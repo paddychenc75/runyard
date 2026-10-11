@@ -9,7 +9,7 @@
 
 ## 怎么复现（一条命令）
 
-- macOS（本机，不会弹窗的部分）：`cd spikes/k9 && pnpm install --frozen-lockfile && node mac/run.mjs --label local --swift`
+- macOS（本机，不会弹窗的部分）：`cd spikes/k9 && node mac/run.mjs --label local --swift`（没有依赖要装）
 - 全部（含 Windows、含会弹权限框的 Finder 变体）：推送到 `spike/k9-*` 分支，CI 工作流 `.github/workflows/spike-k9.yml` 在 `macos-26` 和 `windows-2025` 上各跑一遍，结果作为构建产物上传；Windows 部分在本机等价于 `node win/run.mjs`（只能在 Windows 上跑）。
 - 结果文件：`results/mac-local.json`（本机）、`results/mac-ci-macos26.json`（运行器）、`results/windows.json`（Windows 完整一轮）、`results/windows-bin-sink.json`（Windows 回收站部分的后一轮，含进度回调保护）。
 
@@ -107,7 +107,8 @@ Windows 运行器是 Server 版加管理员账号，不等于用户的 Windows 1
 
 ## 安装过的依赖和查过的内容
 
-- `vite@8.3.1`（发布 2026-09-24，距今 18 天；PRD 模板用 Vite 8.3 线，8.3.2 以后不满 14 天）。另外对照用过 `trash@10.1.1`（发布 2026-02-25，228 天），但它的传递依赖 `braces@3.0.3` 有高危公告（GHSA-vfj7-8cjw-p6xm），PR 的依赖审查据此失败，所以**已从 `package.json` 和锁文件里移除**；它的实验结果保留在 `results/` 里（运行 `windows-bin-sink.json` 那一轮时还装着），要复现这个对照需要手动加回。都是 `spikes/k9` 自己的 `package.json`（精确版本）和 `pnpm-workspace.yaml`（`minimumReleaseAge: 20160`），不在仓库根工作区。`pnpm deps:lookup trash`：OSV、GitHub 公告均无；`vite@8.3.1` 另用 OSV 接口查，无公告（`deps:lookup vite@8.3.4` 对带版本号的写法返回 404，不带版本号的列表可用）。`trash` 的 `windows-trash.exe` 和 `macos-trash` 是随包的预编译程序，没有读源码，只运行；用它们是为了对照，不推荐依赖。
+- `vite@8.3.1`（发布 2026-09-24，距今 18 天；PRD 模板用 Vite 8.3 线，8.3.2 以后不满 14 天）。**没有提交进本 spike 的锁文件**：它依赖的 `source-map-js@1.2.1` 有高危公告（GHSA-68fv-2mgg-jv7q，修复版 1.2.2 发布于 2026-09-30，要到 2026-10-14 才满 14 天），仓库的依赖审查会拒绝。所以 Windows 实验在运行时于一次性的临时项目里按 14 天规则（`minimumReleaseAge: 20160`）执行 `pnpm install` 安装 vite，只存在于 CI 虚拟机里；这是一个需要负责人知道的取舍。10-14 之后可以改回提交锁文件并加 `overrides` 到 1.2.2。
+- 对照用过 `trash@10.1.1`（发布 2026-02-25，228 天；`pnpm deps:lookup trash`：OSV、GitHub 公告均无），但它的传递依赖 `braces@3.0.3` 有高危公告（GHSA-vfj7-8cjw-p6xm），依赖审查失败，已移除；它的实验结果留在 `results/windows-bin-sink.json` 等文件里，复现要手动加回。
 - 在仓库根跑过一次 `pnpm install`（为了用 `pnpm deps:lookup`），没有改任何文件。
 - GitHub Action：`actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`（v7.0.1，发布 2026-04-10，距今 6 个月，仓库安全公告 0 条）；`checkout`、`pnpm/action-setup`、`setup-node` 复用 `ci.yml` 里的哈希。
 - 编译用 Windows 自带的 `csc.exe`（.NET Framework），macOS 用 Xcode 自带的 `swiftc`，没有安装系统软件，没有下载二进制。

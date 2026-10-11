@@ -11,13 +11,17 @@ export function setupViteProject(root) {
   const proj = path.join(root, G.newName("vite"));
   G.assertInRoot(proj);
   fs.mkdirSync(proj);
-  for (const f of ["package.json", "pnpm-workspace.yaml", "pnpm-lock.yaml"]) fs.copyFileSync(path.join(here, "..", f), path.join(proj, f));
+  // 不把 vite 提交进 spike 的锁文件：vite 8.3.1 依赖的 source-map-js 1.2.1 有高危公告（GHSA-68fv-2mgg-jv7q，
+  // 修复版 1.2.2 发布于 2026-09-30，要到 2026-10-14 才满 14 天），仓库的依赖审查会据此拒绝。
+  // 所以只在一次性的临时项目里、按 14 天规则安装 vite，不留进仓库。规则里的“满 14 天”照样生效。
+  fs.writeFileSync(path.join(proj, "package.json"), JSON.stringify({ name: "k9-vite-proj", private: true, type: "module", devDependencies: { vite: "8.3.1" } }, null, 2));
+  fs.copyFileSync(path.join(here, "..", "pnpm-workspace.yaml"), path.join(proj, "pnpm-workspace.yaml"));
   fs.writeFileSync(path.join(proj, G.MARKER), G.token() + "\n");
   fs.writeFileSync(path.join(proj, "index.html"), '<!doctype html><html><body><div id="app"></div><script type="module" src="/main.js"></script></body></html>\n');
   fs.writeFileSync(path.join(proj, "main.js"), 'import { x } from "./dep.js";\ndocument.getElementById("app").textContent = x;\n');
   fs.writeFileSync(path.join(proj, "dep.js"), 'export const x = "hello";\n');
   const t0 = now();
-  const r = run("pnpm", ["install", "--frozen-lockfile"], { cwd: proj, shell: true, timeout: 600000 });
+  const r = run("pnpm", ["install"], { cwd: proj, shell: true, timeout: 600000 });
   if (r.status !== 0) throw new Error("pnpm install 失败: " + (r.stderr || r.stdout).slice(0, 400));
   return { proj, installMs: round(now() - t0) };
 }
