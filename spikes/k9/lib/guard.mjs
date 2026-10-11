@@ -9,11 +9,16 @@ import crypto from "node:crypto";
 export const PREFIX = "runyard-spike-k9-";
 export const MARKER = ".runyard-spike-k9-marker";
 
-const state = { root: null, token: null, trashed: new Set() };
+const state = { root: null, base: null, token: null, trashed: new Set() };
 
-export function makeRoot() {
+/**
+ * @param {string} [base] 临时根建在哪个目录下，默认系统临时目录。
+ * Windows 的回收站实验必须传用户主目录：系统临时目录里的东西删除时不进回收站（见 README）。
+ */
+export function makeRoot(base = os.tmpdir()) {
+  state.base = fs.realpathSync.native(base);
   // realpath：macOS 的 /var 是 /private/var 的链接，不解析会让“以根开头”的断言失灵
-  state.root = fs.realpathSync.native(fs.mkdtempSync(path.join(os.tmpdir(), PREFIX)));
+  state.root = fs.realpathSync.native(fs.mkdtempSync(path.join(state.base, PREFIX)));
   state.token = crypto.randomBytes(8).toString("hex");
   return state.root;
 }
@@ -96,7 +101,7 @@ export function newName(tag = "") {
 
 /** 删除临时根本身（结束时用）。要求：在系统临时目录下、名字有唯一前缀 */
 export function removeRoot() {
-  const real = fs.realpathSync.native(os.tmpdir());
+  const real = state.base;
   if (!state.root.startsWith(real + path.sep) || !path.basename(state.root).startsWith(PREFIX)) throw new Error("guard: 根不合法");
   try { chmodWalk(state.root); } catch {}
   fs.rmSync(state.root, { recursive: true, force: true, maxRetries: 3 });

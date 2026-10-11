@@ -21,7 +21,7 @@ const dump = () => {
   fs.mkdirSync(path.join(import.meta.dirname, "..", "results"), { recursive: true });
   fs.writeFileSync(path.join(import.meta.dirname, "..", "results", "windows.json"), JSON.stringify(results, null, 2));
 };
-const ROOT = G.makeRoot();
+const ROOT = G.makeRoot(os.homedir()); // 不能用系统临时目录：那里删除的东西不进回收站
 const results = { label: "windows", node: process.version, exps: {}, cleanup: {} };
 const log = (...a) => console.log("[k9]", ...a);
 async function exp(name, fn) {

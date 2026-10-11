@@ -2,6 +2,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
+import os from "node:os";
 import * as G from "../lib/guard.mjs";
 import { makeTree, fingerprint, countEntries } from "../lib/make-tree.mjs";
 import { now, round, run, ps } from "./util.mjs";
@@ -169,12 +170,21 @@ export function diagnose(root, bin, drive, helperExe) {
   out.policyHKCU = sh("reg query HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer");
   out.binDirTop = sh(`dir /a ${drive}\\$Recycle.Bin`);
   out.binDirMine = sh(`dir /a "${bin.dir}"`);
-  out.queryRecycleBin = ps(`Add-Type -TypeDefinition 'using System;using System.Runtime.InteropServices;public static class RB{[StructLayout(LayoutKind.Sequential,Pack=1)]public struct Q{public int cb;public long size;public long n;}[DllImport("shell32.dll",CharSet=CharSet.Unicode)]public static extern int SHQueryRecycleBinW(string p,ref Q q);}'; $q=New-Object RB+Q; $q.cb=[Runtime.InteropServices.Marshal]::SizeOf($q); $rc=[RB]::SHQueryRecycleBinW('${drive}\\',[ref]$q); "rc=$rc size=$($q.size) items=$($q.n)"`).stdout.trim();
+  out.queryRecycleBin = ps(`Add-Type -TypeDefinition 'using System;using System.Runtime.InteropServices;public static class RB{[StructLayout(LayoutKind.Sequential)]public struct Q{public int cb;public long size;public long n;}[DllImport("shell32.dll",CharSet=CharSet.Unicode)]public static extern int SHQueryRecycleBinW(string p,ref Q q);}'; $q=New-Object RB+Q; $q.cb=[Runtime.InteropServices.Marshal]::SizeOf($q); $rc=[RB]::SHQueryRecycleBinW('${drive}\\',[ref]$q); "rc=$rc size=$($q.size) items=$($q.n)"`).stdout.trim();
   // 小文件夹试一次，然后看回收站目录里有没有东西
   const tiny = path.join(root, G.newName("diag"));
   makeTree(tiny, { files: 3, symlinks: false, xattrs: false, bigMB: 0 });
   const before = binEntries(bin).items;
   const r = ps(`Add-Type -AssemblyName Microsoft.VisualBasic; [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteDirectory('${tiny}','OnlyErrorDialogs','SendToRecycleBin')`, 45000);
+  // 对照：放在系统临时目录里的小文件夹，同样的调用
+  const tmpDir = path.join(os.tmpdir(), G.newName("difftmp"));
+  fs.mkdirSync(tmpDir);
+  fs.writeFileSync(path.join(tmpDir, "a.txt"), "x");
+  const b2 = binEntries(bin).items;
+  ps(`Add-Type -AssemblyName Microsoft.VisualBasic; [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteDirectory('${tmpDir}','OnlyErrorDialogs','SendToRecycleBin')`, 45000);
+  out.tinyVBInSystemTemp = outcome(bin, b2, tmpDir).verdict;
+  if (fs.existsSync(tmpDir)) fs.rmSync(tmpDir, { recursive: true, force: true }); // 刚用 mkdir 建的、名字带唯一前缀的目录
+  out.psListBin = ps(`Get-ChildItem -Force '${bin.dir}' | Select-Object Name,Length | Format-Table -HideTableHeaders | Out-String`).stdout.trim().slice(0, 500);
   out.tinyVB = { status: r.status, verdict: outcome(bin, before, tiny).verdict, binAfter: sh(`dir /a /s "${bin.dir}"`).slice(0, 600) };
   if (fs.existsSync(tiny)) G.removeInRoot(tiny);
   return out;
