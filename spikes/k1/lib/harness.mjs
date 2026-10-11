@@ -180,6 +180,9 @@ export const httpRun = (port, owner = "cli") => ({
   port,
   owner: owner === "tab" ? { kind: "tab", tabId: "t1" } : { kind: "cli" },
 });
+// vite 不在这个包的依赖里（原因见 README 的“安装过的依赖”）：装了就用，没装时调用方退回极小的 HTTP 服务
+const viteBin = path.join(spikeRoot, "node_modules", "vite", "bin", "vite.js");
+export const viteAvailable = () => fs.existsSync(viteBin);
 export function viteRun(cfg, port, owner = "cli") {
   const proj = path.join(cfg.stateDir, `proj-${port}`);
   fs.mkdirSync(proj, { recursive: true });
@@ -187,7 +190,7 @@ export function viteRun(cfg, port, owner = "cli") {
   const config = path.join(proj, "vite.config.mjs");
   fs.writeFileSync(config, `export default { server: { host: "127.0.0.1", port: ${port}, strictPort: true }, clearScreen: false };\n`);
   return {
-    argv: [nodeExec, path.join(spikeRoot, "node_modules", "vite", "bin", "vite.js"), "--config", config],
+    argv: [nodeExec, viteBin, "--config", config],
     cwd: proj,
     port,
     owner: owner === "tab" ? { kind: "tab", tabId: "t1" } : { kind: "cli" },

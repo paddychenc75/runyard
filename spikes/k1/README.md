@@ -20,7 +20,7 @@
 cd spikes/k1 && pnpm install --frozen-lockfile && pnpm exec install-electron && pnpm spike
 ```
 
-需要 Node 24。全部实验约 8 分钟，结果写进 `results/<系统>-<架构>-local.json` 并打印每项的判定。`pnpm spike:quick` 是减少轮数的版本（约 2 分钟）；`node experiments/run-all.mjs --only concurrency,squatter` 只跑指定的几项。Linux 上没有显示器时在前面加 `xvfb-run -a`。实验只用临时目录（`os.tmpdir()` 下以 `k1s` 开头的文件夹），不碰 `~/.runyard` 和 `~/Runyard`；“另一个系统用户”实验只有设了 `K1_ALLOW_OTHER_USER=1` 才会新建用户或用 `sudo`，本机不要设。
+需要 Node 24。全部实验约 8 分钟（现在不含 Vite 的那几轮，见“安装过的依赖和查过的内容”），结果写进 `results/<系统>-<架构>-local.json` 并打印每项的判定。`pnpm spike:quick` 是减少轮数的版本（约 2 分钟）；`node experiments/run-all.mjs --only concurrency,squatter` 只跑指定的几项。Linux 上没有显示器时在前面加 `xvfb-run -a`。实验只用临时目录（`os.tmpdir()` 下以 `k1s` 开头的文件夹），不碰 `~/.runyard` 和 `~/Runyard`；“另一个系统用户”实验只有设了 `K1_ALLOW_OTHER_USER=1` 才会新建用户或用 `sudo`，本机不要设。
 
 三个系统的 CI：`.github/workflows/spike-k1.yml`，推送到 `spike/k1-*` 分支时运行。
 
@@ -45,7 +45,7 @@ cd spikes/k1 && pnpm install --frozen-lockfile && pnpm exec install-electron && 
 - `supervisor.mjs`：最小的管理进程。不导入 electron，没有原生模块。监听 `<状态目录>/run/supervisor.sock`（Windows：`\\.\pipe\runyard-<profile>-<用户标识>`），写发现文件 `run/supervisor.json`（协议版本、产品版本、由谁启动、可执行文件路径、32 字节随机口令），一行一个 JSON，握手按 §5.1，一个“运行”能力（起一个子进程、等端口通、记住持有者）。
 - `lib/client.mjs`：客户端，应用和命令行共用。读发现文件、连接、握手；连不上就启动管理进程并脱钩；按 §5.4 的握手表处理版本。
 - `cli.mjs`：命令行（一次性进程）。`electron-app/`：真正的 Electron 主进程，不开窗口，用自己的可执行文件加 `ELECTRON_RUN_AS_NODE=1` 拉起管理进程，起“标签页持有”的运行，正常退出前先道别。
-- “运行”是一个极小的 Node HTTP 服务；每 10 轮里有 4 轮换成临时项目里的真 Vite 7.3.6 开发服务器。
+- “运行”是一个极小的 Node HTTP 服务；测量时每 10 轮里有 4 轮换成临时项目里的真 Vite 7.3.6 开发服务器（vite 测完后已从依赖里拿掉，原因见“安装过的依赖和查过的内容”）。
 - Windows 管道名里的“用户标识”用的是“域\用户名”的 SHA-256 前 16 位：纯 Node 拿不到 SID（要另起 `whoami` 进程）。
 
 ## 做了哪些实验
@@ -313,8 +313,15 @@ Linux 的抽象 socket 没有权限控制，别的用户可以抢占这个名字
 | 包 | 版本 | 发布日期 | 查了什么 |
 | --- | --- | --- | --- |
 | electron | 44.4.5（技术设计 §8.1 选定的版本） | 2026-09-23（19 天） | `pnpm deps:lookup electron`：OSV、GitHub 公告库都没有针对它的公告；项目公告页沿用 §8.1 的结论。没有安装脚本；二进制 124 MB 下载到 `~/Library/Caches/electron`，由包里的 `checksums.json` 核对 |
-| vite | 7.3.6 | 2026-06-25（109 天） | 只用来在临时项目里起一个真的开发服务器。**有两条已知公告**：GHSA-rq7h-c2jc-7f22（中）、GHSA-9jrq-w75r-8gcw（低），都是开发服务器对外提供文件时的问题。修掉它们的 7.3.7 才发布 5 天，按 14 天规则不能装，也没有绕过。实验里它只绑定 `127.0.0.1`，在临时目录里运行几秒。仓库的审计闸门只拦高危和严重，这两条不触发 |
-| esbuild（vite 带来的） | 0.28.2 | 2026-08-08 | 有安装脚本，在放行名单里；其余间接依赖由 pnpm 按 14 天规则解析，没有例外条目 |
+| vite | 7.3.6，**测完后已从依赖里拿掉** | 2026-06-25（109 天） | 只用来在临时项目里起一个真的开发服务器，绑定 `127.0.0.1`，运行几秒。它自己有两条已知公告：GHSA-rq7h-c2jc-7f22（中）、GHSA-9jrq-w75r-8gcw（低）；修掉它们的 7.3.7 才发布 5 天，按 14 天规则不能装 |
+| esbuild（vite 带来的） | 0.28.2，随 vite 一起拿掉 | 2026-08-08 | 有安装脚本，在放行名单里 |
+
+**为什么拿掉 vite。** 开 PR 之后，仓库的“依赖变更审查”在 vite 的间接依赖 `source-map-js@1.2.1` 上报了一条高危公告 GHSA-68fv-2mgg-jv7q（2026-09-18 公布，解析恶意的 source map 时会卡住事件循环）。修复它的 1.2.2 是 2026-09-30 发布的，到 2026-10-14 才满 14 天；年龄规则不许绕过，放行名单要负责人同意才能改。所以正确的做法是把这个依赖拿掉：
+
+- 用到 Vite 的测量（实验 B、C 里每台机器各 4 轮）是在拿掉之前做的，对应提交 `1c132db`、CI 运行 38179502923 和本机的结果文件，数字都在上面。
+- 现在的代码里，装了 vite 就用，没装就全部用极小的 HTTP 服务；所以**按上面那条命令复现时，Vite 的那几轮不会跑**（结果里 `viteRounds` 是 0），其余都一样。
+- 要重跑 Vite 的那几轮：2026-10-14 之后在 `spikes/k1` 里执行 `pnpm add -D vite@7.3.6`，确认锁文件里 `source-map-js` 是 1.2.2 以上，再 `pnpm spike`。
+- 我安装时只查了直接依赖的公告，没有查间接依赖，这是这次漏掉的一步；`pnpm deps:lookup` 也只查直接依赖。
 
 CI 用的 Action：`actions/checkout`、`pnpm/action-setup`、`actions/setup-node` 沿用 `ci.yml` 里的提交哈希。新增 `actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`（v7.0.1，2026-04-10 发布，185 天；最新的 v7.0.2 才 5 天，不用；项目公告页 0 条，GitHub 公告库里查不到影响它的条目）。
 

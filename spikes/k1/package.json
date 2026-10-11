@@ -12,7 +12,6 @@
     "spike:quick": "node experiments/run-all.mjs --quick"
   },
   "devDependencies": {
-    "electron": "44.4.5",
-    "vite": "7.3.6"
+    "electron": "44.4.5"
   }
 }

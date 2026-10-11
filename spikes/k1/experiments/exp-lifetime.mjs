@@ -2,7 +2,7 @@
 // 应用是真正的 Electron 进程；管理进程由它用自己的可执行文件加 ELECTRON_RUN_AS_NODE=1 拉起。
 import { execFileSync } from "node:child_process";
 import crypto from "node:crypto";
-import { alive, cleanupState, cli, cliHold, eventsOf, freePort, httpRun, newState, portOpen, runArgs, runGone, sleep, startApp, stats, viteRun, waitFor } from "../lib/harness.mjs";
+import { alive, cleanupState, cli, cliHold, eventsOf, freePort, httpRun, newState, portOpen, runArgs, runGone, sleep, startApp, stats, viteAvailable, viteRun, waitFor } from "../lib/harness.mjs";
 
 // macOS：某个进程是否登记在 LaunchServices 里（登记了才可能有 Dock 图标）。返回 null（没登记）或它的类型
 export function lsappinfoType(pid) {
@@ -69,7 +69,7 @@ async function round({ mode, vite }) {
 async function series(mode, limitMs, quick) {
   const rounds = [];
   const total = quick ? 2 : 10;
-  for (let i = 0; i < total; i++) rounds.push(await round({ mode, vite: i % 3 === 0 }));
+  for (let i = 0; i < total; i++) rounds.push(await round({ mode, vite: i % 3 === 0 && viteAvailable() }));
   const ok = (r) => r.tabGoneMs >= 0 && r.tabGoneMs <= limitMs && r.supervisorAliveAfter && r.cliRunAliveAfter && r.supervisorStartedByApp && r.appGone;
   const pick = (key) => stats(rounds.map((r) => r.breakdown[key]));
   return {
