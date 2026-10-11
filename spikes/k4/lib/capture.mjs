@@ -5,6 +5,7 @@ import { spawn, spawnSync } from "node:child_process";
 export const isWin = process.platform === "win32";
 /** 我们启动过的所有 pid，收尾时核对是否有残留 */
 export const startedPids = [];
+export const startedInfo = [];
 const now = () => performance.timeOrigin + performance.now();
 
 export function startCapture({ cmd, args = [], cwd, env, windowsVerbatimArguments }) {
@@ -20,6 +21,7 @@ export function startCapture({ cmd, args = [], cwd, env, windowsVerbatimArgument
     detached: !isWin, // POSIX 上自成进程组，便于整组结束；只对我们自己启动的 pid 动手
   });
   if (child.pid) startedPids.push(child.pid);
+  startedInfo.push({ pid: child.pid, cmd: `${cmd} ${args.join(" ")}`.slice(0, 160), at: Date.now() });
   let spawnError = null;
   child.on("error", (e) => {
     spawnError = e;

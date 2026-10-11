@@ -4,9 +4,9 @@ import { mkdirSync, mkdtempSync, realpathSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { parseArgs } from "node:util";
-import { isAlive, startedPids } from "./lib/capture.mjs";
+import { isAlive, startedInfo, startedPids } from "./lib/capture.mjs";
 import { rmrf } from "./lib/helpers.mjs";
-import { toolVersions } from "./lib/tools.mjs";
+import { toolVersions, tryRun } from "./lib/tools.mjs";
 import { collectEncodingInfo, runWindowsNative, selfTest } from "./scenarios/encoding.mjs";
 import { runNext, runPnpm, runVite } from "./scenarios/frameworks.mjs";
 import { runLanguages } from "./scenarios/languages.mjs";
@@ -54,7 +54,14 @@ try {
   // 清理核对：我们启动的每个 pid 是否还活着；有端口的用例结束后端口是否已关
   const alive = startedPids.filter(isAlive);
   const portsOpen = ctx.results.filter((r) => r.portStillOpenAfterStop).map((r) => r.id);
-  ctx.cleanup = { pidsStarted: startedPids.length, pidsStillAlive: alive, portsStillOpen: portsOpen };
+  // 活着的 pid 可能是 pid 被系统复用给了别的进程：记下它是谁、我们当初用它启动了什么、同一个 pid 被我们启动过几次
+  const aliveInfo = alive.map((pid) => ({
+    pid,
+    startedTimes: startedInfo.filter((i) => i.pid === pid).length,
+    ourCommand: startedInfo.filter((i) => i.pid === pid).map((i) => i.cmd),
+    nowRunning: process.platform === "win32" ? tryRun("tasklist", ["/FI", `PID eq ${pid}`, "/FO", "CSV", "/NH"]) : tryRun("ps", ["-p", String(pid), "-o", "comm="]),
+  }));
+  ctx.cleanup = { pidsStarted: startedPids.length, pidsStillAlive: alive, aliveInfo, portsStillOpen: portsOpen };
   console.log("[cleanup]", JSON.stringify(ctx.cleanup));
   writeFileSync(path.join(out, "results.json"), JSON.stringify({ env, selfTest: ctx.selfTest, cleanup: ctx.cleanup, skipped: ctx.skipped, results: ctx.results }, null, 2));
   writeReport(out, { env, ctx });
