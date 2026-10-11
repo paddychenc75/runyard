@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(pnpm install)",
+      "Bash(pnpm install --frozen-lockfile)",
+      "Bash(pnpm verify)",
+      "Bash(pnpm check)",
+      "Bash(pnpm lint)",
+      "Bash(pnpm format)",
+      "Bash(pnpm typecheck)",
+      "Bash(pnpm generate)",
+      "Bash(pnpm test)",
+      "Bash(pnpm test *)",
+      "Bash(pnpm deps:lookup *)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
+    ],
+    "ask": [
+      "Edit(/docs/product/**)",
+      "Edit(/.github/**)",
+      "Edit(/.claude/**)",
+      "Edit(/security/**)",
+      "Edit(/pnpm-workspace.yaml)",
+      "Edit(/renovate.json)",
+      "Edit(/tooling/checks/layers.json)",
+      "Bash(git push *)",
+      "Bash(gh release *)"
+    ],
+    "deny": [
+      "Edit(/pnpm-lock.yaml)",
+      "Read(/**/.tsbuild/**)",
+      "Read(/**/.turbo/**)",
+      "Read(/**/dist/**)",
+      "Read(/tooling/design-render/build/**)",
+      "Read(/tooling/design-render/png/**)",
+      "Read(/tooling/design-render/sheets/**)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/tooling/hooks/session-start.ts"],
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/tooling/hooks/guard-bash.ts"],
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/tooling/hooks/post-edit.ts"],
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/tooling/hooks/on-stop.ts"],
+            "timeout": 120
+          }
+        ]
+      }
+    ]
+  }
+}

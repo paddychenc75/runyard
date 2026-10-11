@@ -4,6 +4,7 @@ English | [简体中文](README.zh-CN.md)
 
 Runyard is a desktop app for keeping and running code demos: pick a template, get a running project with an editor, a live preview and a terminal, and let AI coding agents create and run projects through a command-line tool.
 
+<!-- sec: status -->
 ## Status
 
 Early development. Nothing is usable yet. The product requirements, the technical design and the UI design are done; the code is being built in the open from here.
@@ -11,6 +12,7 @@ Early development. Nothing is usable yet. The product requirements, the technica
 - macOS first; Windows 11 follows as a preview.
 - Builds are not code-signed for now.
 
+<!-- sec: contents -->
 ## What is in this repository
 
 | Path | Contents |
@@ -19,10 +21,12 @@ Early development. Nothing is usable yet. The product requirements, the technica
 | `docs/design/` | UI design sources, design tokens, and the app icon |
 | `tooling/` | Repository tooling |
 
+<!-- sec: language -->
 ## Language
 
 The owner of this project works in Chinese, so code comments, commit messages and developer documents are written in Chinese. Identifiers, file names and commands are in English. Issues and pull requests in English are welcome.
 
+<!-- sec: license -->
 ## License
 
 [MIT](LICENSE)
