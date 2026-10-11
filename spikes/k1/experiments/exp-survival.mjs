@@ -65,6 +65,20 @@ async function posixCase(variant, launcher) {
 
 // ---------- Windows ----------
 
+// 别的进程刚写完的文件可能还被占着（EBUSY）：短暂重试
+async function readSoon(file) {
+  for (let i = 0; ; i++) {
+    try {
+      return fs.readFileSync(file, "utf8").trim();
+    } catch (err) {
+      if (i >= 40) throw err;
+      await sleep(50);
+    }
+  }
+}
+// 一个情形出错不该丢掉其余情形的结果
+const guarded = (label, fn) => fn().catch((err) => ({ ...label, error: String(err.message ?? err).slice(0, 300) }));
+
 const q = (s) => `"${s}"`;
 const sq = (s) => `'${s}'`;
 
@@ -118,10 +132,10 @@ async function windowsJobCase(flagsName, via) {
     const statusFile = path.join(cfg.stateDir, "job-status.txt");
     const host = spawn("powershell.exe", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", fixture("job-host.ps1"), "-Script", s.args[2], "-LimitFlags", String(JOB[flagsName]), "-StatusFile", statusFile], { stdio: "ignore", env: baseEnv(), windowsHide: true });
     if ((await waitFor(() => fs.existsSync(statusFile), 60_000, 50)) < 0) return { job: flagsName, via: via ?? "spawn", error: "job-host 没有写出状态" };
-    const jobStatus = fs.readFileSync(statusFile, "utf8").trim();
+    const jobStatus = await readSoon(statusFile);
     let cliOut = null;
     try {
-      cliOut = JSON.parse(fs.readFileSync(path.join(cfg.stateDir, "cli-out.json"), "utf8").trim());
+      cliOut = JSON.parse(await readSoon(path.join(cfg.stateDir, "cli-out.json")));
     } catch {
       // 留空，下面如实报告
     }
@@ -159,13 +173,13 @@ export async function parentExit({ quick }) {
   const shells = [];
   const shellRounds = quick ? 1 : 3;
   for (const shell of ["powershell", "pwsh", "cmd", "git-bash"]) {
-    for (let i = 0; i < shellRounds; i++) shells.push(await windowsShellCase(shell, "node"));
+    for (let i = 0; i < shellRounds; i++) shells.push(await guarded({ shell, launcher: "node" }, () => windowsShellCase(shell, "node")));
   }
-  for (const shell of ["powershell", "cmd"]) shells.push(await windowsShellCase(shell, "electron"));
+  for (const shell of ["powershell", "cmd"]) shells.push(await guarded({ shell, launcher: "electron" }, () => windowsShellCase(shell, "electron")));
   const jobs = [];
   const jobRounds = quick ? 1 : 3;
   for (const [flags, via] of [["none", undefined], ["killOnClose", undefined], ["killOnClose", "cim"], ["killOnCloseBreakawayOk", undefined], ["killOnCloseSilentBreakaway", undefined]]) {
-    for (let i = 0; i < jobRounds; i++) jobs.push(await windowsJobCase(flags, via));
+    for (let i = 0; i < jobRounds; i++) jobs.push(await guarded({ job: flags, via: via ?? "spawn" }, () => windowsJobCase(flags, via)));
   }
   const count = (list, keyOf) => {
     const out = {};

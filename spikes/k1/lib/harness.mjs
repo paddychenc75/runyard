@@ -225,7 +225,7 @@ export function sessionProcesses() {
     rows = out.split("\n").filter((l) => l.includes(SESSION)).map((l) => ({ pid: Number(l.trim().split(/\s+/)[0]), command: l.trim().replace(/^\d+\s+/, "") }));
   }
   const root = spikeRoot.toLowerCase();
-  return rows.filter((x) => x.pid !== process.pid).map((x) => ({ ...x, command: x.command.slice(0, 300), ours: x.command.toLowerCase().includes(root) }));
+  return rows.filter((x) => Number.isInteger(x.pid) && x.pid !== process.pid).map((x) => ({ ...x, command: x.command.slice(0, 300), ours: x.command.toLowerCase().includes(root) }));
 }
 
 // 收拾一个状态目录：先请管理进程自己退出，再强杀记录在案而且还活着的，最后删目录

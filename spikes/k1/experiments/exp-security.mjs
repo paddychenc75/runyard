@@ -169,13 +169,14 @@ async function otherUserWindows(cfg, p) {
   }
   if (!process.env.K1_ALLOW_OTHER_USER) return { ...out, note: "只在 CI 上新建临时用户实测" };
   const user = `k1u${crypto.randomBytes(3).toString("hex")}`;
-  const password = `K1!${crypto.randomBytes(10).toString("hex")}aZ`;
+  // net user 对超过 14 个字符的密码会停下来问一句，所以正好 14 个字符
+  const password = `K1!${crypto.randomBytes(4).toString("hex")}aZ9`;
   const dir = `C:\\k1ou-${SESSION}`;
   try {
     fs.mkdirSync(dir);
     execFileSync("icacls", [dir, "/grant", "*S-1-1-0:(OI)(CI)F"], { stdio: "ignore", windowsHide: true });
     fs.copyFileSync(path.join(spikeRoot, "fixtures", "other-user-probe.mjs"), path.join(dir, "probe.mjs"));
-    execFileSync("net", ["user", user, password, "/add"], { stdio: "ignore", windowsHide: true });
+    execFileSync("net", ["user", user, password, "/add"], { stdio: ["ignore", "pipe", "pipe"], encoding: "utf8", windowsHide: true });
     out.userCreated = true;
     const script = [
       "$pw = ConvertTo-SecureString $env:K1_PW -AsPlainText -Force",

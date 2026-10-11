@@ -53,8 +53,10 @@ async function main() {
   for (const run of conf.runs ?? []) status.runs.push(await conn.request("run.start", run));
   status.phase = "ready";
   writeStatus();
-  setInterval(() => {
-    if (fs.existsSync(conf.controlFile)) app.quit();
+  const poll = setInterval(() => {
+    if (!fs.existsSync(conf.controlFile)) return;
+    clearInterval(poll); // 只触发一次：再调一次 app.quit() 会绕过下面“先道别”的等待
+    app.quit();
   }, 25);
 }
 
