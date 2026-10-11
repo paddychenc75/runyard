@@ -1,0 +1,85 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": [
+    "Runyard 的依赖更新配置（技术设计 §8.6.3，第 4 次提交）。Renovate 是需要负责人在 GitHub 上安装的应用，见 CONTRIBUTING.md。",
+    "年龄规则与 pnpm-workspace.yaml 的 minimumReleaseAge: 20160（14 天）一致；Renovate 的安全更新会绕过年龄规则，pnpm 的不会，两者的冲突没有实测过【未核实】。"
+  ],
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigestsToSemver"],
+  "timezone": "Asia/Shanghai",
+  "labels": ["dependencies"],
+  "semanticCommits": "enabled",
+  "semanticCommitType": "chore",
+  "semanticCommitScope": "deps",
+  "rangeStrategy": "pin",
+  "dependencyDashboard": true,
+  "internalChecksFilter": "strict",
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  "osvVulnerabilityAlerts": true,
+  "dependencyDashboardOSVVulnerabilitySummary": "unresolved",
+  "vulnerabilityAlerts": {
+    "labels": ["dependencies", "security"]
+  },
+  "prBodyNotes": [
+    "合并前按 docs/guides 里的“添加依赖”手册（技术设计 §8.6.4）重做第 3 步：查项目自己的公告页，不能只看 Renovate 说“通过”；把查询结果贴在这里。"
+  ],
+  "packageRules": [
+    {
+      "description": "npm 包满 14 天才提 PR（与 pnpm 的 minimumReleaseAge 一致）",
+      "matchDatasources": ["npm"],
+      "minimumReleaseAge": "14 days"
+    },
+    {
+      "description": "GitHub Actions 同样满 14 天",
+      "matchManagers": ["github-actions"],
+      "minimumReleaseAge": "14 days",
+      "semanticCommitType": "ci",
+      "labels": ["dependencies", "github-actions"],
+      "groupName": "GitHub Actions"
+    },
+    {
+      "description": "新的大版本先等 90 天（§8.6.1 规则 4）；Electron 缩短为 30 天（规则 5）",
+      "matchDatasources": ["npm"],
+      "matchUpdateTypes": ["major"],
+      "minimumReleaseAge": "90 days"
+    },
+    {
+      "matchPackageNames": ["electron"],
+      "matchUpdateTypes": ["major"],
+      "minimumReleaseAge": "30 days"
+    },
+    {
+      "description": "Electron、Vite、TypeScript、pnpm 的大版本不自动合并，必须附 ADR",
+      "matchPackageNames": ["electron", "vite", "typescript", "pnpm"],
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "labels": ["dependencies", "needs-adr"],
+      "prBodyNotes": ["大版本升级必须附 ADR（技术设计 §8.6.4 第 10 步）。"]
+    },
+    {
+      "description": "Electron 工具链一组一个 PR",
+      "matchPackageNames": ["electron", "electron-builder", "electron-vite", "vite"],
+      "groupName": "Electron 工具链"
+    },
+    {
+      "description": "测试工具一组一个 PR",
+      "matchPackageNames": ["vitest", "@vitest/**", "playwright", "@playwright/**"],
+      "groupName": "测试工具"
+    },
+    {
+      "description": "网站一组一个 PR",
+      "matchPackageNames": ["astro", "@astrojs/**"],
+      "groupName": "网站"
+    },
+    {
+      "description": "Node 的升级由人按 §8.6.1 规则 5 决定（只用 LTS，新 LTS 满 90 天再升），不让 Renovate 提",
+      "matchDepNames": ["node"],
+      "enabled": false
+    },
+    {
+      "description": "package.json 的 engines 范围是手写的约束，不是依赖",
+      "matchDepTypes": ["engines"],
+      "enabled": false
+    }
+  ]
+}

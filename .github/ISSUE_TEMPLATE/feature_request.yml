@@ -1,0 +1,25 @@
+name: 功能建议
+description: 想要一个新功能，或者现有功能的改进
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢建议。中文或英文都可以。
+  - type: textarea
+    id: problem
+    attributes:
+      label: 你想解决什么问题
+      description: 先说场景和痛点，不必先给方案。
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: 你设想的做法
+      description: 可选。
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 你考虑过的其他办法
+      description: 可选。现在是怎么凑合的。

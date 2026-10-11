@@ -1,0 +1,47 @@
+name: 缺陷报告
+description: 某个功能的行为和预期不一致
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈。中文或英文都可以。安全漏洞请不要在这里提，见 SECURITY.md。
+  - type: textarea
+    id: what
+    attributes:
+      label: 发生了什么
+      description: 你看到的现象，和你预期的现象。
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 尽量写成别人能照着做的几步。
+      placeholder: |
+        1. ...
+        2. ...
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: 操作系统
+      options:
+        - macOS
+        - Windows
+        - Linux
+        - 其他
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Runyard 版本或提交
+      description: 现在还没有发布版本，请写提交哈希（git rev-parse --short HEAD）。
+  - type: textarea
+    id: logs
+    attributes:
+      label: 日志或截图
+      description: 粘贴相关输出。请先删掉里面的密钥、令牌和个人路径。
+      render: shell

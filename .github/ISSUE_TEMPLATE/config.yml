@@ -1,0 +1,6 @@
+# 关闭“空白 issue”会让提问者只能选下面的模板；这里保留空白 issue，因为很多讨论不属于缺陷或建议。
+blank_issues_enabled: true
+contact_links:
+  - name: 报告安全漏洞（请不要公开提 issue）
+    url: https://github.com/paddychenc75/runyard/security/advisories/new
+    about: 通过 GitHub 的私密漏洞报告提交，只有维护者能看到。说明见 SECURITY.md。

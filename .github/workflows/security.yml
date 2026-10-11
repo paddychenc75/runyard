@@ -1,0 +1,72 @@
+# 每个 PR 和 main 上的依赖安全检查（技术设计 §8.6.3 的“每个 PR”各行）。
+# 不需要任何密钥；密钥扫描由仓库设置里的 GitHub secret scanning 负责，不在这里。
+name: 安全
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  dependency-review:
+    name: 依赖变更审查
+    # 这个 Action 比较 PR 前后的依赖，只对 pull_request 有意义
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # 需要仓库设置里打开“依赖图（Dependency graph）”，否则这一步报错。
+      # 能否读懂 pnpm 11 的 pnpm-lock.yaml：GitHub 文档把 pnpm-lock.yaml 列为依赖图支持的文件，
+      # 但没有写支持哪些锁文件版本【未核实，第一个改依赖的 PR 上实测】。
+      - name: 依赖变更审查
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          fail-on-severity: high
+          fail-on-scopes: runtime
+          # 放行统一走 security/allowlist.toml，这里不重复写一份（技术设计 §8.6.3）
+          allow-ghsas: ""
+          # 许可证检查：技术设计只写了“许可证检查”，没有给出允许或禁止的许可证列表，
+          # 所以先关闭，等负责人定下列表后再开（见 CONTRIBUTING.md 末尾的待办）
+          license-check: false
+          comment-summary-in-pr: never
+
+  audit-gate:
+    name: 审计闸门（pnpm audit，high 与 critical）
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: 安装 pnpm（版本读自 package.json 的 packageManager 字段）
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: 安装 Node（版本读自 .node-version）
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+
+      # pnpm audit 只读锁文件，不需要安装依赖。
+      # --ignore-registry-errors：注册表返回非 200 时退出码为 0，免得 npm 抽风挡住所有 PR；
+      # 每晚的任务不加这个参数。pnpm audit 发现漏洞时退出码非 0，所以这里 || true，
+      # 是否失败交给下一步的闸门看 JSON 内容决定。
+      - name: 运行 pnpm audit（只看正式依赖）
+        run: pnpm audit --prod --json --ignore-registry-errors > audit.json || true
+
+      - name: 审计闸门（按 security/allowlist.toml 过滤）
+        run: node tooling/ci/audit-gate.ts --file audit.json --lenient

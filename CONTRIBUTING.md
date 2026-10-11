@@ -1,0 +1,105 @@
+# 参与贡献
+
+欢迎提 issue 和 PR。**英文的 issue 和 PR 同样欢迎**：维护者主要用中文，但英文的描述不会被拒绝；PR 标题请照下面的格式写，主题尽量用中文，写不好时先写英文也可以，CI 不检查主题用什么语言。
+
+仓库里给开发者看的内容（代码注释、提交信息、文档）用中文；`README.md` 是英文，`README.zh-CN.md` 是中文，改其中一个的内容时请同步另一个。
+
+## 环境
+
+- Node：版本写在 `.node-version`（24.21.0）。`package.json` 的 `engines` 和 `pnpm-workspace.yaml` 的 `engineStrict` 会让版本不符的安装直接失败。
+- pnpm：版本写在 `package.json` 的 `packageManager` 字段（11.28.0）。CI 从这个字段读版本，不另写。
+- 换行：全部文本文件用 LF（见 `.gitattributes`），Windows 上也一样。不要在 Git 里打开会改换行的自动转换。
+
+```sh
+pnpm install --frozen-lockfile
+```
+
+## 常用命令
+
+这些命令都在仓库根目录运行，CI 跑的就是同样的命令：
+
+| 命令 | 做什么 |
+| --- | --- |
+| `pnpm lint` | Biome 检查（格式和规则） |
+| `pnpm format` | 用 Biome 自动格式化 |
+| `pnpm typecheck` | TypeScript 类型检查 |
+| `pnpm check` | 仓库自己的检查（目前有分层、依赖策略、依赖记录） |
+| `pnpm test` | 全部单元测试 |
+| `pnpm verify` | 提 PR 前跑一遍：lint、typecheck、check，再测试有改动影响的部分 |
+| `pnpm deps:lookup <包>` | 查某个包的版本、发布日期、已知公告 |
+
+## 提交信息和 PR 标题
+
+格式：`type(scope): 主题`，主题写中文。例如：
+
+```
+feat(core): 增加运行状态机
+fix(platform): 修复 Windows 上进程树未完全结束
+ci(repo): 增加 PR 流水线
+```
+
+- `type` 可选：`feat`、`fix`、`docs`、`style`、`refactor`、`perf`、`test`、`build`、`ci`、`chore`、`revert`。
+- `scope` 可以省略；写的话必须在列表里：`repo`、`deps`、`ci`、`docs`、`security`、`release`、`spec`、`tooling`、`desktop`、`site`、`protocol`、`platform`、`core`、`supervisor`、`client`、`cli`、`tokens`、`ui`、`i18n`、`testing`、`templates`。列表在 `tooling/ci/check-title.ts`，新增包时一起改。
+- 冒号后要有一个空格，主题不能为空，整条标题不超过 72 个字符（一个汉字算一个）。
+- 破坏性改动在冒号前加 `!`，或在提交正文里写一行 `BREAKING CHANGE: 说明`（`BREAKING CHANGE` 必须是英文原词）。
+- 合并方式只有 squash：一个 PR 压成一个提交，进入 `main` 的提交信息来自 PR 标题，所以**PR 标题**必须符合格式。
+
+CI 会检查 PR 标题和 PR 里每个提交的第一行。本地检查：
+
+```sh
+node tooling/ci/check-title.ts --title "feat(core): 增加运行状态机"
+node tooling/ci/check-title.ts --range origin/main..HEAD
+```
+
+## 依赖
+
+规则的完整说明在技术设计 §8.6（`docs/product/03-tech-design.md`）。日常要记住的：
+
+- 版本写精确值，不写 `^`、`~`、`latest`；共用的版本放在 `pnpm-workspace.yaml` 的 `catalog` 里。
+- 发布不满 14 天的版本装不上（`minimumReleaseAge`），不要用 `minimumReleaseAgeExclude` 绕过；安全修复的例外条件见 §8.6.1 规则 3。
+- 依赖的安装脚本默认不执行；放行要在 `allowBuilds` 里写明，并在 PR 里说明理由。
+- 加或改依赖时，同一个 PR 里更新 `docs/architecture/dependencies.md`；`pnpm check` 里的 `deps-policy` 和 `deps-record` 会核对。
+- 选版本前先用 `pnpm deps:lookup <包>` 查发布日期和公告。
+- 审计的已知公告放行只能写在 `security/allowlist.toml`，每条要有理由和到期日，格式见文件开头的说明。
+
+## CI 做什么
+
+| 工作流 | 触发 | 内容 |
+| --- | --- | --- |
+| `.github/workflows/ci.yml` | 每个 PR、`main` | `lint`（Ubuntu）：PR 标题和提交信息格式、Biome、`pnpm check`。`test`（Ubuntu、`macos-26`、`windows-2025`，三个都必须通过）：类型检查、单元测试；macOS 和 Windows 上另外重跑 Biome 和 `pnpm check` |
+| `.github/workflows/security.yml` | 每个 PR、`main` | 依赖变更审查（`dependency-review-action`）；`pnpm audit` 审计闸门（`tooling/ci/audit-gate.ts`，只统计 high 和 critical 的正式依赖，按 `security/allowlist.toml` 过滤） |
+| `.github/workflows/nightly-security.yml` | 每晚（`main`） | 含开发依赖的全量审计、`pnpm audit signatures`、OSV-Scanner（只报告，结果在仓库的 Security 页）；失败时自动开 issue（标签 `security`） |
+
+所有工作流默认只有 `contents: read` 权限，PR 上跑的任务不用任何密钥，用的是 `pull_request` 事件（不是 `pull_request_target`）。
+
+### 本地复现 CI
+
+```sh
+pnpm install --frozen-lockfile
+pnpm lint && pnpm check && pnpm typecheck && pnpm test
+pnpm audit --prod --json > audit.json; node tooling/ci/audit-gate.ts --file audit.json
+```
+
+## CI 组件（第三方 Action）
+
+所有 Action（包括 GitHub 官方的 `actions/*`）都固定到完整提交哈希，版本写在行尾注释里；选版本的规则与依赖相同（发布满 14 天、在维护的版本线、先查公告）。升级走 Renovate 的 PR，不要手改哈希。
+
+查询日期 2026-10-12。“公告”一列：GitHub 公告库（`gh api "advisories?ecosystem=actions&affects=<仓库>"`）、该仓库自己的安全公告页（`gh api repos/<仓库>/security-advisories`）、OSV（生态 `GitHub Actions`，按所选版本查）三处，结果都是 0 条。
+
+| Action | 版本 | 提交哈希 | 发布日期 | 为什么是这个版本 |
+| --- | --- | --- | --- | --- |
+| `actions/checkout` | v7.0.1 | `3d3c42e5aac5ba805825da76410c181273ba90b1` | 2026-07-20 | 7 线最新，发布 84 天；7.0.0 已满 90 天 |
+| `actions/setup-node` | v7.0.0 | `820762786026740c76f36085b0efc47a31fe5020` | 2026-07-14 | 7.1.0 发布于 2026-10-08，只有 4 天，不选；7.0.0 刚满 90 天 |
+| `pnpm/action-setup` | v6.1.0 | `ea17c68df8912ef543352723c149a84f56e3d413` | 2026-09-05 | 6.0.0 起支持 pnpm 11，缺省版本读 `packageManager` 字段；发布 37 天 |
+| `actions/dependency-review-action` | v5.0.0 | `a1d282b36b6f3519aa1f3fc636f609c47dddb294` | 2026-05-08 | 当前最新，运行时 node24；公共仓库免费 |
+| `google/osv-scanner-action`（可复用工作流） | v2.6.0 | `a345acffa64b0eaede81a3d9aae6141214d9c8fc` | 2026-09-14 | 当前最新，发布 28 天；它内部再引用的 Action 也是固定哈希 |
+
+## 报告安全问题
+
+见 [SECURITY.md](SECURITY.md)。不要在公开的 issue 里写漏洞细节。
+
+## CI 目前没有覆盖的
+
+- 许可证检查：技术设计 §8.6.3 把它列在 `security` 任务里，但没有给出允许或禁止的许可证清单，所以 `dependency-review-action` 的 `license-check` 先关闭，等清单定下来再开。
+- 每晚对 `docs/architecture/dependencies.md` 每一行重新查公告：需要解析该文件，等格式稳定后加入每晚任务。
+- 模板的审计：模板还不存在。

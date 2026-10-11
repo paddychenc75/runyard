@@ -1,0 +1,117 @@
+# PR 与 main 的主流水线（技术设计 §8.3）：lint 任务加三个系统的 test 任务。
+# 第三方 Action 一律固定到完整提交哈希，版本写在行尾注释里；选择依据见 CONTRIBUTING.md 的“CI 组件”表。
+# 更新这些哈希走 Renovate，不要手改（技术设计 §8.6.4）。
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# 默认只读；个别任务需要更多权限时在任务里单独加
+permissions:
+  contents: read
+
+# 同一个 PR 或分支上新的运行取消旧的；main 上不取消，保证每个提交都有完整结果
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  lint:
+    name: lint（格式、仓库检查、标题格式）
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # 检查 PR 里的每个提交需要完整历史
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: 安装 pnpm（版本读自 package.json 的 packageManager 字段）
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: 安装 Node（版本读自 .node-version）
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: 安装依赖（锁文件必须与 package.json 一致）
+        run: pnpm install --frozen-lockfile
+
+      - name: 检查 PR 标题格式
+        if: github.event_name == 'pull_request'
+        env:
+          # 标题是外部输入，只通过环境变量传入，不拼进脚本文本
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: node tooling/ci/check-title.ts --title "$PR_TITLE"
+
+      - name: 检查 PR 里每个提交的信息格式
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node tooling/ci/check-title.ts --range "$BASE_SHA..$HEAD_SHA"
+
+      - name: Biome 检查（格式与规则）
+        run: pnpm lint
+
+      - name: 仓库检查
+        run: pnpm check
+
+  test:
+    name: test（${{ matrix.os }}）
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      # 三个系统都要看到结果，不因为一个失败就取消另外两个
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-26, windows-2025]
+    defaults:
+      run:
+        # Windows 默认是 PowerShell，这里统一用 Git Bash，三个系统写法一致
+        shell: bash
+    steps:
+      # 检出前先关掉 Git 的换行转换，真正的换行规则由 .gitattributes（全部 LF）决定
+      - name: 关闭换行转换
+        run: git config --global core.autocrlf false
+
+      - name: 检出代码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # macOS、Windows 上也跑 pnpm check，其中 prd-anchors-kept 要读 main 的历史，需要完整克隆
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: 安装 pnpm（版本读自 package.json 的 packageManager 字段）
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: 安装 Node（版本读自 .node-version）
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: 安装依赖（锁文件必须与 package.json 一致）
+        run: pnpm install --frozen-lockfile
+
+      # Linux 上这两步已经在 lint 任务里跑过；macOS 和 Windows 再跑一遍，
+      # 因为换行、路径分隔符、大小写敏感这类问题只会在这两个系统上暴露
+      - name: Biome 检查（仅 macOS、Windows）
+        if: runner.os != 'Linux'
+        run: pnpm lint
+
+      - name: 仓库检查（仅 macOS、Windows）
+        if: runner.os != 'Linux'
+        run: pnpm check
+
+      - name: 类型检查
+        run: pnpm typecheck
+
+      - name: 单元测试（不重试）
+        run: pnpm test

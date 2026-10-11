@@ -1346,6 +1346,7 @@ Windows 预览版明确不包含：自动更新、代码签名、对 Windows 10 
 
 - 提交信息用 Conventional Commits 的结构，但主题和正文用中文（负责人 2026-10-12 决定，§12 第 26 项）：`type` 和 `scope` 仍是英文，例如 `feat(core): 增加运行状态机`、`fix(platform): 修复 Windows 上进程树未完全结束`。只允许 squash 合并（一个 PR 压成一个提交）；squash 后进入 `main` 的提交信息来自 PR 标题，所以 PR 标题按同样的格式写。`main` 受保护，必须走 PR 且 CI 全绿。
 - 中文提交信息对工具的影响【未核实：这是根据对这两类工具行为的了解推断的，没有在本仓库试过；并入 K15 核对】：release-please 只解析 `type(scope):` 前缀，以及 `!` 或页脚 `BREAKING CHANGE:` 来决定版本号升多少，主题和正文是什么语言不影响；它把主题原样写进 `CHANGELOG.md`，所以更新日志的条目是中文。页脚的 `BREAKING CHANGE:` 这个标记必须写英文原词，冒号后面的说明可以用中文。提交检查（`lefthook.yml` 的 commit-msg 钩子，以及 §8.3 `lint` 里的 PR 标题格式检查）只查三件事：`type` 在允许的列表里；`scope` 在允许的列表里或省略；冒号后主题不为空，标题不超过 72 个字符（按字符数算，一个汉字算一个）。如果用 commitlint，关掉 `subject-case`（它针对英文大小写，对中文没有意义），不加别的语言相关的规则。
+- 允许的 `scope`（2026-10-12 第 4 次提交时由 CI 脚本按 §3.1 的目录定出，负责人尚未确认；唯一实现是 `tooling/ci/check-title.ts` 的 `SCOPES`）：`repo`、`deps`、`ci`、`docs`、`security`、`release`、`spec`、`tooling`、`desktop`、`site`、`protocol`、`platform`、`core`、`supervisor`、`client`、`cli`、`tokens`、`ui`、`i18n`、`testing`、`templates`。新增包时同一个 PR 里加一项。
 - 应用、命令行、管理进程用同一个版本号；网站没有版本号。
 - release-please 根据提交记录维护一个“发版 PR”：算下一个版本号、更新 `CHANGELOG.md`。**你合并这个 PR 就是发版**。随后 CI 打标签、四个目标各自构建并启动验证、生成校验和与构建来源证明，等你在发布环境里点一次批准，再发布到 GitHub Releases，并触发网站重新部署。只发 GitHub Releases，不向 npm 发布，你不需要 npm 令牌（§5.4）。M1 结束时还没有桌面应用，没有公开的发布产物，那时不发版。
 - 构建来源证明能证明“这个文件是这个仓库的这次 CI 构建的”，用户可用 `gh attestation verify` 检查。它不会让 Gatekeeper 或 SmartScreen（两个系统各自的拦截机制，见 §10）放行。
@@ -2672,4 +2673,4 @@ M0a 和 M0b 里凡是 Windows 的内容，都在 GitHub 的 Windows 机器上自
 
 | 变化 | 改了哪里 |
 | --- | --- |
-| 附录 A 第 18 行注明字段名以 §4.2 为准；附录 B 加两项未处理的事（章节锚点、PRD 规则标签） | 附录 A、附录 B |
+| §8.4 记下提交和 PR 标题允许的 `scope` 列表（取自 `tooling/ci/check-title.ts`，待负责人确认）；附录 A 第 18 行注明字段名以 §4.2 为准；附录 B 加两项未处理的事（章节锚点、PRD 规则标签） | §8.4、附录 A、附录 B |

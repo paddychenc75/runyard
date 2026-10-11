@@ -1,0 +1,131 @@
+# 每晚的全量安全扫描（技术设计 §8.3 的 nightly-security 与 §8.6.3“每晚（main）”一行）。
+# 失败时自动开 issue（已有未关闭的同类 issue 就追加评论），不挡 PR。
+# 公共仓库 60 天没有活动时，GitHub 会自动停用定时任务；停用后到 Actions 页手动启用。
+#
+# 还没做的两项（第 4 次提交的范围之外，登记在 CONTRIBUTING.md 的待办里）：
+#   - 对 docs/architecture/dependencies.md 每一行重新查公告（需要解析该文件，等它的格式稳定）；
+#   - 每个模板各跑一遍审计（模板还不存在）。
+name: 每晚安全扫描
+
+on:
+  schedule:
+    # UTC 02:17（北京时间 10:17），避开整点的排队高峰
+    - cron: "17 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    name: 全量审计与签名校验
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      report: ${{ steps.collect.outputs.report }}
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: 安装 pnpm（版本读自 package.json 的 packageManager 字段）
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: 安装 Node（版本读自 .node-version）
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+
+      # 每晚不使用缓存：要的是“从注册表重新装一遍”的结果
+      - name: 安装依赖
+        run: pnpm install --frozen-lockfile
+
+      # 不加 --ignore-registry-errors：查不到要变成红灯，不能静悄悄地过
+      - name: 全量审计（含开发依赖）
+        id: audit
+        continue-on-error: true
+        run: |
+          pnpm audit --json > audit.json || true
+          node tooling/ci/audit-gate.ts --file audit.json --include-dev --report gate-report.md
+
+      - name: 校验已装包的注册表签名
+        id: signatures
+        continue-on-error: true
+        run: pnpm audit signatures 2>&1 | tee signatures.log; exit "${PIPESTATUS[0]}"
+
+      - name: 汇总结果
+        id: collect
+        run: |
+          {
+            echo "## 审计闸门"
+            cat gate-report.md 2>/dev/null || echo "（没有生成报告，见运行日志）"
+            echo
+            echo "## pnpm audit signatures（${{ steps.signatures.outcome }}）"
+            tail -n 40 signatures.log 2>/dev/null || true
+          } > report.md
+          # 用随机分隔符写多行输出，避免报告内容里恰好出现结束标记
+          delimiter="EOF_$(od -An -N8 -tx1 /dev/urandom | tr -d ' \n')"
+          {
+            echo "report<<${delimiter}"
+            head -c 20000 report.md
+            echo
+            echo "${delimiter}"
+          } >> "$GITHUB_OUTPUT"
+          cat report.md >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ steps.audit.outcome }}" != "success" ] || [ "${{ steps.signatures.outcome }}" != "success" ]; then
+            exit 1
+          fi
+
+  osv:
+    name: OSV-Scanner（全仓库，只报告不挡）
+    # 官方可复用工作流，固定到 v2.6.0 的提交哈希。它要把结果上传到 Security 页，
+    # 所以这个任务（只有这个）需要 security-events: write。
+    # 不用它做闸门：文档里没有按严重度过滤的选项【未核实】，开着会让每条低危都变红。
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@a345acffa64b0eaede81a3d9aae6141214d9c8fc # v2.6.0
+    with:
+      fail-on-vuln: false
+
+  notify:
+    name: 失败时开 issue
+    needs: [scan, osv]
+    if: ${{ always() && (needs.scan.result == 'failure' || needs.osv.result == 'failure') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # 只有这个任务能写 issue
+    permissions:
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      SCAN_REPORT: ${{ needs.scan.outputs.report }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      SCAN_RESULT: ${{ needs.scan.result }}
+      OSV_RESULT: ${{ needs.osv.result }}
+    steps:
+      - name: 开 issue 或追加评论
+        run: |
+          title="每晚安全扫描失败"
+          {
+            echo "运行记录：${RUN_URL}"
+            echo
+            echo "- 审计与签名校验：${SCAN_RESULT}"
+            echo "- OSV-Scanner：${OSV_RESULT}"
+            echo
+            echo "${SCAN_REPORT}"
+          } > body.md
+          gh label create security --color B60205 --description "依赖与供应链安全" 2>/dev/null || true
+          existing="$(gh issue list --state open --label security --search "\"${title}\" in:title" --json number --jq '.[0].number // empty')"
+          if [ -n "${existing}" ]; then
+            gh issue comment "${existing}" --body-file body.md
+          else
+            gh issue create --title "${title}" --label security --body-file body.md
+          fi
