@@ -1,0 +1,45 @@
+{
+  "pnpm": "11.28.0",
+  "when": "2026-10-11T23:22:45.733Z",
+  "audit": {
+    "有高危：--audit-level high": {
+      "code": 1,
+      "head": "┌─────────────────────┬────────────────────────────────────────────────────────┐ | │ high                │ braces vulnerable to stack-exhaustion denial of        │ | │                     │ service through deeply nested patterns                 │"
+    },
+    "有高危：--audit-level critical": {
+      "code": 0,
+      "head": "1 vulnerabilities found | Severity: 1 high"
+    },
+    "有高危：--json": {
+      "code": 1,
+      "advisoriesParsed": 1,
+      "topKeys": [
+        "advisories",
+        "metadata"
+      ]
+    },
+    "无公告：--audit-level high": {
+      "code": 0,
+      "head": "No known vulnerabilities found"
+    },
+    "注册表不可用：不加 --ignore-registry-errors": {
+      "code": 1,
+      "head": "[WARN] POST http://127.0.0.1:9/-/npm/v1/security/advisories/bulk error (unknown). Will retry in 10 seconds. 2 retries left. | [WARN] POST http://127.0.0.1:9/-/npm/v1/security/advisories/bulk error (unknown). Will retry in 1 minute. 1 retries left. | [ERROR] fetch failed"
+    },
+    "注册表不可用：加 --ignore-registry-errors": {
+      "code": 0,
+      "head": "[WARN] POST http://127.0.0.1:9/-/npm/v1/security/advisories/bulk error (unknown). Will retry in 10 seconds. 2 retries left. | [WARN] POST http://127.0.0.1:9/-/npm/v1/security/advisories/bulk error (unknown). Will retry in 1 minute. 1 retries left. | fetch failed"
+    },
+    "有高危 + --ignore-registry-errors": {
+      "code": 1,
+      "head": "┌─────────────────────┬────────────────────────────────────────────────────────┐ | │ high                │ braces vulnerable to stack-exhaustion denial of        │ | │                     │ service through deeply nested patterns                 │"
+    },
+    "audit signatures（已安装 zod）": {
+      "code": 0,
+      "head": "audited 1 package |  | 1 package has a verified registry signature"
+    },
+    "audit signatures 前置安装": {
+      "code": 0
+    }
+  }
+}

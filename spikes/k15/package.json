@@ -1,0 +1,17 @@
+{
+  "name": "runyard-spike-k15",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "K15 工具链核对：只有实验脚本，没有依赖；各实验在临时目录里按需安装",
+  "scripts": {
+    "pnpm": "node pnpm/run.mjs",
+    "nodets": "node node-ts/run.mjs",
+    "biome": "node biome/run.mjs",
+    "release": "node release-please/run.mjs",
+    "osv": "node osv/run.mjs",
+    "audit": "node audit/run.mjs",
+    "all": "node pnpm/run.mjs && node audit/run.mjs && node node-ts/run.mjs && node biome/run.mjs && node release-please/run.mjs && node osv/run.mjs && node small/run.mjs && node small/vite-hmr.mjs && node small/zod-jsonschema.mjs",
+    "small": "node small/run.mjs"
+  }
+}

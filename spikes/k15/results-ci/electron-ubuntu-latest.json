@@ -1,0 +1,112 @@
+{
+  "label": "ubuntu-latest",
+  "platform": "linux",
+  "arch": "x64",
+  "steps": {
+    "launch": {
+      "ok": true,
+      "value": "launched",
+      "ms": 633
+    },
+    "versions": {
+      "ok": true,
+      "value": {
+        "electron": "44.4.5",
+        "chrome": "152.0.7977.130",
+        "node": "24.21.0",
+        "v8": "15.2.124.28-electron.0"
+      },
+      "ms": 6
+    },
+    "waitReady": {
+      "ok": true,
+      "value": "ready",
+      "ms": 30009
+    },
+    "firstWindow": {
+      "ok": true,
+      "value": {
+        "title": "host",
+        "url": "data:text/html;charset=utf-8,%3C!doctype"
+      },
+      "ms": 3
+    },
+    "windows()": {
+      "ok": true,
+      "value": [
+        {
+          "title": "host",
+          "url": "data:text/html;charset=utf-8,%3C!doctype"
+        },
+        {
+          "title": "preview",
+          "url": "data:text/html;charset=utf-8,%3C!doctype"
+        }
+      ],
+      "ms": 3
+    },
+    "context.pages()": {
+      "ok": true,
+      "value": [
+        {
+          "title": "host",
+          "url": "data:text/html;charset=utf-8,%3C!doctype"
+        },
+        {
+          "title": "preview",
+          "url": "data:text/html;charset=utf-8,%3C!doctype"
+        }
+      ],
+      "ms": 2
+    },
+    "find view page by title 'preview'": {
+      "ok": true,
+      "value": "found",
+      "ms": 1
+    },
+    "view: read text via locator": {
+      "ok": true,
+      "value": "预览视图 preview",
+      "ms": 22
+    },
+    "view: screenshot": {
+      "ok": true,
+      "value": {
+        "bytes": 5243
+      },
+      "ms": 24
+    },
+    "view: evaluate in page": {
+      "ok": true,
+      "value": {
+        "w": 640,
+        "h": 320
+      },
+      "ms": 2
+    },
+    "host: screenshot": {
+      "ok": true,
+      "value": {
+        "bytes": 3574
+      },
+      "ms": 49
+    },
+    "fallback: view.webContents.capturePage()": {
+      "ok": true,
+      "value": {
+        "bytes": 5243
+      },
+      "ms": 13
+    },
+    "fallback: view.webContents.executeJavaScript": {
+      "ok": true,
+      "value": "预览视图 preview",
+      "ms": 2
+    },
+    "close": {
+      "ok": true,
+      "value": "closed",
+      "ms": 42
+    }
+  }
+}

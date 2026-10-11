@@ -1,0 +1,18 @@
+// 技术设计 §6.8 第 2 层：原生元素（标签名小写开头）上的 aria-label、title、placeholder、alt
+// 不许写字符串字面量（含 {"…"} 和模板字符串）。组件（大写开头）由 Localized 类型管。
+// 注意：Grit 的正则是整串匹配，所以写 r"[a-z].*" 而不是 r"^[a-z]"。
+JsxAttribute(name=$n, initializer=JsxAttributeInitializerClause(value=$v)) as $attr where {
+  $n <: or { "aria-label", "title", "placeholder", "alt" },
+  $v <: or {
+    JsxString(),
+    JsxExpressionAttributeValue(expression=JsStringLiteralExpression()),
+    JsxExpressionAttributeValue(expression=JsTemplateExpression())
+  },
+  $attr <: within or { JsxSelfClosingElement(name=$tag), JsxOpeningElement(name=$tag) },
+  $tag <: r"[a-z].*",
+  register_diagnostic(
+    span=$attr,
+    message="原生元素上的 aria-label、title、placeholder、alt 不许写字符串字面量，文字走文案包的 t()（技术设计 §6.8 第 2 层）。",
+    severity="error"
+  )
+}

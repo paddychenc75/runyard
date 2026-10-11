@@ -1,0 +1,93 @@
+{
+  "env": {
+    "label": "macos-26-a-run2",
+    "platform": "darwin",
+    "arch": "arm64",
+    "os": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83",
+    "imageVersion": "20260907.0351.1",
+    "imageOS": "macos26",
+    "node": "v24.21.0",
+    "pingfangFiles": "28",
+    "chromium": "153.0.8010.12"
+  },
+  "runs": {
+    "light": {
+      "fontMap": {
+        "zh-system": [
+          "蘋方-簡×21"
+        ],
+        "en-system": [
+          ".SF NS×42"
+        ],
+        "zh-sans": [
+          "蘋方-簡×19"
+        ],
+        "zh-ping": [
+          "蘋方-簡×25"
+        ],
+        "zh-yahei": [
+          "蘋方-簡×15"
+        ],
+        "zh-w300": [
+          "蘋方-簡×8",
+          ".SF NS×4"
+        ],
+        "zh-w600": [
+          "蘋方-簡×8",
+          ".SF NS×4"
+        ],
+        "mono": [
+          "蘋方-簡×2",
+          "Menlo×31"
+        ]
+      },
+      "sha256": {
+        "first": "b7a08167651836020d793abe8853e082213351e551db749e2b4c9aaa6d357226",
+        "second": "b7a08167651836020d793abe8853e082213351e551db749e2b4c9aaa6d357226",
+        "afterReload": "b7a08167651836020d793abe8853e082213351e551db749e2b4c9aaa6d357226",
+        "otherPage": "b7a08167651836020d793abe8853e082213351e551db749e2b4c9aaa6d357226"
+      },
+      "bytes": 72487,
+      "sameInProcess": true
+    },
+    "dark": {
+      "fontMap": {
+        "zh-system": [
+          "蘋方-簡×21"
+        ],
+        "en-system": [
+          ".SF NS×42"
+        ],
+        "zh-sans": [
+          "蘋方-簡×19"
+        ],
+        "zh-ping": [
+          "蘋方-簡×25"
+        ],
+        "zh-yahei": [
+          "蘋方-簡×15"
+        ],
+        "zh-w300": [
+          "蘋方-簡×8",
+          ".SF NS×4"
+        ],
+        "zh-w600": [
+          "蘋方-簡×8",
+          ".SF NS×4"
+        ],
+        "mono": [
+          "蘋方-簡×2",
+          "Menlo×31"
+        ]
+      },
+      "sha256": {
+        "first": "e60e28a8153d734f9ac55f5ae1ba7a139c2ca1baac6b0987dda314e49bb44af0",
+        "second": "e60e28a8153d734f9ac55f5ae1ba7a139c2ca1baac6b0987dda314e49bb44af0",
+        "afterReload": "e60e28a8153d734f9ac55f5ae1ba7a139c2ca1baac6b0987dda314e49bb44af0",
+        "otherPage": "e60e28a8153d734f9ac55f5ae1ba7a139c2ca1baac6b0987dda314e49bb44af0"
+      },
+      "bytes": 72625,
+      "sameInProcess": true
+    }
+  }
+}
