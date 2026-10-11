@@ -1,0 +1,4521 @@
+{
+ "meta": {
+  "label": "macos-26-next-a",
+  "platform": "darwin",
+  "arch": "arm64",
+  "os": "Darwin 25.6.0 Darwin Kernel Version 25.6.0: Fri Jul 31 19:16:43 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_VMAPPLE",
+  "cpus": "3 × Apple M1 (Virtual)",
+  "node": "v24.21.0",
+  "ci": true,
+  "image": "macos26 20260907.0351.1",
+  "reps": 50,
+  "graceMs": 3000,
+  "methods": [
+   "group"
+  ],
+  "tools": {
+   "pnpm": "11.28.0",
+   "go": "（没有）",
+   "python": "Python 3.14.7",
+   "uv": "（没有）"
+  },
+  "startedAt": "2026-10-11T20:32:06.954Z",
+  "procGrowth": "cloudtelemetryservice+2 extensionkitservice+1 mlhostd+1 wifianalyticsd+1 geoanalyticsd+1 intelligencetasksd+1 mmaintenanced+1 cloudphotod+1 parsec-fbf+1 intelligenceplatformcomputeservice+1 feedbackd+1 recentsd+1",
+  "sysProcsEnd": 575,
+  "finalStray": {
+   "byCmdline": 0,
+   "byCwd": 0,
+   "detail": []
+  },
+  "finishedAt": "2026-10-11T20:38:30.100Z",
+  "versions": {
+   "next:next": "16.3.6",
+   "next:react": "19.3.0",
+   "next:react-dom": "19.3.0"
+  },
+  "tmpRemoved": true
+ },
+ "notes": [
+  {
+   "runner": "next",
+   "note": "第一次安装（仓库是冷的，要下载）",
+   "ms": 15009,
+   "code": 0,
+   "leftoverAfterExit": 0
+  },
+  {
+   "runner": "next",
+   "note": "热缓存下完整安装一次",
+   "ms": 4359,
+   "code": 0
+  },
+  {
+   "runner": "next",
+   "note": "缓存目录 .next 结束时存在"
+  }
+ ],
+ "records": [
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 0,
+   "port": 26264,
+   "ready": true,
+   "startMs": 5276,
+   "tree": [
+    {
+     "depth": 0,
+     "pid": 5992,
+     "ppid": 4527,
+     "cmd": "node node_modules/next/dist/bin/next dev -p 26264 -H 127.0.0.1"
+    },
+    {
+     "depth": 1,
+     "pid": 6034,
+     "ppid": 5992,
+     "cmd": "node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    }
+   ],
+   "stopReturnMs": 68,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 67
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 64.68125000000146
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "6504 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 711,
+    "untracked": [],
+    "treeDeadMs": 164.76208300000144,
+    "maxProcs": 2,
+    "sysProcs": 553,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 1,
+   "port": 26264,
+   "ready": true,
+   "startMs": 6993,
+   "stopReturnMs": 79,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 79
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 78.78608300000269
+   },
+   "portMs": 21,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "7379 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 615,
+    "untracked": [],
+    "treeDeadMs": 194.3092089999991,
+    "maxProcs": 2,
+    "sysProcs": 553,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 2,
+   "port": 26264,
+   "ready": true,
+   "startMs": 3558,
+   "stopReturnMs": 44,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 44
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 35.409583000000566
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "7892 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 394,
+    "untracked": [],
+    "treeDeadMs": 93.62612499999523,
+    "maxProcs": 2,
+    "sysProcs": 555,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 3,
+   "port": 26264,
+   "ready": true,
+   "startMs": 3347,
+   "stopReturnMs": 42,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 42
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 41.48633300000074
+   },
+   "portMs": 42,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "8384 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 517,
+    "untracked": [],
+    "treeDeadMs": 121.89549999999872,
+    "maxProcs": 2,
+    "sysProcs": 562,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 4,
+   "port": 26264,
+   "ready": true,
+   "startMs": 3837,
+   "stopReturnMs": 50,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 50
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 37.8414580000026
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "9127 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 517,
+    "untracked": [],
+    "treeDeadMs": 134.26233299999876,
+    "maxProcs": 2,
+    "sysProcs": 565,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 5,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2560,
+   "stopReturnMs": 127,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 127
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 121.49945899999875
+   },
+   "portMs": 15,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "9580 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 850,
+    "untracked": [],
+    "treeDeadMs": 345.4650000000038,
+    "maxProcs": 2,
+    "sysProcs": 565,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 6,
+   "port": 26264,
+   "ready": true,
+   "startMs": 3366,
+   "stopReturnMs": 75,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 75
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 74.93787500000326
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "10076 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 461,
+    "untracked": [],
+    "treeDeadMs": 136.6461249999993,
+    "maxProcs": 2,
+    "sysProcs": 558,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 7,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2349,
+   "stopReturnMs": 77,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 76
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 69.16666699999769
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "10700 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 597,
+    "untracked": [],
+    "treeDeadMs": 166.55774999999994,
+    "maxProcs": 2,
+    "sysProcs": 559,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 8,
+   "port": 26264,
+   "ready": true,
+   "startMs": 3037,
+   "stopReturnMs": 46,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 46
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 38.376625000004424
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "11165 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 482,
+    "untracked": [],
+    "treeDeadMs": 98.44395899999654,
+    "maxProcs": 2,
+    "sysProcs": 554,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 9,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2750,
+   "stopReturnMs": 48,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 48
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 42.88062499999796
+   },
+   "portMs": 21,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "11621 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 578,
+    "untracked": [],
+    "treeDeadMs": 150.03716700000223,
+    "maxProcs": 2,
+    "sysProcs": 555,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 10,
+   "port": 26264,
+   "ready": true,
+   "startMs": 3373,
+   "stopReturnMs": 32,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 32
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 30.166040999996767
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "12325 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 496,
+    "untracked": [],
+    "treeDeadMs": 81.12208399999508,
+    "maxProcs": 2,
+    "sysProcs": 556,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 11,
+   "port": 26264,
+   "ready": true,
+   "startMs": 3451,
+   "stopReturnMs": 61,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 61
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 49.95745800000441
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "12841 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 515,
+    "untracked": [],
+    "treeDeadMs": 95.46379100000195,
+    "maxProcs": 2,
+    "sysProcs": 554,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 12,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2392,
+   "stopReturnMs": 57,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 56
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 45.304209000008996
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "13257 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 545,
+    "untracked": [],
+    "treeDeadMs": 114.75845799999661,
+    "maxProcs": 2,
+    "sysProcs": 558,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 13,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2614,
+   "stopReturnMs": 45,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 45
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 39.63000000000466
+   },
+   "portMs": 15,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "13750 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 519,
+    "untracked": [],
+    "treeDeadMs": 105.55429100000765,
+    "maxProcs": 2,
+    "sysProcs": 558,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 14,
+   "port": 26264,
+   "ready": true,
+   "startMs": 4163,
+   "stopReturnMs": 76,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 76
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 75.57420899999852
+   },
+   "portMs": 27,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "14480 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 950,
+    "untracked": [],
+    "treeDeadMs": 255.5785840000026,
+    "maxProcs": 2,
+    "sysProcs": 562,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 15,
+   "port": 26264,
+   "ready": true,
+   "startMs": 4310,
+   "stopReturnMs": 78,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 78
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 67.36908300001232
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "15089 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 598,
+    "untracked": [],
+    "treeDeadMs": 180.06808299999102,
+    "maxProcs": 2,
+    "sysProcs": 559,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 16,
+   "port": 26264,
+   "ready": true,
+   "startMs": 4532,
+   "stopReturnMs": 78,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 78
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 67.61962499999208
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "15874 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 775,
+    "untracked": [],
+    "treeDeadMs": 141.37145799999416,
+    "maxProcs": 2,
+    "sysProcs": 556,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 17,
+   "port": 26264,
+   "ready": true,
+   "startMs": 3377,
+   "stopReturnMs": 62,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 62
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 51.93304099999659
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "16349 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 671,
+    "untracked": [],
+    "treeDeadMs": 205.87241599999834,
+    "maxProcs": 2,
+    "sysProcs": 560,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 18,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2702,
+   "stopReturnMs": 47,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 47
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 38.896082999999635
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [
+     "16819 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 267.1245829999971,
+    "maxProcs": 2,
+    "sysProcs": 560,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 19,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2163,
+   "stopReturnMs": 34,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 34
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 22.429457999998704
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "17398 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 331,
+    "untracked": [],
+    "treeDeadMs": 65.8007920000091,
+    "maxProcs": 2,
+    "sysProcs": 560,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 20,
+   "port": 26264,
+   "ready": true,
+   "startMs": 1774,
+   "stopReturnMs": 47,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 47
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 37.7867499999993
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "17749 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 362,
+    "untracked": [],
+    "treeDeadMs": 97.632334000009,
+    "maxProcs": 2,
+    "sysProcs": 562,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 21,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2682,
+   "stopReturnMs": 43,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 42
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 34.596208999995724
+   },
+   "portMs": 20,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "18209 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 625,
+    "untracked": [],
+    "treeDeadMs": 162.20337499999732,
+    "maxProcs": 2,
+    "sysProcs": 563,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 22,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2787,
+   "stopReturnMs": 45,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 45
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 39.74383300000045
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "18687 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 436,
+    "untracked": [],
+    "treeDeadMs": 92.49679199999082,
+    "maxProcs": 2,
+    "sysProcs": 558,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 23,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2626,
+   "stopReturnMs": 47,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 47
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 38.41341700000339
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "19347 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 394,
+    "untracked": [],
+    "treeDeadMs": 98.31704100000206,
+    "maxProcs": 2,
+    "sysProcs": 560,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 24,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2804,
+   "stopReturnMs": 46,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 46
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 36.88408299999719
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "19801 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 508,
+    "untracked": [],
+    "treeDeadMs": 91.40941699998803,
+    "maxProcs": 2,
+    "sysProcs": 563,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 25,
+   "port": 26264,
+   "ready": true,
+   "startMs": 3518,
+   "stopReturnMs": 49,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 49
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 36.9536659999867
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "20313 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 543,
+    "untracked": [],
+    "treeDeadMs": 110.29441699999734,
+    "maxProcs": 2,
+    "sysProcs": 563,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 26,
+   "port": 26264,
+   "ready": true,
+   "startMs": 5071,
+   "stopReturnMs": 95,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 95
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 90.72154100000625
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "21163 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 809,
+    "untracked": [],
+    "treeDeadMs": 201.4953749999986,
+    "maxProcs": 2,
+    "sysProcs": 563,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 27,
+   "port": 26264,
+   "ready": true,
+   "startMs": 4595,
+   "stopReturnMs": 70,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 70
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 64.31358300001011
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "21736 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 680,
+    "untracked": [],
+    "treeDeadMs": 150.4318329999951,
+    "maxProcs": 2,
+    "sysProcs": 563,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 28,
+   "port": 26264,
+   "ready": true,
+   "startMs": 5501,
+   "stopReturnMs": 82,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 82
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 73.77954200000386
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "22647 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 568,
+    "untracked": [],
+    "treeDeadMs": 173.88429200000246,
+    "maxProcs": 2,
+    "sysProcs": 563,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 29,
+   "port": 26264,
+   "ready": true,
+   "startMs": 4148,
+   "stopReturnMs": 130,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 130
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 124.71233400001074
+   },
+   "portMs": 20,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "23199 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 714,
+    "untracked": [],
+    "treeDeadMs": 235.41816699999617,
+    "maxProcs": 2,
+    "sysProcs": 563,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 30,
+   "port": 26264,
+   "ready": true,
+   "startMs": 5004,
+   "stopReturnMs": 61,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 61
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 50.195624999993015
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "24065 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 677,
+    "untracked": [],
+    "treeDeadMs": 155.6706669999985,
+    "maxProcs": 2,
+    "sysProcs": 561,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 31,
+   "port": 26264,
+   "ready": true,
+   "startMs": 4261,
+   "stopReturnMs": 56,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 55
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 43.230666999996174
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "24713 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 577,
+    "untracked": [],
+    "treeDeadMs": 116.66654199999175,
+    "maxProcs": 2,
+    "sysProcs": 563,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 32,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2885,
+   "stopReturnMs": 49,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 49
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 37.41537500001141
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "25164 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 472,
+    "untracked": [],
+    "treeDeadMs": 131.4096669999999,
+    "maxProcs": 2,
+    "sysProcs": 555,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 33,
+   "port": 26264,
+   "ready": true,
+   "startMs": 3001,
+   "stopReturnMs": 33,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 33
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 29.949999999982538
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "25870 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 413,
+    "untracked": [],
+    "treeDeadMs": 70.83454199999687,
+    "maxProcs": 2,
+    "sysProcs": 563,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 34,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2563,
+   "stopReturnMs": 48,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 48
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 40.51812500000233
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "26306 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 416,
+    "untracked": [],
+    "treeDeadMs": 93.22929099999601,
+    "maxProcs": 2,
+    "sysProcs": 561,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 35,
+   "port": 26264,
+   "ready": true,
+   "startMs": 3172,
+   "stopReturnMs": 35,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 35
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 29.917333000019426
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "26782 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 460,
+    "untracked": [],
+    "treeDeadMs": 84.60770799999591,
+    "maxProcs": 2,
+    "sysProcs": 567,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 36,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2192,
+   "stopReturnMs": 46,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 46
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 43.16020899999421
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "27242 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 422,
+    "untracked": [],
+    "treeDeadMs": 108.67608299999847,
+    "maxProcs": 2,
+    "sysProcs": 568,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 37,
+   "port": 26264,
+   "ready": true,
+   "startMs": 1838,
+   "stopReturnMs": 50,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 50
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 46.84054199999082
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "27762 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 399,
+    "untracked": [],
+    "treeDeadMs": 89.93583300002501,
+    "maxProcs": 2,
+    "sysProcs": 568,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 38,
+   "port": 26264,
+   "ready": true,
+   "startMs": 1864,
+   "stopReturnMs": 55,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 55
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 53.89587499998743
+   },
+   "portMs": 34,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "28131 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 402,
+    "untracked": [],
+    "treeDeadMs": 93.38091700000223,
+    "maxProcs": 2,
+    "sysProcs": 568,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 39,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2034,
+   "stopReturnMs": 35,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 35
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 26.720000000001164
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "28502 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 461,
+    "untracked": [],
+    "treeDeadMs": 91.44095899999957,
+    "maxProcs": 2,
+    "sysProcs": 564,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 40,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2569,
+   "stopReturnMs": 79,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 79
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 68.0073749999865
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "28915 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 497,
+    "untracked": [],
+    "treeDeadMs": 127.0827500000014,
+    "maxProcs": 2,
+    "sysProcs": 566,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 41,
+   "port": 26264,
+   "ready": true,
+   "startMs": 3476,
+   "stopReturnMs": 52,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 52
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 51.621083000005456
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "29655 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 511,
+    "untracked": [],
+    "treeDeadMs": 113.69262499999604,
+    "maxProcs": 2,
+    "sysProcs": 572,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 42,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2771,
+   "stopReturnMs": 34,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 34
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 33.25641699999687
+   },
+   "portMs": 23,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "30110 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 547,
+    "untracked": [],
+    "treeDeadMs": 123.03162500000326,
+    "maxProcs": 2,
+    "sysProcs": 572,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 43,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2692,
+   "stopReturnMs": 34,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 34
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 28.87204099999508
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "30560 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 541,
+    "untracked": [],
+    "treeDeadMs": 74.65824999997858,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 44,
+   "port": 26264,
+   "ready": true,
+   "startMs": 3242,
+   "stopReturnMs": 47,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 46
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 40.852041000005556
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "31280 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 517,
+    "untracked": [],
+    "treeDeadMs": 110.13033300000825,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 45,
+   "port": 26264,
+   "ready": true,
+   "startMs": 3490,
+   "stopReturnMs": 45,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 45
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 39.25166700000409
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "31785 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 491,
+    "untracked": [],
+    "treeDeadMs": 121.69375000000582,
+    "maxProcs": 2,
+    "sysProcs": 569,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 46,
+   "port": 26264,
+   "ready": true,
+   "startMs": 3212,
+   "stopReturnMs": 46,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 46
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 34.27029099999345
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "32264 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 446,
+    "untracked": [],
+    "treeDeadMs": 89.31200000000536,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 47,
+   "port": 26264,
+   "ready": true,
+   "startMs": 3442,
+   "stopReturnMs": 45,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 45
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 35.60824999999022
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "33024 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 509,
+    "untracked": [],
+    "treeDeadMs": 89.00487500001327,
+    "maxProcs": 2,
+    "sysProcs": 568,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 48,
+   "port": 26264,
+   "ready": true,
+   "startMs": 3276,
+   "stopReturnMs": 46,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 46
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 40.800709000002826
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "33498 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 613,
+    "untracked": [],
+    "treeDeadMs": 115.24708400000236,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 49,
+   "port": 26264,
+   "ready": true,
+   "startMs": 3885,
+   "stopReturnMs": 67,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 67
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 66.7043329999724
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "34035 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 651,
+    "untracked": [],
+    "treeDeadMs": 144.9615000000049,
+    "maxProcs": 2,
+    "sysProcs": 564,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "inflight",
+   "i": 0,
+   "port": 26264,
+   "ready": true,
+   "startMs": 3585,
+   "stopReturnMs": 35,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 34
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 30.35204200001317
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "34823 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 451,
+    "untracked": [],
+    "treeDeadMs": 82.11858300000313,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "slow:ECONNRESET,slow:close,idle:close"
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "inflight",
+   "i": 1,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2444,
+   "stopReturnMs": 36,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 35
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 30.256667000008747
+   },
+   "portMs": 25,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "35293 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 521,
+    "untracked": [],
+    "treeDeadMs": 130.39595800000825,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "slow:ECONNRESET,slow:close,idle:close"
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "inflight",
+   "i": 2,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2808,
+   "stopReturnMs": 92,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 90
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 82.48545800001011
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "35860 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 496,
+    "untracked": [],
+    "treeDeadMs": 156.11866599999485,
+    "maxProcs": 2,
+    "sysProcs": 572,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "slow:ECONNRESET,idle:close,slow:close"
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "inflight",
+   "i": 3,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2915,
+   "stopReturnMs": 45,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 45
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 32.35349999999744
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "36586 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 525,
+    "untracked": [],
+    "treeDeadMs": 99.50662499997998,
+    "maxProcs": 2,
+    "sysProcs": 575,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "slow:ECONNRESET,idle:close,slow:close"
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "inflight",
+   "i": 4,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2666,
+   "stopReturnMs": 48,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 48
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 36.09962500000256
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "37056 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 529,
+    "untracked": [],
+    "treeDeadMs": 131.4826250000042,
+    "maxProcs": 2,
+    "sysProcs": 573,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "slow:ECONNRESET,slow:close,idle:close"
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "startup-stop",
+   "i": 0,
+   "port": 26264,
+   "stoppedAtMs": 324,
+   "stopReturnMs": 13,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 13
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 8.743416000012076
+   },
+   "portMs": 0,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "37224 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 386,
+    "untracked": [],
+    "treeDeadMs": 60.86891600000672,
+    "maxProcs": 2,
+    "sysProcs": 573,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "startup-then-run",
+   "i": 0,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2738,
+   "stopReturnMs": 46,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 45
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 42.09916700000758
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "37675 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 506,
+    "untracked": [],
+    "treeDeadMs": 101.4385000000184,
+    "maxProcs": 2,
+    "sysProcs": 573,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "startup-stop",
+   "i": 1,
+   "port": 26264,
+   "stoppedAtMs": 973,
+   "stopReturnMs": 23,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 23
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 22.453542000002926
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "37960 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 539,
+    "untracked": [],
+    "treeDeadMs": 81.67749999999069,
+    "maxProcs": 2,
+    "sysProcs": 573,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "startup-then-run",
+   "i": 1,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2548,
+   "stopReturnMs": 50,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 50
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 40.68329200000153
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "38601 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 483,
+    "untracked": [],
+    "treeDeadMs": 108.19374999997672,
+    "maxProcs": 2,
+    "sysProcs": 573,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "startup-stop",
+   "i": 2,
+   "port": 26264,
+   "stoppedAtMs": 1621,
+   "stopReturnMs": 22,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 22
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 18.156875000015134
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "38930 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 407,
+    "untracked": [],
+    "treeDeadMs": 59.34162500000093,
+    "maxProcs": 2,
+    "sysProcs": 573,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "startup-then-run",
+   "i": 2,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2446,
+   "stopReturnMs": 72,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 72
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 64.07070800001384
+   },
+   "portMs": 24,
+   "leftover": {
+    "aliveAtReturn": [
+     "39361 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 298.0833339999954,
+    "maxProcs": 2,
+    "sysProcs": 573,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "startup-stop",
+   "i": 3,
+   "port": 26264,
+   "stoppedAtMs": 2269,
+   "stopReturnMs": 26,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 25
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 20.079375000001164
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [
+     "39748 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 245.59754099999554,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "startup-then-run",
+   "i": 3,
+   "port": 26264,
+   "ready": true,
+   "startMs": 3301,
+   "stopReturnMs": 35,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 35
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 30.83804199998849
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "40442 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 503,
+    "untracked": [],
+    "treeDeadMs": 95.47358400002122,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "startup-stop",
+   "i": 4,
+   "port": 26264,
+   "stoppedAtMs": 2918,
+   "stopReturnMs": 35,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 35
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 33.26187499999651
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "40893 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 461,
+    "untracked": [],
+    "treeDeadMs": 95.37958300000173,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "startup-then-run",
+   "i": 4,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2730,
+   "stopReturnMs": 35,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 35
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 28.04933300000266
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "41343 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 436,
+    "untracked": [],
+    "treeDeadMs": 94.11204100001487,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "kill",
+   "i": 0,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2885,
+   "stopReturnMs": 12,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGKILL",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 11
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGKILL"
+    },
+    "rootExitMs": 4.9320000000006985
+   },
+   "portMs": 20,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 62.24375000002328,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "kill-then-run",
+   "i": 0,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2947,
+   "stopReturnMs": 48,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 48
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 37.90991700004088
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "42431 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 465,
+    "untracked": [],
+    "treeDeadMs": 128.09554200002458,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "kill",
+   "i": 1,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2829,
+   "stopReturnMs": 27,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGKILL",
+      "at": 3
+     },
+     {
+      "what": "进程组已空",
+      "at": 27
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGKILL"
+    },
+    "rootExitMs": 8.498041999991983
+   },
+   "portMs": 21,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 65.42237500002375,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "kill-then-run",
+   "i": 1,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2974,
+   "stopReturnMs": 45,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 45
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 44.62075000000186
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "43268 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 517,
+    "untracked": [],
+    "treeDeadMs": 164.61879199999385,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "kill",
+   "i": 2,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2335,
+   "stopReturnMs": 12,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGKILL",
+      "at": 2
+     },
+     {
+      "what": "进程组已空",
+      "at": 12
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGKILL"
+    },
+    "rootExitMs": 2.8783340000081807
+   },
+   "portMs": 21,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 75.08541699999478,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "kill-then-run",
+   "i": 2,
+   "port": 26264,
+   "ready": true,
+   "startMs": 3456,
+   "stopReturnMs": 47,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 47
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 36.396792000043206
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "44371 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 469,
+    "untracked": [],
+    "treeDeadMs": 107.9632500000298,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "kill",
+   "i": 3,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2811,
+   "stopReturnMs": 11,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGKILL",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 11
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGKILL"
+    },
+    "rootExitMs": 1.7148339999839664
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 77.30404199997429,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "kill-then-run",
+   "i": 3,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2599,
+   "stopReturnMs": 34,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 34
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 29.724875000014435
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [
+     "45436 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 270.237415999989,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "kill",
+   "i": 4,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2664,
+   "stopReturnMs": 11,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGKILL",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 10
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGKILL"
+    },
+    "rootExitMs": 3.988374999957159
+   },
+   "portMs": 21,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 65.16149999998743,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "kill-then-run",
+   "i": 4,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2531,
+   "stopReturnMs": 43,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 43
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 33.8676249999553
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "46231 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 455,
+    "untracked": [],
+    "treeDeadMs": 90.62012500001583,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "kill",
+   "i": 5,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2180,
+   "stopReturnMs": 14,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGKILL",
+      "at": 3
+     },
+     {
+      "what": "进程组已空",
+      "at": 14
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGKILL"
+    },
+    "rootExitMs": 3.8942079999833368
+   },
+   "portMs": 20,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 97.03858399996534,
+    "maxProcs": 2,
+    "sysProcs": 576,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "kill-then-run",
+   "i": 5,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2726,
+   "stopReturnMs": 45,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 45
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 38.476792000001296
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "47313 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 414,
+    "untracked": [],
+    "treeDeadMs": 105.33079200005159,
+    "maxProcs": 2,
+    "sysProcs": 572,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "kill",
+   "i": 6,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2396,
+   "stopReturnMs": 22,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGKILL",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 22
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGKILL"
+    },
+    "rootExitMs": 3.2769160000025295
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 82.70295900001656,
+    "maxProcs": 2,
+    "sysProcs": 572,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "kill-then-run",
+   "i": 6,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2285,
+   "stopReturnMs": 47,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 47
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 37.39370799995959
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "48070 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 423,
+    "untracked": [],
+    "treeDeadMs": 100.75791700003901,
+    "maxProcs": 2,
+    "sysProcs": 572,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "kill",
+   "i": 7,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2272,
+   "stopReturnMs": 15,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGKILL",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 14
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGKILL"
+    },
+    "rootExitMs": 3.551500000001397
+   },
+   "portMs": 21,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 56.458665999991354,
+    "maxProcs": 2,
+    "sysProcs": 572,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "kill-then-run",
+   "i": 7,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2386,
+   "stopReturnMs": 48,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 48
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 35.476332999998704
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "48971 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 397,
+    "untracked": [],
+    "treeDeadMs": 94.04445799998939,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "kill",
+   "i": 8,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2109,
+   "stopReturnMs": 10,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGKILL",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 10
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGKILL"
+    },
+    "rootExitMs": 1.8393339999602176
+   },
+   "portMs": 22,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 59.32204100000672,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "kill-then-run",
+   "i": 8,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2136,
+   "stopReturnMs": 33,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 33
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 29.180749999999534
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "49747 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 366,
+    "untracked": [],
+    "treeDeadMs": 73.72962500003632,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "kill",
+   "i": 9,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2239,
+   "stopReturnMs": 13,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGKILL",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 13
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGKILL"
+    },
+    "rootExitMs": 2.6011670000152662
+   },
+   "portMs": 21,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 47.994667000020854,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "kill-then-run",
+   "i": 9,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2259,
+   "stopReturnMs": 48,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 48
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 45.14279200002784
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "50484 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 397,
+    "untracked": [],
+    "treeDeadMs": 89.31429199996637,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "interrupt",
+   "i": 0,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2525,
+   "stopReturnMs": 41,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGINT",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 40
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 26.870624999981374
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "51143 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 370,
+    "untracked": [],
+    "treeDeadMs": 93.81704200000968,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "interrupt",
+   "i": 1,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2115,
+   "stopReturnMs": 43,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGINT",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 43
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 31.597625000053085
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "51532 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 409,
+    "untracked": [],
+    "treeDeadMs": 90.86737499997253,
+    "maxProcs": 2,
+    "sysProcs": 570,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "interrupt",
+   "i": 2,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2347,
+   "stopReturnMs": 61,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGINT",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 61
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 54.663624999986496
+   },
+   "portMs": 23,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "51942 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 420,
+    "untracked": [],
+    "treeDeadMs": 120.93174999998882,
+    "maxProcs": 2,
+    "sysProcs": 565,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "interrupt",
+   "i": 3,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2157,
+   "stopReturnMs": 51,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGINT",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 51
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 41.12345799995819
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "52333 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 353,
+    "untracked": [],
+    "treeDeadMs": 84.67900000000373,
+    "maxProcs": 2,
+    "sysProcs": 564,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "interrupt",
+   "i": 4,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2475,
+   "stopReturnMs": 38,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGINT",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 38
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 31.830958999984432
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "52980 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 374,
+    "untracked": [],
+    "treeDeadMs": 83.07612500002142,
+    "maxProcs": 2,
+    "sysProcs": 563,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "interrupt",
+   "i": 5,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2254,
+   "stopReturnMs": 77,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGINT",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 77
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 63.526292000024114
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "53369 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 499,
+    "untracked": [],
+    "treeDeadMs": 127.63987499999348,
+    "maxProcs": 2,
+    "sysProcs": 561,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "interrupt",
+   "i": 6,
+   "port": 26264,
+   "ready": true,
+   "startMs": 4078,
+   "stopReturnMs": 79,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGINT",
+      "at": 4
+     },
+     {
+      "what": "进程组已空",
+      "at": 79
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 68.02008299995214
+   },
+   "portMs": 5,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "53868 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 596,
+    "untracked": [],
+    "treeDeadMs": 147.30162499996368,
+    "maxProcs": 2,
+    "sysProcs": 559,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "interrupt",
+   "i": 7,
+   "port": 26264,
+   "ready": true,
+   "startMs": 3665,
+   "stopReturnMs": 33,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGINT",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 33
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 32.64429199998267
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "54624 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 526,
+    "untracked": [],
+    "treeDeadMs": 91.13979200000176,
+    "maxProcs": 2,
+    "sysProcs": 568,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "interrupt",
+   "i": 8,
+   "port": 26264,
+   "ready": true,
+   "startMs": 3145,
+   "stopReturnMs": 46,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGINT",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 46
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 39.14579199999571
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "55097 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 448,
+    "untracked": [],
+    "treeDeadMs": 103.94595800002571,
+    "maxProcs": 2,
+    "sysProcs": 569,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "interrupt",
+   "i": 9,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2947,
+   "stopReturnMs": 42,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGINT",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 42
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 34.21741699997801
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "55568 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/detached-flush.j"
+    ],
+    "transientGoneMs": 520,
+    "untracked": [],
+    "treeDeadMs": 99.7436250000028,
+    "maxProcs": 2,
+    "sysProcs": 569,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "install-stop",
+   "i": 0,
+   "port": 26264,
+   "stoppedAtMs": 1090,
+   "stopReturnMs": 272,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 272
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 261.4818749999977
+   },
+   "portMs": 0,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 332.6159580000094,
+    "maxProcs": 3,
+    "sysProcs": 574,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "nodeModulesAfterStop": 0,
+   "reinstall": {
+    "code": 0,
+    "ms": 2970
+   },
+   "runAfterReinstall": true
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "install-then-run",
+   "i": 0,
+   "port": 26264,
+   "ready": true,
+   "startMs": 2267,
+   "stopReturnMs": 43,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 43
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 37.06691600003978
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "57295 node <tmp>/next-group-inst0/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/deta"
+    ],
+    "transientGoneMs": 347,
+    "untracked": [],
+    "treeDeadMs": 90.51949999999488,
+    "maxProcs": 2,
+    "sysProcs": 573,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "install-stop",
+   "i": 1,
+   "port": 26264,
+   "stoppedAtMs": 2180,
+   "stopReturnMs": 23,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 23
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 17.272125000017695
+   },
+   "portMs": 0,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 69.3401250000461,
+    "maxProcs": 1,
+    "sysProcs": 574,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "nodeModulesAfterStop": 1,
+   "reinstall": {
+    "code": 0,
+    "ms": 2935
+   },
+   "runAfterReinstall": true
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "install-then-run",
+   "i": 1,
+   "port": 26264,
+   "ready": true,
+   "startMs": 4180,
+   "stopReturnMs": 48,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 47
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 41.711874999979045
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "58897 node <tmp>/next-group-inst1/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/deta"
+    ],
+    "transientGoneMs": 445,
+    "untracked": [],
+    "treeDeadMs": 96.99499999999534,
+    "maxProcs": 2,
+    "sysProcs": 579,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "install-stop",
+   "i": 2,
+   "port": 26264,
+   "stoppedAtMs": 3269,
+   "stopReturnMs": 22,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 22
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 21.310083999997005
+   },
+   "portMs": 1,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 76.17237500002375,
+    "maxProcs": 1,
+    "sysProcs": 578,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "nodeModulesAfterStop": 1,
+   "reinstall": {
+    "code": 0,
+    "ms": 4219
+   },
+   "runAfterReinstall": true
+  },
+  {
+   "runner": "next",
+   "method": "group",
+   "scenario": "install-then-run",
+   "i": 2,
+   "port": 26264,
+   "ready": true,
+   "startMs": 4179,
+   "stopReturnMs": 58,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 58
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 52.28175000002375
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [
+     "60571 node <tmp>/next-group-inst2/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/telemetry/deta"
+    ],
+    "transientGoneMs": 465,
+    "untracked": [],
+    "treeDeadMs": 114.48266700003296,
+    "maxProcs": 2,
+    "sysProcs": 574,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  }
+ ]
+}
