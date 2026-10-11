@@ -1,0 +1,65 @@
+[
+  {
+    "variant": "full",
+    "good": 62,
+    "total": 62,
+    "bad": []
+  },
+  {
+    "variant": "no-hooks",
+    "good": 60,
+    "total": 62,
+    "bad": [
+      "mise-activate/zsh/node=miss",
+      "mise-activate/bash/node=miss"
+    ]
+  },
+  {
+    "variant": "no-warmup",
+    "good": 58,
+    "total": 62,
+    "bad": [
+      "nvm-lazy/zsh/node=miss(fn)",
+      "nvm-lazy/zsh/pnpm=miss(fn)",
+      "nvm-lazy/bash/node=miss(fn)",
+      "nvm-lazy/bash/pnpm=miss(fn)"
+    ]
+  },
+  {
+    "variant": "no-hooks-no-warmup",
+    "good": 56,
+    "total": 62,
+    "bad": [
+      "nvm-lazy/zsh/node=miss(fn)",
+      "nvm-lazy/zsh/pnpm=miss(fn)",
+      "nvm-lazy/bash/node=miss(fn)",
+      "nvm-lazy/bash/pnpm=miss(fn)",
+      "mise-activate/zsh/node=miss",
+      "mise-activate/bash/node=miss"
+    ]
+  },
+  {
+    "variant": "login-noninteractive-only",
+    "good": 51,
+    "total": 62,
+    "bad": [
+      "nvm-default/zsh/node=miss",
+      "nvm-default/zsh/pnpm=miss",
+      "nvm-lazy/zsh/node=miss(fn)",
+      "nvm-lazy/zsh/pnpm=miss(fn)",
+      "fnm/zsh/node=miss",
+      "volta/zsh/node=miss",
+      "mise-activate/zsh/node=miss",
+      "asdf/zsh/node=miss",
+      "asdf/zsh/python=WRONG-version",
+      "pyenv/zsh/python=WRONG-version",
+      "path-only-in-zshrc/zsh/node=miss"
+    ]
+  },
+  {
+    "variant": "interactive-only-no-stdin-fallback",
+    "good": 62,
+    "total": 62,
+    "bad": []
+  }
+]

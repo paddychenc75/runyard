@@ -1,0 +1,67 @@
+{
+  "received": {
+    "keys": [
+      "HOME",
+      "LANG",
+      "LOGNAME",
+      "PATH",
+      "TMPDIR",
+      "USER",
+      "XPC_FLAGS"
+    ],
+    "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+    "SHELL": null,
+    "TERM": null,
+    "HOME": "/home/runner",
+    "TERM_PROGRAM": null
+  },
+  "login": {
+    "shell": "/bin/bash",
+    "via": "os.userInfo"
+  },
+  "meta": {
+    "ms": 19.631731000000002,
+    "shell": "/bin/bash",
+    "kind": "bash",
+    "interactive": true,
+    "timedOut": false,
+    "stdoutBytes": 353,
+    "stderrTail": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n",
+    "stdoutHead": "__RUNYARD_ENV_c4fe4f8629501874_START__XPC_FLAGS=0x0?PWD=/home/runner?LOGNAME=runner?HOME=/home/runner?LANG=en_US.UTF-8?TMPDIR=/tmp/?SGX_AESM_ADDR=1?USER=runner?SHLVL=1?RUNYARD_RESOLVING_ENV=1?XDG_DATA",
+    "exitCode": null,
+    "signal": "early",
+    "ok": true,
+    "lossy": false,
+    "noiseBytes": 0,
+    "shellVia": "os.userInfo",
+    "via": "lic",
+    "trace": [
+      {
+        "via": "lic",
+        "ok": true,
+        "ms": 20
+      }
+    ],
+    "degraded": false
+  },
+  "tools": {
+    "node": {
+      "missing": true
+    },
+    "pnpm": {
+      "missing": true
+    },
+    "python": {
+      "path": "/usr/bin/python3",
+      "version": "3.12.3"
+    },
+    "uv": {
+      "missing": true
+    },
+    "go": {
+      "path": "/usr/bin/go",
+      "version": "1.24.13"
+    }
+  },
+  "totalMs": 34
+}

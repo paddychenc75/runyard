@@ -1,0 +1,4360 @@
+{
+ "meta": {
+  "label": "macos-26-nuxt4-a",
+  "platform": "darwin",
+  "arch": "arm64",
+  "os": "Darwin 25.6.0 Darwin Kernel Version 25.6.0: Fri Jul 31 19:16:43 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_VMAPPLE",
+  "cpus": "3 × Apple M1 (Virtual)",
+  "node": "v24.21.0",
+  "ci": true,
+  "image": "macos26 20260907.0351.1",
+  "reps": 50,
+  "graceMs": 3000,
+  "methods": [
+   "group"
+  ],
+  "tools": {
+   "pnpm": "11.28.0",
+   "go": "（没有）",
+   "python": "Python 3.14.7",
+   "uv": "（没有）"
+  },
+  "startedAt": "2026-10-11T20:33:47.359Z",
+  "procGrowth": "cloudtelemetryservice+3 nsattributedstringagent+2 com.apple.accessibility.mediaaccessibilityd+2 securitysubscriber+2 interactivelegacyprofilessubscriber+2 screensharingsubscriber+2 legacyprofilessubscriber+2 passcodesettingssubscriber+2 managedappssubscriber+2 managementtestsubscriber+2 mdworker_shared+2 distnoted+1",
+  "sysProcsEnd": 550,
+  "finalStray": {
+   "byCmdline": 0,
+   "byCwd": 0,
+   "detail": []
+  },
+  "finishedAt": "2026-10-11T20:40:02.066Z",
+  "versions": {
+   "nuxt4:nuxt": "4.5.2",
+   "nuxt4:vue": "3.5.43"
+  },
+  "tmpRemoved": true
+ },
+ "notes": [
+  {
+   "runner": "nuxt4",
+   "note": "第一次安装（仓库是冷的，要下载）",
+   "ms": 16881,
+   "code": 0,
+   "leftoverAfterExit": 0
+  },
+  {
+   "runner": "nuxt4",
+   "note": "热缓存下完整安装一次",
+   "ms": 3126,
+   "code": 0
+  },
+  {
+   "runner": "nuxt4",
+   "note": "缓存目录 .nuxt 结束时存在"
+  },
+  {
+   "runner": "nuxt4",
+   "note": "缓存目录 node_modules/.cache 结束时存在"
+  }
+ ],
+ "records": [
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 0,
+   "port": 25394,
+   "ready": true,
+   "startMs": 5520,
+   "tree": [
+    {
+     "depth": 0,
+     "pid": 3604,
+     "ppid": 2245,
+     "cmd": "node node_modules/nuxt/bin/nuxt.mjs dev --port 25394 --host 127.0.0.1"
+    },
+    {
+     "depth": 1,
+     "pid": 4013,
+     "ppid": 3604,
+     "cmd": "<tmp>/nuxt4/node_modules/.pnpm/@esbuild+darwin-arm64@0.28.2/node_modules/@esbuild/darwin-arm64/bin/esbuild --service=0.28.2 --ping"
+    },
+    {
+     "depth": 1,
+     "pid": 4110,
+     "ppid": 3604,
+     "cmd": "node --enable-source-maps <tmp>/nuxt4/node_modules/.pnpm/@nuxt+cli@3.37.0_@nuxt+schema@4.5.2_magicast@0.5.5_supports-color@10.2.2/node_modules/@nuxt/cli/dist/de"
+    },
+    {
+     "depth": 1,
+     "pid": 4113,
+     "ppid": 3604,
+     "cmd": "node --enable-source-maps <tmp>/nuxt4/node_modules/.pnpm/@nuxt+cli@3.37.0_@nuxt+schema@4.5.2_magicast@0.5.5_supports-color@10.2.2/node_modules/@nuxt/cli/dist/de"
+    }
+   ],
+   "stopReturnMs": 445,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 445
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 432.7608340000006
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 483.89820800000234,
+    "maxProcs": 4,
+    "sysProcs": 483,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 1,
+   "port": 25394,
+   "ready": true,
+   "startMs": 4275,
+   "stopReturnMs": 21,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 21
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 17.197958000000654
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 68.42554100000052,
+    "maxProcs": 4,
+    "sysProcs": 482,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 2,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3704,
+   "stopReturnMs": 24,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 24
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 16.30525000000489
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 82.40012500000012,
+    "maxProcs": 4,
+    "sysProcs": 482,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 3,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3537,
+   "stopReturnMs": 22,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 22
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 20.29170900000463
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 81.13704200000211,
+    "maxProcs": 4,
+    "sysProcs": 481,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 4,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3547,
+   "stopReturnMs": 21,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 21
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 13.351834000000963
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 74.62616700000217,
+    "maxProcs": 4,
+    "sysProcs": 481,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 5,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2915,
+   "stopReturnMs": 22,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 21
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 17.879625000001397
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 83.26658399999724,
+    "maxProcs": 4,
+    "sysProcs": 480,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 6,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2873,
+   "stopReturnMs": 23,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 23
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 15.787250000001222
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 81.29512499999691,
+    "maxProcs": 4,
+    "sysProcs": 480,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 7,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3876,
+   "stopReturnMs": 63,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 63
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 62.93720900000335
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 154.64066599999933,
+    "maxProcs": 4,
+    "sysProcs": 480,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 8,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3596,
+   "stopReturnMs": 21,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 21
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 13.870875000000524
+   },
+   "portMs": 15,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 76.56470799999806,
+    "maxProcs": 4,
+    "sysProcs": 477,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 9,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3628,
+   "stopReturnMs": 23,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 23
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 17.076124999999593
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 66.12895799999387,
+    "maxProcs": 4,
+    "sysProcs": 480,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 10,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3976,
+   "stopReturnMs": 47,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 47
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 35.283125000001746
+   },
+   "portMs": 37,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 102.6629580000008,
+    "maxProcs": 4,
+    "sysProcs": 488,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 11,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3562,
+   "stopReturnMs": 24,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 24
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 16.531375000005937
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 62.89366600000358,
+    "maxProcs": 4,
+    "sysProcs": 499,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 12,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2897,
+   "stopReturnMs": 21,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 21
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 13.495292000006884
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 55.6502499999915,
+    "maxProcs": 4,
+    "sysProcs": 499,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 13,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3511,
+   "stopReturnMs": 22,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 22
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 16.87204099999508
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 63.284708999999566,
+    "maxProcs": 4,
+    "sysProcs": 499,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 14,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3919,
+   "stopReturnMs": 24,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 24
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 18.725749999997788
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 73.90558299999975,
+    "maxProcs": 4,
+    "sysProcs": 507,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 15,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3546,
+   "stopReturnMs": 22,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 22
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 16.88045900000725
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 73.67004199999792,
+    "maxProcs": 4,
+    "sysProcs": 509,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 16,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2796,
+   "stopReturnMs": 23,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 23
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 17.614832999999635
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 65.39695799999754,
+    "maxProcs": 4,
+    "sysProcs": 508,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 17,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3439,
+   "stopReturnMs": 33,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 33
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 24.284792000005837
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 84.22875000000931,
+    "maxProcs": 4,
+    "sysProcs": 507,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 18,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3960,
+   "stopReturnMs": 25,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 24
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 19.176833999998053
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 64.42779099999461,
+    "maxProcs": 4,
+    "sysProcs": 506,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 19,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3686,
+   "stopReturnMs": 22,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 22
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 19.765041999999085
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 91.42795900000783,
+    "maxProcs": 4,
+    "sysProcs": 503,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 20,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2835,
+   "stopReturnMs": 20,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 20
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 16.77475000001141
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 65.5633339999913,
+    "maxProcs": 4,
+    "sysProcs": 506,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 21,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2827,
+   "stopReturnMs": 22,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 22
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 13.097334000005503
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 53.96575000000303,
+    "maxProcs": 4,
+    "sysProcs": 506,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 22,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2820,
+   "stopReturnMs": 22,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 22
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 14.464957999996841
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 75.61545899999328,
+    "maxProcs": 4,
+    "sysProcs": 501,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 23,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3878,
+   "stopReturnMs": 43,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 43
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 41.850665999998455
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 129.57737499999348,
+    "maxProcs": 4,
+    "sysProcs": 509,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 24,
+   "port": 25394,
+   "ready": true,
+   "startMs": 4641,
+   "stopReturnMs": 43,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 42
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 35.870707999987644
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 128.95750000000407,
+    "maxProcs": 4,
+    "sysProcs": 518,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 25,
+   "port": 25394,
+   "ready": true,
+   "startMs": 4651,
+   "stopReturnMs": 45,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 45
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 35.15099999999802
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 109.43066699999326,
+    "maxProcs": 4,
+    "sysProcs": 524,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 26,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3681,
+   "stopReturnMs": 21,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 21
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 20.7554999999993
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 72.47541600000113,
+    "maxProcs": 4,
+    "sysProcs": 524,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 27,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2855,
+   "stopReturnMs": 21,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 21
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 17.257500000006985
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 61.69450000001234,
+    "maxProcs": 4,
+    "sysProcs": 528,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 28,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2735,
+   "stopReturnMs": 23,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 23
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 17.896042000007583
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 65.53225000000384,
+    "maxProcs": 4,
+    "sysProcs": 528,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 29,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2647,
+   "stopReturnMs": 21,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 21
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 12.948459000006551
+   },
+   "portMs": 15,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 70.24300000000221,
+    "maxProcs": 4,
+    "sysProcs": 528,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 30,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2844,
+   "stopReturnMs": 34,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 33
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 25.43333299999358
+   },
+   "portMs": 15,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 75.21608399998513,
+    "maxProcs": 4,
+    "sysProcs": 526,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 31,
+   "port": 25394,
+   "ready": true,
+   "startMs": 4013,
+   "stopReturnMs": 34,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 34
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 22.21304100000998
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 85.65516700001899,
+    "maxProcs": 4,
+    "sysProcs": 524,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 32,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3328,
+   "stopReturnMs": 34,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 34
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 23.57279100001324
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 83.75566700001946,
+    "maxProcs": 4,
+    "sysProcs": 530,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 33,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3569,
+   "stopReturnMs": 40,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 40
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 28.563832999992883
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 92.96574999997392,
+    "maxProcs": 4,
+    "sysProcs": 533,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 34,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2787,
+   "stopReturnMs": 26,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 26
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 25.988833000010345
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 88.07429200000479,
+    "maxProcs": 4,
+    "sysProcs": 534,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 35,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3027,
+   "stopReturnMs": 73,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 72
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 70.78125
+   },
+   "portMs": 73,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 268.4403750000056,
+    "maxProcs": 4,
+    "sysProcs": 538,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 36,
+   "port": 25394,
+   "ready": true,
+   "startMs": 4948,
+   "stopReturnMs": 30,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 29
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 27.932082999992417
+   },
+   "portMs": 23,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 170.02704100002302,
+    "maxProcs": 4,
+    "sysProcs": 533,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 37,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3839,
+   "stopReturnMs": 26,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 26
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 20.296334000013303
+   },
+   "portMs": 15,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 70.16824999998789,
+    "maxProcs": 4,
+    "sysProcs": 539,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 38,
+   "port": 25394,
+   "ready": true,
+   "startMs": 4066,
+   "stopReturnMs": 42,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 42
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 32.002624999993714
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 140.1335830000171,
+    "maxProcs": 4,
+    "sysProcs": 547,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 39,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3955,
+   "stopReturnMs": 25,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 25
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 16.283792000001995
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 76.03720799999428,
+    "maxProcs": 4,
+    "sysProcs": 540,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 40,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3045,
+   "stopReturnMs": 22,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 22
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 16.56208400000469
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 89.63837500000955,
+    "maxProcs": 4,
+    "sysProcs": 536,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 41,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2997,
+   "stopReturnMs": 24,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 24
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 13.532040999998571
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 85.70612499999697,
+    "maxProcs": 4,
+    "sysProcs": 527,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 42,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3472,
+   "stopReturnMs": 21,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 21
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 16.152375000005122
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 72.68429199999082,
+    "maxProcs": 4,
+    "sysProcs": 532,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 43,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2789,
+   "stopReturnMs": 23,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 23
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 15.53483300001244
+   },
+   "portMs": 15,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 69.21912500000326,
+    "maxProcs": 4,
+    "sysProcs": 532,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 44,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2782,
+   "stopReturnMs": 23,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 23
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 17.822375000017928
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 62.441666999977315,
+    "maxProcs": 4,
+    "sysProcs": 532,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 45,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2713,
+   "stopReturnMs": 22,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 22
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 13.69666600000346
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 85.2448339999828,
+    "maxProcs": 4,
+    "sysProcs": 533,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 46,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2651,
+   "stopReturnMs": 24,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 24
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 15.1054169999843
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 54.75487499998417,
+    "maxProcs": 4,
+    "sysProcs": 529,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 47,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2327,
+   "stopReturnMs": 22,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 22
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 14.59616700001061
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 74.94791599997552,
+    "maxProcs": 4,
+    "sysProcs": 525,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 48,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3565,
+   "stopReturnMs": 23,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 23
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 15.508416999975452
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 59.187999999994645,
+    "maxProcs": 4,
+    "sysProcs": 536,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "cycle",
+   "i": 49,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2759,
+   "stopReturnMs": 24,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 24
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 16.458834000019124
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 79.84200000000419,
+    "maxProcs": 4,
+    "sysProcs": 533,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "inflight",
+   "i": 0,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2724,
+   "stopReturnMs": 24,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 24
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 16.263666999991983
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 62.72562499999185,
+    "maxProcs": 4,
+    "sysProcs": 532,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "idle:close,slow:ECONNRESET,slow:close"
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "inflight",
+   "i": 1,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2703,
+   "stopReturnMs": 22,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 22
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 13.729583000007551
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 67.44083300000057,
+    "maxProcs": 4,
+    "sysProcs": 527,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "idle:close,slow:ECONNRESET,slow:close"
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "inflight",
+   "i": 2,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2771,
+   "stopReturnMs": 24,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 24
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 12.71733299997868
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 102.17458299998543,
+    "maxProcs": 4,
+    "sysProcs": 536,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "idle:close,slow:ECONNRESET,slow:close"
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "inflight",
+   "i": 3,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3428,
+   "stopReturnMs": 23,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 23
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 18.9877919999999
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 63.38550000000396,
+    "maxProcs": 4,
+    "sysProcs": 536,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "idle:close,slow:ECONNRESET,slow:close"
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "inflight",
+   "i": 4,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3776,
+   "stopReturnMs": 30,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 30
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 29.55883399999584
+   },
+   "portMs": 30,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 134.82241600000998,
+    "maxProcs": 4,
+    "sysProcs": 535,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "idle:close,slow:ECONNRESET,slow:close"
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "startup-stop",
+   "i": 0,
+   "port": 25394,
+   "stoppedAtMs": 354,
+   "stopReturnMs": 69,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 68
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 67.8554170000134
+   },
+   "portMs": 68,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 135.3279170000169,
+    "maxProcs": 1,
+    "sysProcs": 536,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "startup-then-run",
+   "i": 0,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2765,
+   "stopReturnMs": 23,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 23
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 19.667875000013737
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 76.20608400000492,
+    "maxProcs": 4,
+    "sysProcs": 538,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "startup-stop",
+   "i": 1,
+   "port": 25394,
+   "stoppedAtMs": 1061,
+   "stopReturnMs": 112,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 112
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 100.15170799999032
+   },
+   "portMs": 99,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 152.77808299998287,
+    "maxProcs": 1,
+    "sysProcs": 545,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "startup-then-run",
+   "i": 1,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2729,
+   "stopReturnMs": 23,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 23
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 19.23791700002039
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 103.92683300000499,
+    "maxProcs": 4,
+    "sysProcs": 542,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "startup-stop",
+   "i": 2,
+   "port": 25394,
+   "stoppedAtMs": 1769,
+   "stopReturnMs": 39,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 39
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 13.349875000014435
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 119.61808300000848,
+    "maxProcs": 2,
+    "sysProcs": 541,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "startup-then-run",
+   "i": 2,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2826,
+   "stopReturnMs": 38,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 38
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 37.77195899997605
+   },
+   "portMs": 38,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 94.89100000000326,
+    "maxProcs": 4,
+    "sysProcs": 541,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "startup-stop",
+   "i": 3,
+   "port": 25394,
+   "stoppedAtMs": 2476,
+   "stopReturnMs": 32,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 32
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 31.61320799999521
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 75.81591600002139,
+    "maxProcs": 4,
+    "sysProcs": 539,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "startup-then-run",
+   "i": 3,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2782,
+   "stopReturnMs": 20,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 20
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 14.52566700000898
+   },
+   "portMs": 15,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 81.54245900001843,
+    "maxProcs": 4,
+    "sysProcs": 539,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "startup-stop",
+   "i": 4,
+   "port": 25394,
+   "stoppedAtMs": 3183,
+   "stopReturnMs": 24,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 24
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 13.293624999991152
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 71.75950000001467,
+    "maxProcs": 4,
+    "sysProcs": 538,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "startup-then-run",
+   "i": 4,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2776,
+   "stopReturnMs": 21,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 21
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 11.121416000009049
+   },
+   "portMs": 15,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 53.09404199998244,
+    "maxProcs": 4,
+    "sysProcs": 538,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "kill",
+   "i": 0,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2747,
+   "stopReturnMs": 13,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGKILL",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 13
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGKILL"
+    },
+    "rootExitMs": 8.143624999996973
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 72.52183300000615,
+    "maxProcs": 4,
+    "sysProcs": 538,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "kill-then-run",
+   "i": 0,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2834,
+   "stopReturnMs": 33,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 33
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 25.18104100000346
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 105.46812499998487,
+    "maxProcs": 4,
+    "sysProcs": 537,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "kill",
+   "i": 1,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3627,
+   "stopReturnMs": 22,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGKILL",
+      "at": 2
+     },
+     {
+      "what": "进程组已空",
+      "at": 22
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGKILL"
+    },
+    "rootExitMs": 21.919916999991983
+   },
+   "portMs": 23,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 126.91975000000093,
+    "maxProcs": 4,
+    "sysProcs": 536,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "kill-then-run",
+   "i": 1,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3762,
+   "stopReturnMs": 23,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 23
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 18.27445899997838
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 85.29199999998673,
+    "maxProcs": 4,
+    "sysProcs": 536,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "kill",
+   "i": 2,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3836,
+   "stopReturnMs": 27,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGKILL",
+      "at": 2
+     },
+     {
+      "what": "进程组已空",
+      "at": 27
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGKILL"
+    },
+    "rootExitMs": 18.019790999998804
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 123.31566600000951,
+    "maxProcs": 4,
+    "sysProcs": 536,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "kill-then-run",
+   "i": 2,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3495,
+   "stopReturnMs": 35,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 34
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 23.165333000011742
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 110.00033400004031,
+    "maxProcs": 4,
+    "sysProcs": 536,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "kill",
+   "i": 3,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2726,
+   "stopReturnMs": 11,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGKILL",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 11
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGKILL"
+    },
+    "rootExitMs": 8.473292000009678
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 99.7743340000161,
+    "maxProcs": 4,
+    "sysProcs": 536,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "kill-then-run",
+   "i": 3,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2738,
+   "stopReturnMs": 23,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 23
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 22.962082999991253
+   },
+   "portMs": 23,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 74.08620799996424,
+    "maxProcs": 4,
+    "sysProcs": 539,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "kill",
+   "i": 4,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2672,
+   "stopReturnMs": 12,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGKILL",
+      "at": 2
+     },
+     {
+      "what": "进程组已空",
+      "at": 12
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGKILL"
+    },
+    "rootExitMs": 8.627541999972891
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 60.37358299997868,
+    "maxProcs": 4,
+    "sysProcs": 542,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "kill-then-run",
+   "i": 4,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2608,
+   "stopReturnMs": 22,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 22
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 11.960207999974955
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 51.01045800000429,
+    "maxProcs": 4,
+    "sysProcs": 543,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "kill",
+   "i": 5,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2594,
+   "stopReturnMs": 33,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGKILL",
+      "at": 1
+     },
+     {
+      "what": "进程组已空",
+      "at": 32
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGKILL"
+    },
+    "rootExitMs": 22.028166000032797
+   },
+   "portMs": 22,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 88.07279200002085,
+    "maxProcs": 4,
+    "sysProcs": 542,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "kill-then-run",
+   "i": 5,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2883,
+   "stopReturnMs": 23,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 23
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 14.875708999985363
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 53.66495800000848,
+    "maxProcs": 4,
+    "sysProcs": 542,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "kill",
+   "i": 6,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2718,
+   "stopReturnMs": 13,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGKILL",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 13
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGKILL"
+    },
+    "rootExitMs": 9.85833299998194
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 52.15374999999767,
+    "maxProcs": 4,
+    "sysProcs": 542,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "kill-then-run",
+   "i": 6,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3048,
+   "stopReturnMs": 21,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 21
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 17.92316700000083
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 82.90479200001573,
+    "maxProcs": 4,
+    "sysProcs": 546,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "kill",
+   "i": 7,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2681,
+   "stopReturnMs": 12,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGKILL",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 12
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGKILL"
+    },
+    "rootExitMs": 9.97016700002132
+   },
+   "portMs": 21,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 60.64058400003705,
+    "maxProcs": 4,
+    "sysProcs": 545,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "kill-then-run",
+   "i": 7,
+   "port": 25394,
+   "ready": true,
+   "startMs": 4567,
+   "stopReturnMs": 48,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 48
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 37.95816699997522
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 116.63904199999524,
+    "maxProcs": 4,
+    "sysProcs": 548,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "kill",
+   "i": 8,
+   "port": 25394,
+   "ready": true,
+   "startMs": 4377,
+   "stopReturnMs": 21,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGKILL",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 21
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGKILL"
+    },
+    "rootExitMs": 12.9653330000001
+   },
+   "portMs": 20,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 65.75237500004005,
+    "maxProcs": 4,
+    "sysProcs": 546,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "kill-then-run",
+   "i": 8,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3793,
+   "stopReturnMs": 23,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 23
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 19.114916999998968
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 87.2690419999999,
+    "maxProcs": 4,
+    "sysProcs": 547,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "kill",
+   "i": 9,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3986,
+   "stopReturnMs": 17,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGKILL",
+      "at": 4
+     },
+     {
+      "what": "进程组已空",
+      "at": 16
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGKILL"
+    },
+    "rootExitMs": 14.399792000011075
+   },
+   "portMs": 22,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 99.20150000002468,
+    "maxProcs": 4,
+    "sysProcs": 545,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "kill-then-run",
+   "i": 9,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3829,
+   "stopReturnMs": 34,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 34
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 21.854749999998603
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 104.99604100000579,
+    "maxProcs": 4,
+    "sysProcs": 545,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "interrupt",
+   "i": 0,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3587,
+   "stopReturnMs": 22,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGINT",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 22
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 20.950583999976516
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 89.37033300002804,
+    "maxProcs": 4,
+    "sysProcs": 543,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "interrupt",
+   "i": 1,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2800,
+   "stopReturnMs": 24,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGINT",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 24
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 15.125665999948978
+   },
+   "portMs": 15,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 63.213374999992084,
+    "maxProcs": 4,
+    "sysProcs": 545,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "interrupt",
+   "i": 2,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2715,
+   "stopReturnMs": 24,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGINT",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 24
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 13.368332999991253
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 69.81529100000625,
+    "maxProcs": 4,
+    "sysProcs": 544,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "interrupt",
+   "i": 3,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2895,
+   "stopReturnMs": 34,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGINT",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 34
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 26.404666999995243
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 97.46791700000176,
+    "maxProcs": 4,
+    "sysProcs": 545,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "interrupt",
+   "i": 4,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2855,
+   "stopReturnMs": 23,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGINT",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 23
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 20.08045900001889
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 71.2592500000028,
+    "maxProcs": 4,
+    "sysProcs": 545,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "interrupt",
+   "i": 5,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2749,
+   "stopReturnMs": 24,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGINT",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 24
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 16.01941699994495
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 59.920458999986295,
+    "maxProcs": 4,
+    "sysProcs": 543,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "interrupt",
+   "i": 6,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2801,
+   "stopReturnMs": 25,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGINT",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 25
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 15.677207999979146
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 64.66141699999571,
+    "maxProcs": 4,
+    "sysProcs": 545,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "interrupt",
+   "i": 7,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2765,
+   "stopReturnMs": 24,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGINT",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 24
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 15.876208000001498
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 72.02204199996777,
+    "maxProcs": 4,
+    "sysProcs": 543,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "interrupt",
+   "i": 8,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2581,
+   "stopReturnMs": 23,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGINT",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 23
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 16.371500000008382
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 75.78229199995985,
+    "maxProcs": 4,
+    "sysProcs": 536,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "interrupt",
+   "i": 9,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2748,
+   "stopReturnMs": 21,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGINT",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 21
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 13.131457999988925
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 73.64970900001936,
+    "maxProcs": 4,
+    "sysProcs": 543,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "install-stop",
+   "i": 0,
+   "port": 25394,
+   "stoppedAtMs": 782,
+   "stopReturnMs": 59,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 59
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 48.72299999999814
+   },
+   "portMs": 0,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 91.26958399999421,
+    "maxProcs": 1,
+    "sysProcs": 545,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "nodeModulesAfterStop": 0,
+   "reinstall": {
+    "code": 0,
+    "ms": 3060
+   },
+   "runAfterReinstall": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "install-then-run",
+   "i": 0,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3478,
+   "stopReturnMs": 293,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 293
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 293.3209999999963
+   },
+   "portMs": 1,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 354.83608300000196,
+    "maxProcs": 4,
+    "sysProcs": 545,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "install-stop",
+   "i": 1,
+   "port": 25394,
+   "stoppedAtMs": 1563,
+   "stopReturnMs": 21,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 21
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 11.060499999963213
+   },
+   "portMs": 0,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 89.53316600003745,
+    "maxProcs": 1,
+    "sysProcs": 542,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "nodeModulesAfterStop": 1,
+   "reinstall": {
+    "code": 0,
+    "ms": 3130
+   },
+   "runAfterReinstall": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "install-then-run",
+   "i": 1,
+   "port": 25394,
+   "ready": true,
+   "startMs": 2851,
+   "stopReturnMs": 272,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 272
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 268.336707999988
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 309.6231670000125,
+    "maxProcs": 4,
+    "sysProcs": 549,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "install-stop",
+   "i": 2,
+   "port": 25394,
+   "stoppedAtMs": 2345,
+   "stopReturnMs": 11,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 11
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 8.712041999970097
+   },
+   "portMs": 0,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 44.10362500004703,
+    "maxProcs": 2,
+    "sysProcs": 552,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "nodeModulesAfterStop": 1,
+   "reinstall": {
+    "code": 0,
+    "ms": 2527
+   },
+   "runAfterReinstall": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "group",
+   "scenario": "install-then-run",
+   "i": 2,
+   "port": 25394,
+   "ready": true,
+   "startMs": 3990,
+   "stopReturnMs": 449,
+   "stop": {
+    "steps": [
+     {
+      "what": "整组 SIGTERM",
+      "at": 0
+     },
+     {
+      "what": "进程组已空",
+      "at": 449
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 440.75895799999125
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 472.5329999999958,
+    "maxProcs": 4,
+    "sysProcs": 553,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  }
+ ]
+}

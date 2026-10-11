@@ -1,0 +1,69 @@
+{
+  "received": {
+    "keys": [
+      "HOME",
+      "LANG",
+      "LOGNAME",
+      "PATH",
+      "TMPDIR",
+      "USER",
+      "XPC_FLAGS",
+      "__CF_USER_TEXT_ENCODING"
+    ],
+    "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+    "SHELL": null,
+    "TERM": null,
+    "HOME": "/Users/runner",
+    "TERM_PROGRAM": null
+  },
+  "login": {
+    "shell": "/bin/bash",
+    "via": "os.userInfo"
+  },
+  "meta": {
+    "ms": 25.393833,
+    "shell": "/bin/bash",
+    "kind": "bash",
+    "interactive": true,
+    "timedOut": false,
+    "stdoutBytes": 3358,
+    "stderrTail": "",
+    "stdoutHead": "__RUNYARD_ENV_f0d0e6fb1cba1bf1_START__GOROOT_1_24_ARM64=/Users/runner/hostedtoolcache/go/1.24.13/arm64?ANDROID_HOME=/Users/runner/Library/Android/sdk?CHROMEWEBDRIVER=/usr/local/share/chromedriver-mac-",
+    "exitCode": null,
+    "signal": "early",
+    "ok": true,
+    "lossy": false,
+    "noiseBytes": 0,
+    "shellVia": "os.userInfo",
+    "via": "lic",
+    "trace": [
+      {
+        "via": "lic",
+        "ok": true,
+        "ms": 25
+      }
+    ],
+    "degraded": false
+  },
+  "tools": {
+    "node": {
+      "path": "/opt/homebrew/bin/node",
+      "version": "24.20.0"
+    },
+    "pnpm": {
+      "missing": true
+    },
+    "python": {
+      "path": "/opt/homebrew/bin/python3",
+      "version": "3.14.7"
+    },
+    "uv": {
+      "path": "/opt/homebrew/bin/uv",
+      "version": "0.12.10"
+    },
+    "go": {
+      "missing": true
+    }
+  },
+  "totalMs": 89
+}

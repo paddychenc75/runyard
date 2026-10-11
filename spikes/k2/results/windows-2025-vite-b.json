@@ -1,0 +1,4424 @@
+{
+ "meta": {
+  "label": "windows-2025-vite-b",
+  "platform": "win32",
+  "arch": "x64",
+  "os": "Windows_NT 10.0.26100 Windows Server 2025 Datacenter",
+  "cpus": "4 × AMD EPYC 9V45 96-Core Processor                ",
+  "node": "v24.21.0",
+  "ci": true,
+  "image": "win25-vs2026 20260925.250.1",
+  "reps": 50,
+  "graceMs": 3000,
+  "methods": [
+   "job",
+   "job-ctrlc",
+   "pty-ctrlc"
+  ],
+  "tools": {
+   "pnpm": "11.28.0",
+   "go": "go version go1.24.13 windows/amd64",
+   "python": "Python 3.12.10",
+   "uv": "（没有）"
+  },
+  "startedAt": "2026-10-11T20:32:22.158Z",
+  "procGrowth": "conhost.exe+8 wmiadap.exe+1 wmiprvse.exe-1 svchost.exe-4",
+  "sysProcsEnd": 157,
+  "finalStray": {
+   "byCmdline": 0,
+   "byCwd": 0,
+   "detail": []
+  },
+  "finishedAt": "2026-10-11T20:33:16.310Z",
+  "versions": {
+   "vite:react": "19.3.0",
+   "vite:react-dom": "19.3.0",
+   "vite:vite": "8.3.1",
+   "vite:@vitejs/plugin-react": "6.1.1"
+  },
+  "tmpRemoved": true
+ },
+ "notes": [
+  {
+   "runner": "vite",
+   "note": "第一次安装（仓库是冷的，要下载）",
+   "ms": 3193,
+   "code": 0,
+   "leftoverAfterExit": 0
+  },
+  {
+   "runner": "vite",
+   "note": "热缓存下完整安装一次",
+   "ms": 722,
+   "code": 0
+  },
+  {
+   "runner": "vite",
+   "note": "缓存目录 node_modules/.vite 结束时存在"
+  }
+ ],
+ "records": [
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 0,
+   "port": 27359,
+   "ready": true,
+   "startMs": 364,
+   "tree": [
+    {
+     "depth": 0,
+     "pid": 8540,
+     "ppid": 7780,
+     "cmd": "D:/a/runyard/runyard/spikes/k2/win/runyard-job.exe -- node node_modules/vite/bin/vite.js --port 27359 --strictPort --host 127.0.0.1"
+    },
+    {
+     "depth": 1,
+     "pid": 8124,
+     "ppid": 8540,
+     "cmd": "/??/C:/Windows/system32/conhost.exe 0x4"
+    },
+    {
+     "depth": 1,
+     "pid": 4632,
+     "ppid": 8540,
+     "cmd": "node node_modules/vite/bin/vite.js --port 27359 --strictPort --host 127.0.0.1"
+    }
+   ],
+   "stopReturnMs": 3,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.656300000000556
+   },
+   "portMs": 26,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 60.47909999999956,
+    "maxProcs": 3,
+    "sysProcs": 155,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "4632"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 1,
+   "port": 27359,
+   "ready": true,
+   "startMs": 275,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.8369000000002416
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 42.054300000000694,
+    "maxProcs": 2,
+    "sysProcs": 155,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "2524"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 2,
+   "port": 27359,
+   "ready": true,
+   "startMs": 273,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.220800000000054
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 41.360899999999674,
+    "maxProcs": 3,
+    "sysProcs": 155,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "4260"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 3,
+   "port": 27359,
+   "ready": true,
+   "startMs": 270,
+   "stopReturnMs": 4,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 3.4997000000003027
+   },
+   "portMs": 31,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 51.223799999999756,
+    "maxProcs": 3,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "7340"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 4,
+   "port": 27359,
+   "ready": true,
+   "startMs": 278,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.285300000001371
+   },
+   "portMs": 29,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 58.647899999999936,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "7616"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 5,
+   "port": 27359,
+   "ready": true,
+   "startMs": 270,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.006100000000515
+   },
+   "portMs": 29,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 48.3833999999988,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "4612"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 6,
+   "port": 27359,
+   "ready": true,
+   "startMs": 278,
+   "stopReturnMs": 3,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.68789999999899
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 36.58469999999943,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "5224"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 7,
+   "port": 27359,
+   "ready": true,
+   "startMs": 272,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.8454000000001543
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 44.784599999999045,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "5304"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 8,
+   "port": 27359,
+   "ready": true,
+   "startMs": 271,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.227199999999357
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 47.67460000000028,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8592"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 9,
+   "port": 27359,
+   "ready": true,
+   "startMs": 278,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.9061000000001513
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 67.77910000000156,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "6684"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 10,
+   "port": 27359,
+   "ready": true,
+   "startMs": 279,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.8865000000005239
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 37.279599999999846,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "3408"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 11,
+   "port": 27359,
+   "ready": true,
+   "startMs": 277,
+   "stopReturnMs": 4,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 3.666400000000067
+   },
+   "portMs": 27,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 46.21509999999944,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8508"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 12,
+   "port": 27359,
+   "ready": true,
+   "startMs": 280,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.701100000000224
+   },
+   "portMs": 29,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 50.53129999999874,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "7028"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 13,
+   "port": 27359,
+   "ready": true,
+   "startMs": 278,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.0493999999998778
+   },
+   "portMs": 29,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 54.4398999999994,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "632"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 14,
+   "port": 27359,
+   "ready": true,
+   "startMs": 272,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.9190999999991618
+   },
+   "portMs": 31,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 51.17460000000028,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "2252"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 15,
+   "port": 27359,
+   "ready": true,
+   "startMs": 275,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.8087999999988824
+   },
+   "portMs": 29,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 49.90810000000056,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "6180"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 16,
+   "port": 27359,
+   "ready": true,
+   "startMs": 274,
+   "stopReturnMs": 3,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.7215000000014697
+   },
+   "portMs": 30,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 50.575299999998606,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "7072"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 17,
+   "port": 27359,
+   "ready": true,
+   "startMs": 334,
+   "stopReturnMs": 4,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 3.8655999999991764
+   },
+   "portMs": 30,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 51.69949999999881,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8196"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 18,
+   "port": 27359,
+   "ready": true,
+   "startMs": 272,
+   "stopReturnMs": 4,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 4.069499999999607
+   },
+   "portMs": 29,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 48.806800000000294,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "4108"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 19,
+   "port": 27359,
+   "ready": true,
+   "startMs": 277,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.7440999999998894
+   },
+   "portMs": 25,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 61.86230000000069,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "4032"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 20,
+   "port": 27359,
+   "ready": true,
+   "startMs": 277,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.7590000000000146
+   },
+   "portMs": 22,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 72.56970000000001,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "1944"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 21,
+   "port": 27359,
+   "ready": true,
+   "startMs": 275,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.527299999999741
+   },
+   "portMs": 27,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 76.01490000000013,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "632"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 22,
+   "port": 27359,
+   "ready": true,
+   "startMs": 293,
+   "stopReturnMs": 3,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.561700000000201
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 39.94790000000103,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "2252"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 23,
+   "port": 27359,
+   "ready": true,
+   "startMs": 282,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.5410999999985506
+   },
+   "portMs": 29,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 48.502300000000105,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "6180"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 24,
+   "port": 27359,
+   "ready": true,
+   "startMs": 275,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.0050999999984924
+   },
+   "portMs": 29,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 58.40480000000025,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "2712"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 25,
+   "port": 27359,
+   "ready": true,
+   "startMs": 283,
+   "stopReturnMs": 3,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 3.1494999999995343
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 59.40099999999984,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8456"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 26,
+   "port": 27359,
+   "ready": true,
+   "startMs": 428,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.3289999999997235
+   },
+   "portMs": 27,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 62.2455000000009,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "6564"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 27,
+   "port": 27359,
+   "ready": true,
+   "startMs": 281,
+   "stopReturnMs": 1,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.3336999999992258
+   },
+   "portMs": 23,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 53.98829999999725,
+    "maxProcs": 3,
+    "sysProcs": 152,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "9096"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 28,
+   "port": 27359,
+   "ready": true,
+   "startMs": 286,
+   "stopReturnMs": 3,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.8487999999997555
+   },
+   "portMs": 24,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 51.83050000000003,
+    "maxProcs": 3,
+    "sysProcs": 152,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "1092"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 29,
+   "port": 27359,
+   "ready": true,
+   "startMs": 354,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.9346000000005006
+   },
+   "portMs": 25,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 56.99069999999847,
+    "maxProcs": 3,
+    "sysProcs": 152,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "1800"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 30,
+   "port": 27359,
+   "ready": true,
+   "startMs": 279,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.3492999999980384
+   },
+   "portMs": 30,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 51.0515000000014,
+    "maxProcs": 3,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "1160"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 31,
+   "port": 27359,
+   "ready": true,
+   "startMs": 276,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.7993999999998778
+   },
+   "portMs": 30,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 47.58510000000024,
+    "maxProcs": 3,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "5112"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 32,
+   "port": 27359,
+   "ready": true,
+   "startMs": 280,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.129800000002433
+   },
+   "portMs": 32,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 50.824899999999616,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "1304"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 33,
+   "port": 27359,
+   "ready": true,
+   "startMs": 278,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.8014000000002852
+   },
+   "portMs": 31,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 50.990200000000186,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "6996"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 34,
+   "port": 27359,
+   "ready": true,
+   "startMs": 265,
+   "stopReturnMs": 4,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 3.6375000000007276
+   },
+   "portMs": 26,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 44.09029999999984,
+    "maxProcs": 3,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "6048"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 35,
+   "port": 27359,
+   "ready": true,
+   "startMs": 341,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.899199999999837
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 66.08239999999932,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8800"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 36,
+   "port": 27359,
+   "ready": true,
+   "startMs": 283,
+   "stopReturnMs": 3,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.5525999999990745
+   },
+   "portMs": 15,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 47.89509999999791,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "1316"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 37,
+   "port": 27359,
+   "ready": true,
+   "startMs": 337,
+   "stopReturnMs": 1,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.4169000000001688
+   },
+   "portMs": 31,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 50.1294999999991,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "6228"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 38,
+   "port": 27359,
+   "ready": true,
+   "startMs": 276,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.7032999999973981
+   },
+   "portMs": 32,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 50.87870000000112,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "1656"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 39,
+   "port": 27359,
+   "ready": true,
+   "startMs": 278,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.7875999999996566
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 47.987999999997555,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "3396"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 40,
+   "port": 27359,
+   "ready": true,
+   "startMs": 280,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.781299999998737
+   },
+   "portMs": 29,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 47.54030000000057,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "7664"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 41,
+   "port": 27359,
+   "ready": true,
+   "startMs": 281,
+   "stopReturnMs": 3,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 3.0855999999985215
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 34.11620000000039,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "7620"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 42,
+   "port": 27359,
+   "ready": true,
+   "startMs": 274,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.3188999999983935
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 51.3833999999988,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "6308"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 43,
+   "port": 27359,
+   "ready": true,
+   "startMs": 280,
+   "stopReturnMs": 3,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.4192000000002736
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 34.541300000000774,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "5748"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 44,
+   "port": 27359,
+   "ready": true,
+   "startMs": 274,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.8175000000010186
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 42.95840000000317,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "3052"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 45,
+   "port": 27359,
+   "ready": true,
+   "startMs": 274,
+   "stopReturnMs": 5,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 5.270700000000943
+   },
+   "portMs": 29,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 47.494200000001,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8288"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 46,
+   "port": 27359,
+   "ready": true,
+   "startMs": 266,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.842899999999645
+   },
+   "portMs": 28,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 55.59779999999955,
+    "maxProcs": 2,
+    "sysProcs": 152,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "884"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 47,
+   "port": 27359,
+   "ready": true,
+   "startMs": 269,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.9431000000004133
+   },
+   "portMs": 30,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 47.80609999999797,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "2252"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 48,
+   "port": 27359,
+   "ready": true,
+   "startMs": 278,
+   "stopReturnMs": 3,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.904099999999744
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 66.17050000000017,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "5300"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 49,
+   "port": 27359,
+   "ready": true,
+   "startMs": 284,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.4926999999988766
+   },
+   "portMs": 29,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 47.96200000000317,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "3692"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "inflight",
+   "i": 0,
+   "port": 27359,
+   "ready": true,
+   "startMs": 277,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.4867000000012922
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 58.987199999999575,
+    "maxProcs": 3,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "slow:ECONNRESET,slow:close,idle:ECONNRESET,idle:close",
+   "jobReport": {
+    "child": "7660"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "inflight",
+   "i": 1,
+   "port": 27359,
+   "ready": true,
+   "startMs": 270,
+   "stopReturnMs": 1,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.3539999999993597
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 61.212899999998626,
+    "maxProcs": 3,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "idle:ECONNRESET,idle:close,slow:ECONNRESET,slow:close",
+   "jobReport": {
+    "child": "2908"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "inflight",
+   "i": 2,
+   "port": 27359,
+   "ready": true,
+   "startMs": 278,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.4923000000017055
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 49.339499999998225,
+    "maxProcs": 3,
+    "sysProcs": 151,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "idle:ECONNRESET,idle:close,slow:ECONNRESET,slow:close",
+   "jobReport": {
+    "child": "5828"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "inflight",
+   "i": 3,
+   "port": 27359,
+   "ready": true,
+   "startMs": 279,
+   "stopReturnMs": 1,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.3801000000021304
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 49.02059999999983,
+    "maxProcs": 3,
+    "sysProcs": 151,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "idle:ECONNRESET,idle:close,slow:ECONNRESET,slow:close",
+   "jobReport": {
+    "child": "5832"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "inflight",
+   "i": 4,
+   "port": 27359,
+   "ready": true,
+   "startMs": 277,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.4357999999992899
+   },
+   "portMs": 32,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 48.86079999999856,
+    "maxProcs": 3,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "idle:ECONNRESET,idle:close,slow:ECONNRESET,slow:close",
+   "jobReport": {
+    "child": "3936"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "startup-stop",
+   "i": 0,
+   "port": 27359,
+   "stoppedAtMs": 28,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.4259999999994761
+   },
+   "portMs": 1,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 29.83690000000206,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "6676"
+   },
+   "runAfter": true
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "startup-then-run",
+   "i": 0,
+   "port": 27359,
+   "ready": true,
+   "startMs": 281,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.9531999999999243
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 49.530399999999645,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "5348"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "startup-stop",
+   "i": 1,
+   "port": 27359,
+   "stoppedAtMs": 83,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.4522999999971944
+   },
+   "portMs": 1,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 33.290899999999965,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "2884"
+   },
+   "runAfter": true
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "startup-then-run",
+   "i": 1,
+   "port": 27359,
+   "ready": true,
+   "startMs": 264,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.8367999999973108
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 54.313899999997375,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8092"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "startup-stop",
+   "i": 2,
+   "port": 27359,
+   "stoppedAtMs": 139,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.5900999999976193
+   },
+   "portMs": 1,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 54.47570000000269,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8864"
+   },
+   "runAfter": true
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "startup-then-run",
+   "i": 2,
+   "port": 27359,
+   "ready": true,
+   "startMs": 264,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.3483999999989464
+   },
+   "portMs": 31,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 53.28309999999692,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "4048"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "startup-stop",
+   "i": 3,
+   "port": 27359,
+   "stoppedAtMs": 195,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.9559000000008382
+   },
+   "portMs": 1,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 48.41179999999804,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "3752"
+   },
+   "runAfter": true
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "startup-then-run",
+   "i": 3,
+   "port": 27359,
+   "ready": true,
+   "startMs": 278,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.8385999999991327
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 45.76469999999972,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "1968"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "startup-stop",
+   "i": 4,
+   "port": 27359,
+   "stoppedAtMs": 250,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.5252000000000407
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 49.23289999999906,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "2060"
+   },
+   "runAfter": true
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "startup-then-run",
+   "i": 4,
+   "port": 27359,
+   "ready": true,
+   "startMs": 280,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.9241000000001804
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 65.09860000000117,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "7884"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "install-stop",
+   "i": 0,
+   "port": 27359,
+   "stoppedAtMs": 181,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.4693000000006577
+   },
+   "portMs": 1,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 39.43130000000019,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "3936"
+   },
+   "nodeModulesAfterStop": 0,
+   "reinstall": {
+    "code": 0,
+    "ms": 723
+   },
+   "runAfterReinstall": true
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "install-then-run",
+   "i": 0,
+   "port": 27359,
+   "ready": true,
+   "startMs": 289,
+   "stopReturnMs": 5,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 4.418900000000576
+   },
+   "portMs": 25,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 74.0392000000029,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8840"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "install-stop",
+   "i": 1,
+   "port": 27359,
+   "stoppedAtMs": 361,
+   "stopReturnMs": 4,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 3.77639999999883
+   },
+   "portMs": 2,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 53.3279999999977,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "4444"
+   },
+   "nodeModulesAfterStop": 0,
+   "reinstall": {
+    "code": 0,
+    "ms": 729
+   },
+   "runAfterReinstall": true
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "install-then-run",
+   "i": 1,
+   "port": 27359,
+   "ready": true,
+   "startMs": 269,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.898800000002666
+   },
+   "portMs": 31,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 48.871399999996356,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "6804"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "install-stop",
+   "i": 2,
+   "port": 27359,
+   "stoppedAtMs": 542,
+   "stopReturnMs": 1,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.3280999999988126
+   },
+   "portMs": 1,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 33.40540000000328,
+    "maxProcs": 4,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "7568"
+   },
+   "nodeModulesAfterStop": 0,
+   "reinstall": {
+    "code": 0,
+    "ms": 736
+   },
+   "runAfterReinstall": true
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "install-then-run",
+   "i": 2,
+   "port": 27359,
+   "ready": true,
+   "startMs": 276,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.9593000000022585
+   },
+   "portMs": 33,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 72.61030000000028,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8696"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "variant:vite-via-pnpm",
+   "i": 0,
+   "port": 27359,
+   "ready": true,
+   "startMs": 581,
+   "tree": [
+    {
+     "depth": 0,
+     "pid": 4428,
+     "ppid": 7780,
+     "cmd": "D:/a/runyard/runyard/spikes/k2/win/runyard-job.exe -- C:/Windows/system32/cmd.exe /d /s /c \"C:/Users/runneradmin/setup-pnpm/node_modules/.bin/bin/pnpm.cmd exec "
+    },
+    {
+     "depth": 1,
+     "pid": 5748,
+     "ppid": 4428,
+     "cmd": "/??/C:/Windows/system32/conhost.exe 0x4"
+    },
+    {
+     "depth": 1,
+     "pid": 7136,
+     "ppid": 4428,
+     "cmd": "C:/Windows/system32/cmd.exe /d /s /c \"C:/Users/runneradmin/setup-pnpm/node_modules/.bin/bin/pnpm.cmd exec vite --port 27359 --strictPort --host 127.0.0.1\""
+    },
+    {
+     "depth": 2,
+     "pid": 3360,
+     "ppid": 7136,
+     "cmd": "node   \"C:/Users/runneradmin/setup-pnpm/node_modules/.bin/bin//../global/v11/8cc-1a12caa5502-0b57214c80166657/node_modules/pnpm/bin/pnpm.mjs\" exec vite --port 2"
+    },
+    {
+     "depth": 3,
+     "pid": 3896,
+     "ppid": 3360,
+     "cmd": "C:/Windows/system32/cmd.exe /q /d /s /c \"vite ^^^\"--port^^^\" ^^^\"27359^^^\" ^^^\"--strictPort^^^\" ^^^\"--host^^^\" ^^^\"127.0.0.1^^^\"\""
+    },
+    {
+     "depth": 4,
+     "pid": 3040,
+     "ppid": 3896,
+     "cmd": "node   \"<tmp>/vite/node_modules/.bin//../vite/bin/vite.js\" \"--port\" \"27359\" \"--strictPort\" \"--host\" \"127.0.0.1\""
+    }
+   ],
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.8347999999969034
+   },
+   "portMs": 25,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 55.82100000000355,
+    "maxProcs": 6,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "7136"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "variant:vite-via-pnpm",
+   "i": 1,
+   "port": 27359,
+   "ready": true,
+   "startMs": 580,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.1287999999985914
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 54.72810000000027,
+    "maxProcs": 6,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "6752"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "variant:vite-via-pnpm",
+   "i": 2,
+   "port": 27359,
+   "ready": true,
+   "startMs": 593,
+   "stopReturnMs": 3,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.7463000000061584
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 49.62830000000395,
+    "maxProcs": 7,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "3328"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "variant:vite-via-pnpm",
+   "i": 3,
+   "port": 27359,
+   "ready": true,
+   "startMs": 595,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.9017999999996391
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 48.06919999999809,
+    "maxProcs": 6,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "5536"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job",
+   "scenario": "variant:vite-via-pnpm",
+   "i": 4,
+   "port": 27359,
+   "ready": true,
+   "startMs": 583,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.4622000000017579
+   },
+   "portMs": 30,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 46.812400000002526,
+    "maxProcs": 8,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "6464"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 0,
+   "port": 27359,
+   "ready": true,
+   "startMs": 280,
+   "tree": [
+    {
+     "depth": 0,
+     "pid": 6588,
+     "ppid": 7780,
+     "cmd": "D:/a/runyard/runyard/spikes/k2/win/runyard-job.exe --console --stdin-control -- node node_modules/vite/bin/vite.js --port 27359 --strictPort --host 127.0.0.1"
+    },
+    {
+     "depth": 1,
+     "pid": 860,
+     "ppid": 6588,
+     "cmd": "/??/C:/Windows/system32/conhost.exe 0x4"
+    },
+    {
+     "depth": 1,
+     "pid": 6744,
+     "ppid": 6588,
+     "cmd": "node node_modules/vite/bin/vite.js --port 27359 --strictPort --host 127.0.0.1"
+    }
+   ],
+   "stopReturnMs": 90,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 89.43850000000384
+   },
+   "portMs": 84,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 128.7109999999957,
+    "maxProcs": 3,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "6744",
+    "ctrlcSent": "1",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 1,
+   "port": 27359,
+   "ready": true,
+   "startMs": 264,
+   "stopReturnMs": 14,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 13.488900000003923
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 52.15570000000298,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "1332",
+    "ctrlcSent": "1",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 2,
+   "port": 27359,
+   "ready": true,
+   "startMs": 213,
+   "stopReturnMs": 13,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 13.364700000005541
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 50.868799999996554,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "5760",
+    "ctrlcSent": "1",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 3,
+   "port": 27359,
+   "ready": true,
+   "startMs": 213,
+   "stopReturnMs": 14,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 13.506100000005972
+   },
+   "portMs": 20,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 53.10369999999966,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "2284",
+    "ctrlcSent": "1",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 4,
+   "port": 27359,
+   "ready": true,
+   "startMs": 211,
+   "stopReturnMs": 14,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 13.637099999999919
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 38.86220000000321,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "3092",
+    "ctrlcSent": "1",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 5,
+   "port": 27359,
+   "ready": true,
+   "startMs": 259,
+   "stopReturnMs": 13,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 12.70509999999922
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 51.93879999999626,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "5244",
+    "ctrlcSent": "1",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 6,
+   "port": 27359,
+   "ready": true,
+   "startMs": 212,
+   "stopReturnMs": 14,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 13.52039999999397
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 39.21949999999924,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "6612",
+    "ctrlcSent": "1",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 7,
+   "port": 27359,
+   "ready": true,
+   "startMs": 260,
+   "stopReturnMs": 14,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 14.209100000000035
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 44.11099999999715,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "4108",
+    "ctrlcSent": "1",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 8,
+   "port": 27359,
+   "ready": true,
+   "startMs": 266,
+   "stopReturnMs": 13,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 13.367700000002515
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 51.81819999999425,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "3348",
+    "ctrlcSent": "1",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 9,
+   "port": 27359,
+   "ready": true,
+   "startMs": 278,
+   "stopReturnMs": 13,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 13.325700000001234
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 51.510699999998906,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "5736",
+    "ctrlcSent": "1",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 10,
+   "port": 27359,
+   "ready": true,
+   "startMs": 209,
+   "stopReturnMs": 14,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 13.865799999999581
+   },
+   "portMs": 23,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 55.339899999999034,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "8620",
+    "ctrlcSent": "1",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 11,
+   "port": 27359,
+   "ready": true,
+   "startMs": 276,
+   "stopReturnMs": 13,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 13.401899999997113
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 50.95659999999771,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "1460",
+    "ctrlcSent": "1",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 12,
+   "port": 27359,
+   "ready": true,
+   "startMs": 216,
+   "stopReturnMs": 13,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 12.793999999994412
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 50.67319999999745,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "8208",
+    "ctrlcSent": "1",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 13,
+   "port": 27359,
+   "ready": true,
+   "startMs": 212,
+   "stopReturnMs": 14,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 14.006600000000617
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 53.0338000000047,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "4960",
+    "ctrlcSent": "1",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 14,
+   "port": 27359,
+   "ready": true,
+   "startMs": 274,
+   "stopReturnMs": 13,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 13.232499999998254
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 51.906699999999546,
+    "maxProcs": 2,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "6936",
+    "ctrlcSent": "1",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job-ctrlc",
+   "scenario": "inflight",
+   "i": 0,
+   "port": 27359,
+   "ready": true,
+   "startMs": 211,
+   "stopReturnMs": 20,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 19.562799999999697
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 48.668100000002596,
+    "maxProcs": 3,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "idle:ECONNRESET,idle:close,slow:ECONNRESET,slow:close",
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "8428",
+    "ctrlcSent": "1",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job-ctrlc",
+   "scenario": "inflight",
+   "i": 1,
+   "port": 27359,
+   "ready": true,
+   "startMs": 263,
+   "stopReturnMs": 28,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 27.935800000006566
+   },
+   "portMs": 32,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 65.38169999999809,
+    "maxProcs": 3,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "slow:ECONNRESET,slow:close,idle:ECONNRESET,idle:close",
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "7604",
+    "ctrlcSent": "1",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "job-ctrlc",
+   "scenario": "inflight",
+   "i": 2,
+   "port": 27359,
+   "ready": true,
+   "startMs": 229,
+   "stopReturnMs": 15,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 14.628099999994447
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 48.90200000000186,
+    "maxProcs": 3,
+    "sysProcs": 150,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "slow:ECONNRESET,slow:close,idle:ECONNRESET,idle:close",
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "5588",
+    "ctrlcSent": "1",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "pty-ctrlc",
+   "scenario": "cycle",
+   "i": 0,
+   "port": 27359,
+   "ready": true,
+   "startMs": 198,
+   "tree": [
+    {
+     "depth": 0,
+     "pid": 1944,
+     "ppid": 7780,
+     "cmd": "node node_modules/vite/bin/vite.js --port 27359 --strictPort --host 127.0.0.1"
+    }
+   ],
+   "stopReturnMs": 1018,
+   "stop": {
+    "steps": [
+     {
+      "what": "写入 Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 1017.9667999999947
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 1054.6535000000003,
+    "maxProcs": 1,
+    "sysProcs": 151,
+    "notKilled": []
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "pty-ctrlc",
+   "scenario": "cycle",
+   "i": 1,
+   "port": 27359,
+   "ready": true,
+   "startMs": 201,
+   "stopReturnMs": 1026,
+   "stop": {
+    "steps": [
+     {
+      "what": "写入 Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 1025.7934999999998
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 1073.1127999999953,
+    "maxProcs": 1,
+    "sysProcs": 152,
+    "notKilled": []
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "pty-ctrlc",
+   "scenario": "cycle",
+   "i": 2,
+   "port": 27359,
+   "ready": true,
+   "startMs": 198,
+   "stopReturnMs": 1015,
+   "stop": {
+    "steps": [
+     {
+      "what": "写入 Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 1014.4756999999954
+   },
+   "portMs": 15,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 1040.9161000000022,
+    "maxProcs": 1,
+    "sysProcs": 153,
+    "notKilled": []
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "pty-ctrlc",
+   "scenario": "cycle",
+   "i": 3,
+   "port": 27359,
+   "ready": true,
+   "startMs": 216,
+   "stopReturnMs": 1023,
+   "stop": {
+    "steps": [
+     {
+      "what": "写入 Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 1023.3698000000004
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 1071.7279999999955,
+    "maxProcs": 1,
+    "sysProcs": 154,
+    "notKilled": []
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "pty-ctrlc",
+   "scenario": "cycle",
+   "i": 4,
+   "port": 27359,
+   "ready": true,
+   "startMs": 212,
+   "stopReturnMs": 1011,
+   "stop": {
+    "steps": [
+     {
+      "what": "写入 Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 1011.0571999999956
+   },
+   "portMs": 21,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 1055.0141999999978,
+    "maxProcs": 1,
+    "sysProcs": 155,
+    "notKilled": []
+   }
+  },
+  {
+   "runner": "vite",
+   "method": "pty-ctrlc",
+   "scenario": "inflight",
+   "i": 0,
+   "port": 27359,
+   "ready": true,
+   "startMs": 197,
+   "stopReturnMs": 1014,
+   "stop": {
+    "steps": [
+     {
+      "what": "写入 Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 1014.0580999999947
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 1040.1343999999954,
+    "maxProcs": 1,
+    "sysProcs": 156,
+    "notKilled": []
+   },
+   "inflightEvents": "slow:ECONNRESET,slow:close,idle:ECONNRESET,idle:close"
+  },
+  {
+   "runner": "vite",
+   "method": "pty-ctrlc",
+   "scenario": "inflight",
+   "i": 1,
+   "port": 27359,
+   "ready": true,
+   "startMs": 278,
+   "stopReturnMs": 1017,
+   "stop": {
+    "steps": [
+     {
+      "what": "写入 Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 1017.144100000005
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 1067.1425999999992,
+    "maxProcs": 1,
+    "sysProcs": 157,
+    "notKilled": []
+   },
+   "inflightEvents": "idle:ECONNRESET,idle:close,slow:ECONNRESET,slow:close"
+  },
+  {
+   "runner": "vite",
+   "method": "pty-ctrlc",
+   "scenario": "inflight",
+   "i": 2,
+   "port": 27359,
+   "ready": true,
+   "startMs": 213,
+   "stopReturnMs": 1023,
+   "stop": {
+    "steps": [
+     {
+      "what": "写入 Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 1022.633799999996
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 1071.8929999999964,
+    "maxProcs": 1,
+    "sysProcs": 157,
+    "notKilled": []
+   },
+   "inflightEvents": "idle:ECONNRESET,idle:close,slow:ECONNRESET,slow:close"
+  }
+ ]
+}

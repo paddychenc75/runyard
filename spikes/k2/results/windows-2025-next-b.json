@@ -1,0 +1,4294 @@
+{
+ "meta": {
+  "label": "windows-2025-next-b",
+  "platform": "win32",
+  "arch": "x64",
+  "os": "Windows_NT 10.0.26100 Windows Server 2025 Datacenter",
+  "cpus": "4 × INTEL(R) XEON(R) PLATINUM 8573C",
+  "node": "v24.21.0",
+  "ci": true,
+  "image": "win25-vs2026 20260925.250.1",
+  "reps": 50,
+  "graceMs": 3000,
+  "methods": [
+   "job",
+   "job-ctrlc",
+   "pty-ctrlc"
+  ],
+  "tools": {
+   "pnpm": "11.28.0",
+   "go": "go version go1.24.13 windows/amd64",
+   "python": "Python 3.12.10",
+   "uv": "（没有）"
+  },
+  "startedAt": "2026-10-11T20:32:33.124Z",
+  "procGrowth": "conhost.exe+8 runtimebroker.exe+1 mousocoreworker.exe+1 sppsvc.exe+1 compattelrunner.exe+1 wmiprvse.exe-1 svchost.exe-4",
+  "sysProcsEnd": 154,
+  "finalStray": {
+   "byCmdline": 0,
+   "byCwd": 0,
+   "detail": []
+  },
+  "finishedAt": "2026-10-11T20:38:05.499Z",
+  "versions": {
+   "next:next": "16.3.6",
+   "next:react": "19.3.0",
+   "next:react-dom": "19.3.0"
+  },
+  "tmpRemoved": true
+ },
+ "notes": [
+  {
+   "runner": "next",
+   "note": "第一次安装（仓库是冷的，要下载）",
+   "ms": 9002,
+   "code": 0,
+   "leftoverAfterExit": 0
+  },
+  {
+   "runner": "next",
+   "note": "热缓存下完整安装一次",
+   "ms": 2739,
+   "code": 0
+  },
+  {
+   "runner": "next",
+   "note": "缓存目录 .next 结束时存在"
+  }
+ ],
+ "records": [
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 0,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3051,
+   "tree": [
+    {
+     "depth": 0,
+     "pid": 3308,
+     "ppid": 1368,
+     "cmd": "D:/a/runyard/runyard/spikes/k2/win/runyard-job.exe -- node node_modules/next/dist/bin/next dev -p 28939 -H 127.0.0.1"
+    },
+    {
+     "depth": 1,
+     "pid": 3292,
+     "ppid": 3308,
+     "cmd": "/??/C:/Windows/system32/conhost.exe 0x4"
+    },
+    {
+     "depth": 1,
+     "pid": 3980,
+     "ppid": 3308,
+     "cmd": "node node_modules/next/dist/bin/next dev -p 28939 -H 127.0.0.1"
+    },
+    {
+     "depth": 2,
+     "pid": 8940,
+     "ppid": 3980,
+     "cmd": "node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    }
+   ],
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.007399999998597
+   },
+   "portMs": 25,
+   "leftover": {
+    "aliveAtReturn": [
+     "8940 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 116.77530000000115,
+    "maxProcs": 4,
+    "sysProcs": 146,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "3980"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 1,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2902,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.9241999999976542
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [
+     "892 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 171.6839,
+    "maxProcs": 4,
+    "sysProcs": 146,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "5736"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 2,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2913,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.8884000000034575
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [
+     "4884 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 132.44249999999738,
+    "maxProcs": 4,
+    "sysProcs": 146,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "9000"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 3,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3020,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.9116000000030908
+   },
+   "portMs": 33,
+   "leftover": {
+    "aliveAtReturn": [
+     "1532 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 127.1221000000005,
+    "maxProcs": 4,
+    "sysProcs": 147,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "3896"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 4,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2948,
+   "stopReturnMs": 4,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 4.224600000001374
+   },
+   "portMs": 30,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 70.4839000000029,
+    "maxProcs": 4,
+    "sysProcs": 147,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "6328"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 5,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2916,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.1546000000016647
+   },
+   "portMs": 25,
+   "leftover": {
+    "aliveAtReturn": [
+     "8288 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 126.73720000000321,
+    "maxProcs": 4,
+    "sysProcs": 147,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "2908"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 6,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2931,
+   "stopReturnMs": 3,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.370599999994738
+   },
+   "portMs": 26,
+   "leftover": {
+    "aliveAtReturn": [
+     "7220 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 120.48139999999694,
+    "maxProcs": 4,
+    "sysProcs": 147,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "1388"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 7,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2910,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.065600000001723
+   },
+   "portMs": 28,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 71.23999999999796,
+    "maxProcs": 4,
+    "sysProcs": 146,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "3812"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 8,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2970,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.7655000000013388
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 67.81260000000475,
+    "maxProcs": 4,
+    "sysProcs": 146,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "3724"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 9,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2967,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.971799999999348
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 75.2948999999935,
+    "maxProcs": 4,
+    "sysProcs": 146,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "6308"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 10,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2860,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.8648000000030152
+   },
+   "portMs": 30,
+   "leftover": {
+    "aliveAtReturn": [
+     "8276 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 133.40090000000055,
+    "maxProcs": 4,
+    "sysProcs": 146,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "3108"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 11,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2883,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.970500000003085
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [
+     "7144 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 124.73500000000058,
+    "maxProcs": 4,
+    "sysProcs": 146,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "9092"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 12,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3015,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.197599999999511
+   },
+   "portMs": 20,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 65.97250000000349,
+    "maxProcs": 4,
+    "sysProcs": 146,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8604"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 13,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3034,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.8888999999981024
+   },
+   "portMs": 25,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 65.0804000000062,
+    "maxProcs": 4,
+    "sysProcs": 145,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "7164"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 14,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2973,
+   "stopReturnMs": 4,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 3.846400000002177
+   },
+   "portMs": 28,
+   "leftover": {
+    "aliveAtReturn": [
+     "6832 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 135.3050000000003,
+    "maxProcs": 4,
+    "sysProcs": 145,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "1248"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 15,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3009,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.8557000000000698
+   },
+   "portMs": 21,
+   "leftover": {
+    "aliveAtReturn": [
+     "9180 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 128.77820000000065,
+    "maxProcs": 4,
+    "sysProcs": 145,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "6400"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 16,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3061,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.5428000000101747
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [
+     "7852 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 109.8460999999952,
+    "maxProcs": 4,
+    "sysProcs": 145,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "5604"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 17,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2984,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.6497999999992317
+   },
+   "portMs": 21,
+   "leftover": {
+    "aliveAtReturn": [
+     "1512 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 126.32789999998931,
+    "maxProcs": 4,
+    "sysProcs": 145,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "9096"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 18,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3043,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.5630000000091968
+   },
+   "portMs": 22,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 81.52169999999751,
+    "maxProcs": 4,
+    "sysProcs": 145,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "2352"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 19,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3041,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.7375000000029104
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [
+     "3076 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 122.14839999999094,
+    "maxProcs": 4,
+    "sysProcs": 145,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8436"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 20,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3050,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.9033000000054017
+   },
+   "portMs": 21,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 60.383700000005774,
+    "maxProcs": 4,
+    "sysProcs": 145,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8788"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 21,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2969,
+   "stopReturnMs": 3,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.7035999999934575
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [
+     "3004 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 124.29250000001048,
+    "maxProcs": 4,
+    "sysProcs": 145,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "1892"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 22,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2946,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.5424999999959255
+   },
+   "portMs": 28,
+   "leftover": {
+    "aliveAtReturn": [
+     "4720 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 130.96050000000105,
+    "maxProcs": 4,
+    "sysProcs": 145,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "3484"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 23,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2941,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.618399999992107
+   },
+   "portMs": 30,
+   "leftover": {
+    "aliveAtReturn": [
+     "5940 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 128.92459999999846,
+    "maxProcs": 4,
+    "sysProcs": 145,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "5648"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 24,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3041,
+   "stopReturnMs": 13,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 12.94659999999567
+   },
+   "portMs": 32,
+   "leftover": {
+    "aliveAtReturn": [
+     "4124 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 135.23140000000421,
+    "maxProcs": 4,
+    "sysProcs": 144,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "7348"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 25,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2964,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.6714999999967404
+   },
+   "portMs": 28,
+   "leftover": {
+    "aliveAtReturn": [
+     "3284 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 132.5298999999941,
+    "maxProcs": 4,
+    "sysProcs": 144,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8972"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 26,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2974,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.8543999999965308
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [
+     "8044 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 136.29830000000948,
+    "maxProcs": 4,
+    "sysProcs": 144,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "5604"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 27,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2966,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.7595999999903142
+   },
+   "portMs": 22,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 62.463999999992666,
+    "maxProcs": 4,
+    "sysProcs": 144,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "6996"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 28,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2990,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.5393999999942025
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [
+     "4692 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 135.91670000000158,
+    "maxProcs": 4,
+    "sysProcs": 144,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8372"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 29,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3043,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.7774999999965075
+   },
+   "portMs": 22,
+   "leftover": {
+    "aliveAtReturn": [
+     "724 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 124.03429999999935,
+    "maxProcs": 4,
+    "sysProcs": 144,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8648"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 30,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3006,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.9583999999886146
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 71.30879999999888,
+    "maxProcs": 4,
+    "sysProcs": 144,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "1564"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 31,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2986,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.131699999998091
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [
+     "4264 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 124.43760000000475,
+    "maxProcs": 4,
+    "sysProcs": 144,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "7208"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 32,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2957,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.8756999999895925
+   },
+   "portMs": 25,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 68.26469999999972,
+    "maxProcs": 4,
+    "sysProcs": 144,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "4436"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 33,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2946,
+   "stopReturnMs": 3,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.980100000000675
+   },
+   "portMs": 24,
+   "leftover": {
+    "aliveAtReturn": [
+     "8384 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 114.2395000000106,
+    "maxProcs": 4,
+    "sysProcs": 143,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "7420"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 34,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3014,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.0486999999993714
+   },
+   "portMs": 22,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 80.3064000000013,
+    "maxProcs": 4,
+    "sysProcs": 143,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "6468"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 35,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2981,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.653599999990547
+   },
+   "portMs": 24,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 77.90640000000712,
+    "maxProcs": 4,
+    "sysProcs": 143,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "6316"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 36,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3030,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.8136000000085915
+   },
+   "portMs": 26,
+   "leftover": {
+    "aliveAtReturn": [
+     "2288 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 129.76029999999446,
+    "maxProcs": 4,
+    "sysProcs": 143,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8040"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 37,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2949,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.6953000000212342
+   },
+   "portMs": 22,
+   "leftover": {
+    "aliveAtReturn": [
+     "7396 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 113.06160000001546,
+    "maxProcs": 4,
+    "sysProcs": 143,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "3512"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 38,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2997,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.1570000000065193
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [
+     "3108 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 136.3624000000127,
+    "maxProcs": 4,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "7652"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 39,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2949,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.6457000000227708
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [
+     "2300 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 112.9837000000116,
+    "maxProcs": 4,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "2028"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 40,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3011,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.9675999999744818
+   },
+   "portMs": 26,
+   "leftover": {
+    "aliveAtReturn": [
+     "8788 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 130.09960000001593,
+    "maxProcs": 4,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "5236"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 41,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2985,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.7188000000023749
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [
+     "796 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 121.65769999998156,
+    "maxProcs": 4,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "7620"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 42,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2978,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.551500000001397
+   },
+   "portMs": 28,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 68.38550000000396,
+    "maxProcs": 4,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8604"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 43,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3011,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.9195000000181608
+   },
+   "portMs": 23,
+   "leftover": {
+    "aliveAtReturn": [
+     "2644 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 127.07060000000638,
+    "maxProcs": 4,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "1100"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 44,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2939,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.014199999975972
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [
+     "6468 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 122.17370000001392,
+    "maxProcs": 4,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "5132"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 45,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2921,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.6447999999800231
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 70.20829999999842,
+    "maxProcs": 4,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "3944"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 46,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2941,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.9271000000007916
+   },
+   "portMs": 21,
+   "leftover": {
+    "aliveAtReturn": [
+     "4612 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 110.8984000000055,
+    "maxProcs": 4,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "5400"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 47,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3041,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.5787000000127591
+   },
+   "portMs": 22,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 75.75230000002193,
+    "maxProcs": 4,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "6104"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 48,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3021,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.9421999999904074
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [
+     "3508 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 121.21390000000247,
+    "maxProcs": 4,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "3548"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "cycle",
+   "i": 49,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3008,
+   "stopReturnMs": 13,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 13.190499999996973
+   },
+   "portMs": 25,
+   "leftover": {
+    "aliveAtReturn": [
+     "3448 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 130.5628999999899,
+    "maxProcs": 4,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8368"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "inflight",
+   "i": 0,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2901,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.6577999999863096
+   },
+   "portMs": 33,
+   "leftover": {
+    "aliveAtReturn": [
+     "8376 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 134.1369999999879,
+    "maxProcs": 4,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "idle:ECONNRESET,idle:close,slow:ECONNRESET,slow:close",
+   "jobReport": {
+    "child": "2632"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "inflight",
+   "i": 1,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2980,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.6024000000033993
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [
+     "7460 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 135.62730000002193,
+    "maxProcs": 4,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "idle:ECONNRESET,idle:close,slow:ECONNRESET,slow:close",
+   "jobReport": {
+    "child": "2152"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "inflight",
+   "i": 2,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2965,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.6037000000069384
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [
+     "6500 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 116.74600000001374,
+    "maxProcs": 4,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "idle:ECONNRESET,idle:close,slow:ECONNRESET,slow:close",
+   "jobReport": {
+    "child": "3680"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "inflight",
+   "i": 3,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2942,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.110499999980675
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [
+     "5940 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 110.45060000001104,
+    "maxProcs": 4,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "idle:ECONNRESET,idle:close,slow:ECONNRESET,slow:close",
+   "jobReport": {
+    "child": "4180"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "inflight",
+   "i": 4,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2944,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.6735000000044238
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [
+     "1016 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 134.23850000000675,
+    "maxProcs": 4,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "idle:ECONNRESET,idle:close,slow:ECONNRESET,slow:close",
+   "jobReport": {
+    "child": "5140"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "startup-stop",
+   "i": 0,
+   "port": 28939,
+   "stoppedAtMs": 298,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.721899999974994
+   },
+   "portMs": 2,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 48.25689999997849,
+    "maxProcs": 2,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "5796"
+   },
+   "runAfter": true
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "startup-then-run",
+   "i": 0,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2969,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.111799999984214
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 73.03409999998985,
+    "maxProcs": 4,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8756"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "startup-stop",
+   "i": 1,
+   "port": 28939,
+   "stoppedAtMs": 894,
+   "stopReturnMs": 3,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.783400000014808
+   },
+   "portMs": 28,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 67.9487000000081,
+    "maxProcs": 4,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "1360"
+   },
+   "runAfter": true
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "startup-then-run",
+   "i": 1,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3002,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.103900000016438
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [
+     "4252 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 136.83139999999548,
+    "maxProcs": 4,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "3300"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "startup-stop",
+   "i": 2,
+   "port": 28939,
+   "stoppedAtMs": 1491,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.630299999989802
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 62.1872999999905,
+    "maxProcs": 4,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "3392"
+   },
+   "runAfter": true
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "startup-then-run",
+   "i": 2,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2885,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.7917000000015832
+   },
+   "portMs": 30,
+   "leftover": {
+    "aliveAtReturn": [
+     "3128 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 133.6404999999795,
+    "maxProcs": 4,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "4356"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "startup-stop",
+   "i": 3,
+   "port": 28939,
+   "stoppedAtMs": 2087,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.7137999999977183
+   },
+   "portMs": 22,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 65.1136000000115,
+    "maxProcs": 4,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8292"
+   },
+   "runAfter": true
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "startup-then-run",
+   "i": 3,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3001,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.2446000000054482
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [
+     "8916 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 121.70000000001164,
+    "maxProcs": 4,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8588"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "startup-stop",
+   "i": 4,
+   "port": 28939,
+   "stoppedAtMs": 2683,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.7574000000022352
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 73.49539999998524,
+    "maxProcs": 4,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "4436"
+   },
+   "runAfter": true
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "startup-then-run",
+   "i": 4,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2980,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.0621999999857508
+   },
+   "portMs": 28,
+   "leftover": {
+    "aliveAtReturn": [
+     "5704 node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 119.46300000001793,
+    "maxProcs": 4,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "6624"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "install-stop",
+   "i": 0,
+   "port": 28939,
+   "stoppedAtMs": 685,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.9768000000040047
+   },
+   "portMs": 1,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 43.764400000014575,
+    "maxProcs": 4,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "3724"
+   },
+   "nodeModulesAfterStop": 0,
+   "reinstall": {
+    "code": 0,
+    "ms": 2711
+   },
+   "runAfterReinstall": true
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "install-then-run",
+   "i": 0,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3078,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.670799999992596
+   },
+   "portMs": 31,
+   "leftover": {
+    "aliveAtReturn": [
+     "8740 node <tmp>/next-job-inst0/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 133.86879999999655,
+    "maxProcs": 4,
+    "sysProcs": 140,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "7852"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "install-stop",
+   "i": 1,
+   "port": 28939,
+   "stoppedAtMs": 1370,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 2.050199999997858
+   },
+   "portMs": 2,
+   "leftover": {
+    "aliveAtReturn": [
+     "7180 node   \"C:/Users/runneradmin/setup-pnpm/node_modules/.bin/bin//../global/v11/1a60-1a12caa6c37-fd94e0b0393c5aeb/node_modules/pnpm/bin/pnpm.mj"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 106.46500000002561,
+    "maxProcs": 4,
+    "sysProcs": 140,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "5724"
+   },
+   "nodeModulesAfterStop": 0,
+   "reinstall": {
+    "code": 0,
+    "ms": 2651
+   },
+   "runAfterReinstall": true
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "install-then-run",
+   "i": 1,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3089,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.724099999992177
+   },
+   "portMs": 27,
+   "leftover": {
+    "aliveAtReturn": [
+     "8372 node <tmp>/next-job-inst1/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 119.68929999999818,
+    "maxProcs": 4,
+    "sysProcs": 140,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "2352"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "install-stop",
+   "i": 2,
+   "port": 28939,
+   "stoppedAtMs": 2054,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.929999999993015
+   },
+   "portMs": 1,
+   "leftover": {
+    "aliveAtReturn": [
+     "8836 node   \"C:/Users/runneradmin/setup-pnpm/node_modules/.bin/bin//../global/v11/1a60-1a12caa6c37-fd94e0b0393c5aeb/node_modules/pnpm/bin/pnpm.mj"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 106.11800000001676,
+    "maxProcs": 4,
+    "sysProcs": 139,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "9116"
+   },
+   "nodeModulesAfterStop": 1,
+   "reinstall": {
+    "code": 0,
+    "ms": 2903
+   },
+   "runAfterReinstall": true
+  },
+  {
+   "runner": "next",
+   "method": "job",
+   "scenario": "install-then-run",
+   "i": 2,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2990,
+   "stopReturnMs": 2,
+   "stop": {
+    "steps": [
+     {
+      "what": "结束辅助程序",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": null,
+     "signal": "SIGTERM"
+    },
+    "rootExitMs": 1.6541999999899417
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [
+     "3128 node <tmp>/next-job-inst2/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 126.87670000002254,
+    "maxProcs": 4,
+    "sysProcs": 138,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "4248"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 0,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3114,
+   "tree": [
+    {
+     "depth": 0,
+     "pid": 7440,
+     "ppid": 1368,
+     "cmd": "D:/a/runyard/runyard/spikes/k2/win/runyard-job.exe --console --stdin-control -- node node_modules/next/dist/bin/next dev -p 28939 -H 127.0.0.1"
+    },
+    {
+     "depth": 1,
+     "pid": 2496,
+     "ppid": 7440,
+     "cmd": "/??/C:/Windows/system32/conhost.exe 0x4"
+    },
+    {
+     "depth": 1,
+     "pid": 3956,
+     "ppid": 7440,
+     "cmd": "node node_modules/next/dist/bin/next dev -p 28939 -H 127.0.0.1"
+    },
+    {
+     "depth": 2,
+     "pid": 7860,
+     "ppid": 3956,
+     "cmd": "node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    }
+   ],
+   "stopReturnMs": 284,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 283.96180000001914
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 307.4800000000105,
+    "maxProcs": 4,
+    "sysProcs": 138,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "3956",
+    "ctrlcSent": "1",
+    "rootExitCode": "0",
+    "activeAtRootExit": "1",
+    "msUntilEmpty": "150",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 1,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2959,
+   "stopReturnMs": 274,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 273.9042999999947
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 299.9685999999929,
+    "maxProcs": 4,
+    "sysProcs": 138,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "6444",
+    "ctrlcSent": "1",
+    "rootExitCode": "0",
+    "activeAtRootExit": "1",
+    "msUntilEmpty": "150",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 2,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3023,
+   "stopReturnMs": 278,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 277.7771000000066
+   },
+   "portMs": 26,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 319.3902999999991,
+    "maxProcs": 4,
+    "sysProcs": 138,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "6032",
+    "ctrlcSent": "1",
+    "rootExitCode": "0",
+    "activeAtRootExit": "1",
+    "msUntilEmpty": "140",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 3,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3044,
+   "stopReturnMs": 277,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 276.7042000000074
+   },
+   "portMs": 25,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 317.8093999999983,
+    "maxProcs": 4,
+    "sysProcs": 138,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "9112",
+    "ctrlcSent": "1",
+    "rootExitCode": "0",
+    "activeAtRootExit": "1",
+    "msUntilEmpty": "140",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 4,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3011,
+   "stopReturnMs": 283,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 283.34309999999823
+   },
+   "portMs": 26,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 328.89379999999073,
+    "maxProcs": 4,
+    "sysProcs": 138,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "7852",
+    "ctrlcSent": "1",
+    "rootExitCode": "0",
+    "activeAtRootExit": "1",
+    "msUntilEmpty": "160",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 5,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3013,
+   "stopReturnMs": 284,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 284.1405000000086
+   },
+   "portMs": 30,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 307.18660000001546,
+    "maxProcs": 4,
+    "sysProcs": 138,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "1252",
+    "ctrlcSent": "1",
+    "rootExitCode": "0",
+    "activeAtRootExit": "1",
+    "msUntilEmpty": "140",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 6,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2957,
+   "stopReturnMs": 273,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 272.56969999999274
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 307.8675000000221,
+    "maxProcs": 4,
+    "sysProcs": 138,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "9012",
+    "ctrlcSent": "1",
+    "rootExitCode": "0",
+    "activeAtRootExit": "1",
+    "msUntilEmpty": "130",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 7,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2923,
+   "stopReturnMs": 276,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 276.3746000000392
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 303.71999999997206,
+    "maxProcs": 4,
+    "sysProcs": 138,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "4236",
+    "ctrlcSent": "1",
+    "rootExitCode": "0",
+    "activeAtRootExit": "1",
+    "msUntilEmpty": "140",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 8,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3006,
+   "stopReturnMs": 281,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 281.37609999999404
+   },
+   "portMs": 16,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 304.9802999999956,
+    "maxProcs": 4,
+    "sysProcs": 138,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "2552",
+    "ctrlcSent": "1",
+    "rootExitCode": "0",
+    "activeAtRootExit": "1",
+    "msUntilEmpty": "140",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 9,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2934,
+   "stopReturnMs": 273,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 272.4045000000042
+   },
+   "portMs": 32,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 305.27289999998175,
+    "maxProcs": 4,
+    "sysProcs": 138,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "6972",
+    "ctrlcSent": "1",
+    "rootExitCode": "0",
+    "activeAtRootExit": "1",
+    "msUntilEmpty": "130",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 10,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2952,
+   "stopReturnMs": 266,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 266.10719999996945
+   },
+   "portMs": 27,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 303.343600000022,
+    "maxProcs": 4,
+    "sysProcs": 138,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "8944",
+    "ctrlcSent": "1",
+    "rootExitCode": "0",
+    "activeAtRootExit": "1",
+    "msUntilEmpty": "130",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 11,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3229,
+   "stopReturnMs": 306,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 305.7238999999827
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 332.87880000000587,
+    "maxProcs": 4,
+    "sysProcs": 139,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "1520",
+    "ctrlcSent": "1",
+    "rootExitCode": "0",
+    "activeAtRootExit": "1",
+    "msUntilEmpty": "160",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 12,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3189,
+   "stopReturnMs": 288,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 287.54920000000857
+   },
+   "portMs": 21,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 314.45140000001993,
+    "maxProcs": 4,
+    "sysProcs": 139,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "2640",
+    "ctrlcSent": "1",
+    "rootExitCode": "0",
+    "activeAtRootExit": "1",
+    "msUntilEmpty": "180",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 13,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3159,
+   "stopReturnMs": 306,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 305.6198999999906
+   },
+   "portMs": 23,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 352.03899999998976,
+    "maxProcs": 4,
+    "sysProcs": 139,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "1632",
+    "ctrlcSent": "1",
+    "rootExitCode": "0",
+    "activeAtRootExit": "1",
+    "msUntilEmpty": "160",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job-ctrlc",
+   "scenario": "cycle",
+   "i": 14,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3078,
+   "stopReturnMs": 292,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 291.70410000003176
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 344.1503999999841,
+    "maxProcs": 4,
+    "sysProcs": 139,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "1120",
+    "ctrlcSent": "1",
+    "rootExitCode": "0",
+    "activeAtRootExit": "1",
+    "msUntilEmpty": "160",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job-ctrlc",
+   "scenario": "inflight",
+   "i": 0,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3188,
+   "stopReturnMs": 289,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 289.0315999999875
+   },
+   "portMs": 19,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 326.97850000002654,
+    "maxProcs": 4,
+    "sysProcs": 139,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "idle:ECONNRESET,idle:close,slow:ECONNRESET,slow:close",
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "6756",
+    "ctrlcSent": "1",
+    "rootExitCode": "0",
+    "activeAtRootExit": "1",
+    "msUntilEmpty": "140",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job-ctrlc",
+   "scenario": "inflight",
+   "i": 1,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3141,
+   "stopReturnMs": 296,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 295.5091999999713
+   },
+   "portMs": 25,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 338.81440000003204,
+    "maxProcs": 4,
+    "sysProcs": 139,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "idle:ECONNRESET,idle:close,slow:ECONNRESET,slow:close",
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "2368",
+    "ctrlcSent": "1",
+    "rootExitCode": "0",
+    "activeAtRootExit": "1",
+    "msUntilEmpty": "160",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "job-ctrlc",
+   "scenario": "inflight",
+   "i": 2,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2994,
+   "stopReturnMs": 276,
+   "stop": {
+    "steps": [
+     {
+      "what": "Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 276.3538000000408
+   },
+   "portMs": 22,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 315.8554000000004,
+    "maxProcs": 4,
+    "sysProcs": 138,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "idle:ECONNRESET,idle:close,slow:ECONNRESET,slow:close",
+   "jobReport": {
+    "ownConsole": "1",
+    "child": "8268",
+    "ctrlcSent": "1",
+    "rootExitCode": "0",
+    "activeAtRootExit": "1",
+    "msUntilEmpty": "140",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "next",
+   "method": "pty-ctrlc",
+   "scenario": "cycle",
+   "i": 0,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2960,
+   "tree": [
+    {
+     "depth": 0,
+     "pid": 7448,
+     "ppid": 1368,
+     "cmd": "node node_modules/next/dist/bin/next dev -p 28939 -H 127.0.0.1"
+    },
+    {
+     "depth": 1,
+     "pid": 5324,
+     "ppid": 7448,
+     "cmd": "node <tmp>/next/node_modules/.pnpm/next@16.3.6_react-dom@19.3.0_react@19.3.0__react@19.3.0/node_modules/next/dist/server/lib/start-server.js"
+    }
+   ],
+   "stopReturnMs": 1082,
+   "stop": {
+    "steps": [
+     {
+      "what": "写入 Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 1082.3289999999688
+   },
+   "portMs": 22,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 1126.6668000000063,
+    "maxProcs": 2,
+    "sysProcs": 139,
+    "notKilled": []
+   }
+  },
+  {
+   "runner": "next",
+   "method": "pty-ctrlc",
+   "scenario": "cycle",
+   "i": 1,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3010,
+   "stopReturnMs": 1068,
+   "stop": {
+    "steps": [
+     {
+      "what": "写入 Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 1067.4435999999987
+   },
+   "portMs": 27,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 1107.5106999999844,
+    "maxProcs": 2,
+    "sysProcs": 140,
+    "notKilled": []
+   }
+  },
+  {
+   "runner": "next",
+   "method": "pty-ctrlc",
+   "scenario": "cycle",
+   "i": 2,
+   "port": 28939,
+   "ready": true,
+   "startMs": 2979,
+   "stopReturnMs": 1081,
+   "stop": {
+    "steps": [
+     {
+      "what": "写入 Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 1080.765400000033
+   },
+   "portMs": 18,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 1143.7521000000415,
+    "maxProcs": 2,
+    "sysProcs": 152,
+    "notKilled": []
+   }
+  },
+  {
+   "runner": "next",
+   "method": "pty-ctrlc",
+   "scenario": "cycle",
+   "i": 3,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3368,
+   "stopReturnMs": 1083,
+   "stop": {
+    "steps": [
+     {
+      "what": "写入 Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 1083.3343999999925
+   },
+   "portMs": 21,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 1126.8953000000329,
+    "maxProcs": 2,
+    "sysProcs": 153,
+    "notKilled": []
+   }
+  },
+  {
+   "runner": "next",
+   "method": "pty-ctrlc",
+   "scenario": "cycle",
+   "i": 4,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3237,
+   "stopReturnMs": 1089,
+   "stop": {
+    "steps": [
+     {
+      "what": "写入 Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 1088.4430000000284
+   },
+   "portMs": 30,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 1152.6734999999753,
+    "maxProcs": 2,
+    "sysProcs": 153,
+    "notKilled": []
+   }
+  },
+  {
+   "runner": "next",
+   "method": "pty-ctrlc",
+   "scenario": "inflight",
+   "i": 0,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3898,
+   "stopReturnMs": 1110,
+   "stop": {
+    "steps": [
+     {
+      "what": "写入 Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 1109.95550000004
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 1148.593899999978,
+    "maxProcs": 2,
+    "sysProcs": 156,
+    "notKilled": []
+   },
+   "inflightEvents": "idle:ECONNRESET,idle:close,slow:ECONNRESET,slow:close"
+  },
+  {
+   "runner": "next",
+   "method": "pty-ctrlc",
+   "scenario": "inflight",
+   "i": 1,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3216,
+   "stopReturnMs": 1068,
+   "stop": {
+    "steps": [
+     {
+      "what": "写入 Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 1068.164999999979
+   },
+   "portMs": 21,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 1116.3894999999902,
+    "maxProcs": 2,
+    "sysProcs": 157,
+    "notKilled": []
+   },
+   "inflightEvents": "idle:ECONNRESET,idle:close,slow:ECONNRESET,slow:close"
+  },
+  {
+   "runner": "next",
+   "method": "pty-ctrlc",
+   "scenario": "inflight",
+   "i": 2,
+   "port": 28939,
+   "ready": true,
+   "startMs": 3109,
+   "stopReturnMs": 1079,
+   "stop": {
+    "steps": [
+     {
+      "what": "写入 Ctrl+C",
+      "at": 0
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 0,
+     "signal": null
+    },
+    "rootExitMs": 1078.9612000000197
+   },
+   "portMs": 17,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 1128.5449999999837,
+    "maxProcs": 2,
+    "sysProcs": 154,
+    "notKilled": []
+   },
+   "inflightEvents": "idle:ECONNRESET,idle:close,slow:ECONNRESET,slow:close"
+  }
+ ]
+}
