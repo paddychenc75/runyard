@@ -1,0 +1,368 @@
+{
+  "node": "v24.21.0",
+  "biome": "Version: 2.5.14",
+  "when": "2026-10-11T23:28:42.214Z",
+  "configAsDesigned_noStringsFalse": {
+    "label": "noStrings:false（本 spike 建议）",
+    "version": "Version: 2.5.14",
+    "total": 28,
+    "rows": [
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:7",
+        "rule": "jsx",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:8",
+        "rule": "jsx",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:9",
+        "rule": "jsx",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:10",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:11",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:12",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:23",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:24",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:25",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:26",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:27",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:28",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:31",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:33",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:34",
+        "rule": "jsx",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:35",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:36",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:38",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "packages/core/src/a.ts:1",
+        "rule": "imports",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "packages/protocol/src/p.ts:1",
+        "rule": "node",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "packages/ui/src/base/b.ts:2",
+        "rule": "imports",
+        "marker": "BAD-GAP",
+        "flagged": false,
+        "verdict": "漏（已知缺口）"
+      },
+      {
+        "where": "packages/ui/src/base/b.ts:3",
+        "rule": "imports",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "packages/ui/src/comp.tsx:2",
+        "rule": "jsx",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "packages/ui/src/comp.tsx:3",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      }
+    ],
+    "falsePositives": []
+  },
+  "configAsDesigned_noStringsTrue": {
+    "label": "noStrings:true（技术设计 §6.8 原文）",
+    "version": "Version: 2.5.14",
+    "total": 42,
+    "rows": [
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:7",
+        "rule": "jsx",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:8",
+        "rule": "jsx",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:9",
+        "rule": "jsx",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:10",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:11",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:12",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:23",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:24",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:25",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:26",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:27",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:28",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:31",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:33",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:34",
+        "rule": "jsx",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:35",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:36",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "apps/desktop/src/renderer/page.tsx:38",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "packages/core/src/a.ts:1",
+        "rule": "imports",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "packages/protocol/src/p.ts:1",
+        "rule": "node",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "packages/ui/src/base/b.ts:2",
+        "rule": "imports",
+        "marker": "BAD-GAP",
+        "flagged": false,
+        "verdict": "漏（已知缺口）"
+      },
+      {
+        "where": "packages/ui/src/base/b.ts:3",
+        "rule": "imports",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "packages/ui/src/comp.tsx:2",
+        "rule": "jsx",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      },
+      {
+        "where": "packages/ui/src/comp.tsx:3",
+        "rule": "grit",
+        "marker": "BAD",
+        "flagged": true,
+        "verdict": "拦住了"
+      }
+    ],
+    "falsePositives": [
+      "apps/desktop/src/renderer/page.tsx:10:jsx",
+      "apps/desktop/src/renderer/page.tsx:12:jsx",
+      "apps/desktop/src/renderer/page.tsx:16:jsx",
+      "apps/desktop/src/renderer/page.tsx:17:jsx",
+      "apps/desktop/src/renderer/page.tsx:35:jsx",
+      "apps/desktop/src/renderer/page.tsx:36:jsx",
+      "apps/desktop/src/renderer/page.tsx:37:jsx",
+      "apps/desktop/src/renderer/page.tsx:39:jsx",
+      "packages/ui/src/comp.tsx:3:jsx",
+      "packages/ui/src/comp.tsx:4:jsx"
+    ]
+  }
+}

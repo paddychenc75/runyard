@@ -1,0 +1,86 @@
+{
+  "env": {
+    "label": "ubuntu-run1",
+    "platform": "linux",
+    "arch": "x64",
+    "os": "linux",
+    "imageVersion": "20261004.327.1",
+    "imageOS": "ubuntu24",
+    "node": "v24.21.0",
+    "chromium": "153.0.8010.12"
+  },
+  "runs": {
+    "light": {
+      "fontMap": {
+        "zh-system": [
+          "DejaVu Sans×21"
+        ],
+        "en-system": [
+          "DejaVu Sans×42"
+        ],
+        "zh-sans": [
+          "Liberation Sans×19"
+        ],
+        "zh-ping": [
+          "Liberation Sans×25"
+        ],
+        "zh-yahei": [
+          "Liberation Sans×15"
+        ],
+        "zh-w300": [
+          "DejaVu Sans Light×12"
+        ],
+        "zh-w600": [
+          "DejaVu Sans×12"
+        ],
+        "mono": [
+          "DejaVu Sans Mono×33"
+        ]
+      },
+      "sha256": {
+        "first": "6b1e54925e0525ea417f87f6ef6b99103b44aa6a3e3067700cb74ac31d4d8e73",
+        "second": "6b1e54925e0525ea417f87f6ef6b99103b44aa6a3e3067700cb74ac31d4d8e73",
+        "afterReload": "6b1e54925e0525ea417f87f6ef6b99103b44aa6a3e3067700cb74ac31d4d8e73",
+        "otherPage": "6b1e54925e0525ea417f87f6ef6b99103b44aa6a3e3067700cb74ac31d4d8e73"
+      },
+      "bytes": 30822,
+      "sameInProcess": true
+    },
+    "dark": {
+      "fontMap": {
+        "zh-system": [
+          "DejaVu Sans×21"
+        ],
+        "en-system": [
+          "DejaVu Sans×42"
+        ],
+        "zh-sans": [
+          "Liberation Sans×19"
+        ],
+        "zh-ping": [
+          "Liberation Sans×25"
+        ],
+        "zh-yahei": [
+          "Liberation Sans×15"
+        ],
+        "zh-w300": [
+          "DejaVu Sans Light×12"
+        ],
+        "zh-w600": [
+          "DejaVu Sans×12"
+        ],
+        "mono": [
+          "DejaVu Sans Mono×33"
+        ]
+      },
+      "sha256": {
+        "first": "7cf690265933e4d069c1f9fc559304cf496e5a3164d9357fa022e05be51b75d3",
+        "second": "7cf690265933e4d069c1f9fc559304cf496e5a3164d9357fa022e05be51b75d3",
+        "afterReload": "7cf690265933e4d069c1f9fc559304cf496e5a3164d9357fa022e05be51b75d3",
+        "otherPage": "7cf690265933e4d069c1f9fc559304cf496e5a3164d9357fa022e05be51b75d3"
+      },
+      "bytes": 33006,
+      "sameInProcess": true
+    }
+  }
+}
