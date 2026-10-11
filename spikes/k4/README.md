@@ -185,9 +185,8 @@ Win、macOS、Linux 的 `...\运行场 测试\项目 一`：Node、Go、Python�
 
 ## 依赖和查过的内容
 
-- `spikes/k4/fixtures/vite` 有独立的 `package.json`、`pnpm-workspace.yaml`（`minimumReleaseAge: 20160`）、锁文件，精确版本，不属于根工作区，CI 上 `pnpm install --frozen-lockfile`。
-- **`fixtures/next` 不再提交 `package.json` 和锁文件**（依赖审查对 `next@16.3.6` 报高危 GHSA-cjq9-62q9-8jv4，仓库里不许出现带高危公告的版本）。harness 在运行时于一次性运行器的临时目录写出 `package.json`（精确版本 `next 16.3.6`、`react`/`react-dom 19.3.0`）并 `pnpm install`，仍受 `minimumReleaseAge: 20160` 约束；实际装上的版本打印为 `[installed] next@…` 并写入 `results.json` 的 `installedAtRuntime`。上面“结果”各节的数据是改动之前用已提交的锁文件（同一个 `next@16.3.6`）测得的，仍然有效。
-- 安装的包：`vite 8.3.1`（发布 2026-09-24，17 天；8.3.2 为 10 天被年龄规则挡住）、`@vitejs/plugin-react 6.1.1`（44 天）、`react`、`react-dom 19.3.0`（32 天）、`next 16.3.6`（19 天）。已跑 `pnpm deps:lookup` 查 OSV 与 GitHub 公告：vite、react、plugin-react 无公告；**`next 16.3.6` 有 6 条公告**（SSRF 图片优化、缓存污染、开发服务器 MCP 信息泄露等，修复在 16.3.7/16.3.8，但它们发布不满 14 天；PRD 里的 16.4.0 才 4 天）。本实验只在一次性 CI 运行器上跑 `next dev`，绑定 `127.0.0.1`，不用图片优化，因此接受；**没有绕过年龄规则**。
+- 两个夹具（`fixtures/vite`、`fixtures/next`）都**不再提交 `package.json` 和锁文件**：依赖审查先对 `next@16.3.6` 报高危 GHSA-cjq9-62q9-8jv4（图片优化 SSRF），又对 Vite 夹具锁文件里的间接依赖 `source-map-js@1.2.1` 报高危 GHSA-68fv-2mgg-jv7q（事件循环拒绝服务），仓库里不许出现带高危公告的版本。harness 在运行时于一次性运行器的临时目录写出 `package.json`（精确版本）并 `pnpm install`，仍受夹具目录里 `pnpm-workspace.yaml` 的 `minimumReleaseAge: 20160` 约束；实际装上的版本打印为 `[installed] <包>@<版本>` 并写入 `results.json` 的 `installedAtRuntime`。因为没有锁文件，间接依赖会按“满 14 天的最新版”解析，可能带已知公告（只在一次性运行器上的开发服务器里，绑定 `127.0.0.1`）。上面“结果”各节的数据是改动之前用已提交的锁文件测得的，仍然有效。
+- 安装的包：`vite 8.3.1`（发布 2026-09-24，17 天；8.3.2 为 10 天被年龄规则挡住）、`@vitejs/plugin-react 6.1.1`（44 天）、`react`、`react-dom 19.3.0`（32 天）、`next 16.3.6`（19 天）。已跑 `pnpm deps:lookup` 查 OSV 与 GitHub 公告：vite、react、plugin-react 无公告；**`next 16.3.6` 有 6 条公告，Vite 夹具的间接依赖 `source-map-js 1.2.1` 另有 1 条高危公告**（SSRF 图片优化、缓存污染、开发服务器 MCP 信息泄露等，修复在 16.3.7/16.3.8，但它们发布不满 14 天；PRD 里的 16.4.0 才 4 天）。本实验只在一次性 CI 运行器上跑 `next dev`，绑定 `127.0.0.1`，不用图片优化，因此接受；**没有绕过年龄规则**。
 - 新增的 Action（均固定完整提交哈希，发布满 14 天，仓库公告列表无已发布公告）：`actions/setup-python v7.0.0`（2026-07-20）、`actions/setup-go v7.0.0`（2026-07-16）、`astral-sh/setup-uv v10.2.0`（2026-09-21）、`actions/upload-artifact v7.0.1`（2026-04-10）；其余沿用 `ci.yml` 的哈希。
 - 运行时下载：`uv run` 使用 PATH 上的 Python，未下载解释器；Go 由 `setup-go` 提供。本机未安装任何系统软件。
 

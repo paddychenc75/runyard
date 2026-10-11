@@ -18,6 +18,14 @@ async function install(ctx, dir, pn, pe, extraArgs = [], rep) {
 export async function runPnpm(ctx) {
   const dir = path.join(ctx.base, "vite");
   copyFixture("vite", dir);
+  // 夹具不再提交 package.json / 锁文件：先写出 package.json 并装一次生成锁文件，之后各档位用 --frozen-lockfile 重装
+  writeFileSync(path.join(dir, "package.json"), JSON.stringify(RUNTIME_PACKAGE_JSON.vite, null, 2));
+  const first = resolveCommand("pnpm", ["install", "--reporter=silent", `--store-dir=${path.join(ctx.base, "pnpm-store")}`]);
+  if (first) {
+    const { startCapture } = await import("../lib/capture.mjs");
+    const h = startCapture({ ...first, cwd: dir, env: pnpmEnv(ctx) });
+    await h.finish(300000);
+  }
   const variants = [
     ["default", {}, []],
     ["no-color", { NO_COLOR: "1" }, []],
@@ -34,6 +42,7 @@ export async function runPnpm(ctx) {
 // 带已知高危公告的依赖不提交进仓库（含锁文件和 package.json）：运行时在一次性运行器的临时目录里写出并安装，
 // 仍受夹具目录里 pnpm-workspace.yaml 的 minimumReleaseAge 约束，版本精确。
 const RUNTIME_PACKAGE_JSON = {
+  vite: { name: "k4-vite", private: true, type: "module", dependencies: { react: "19.3.0", "react-dom": "19.3.0" }, devDependencies: { "@vitejs/plugin-react": "6.1.1", vite: "8.3.1" } },
   next: { name: "k4-next", private: true, dependencies: { next: "16.3.6", react: "19.3.0", "react-dom": "19.3.0" } },
 };
 
