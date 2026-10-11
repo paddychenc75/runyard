@@ -54,6 +54,13 @@ func main() {
 				time.Sleep(time.Duration(arg(3, 50)) * time.Millisecond)
 			}
 		}
+	case "bulk":
+		for i := 1; i <= arg(2, 6); i++ {
+			fmt.Printf("\x1b[32mbulk %d 中文测试\x1b[0m 末尾\n", i)
+		}
+		if len(os.Args) > 3 && os.Args[3] == "hard" {
+			os.Exit(0)
+		}
 	case "hang":
 		for i := 1; i <= arg(2, 6); i++ {
 			fmt.Printf("line %d before-kill 中文\n", i)

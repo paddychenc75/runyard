@@ -105,6 +105,13 @@ export async function runLanguages(ctx) {
         await runCase(ctx, { id: `${L.tool}.interleave0ms.${pn}`, tool: L.tool, scenario: "interleave-tight", profile: pn, run: mk(["interleave", "400", "0"], pe, flags), order: true, markers: ["seq 400 err"], rep });
       }
     }
+    // 5b. bulk：2 万行带颜色码的中文，数据块边界必然切在汉字和转义序列中间；hard = 写完立刻硬退出，看尾部丢不丢
+    const bulkV = L.python ? [["utf8-buffered", U8, []], ["utf8-flag-u", U8, ["-u"]]] : [["default", {}, []]];
+    for (const [pn, pe, flags] of bulkV) {
+      for (const mode of ["soft", "hard"]) {
+        await runCase(ctx, { id: `${L.tool}.bulk-${mode}.${pn}`, tool: L.tool, scenario: `bulk-${mode}`, profile: pn, envDelta: pe, run: mk(["bulk", "20000", mode], pe, flags), bulk: 20000, markers: [], timeoutMs: 120000 });
+      }
+    }
     // 6. hang：打印 5 行后被强杀，看丢不丢
     const hang = L.python ? [["default", {}, []], ["utf8-buffered", U8, []], ["utf8-flag-u", U8, ["-u"]], ["utf8-env-PYTHONUNBUFFERED", { ...U8, PYTHONUNBUFFERED: "1" }, []]] : [["default", {}, []]];
     for (const [pn, pe, flags] of hang) {

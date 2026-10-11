@@ -115,3 +115,17 @@ export function boundarySplits(chunks) {
   }
   return { utf8MidSequence: utf8, escMidSequence: esc };
 }
+
+/** 大批量输出：收到了多少行、哪些缺了、哪些被破坏（颜色码剥掉后必须恰好等于 "bulk <i> 中文测试 末尾"）。 */
+export function bulkCheck(lines, n) {
+  const seen = new Set();
+  let corrupted = 0;
+  for (const l of lines) {
+    const m = /^bulk (\d+) 中文测试 末尾$/.exec(l.text);
+    if (m) seen.add(Number(m[1]));
+    else if (l.text.startsWith("bulk")) corrupted++;
+  }
+  let last = 0;
+  for (const i of seen) last = Math.max(last, i);
+  return { expected: n, received: seen.size, lastIndex: last, missing: n - seen.size, corrupted };
+}

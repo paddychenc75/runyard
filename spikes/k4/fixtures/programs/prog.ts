@@ -32,6 +32,10 @@ if (cmd === "hello") {
     (i % 2 ? console.log : console.error)(`seq ${i} ${i % 2 ? "out" : "err"}`);
     if (Number(b) > 0) await sleep(Number(b));
   }
+} else if (cmd === "bulk") {
+  // 大量带颜色码的中文行，数据块边界必然落在汉字或转义序列中间；b=hard 时写完立刻 process.exit
+  for (let i = 1; i <= Number(a); i++) console.log(`\u001b[32mbulk ${i} 中文测试\u001b[0m 末尾`);
+  if (b === "hard") process.exit(0);
 } else if (cmd === "hang") {
   for (let i = 1; i <= Number(a); i++) console.log(`line ${i} before-kill 中文`);
   await sleep(60000);

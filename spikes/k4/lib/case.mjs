@@ -3,7 +3,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import net from "node:net";
 import { startCapture } from "./capture.mjs";
-import { census, textHealth, tickLatency, orderInversions, boundarySplits } from "./analyze.mjs";
+import { census, textHealth, tickLatency, orderInversions, boundarySplits, bulkCheck } from "./analyze.mjs";
 import { toPlainLines } from "./plain-text.mjs";
 
 export async function runCase(ctx, spec) {
@@ -39,7 +39,9 @@ export async function runCase(ctx, spec) {
 }
 
 function finalize(ctx, rec, name, chunks, spec, t0) {
+  const tPipe = performance.now();
   const lines = toPlainLines(chunks);
+  rec.pipelineMs = +(performance.now() - tPipe).toFixed(1);
   const plain = lines.map((l) => `${String(l.seq).padStart(4)} ${l.src === "stderr" ? "E" : "O"} ${l.text}`).join("\n");
   mkdirSync(ctx.rawDir, { recursive: true });
   writeFileSync(path.join(ctx.rawDir, `${name}.raw.bin`), Buffer.concat(chunks.map((c) => c.buf)));
@@ -54,6 +56,7 @@ function finalize(ctx, rec, name, chunks, spec, t0) {
   rec.encodings = [...new Set(lines.map((l) => l.encoding))];
   rec.markers = Object.fromEntries((spec.markers ?? []).map((m) => [m, all.includes(m)]));
   if (spec.tick) rec.latency = tickLatency(chunks);
+  if (spec.bulk) rec.bulk = bulkCheck(lines, spec.bulk);
   if (spec.order) rec.order = orderInversions(chunks);
   if (spec.keepFirstLines) rec.sample = lines.slice(0, spec.keepFirstLines).map((l) => `${l.src === "stderr" ? "E" : "O"} ${l.text}`);
   rec.plainLineCount = lines.length;
@@ -64,6 +67,7 @@ function finalize(ctx, rec, name, chunks, spec, t0) {
       `ctl=${JSON.stringify(c)} residual=${rec.health.residualLines} fffd=${rec.health.fffdLines} markers=${JSON.stringify(rec.markers)}` +
       (rec.latency ? ` lat=${JSON.stringify(rec.latency)}` : "") +
       (rec.order ? ` inv=${rec.order.inversions}` : "") +
+      (rec.bulk ? ` bulk=${JSON.stringify(rec.bulk)} pipelineMs=${rec.pipelineMs} splits=${JSON.stringify(rec.splits)}` : "") +
       (rec.driveError ? ` DRIVE_ERROR=${rec.driveError}` : "") +
       (rec.fatal ? ` FATAL=${rec.fatal}` : ""),
   );
