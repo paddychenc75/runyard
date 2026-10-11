@@ -1,0 +1,3848 @@
+{
+ "meta": {
+  "label": "windows-2025-nuxt4-a",
+  "platform": "win32",
+  "arch": "x64",
+  "os": "Windows_NT 10.0.26100 Windows Server 2025 Datacenter",
+  "cpus": "4 × AMD EPYC 9V74 80-Core Processor                ",
+  "node": "v24.21.0",
+  "ci": true,
+  "image": "win25-vs2026 20260925.250.1",
+  "reps": 50,
+  "graceMs": 3000,
+  "methods": [
+   "taskkill",
+   "taskkill-obs"
+  ],
+  "tools": {
+   "pnpm": "11.28.0",
+   "go": "go version go1.24.13 windows/amd64",
+   "python": "Python 3.12.10",
+   "uv": "（没有）"
+  },
+  "startedAt": "2026-10-11T20:32:38.425Z",
+  "procGrowth": "svchost.exe+1 compattelrunner.exe+1 wmiprvse.exe-1",
+  "sysProcsEnd": 141,
+  "finalStray": {
+   "byCmdline": 0,
+   "byCwd": 0,
+   "detail": []
+  },
+  "finishedAt": "2026-10-11T20:40:04.746Z",
+  "versions": {
+   "nuxt4:nuxt": "4.5.2",
+   "nuxt4:vue": "3.5.43"
+  },
+  "tmpRemoved": true
+ },
+ "notes": [
+  {
+   "runner": "nuxt4",
+   "note": "第一次安装（仓库是冷的，要下载）",
+   "ms": 9956,
+   "code": 0,
+   "leftoverAfterExit": 0
+  },
+  {
+   "runner": "nuxt4",
+   "note": "热缓存下完整安装一次",
+   "ms": 3847,
+   "code": 0
+  },
+  {
+   "runner": "nuxt4",
+   "note": "缓存目录 .nuxt 结束时存在"
+  },
+  {
+   "runner": "nuxt4",
+   "note": "缓存目录 node_modules/.cache 结束时存在"
+  }
+ ],
+ "records": [
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 0,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4755,
+   "tree": [
+    {
+     "depth": 0,
+     "pid": 2096,
+     "ppid": 6924,
+     "cmd": "node node_modules/nuxt/bin/nuxt.mjs dev --port 20643 --host 127.0.0.1"
+    },
+    {
+     "depth": 1,
+     "pid": 3564,
+     "ppid": 2096,
+     "cmd": "/??/C:/Windows/system32/conhost.exe 0x4"
+    },
+    {
+     "depth": 1,
+     "pid": 4872,
+     "ppid": 2096,
+     "cmd": "<tmp>/nuxt4/node_modules/.pnpm/@esbuild+win32-x64@0.28.2/node_modules/@esbuild/win32-x64/esbuild.exe --service=0.28.2 --ping"
+    },
+    {
+     "depth": 1,
+     "pid": 2024,
+     "ppid": 2096,
+     "cmd": "node --enable-source-maps <tmp>/nuxt4/node_modules/.pnpm/@nuxt+cli@3.37.0_@nuxt+sche_7a1e24bf16dcbef46180e16cd7f0a96d/node_modules/@nuxt/cli/dist/dev/index.mjs "
+    },
+    {
+     "depth": 1,
+     "pid": 9236,
+     "ppid": 2096,
+     "cmd": "node --enable-source-maps <tmp>/nuxt4/node_modules/.pnpm/@nuxt+cli@3.37.0_@nuxt+sche_7a1e24bf16dcbef46180e16cd7f0a96d/node_modules/@nuxt/cli/dist/dev/index.mjs "
+    }
+   ],
+   "stopReturnMs": 143,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 125.28779999999824,
+      "out": "SUCCESS: The process with PID 3564 (child process of PID 2096) has been terminated.\r\nSUCCESS: The process with PID 4872 (child process of PID 2096) has been terminated.\r\nSUCCESS: The process with PID 2024 (child process of PID 2096) has been terminated.\r\nSUCCESS: The process with PID 9236 (child process of PID 2096) has been terminated.\r\nSUCCESS: The process with PID 2096 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 143.12520000000222
+   },
+   "portMs": 123,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 179.24449999999706,
+    "maxProcs": 5,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 1,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4715,
+   "stopReturnMs": 74,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 53.1916999999994,
+      "out": "SUCCESS: The process with PID 2372 (child process of PID 9940) has been terminated.\r\nSUCCESS: The process with PID 4408 (child process of PID 9940) has been terminated.\r\nSUCCESS: The process with PID 8968 (child process of PID 9940) has been terminated.\r\nSUCCESS: The process with PID 2444 (child process of PID 9940) has been terminated.\r\nSUCCESS: The process with PID 9940 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 74.33250000000044
+   },
+   "portMs": 54,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 122.9477999999981,
+    "maxProcs": 5,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 2,
+   "port": 20643,
+   "ready": true,
+   "startMs": 5019,
+   "stopReturnMs": 83,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 58.80199999999968,
+      "out": "SUCCESS: The process with PID 8484 (child process of PID 7316) has been terminated.\r\nSUCCESS: The process with PID 4368 (child process of PID 7316) has been terminated.\r\nSUCCESS: The process with PID 6316 (child process of PID 7316) has been terminated.\r\nSUCCESS: The process with PID 7252 (child process of PID 7316) has been terminated.\r\nSUCCESS: The process with PID 7316 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 83.17199999999866
+   },
+   "portMs": 58,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 117.30080000000089,
+    "maxProcs": 5,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 3,
+   "port": 20643,
+   "ready": true,
+   "startMs": 5204,
+   "stopReturnMs": 84,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 65.01350000000093,
+      "out": "SUCCESS: The process with PID 4280 (child process of PID 6932) has been terminated.\r\nSUCCESS: The process with PID 7080 (child process of PID 6932) has been terminated.\r\nSUCCESS: The process with PID 5136 (child process of PID 6932) has been terminated.\r\nSUCCESS: The process with PID 1136 (child process of PID 6932) has been terminated.\r\nSUCCESS: The process with PID 6932 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 83.69949999999517
+   },
+   "portMs": 63,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 128.78379999999743,
+    "maxProcs": 5,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 4,
+   "port": 20643,
+   "ready": true,
+   "startMs": 5223,
+   "stopReturnMs": 83,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 62.351699999999255,
+      "out": "SUCCESS: The process with PID 6060 (child process of PID 1532) has been terminated.\r\nSUCCESS: The process with PID 3680 (child process of PID 1532) has been terminated.\r\nSUCCESS: The process with PID 10204 (child process of PID 1532) has been terminated.\r\nSUCCESS: The process with PID 2508 (child process of PID 1532) has been terminated.\r\nSUCCESS: The process with PID 1532 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 82.93029999999999
+   },
+   "portMs": 63,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 122.46590000000288,
+    "maxProcs": 5,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 5,
+   "port": 20643,
+   "ready": true,
+   "startMs": 5208,
+   "stopReturnMs": 73,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 53.04870000000665,
+      "out": "SUCCESS: The process with PID 8124 (child process of PID 9356) has been terminated.\r\nSUCCESS: The process with PID 1764 (child process of PID 9356) has been terminated.\r\nSUCCESS: The process with PID 3788 (child process of PID 9356) has been terminated.\r\nSUCCESS: The process with PID 760 (child process of PID 9356) has been terminated.\r\nSUCCESS: The process with PID 9356 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 72.95640000000276
+   },
+   "portMs": 54,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 116.98370000000432,
+    "maxProcs": 5,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 6,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4989,
+   "stopReturnMs": 85,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 56.22980000000098,
+      "out": "SUCCESS: The process with PID 3964 (child process of PID 9900) has been terminated.\r\nSUCCESS: The process with PID 7604 (child process of PID 9900) has been terminated.\r\nSUCCESS: The process with PID 4676 (child process of PID 9900) has been terminated.\r\nSUCCESS: The process with PID 2988 (child process of PID 9900) has been terminated.\r\nSUCCESS: The process with PID 9900 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 84.97129999999743
+   },
+   "portMs": 62,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 118.8324999999968,
+    "maxProcs": 5,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 7,
+   "port": 20643,
+   "ready": true,
+   "startMs": 5201,
+   "stopReturnMs": 85,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 64.23179999999411,
+      "out": "SUCCESS: The process with PID 3340 (child process of PID 7920) has been terminated.\r\nSUCCESS: The process with PID 8208 (child process of PID 7920) has been terminated.\r\nSUCCESS: The process with PID 2248 (child process of PID 7920) has been terminated.\r\nSUCCESS: The process with PID 9304 (child process of PID 7920) has been terminated.\r\nSUCCESS: The process with PID 7920 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 84.59189999999944
+   },
+   "portMs": 62,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 108.37520000000222,
+    "maxProcs": 5,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 8,
+   "port": 20643,
+   "ready": true,
+   "startMs": 5207,
+   "stopReturnMs": 79,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 60.431299999996554,
+      "out": "SUCCESS: The process with PID 7180 (child process of PID 6348) has been terminated.\r\nSUCCESS: The process with PID 5080 (child process of PID 6348) has been terminated.\r\nSUCCESS: The process with PID 1236 (child process of PID 6348) has been terminated.\r\nSUCCESS: The process with PID 8752 (child process of PID 6348) has been terminated.\r\nSUCCESS: The process with PID 6348 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 79.35680000000139
+   },
+   "portMs": 69,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 100.43339999999444,
+    "maxProcs": 5,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 9,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4932,
+   "stopReturnMs": 72,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 53.065199999997276,
+      "out": "SUCCESS: The process with PID 3104 (child process of PID 7244) has been terminated.\r\nSUCCESS: The process with PID 3908 (child process of PID 7244) has been terminated.\r\nSUCCESS: The process with PID 3056 (child process of PID 7244) has been terminated.\r\nSUCCESS: The process with PID 4468 (child process of PID 7244) has been terminated.\r\nSUCCESS: The process with PID 7244 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 71.53820000000997
+   },
+   "portMs": 54,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 107.88140000001295,
+    "maxProcs": 5,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 10,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4553,
+   "stopReturnMs": 74,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 53.51599999998871,
+      "out": "SUCCESS: The process with PID 2460 (child process of PID 8576) has been terminated.\r\nSUCCESS: The process with PID 7264 (child process of PID 8576) has been terminated.\r\nSUCCESS: The process with PID 2472 (child process of PID 8576) has been terminated.\r\nSUCCESS: The process with PID 4208 (child process of PID 8576) has been terminated.\r\nSUCCESS: The process with PID 8576 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 74.1695999999938
+   },
+   "portMs": 62,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 111.4600000000064,
+    "maxProcs": 5,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 11,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4582,
+   "stopReturnMs": 80,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 60.91340000000491,
+      "out": "SUCCESS: The process with PID 1868 (child process of PID 5084) has been terminated.\r\nSUCCESS: The process with PID 972 (child process of PID 5084) has been terminated.\r\nSUCCESS: The process with PID 7016 (child process of PID 5084) has been terminated.\r\nSUCCESS: The process with PID 8320 (child process of PID 5084) has been terminated.\r\nSUCCESS: The process with PID 5084 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 79.5972000000038
+   },
+   "portMs": 69,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 114.1137000000017,
+    "maxProcs": 5,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 12,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4567,
+   "stopReturnMs": 75,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 53.50040000000445,
+      "out": "SUCCESS: The process with PID 5612 (child process of PID 8108) has been terminated.\r\nSUCCESS: The process with PID 7616 (child process of PID 8108) has been terminated.\r\nSUCCESS: The process with PID 10148 (child process of PID 8108) has been terminated.\r\nSUCCESS: The process with PID 7308 (child process of PID 8108) has been terminated.\r\nSUCCESS: The process with PID 8108 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 75.38520000000426
+   },
+   "portMs": 55,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 121.74210000000312,
+    "maxProcs": 5,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 13,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4576,
+   "stopReturnMs": 73,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 51.521999999997206,
+      "out": "SUCCESS: The process with PID 6664 (child process of PID 7284) has been terminated.\r\nSUCCESS: The process with PID 1384 (child process of PID 7284) has been terminated.\r\nSUCCESS: The process with PID 9036 (child process of PID 7284) has been terminated.\r\nSUCCESS: The process with PID 6140 (child process of PID 7284) has been terminated.\r\nSUCCESS: The process with PID 7284 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 73.12980000000971
+   },
+   "portMs": 56,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 125.13379999999597,
+    "maxProcs": 5,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 14,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4567,
+   "stopReturnMs": 74,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 54.69520000000193,
+      "out": "SUCCESS: The process with PID 9288 (child process of PID 9900) has been terminated.\r\nSUCCESS: The process with PID 4108 (child process of PID 9900) has been terminated.\r\nSUCCESS: The process with PID 5616 (child process of PID 9900) has been terminated.\r\nSUCCESS: The process with PID 4704 (child process of PID 9900) has been terminated.\r\nSUCCESS: The process with PID 9900 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 73.62619999999879
+   },
+   "portMs": 63,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 92.99340000000666,
+    "maxProcs": 5,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 15,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4564,
+   "stopReturnMs": 74,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 52.15490000000864,
+      "out": "SUCCESS: The process with PID 8516 (child process of PID 8940) has been terminated.\r\nSUCCESS: The process with PID 7096 (child process of PID 8940) has been terminated.\r\nSUCCESS: The process with PID 6956 (child process of PID 8940) has been terminated.\r\nSUCCESS: The process with PID 9316 (child process of PID 8940) has been terminated.\r\nSUCCESS: The process with PID 8940 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 73.50490000001446
+   },
+   "portMs": 59,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 96.12249999999767,
+    "maxProcs": 5,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 16,
+   "port": 20643,
+   "ready": true,
+   "startMs": 5036,
+   "stopReturnMs": 80,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 58.36649999998917,
+      "out": "SUCCESS: The process with PID 2680 (child process of PID 1184) has been terminated.\r\nSUCCESS: The process with PID 2472 (child process of PID 1184) has been terminated.\r\nSUCCESS: The process with PID 6544 (child process of PID 1184) has been terminated.\r\nSUCCESS: The process with PID 1572 (child process of PID 1184) has been terminated.\r\nSUCCESS: The process with PID 1184 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 79.48600000000442
+   },
+   "portMs": 59,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 130.4704000000056,
+    "maxProcs": 5,
+    "sysProcs": 148,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 17,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4765,
+   "stopReturnMs": 79,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 62.65690000000177,
+      "out": "SUCCESS: The process with PID 9208 (child process of PID 6000) has been terminated.\r\nSUCCESS: The process with PID 8324 (child process of PID 6000) has been terminated.\r\nSUCCESS: The process with PID 5620 (child process of PID 6000) has been terminated.\r\nSUCCESS: The process with PID 3968 (child process of PID 6000) has been terminated.\r\nSUCCESS: The process with PID 6000 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 79.380799999999
+   },
+   "portMs": 56,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 100.24179999998887,
+    "maxProcs": 5,
+    "sysProcs": 147,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 18,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4595,
+   "stopReturnMs": 81,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 60.54920000000857,
+      "out": "SUCCESS: The process with PID 3484 (child process of PID 7164) has been terminated.\r\nSUCCESS: The process with PID 6456 (child process of PID 7164) has been terminated.\r\nSUCCESS: The process with PID 812 (child process of PID 7164) has been terminated.\r\nSUCCESS: The process with PID 1336 (child process of PID 7164) has been terminated.\r\nSUCCESS: The process with PID 7164 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 81.15350000000035
+   },
+   "portMs": 62,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 130.636599999998,
+    "maxProcs": 5,
+    "sysProcs": 147,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 19,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4596,
+   "stopReturnMs": 75,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 56.136599999998,
+      "out": "SUCCESS: The process with PID 10232 (child process of PID 8312) has been terminated.\r\nSUCCESS: The process with PID 8872 (child process of PID 8312) has been terminated.\r\nSUCCESS: The process with PID 760 (child process of PID 8312) has been terminated.\r\nSUCCESS: The process with PID 8548 (child process of PID 8312) has been terminated.\r\nSUCCESS: The process with PID 8312 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 74.9719000000041
+   },
+   "portMs": 53,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 119.35229999999865,
+    "maxProcs": 5,
+    "sysProcs": 146,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 20,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4559,
+   "stopReturnMs": 88,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 70.57289999999921,
+      "out": "SUCCESS: The process with PID 6804 (child process of PID 2552) has been terminated.\r\nSUCCESS: The process with PID 4776 (child process of PID 2552) has been terminated.\r\nSUCCESS: The process with PID 8608 (child process of PID 2552) has been terminated.\r\nSUCCESS: The process with PID 2504 (child process of PID 2552) has been terminated.\r\nSUCCESS: The process with PID 2552 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 88.15359999999055
+   },
+   "portMs": 60,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 126.32600000000093,
+    "maxProcs": 5,
+    "sysProcs": 146,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 21,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4656,
+   "stopReturnMs": 89,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 67.31070000000182,
+      "out": "SUCCESS: The process with PID 4704 (child process of PID 5616) has been terminated.\r\nSUCCESS: The process with PID 1440 (child process of PID 5616) has been terminated.\r\nSUCCESS: The process with PID 8132 (child process of PID 5616) has been terminated.\r\nSUCCESS: The process with PID 7444 (child process of PID 5616) has been terminated.\r\nSUCCESS: The process with PID 5616 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 89.38060000000405
+   },
+   "portMs": 58,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 134.0161999999982,
+    "maxProcs": 5,
+    "sysProcs": 147,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 22,
+   "port": 20643,
+   "ready": true,
+   "startMs": 5155,
+   "stopReturnMs": 75,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 56.63499999999476,
+      "out": "SUCCESS: The process with PID 1808 (child process of PID 5032) has been terminated.\r\nSUCCESS: The process with PID 2740 (child process of PID 5032) has been terminated.\r\nSUCCESS: The process with PID 4808 (child process of PID 5032) has been terminated.\r\nSUCCESS: The process with PID 9884 (child process of PID 5032) has been terminated.\r\nSUCCESS: The process with PID 5032 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 74.89860000000044
+   },
+   "portMs": 53,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 110.73450000000594,
+    "maxProcs": 5,
+    "sysProcs": 147,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 23,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4610,
+   "stopReturnMs": 79,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 58.547300000005635,
+      "out": "SUCCESS: The process with PID 5692 (child process of PID 3152) has been terminated.\r\nSUCCESS: The process with PID 1428 (child process of PID 3152) has been terminated.\r\nSUCCESS: The process with PID 1184 (child process of PID 3152) has been terminated.\r\nSUCCESS: The process with PID 7012 (child process of PID 3152) has been terminated.\r\nSUCCESS: The process with PID 3152 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 79.01550000000861
+   },
+   "portMs": 52,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 114.59849999999278,
+    "maxProcs": 5,
+    "sysProcs": 147,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 24,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4604,
+   "stopReturnMs": 75,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 54.10550000000512,
+      "out": "SUCCESS: The process with PID 8088 (child process of PID 7856) has been terminated.\r\nSUCCESS: The process with PID 7492 (child process of PID 7856) has been terminated.\r\nSUCCESS: The process with PID 9208 (child process of PID 7856) has been terminated.\r\nSUCCESS: The process with PID 6992 (child process of PID 7856) has been terminated.\r\nSUCCESS: The process with PID 7856 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 74.45940000002156
+   },
+   "portMs": 53,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 106,
+    "maxProcs": 5,
+    "sysProcs": 146,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 25,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4616,
+   "stopReturnMs": 77,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 55.625499999994645,
+      "out": "SUCCESS: The process with PID 10148 (child process of PID 9388) has been terminated.\r\nSUCCESS: The process with PID 836 (child process of PID 9388) has been terminated.\r\nSUCCESS: The process with PID 9016 (child process of PID 9388) has been terminated.\r\nSUCCESS: The process with PID 812 (child process of PID 9388) has been terminated.\r\nSUCCESS: The process with PID 9388 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 76.55299999998533
+   },
+   "portMs": 65,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 116.54720000000088,
+    "maxProcs": 5,
+    "sysProcs": 146,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 26,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4637,
+   "stopReturnMs": 75,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 53.2043999999878,
+      "out": "SUCCESS: The process with PID 8904 (child process of PID 5892) has been terminated.\r\nSUCCESS: The process with PID 2508 (child process of PID 5892) has been terminated.\r\nSUCCESS: The process with PID 6292 (child process of PID 5892) has been terminated.\r\nSUCCESS: The process with PID 7608 (child process of PID 5892) has been terminated.\r\nSUCCESS: The process with PID 5892 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 75.1929999999993
+   },
+   "portMs": 59,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 126.93400000000838,
+    "maxProcs": 5,
+    "sysProcs": 146,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 27,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4623,
+   "stopReturnMs": 79,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 58.29999999998836,
+      "out": "SUCCESS: The process with PID 9328 (child process of PID 9092) has been terminated.\r\nSUCCESS: The process with PID 7172 (child process of PID 9092) has been terminated.\r\nSUCCESS: The process with PID 3348 (child process of PID 9092) has been terminated.\r\nSUCCESS: The process with PID 6520 (child process of PID 9092) has been terminated.\r\nSUCCESS: The process with PID 9092 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 78.46949999997742
+   },
+   "portMs": 68,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 100.25119999999879,
+    "maxProcs": 5,
+    "sysProcs": 146,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 28,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4612,
+   "stopReturnMs": 86,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 63.970200000010664,
+      "out": "SUCCESS: The process with PID 7480 (child process of PID 1396) has been terminated.\r\nSUCCESS: The process with PID 7092 (child process of PID 1396) has been terminated.\r\nSUCCESS: The process with PID 6952 (child process of PID 1396) has been terminated.\r\nSUCCESS: The process with PID 2664 (child process of PID 1396) has been terminated.\r\nSUCCESS: The process with PID 1396 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 86.07719999999972
+   },
+   "portMs": 70,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 113.76290000000154,
+    "maxProcs": 5,
+    "sysProcs": 144,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 29,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4579,
+   "stopReturnMs": 75,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 54.91029999998864,
+      "out": "SUCCESS: The process with PID 10028 (child process of PID 3620) has been terminated.\r\nSUCCESS: The process with PID 5064 (child process of PID 3620) has been terminated.\r\nSUCCESS: The process with PID 6968 (child process of PID 3620) has been terminated.\r\nSUCCESS: The process with PID 5208 (child process of PID 3620) has been terminated.\r\nSUCCESS: The process with PID 3620 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 75.38809999998193
+   },
+   "portMs": 65,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 96.71779999998398,
+    "maxProcs": 5,
+    "sysProcs": 144,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 30,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4585,
+   "stopReturnMs": 75,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 51.634499999985565,
+      "out": "SUCCESS: The process with PID 7152 (child process of PID 1240) has been terminated.\r\nSUCCESS: The process with PID 1184 (child process of PID 1240) has been terminated.\r\nSUCCESS: The process with PID 3228 (child process of PID 1240) has been terminated.\r\nSUCCESS: The process with PID 9140 (child process of PID 1240) has been terminated.\r\nSUCCESS: The process with PID 1240 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 74.54079999998794
+   },
+   "portMs": 53,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 120.13899999999558,
+    "maxProcs": 5,
+    "sysProcs": 144,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 31,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4634,
+   "stopReturnMs": 75,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 54.266199999983655,
+      "out": "SUCCESS: The process with PID 2260 (child process of PID 9028) has been terminated.\r\nSUCCESS: The process with PID 696 (child process of PID 9028) has been terminated.\r\nSUCCESS: The process with PID 7616 (child process of PID 9028) has been terminated.\r\nSUCCESS: The process with PID 10196 (child process of PID 9028) has been terminated.\r\nSUCCESS: The process with PID 9028 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 75.17130000001634
+   },
+   "portMs": 76,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 96.97179999999935,
+    "maxProcs": 5,
+    "sysProcs": 144,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 32,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4729,
+   "stopReturnMs": 78,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 56.13860000000568,
+      "out": "SUCCESS: The process with PID 8532 (child process of PID 5916) has been terminated.\r\nSUCCESS: The process with PID 7056 (child process of PID 5916) has been terminated.\r\nSUCCESS: The process with PID 3568 (child process of PID 5916) has been terminated.\r\nSUCCESS: The process with PID 2036 (child process of PID 5916) has been terminated.\r\nSUCCESS: The process with PID 5916 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 78.21210000000428
+   },
+   "portMs": 53,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 110.9149000000034,
+    "maxProcs": 5,
+    "sysProcs": 144,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 33,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4717,
+   "stopReturnMs": 77,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 53.97940000001108,
+      "out": "SUCCESS: The process with PID 812 (child process of PID 9344) has been terminated.\r\nSUCCESS: The process with PID 7532 (child process of PID 9344) has been terminated.\r\nSUCCESS: The process with PID 9600 (child process of PID 9344) has been terminated.\r\nSUCCESS: The process with PID 2020 (child process of PID 9344) has been terminated.\r\nSUCCESS: The process with PID 9344 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 76.87320000000182
+   },
+   "portMs": 56,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 124.41290000002482,
+    "maxProcs": 5,
+    "sysProcs": 144,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 34,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4604,
+   "stopReturnMs": 80,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 58.87530000001425,
+      "out": "SUCCESS: The process with PID 6292 (child process of PID 9260) has been terminated.\r\nSUCCESS: The process with PID 8772 (child process of PID 9260) has been terminated.\r\nSUCCESS: The process with PID 1964 (child process of PID 9260) has been terminated.\r\nSUCCESS: The process with PID 1932 (child process of PID 9260) has been terminated.\r\nSUCCESS: The process with PID 9260 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 80.01360000000568
+   },
+   "portMs": 78,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 129.72969999999623,
+    "maxProcs": 5,
+    "sysProcs": 144,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 35,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4633,
+   "stopReturnMs": 76,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 56.69969999999739,
+      "out": "SUCCESS: The process with PID 2372 (child process of PID 7836) has been terminated.\r\nSUCCESS: The process with PID 980 (child process of PID 7836) has been terminated.\r\nSUCCESS: The process with PID 4280 (child process of PID 7836) has been terminated.\r\nSUCCESS: The process with PID 2868 (child process of PID 7836) has been terminated.\r\nSUCCESS: The process with PID 7836 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 75.82560000001104
+   },
+   "portMs": 66,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 97.39879999999539,
+    "maxProcs": 5,
+    "sysProcs": 144,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 36,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4625,
+   "stopReturnMs": 76,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 54.30999999999767,
+      "out": "SUCCESS: The process with PID 9672 (child process of PID 7092) has been terminated.\r\nSUCCESS: The process with PID 7004 (child process of PID 7092) has been terminated.\r\nSUCCESS: The process with PID 4808 (child process of PID 7092) has been terminated.\r\nSUCCESS: The process with PID 2792 (child process of PID 7092) has been terminated.\r\nSUCCESS: The process with PID 7092 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 76.11579999999958
+   },
+   "portMs": 62,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 97.76660000000265,
+    "maxProcs": 5,
+    "sysProcs": 144,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 37,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4592,
+   "stopReturnMs": 74,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 53.96499999999651,
+      "out": "SUCCESS: The process with PID 3740 (child process of PID 3156) has been terminated.\r\nSUCCESS: The process with PID 6048 (child process of PID 3156) has been terminated.\r\nSUCCESS: The process with PID 8636 (child process of PID 3156) has been terminated.\r\nSUCCESS: The process with PID 9816 (child process of PID 3156) has been terminated.\r\nSUCCESS: The process with PID 3156 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 73.72529999999097
+   },
+   "portMs": 75,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 95.9032999999763,
+    "maxProcs": 5,
+    "sysProcs": 143,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 38,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4646,
+   "stopReturnMs": 78,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 56.05009999999311,
+      "out": "SUCCESS: The process with PID 9424 (child process of PID 3908) has been terminated.\r\nSUCCESS: The process with PID 8660 (child process of PID 3908) has been terminated.\r\nSUCCESS: The process with PID 3664 (child process of PID 3908) has been terminated.\r\nSUCCESS: The process with PID 8728 (child process of PID 3908) has been terminated.\r\nSUCCESS: The process with PID 3908 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 78.10510000001523
+   },
+   "portMs": 54,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 110.90589999998338,
+    "maxProcs": 5,
+    "sysProcs": 143,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 39,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4619,
+   "stopReturnMs": 84,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 63.46259999999893,
+      "out": "SUCCESS: The process with PID 5560 (child process of PID 756) has been terminated.\r\nSUCCESS: The process with PID 7048 (child process of PID 756) has been terminated.\r\nSUCCESS: The process with PID 2224 (child process of PID 756) has been terminated.\r\nSUCCESS: The process with PID 7296 (child process of PID 756) has been terminated.\r\nSUCCESS: The process with PID 756 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 84.38730000000214
+   },
+   "portMs": 76,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 127.84799999999814,
+    "maxProcs": 5,
+    "sysProcs": 143,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 40,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4620,
+   "stopReturnMs": 84,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 62.59869999997318,
+      "out": "SUCCESS: The process with PID 6504 (child process of PID 4180) has been terminated.\r\nSUCCESS: The process with PID 1412 (child process of PID 4180) has been terminated.\r\nSUCCESS: The process with PID 9440 (child process of PID 4180) has been terminated.\r\nSUCCESS: The process with PID 8676 (child process of PID 4180) has been terminated.\r\nSUCCESS: The process with PID 4180 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 83.43859999999404
+   },
+   "portMs": 74,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 108.00179999999818,
+    "maxProcs": 5,
+    "sysProcs": 143,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 41,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4636,
+   "stopReturnMs": 74,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 54.54469999999856,
+      "out": "SUCCESS: The process with PID 2540 (child process of PID 2368) has been terminated.\r\nSUCCESS: The process with PID 4072 (child process of PID 2368) has been terminated.\r\nSUCCESS: The process with PID 8896 (child process of PID 2368) has been terminated.\r\nSUCCESS: The process with PID 4496 (child process of PID 2368) has been terminated.\r\nSUCCESS: The process with PID 2368 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 74.42840000000433
+   },
+   "portMs": 51,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 95.30730000001495,
+    "maxProcs": 5,
+    "sysProcs": 143,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 42,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4677,
+   "stopReturnMs": 82,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 57.518699999985984,
+      "out": "SUCCESS: The process with PID 7720 (child process of PID 5408) has been terminated.\r\nSUCCESS: The process with PID 1892 (child process of PID 5408) has been terminated.\r\nSUCCESS: The process with PID 3208 (child process of PID 5408) has been terminated.\r\nSUCCESS: The process with PID 9052 (child process of PID 5408) has been terminated.\r\nSUCCESS: The process with PID 5408 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 81.77720000001136
+   },
+   "portMs": 56,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 104.57199999998556,
+    "maxProcs": 5,
+    "sysProcs": 143,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 43,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4714,
+   "stopReturnMs": 76,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 55.07320000001346,
+      "out": "SUCCESS: The process with PID 5088 (child process of PID 8516) has been terminated.\r\nSUCCESS: The process with PID 2220 (child process of PID 8516) has been terminated.\r\nSUCCESS: The process with PID 6528 (child process of PID 8516) has been terminated.\r\nSUCCESS: The process with PID 7404 (child process of PID 8516) has been terminated.\r\nSUCCESS: The process with PID 8516 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 76.41750000001048
+   },
+   "portMs": 66,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 98.13289999999688,
+    "maxProcs": 5,
+    "sysProcs": 143,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 44,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4650,
+   "stopReturnMs": 77,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 53.74769999997807,
+      "out": "SUCCESS: The process with PID 4268 (child process of PID 2472) has been terminated.\r\nSUCCESS: The process with PID 1812 (child process of PID 2472) has been terminated.\r\nSUCCESS: The process with PID 3176 (child process of PID 2472) has been terminated.\r\nSUCCESS: The process with PID 5064 (child process of PID 2472) has been terminated.\r\nSUCCESS: The process with PID 2472 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 76.82870000001276
+   },
+   "portMs": 67,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 119.13099999999395,
+    "maxProcs": 5,
+    "sysProcs": 143,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 45,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4734,
+   "stopReturnMs": 77,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 53.74330000000191,
+      "out": "SUCCESS: The process with PID 9776 (child process of PID 1212) has been terminated.\r\nSUCCESS: The process with PID 7488 (child process of PID 1212) has been terminated.\r\nSUCCESS: The process with PID 6728 (child process of PID 1212) has been terminated.\r\nSUCCESS: The process with PID 7916 (child process of PID 1212) has been terminated.\r\nSUCCESS: The process with PID 1212 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 76.54870000001392
+   },
+   "portMs": 55,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 112.47050000002491,
+    "maxProcs": 5,
+    "sysProcs": 143,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 46,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4633,
+   "stopReturnMs": 79,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 56.32330000001821,
+      "out": "SUCCESS: The process with PID 6544 (child process of PID 1572) has been terminated.\r\nSUCCESS: The process with PID 3640 (child process of PID 1572) has been terminated.\r\nSUCCESS: The process with PID 6992 (child process of PID 1572) has been terminated.\r\nSUCCESS: The process with PID 7340 (child process of PID 1572) has been terminated.\r\nSUCCESS: The process with PID 1572 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 78.66710000002058
+   },
+   "portMs": 59,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 127.4890000000014,
+    "maxProcs": 5,
+    "sysProcs": 143,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 47,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4734,
+   "stopReturnMs": 73,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 53.07439999998314,
+      "out": "SUCCESS: The process with PID 7160 (child process of PID 4092) has been terminated.\r\nSUCCESS: The process with PID 6088 (child process of PID 4092) has been terminated.\r\nSUCCESS: The process with PID 7048 (child process of PID 4092) has been terminated.\r\nSUCCESS: The process with PID 2812 (child process of PID 4092) has been terminated.\r\nSUCCESS: The process with PID 4092 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 73.34260000000359
+   },
+   "portMs": 57,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 124.3972000000067,
+    "maxProcs": 5,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 48,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4663,
+   "stopReturnMs": 75,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 55.19980000000214,
+      "out": "SUCCESS: The process with PID 1236 (child process of PID 9016) has been terminated.\r\nSUCCESS: The process with PID 7908 (child process of PID 9016) has been terminated.\r\nSUCCESS: The process with PID 4180 (child process of PID 9016) has been terminated.\r\nSUCCESS: The process with PID 7652 (child process of PID 9016) has been terminated.\r\nSUCCESS: The process with PID 9016 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 74.91370000000461
+   },
+   "portMs": 67,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 95.19510000001173,
+    "maxProcs": 5,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "cycle",
+   "i": 49,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4725,
+   "stopReturnMs": 77,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 53.28620000000228,
+      "out": "SUCCESS: The process with PID 5384 (child process of PID 6524) has been terminated.\r\nSUCCESS: The process with PID 2848 (child process of PID 6524) has been terminated.\r\nSUCCESS: The process with PID 4488 (child process of PID 6524) has been terminated.\r\nSUCCESS: The process with PID 6488 (child process of PID 6524) has been terminated.\r\nSUCCESS: The process with PID 6524 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 77.43309999999474
+   },
+   "portMs": 57,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 109.38389999998617,
+    "maxProcs": 5,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "inflight",
+   "i": 0,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4628,
+   "stopReturnMs": 79,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 57.492700000002515,
+      "out": "SUCCESS: The process with PID 4048 (child process of PID 6696) has been terminated.\r\nSUCCESS: The process with PID 3628 (child process of PID 6696) has been terminated.\r\nSUCCESS: The process with PID 5616 (child process of PID 6696) has been terminated.\r\nSUCCESS: The process with PID 4564 (child process of PID 6696) has been terminated.\r\nSUCCESS: The process with PID 6696 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 78.69600000002538
+   },
+   "portMs": 79,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 121.85299999997369,
+    "maxProcs": 5,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "slow:ECONNRESET,slow:close,idle:ECONNRESET,idle:close"
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "inflight",
+   "i": 1,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4624,
+   "stopReturnMs": 80,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 57.4716999999946,
+      "out": "SUCCESS: The process with PID 1372 (child process of PID 2384) has been terminated.\r\nSUCCESS: The process with PID 7240 (child process of PID 2384) has been terminated.\r\nSUCCESS: The process with PID 2500 (child process of PID 2384) has been terminated.\r\nSUCCESS: The process with PID 2524 (child process of PID 2384) has been terminated.\r\nSUCCESS: The process with PID 2384 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 79.54879999998957
+   },
+   "portMs": 66,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 134.85420000000158,
+    "maxProcs": 5,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "slow:ECONNRESET,slow:close,idle:ECONNRESET,idle:close"
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "inflight",
+   "i": 2,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4653,
+   "stopReturnMs": 83,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 63.91889999998966,
+      "out": "SUCCESS: The process with PID 7092 (child process of PID 4808) has been terminated.\r\nSUCCESS: The process with PID 5356 (child process of PID 4808) has been terminated.\r\nSUCCESS: The process with PID 5624 (child process of PID 4808) has been terminated.\r\nSUCCESS: The process with PID 9136 (child process of PID 4808) has been terminated.\r\nSUCCESS: The process with PID 4808 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 83.15100000001257
+   },
+   "portMs": 66,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 111.37579999997979,
+    "maxProcs": 5,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "slow:ECONNRESET,slow:close,idle:ECONNRESET,idle:close"
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "inflight",
+   "i": 3,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4739,
+   "stopReturnMs": 75,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 52.304100000008475,
+      "out": "SUCCESS: The process with PID 4432 (child process of PID 6864) has been terminated.\r\nSUCCESS: The process with PID 7548 (child process of PID 6864) has been terminated.\r\nSUCCESS: The process with PID 9456 (child process of PID 6864) has been terminated.\r\nSUCCESS: The process with PID 5896 (child process of PID 6864) has been terminated.\r\nSUCCESS: The process with PID 6864 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 74.7565000000177
+   },
+   "portMs": 64,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 116.46909999998752,
+    "maxProcs": 5,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "idle:ECONNRESET,idle:close,slow:ECONNRESET,slow:close"
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "inflight",
+   "i": 4,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4858,
+   "stopReturnMs": 86,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 62.494599999976344,
+      "out": "SUCCESS: The process with PID 900 (child process of PID 1380) has been terminated.\r\nSUCCESS: The process with PID 2228 (child process of PID 1380) has been terminated.\r\nSUCCESS: The process with PID 6512 (child process of PID 1380) has been terminated.\r\nSUCCESS: The process with PID 3908 (child process of PID 1380) has been terminated.\r\nSUCCESS: The process with PID 1380 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 85.86619999998948
+   },
+   "portMs": 77,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 132.62150000000838,
+    "maxProcs": 5,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "slow:ECONNRESET,slow:close,idle:ECONNRESET,idle:close"
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "startup-stop",
+   "i": 0,
+   "port": 20643,
+   "stoppedAtMs": 464,
+   "stopReturnMs": 72,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 66.42579999996815,
+      "out": "SUCCESS: The process with PID 5284 (child process of PID 3712) has been terminated.\r\nSUCCESS: The process with PID 3712 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 71.73949999996694
+   },
+   "portMs": 5,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 104.39939999999478,
+    "maxProcs": 2,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "startup-then-run",
+   "i": 0,
+   "port": 20643,
+   "ready": true,
+   "startMs": 5116,
+   "stopReturnMs": 84,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 65.39970000000903,
+      "out": "SUCCESS: The process with PID 8848 (child process of PID 5664) has been terminated.\r\nSUCCESS: The process with PID 4092 (child process of PID 5664) has been terminated.\r\nSUCCESS: The process with PID 1876 (child process of PID 5664) has been terminated.\r\nSUCCESS: The process with PID 6768 (child process of PID 5664) has been terminated.\r\nSUCCESS: The process with PID 5664 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 84.21100000001024
+   },
+   "portMs": 64,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 124.29190000001108,
+    "maxProcs": 5,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "startup-stop",
+   "i": 1,
+   "port": 20643,
+   "stoppedAtMs": 1391,
+   "stopReturnMs": 79,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 65.79569999995874,
+      "out": "SUCCESS: The process with PID 3696 (child process of PID 5840) has been terminated.\r\nSUCCESS: The process with PID 5840 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 78.60620000003837
+   },
+   "portMs": 77,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 107.32759999996051,
+    "maxProcs": 4,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "startup-then-run",
+   "i": 1,
+   "port": 20643,
+   "ready": true,
+   "startMs": 5152,
+   "stopReturnMs": 89,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 67.04609999997774,
+      "out": "SUCCESS: The process with PID 4408 (child process of PID 5780) has been terminated.\r\nSUCCESS: The process with PID 2024 (child process of PID 5780) has been terminated.\r\nSUCCESS: The process with PID 2416 (child process of PID 5780) has been terminated.\r\nSUCCESS: The process with PID 7172 (child process of PID 5780) has been terminated.\r\nSUCCESS: The process with PID 5780 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 88.476800000004
+   },
+   "portMs": 76,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 114.15119999996386,
+    "maxProcs": 5,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "startup-stop",
+   "i": 2,
+   "port": 20643,
+   "stoppedAtMs": 2319,
+   "stopReturnMs": 80,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 65.59600000001956,
+      "out": "SUCCESS: The process with PID 6020 (child process of PID 7812) has been terminated.\r\nSUCCESS: The process with PID 7812 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 80.06569999997737
+   },
+   "portMs": 80,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 120.78859999997076,
+    "maxProcs": 4,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "startup-then-run",
+   "i": 2,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4733,
+   "stopReturnMs": 79,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 56.89289999997709,
+      "out": "SUCCESS: The process with PID 2800 (child process of PID 5408) has been terminated.\r\nSUCCESS: The process with PID 10048 (child process of PID 5408) has been terminated.\r\nSUCCESS: The process with PID 2220 (child process of PID 5408) has been terminated.\r\nSUCCESS: The process with PID 2444 (child process of PID 5408) has been terminated.\r\nSUCCESS: The process with PID 5408 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 78.8798999999999
+   },
+   "portMs": 56,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 111.8344999999972,
+    "maxProcs": 5,
+    "sysProcs": 142,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "startup-stop",
+   "i": 3,
+   "port": 20643,
+   "stoppedAtMs": 3246,
+   "stopReturnMs": 94,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 77.96480000001611,
+      "out": "SUCCESS: The process with PID 6064 (child process of PID 4692) has been terminated.\r\nSUCCESS: The process with PID 4692 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 93.91090000001714
+   },
+   "portMs": 79,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 119.31729999999516,
+    "maxProcs": 4,
+    "sysProcs": 149,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "startup-then-run",
+   "i": 3,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4733,
+   "stopReturnMs": 83,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 62.34219999995548,
+      "out": "SUCCESS: The process with PID 972 (child process of PID 4532) has been terminated.\r\nSUCCESS: The process with PID 5256 (child process of PID 4532) has been terminated.\r\nSUCCESS: The process with PID 1432 (child process of PID 4532) has been terminated.\r\nSUCCESS: The process with PID 9224 (child process of PID 4532) has been terminated.\r\nSUCCESS: The process with PID 4532 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 83.21379999996861
+   },
+   "portMs": 71,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 115.63099999999395,
+    "maxProcs": 5,
+    "sysProcs": 148,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "startup-stop",
+   "i": 4,
+   "port": 20643,
+   "stoppedAtMs": 4173,
+   "stopReturnMs": 91,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 69.12420000002021,
+      "out": "SUCCESS: The process with PID 4332 (child process of PID 5972) has been terminated.\r\nSUCCESS: The process with PID 9388 (child process of PID 5972) has been terminated.\r\nSUCCESS: The process with PID 10180 (child process of PID 5972) has been terminated.\r\nSUCCESS: The process with PID 5376 (child process of PID 5972) has been terminated.\r\nSUCCESS: The process with PID 5972 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 90.74559999996563
+   },
+   "portMs": 72,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 113.13449999998556,
+    "maxProcs": 5,
+    "sysProcs": 148,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "runAfter": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "startup-then-run",
+   "i": 4,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4736,
+   "stopReturnMs": 79,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 57.06829999998445,
+      "out": "SUCCESS: The process with PID 3568 (child process of PID 1800) has been terminated.\r\nSUCCESS: The process with PID 2468 (child process of PID 1800) has been terminated.\r\nSUCCESS: The process with PID 9688 (child process of PID 1800) has been terminated.\r\nSUCCESS: The process with PID 592 (child process of PID 1800) has been terminated.\r\nSUCCESS: The process with PID 1800 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 78.66800000000512
+   },
+   "portMs": 75,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 116.86639999999898,
+    "maxProcs": 5,
+    "sysProcs": 148,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "install-stop",
+   "i": 0,
+   "port": 20643,
+   "stoppedAtMs": 962,
+   "stopReturnMs": 70,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 69.7497999999905,
+      "out": "SUCCESS: The process with PID 8024 (child process of PID 6108) has been terminated.\r\nSUCCESS: The process with PID 9420 (child process of PID 6108) has been terminated.\r\nSUCCESS: The process with PID 6108 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 67.58090000000084
+   },
+   "portMs": 3,
+   "leftover": {
+    "aliveAtReturn": [
+     "9420 node   \"C:/Users/runneradmin/setup-pnpm/node_modules/.bin/bin//../global/v11/2050-1a12caa5a0a-b5768cf1b9a6544a/node_modules/pnpm/bin/pnpm.mj"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 166.43049999995856,
+    "maxProcs": 3,
+    "sysProcs": 148,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "nodeModulesAfterStop": 0,
+   "reinstall": {
+    "code": 0,
+    "ms": 3825
+   },
+   "runAfterReinstall": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "install-then-run",
+   "i": 0,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4885,
+   "stopReturnMs": 82,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 55.069200000027195,
+      "out": "SUCCESS: The process with PID 9260 (child process of PID 6488) has been terminated.\r\nSUCCESS: The process with PID 6524 (child process of PID 6488) has been terminated.\r\nSUCCESS: The process with PID 9520 (child process of PID 6488) has been terminated.\r\nSUCCESS: The process with PID 7076 (child process of PID 6488) has been terminated.\r\nSUCCESS: The process with PID 6488 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 82.36259999999311
+   },
+   "portMs": 63,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 131.57090000004973,
+    "maxProcs": 5,
+    "sysProcs": 148,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "install-stop",
+   "i": 1,
+   "port": 20643,
+   "stoppedAtMs": 1924,
+   "stopReturnMs": 84,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 84.0065000000177,
+      "out": "SUCCESS: The process with PID 10004 (child process of PID 9204) has been terminated.\r\nSUCCESS: The process with PID 5776 (child process of PID 9204) has been terminated.\r\nSUCCESS: The process with PID 9204 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 80.9890000000014
+   },
+   "portMs": 6,
+   "leftover": {
+    "aliveAtReturn": [
+     "5776 node   \"C:/Users/runneradmin/setup-pnpm/node_modules/.bin/bin//../global/v11/2050-1a12caa5a0a-b5768cf1b9a6544a/node_modules/pnpm/bin/pnpm.mj"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 181.0965000000433,
+    "maxProcs": 3,
+    "sysProcs": 148,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "nodeModulesAfterStop": 1,
+   "reinstall": {
+    "code": 0,
+    "ms": 3629
+   },
+   "runAfterReinstall": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "install-then-run",
+   "i": 1,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4785,
+   "stopReturnMs": 98,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 69.71140000002924,
+      "out": "SUCCESS: The process with PID 8888 (child process of PID 1728) has been terminated.\r\nSUCCESS: The process with PID 7020 (child process of PID 1728) has been terminated.\r\nSUCCESS: The process with PID 7012 (child process of PID 1728) has been terminated.\r\nSUCCESS: The process with PID 5716 (child process of PID 1728) has been terminated.\r\nSUCCESS: The process with PID 1728 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 98.32860000000801
+   },
+   "portMs": 82,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 135.444599999988,
+    "maxProcs": 5,
+    "sysProcs": 148,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "install-stop",
+   "i": 2,
+   "port": 20643,
+   "stoppedAtMs": 2885,
+   "stopReturnMs": 86,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 86.22509999998147,
+      "out": "SUCCESS: The process with PID 7280 (child process of PID 8340) has been terminated.\r\nSUCCESS: The process with PID 6772 (child process of PID 8340) has been terminated.\r\nSUCCESS: The process with PID 8340 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 85.9658000000054
+   },
+   "portMs": 6,
+   "leftover": {
+    "aliveAtReturn": [
+     "6772 node   \"C:/Users/runneradmin/setup-pnpm/node_modules/.bin/bin//../global/v11/2050-1a12caa5a0a-b5768cf1b9a6544a/node_modules/pnpm/bin/pnpm.mj"
+    ],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 178.08889999997336,
+    "maxProcs": 3,
+    "sysProcs": 147,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "nodeModulesAfterStop": 1,
+   "reinstall": {
+    "code": 0,
+    "ms": 2781
+   },
+   "runAfterReinstall": true
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill",
+   "scenario": "install-then-run",
+   "i": 2,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4834,
+   "stopReturnMs": 86,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 62.493000000016764,
+      "out": "SUCCESS: The process with PID 8332 (child process of PID 2788) has been terminated.\r\nSUCCESS: The process with PID 2028 (child process of PID 2788) has been terminated.\r\nSUCCESS: The process with PID 3680 (child process of PID 2788) has been terminated.\r\nSUCCESS: The process with PID 5916 (child process of PID 2788) has been terminated.\r\nSUCCESS: The process with PID 2788 (child process of PID 6924) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 86.12660000001779
+   },
+   "portMs": 59,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 114.38020000001416,
+    "maxProcs": 5,
+    "sysProcs": 147,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill-obs",
+   "scenario": "cycle",
+   "i": 0,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4774,
+   "tree": [
+    {
+     "depth": 0,
+     "pid": 6364,
+     "ppid": 6924,
+     "cmd": "D:/a/runyard/runyard/spikes/k2/win/runyard-job.exe --observe -- node node_modules/nuxt/bin/nuxt.mjs dev --port 20643 --host 127.0.0.1"
+    },
+    {
+     "depth": 1,
+     "pid": 8972,
+     "ppid": 6364,
+     "cmd": "/??/C:/Windows/system32/conhost.exe 0x4"
+    },
+    {
+     "depth": 1,
+     "pid": 8740,
+     "ppid": 6364,
+     "cmd": "node node_modules/nuxt/bin/nuxt.mjs dev --port 20643 --host 127.0.0.1"
+    },
+    {
+     "depth": 2,
+     "pid": 9928,
+     "ppid": 8740,
+     "cmd": "<tmp>/nuxt4/node_modules/.pnpm/@esbuild+win32-x64@0.28.2/node_modules/@esbuild/win32-x64/esbuild.exe --service=0.28.2 --ping"
+    },
+    {
+     "depth": 2,
+     "pid": 5516,
+     "ppid": 8740,
+     "cmd": "node --enable-source-maps <tmp>/nuxt4/node_modules/.pnpm/@nuxt+cli@3.37.0_@nuxt+sche_7a1e24bf16dcbef46180e16cd7f0a96d/node_modules/@nuxt/cli/dist/dev/index.mjs "
+    },
+    {
+     "depth": 2,
+     "pid": 2488,
+     "ppid": 8740,
+     "cmd": "node --enable-source-maps <tmp>/nuxt4/node_modules/.pnpm/@nuxt+cli@3.37.0_@nuxt+sche_7a1e24bf16dcbef46180e16cd7f0a96d/node_modules/@nuxt/cli/dist/dev/index.mjs "
+    }
+   ],
+   "stopReturnMs": 83,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 55.571999999985565,
+      "out": "SUCCESS: The process with PID 9928 (child process of PID 8740) has been terminated.\r\nSUCCESS: The process with PID 5516 (child process of PID 8740) has been terminated.\r\nSUCCESS: The process with PID 2488 (child process of PID 8740) has been terminated.\r\nSUCCESS: The process with PID 8740 (child process of PID 6364) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 82.43900000001304
+   },
+   "portMs": 81,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 126.19740000000456,
+    "maxProcs": 6,
+    "sysProcs": 145,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8740",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill-obs",
+   "scenario": "cycle",
+   "i": 1,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4727,
+   "stopReturnMs": 90,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 56.1583999999566,
+      "out": "SUCCESS: The process with PID 8348 (child process of PID 5304) has been terminated.\r\nSUCCESS: The process with PID 6492 (child process of PID 5304) has been terminated.\r\nSUCCESS: The process with PID 7824 (child process of PID 5304) has been terminated.\r\nSUCCESS: The process with PID 5304 (child process of PID 7120) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 90.31510000000708
+   },
+   "portMs": 72,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 116.00380000000587,
+    "maxProcs": 6,
+    "sysProcs": 144,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "5304",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill-obs",
+   "scenario": "cycle",
+   "i": 2,
+   "port": 20643,
+   "ready": true,
+   "startMs": 5069,
+   "stopReturnMs": 86,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 57.65739999996731,
+      "out": "SUCCESS: The process with PID 7444 (child process of PID 1036) has been terminated.\r\nSUCCESS: The process with PID 9444 (child process of PID 1036) has been terminated.\r\nSUCCESS: The process with PID 6488 (child process of PID 1036) has been terminated.\r\nSUCCESS: The process with PID 1036 (child process of PID 6740) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 86.28659999999218
+   },
+   "portMs": 66,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 136.01269999996293,
+    "maxProcs": 6,
+    "sysProcs": 145,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "1036",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill-obs",
+   "scenario": "cycle",
+   "i": 3,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4752,
+   "stopReturnMs": 87,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 59.95329999999376,
+      "out": "SUCCESS: The process with PID 6832 (child process of PID 4704) has been terminated.\r\nSUCCESS: The process with PID 7204 (child process of PID 4704) has been terminated.\r\nSUCCESS: The process with PID 9556 (child process of PID 4704) has been terminated.\r\nSUCCESS: The process with PID 4704 (child process of PID 6840) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 86.62579999997979
+   },
+   "portMs": 57,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 126.73460000002524,
+    "maxProcs": 6,
+    "sysProcs": 144,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "4704",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill-obs",
+   "scenario": "cycle",
+   "i": 4,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4952,
+   "stopReturnMs": 99,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 67.17879999999423,
+      "out": "SUCCESS: The process with PID 2648 (child process of PID 4268) has been terminated.\r\nSUCCESS: The process with PID 4504 (child process of PID 4268) has been terminated.\r\nSUCCESS: The process with PID 1868 (child process of PID 4268) has been terminated.\r\nSUCCESS: The process with PID 4268 (child process of PID 2676) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 98.65539999998873
+   },
+   "portMs": 77,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 136.47380000003614,
+    "maxProcs": 6,
+    "sysProcs": 144,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "4268",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill-obs",
+   "scenario": "cycle",
+   "i": 5,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4869,
+   "stopReturnMs": 87,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 61.7502000000095,
+      "out": "SUCCESS: The process with PID 6456 (child process of PID 5876) has been terminated.\r\nSUCCESS: The process with PID 7856 (child process of PID 5876) has been terminated.\r\nSUCCESS: The process with PID 8108 (child process of PID 5876) has been terminated.\r\nSUCCESS: The process with PID 5876 (child process of PID 8060) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 86.48649999999907
+   },
+   "portMs": 58,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 128.1919999999809,
+    "maxProcs": 6,
+    "sysProcs": 144,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "5876",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill-obs",
+   "scenario": "cycle",
+   "i": 6,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4759,
+   "stopReturnMs": 91,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 63.36239999998361,
+      "out": "SUCCESS: The process with PID 3920 (child process of PID 3664) has been terminated.\r\nSUCCESS: The process with PID 4732 (child process of PID 3664) has been terminated.\r\nSUCCESS: The process with PID 952 (child process of PID 3664) has been terminated.\r\nSUCCESS: The process with PID 3664 (child process of PID 9784) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 91.34549999999581
+   },
+   "portMs": 62,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 118.81930000003194,
+    "maxProcs": 6,
+    "sysProcs": 144,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "3664",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill-obs",
+   "scenario": "cycle",
+   "i": 7,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4758,
+   "stopReturnMs": 88,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 55.54709999996703,
+      "out": "SUCCESS: The process with PID 9416 (child process of PID 10204) has been terminated.\r\nSUCCESS: The process with PID 8420 (child process of PID 10204) has been terminated.\r\nSUCCESS: The process with PID 8832 (child process of PID 10204) has been terminated.\r\nSUCCESS: The process with PID 10204 (child process of PID 1956) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 87.59339999995427
+   },
+   "portMs": 57,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 129.38799999997718,
+    "maxProcs": 6,
+    "sysProcs": 143,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "10204",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill-obs",
+   "scenario": "cycle",
+   "i": 8,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4735,
+   "stopReturnMs": 92,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 63.89379999996163,
+      "out": "SUCCESS: The process with PID 6852 (child process of PID 1820) has been terminated.\r\nSUCCESS: The process with PID 852 (child process of PID 1820) has been terminated.\r\nSUCCESS: The process with PID 6516 (child process of PID 1820) has been terminated.\r\nSUCCESS: The process with PID 1820 (child process of PID 6036) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 92.42599999997765
+   },
+   "portMs": 71,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 116.3363000000245,
+    "maxProcs": 6,
+    "sysProcs": 143,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "1820",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill-obs",
+   "scenario": "cycle",
+   "i": 9,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4725,
+   "stopReturnMs": 84,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 57.98000000003958,
+      "out": "SUCCESS: The process with PID 5828 (child process of PID 3252) has been terminated.\r\nSUCCESS: The process with PID 9940 (child process of PID 3252) has been terminated.\r\nSUCCESS: The process with PID 4420 (child process of PID 3252) has been terminated.\r\nSUCCESS: The process with PID 3252 (child process of PID 5712) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 84.2717999999877
+   },
+   "portMs": 57,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 129.18319999997038,
+    "maxProcs": 6,
+    "sysProcs": 143,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "3252",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill-obs",
+   "scenario": "cycle",
+   "i": 10,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4699,
+   "stopReturnMs": 84,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 57.43440000002738,
+      "out": "SUCCESS: The process with PID 2120 (child process of PID 1808) has been terminated.\r\nSUCCESS: The process with PID 5396 (child process of PID 1808) has been terminated.\r\nSUCCESS: The process with PID 8384 (child process of PID 1808) has been terminated.\r\nSUCCESS: The process with PID 1808 (child process of PID 4208) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 83.6594000000041
+   },
+   "portMs": 56,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 126.13959999999497,
+    "maxProcs": 6,
+    "sysProcs": 143,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "1808",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill-obs",
+   "scenario": "cycle",
+   "i": 11,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4775,
+   "stopReturnMs": 82,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 54.758199999982025,
+      "out": "SUCCESS: The process with PID 7488 (child process of PID 8780) has been terminated.\r\nSUCCESS: The process with PID 6452 (child process of PID 8780) has been terminated.\r\nSUCCESS: The process with PID 8340 (child process of PID 8780) has been terminated.\r\nSUCCESS: The process with PID 8780 (child process of PID 8576) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 82.41440000000875
+   },
+   "portMs": 65,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 134.83259999996517,
+    "maxProcs": 6,
+    "sysProcs": 143,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "8780",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill-obs",
+   "scenario": "cycle",
+   "i": 12,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4725,
+   "stopReturnMs": 83,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 55.95429999998305,
+      "out": "SUCCESS: The process with PID 1864 (child process of PID 6864) has been terminated.\r\nSUCCESS: The process with PID 5948 (child process of PID 6864) has been terminated.\r\nSUCCESS: The process with PID 6468 (child process of PID 6864) has been terminated.\r\nSUCCESS: The process with PID 6864 (child process of PID 6648) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 83.24770000000717
+   },
+   "portMs": 68,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 125.75639999995474,
+    "maxProcs": 6,
+    "sysProcs": 143,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "6864",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill-obs",
+   "scenario": "cycle",
+   "i": 13,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4886,
+   "stopReturnMs": 91,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 61.974600000015926,
+      "out": "SUCCESS: The process with PID 2260 (child process of PID 2788) has been terminated.\r\nSUCCESS: The process with PID 3920 (child process of PID 2788) has been terminated.\r\nSUCCESS: The process with PID 9968 (child process of PID 2788) has been terminated.\r\nSUCCESS: The process with PID 2788 (child process of PID 1884) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 91.22539999999572
+   },
+   "portMs": 60,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 133.2265999999945,
+    "maxProcs": 6,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "2788",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill-obs",
+   "scenario": "cycle",
+   "i": 14,
+   "port": 20643,
+   "ready": true,
+   "startMs": 5050,
+   "stopReturnMs": 90,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 60.521300000022165,
+      "out": "SUCCESS: The process with PID 7308 (child process of PID 5108) has been terminated.\r\nSUCCESS: The process with PID 1220 (child process of PID 5108) has been terminated.\r\nSUCCESS: The process with PID 6116 (child process of PID 5108) has been terminated.\r\nSUCCESS: The process with PID 5108 (child process of PID 8532) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 90.32639999996172
+   },
+   "portMs": 69,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 126.47139999998035,
+    "maxProcs": 6,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "jobReport": {
+    "child": "5108",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill-obs",
+   "scenario": "inflight",
+   "i": 0,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4730,
+   "stopReturnMs": 85,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 54.76919999998063,
+      "out": "SUCCESS: The process with PID 4236 (child process of PID 4488) has been terminated.\r\nSUCCESS: The process with PID 7652 (child process of PID 4488) has been terminated.\r\nSUCCESS: The process with PID 3236 (child process of PID 4488) has been terminated.\r\nSUCCESS: The process with PID 4488 (child process of PID 6108) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 85.21830000000773
+   },
+   "portMs": 58,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 116.77990000002319,
+    "maxProcs": 6,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "slow:ECONNRESET,slow:close,idle:ECONNRESET,idle:close",
+   "jobReport": {
+    "child": "4488",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill-obs",
+   "scenario": "inflight",
+   "i": 1,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4716,
+   "stopReturnMs": 84,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 54.38039999996545,
+      "out": "SUCCESS: The process with PID 9656 (child process of PID 1284) has been terminated.\r\nSUCCESS: The process with PID 3412 (child process of PID 1284) has been terminated.\r\nSUCCESS: The process with PID 7736 (child process of PID 1284) has been terminated.\r\nSUCCESS: The process with PID 1284 (child process of PID 852) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 84.27969999995548
+   },
+   "portMs": 65,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 119.93880000000354,
+    "maxProcs": 6,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "slow:ECONNRESET,slow:close,idle:ECONNRESET,idle:close",
+   "jobReport": {
+    "child": "1284",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  },
+  {
+   "runner": "nuxt4",
+   "method": "taskkill-obs",
+   "scenario": "inflight",
+   "i": 2,
+   "port": 20643,
+   "ready": true,
+   "startMs": 4812,
+   "stopReturnMs": 89,
+   "stop": {
+    "steps": [
+     {
+      "what": "taskkill /T /F",
+      "code": 0,
+      "ms": 61.61509999999544,
+      "out": "SUCCESS: The process with PID 2588 (child process of PID 1412) has been terminated.\r\nSUCCESS: The process with PID 1376 (child process of PID 1412) has been terminated.\r\nSUCCESS: The process with PID 9980 (child process of PID 1412) has been terminated.\r\nSUCCESS: The process with PID 1412 (child process of PID 3740) has been terminated."
+     }
+    ],
+    "escalated": false,
+    "exit": {
+     "code": 1,
+     "signal": null
+    },
+    "rootExitMs": 89.04099999996834
+   },
+   "portMs": 70,
+   "leftover": {
+    "aliveAtReturn": [],
+    "survivors": [],
+    "transient": [],
+    "transientGoneMs": null,
+    "untracked": [],
+    "treeDeadMs": 133.63200000004144,
+    "maxProcs": 6,
+    "sysProcs": 141,
+    "pipeHeld": false,
+    "notKilled": []
+   },
+   "pipeHeld": false,
+   "inflightEvents": "idle:ECONNRESET,idle:close,slow:ECONNRESET,slow:close",
+   "jobReport": {
+    "child": "1412",
+    "rootExitCode": "1",
+    "activeAtRootExit": "0",
+    "msUntilEmpty": "0",
+    "leftover": "0"
+   }
+  }
+ ]
+}
