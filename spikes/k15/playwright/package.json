@@ -1,0 +1,15 @@
+{
+  "name": "k15-playwright",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "K15：macos-26 上的中文字体与截图是否稳定；Playwright 对 Electron 44 和 WebContentsView 的支持。依赖在 CI 里运行时安装，不提交锁文件。",
+  "scripts": {
+    "shots": "node shots.mjs",
+    "electron": "node electron.mjs"
+  },
+  "devDependencies": {
+    "electron": "44.4.5",
+    "playwright": "1.63.0"
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "tag": "v2.6.0",
+  "asset": "osv-scanner_darwin_arm64",
+  "sha256": "98c460dcd37de25819babd757d04542045b6243113e209edcd4d89fedb0256b4",
+  "sha256Matches": true,
+  "when": "2026-10-11T23:07:24.187Z",
+  "os": "darwin",
+  "arch": "arm64",
+  "version": "osv-scanner version: 2.6.0",
+  "lockfiles": {
+    "singleSectionSeparators": 0,
+    "twoSectionSeparators": 2
+  },
+  "scans": {
+    "单段锁文件（有 braces@3.0.3）": {
+      "label": "single",
+      "code": 1,
+      "foundIds": [
+        "GHSA-vfj7-8cjw-p6xm"
+      ],
+      "summary": "0 vulnerabilities can be fixed.\n+-------------------------------------+------+-----------+---------+---------+---------------+--------------------------------------------------------------------------------------+\n| OSV URL                             | CVSS | ECOSYSTEM | PACKAGE | VERSION | FIXED VERSION | SOURCE                                                                               |\n+-------------------------------------+------+-----------+---------+---------+---------------+----------"
+    },
+    "两段锁文件（环境段 + braces@3.0.3 在第二段）": {
+      "label": "two",
+      "code": 1,
+      "foundIds": [
+        "GHSA-vfj7-8cjw-p6xm"
+      ],
+      "summary": "0 vulnerabilities can be fixed.\n+-------------------------------------+------+-----------+---------+---------+---------------+-----------------------------------------------------------------------------------+\n| OSV URL                             | CVSS | ECOSYSTEM | PACKAGE | VERSION | FIXED VERSION | SOURCE                                                                            |\n+-------------------------------------+------+-----------+---------+---------+---------------+----------------"
+    },
+    "递归扫描目录（两段锁文件）": {
+      "label": "dir",
+      "code": 1,
+      "foundIds": [
+        "GHSA-vfj7-8cjw-p6xm"
+      ],
+      "summary": "0 vulnerabilities can be fixed.\n+-------------------------------------+------+-----------+---------+---------+---------------+-----------------------------------------------------------------------------------+\n| OSV URL                             | CVSS | ECOSYSTEM | PACKAGE | VERSION | FIXED VERSION | SOURCE                                                                            |\n+-------------------------------------+------+-----------+---------+---------+---------------+----------------"
+    },
+    "仓库根锁文件（无已知公告）": {
+      "label": "repo",
+      "code": 1,
+      "foundIds": [
+        "GHSA-68fv-2mgg-jv7q"
+      ],
+      "summary": "1 vulnerability can be fixed.\n+-------------------------------------+------+-----------+---------------+---------+---------------+-----------------------------------------------------------------------+\n| OSV URL                             | CVSS | ECOSYSTEM | PACKAGE       | VERSION | FIXED VERSION | SOURCE                                                                |\n+-------------------------------------+------+-----------+---------------+---------+---------------+------------------------"
+    },
+    "配置键名 [[IgnoredVulns]]（官方示例）": {
+      "label": "[[IgnoredVulns]]（官方示例）",
+      "code": 0,
+      "foundIds": [
+        "GHSA-vfj7-8cjw-p6xm"
+      ],
+      "summary": "Starting filesystem walk for root: /\nScanned /var/folders/d7/sf0fm6j14gz5736y52xg9mm40000gn/T/k15-osv-cfg-xxqYob/pnpm-lock.yaml file and found 4 packages\nEnd status: 0 dirs visited, 1 inodes visited, 1 Extract calls, 165.959µs elapsed, 166µs wall time\nGHSA-vfj7-8cjw-p6xm and 1 alias have been filtered out because: k15 测试\nFiltered 1 vulnerability from output\nNo issues found"
+    },
+    "配置键名 [[IgnoreVulns]]（技术设计文字里的写法）": {
+      "label": "[[IgnoreVulns]]（技术设计文字里的写法）",
+      "code": 127,
+      "foundIds": [],
+      "summary": "Failed to read config file: unknown keys in config file: IgnoreVulns, IgnoreVulns.id, IgnoreVulns.reason\nunknown keys in config file: IgnoreVulns, IgnoreVulns.id, IgnoreVulns.reason"
+    },
+    "配置键名 [[IgnoredVulns]] + ignoreUntil": {
+      "label": "[[IgnoredVulns]] + ignoreUntil",
+      "code": 0,
+      "foundIds": [
+        "GHSA-vfj7-8cjw-p6xm"
+      ],
+      "summary": "Starting filesystem walk for root: /\nScanned /var/folders/d7/sf0fm6j14gz5736y52xg9mm40000gn/T/k15-osv-cfg-4an00h/pnpm-lock.yaml file and found 4 packages\nEnd status: 0 dirs visited, 1 inodes visited, 1 Extract calls, 154.042µs elapsed, 154µs wall time\nGHSA-vfj7-8cjw-p6xm and 1 alias have been filtered out because: k15 测试\nFiltered 1 vulnerability from output\nNo issues found"
+    }
+  },
+  "helpMentionsSeverity": [],
+  "helpFlags": [
+    "--lockfile",
+    "--sbom",
+    "--recursive,",
+    "--no-ignore",
+    "--include-git-root",
+    "--experimental-exclude",
+    "--data-source",
+    "--maven-registry",
+    "--config",
+    "--format",
+    "--serve",
+    "--port",
+    "--output",
+    "--output-file",
+    "--verbosity",
+    "--offline",
+    "--offline-vulnerabilities",
+    "--download-offline-databases",
+    "--call-analysis",
+    "--no-call-analysis",
+    "--no-resolve",
+    "--allow-no-lockfiles",
+    "--all-packages",
+    "--all-vulns",
+    "--licenses",
+    "--experimental-flag-deprecated-packages",
+    "--experimental-plugins",
+    "--experimental-disable-plugins",
+    "--experimental-no-default-plugins",
+    "--help,"
+  ]
+}

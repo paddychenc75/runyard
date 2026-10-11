@@ -1,0 +1,72 @@
+{
+  "node": "v24.21.0",
+  "pnpm": "11.28.0",
+  "when": "2026-10-11T22:54:41.845Z",
+  "trustPolicy": {
+    "repoCopyFiles": [
+      "package.json",
+      "packages/protocol/package.json",
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml",
+      "tooling/package.json"
+    ],
+    "repoFrozenInstall": {
+      "code": 0,
+      "errors": [
+        ""
+      ]
+    },
+    "repoFreshResolve": {
+      "code": 0,
+      "errors": [
+        ""
+      ]
+    },
+    "tree: trust only (age 0)": {
+      "code": 1,
+      "errors": [
+        "[ERR_PNPM_TRUST_DOWNGRADE] High-risk trust downgrade for \"semver@6.3.1\" (possible package takeover)",
+        "This error happened while installing the dependencies of @vitejs/plugin-react@5.0.1"
+      ],
+      "seconds": 5,
+      "tail": "[ERR_PNPM_TRUST_DOWNGRADE] High-risk trust downgrade for \"semver@6.3.1\" (possible package takeover)\n\nThis error happened while installing the dependencies of @vitejs/plugin-react@5.0.1\n at @babel/core@7.29.7\n\nTrust checks are based solely on publish date, not semver. A package cannot be installed if any earlier-published version had stronger trust evidence. Earlier versions had provenance attestation, but this version has no trust evidence. A trust downgrade may indicate a supply chain incident."
+    },
+    "tree: trust + age 14d": {
+      "code": 1,
+      "errors": [
+        "[ERR_PNPM_TRUST_DOWNGRADE] High-risk trust downgrade for \"semver@6.3.1\" (possible package takeover)",
+        "This error happened while installing the dependencies of @vitejs/plugin-react@5.0.1"
+      ],
+      "seconds": 6,
+      "tail": "[ERR_PNPM_TRUST_DOWNGRADE] High-risk trust downgrade for \"semver@6.3.1\" (possible package takeover)\n\nThis error happened while installing the dependencies of @vitejs/plugin-react@5.0.1\n at @babel/core@7.29.7\n\nTrust checks are based solely on publish date, not semver. A package cannot be installed if any earlier-published version had stronger trust evidence. Earlier versions had provenance attestation, but this version has no trust evidence. A trust downgrade may indicate a supply chain incident."
+    },
+    "tree: age 14d only (对照)": {
+      "code": 0,
+      "errors": [
+        "[WARN] 28 deprecated subdependencies found: @yuku-codegen/binding-android-arm64@0.10.2, @yuku-codegen/binding-darwin-arm64@0.10.2, @yuku-codegen/binding-darwin-x64@0.10.2, @yuku-codegen/binding-freebsd-x64@0.10.2, @yuku-codegen/binding-linux-arm-gnu@0.10.2, @yuku-codegen/binding-linux-arm-musl@0.10.2, @yuku-codegen/binding-linux-arm64-gnu@0.10.2, @yuku-codegen/binding-linux-arm64-musl@0.10.2, @yuku-codegen/binding-linux-x64-gnu@0.10.2, @yuku-codegen/binding-linux-x64-musl@0.10.2, @yuku-codegen/binding-win32-arm64@0.10.2, @yuku-codegen/binding-win32-x64@0.10.2, @yuku-parser/binding-android-arm64@0.10.2, @yuku-parser/binding-darwin-arm64@0.10.2, @yuku-parser/binding-darwin-x64@0.10.2, @yuku-parser/binding-freebsd-x64@0.10.2, @yuku-parser/binding-linux-arm-gnu@0.10.2, @yuku-parser/binding-linux-arm-musl@0.10.2, @yuku-parser/binding-linux-arm64-gnu@0.10.2, @yuku-parser/binding-linux-arm64-musl@0.10.2, @yuku-parser/binding-linux-x64-gnu@0.10.2, @yuku-parser/binding-linux-x64-musl@0.10.2, @yuku-parser/binding-win32-arm64@0.10.2, @yuku-parser/binding-win32-x64@0.10.2, boolean@3.2.0, glob@7.2.3, inflight@1.0.6, rimraf@2.6.3"
+      ],
+      "seconds": 14,
+      "tail": "Progress: resolved 899, reused 0, downloaded 0, added 0\nProgress: resolved 908, reused 0, downloaded 0, added 0\n[WARN] 28 deprecated subdependencies found: @yuku-codegen/binding-android-arm64@0.10.2, @yuku-codegen/binding-darwin-arm64@0.10.2, @yuku-codegen/binding-darwin-x64@0.10.2, @yuku-codegen/binding-freebsd-x64@0.10.2, @yuku-codegen/binding-linux-arm-gnu@0.10.2, @yuku-codegen/binding-linux-arm-musl@0.10.2, @yuku-codegen/binding-linux-arm64-gnu@0.10.2, @yuku-codegen/binding-linux-arm64-musl@0.10.2, @yuku-codegen/binding-linux-x64-gnu@0.10.2, @yuku-codegen/binding-linux-x64-musl@0.10.2, @yuku-codegen/binding-win32-arm64@0.10.2, @yuku-codegen/binding-win32-x64@0.10.2, @yuku-parser/binding-android-arm64@0.10.2, @yuku-parser/binding-darwin-arm64@0.10.2, @yuku-parser/binding-darwin-x64@0.10.2, @yuku-parser/binding-freebsd-x64@0.10.2, @yuku-parser/binding-linux-arm-gnu@0.10.2, @yuku-parser/binding-linux-arm-musl@0.10.2, @yuku-parser/binding-linux-arm64-gnu@0.10.2, @yuku-parser/binding-linux-arm64-musl@0.10.2, @yuku-parser/binding-linux-x64-gnu@0.10.2, @yuku-parser/binding-linux-x64-musl@0.10.2, @yuku-parser/binding-win32-arm64@0.10.2, @yuku-parser/binding-win32-x64@0.10.2, boolean@3.2.0, glob@7.2.3, inflight@1.0.6, rimraf@2.6.3\nProgress: resolved 909, reused 0, downloaded 0, added 0, done\n\nDone in 13.9s using pnpm v11.28.0"
+    },
+    "tree: trustPolicyIgnoreAfter=20160 分钟": {
+      "code": 0,
+      "errors": []
+    },
+    "tree: trustPolicyIgnoreAfter=129600 分钟": {
+      "code": 0,
+      "errors": []
+    },
+    "tree: trustPolicyIgnoreAfter=525600 分钟": {
+      "code": 0,
+      "errors": []
+    },
+    "tree: 逐个 trustPolicyExclude": {
+      "finalCode": 0,
+      "excludedNeeded": [
+        "semver@6.3.1",
+        "@octokit/endpoint@9.0.6"
+      ],
+      "lastError": null
+    }
+  }
+}

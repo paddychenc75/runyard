@@ -1,0 +1,353 @@
+{
+  "node": "v24.21.0",
+  "releasePlease": "17.11.2",
+  "when": "2026-10-11T23:06:18.583Z",
+  "scenarios": [
+    {
+      "name": "A feat（0.x，patch-for-minor）",
+      "start": "0.3.0",
+      "nextVersion": "0.3.1",
+      "title": "chore(main): release 0.3.1",
+      "updatedFiles": [
+        ".release-please-manifest.json",
+        "CHANGELOG.md",
+        "apps/desktop/package.json",
+        "changelog.json",
+        "npm-shrinkwrap.json",
+        "package-lock.json",
+        "package.json",
+        "packages/cli/package.json",
+        "samples/package.json"
+      ],
+      "changelogBody": [
+        "## [0.3.1](https://github.com/local/runyard/compare/v0.3.0...v0.3.1) (2026-10-11)",
+        "### Features",
+        "* **core:** 增加运行状态机 ([ed210f9](https://github.com/local/runyard/commit/ed210f919a7810a6b929746fa8f4dc41d0d51af7))",
+        "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
+      ]
+    },
+    {
+      "name": "A2 feat（0.x，不开 patch-for-minor）",
+      "start": "0.3.0",
+      "nextVersion": "0.4.0",
+      "title": "chore(main): release 0.4.0",
+      "updatedFiles": [
+        ".release-please-manifest.json",
+        "CHANGELOG.md",
+        "apps/desktop/package.json",
+        "changelog.json",
+        "npm-shrinkwrap.json",
+        "package-lock.json",
+        "package.json",
+        "packages/cli/package.json",
+        "samples/package.json"
+      ],
+      "changelogBody": [
+        "## [0.4.0](https://github.com/local/runyard/compare/v0.3.0...v0.4.0) (2026-10-11)",
+        "### Features",
+        "* **core:** 增加运行状态机 ([a12b995](https://github.com/local/runyard/commit/a12b99522ffcc86bda79fbb46d8fc355f53484ae))",
+        "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
+      ]
+    },
+    {
+      "name": "B fix",
+      "start": "0.3.0",
+      "nextVersion": "0.3.1",
+      "title": "chore(main): release 0.3.1",
+      "updatedFiles": [
+        ".release-please-manifest.json",
+        "CHANGELOG.md",
+        "apps/desktop/package.json",
+        "changelog.json",
+        "npm-shrinkwrap.json",
+        "package-lock.json",
+        "package.json",
+        "packages/cli/package.json",
+        "samples/package.json"
+      ],
+      "changelogBody": [
+        "## [0.3.1](https://github.com/local/runyard/compare/v0.3.0...v0.3.1) (2026-10-11)",
+        "### Bug Fixes",
+        "* **platform:** 修复 Windows 上进程树未完全结束 ([d5c4397](https://github.com/local/runyard/commit/d5c4397b7af21ec7770f00090bfbf3f0f7113a42))",
+        "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
+      ]
+    },
+    {
+      "name": "C feat!（感叹号，0.x）",
+      "start": "0.3.0",
+      "nextVersion": "0.4.0",
+      "title": "chore(main): release 0.4.0",
+      "updatedFiles": [
+        ".release-please-manifest.json",
+        "CHANGELOG.md",
+        "apps/desktop/package.json",
+        "changelog.json",
+        "npm-shrinkwrap.json",
+        "package-lock.json",
+        "package.json",
+        "packages/cli/package.json",
+        "samples/package.json"
+      ],
+      "changelogBody": [
+        "## [0.4.0](https://github.com/local/runyard/compare/v0.3.0...v0.4.0) (2026-10-11)",
+        "### ⚠ BREAKING CHANGES",
+        "* **cli:** 移除旧命令",
+        "### Features",
+        "* **cli:** 移除旧命令 ([92e7add](https://github.com/local/runyard/commit/92e7add99a65808d240c78e11a9520a5634dbee7))",
+        "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
+      ]
+    },
+    {
+      "name": "D 页脚 BREAKING CHANGE: 英文词 + 中文说明",
+      "start": "0.3.0",
+      "nextVersion": "0.4.0",
+      "title": "chore(main): release 0.4.0",
+      "updatedFiles": [
+        ".release-please-manifest.json",
+        "CHANGELOG.md",
+        "apps/desktop/package.json",
+        "changelog.json",
+        "npm-shrinkwrap.json",
+        "package-lock.json",
+        "package.json",
+        "packages/cli/package.json",
+        "samples/package.json"
+      ],
+      "changelogBody": [
+        "## [0.4.0](https://github.com/local/runyard/compare/v0.3.0...v0.4.0) (2026-10-11)",
+        "### ⚠ BREAKING CHANGES",
+        "* **core:** 配置文件格式改变，需要重新生成",
+        "### Bug Fixes",
+        "* **core:** 修复崩溃 ([9b2da95](https://github.com/local/runyard/commit/9b2da95eb82249210068e4e511085bdd4ff2d203))",
+        "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
+      ]
+    },
+    {
+      "name": "E 页脚用中文词“破坏性变更：”",
+      "start": "0.3.0",
+      "nextVersion": "0.3.1",
+      "title": "chore(main): release 0.3.1",
+      "updatedFiles": [
+        ".release-please-manifest.json",
+        "CHANGELOG.md",
+        "apps/desktop/package.json",
+        "changelog.json",
+        "npm-shrinkwrap.json",
+        "package-lock.json",
+        "package.json",
+        "packages/cli/package.json",
+        "samples/package.json"
+      ],
+      "changelogBody": [
+        "## [0.3.1](https://github.com/local/runyard/compare/v0.3.0...v0.3.1) (2026-10-11)",
+        "### Bug Fixes",
+        "* **core:** 修复崩溃 ([7c8ef25](https://github.com/local/runyard/commit/7c8ef255d3ce4db104b4f1340a0cfac79eb6abe2))",
+        "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
+      ]
+    },
+    {
+      "name": "F 全角冒号与全角括号 “feat（core）：增加”",
+      "start": "0.3.0",
+      "result": "不生成发版 PR（没有可发布的提交）"
+    },
+    {
+      "name": "G 只有 chore/docs/ci（不应发版）",
+      "start": "0.3.0",
+      "result": "不生成发版 PR（没有可发布的提交）"
+    },
+    {
+      "name": "H 混合：feat + fix + chore + docs",
+      "start": "0.3.0",
+      "nextVersion": "0.3.1",
+      "title": "chore(main): release 0.3.1",
+      "updatedFiles": [
+        ".release-please-manifest.json",
+        "CHANGELOG.md",
+        "apps/desktop/package.json",
+        "changelog.json",
+        "npm-shrinkwrap.json",
+        "package-lock.json",
+        "package.json",
+        "packages/cli/package.json",
+        "samples/package.json"
+      ],
+      "changelogBody": [
+        "## [0.3.1](https://github.com/local/runyard/compare/v0.3.0...v0.3.1) (2026-10-11)",
+        "### Features",
+        "* **core:** 增加运行状态机 ([81ba4aa](https://github.com/local/runyard/commit/81ba4aa4a96c55628cbc8f941c20bb17cb8035d5))",
+        "### Bug Fixes",
+        "* **platform:** 修复路径问题 ([ca8bb3b](https://github.com/local/runyard/commit/ca8bb3b56b74044655172937d4edc3de82ad3fd9))",
+        "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
+      ]
+    },
+    {
+      "name": "I 无 scope 的中文主题",
+      "start": "0.3.0",
+      "nextVersion": "0.3.1",
+      "title": "chore(main): release 0.3.1",
+      "updatedFiles": [
+        ".release-please-manifest.json",
+        "CHANGELOG.md",
+        "apps/desktop/package.json",
+        "changelog.json",
+        "npm-shrinkwrap.json",
+        "package-lock.json",
+        "package.json",
+        "packages/cli/package.json",
+        "samples/package.json"
+      ],
+      "changelogBody": [
+        "## [0.3.1](https://github.com/local/runyard/compare/v0.3.0...v0.3.1) (2026-10-11)",
+        "### Features",
+        "* 新增示例模板 ([7be13e5](https://github.com/local/runyard/commit/7be13e5e33f2ceee912dd23f14f23db6a34a6a5a))",
+        "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
+      ]
+    },
+    {
+      "name": "J 1.x：feat -> minor",
+      "start": "1.2.0",
+      "nextVersion": "1.3.0",
+      "title": "chore(main): release 1.3.0",
+      "updatedFiles": [
+        ".release-please-manifest.json",
+        "CHANGELOG.md",
+        "apps/desktop/package.json",
+        "changelog.json",
+        "npm-shrinkwrap.json",
+        "package-lock.json",
+        "package.json",
+        "packages/cli/package.json",
+        "samples/package.json"
+      ],
+      "changelogBody": [
+        "## [1.3.0](https://github.com/local/runyard/compare/v1.2.0...v1.3.0) (2026-10-11)",
+        "### Features",
+        "* **core:** 增加运行状态机 ([346f6cf](https://github.com/local/runyard/commit/346f6cf6e23021df885c874970ba0395adab4915))",
+        "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
+      ]
+    },
+    {
+      "name": "K 1.x：fix -> patch",
+      "start": "1.2.0",
+      "nextVersion": "1.2.1",
+      "title": "chore(main): release 1.2.1",
+      "updatedFiles": [
+        ".release-please-manifest.json",
+        "CHANGELOG.md",
+        "apps/desktop/package.json",
+        "changelog.json",
+        "npm-shrinkwrap.json",
+        "package-lock.json",
+        "package.json",
+        "packages/cli/package.json",
+        "samples/package.json"
+      ],
+      "changelogBody": [
+        "## [1.2.1](https://github.com/local/runyard/compare/v1.2.0...v1.2.1) (2026-10-11)",
+        "### Bug Fixes",
+        "* **core:** 修复崩溃 ([47a0778](https://github.com/local/runyard/commit/47a07784b17cca090bd9e957dbf0b6baf10cc147))",
+        "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
+      ]
+    },
+    {
+      "name": "L 1.x：feat! -> major",
+      "start": "1.2.0",
+      "nextVersion": "2.0.0",
+      "title": "chore(main): release 2.0.0",
+      "updatedFiles": [
+        ".release-please-manifest.json",
+        "CHANGELOG.md",
+        "apps/desktop/package.json",
+        "changelog.json",
+        "npm-shrinkwrap.json",
+        "package-lock.json",
+        "package.json",
+        "packages/cli/package.json",
+        "samples/package.json"
+      ],
+      "changelogBody": [
+        "## [2.0.0](https://github.com/local/runyard/compare/v1.2.0...v2.0.0) (2026-10-11)",
+        "### ⚠ BREAKING CHANGES",
+        "* **core:** 去掉旧接口",
+        "### Features",
+        "* **core:** 去掉旧接口 ([ea2c952](https://github.com/local/runyard/commit/ea2c95241fb9324ce4c0c045bbb1626fa7c4b89d))",
+        "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
+      ]
+    },
+    {
+      "name": "M 只改了 apps/desktop 和 packages/cli 下的文件（单版本号应当照常发版）",
+      "start": "0.3.0",
+      "nextVersion": "0.3.1",
+      "title": "chore(main): release 0.3.1",
+      "updatedFiles": [
+        ".release-please-manifest.json",
+        "CHANGELOG.md",
+        "apps/desktop/package.json",
+        "changelog.json",
+        "npm-shrinkwrap.json",
+        "package-lock.json",
+        "package.json",
+        "packages/cli/package.json",
+        "samples/package.json"
+      ],
+      "changelogBody": [
+        "## [0.3.1](https://github.com/local/runyard/compare/v0.3.0...v0.3.1) (2026-10-11)",
+        "### Features",
+        "* **cli:** 增加 doctor 命令 ([a675702](https://github.com/local/runyard/commit/a67570279eb4012911324428d561045dac2b09b9))",
+        "### Bug Fixes",
+        "* **desktop:** 修复窗口闪烁 ([4d9a54f](https://github.com/local/runyard/commit/4d9a54f2892a273ecb6990953601383db4c9cd0a))",
+        "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
+      ]
+    },
+    {
+      "name": "N 自定义中文章节标题",
+      "start": "0.3.0",
+      "nextVersion": "0.3.1",
+      "title": "chore(main): release 0.3.1",
+      "updatedFiles": [
+        ".release-please-manifest.json",
+        "CHANGELOG.md",
+        "apps/desktop/package.json",
+        "changelog.json",
+        "npm-shrinkwrap.json",
+        "package-lock.json",
+        "package.json",
+        "packages/cli/package.json",
+        "samples/package.json"
+      ],
+      "changelogBody": [
+        "## [0.3.1](https://github.com/local/runyard/compare/v0.3.0...v0.3.1) (2026-10-11)",
+        "### 新功能",
+        "* **core:** 增加运行状态机 ([ca0a380](https://github.com/local/runyard/commit/ca0a3800a707ef6856925862887917d90de93e87))",
+        "### 修复",
+        "* **platform:** 修复路径问题 ([efccd4b](https://github.com/local/runyard/commit/efccd4b6562c4f0abf61961f894510e6bfc3e152))",
+        "### 性能",
+        "* **core:** 加快启动 ([b922724](https://github.com/local/runyard/commit/b9227246e165d1e3a9ec0f3fe1f503f9c3078abd))",
+        "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
+      ]
+    },
+    {
+      "name": "O 提交主题带 PR 号（squash 合并的真实形态）",
+      "start": "0.3.0",
+      "nextVersion": "0.3.1",
+      "title": "chore(main): release 0.3.1",
+      "updatedFiles": [
+        ".release-please-manifest.json",
+        "CHANGELOG.md",
+        "apps/desktop/package.json",
+        "changelog.json",
+        "npm-shrinkwrap.json",
+        "package-lock.json",
+        "package.json",
+        "packages/cli/package.json",
+        "samples/package.json"
+      ],
+      "changelogBody": [
+        "## [0.3.1](https://github.com/local/runyard/compare/v0.3.0...v0.3.1) (2026-10-11)",
+        "### Features",
+        "* **core:** 增加运行状态机 ([#12](https://github.com/local/runyard/issues/12)) ([aa7a139](https://github.com/local/runyard/commit/aa7a1396479ab555db12ced9329109e6cee0ac85))",
+        "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
+      ]
+    }
+  ]
+}

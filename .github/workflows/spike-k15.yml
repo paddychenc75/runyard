@@ -1,0 +1,184 @@
+# 技术验证 K15（工具链核对）里必须在 CI 机器上做的部分：
+#   - macos-26 上中文是不是苹方、同一页面的截图是否逐像素一致（两个独立的 job 对照）
+#   - Playwright 1.63.0 对 Electron 44.4.5 和 WebContentsView 的支持
+#   - 三个系统上 Node 24 直接运行另一个包的 .ts、Biome 按目录配置、corepack 是否存在
+#   - OSV-Scanner 官方 Action 能否读 pnpm 11 的锁文件（与 nightly-security.yml 同一个固定版本）
+# 一次性实验，M0a 结束时随 spikes/ 一起删除。
+name: spike-k15
+
+on:
+  push:
+    branches: ["spike/k15-*"]
+    paths:
+      - "spikes/k15/**"
+      - ".github/workflows/spike-k15.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  shots:
+    name: 截图（${{ matrix.label }}）
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # 同一个镜像上开两个互相独立的 job，用来比较“跨 job”是否逐像素一致
+          - { os: macos-26, label: macos-26-a }
+          - { os: macos-26, label: macos-26-b }
+          - { os: ubuntu-latest, label: ubuntu }
+          - { os: windows-2025, label: windows }
+    defaults:
+      run:
+        shell: bash
+        working-directory: spikes/k15/playwright
+    steps:
+      - name: 关闭换行转换
+        working-directory: .
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+      - name: 安装依赖（运行时安装，不提交锁文件：Electron 与 Playwright 的间接依赖不进仓库的依赖审查）
+        run: pnpm install --no-frozen-lockfile
+      - name: 下载 Playwright 的 Chromium
+        run: pnpm exec playwright install chromium
+      - name: 截图第一轮（独立进程）
+        run: node shots.mjs out "${{ matrix.label }}-run1"
+      - name: 截图第二轮（另一个独立进程）
+        run: node shots.mjs out "${{ matrix.label }}-run2"
+      - name: 记录字体环境
+        if: runner.os == 'macOS'
+        run: |
+          sw_vers; echo "ImageVersion=$ImageVersion ImageOS=$ImageOS"
+          system_profiler SPFontsDataType 2>/dev/null | grep -E "^\s+(Full Name|Family): .*(PingFang|Hiragino Sans GB|STHeiti|Heiti)" | sort -u | head -20 || true
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: k15-shots-${{ matrix.label }}
+          path: spikes/k15/playwright/out
+          retention-days: 14
+
+  electron:
+    name: Playwright + Electron（${{ matrix.os }}）
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-26, ubuntu-latest, windows-2025]
+    defaults:
+      run:
+        shell: bash
+        working-directory: spikes/k15/playwright
+    steps:
+      - name: 关闭换行转换
+        working-directory: .
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+      - name: 安装依赖
+        run: pnpm install --no-frozen-lockfile
+      - name: 下载 Electron 二进制（包里没有安装脚本，校验和由包内 checksums.json 核对）
+        run: pnpm exec install-electron
+      - name: 运行（Linux 用虚拟显示器）
+        if: runner.os == 'Linux'
+        run: xvfb-run -a node electron.mjs out "${{ matrix.os }}"
+      - name: 运行
+        if: runner.os != 'Linux'
+        run: node electron.mjs out "${{ matrix.os }}"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: k15-electron-${{ matrix.os }}
+          path: spikes/k15/playwright/out
+          retention-days: 14
+
+  cross-os:
+    name: 三系统小实验（${{ matrix.os }}）
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-26, ubuntu-latest, windows-2025]
+    defaults:
+      run:
+        shell: bash
+        working-directory: spikes/k15
+    steps:
+      - name: 关闭换行转换
+        working-directory: .
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+      - name: 工具版本与 corepack
+        run: |
+          node -v; pnpm -v
+          if command -v corepack >/dev/null 2>&1; then echo "corepack: $(corepack --version) at $(command -v corepack)"; else echo "corepack: 找不到"; fi
+      - name: Node 24 直接运行另一个包的 .ts
+        run: node node-ts/run.mjs
+      - name: Biome（noJsxLiterals、GritQL、按目录配置）
+        run: node biome/run.mjs
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: k15-cross-os-${{ matrix.os }}
+          path: spikes/k15/results
+          retention-days: 14
+
+  osv-binary:
+    name: OSV-Scanner 命令行（ubuntu）
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+    defaults:
+      run:
+        working-directory: spikes/k15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+      - name: 下载并校验 osv-scanner，扫描运行时生成的锁文件
+        run: node osv/run.mjs
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: k15-osv-binary
+          path: spikes/k15/results
+          retention-days: 14
+
+  # 和 nightly-security.yml 里同一个可复用工作流、同一个固定哈希：扫整个仓库（含 spikes/ 下的 pnpm 11 锁文件）。
+  # fail-on-vuln: false，只看它能不能读锁文件、报告什么；结果会上传到 Security 页（与每晚任务相同）。
+  osv-action:
+    name: OSV-Scanner 官方可复用工作流
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@a345acffa64b0eaede81a3d9aae6141214d9c8fc # v2.6.0
+    with:
+      fail-on-vuln: false
+      export-results: true

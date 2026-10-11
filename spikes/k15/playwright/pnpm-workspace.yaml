@@ -1,0 +1,3 @@
+# 独立工作区，不属于仓库根；安全设置与根一致
+minimumReleaseAge: 20160
+savePrefix: ""
