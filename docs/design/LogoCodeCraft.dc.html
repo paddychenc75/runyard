@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>不带字母的图标 · 方案三、四</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+a{color:#0071E3}a:hover{color:#0058B0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1580px; box-sizing: border-box; padding: 40px 44px; background: #FFFFFF; color: #1D1D1F; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 14px; line-height: 1.5; display: flex; flex-direction: column; gap: 20px; overflow: hidden">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.3px">不带字母的图标 · 方案三、四</h1>
+<div style="color: #6E6E73; font-size: 15px">macOS 工艺方向的设计师。他和上一位互相看不到对方的稿子，却想到了同一个主意：让正在执行的那一行亮起来并跑出图标。</div>
+</div>
+<img src="/_blob/c0625673daaff102c1078b0e96fc67c4" alt="不带字母的图标 · 方案三、四" style="width: 1352px; height: 1110px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.08); flex: none">
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+<div style="padding: 16px 18px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 16px; font-weight: 700">方案三 · 亮着的那一行（设计师推荐）</div>
+<div style="color: #3A3A3C">靛紫色的底，几行代码是刻进去的凹槽。正在执行的那一行是一根凸起的琥珀色光管，从缩进的位置一直冲出右边缘；上一行的槽里还留着一点余光。</div>
+<div><span style="font-weight: 600">不足：</span><span style="color: #3A3A3C">去掉光效后只剩几条横杠，单色版本明显变弱；紫色的底和不少开发工具相近。</span></div>
+</div>
+<div style="padding: 16px 18px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 16px; font-weight: 700">方案四 · 冲出屏幕</div>
+<div style="color: #3A3A3C">浅色机身里嵌一块深色屏幕，屏幕里是几行暗的代码。正在执行的那一行烧成朱红色，穿出屏幕的边框，再冲出图标。在一排图标里最显眼。</div>
+<div><span style="font-weight: 600">不足：</span><span style="color: #3A3A3C">那块“屏幕”让它更靠近终端和编辑器这一类图标；元素比方案三多。</span></div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1580}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

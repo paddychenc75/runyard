@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>“正在执行的那一行”的优化：四个版本，已选 D</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+a{color:#0071E3}a:hover{color:#0058B0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1280px; box-sizing: border-box; padding: 40px 44px; background: #FFFFFF; color: #1D1D1F; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 14px; line-height: 1.5; display: flex; flex-direction: column; gap: 20px; overflow: hidden">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.3px">“正在执行的那一行”的优化：四个版本，已选 D</h1>
+<div style="color: #6E6E73; font-size: 15px">从左到右：原来的版本、A、B、C、D。每列从上到下：浅色背景、深色背景（各带 128、64、32、16 像素的小图）、单色版本。最下面一条是缩小后和播放器、文本对齐、便签、终端图标排在一起的对照。</div>
+</div>
+<img src="/_blob/77ad6f083bc255fbbc5d74f4afadd571" alt="“正在执行的那一行”的优化：四个版本，已选 D" style="width: 1352px; height: 784px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.08); flex: none">
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px">
+<div style="padding: 16px 18px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 16px; font-weight: 700">A · 加边、拆成词</div>
+<div style="color: #3A3A3C">底板加了清楚的边，代码行拆成一段一段的“词”，亮线加粗。</div>
+<div><span style="font-weight: 600">不足：</span><span style="color: #3A3A3C">拆开的小段在小尺寸下变成零散的圆点，反而乱。</span></div>
+</div>
+<div style="padding: 16px 18px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 16px; font-weight: 700">B · 炭黑底、发光</div>
+<div style="color: #3A3A3C">换成炭黑的底，亮线真的在发光，上一行留着余温。“点亮”的感觉最强。</div>
+<div><span style="font-weight: 600">不足：</span><span style="color: #3A3A3C">离暖白扁平的风格远了；深色底更靠近终端和编辑器。</span></div>
+</div>
+<div style="padding: 16px 18px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 16px; font-weight: 700">C · 行号栏</div>
+<div style="color: #3A3A3C">左边加一条行号栏，执行行有整行的浅橙色带，是调试器的画法。</div>
+<div><span style="font-weight: 600">不足：</span><span style="color: #3A3A3C">像“列表里选中的一行”。</span></div>
+</div>
+<div style="padding: 16px 18px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 16px; font-weight: 700">D · 线真的伸出去（已选）</div>
+<div style="color: #3A3A3C">亮线伸出了图标底板，轮廓被打破，缩到 16 像素也看得出；没执行的行改成空心，所以单色版本不靠颜色也能分清三种状态。</div>
+<div><span style="font-weight: 600">不足：</span><span style="color: #3A3A3C">新版 macOS 会把图标套进系统的圆角方形，伸出去的一段可能被裁掉，程序坞里需要一个“线停在边缘”的版本；这一点还没有在真实系统上验证。</span></div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1280}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

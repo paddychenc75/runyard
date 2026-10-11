@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Runyard 另存为模板</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+input::placeholder,textarea::placeholder{color:#A1A1A6;opacity:1}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:#4DA3FF}a:hover{color:#7DBBFF}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; box-sizing: border-box; position: relative; overflow: hidden; background: #161618; color: #F5F5F7; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 13px; line-height: 1.4">
+<div aria-hidden="true" style="position: absolute; inset: 0">
+<dc-import name="ServiceDark" hint-size="1440px,900px"></dc-import>
+</div>
+<div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(0,0,0,0.45)"></div>
+
+<div role="dialog" aria-label="另存为模板" style="position: absolute; left: 360px; top: 66px; width: 720px; height: 790px; box-sizing: border-box; border-radius: 28px; display: flex; flex-direction: column; overflow: hidden; background: rgba(44,44,48,0.78); backdrop-filter: blur(50px) saturate(190%); border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 0 0 0.5px rgba(255,255,255,0.10), 0 40px 90px rgba(0,0,0,0.60), inset 0 1px 0 rgba(255,255,255,0.14)">
+
+<div style="flex: none; padding: 22px 28px 0 28px">
+<h2 style="margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.2px">另存为模板</h2>
+<div style="margin-top: 2px; color: #D1D1D6">把 hono-todo-api 现在的样子存成模板，以后新建时可以直接用。</div>
+</div>
+
+<div style="flex: 1; min-height: 0; padding: 14px 28px 0 28px; display: flex; flex-direction: column; gap: 12px; overflow: hidden">
+<label style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-weight: 600">模板名称</span>
+<input type="text" value="待办接口起步" style="height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.14); background: rgba(0,0,0,0.35); font: inherit; color: #F5F5F7; outline: none; box-sizing: border-box; width: 100%">
+</label>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<label for="tpl-id" style="font-weight: 600">模板标识</label>
+<input id="tpl-id" type="text" value="todo-api" style="height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.14); background: rgba(0,0,0,0.35); font: inherit; color: #F5F5F7; outline: none; box-sizing: border-box; width: 100%; font-family: 'SF Mono', Menlo, monospace">
+<div style="font-size: 12px; color: #D1D1D6">只能用小写字母、数字和连字符，命令行里用它：<span style="font-family: 'SF Mono', Menlo, monospace">runyard new todo-api</span></div>
+</div>
+<label style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-weight: 600">说明</span>
+<input type="text" value="Hono 待办接口，带内存数据和两个路由" style="height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.14); background: rgba(0,0,0,0.35); font: inherit; color: #F5F5F7; outline: none; box-sizing: border-box; width: 100%">
+</label>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="font-weight: 600">包含的文件</div>
+<div style="padding: 6px 10px; border-radius: 12px; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column">
+<sc-for list="{{filesOn}}" as="f" hint-placeholder-count="4">
+<div style="height: 28px; display: flex; align-items: center; white-space: nowrap">
+<span role="checkbox" aria-checked="{{f.checked}}" aria-label="{{f.name}}" style="width: 16px; height: 16px; border-radius: 5px; box-sizing: border-box; background: {{f.cbBg}}; border: 1.5px solid {{f.cbBorder}}; display: flex; align-items: center; justify-content: center; flex: none; margin-right: 12px"><svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="{{f.cbTick}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5.2 4.2 7.4 8 3"/></svg></span>
+<span aria-hidden="true" style="width: {{f.indent}}; flex: none"></span>
+<svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="{{f.chev}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-right: 4px"><path d="M2 3.5 5 6.5 8 3.5"/></svg><svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="{{f.icon}}" stroke-width="1.4" stroke-linejoin="round" style="flex: none; margin-right: 8px"><path d="{{f.path}}"/></svg>
+<span style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: {{f.color}}; font-weight: {{f.weight}}; flex: none">{{f.name}}</span>
+<span style="flex: 1; min-width: 16px"></span>
+<span style="font-size: 12px; color: #A1A1A6; overflow: hidden; text-overflow: ellipsis">{{f.note}}</span>
+</div>
+</sc-for>
+<div style="height: 28px; margin-top: 4px; box-sizing: border-box; border-top: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; font-size: 12px; font-weight: 600; color: #A1A1A6">默认不包含</div>
+<sc-for list="{{filesOff}}" as="f" hint-placeholder-count="4">
+<div style="height: 28px; display: flex; align-items: center; white-space: nowrap">
+<span role="checkbox" aria-disabled="true" aria-checked="{{f.checked}}" aria-label="{{f.name}}" style="width: 16px; height: 16px; border-radius: 5px; box-sizing: border-box; background: {{f.cbBg}}; border: 1.5px solid {{f.cbBorder}}; display: flex; align-items: center; justify-content: center; flex: none; margin-right: 12px; opacity: {{f.cbOp}}"><svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="{{f.cbTick}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5.2 4.2 7.4 8 3"/></svg></span>
+<span aria-hidden="true" style="width: {{f.indent}}; flex: none"></span>
+<svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="{{f.chev}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-right: 4px"><path d="M2 3.5 5 6.5 8 3.5"/></svg><svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="{{f.icon}}" stroke-width="1.4" stroke-linejoin="round" style="flex: none; margin-right: 8px"><path d="{{f.path}}"/></svg>
+<span style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: {{f.color}}; font-weight: {{f.weight}}; flex: none">{{f.name}}</span>
+<span style="flex: 1; min-width: 16px"></span>
+<span style="font-size: 12px; color: #A1A1A6; overflow: hidden; text-overflow: ellipsis">{{f.note}}</span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; min-height: 34px">
+<span style="font-weight: 600; flex: none">依赖的运行环境</span>
+<span style="color: #D1D1D6; min-width: 0">沿用原模板 Hono：Node ≥ 20.19 且 < 27，pnpm ≥ 9</span>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; min-height: 28px">
+<button role="switch" aria-checked="true" aria-label="把项目名替换成变量" style="width: 40px; height: 24px; padding: 0; border-radius: 12px; border: none; background: #30D158; position: relative; flex: none"><span aria-hidden="true" style="position: absolute; top: 2px; left: 18px; width: 20px; height: 20px; border-radius: 10px; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.3)"></span></button>
+<span style="min-width: 0">把项目名替换成变量，新建时自动换成新项目的名字</span>
+</div>
+</div>
+
+<div style="height: 56px; flex: none; margin-top: 8px; padding: 0 20px 0 28px; display: flex; align-items: center; gap: 12px; border-top: 1px solid rgba(255,255,255,0.08)">
+<span style="flex: 1; min-width: 0; color: #D1D1D6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">保存后出现在新建时的“我的”分组 · <span style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px">~/.runyard/templates/todo-api</span></span>
+<button style="height: 36px; padding: 0 18px; border-radius: 18px; border: none; background: rgba(118,118,128,0.24); flex: none; white-space: nowrap">取消</button>
+<button style="height: 36px; padding: 0 20px; border-radius: 18px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; flex: none; white-space: nowrap; box-shadow: 0 4px 14px rgba(10,132,255,0.35)">保存模板</button>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+const lines = [
+'import { Hono } from \'hono\'',
+'',
+'const app = new Hono()',
+'const todos = []',
+'app.get(\'/todos\', (c) => c.json(todos))',
+'export default app'
+].map((t, i) => ({ no: i + 1, text: t }));
+const fileData = [
+['src/', '', true, 0, true], ['index.ts', '', true, 1], ['package.json', '', true], ['pnpm-lock.yaml', '', true], ['tsconfig.json', '', true],
+['node_modules/', '依赖，不包含', false],
+['.env', '可能含密钥，默认不包含', false],
+['dist/', '构建产物，不包含', false]
+];
+const DIRC = '#FFD60A';
+const typeColor = (n) => /\.tsx?$/.test(n) ? '#6BDFFF' : /\.css$/.test(n) ? '#D0A8FF' : /\.html$/.test(n) ? '#FFA14A' : /\.(json|yaml)$/.test(n) ? '#FFD60A' : '#A1A1A6';
+const files = fileData.map((f) => { const dir = f[0].slice(-1) === '/'; const on = f[2]; return { name: f[0], note: f[1], on, checked: on ? 'true' : 'false', cbBg: on ? '#0071E3' : 'transparent', cbBorder: on ? '#0071E3' : '#8E8E93', cbOp: (f[0] === 'node_modules/' || f[0] === 'dist/') ? 0.4 : 1, cbTick: on ? '#FFFFFF' : 'transparent', indent: ((f[3] || 0) * 20) + 'px', chev: dir && on ? '#A1A1A6' : 'transparent', path: dir ? 'M1.5 4.5a1 1 0 0 1 1-1h3.2l1.5 1.6h6.3a1 1 0 0 1 1 1v6.4a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1z' : 'M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5', color: on ? '#F5F5F7' : '#A1A1A6', weight: dir ? 600 : 400, icon: !on ? '#8E8E93' : dir ? DIRC : typeColor(f[0]) }; });
+const filesOn = files.filter((f) => f.on);
+const filesOff = files.filter((f) => !f.on);
+return { lines, filesOn, filesOff };
+}
+}
+</script>
+</body>
+</html>

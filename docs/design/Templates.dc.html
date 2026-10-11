@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Runyard 模板</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:#0071E3}a:hover{color:#0058B0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #1D1D1F; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 13px; line-height: 1.4">
+<!-- content layer -->
+<div style="position: absolute; left: 256px; right: 0; top: 0; bottom: 0; display: flex; flex-direction: column">
+<div style="flex: 1; min-height: 0; padding: 40px 28px 24px 28px; display: flex; gap: 24px">
+
+<!-- left: list -->
+<section aria-label="模板列表" style="width: 496px; flex: none; display: flex; flex-direction: column; min-height: 0">
+<div style="display: flex; align-items: flex-end; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0">
+<h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.3px">模板</h1>
+<div style="color: #6E6E73">11 个内置 · 2 个我的</div>
+</div>
+</div>
+<div style="margin-top: 10px; display: flex; flex-direction: column; gap: 0; min-height: 0">
+<sc-for list="{{items}}" as="item" hint-placeholder-count="19">
+<sc-if value="{{item.header}}" hint-placeholder-val="{{false}}">
+<div style="height: 24px; padding: 6px 12px 0 12px; box-sizing: border-box; font-size: 12px; font-weight: 600; color: #6E6E73">{{item.label}}</div>
+</sc-if>
+<sc-if value="{{item.card}}" hint-placeholder-val="{{true}}">
+<div style="height: 42px; flex: none; padding: 0 12px; box-sizing: border-box; border-radius: 12px; display: flex; align-items: center; gap: 10px; background: {{item.bg}}; box-shadow: {{item.ring}}">
+<span aria-hidden="true" style="width: 28px; height: 28px; border-radius: 8px; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 1px 2px rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center; font-family: 'SF Mono', Menlo, monospace; font-size: 11px; font-weight: 600; color: #3A3A3C; flex: none">{{item.badge}}</span>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+<div style="font-size: 14px; font-weight: 600; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{item.name}}</div>
+<div style="font-size: 12px; line-height: 1.25; color: {{item.descColor}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{item.desc}}</div>
+</div>
+<span style="display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 10px; font-size: 12px; flex: none; white-space: nowrap; color: {{item.tagColor}}; background: {{item.tagBg}}">{{item.tag}}</span>
+</div>
+</sc-if>
+</sc-for>
+</div>
+</section>
+
+<!-- right: detail -->
+<section aria-label="模板详情" style="flex: 1; min-width: 0; min-height: 0; box-sizing: border-box; padding: 20px 26px 18px 26px; border-radius: 16px; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.07); display: flex; flex-direction: column; gap: 14px; overflow: hidden">
+
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; gap: 12px">
+<span aria-hidden="true" style="width: 40px; height: 40px; border-radius: 11px; background: #F0F0F3; border: 1px solid rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center; font-family: 'SF Mono', Menlo, monospace; font-size: 14px; font-weight: 600; color: #48484A; flex: none">Re</span>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+<h2 style="margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.2px">React 19 + TypeScript</h2>
+<div style="display: flex; align-items: center; gap: 10px; color: #3A3A3C; font-family: 'SF Mono', Menlo, monospace; font-size: 12px"><span>react19</span></div>
+</div>
+</div>
+<div style="display: flex; gap: 6px; flex-wrap: wrap">
+<sc-for list="{{tags}}" as="tag" hint-placeholder-count="5">
+<span style="display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 12px; color: {{tag.color}}; background: {{tag.bg}}">{{tag.label}}</span>
+</sc-for>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="font-size: 12px; font-weight: 600; color: #6E6E73">依赖的运行环境</div>
+<div style="border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; overflow: hidden">
+<div style="display: grid; grid-template-columns: 90px minmax(0, 1.3fr) 100px 80px; column-gap: 10px; align-items: center; height: 30px; padding: 0 14px; background: #F5F5F7; color: #6E6E73; font-size: 12px">
+<div>工具</div><div>需要的版本</div><div>这台电脑</div><div>状态</div>
+</div>
+<sc-for list="{{deps}}" as="dep" hint-placeholder-count="2">
+<div style="display: grid; grid-template-columns: 90px minmax(0, 1.3fr) 100px 80px; column-gap: 10px; align-items: center; height: 34px; padding: 0 14px; border-top: 1px solid rgba(0,0,0,0.06)">
+<div style="font-weight: 600">{{dep.tool}}</div>
+<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #3A3A3C">{{dep.need}}</div>
+<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #3A3A3C">{{dep.have}}</div>
+<div style="display: flex; align-items: center; gap: 5px; color: #1B7A34; font-weight: 500; white-space: nowrap"><svg aria-hidden="true" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#1B7A34" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.5 5 9l4.5-5.5"/></svg>{{dep.status}}</div>
+</div>
+</sc-for>
+</div>
+<div style="font-size: 12px; color: #3A3A3C">没有 pnpm 时会改用 npm</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="font-size: 12px; font-weight: 600; color: #6E6E73">运行方式</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<sc-for list="{{cmds}}" as="cmd" hint-placeholder-count="3">
+<div style="display: flex; align-items: center; gap: 12px">
+<div style="width: 72px; flex: none; color: #3A3A3C">{{cmd.label}}</div>
+<div style="flex: 1; min-width: 0; height: 28px; padding: 0 12px; box-sizing: border-box; border-radius: 9px; background: #F5F5F7; display: flex; align-items: center; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #1D1D1F; white-space: nowrap; overflow: hidden">{{cmd.text}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="font-size: 12px; font-weight: 600; color: #6E6E73">包含的文件</div>
+<div style="border-radius: 12px; background: #F5F5F7; padding: 8px 10px; display: flex; flex-direction: column">
+<sc-for list="{{files}}" as="file" hint-placeholder-count="9">
+<div style="height: 24px; padding-left: {{file.indent}}; display: flex; align-items: center; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #1D1D1F; font-weight: {{file.weight}}; white-space: nowrap"><svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="{{file.chev}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-right: 4px"><path d="M2 3.5 5 6.5 8 3.5"/></svg><svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="{{file.icon}}" stroke-width="1.4" stroke-linejoin="round" style="flex: none; margin-right: 8px"><path d="{{file.path}}"/></svg>{{file.name}}</div>
+</sc-for>
+</div>
+</div>
+
+<div style="flex: 1"></div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; gap: 8px; align-items: center">
+<button style="height: 36px; padding: 0 18px; border-radius: 18px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; flex: none; white-space: nowrap; box-shadow: 0 4px 14px rgba(0,113,227,0.25)">用它新建</button>
+<button style="height: 36px; padding: 0 16px; border-radius: 18px; border: none; background: rgba(118,118,128,0.14); flex: none; white-space: nowrap">在 Finder 中显示</button>
+</div>
+<div style="font-size: 12px; color: #6E6E73">想改内置模板：先用它新建一个项目，改好后“另存为模板”。</div>
+</div>
+</section>
+
+</div>
+</div>
+
+<!-- floating glass sidebar -->
+<nav aria-label="资源库导航" style="position: absolute; left: 8px; top: 8px; bottom: 8px; width: 240px; box-sizing: border-box; border-radius: 20px; padding: 14px 10px 12px 10px; display: flex; flex-direction: column; gap: 4px; background: rgba(242,243,247,0.78); backdrop-filter: blur(40px) saturate(180%); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.10), 0 12px 36px rgba(15,23,42,0.12), inset 0 1px 0 rgba(255,255,255,1)">
+<div style="display: flex; align-items: center; gap: 8px; height: 28px; padding: 0 8px">
+<span aria-hidden="true" style="width: 12px; height: 12px; border-radius: 6px; background: #FF5F57; border: 0.5px solid rgba(0,0,0,0.12)"></span>
+<span aria-hidden="true" style="width: 12px; height: 12px; border-radius: 6px; background: #FEBC2E; border: 0.5px solid rgba(0,0,0,0.12)"></span>
+<span aria-hidden="true" style="width: 12px; height: 12px; border-radius: 6px; background: #28C840; border: 0.5px solid rgba(0,0,0,0.12)"></span>
+</div>
+<div style="padding: 14px 10px 6px 10px; font-size: 20px; font-weight: 700; letter-spacing: -0.2px">Runyard</div>
+
+<div style="padding: 10px 10px 4px 10px; font-size: 12px; font-weight: 600; color: #6E6E73">资源库</div>
+<sc-for list="{{nav}}" as="item" hint-placeholder-count="4">
+<button style="height: 36px; padding: 0 10px; border-radius: 10px; border: none; background: {{item.bg}}; color: {{item.color}}; font-weight: {{item.weight}}; display: flex; align-items: center; gap: 10px; text-align: left; width: 100%">
+<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 3px; background: {{item.mark}}"></span>
+<span style="flex: 1">{{item.label}}</span>
+<span style="font-size: 12px; color: {{item.countColor}}">{{item.count}}</span>
+</button>
+</sc-for>
+
+<div style="padding: 16px 10px 4px 10px; font-size: 12px; font-weight: 600; color: #6E6E73">管理</div>
+<button style="height: 36px; padding: 0 10px; border-radius: 10px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; display: flex; align-items: center; gap: 10px; text-align: left; width: 100%">
+<svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#FFFFFF" stroke-width="1.4" stroke-linejoin="round"><path d="M8 1.5 14 5v6l-6 3.5L2 11V5z"/><path d="M2 5l6 3.5L14 5M8 8.5v6"/></svg><span style="flex: 1">模板</span><span style="font-size: 12px; color: #FFFFFF">13</span></button>
+<button style="height: 36px; padding: 0 10px; border-radius: 10px; border: none; background: transparent; display: flex; align-items: center; gap: 10px; text-align: left; width: 100%">
+<svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#3A3A3C" stroke-width="1.4" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 1.5"/></svg><span style="flex: 1">长期未使用</span><span style="font-size: 12px; color: #6E6E73">7</span></button>
+<button style="height: 36px; padding: 0 10px; border-radius: 10px; border: none; background: transparent; display: flex; align-items: center; gap: 10px; text-align: left; width: 100%">
+<svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#3A3A3C" stroke-width="1.4" stroke-linecap="round"><path d="M2 4.5h7M12 4.5h2M2 11.5h2M7 11.5h7"/><circle cx="10.5" cy="4.5" r="1.5"/><circle cx="5.5" cy="11.5" r="1.5"/></svg><span style="flex: 1">设置</span></button>
+
+<div style="flex: 1"></div>
+<div style="padding: 10px; border-radius: 12px; background: rgba(255,255,255,0.6); border: 1px solid rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 2px">
+<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px">~/Runyard</div>
+<div style="font-size: 12px; color: #6E6E73">20 个项目 · 共 2.9 GB</div>
+</div>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+const head = (label) => ({ header: true, card: false, label });
+const mineTag = { tag: '我的', tagColor: '#0058B0', tagBg: 'rgba(0,113,227,0.12)' };
+const builtTag = { tag: '内置', tagColor: '#3A3A3C', tagBg: '#F0F0F3' };
+const card = (badge, name, desc, tag, selected, warn) => Object.assign({ header: false, card: true, badge, name, desc, bg: selected ? 'rgba(0,113,227,0.10)' : 'transparent', ring: selected ? 'inset 0 0 0 1.5px rgba(0,113,227,0.55)' : 'none', descColor: warn ? '#8A4B00' : '#6E6E73' }, tag);
+const items = [
+head('页面'),
+card('HT', '静态页面', '无需安装任何工具 · 改动即刷新', builtTag),
+head('前端'),
+card('Re', 'React 19 + TypeScript', 'React 19.3 · Vite 8.3 · 热更新', builtTag, true),
+card('Re', 'React 18 + TypeScript', 'React 18.3 · Vite 8.3 · 热更新', builtTag),
+card('Vu', 'Vue 3 + TypeScript', 'Vue 3.5 · Vite 8.3 · 热更新', builtTag),
+head('全栈'),
+card('Nx', 'Next.js 16', 'Next.js 16.4 · 启动约 3 到 5 秒', builtTag),
+card('Nu', 'Nuxt 4', 'Nuxt 4.6 · 启动约 2 秒', builtTag),
+card('Nu', 'Nuxt 3', 'Nuxt 3 最后一个版本 · 官方已停止维护', builtTag, false, true),
+head('脚本'),
+card('TS', 'Node + TypeScript', '单文件脚本 · 保存后自动运行', builtTag),
+card('Py', 'Python（需要 3.12 以上）', '单文件脚本 · 保存后自动运行', builtTag),
+card('Go', 'Go（需要 1.22 以上）', '单文件程序 · 保存后自动运行', builtTag),
+head('服务'),
+card('Ho', 'Hono', 'Hono 4.13 · 自带请求面板，改完代码自动重发', builtTag),
+head('我的'),
+card('Te', 'team-react', 'React 19，带团队的 ESLint 配置', mineTag),
+card('Ap', 'api-mock', '返回固定 JSON 的接口', mineTag)
+];
+const tagData = [ ['内置', true], ['前端', false], ['TypeScript', false], ['Vite', false], ['热更新', false]];
+const tags = tagData.map((t) => ({ label: t[0], color: t[1] ? '#3A3A3C' : '#3A3A3C', bg: t[1] ? '#F0F0F3' : 'rgba(0,113,227,0.10)' }));
+const ok = '满足';
+const deps = [
+{ tool: 'Node', need: '≥ 20.19 且 < 27', have: '25.6.0', status: ok },
+{ tool: 'pnpm', need: '≥ 9', have: '10.30.1', status: ok }
+];
+const cmds = [
+{ label: '安装依赖', text: 'pnpm install --prefer-offline' },
+{ label: '启动', text: 'pnpm vite --port {port} --strictPort' },
+{ label: '就绪判断', text: 'http://127.0.0.1:{port}/' }
+];
+const files = [['src', 0, true], ['App.css', 1, false], ['App.tsx', 1, false], ['main.tsx', 1, false], ['index.html', 0, false], ['package.json', 0, false], ['pnpm-lock.yaml', 0, false], ['tsconfig.json', 0, false], ['vite.config.ts', 0, false]].map((f) => ({ name: f[2] ? f[0] + '/' : f[0], indent: (f[1] * 18) + 'px', weight: f[2] ? 600 : 400, dir: f[2], file: !f[2], chev: f[2] ? '#6E6E73' : 'transparent', path: f[2] ? 'M1.5 4.5a1 1 0 0 1 1-1h3.2l1.5 1.6h6.3a1 1 0 0 1 1 1v6.4a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1z' : 'M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5', icon: f[2] ? '#B8860B' : (/\.tsx?$/.test(f[0]) ? '#0F68A0' : /\.css$/.test(f[0]) ? '#7A2E9E' : /\.html$/.test(f[0]) ? '#B3470B' : /\.(json|yaml)$/.test(f[0]) ? '#8A6D00' : '#6E6E73') }));
+const navItems = [ ['全部', '20', true], ['已保留', '16', false], ['自动清理', '4', false], ['智能体创建', '6', false]];
+const nav = navItems.map((n) => ({ label: n[0], count: n[1], bg: 'transparent', color: '#1D1D1F', weight: 400, mark: '#8E8E93', countColor: '#6E6E73' }));
+return { nav, items, tags, deps, cmds, files };
+}
+}
+</script>
+</body>
+</html>

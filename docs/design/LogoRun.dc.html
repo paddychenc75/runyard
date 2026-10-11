@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>图标 A 融入“运行代码”：三个方案</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+a{color:#0071E3}a:hover{color:#0058B0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1340px; box-sizing: border-box; padding: 40px 44px; background: #FFFFFF; color: #1D1D1F; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 14px; line-height: 1.5; display: flex; flex-direction: column; gap: 20px; overflow: hidden">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.3px">图标 A 融入“运行代码”：三个方案</h1>
+<div style="color: #6E6E73; font-size: 15px">按你的想法：在 R 里藏进表示运行代码的符号。图里从左到右：原来的版本、方案一、方案二、方案三。每列最下面两条是把图标缩小后夹在两个播放器图标和两个终端图标中间，检查会不会被认错。</div>
+</div>
+<img src="/_blob/06ecc0006b2090c6a9b2c546d964dd0b" alt="图标 A 融入“运行代码”：三个方案" style="width: 1352px; height: 828px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.08)">
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px">
+<div style="padding: 16px 18px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 16px; font-weight: 700">原来的版本</div>
+<div style="color: #3A3A3C">上一轮选定的样子，没有第二层意思，放在这里做对照。</div>
+<div><span style="font-weight: 600">不足：</span><span style="color: #3A3A3C">看不出和代码有关。</span></div>
+</div>
+<div style="padding: 16px 18px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 16px; font-weight: 700">方案一 · 提示符（设计师推荐）</div>
+<div style="color: #3A3A3C">R 上半部画成一个尖角，就是命令行提示符的“&gt;”；R 本来就有的那条跑出去的底线，正好是后面的“_”。整个 R 里藏着一个正在运行的“&gt;_”。</div>
+<div><span style="font-weight: 600">不足：</span><span style="color: #3A3A3C">尖角加竖线围起来客观上仍是一个空心三角，像播放键的风险压低了但没有完全消除；棱角不如原来圆润。</span></div>
+</div>
+<div style="padding: 16px 18px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 16px; font-weight: 700">方案二 · 折线</div>
+<div style="color: #3A3A3C">同样的尖角，后面接一条斜着的腿再跑出去。R 认得最快。</div>
+<div><span style="font-weight: 600">不足：</span><span style="color: #3A3A3C">斜腿又形成了一个反方向的尖角，整体读成之字形，第二层意思反而丢了。</span></div>
+</div>
+<div style="padding: 16px 18px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 16px; font-weight: 700">方案三 · 运行键</div>
+<div style="color: #3A3A3C">R 上半部画成圆角的空心三角，像编辑器里“运行”按钮的轮廓。最圆润，和原来的风格最接近。</div>
+<div><span style="font-weight: 600">不足：</span><span style="color: #3A3A3C">读出来分不清是“播放”还是“运行”，三个里最容易被当成播放器。</span></div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1340}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Runyard 动效与无障碍</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+input::placeholder,textarea::placeholder{color:#6E6E73;opacity:1}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:#0071E3}a:hover{color:#0058B0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1340px; box-sizing: border-box; overflow: hidden; padding: 40px 44px; background: #FFFFFF; color: #1D1D1F; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 13px; line-height: 1.45; display: flex; flex-direction: column; gap: 22px">
+
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.3px">动效与无障碍</h1>
+<div style="color: #6E6E73; font-size: 14px">什么在动、动多久、怎么用键盘操作，以及每个控件必须满足的无障碍底线。颜色、材质、字体见各自的规范板。</div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1.55fr 1fr; column-gap: 28px; align-items: start">
+
+<!-- left column -->
+<div style="display: flex; flex-direction: column; gap: 22px; min-width: 0">
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">动效原则</h2>
+<div style="box-sizing: border-box; padding: 12px 16px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 4px">
+<sc-for list="{{principles}}" as="p" hint-placeholder-count="4">
+<div style="display: flex; gap: 10px; align-items: flex-start"><span aria-hidden="true" style="width: 6px; height: 6px; border-radius: 3px; background: #1D1D1F; margin-top: 7px; flex: none"></span><span style="color: #3A3A3C">{{p.t}}</span></div>
+</sc-for>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">过渡一览</h2>
+<div style="display: flex; flex-direction: column">
+<div style="display: grid; grid-template-columns: 1.4fr 2fr 0.9fr 1.1fr; column-gap: 12px; padding: 0 0 6px 0; font-size: 12px; font-weight: 600; color: #6E6E73; border-bottom: 1px solid rgba(0,0,0,0.10)">
+<span>触发</span><span>什么在动</span><span>时长</span><span>缓动</span>
+</div>
+<sc-for list="{{transitions}}" as="r" hint-placeholder-count="8">
+<div style="display: grid; grid-template-columns: 1.4fr 2fr 0.9fr 1.1fr; column-gap: 12px; padding: 6px 0; align-items: start; border-bottom: 1px solid rgba(0,0,0,0.06)">
+<span style="font-weight: 600">{{r.trigger}}</span>
+<span style="font-size: 12px; color: #3A3A3C">{{r.moves}}</span>
+<span style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px">{{r.time}}</span>
+<span style="font-size: 12px; color: #3A3A3C">{{r.ease}}</span>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">前后对照</h2>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 20px; align-items: start">
+<sc-for list="{{pairs}}" as="pr" hint-placeholder-count="3">
+<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 8px">
+<sc-for list="{{pr.frames}}" as="fr" hint-placeholder-count="2">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="position: relative; width: 120px; height: 78px; box-sizing: border-box; overflow: hidden; border-radius: 10px; background: #F5F5F7; border: 1px solid rgba(0,0,0,0.08)">
+<sc-for list="{{fr.boxes}}" as="b" hint-placeholder-count="6"><div aria-hidden="true" style="position: absolute; box-sizing: border-box; {{b.css}}"></div></sc-for>
+</div>
+<span style="font-size: 12px; color: #6E6E73; font-family: 'SF Mono', Menlo, monospace">{{fr.label}}</span>
+</div>
+<sc-if value="{{fr.arrow}}" hint-placeholder-val="{{true}}"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#6E6E73" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-bottom: 20px"><path d="M3 8h10M9 4l4 4-4 4"/></svg></sc-if>
+</sc-for>
+</div>
+<div style="font-size: 12px"><span style="font-weight: 600">{{pr.title}}</span><br><span style="color: #6E6E73">{{pr.desc}}</span></div>
+</div>
+</sc-for>
+</div>
+</section>
+
+</div>
+
+<!-- right column -->
+<div style="display: flex; flex-direction: column; gap: 22px; min-width: 0">
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">键盘</h2>
+<div style="display: flex; flex-direction: column">
+<sc-for list="{{keys}}" as="k" hint-placeholder-count="11">
+<div style="display: grid; grid-template-columns: 84px minmax(0, 1fr); column-gap: 12px; align-items: center; height: 30px; border-bottom: 1px solid rgba(0,0,0,0.06)">
+<span style="display: inline-flex; align-items: center; justify-self: start; height: 22px; padding: 0 8px; box-sizing: border-box; border-radius: 7px; background: #F0F0F3; border: 1px solid rgba(0,0,0,0.10); font-family: 'SF Mono', Menlo, monospace; font-size: 12px; font-weight: 600; white-space: nowrap">{{k.key}}</span>
+<span>{{k.what}}</span>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">焦点顺序与焦点环</h2>
+<div style="color: #3A3A3C">从左到右、从上到下。浮层打开时焦点留在浮层里；关闭后回到触发它的控件。</div>
+<div style="display: flex; gap: 10px; align-items: stretch">
+<div style="flex: 1; min-width: 0; box-sizing: border-box; padding: 14px; border-radius: 14px; background: #F5F5F7; display: flex; align-items: center; gap: 14px">
+<button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; background: rgba(118,118,128,0.14); white-space: nowrap; box-shadow: 0 0 0 1.5px #0071E3, 0 0 0 4.5px rgba(0,113,227,0.18)">重命名</button>
+<input type="text" value="my-app" aria-label="名称" style="width: 80px; box-sizing: border-box; height: 32px; padding: 0 10px; border-radius: 10px; font: inherit; color: #1D1D1F; outline: none; background: #FFFFFF; border: 1.5px solid #0071E3; box-shadow: 0 0 0 3px rgba(0,113,227,0.18)">
+</div>
+<div style="box-sizing: border-box; padding: 14px; border-radius: 14px; background: #1C1C1E; display: flex; align-items: center">
+<button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; background: rgba(118,118,128,0.24); color: #F5F5F7; white-space: nowrap; box-shadow: 0 0 0 1.5px #0A84FF, 0 0 0 4.5px rgba(10,132,255,0.32)">重命名</button>
+</div>
+</div>
+<div style="font-size: 12px; color: #6E6E73">焦点环：1.5 px 强调色描边加 3 px 浅色光环，浅色和深色主题都一样；任何控件获得键盘焦点时必须看得见。</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">减弱动态效果</h2>
+<div style="color: #3A3A3C">系统开启此设置时，缩放和滑动都改成淡入淡出，时长不变；不再有循环动画。</div>
+<div style="box-sizing: border-box; padding: 8px 14px; border-radius: 14px; background: #F5F5F7; display: flex; flex-direction: column">
+<sc-for list="{{reduced}}" as="m" hint-placeholder-count="3">
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 16px minmax(0, 1.3fr); column-gap: 10px; align-items: center; min-height: 28px">
+<span style="color: #6E6E73">{{m.from}}</span>
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#6E6E73" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+<span style="font-weight: 600">{{m.to}}</span>
+</div>
+</sc-for>
+</div>
+</section>
+
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1.3fr; column-gap: 28px; align-items: start">
+
+<section style="display: flex; flex-direction: column; gap: 10px; min-width: 0">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">无障碍要求</h2>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 20px">
+<sc-for list="{{access}}" as="a" hint-placeholder-count="8">
+<div style="display: flex; gap: 8px; align-items: flex-start; min-width: 0">
+<svg aria-hidden="true" width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="#1B7A34" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 3px"><path d="M2.5 6.5 5 9l4.5-5.5"/></svg>
+<div style="display: flex; flex-direction: column; min-width: 0"><span style="font-weight: 600">{{a.t}}</span><span style="font-size: 12px; color: #6E6E73">{{a.d}}</span></div>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 10px; min-width: 0">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">该做与不该做</h2>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 20px">
+
+<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<span style="font-weight: 600">玻璃只用在浮层</span>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 10px">
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<div style="height: 64px; box-sizing: border-box; border-radius: 12px; background: #F5F5F7; display: flex; flex-direction: column; align-items: center; justify-content: center">
+<div style="position: relative; z-index: 1; height: 24px; width: 110px; border-radius: 12px; box-sizing: border-box; background: rgba(255,255,255,0.66); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.08), 0 8px 24px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.9)"></div>
+<div style="margin-top: -8px; height: 30px; width: 130px; border-radius: 10px; box-sizing: border-box; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08)"></div>
+</div>
+<span style="display: flex; gap: 5px; font-size: 12px; color: #1B7A34"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#1B7A34" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 3px"><path d="M2.5 6.5 5 9l4.5-5.5"/></svg>导航和控件浮在内容上</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<div style="height: 64px; box-sizing: border-box; border-radius: 12px; background: #F5F5F7; display: flex; align-items: center; justify-content: center">
+<div style="height: 44px; width: 130px; border-radius: 10px; box-sizing: border-box; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; background: rgba(255,255,255,0.40); backdrop-filter: blur(28px); border: 1px dashed rgba(0,0,0,0.25)"><span style="height: 6px; width: 80px; border-radius: 3px; background: #C7C7CC"></span><span style="height: 6px; width: 100px; border-radius: 3px; background: #C7C7CC"></span><span style="height: 6px; width: 60px; border-radius: 3px; background: #C7C7CC"></span></div>
+</div>
+<span style="display: flex; gap: 5px; font-size: 12px; color: #C4001A"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#C4001A" stroke-width="1.7" stroke-linecap="round" style="flex: none; margin-top: 3px"><path d="M3 3l6 6M9 3 3 9"/></svg>内容本身不做成半透明</span>
+</div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<span style="font-weight: 600">每屏一个强调动作</span>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 10px">
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<div style="height: 64px; box-sizing: border-box; border-radius: 12px; background: #F5F5F7; display: flex; align-items: center; justify-content: center; gap: 8px">
+<button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; background: rgba(118,118,128,0.14); white-space: nowrap">取消</button>
+<button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; white-space: nowrap">创建</button>
+</div>
+<span style="display: flex; gap: 5px; font-size: 12px; color: #1B7A34"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#1B7A34" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 3px"><path d="M2.5 6.5 5 9l4.5-5.5"/></svg>一个主要按钮，其余次要</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<div style="height: 64px; box-sizing: border-box; border-radius: 12px; background: #F5F5F7; display: flex; align-items: center; justify-content: center; gap: 6px">
+<button style="height: 32px; padding: 0 9px; border-radius: 16px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; white-space: nowrap">创建</button>
+<button style="height: 32px; padding: 0 9px; border-radius: 16px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; white-space: nowrap">运行</button>
+<button style="height: 32px; padding: 0 9px; border-radius: 16px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; white-space: nowrap">打开</button>
+</div>
+<span style="display: flex; gap: 5px; font-size: 12px; color: #C4001A"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#C4001A" stroke-width="1.7" stroke-linecap="round" style="flex: none; margin-top: 3px"><path d="M3 3l6 6M9 3 3 9"/></svg>同一屏多个主要按钮</span>
+</div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<span style="font-weight: 600">不用装饰渐变</span>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 10px">
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<div style="height: 64px; box-sizing: border-box; border-radius: 12px; background: #F5F5F7; display: flex; align-items: center; justify-content: center">
+<div style="height: 40px; width: 130px; border-radius: 10px; background: #0071E3; color: #FFFFFF; font-weight: 600; display: flex; align-items: center; justify-content: center">纯色填充</div>
+</div>
+<span style="display: flex; gap: 5px; font-size: 12px; color: #1B7A34"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#1B7A34" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 3px"><path d="M2.5 6.5 5 9l4.5-5.5"/></svg>只用纯色填充</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<div style="height: 64px; box-sizing: border-box; border-radius: 12px; background: #F5F5F7; display: flex; align-items: center; justify-content: center">
+<div style="height: 40px; width: 130px; border-radius: 10px; box-sizing: border-box; border: 1px dashed rgba(0,0,0,0.30); color: #6E6E73; text-decoration: line-through; display: flex; align-items: center; justify-content: center">渐变底（不用）</div>
+</div>
+<span style="display: flex; gap: 5px; font-size: 12px; color: #C4001A"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#C4001A" stroke-width="1.7" stroke-linecap="round" style="flex: none; margin-top: 3px"><path d="M3 3l6 6M9 3 3 9"/></svg>装饰性渐变</span>
+</div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<span style="font-weight: 600">按钮里不放快捷键符号</span>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 10px">
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<div style="height: 64px; box-sizing: border-box; border-radius: 12px; background: #F5F5F7; display: flex; align-items: center; justify-content: center; gap: 10px">
+<button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; white-space: nowrap">运行</button>
+<span style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #6E6E73">⌘R</span>
+</div>
+<span style="display: flex; gap: 5px; font-size: 12px; color: #1B7A34"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#1B7A34" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 3px"><path d="M2.5 6.5 5 9l4.5-5.5"/></svg>快捷键写在菜单和提示里</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<div style="height: 64px; box-sizing: border-box; border-radius: 12px; background: #F5F5F7; display: flex; align-items: center; justify-content: center">
+<div style="height: 32px; padding: 0 14px; border-radius: 16px; box-sizing: border-box; border: 1px dashed rgba(0,0,0,0.30); color: #6E6E73; text-decoration: line-through; display: flex; align-items: center; white-space: nowrap">运行 + 快捷键</div>
+</div>
+<span style="display: flex; gap: 5px; font-size: 12px; color: #C4001A"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#C4001A" stroke-width="1.7" stroke-linecap="round" style="flex: none; margin-top: 3px"><path d="M3 3l6 6M9 3 3 9"/></svg>按钮里放快捷键符号</span>
+</div>
+</div>
+</div>
+
+</div>
+</section>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1340}}'>
+class Component extends DCLogic {
+renderVals() {
+const principles = [
+  { t: '动效用来说明发生了什么，不做装饰。' },
+  { t: '浮层从触发它的控件长出来，关闭时收回到那里。' },
+  { t: '短：多数 150 到 250 毫秒；用户的操作立刻有反馈。' },
+  { t: '系统开启“减弱动态效果”时，只剩淡入淡出，没有循环动画。' }
+];
+const tr = (trigger, moves, time, ease) => ({ trigger: trigger, moves: moves, time: time, ease: ease });
+const transitions = [
+  tr('打开或关闭对话框、模板选择器', '从 0.96 放大并淡入，从触发它的控件位置展开', '250 ms', '弹簧式缓出'),
+  tr('打开菜单', '淡入并轻微放大，贴着按钮出现', '150 ms', '缓出'),
+  tr('切换标签', '内容交叉淡入淡出，不滑动', '150 ms', '缓入缓出'),
+  tr('启动步骤', '四步依次点亮，每步错开 120 ms', '200 ms 每步', '缓出'),
+  tr('预览就绪', '预览淡入，盖过进度卡片', '200 ms', '缓出'),
+  tr('列表行悬停', '背景直接变化，没有过渡', '即时', '—'),
+  tr('提示出现与消失', '上滑 8 px 并淡入；停留 3 秒后自动淡出', '200 ms', '淡入缓出，淡出缓入'),
+  tr('按下玻璃控件', '高光描边变亮，填充加一层；松开恢复', '100 ms', '线性')
+];
+const box = (css) => ({ css: css });
+const dlgFinal = 'left:30px;top:10px;width:76px;height:50px;border-radius:10px;';
+const opener = box('left:10px;bottom:8px;width:30px;height:14px;border-radius:7px;background:#0071E3;');
+const dialogPair = {
+  title: '对话框打开', desc: '从 0.96 放大到 1，透明度 0 到 100%，原点在触发按钮。',
+  frames: [
+    { label: '0 ms', arrow: true, boxes: [opener, box(dlgFinal + 'border:1px dashed rgba(0,0,0,0.25);'), box(dlgFinal + 'background:#FFFFFF;border:1px solid rgba(0,0,0,0.12);opacity:0.35;transform:scale(0.96);transform-origin:10% 100%;')] },
+    { label: '250 ms', arrow: false, boxes: [opener, box(dlgFinal + 'background:#FFFFFF;border:1px solid rgba(0,0,0,0.12);box-shadow:0 8px 20px rgba(15,23,42,0.18);')] }
+  ]
+};
+const bars = [box('left:12px;top:10px;width:70px;height:6px;border-radius:3px;background:#D1D1D6;'), box('left:12px;top:22px;width:92px;height:6px;border-radius:3px;background:#D1D1D6;')];
+const toastCss = 'left:28px;width:64px;height:18px;border-radius:9px;';
+const toastPair = {
+  title: '提示出现', desc: '从下方上滑 8 px 并淡入；3 秒后原路淡出。',
+  frames: [
+    { label: '0 ms', arrow: true, boxes: bars.concat([box(toastCss + 'bottom:12px;border:1px dashed rgba(0,0,0,0.25);'), box(toastCss + 'bottom:4px;background:#FFFFFF;border:1px solid rgba(0,0,0,0.12);opacity:0.3;')]) },
+    { label: '200 ms', arrow: false, boxes: bars.concat([box(toastCss + 'bottom:12px;background:#FFFFFF;border:1px solid rgba(0,0,0,0.12);box-shadow:0 6px 16px rgba(15,23,42,0.16);')]) }
+  ]
+};
+const stepBoxes = (states) => {
+  const out = [];
+  states.forEach((s, i) => {
+    const top = 10 + i * 16;
+    const dot = s === 'done' ? 'background:#28A745;border:2px solid #28A745;' : s === 'doing' ? 'border:2px solid #C27400;border-right-color:transparent;' : 'border:2px solid #C7C7CC;';
+    out.push(box('left:12px;top:' + top + 'px;width:10px;height:10px;border-radius:50%;' + dot));
+    out.push(box('left:30px;top:' + (top + 2) + 'px;width:72px;height:6px;border-radius:3px;background:' + (s === 'doing' ? '#6E6E73' : s === 'done' ? '#A1A1A6' : '#E5E5EA') + ';'));
+  });
+  return out;
+};
+const stepsPair = {
+  title: '启动步骤点亮', desc: '上一步变成对勾，下一步开始转圈；步与步之间错开 120 ms。',
+  frames: [
+    { label: '第 2 步', arrow: true, boxes: stepBoxes(['done', 'doing', 'todo', 'todo']) },
+    { label: '第 3 步', arrow: false, boxes: stepBoxes(['done', 'done', 'doing', 'todo']) }
+  ]
+};
+const pairs = [dialogPair, toastPair, stepsPair];
+const keys = [
+  { key: '⌘N', what: '新建项目' },
+  { key: '⌘K', what: '命令面板' },
+  { key: '⌘F', what: '搜索资源库' },
+  { key: '⌘P', what: '快速打开文件' },
+  { key: '⌘S', what: '立即保存' },
+  { key: '⌘R', what: '运行或重新运行' },
+  { key: '⌘W', what: '关闭标签并停止' },
+  { key: '⌘,', what: '设置' },
+  { key: 'Return', what: '确认，触发主要按钮' },
+  { key: 'Esc', what: '关闭浮层，等于取消' },
+  { key: '↑ ↓', what: '在列表和菜单里移动' }
+];
+const reduced = [
+  { from: '缩放 + 淡入', to: '只淡入淡出' },
+  { from: '滑动 + 淡入', to: '只淡入淡出' },
+  { from: '转圈', to: '静态标记 + 文字“进行中”' }
+];
+const access = [
+  { t: '对比度', d: '文字 4.5:1，图形标记 3:1。' },
+  { t: '不只靠颜色', d: '每个状态同时有文字和形状。' },
+  { t: '图标按钮要有名字', d: '每个纯图标按钮都有读屏标签和提示文字。' },
+  { t: '点击区域', d: '指针控件至少 28 × 28，主要列表行 44。' },
+  { t: '降低透明度', d: '玻璃改成不透明的浅灰或深灰底，布局不变。' },
+  { t: '文字缩放', d: '基准字号 12 到 16 px 随系统设置缩放，不裁切。' },
+  { t: '两种语言', d: '简体中文和英文都要放得下，英文更长。' },
+  { t: '键盘可达', d: '每个控件都能用键盘到达和操作，焦点环可见。' }
+];
+return { principles, transitions, pairs, keys, reduced, access };
+}
+}
+</script>
+</body>
+</html>

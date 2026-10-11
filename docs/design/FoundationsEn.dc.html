@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Runyard Design foundations</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:#0071E3}a:hover{color:#0058B0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; box-sizing: border-box; padding: 40px 44px; background: #FFFFFF; color: #1D1D1F; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 13px; line-height: 1.45; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 36px; row-gap: 28px; align-content: start">
+
+<div style="grid-column: 1 / -1; display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.3px">Design foundations</h1>
+<div style="color: #6E6E73; font-size: 14px">Two layers: content sits below and is opaque; navigation and controls float above it in glass. Glass is for floating layers only, never for the content itself.</div>
+</div>
+
+<!-- materials -->
+<section style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Glass material</h2>
+<div style="position: relative; height: 250px; border-radius: 20px; overflow: hidden; background: #F5F5F7">
+<div aria-hidden="true" style="position: absolute; left: 24px; top: 24px; width: 150px; height: 110px; border-radius: 16px; background: #0071E3"></div>
+<div aria-hidden="true" style="position: absolute; left: 150px; top: 96px; width: 170px; height: 120px; border-radius: 16px; background: #FF9F0A"></div>
+<div aria-hidden="true" style="position: absolute; right: 24px; top: 34px; width: 120px; height: 150px; border-radius: 16px; background: #1D1D1F"></div>
+<div style="position: absolute; left: 44px; top: 54px; right: 44px; height: 56px; padding: 0 20px; box-sizing: border-box; border-radius: 28px; display: flex; align-items: center; font-weight: 600; background: rgba(255,255,255,0.66); backdrop-filter: blur(28px) saturate(180%); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.08), 0 8px 24px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.9)">Light glass · Toolbar, tabs</div>
+<div style="position: absolute; left: 44px; top: 140px; right: 44px; height: 56px; padding: 0 20px; box-sizing: border-box; border-radius: 28px; display: flex; align-items: center; font-weight: 600; color: #F5F5F7; background: rgba(72,72,78,0.55); backdrop-filter: blur(28px) saturate(180%); border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 10px 28px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.14)">Dark glass · Same spot in the dark theme</div>
+</div>
+<div style="color: #6E6E73">Blur 28 to 50, saturation 180%, a thin highlight stroke and a soft drop shadow. Larger floating layers use a stronger blur.</div>
+</section>
+
+<!-- colour -->
+<section style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Color</h2>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{colors}}" as="c" hint-placeholder-count="8">
+<div style="display: flex; align-items: center; gap: 10px">
+<span aria-hidden="true" style="width: 40px; height: 40px; border-radius: 12px; background: {{c.hex}}; border: 1px solid rgba(0,0,0,0.08); flex: none"></span>
+<div style="display: flex; flex-direction: column">
+<span style="font-weight: 600">{{c.name}}</span>
+<span style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #6E6E73">{{c.hex}}</span>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="color: #6E6E73">Status is never conveyed by color alone; it also has a shape and a word. Running is a solid circle, stopped is a hollow circle, crashed is a square, and a missing toolchain is a triangle.</div>
+</section>
+
+<!-- type -->
+<section style="display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Typography</h2>
+<div style="font-size: 28px; font-weight: 700; letter-spacing: -0.3px">Page title 28</div>
+<div style="font-size: 20px; font-weight: 700">Panel title 20</div>
+<div style="font-size: 14px; font-weight: 600">Playground names, buttons 14</div>
+<div style="font-size: 13px">Body text, list content 13</div>
+<div style="font-size: 12px; color: #6E6E73">Secondary text, column headers 12</div>
+<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 13px">Code, ports, commands SF Mono 13 :7101</div>
+<div style="color: #6E6E73">The interface uses the system font. Code uses SF Mono.</div>
+</section>
+
+<!-- radius -->
+<section style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Corner radius: smaller toward the inside</h2>
+<div style="height: 190px; border-radius: 26px; background: #F5F5F7; border: 1px solid rgba(0,0,0,0.08); padding: 8px; box-sizing: border-box; display: flex">
+<div style="flex: 1; border-radius: 20px; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08); padding: 10px; box-sizing: border-box; display: flex">
+<div style="flex: 1; border-radius: 12px; background: #F5F5F7; border: 1px solid rgba(0,0,0,0.08); padding: 8px; box-sizing: border-box; display: flex; align-items: flex-start">
+<span style="height: 28px; padding: 0 12px; border-radius: 9px; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08); display: inline-flex; align-items: center">9</span>
+</div>
+</div>
+</div>
+<div style="color: #6E6E73">Window 26, floating sidebar 20, content cards 16, list rows and inputs 12, small controls 9. Buttons and toolbars use fully rounded capsules.</div>
+</section>
+
+<!-- controls -->
+<section style="grid-column: span 2; display: flex; flex-direction: column; gap: 14px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Controls</h2>
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+<button style="height: 44px; padding: 0 20px; border-radius: 22px; border: 1px solid rgba(255,255,255,0.35); background: #0071E3; color: #FFFFFF; font-weight: 600; font-size: 14px; box-shadow: 0 8px 22px rgba(0,113,227,0.32), inset 0 1px 0 rgba(255,255,255,0.35)">Primary button</button>
+<button style="height: 44px; padding: 0 18px; border-radius: 22px; font-weight: 500; background: rgba(255,255,255,0.66); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.08), 0 8px 24px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.9)">Glass button</button>
+<button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; background: rgba(118,118,128,0.14)">Secondary button</button>
+<button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; background: rgba(215,0,21,0.10); color: #C4001A; font-weight: 500">Move to Trash</button>
+<div role="group" aria-label="Version" style="display: flex; padding: 2px; border-radius: 11px; background: rgba(118,118,128,0.14)">
+<button style="height: 28px; min-width: 40px; padding: 0 10px; border-radius: 9px; border: none; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; font-weight: 600; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.14), 0 0 0 0.5px rgba(0,0,0,0.05)">19</button>
+<button style="height: 28px; min-width: 40px; padding: 0 10px; border-radius: 9px; border: none; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; font-weight: 600; background: transparent; color: #48484A">18</button>
+</div>
+<span aria-hidden="true" style="width: 34px; height: 20px; border-radius: 10px; background: #28A745; position: relative; display: inline-block"><span style="position: absolute; right: 2px; top: 2px; width: 16px; height: 16px; border-radius: 8px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(0,0,0,0.25)"></span></span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap">
+<span style="display: flex; align-items: center; gap: 8px; color: #1B7A34; font-weight: 500"><span aria-hidden="true" style="width: 9px; height: 9px; border-radius: 50%; background: #28A745"></span>Running</span>
+<span style="display: flex; align-items: center; gap: 8px; color: #8A4B00; font-weight: 500"><span aria-hidden="true" style="width: 9px; height: 9px; border-radius: 50%; box-sizing: border-box; border: 2px solid #C27400; border-right-color: transparent"></span>Starting</span>
+<span style="display: flex; align-items: center; gap: 8px; color: #6E6E73; font-weight: 500"><span aria-hidden="true" style="width: 9px; height: 9px; border-radius: 50%; box-sizing: border-box; border: 1.5px solid #8E8E93"></span>Stopped</span>
+<span style="display: flex; align-items: center; gap: 8px; color: #C4001A; font-weight: 500"><span aria-hidden="true" style="width: 9px; height: 9px; border-radius: 2px; background: #D70015"></span>Crashed</span>
+<span style="display: flex; align-items: center; gap: 8px; color: #8A4B00; font-weight: 500">
+<svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#C27400" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"><path d="M6 1.5 11 10.5H1zM6 5v2.5M6 9v.2"/></svg>Toolchain missing</span>
+<span style="display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 12px; background: #F0F0F3; border: 1px solid rgba(0,0,0,0.16)">Kept</span>
+<span style="display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 12px; color: #6E6E73; border: 1px dashed rgba(0,0,0,0.25)">Scratch</span>
+<span style="display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 12px; font-weight: 500; color: #7A2E9E; background: rgba(175,82,222,0.12)">Agent</span>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; color: #3A3A3C">
+<div style="padding: 14px 16px; border-radius: 16px; background: #F5F5F7"><span style="font-weight: 600; color: #1D1D1F">Motion</span><br>Floating layers scale up from the button that triggered them, in about 0.25 s, with a slight bounce. Startup lights up in four steps: copy, install, start, ready. With “Reduce motion” on, they cross-fade instead.</div>
+<div style="padding: 14px 16px; border-radius: 16px; background: #F5F5F7"><span style="font-weight: 600; color: #1D1D1F">Legibility</span><br>Text on glass is always solid, never translucent. With “Reduce transparency” on, glass becomes an opaque light or dark gray and the layout does not change.</div>
+</div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+const colors = [
+{ name: 'Accent', hex: '#0071E3' },
+{ name: 'Running', hex: '#28A745' },
+{ name: 'Starting / missing', hex: '#C27400' },
+{ name: 'Crashed / delete', hex: '#D70015' },
+{ name: 'Agent', hex: '#AF52DE' },
+{ name: 'Primary text', hex: '#1D1D1F' },
+{ name: 'Secondary text', hex: '#6E6E73' },
+{ name: 'Content background', hex: '#F5F5F7' }
+];
+return { colors };
+}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Runyard 创建后的启动过程</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:#0071E3}a:hover{color:#0058B0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; box-sizing: border-box; position: relative; overflow: hidden; background: #F5F5F7; color: #1D1D1F; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 13px; line-height: 1.4">
+
+<div style="position: absolute; left: 20px; right: 16px; top: 14px; height: 44px; display: flex; align-items: center; gap: 12px">
+<div style="display: flex; align-items: center; gap: 8px; padding-right: 6px">
+<span aria-hidden="true" style="width: 12px; height: 12px; border-radius: 6px; background: #FF5F57; border: 0.5px solid rgba(0,0,0,0.12)"></span>
+<span aria-hidden="true" style="width: 12px; height: 12px; border-radius: 6px; background: #FEBC2E; border: 0.5px solid rgba(0,0,0,0.12)"></span>
+<span aria-hidden="true" style="width: 12px; height: 12px; border-radius: 6px; background: #28C840; border: 0.5px solid rgba(0,0,0,0.12)"></span>
+</div>
+<div style="height: 44px; padding: 4px; box-sizing: border-box; border-radius: 22px; display: flex; align-items: center; gap: 2px; flex: none; background: rgba(255,255,255,0.66); backdrop-filter: blur(28px) saturate(180%); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.08), 0 8px 24px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.9)">
+<button style="height: 36px; padding: 0 16px; border-radius: 18px; border: none; background: transparent; color: #3A3A3C; display: flex; align-items: center; gap: 7px; white-space: nowrap">
+<svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#3A3A3C" stroke-width="1.5" stroke-linejoin="round"><rect x="1.5" y="1.5" width="4.5" height="4.5" rx="1.2"/><rect x="8" y="1.5" width="4.5" height="4.5" rx="1.2"/><rect x="1.5" y="8" width="4.5" height="4.5" rx="1.2"/><rect x="8" y="8" width="4.5" height="4.5" rx="1.2"/></svg>资源库</button>
+<button style="height: 36px; padding: 0 12px 0 14px; border-radius: 18px; border: none; background: transparent; color: #3A3A3C; display: flex; align-items: center; gap: 8px; white-space: nowrap">
+<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: #28A745"></span>react-counter
+<svg role="img" aria-label="关闭并停止" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#6E6E73" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l6 6M8 2 2 8"/></svg></button>
+<button style="height: 36px; padding: 0 12px 0 14px; border-radius: 18px; border: none; background: transparent; color: #3A3A3C; display: flex; align-items: center; gap: 8px; white-space: nowrap">
+<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: #28A745"></span>hono-todo-api
+<svg role="img" aria-label="关闭并停止" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#6E6E73" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l6 6M8 2 2 8"/></svg></button>
+<button style="height: 36px; padding: 0 12px 0 14px; border-radius: 18px; border: none; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 0 0 0.5px rgba(0,0,0,0.06); font-weight: 600; display: flex; align-items: center; gap: 8px; white-space: nowrap">
+<span aria-hidden="true" style="width: 9px; height: 9px; border-radius: 50%; box-sizing: border-box; border: 2px solid #C27400; border-right-color: transparent"></span>react19-4
+<svg role="img" aria-label="关闭并停止" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#6E6E73" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l6 6M8 2 2 8"/></svg></button>
+</div>
+<div style="flex: 1"></div>
+<div style="height: 44px; padding: 0 6px 0 18px; border-radius: 22px; display: flex; align-items: center; gap: 12px; flex: none; white-space: nowrap; background: rgba(255,255,255,0.66); backdrop-filter: blur(28px) saturate(180%); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.08), 0 8px 24px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.9)">
+<span style="font-weight: 600; font-size: 14px">react19-4</span>
+<span style="color: #6E6E73">React 19 · Vite</span>
+<span style="display: flex; align-items: center; gap: 6px; color: #8A4B00; font-weight: 500"><span aria-hidden="true" style="width: 9px; height: 9px; border-radius: 50%; box-sizing: border-box; border: 2px solid #C27400; border-right-color: transparent"></span>启动中</span>
+<span style="font-size: 12px; color: #6E6E73; white-space: nowrap">关闭标签页即停止</span>
+<button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; background: rgba(118,118,128,0.14); display: flex; align-items: center; gap: 6px">
+<span aria-hidden="true" style="width: 9px; height: 9px; border-radius: 2px; background: #1D1D1F"></span>停止</button>
+<button aria-label="更多操作" style="width: 32px; height: 32px; padding: 0; border-radius: 16px; border: none; background: rgba(118,118,128,0.14); display: flex; align-items: center; justify-content: center; flex: none">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="#1D1D1F"><circle cx="3.5" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="12.5" cy="8" r="1.3"/></svg></button>
+</div>
+<button style="height: 44px; padding: 0 16px; border-radius: 22px; display: flex; align-items: center; gap: 8px; font-weight: 500; background: rgba(255,255,255,0.66); backdrop-filter: blur(28px) saturate(180%); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.08), 0 8px 24px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.9)">
+<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: #28A745; box-shadow: 0 0 0 3px rgba(40,167,69,0.18)"></span>4 个运行中</button>
+</div>
+
+<nav aria-label="文件" style="position: absolute; left: 8px; top: 70px; bottom: 8px; width: 216px; box-sizing: border-box; border-radius: 20px; padding: 14px 8px; display: flex; flex-direction: column; gap: 1px; background: rgba(255,255,255,0.62); backdrop-filter: blur(40px) saturate(180%); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.10), 0 12px 36px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,1)">
+<div style="padding: 0 10px 8px 10px; font-size: 12px; font-weight: 600; color: #6E6E73">文件</div>
+<sc-for list="{{files}}" as="f" hint-placeholder-count="7">
+<button style="height: 28px; padding: 0 8px 0 {{f.indent}}; border-radius: 8px; border: none; background: {{f.bg}}; color: {{f.color}}; font-weight: {{f.weight}}; display: flex; align-items: center; text-align: left; width: 100%">
+<svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="{{f.chev}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-right: 4px"><path d="M2 3.5 5 6.5 8 3.5"/></svg><svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="{{f.icon}}" stroke-width="1.4" stroke-linejoin="round" style="flex: none; margin-right: 8px"><path d="{{f.path}}"/></svg>
+<span style="flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{f.name}}</span>
+</button>
+</sc-for>
+</nav>
+
+<div style="position: absolute; left: 232px; right: 8px; top: 70px; bottom: 8px; display: flex; flex-direction: column; gap: 8px">
+<div style="flex: 1; min-height: 0; display: flex; gap: 8px">
+
+<div style="flex: 1.05; min-width: 0; border-radius: 16px; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.07); display: flex; flex-direction: column; overflow: hidden">
+<div style="height: 40px; flex: none; padding: 0 8px; display: flex; align-items: center; gap: 4px; border-bottom: 1px solid rgba(0,0,0,0.07)">
+<button style="height: 28px; padding: 0 12px; border-radius: 9px; border: none; background: rgba(118,118,128,0.14); font-weight: 500">App.tsx</button>
+<span style="flex: 1"></span>
+<span style="font-size: 12px; color: #6E6E73; padding-right: 8px">启动期间就可以开始编辑</span>
+</div>
+<div style="padding: 6px 16px; font-size: 12px; color: #6E6E73">react19-4 › src › App.tsx</div>
+<div style="flex: 1; min-height: 0; padding: 4px 0; font-family: 'SF Mono', Menlo, monospace; font-size: 13px; line-height: 22px">
+<sc-for list="{{lines}}" as="line" hint-placeholder-count="15">
+<div style="display: flex">
+<span style="width: 48px; flex: none; text-align: right; padding-right: 16px; color: #6E6E73">{{line.no}}</span>
+<span style="white-space: pre"><sc-for list="{{line.tokens}}" as="tk" hint-placeholder-count="3"><span style="color: {{tk.c}}">{{tk.t}}</span></sc-for></span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<!-- preview pane: startup progress -->
+<div style="flex: 1; min-width: 0; border-radius: 16px; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.07); display: flex; align-items: center; justify-content: center; padding: 24px; box-sizing: border-box">
+<div style="width: 440px; max-width: 100%; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="font-size: 20px; font-weight: 700">正在启动 react19-4</div>
+<div style="color: #6E6E73">项目已经建好，放在 ~/Runyard/react19-4。页面准备好后会自动显示在这里。</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 4px">
+<sc-for list="{{steps}}" as="s" hint-placeholder-count="4">
+<div style="height: 48px; padding: 0 14px; border-radius: 12px; background: {{s.bg}}; display: flex; align-items: center; gap: 12px">
+<span aria-hidden="true" style="width: 22px; height: 22px; border-radius: 50%; box-sizing: border-box; background: {{s.markBg}}; border: 2px solid {{s.markBorder}}; border-right-color: {{s.markGap}}; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 12px; font-weight: 700; flex: none">{{s.mark}}</span>
+<span style="flex: 1; font-weight: {{s.weight}}; color: {{s.color}}">{{s.label}}</span>
+<span style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #6E6E73">{{s.time}}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="padding: 10px 14px; border-radius: 12px; background: #F5F5F7; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #3A3A3C; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">VITE v8.3.4  正在预构建依赖…</div>
+
+<div style="display: flex; align-items: center; gap: 10px">
+<button style="height: 36px; padding: 0 16px; border-radius: 18px; border: none; background: rgba(118,118,128,0.14)">查看完整输出</button>
+<button style="height: 36px; padding: 0 16px; border-radius: 18px; border: none; background: rgba(118,118,128,0.14)">停止启动</button>
+<span style="flex: 1"></span>
+<span style="font-size: 12px; color: #6E6E73">通常不到 2 秒</span>
+</div>
+</div>
+</div>
+</div>
+
+<div style="height: 218px; flex: none; border-radius: 16px; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.07); display: flex; flex-direction: column; overflow: hidden">
+<div style="height: 44px; flex: none; padding: 0 10px; display: flex; align-items: center; gap: 10px">
+<div role="tablist" style="display: flex; padding: 2px; border-radius: 11px; background: rgba(118,118,128,0.14)">
+<button role="tab" aria-selected="true" style="height: 28px; padding: 0 14px; border-radius: 9px; border: none; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.14), 0 0 0 0.5px rgba(0,0,0,0.05); font-weight: 600">输出</button>
+<button role="tab" aria-selected="false" style="height: 28px; padding: 0 14px; border-radius: 9px; border: none; background: transparent; color: #3A3A3C">终端</button>
+</div>
+</div>
+<div style="flex: 1; padding: 2px 18px 12px 18px; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; line-height: 21px; color: #3A3A3C">
+<div><span style="color: #6E6E73">20:31:07</span>  已从模板 react19 创建，共 9 个文件</div>
+<div><span style="color: #6E6E73">20:31:07</span>  <span style="color: #0058B0">$ pnpm install --prefer-offline</span></div>
+<div><span style="color: #6E6E73">20:31:07</span>  依赖已就绪，全部来自本机缓存，用时 0.3 秒</div>
+<div><span style="color: #6E6E73">20:31:07</span>  <span style="color: #0058B0">$ pnpm vite --port 7110 --strictPort</span></div>
+<div><span style="color: #6E6E73">20:31:08</span>  VITE v8.3.4  正在预构建依赖…</div>
+</div>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+const K = '#AD3DA4', S = '#B3261E', F = '#0F68A0', N = '#1C00CF', P = '#1D1D1F', M = '#6E6E73', T = '#1B7A34';
+const t = (text, c) => ({ t: text, c: c || P });
+const src = [
+[t('import', K), t(' { useState } '), t('from', K), t(" 'react'", S)],
+[t('import', K), t(" './App.css'", S)],
+[t(' ')],
+[t('export default function', K), t(' App', F), t('() {')],
+[t('  const', K), t(' [count, setCount] = '), t('useState', F), t('('), t('0', N), t(')')],
+[t(' ')],
+[t('  return', K), t(' (')],
+[t('    <', M), t('main', T), t(' className=', P), t('"card"', S), t('>', M)],
+[t('      <', M), t('h1', T), t('>', M), t('Hello, Runyard'), t('</', M), t('h1', T), t('>', M)],
+[t('      <', M), t('button', T), t(' onClick={() => '), t('setCount', F), t('(count + '), t('1', N), t(')}'), t('>', M)],
+[t('        Count is {count}')],
+[t('      </', M), t('button', T), t('>', M)],
+[t('    </', M), t('main', T), t('>', M)],
+[t('  )')],
+[t('}')]
+];
+const lines = src.map((tokens, i) => ({ no: String(i + 1), tokens }));
+const fileData = [['src', 0, 'dir'], ['App.css', 1, 'file'], ['App.tsx', 1, 'on'], ['main.tsx', 1, 'file'], ['index.html', 0, 'file'], ['package.json', 0, 'file'], ['vite.config.ts', 0, 'file']];
+const files = fileData.map((f) => ({ name: f[0], indent: (10 + f[1] * 16) + 'px', bg: f[2] === 'on' ? '#0071E3' : 'transparent', color: f[2] === 'on' ? '#FFFFFF' : '#1D1D1F', weight: f[2] === 'dir' ? 600 : 400, mark: f[2] === 'on' ? '#FFFFFF' : (f[2] === 'dir' ? '#B8860B' : '#8E8E93'), markRadius: f[2] === 'dir' ? '2px' : '50%' }));
+const typeColor = (n) => /\.tsx?$/.test(n) ? '#0F68A0' : /\.css$/.test(n) ? '#7A2E9E' : /\.html$/.test(n) ? '#B3470B' : /\.json$/.test(n) ? '#8A6D00' : '#6E6E73';
+files.forEach((f, i) => { const kind = fileData[i][2]; f.dir = kind === 'dir'; f.file = !f.dir; f.indent = (8 + fileData[i][1] * 18) + 'px'; f.chev = f.dir ? '#6E6E73' : 'transparent'; f.path = f.dir ? 'M1.5 4.5a1 1 0 0 1 1-1h3.2l1.5 1.6h6.3a1 1 0 0 1 1 1v6.4a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1z' : 'M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5'; f.icon = kind === 'on' ? '#FFFFFF' : f.dir ? '#B8860B' : typeColor(f.name); });
+const done = (label, time) => ({ label, time, mark: '✓', markBg: '#28A745', markBorder: '#28A745', markGap: '#28A745', bg: 'transparent', weight: 400, color: '#1D1D1F' });
+const doing = (label, time) => ({ label, time, mark: '', markBg: 'transparent', markBorder: '#C27400', markGap: 'transparent', bg: 'rgba(194,116,0,0.10)', weight: 600, color: '#1D1D1F' });
+const todo = (label) => ({ label, time: '', mark: '', markBg: 'transparent', markBorder: '#C7C7CC', markGap: '#C7C7CC', bg: 'transparent', weight: 400, color: '#6E6E73' });
+const steps = [done('复制模板文件', '0.1 秒'), done('安装依赖', '0.3 秒'), doing('启动开发服务', '进行中'), todo('就绪，显示页面')];
+return { lines, files, steps };
+}
+}
+</script>
+</body>
+</html>

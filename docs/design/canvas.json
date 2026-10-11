@@ -1,0 +1,2097 @@
+{
+ "v": 3,
+ "attachments": {},
+ "boards": {
+  "Main.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 0,
+   "title": "01 资源库",
+   "page": "zh"
+  },
+  "MainNarrow.dc.html": {
+   "w": 1100,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 0,
+   "title": "02 窗口变窄时，表格横向滚动",
+   "page": "zh"
+  },
+  "Empty.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 2700,
+   "y": 0,
+   "title": "03 第一次打开，还没有项目",
+   "page": "zh"
+  },
+  "NoResults.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4220,
+   "y": 0,
+   "title": "04 搜索没有结果",
+   "page": "zh"
+  },
+  "FolderMissing.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 5740,
+   "y": 0,
+   "title": "05 找不到项目文件夹",
+   "page": "zh"
+  },
+  "RowMenu.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 1320,
+   "title": "06 点“更多”之后的菜单",
+   "page": "zh"
+  },
+  "RenameInline.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 1320,
+   "title": "07 重命名与编辑备注",
+   "page": "zh"
+  },
+  "DeleteConfirm.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 1320,
+   "title": "08 移到废纸篓前的确认",
+   "page": "zh"
+  },
+  "RunningPopover.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 1320,
+   "title": "09 运行中列表",
+   "page": "zh"
+  },
+  "AgentActivity.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 1320,
+   "title": "10 智能体刚创建了项目",
+   "page": "zh"
+  },
+  "CleanReminder.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 7600,
+   "y": 1320,
+   "title": "11 自动清理提醒",
+   "page": "zh"
+  },
+  "Picker.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 2640,
+   "title": "12 选模板",
+   "page": "zh"
+  },
+  "CreateDialog.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 2640,
+   "title": "13 填写名称、备注、自动清理",
+   "page": "zh"
+  },
+  "CreateDialogOn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 2640,
+   "title": "14 打开自动清理之后",
+   "page": "zh"
+  },
+  "Creating.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 2640,
+   "title": "15 启动过程",
+   "page": "zh"
+  },
+  "MissingLight.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 2640,
+   "title": "16 缺少运行环境",
+   "page": "zh"
+  },
+  "UrlConfirm.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 7600,
+   "y": 2640,
+   "title": "17 从链接新建项目前的确认",
+   "page": "zh"
+  },
+  "WebLight.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 3960,
+   "title": "18 网页工作区",
+   "page": "zh"
+  },
+  "Service.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 3960,
+   "title": "19 服务工作区",
+   "page": "zh"
+  },
+  "WorkspaceMenu.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 3960,
+   "title": "20 工作区的“更多”菜单",
+   "page": "zh"
+  },
+  "AttachedRun.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 3960,
+   "title": "21 由命令行启动的项目",
+   "page": "zh"
+  },
+  "CloseConfirm.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 3960,
+   "title": "22 关闭运行中的标签页前的确认",
+   "page": "zh"
+  },
+  "Script.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 5280,
+   "title": "23 脚本工作区",
+   "page": "zh"
+  },
+  "ScriptRunning.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 5280,
+   "title": "24 脚本运行中",
+   "page": "zh"
+  },
+  "ScriptStale.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 5280,
+   "title": "25 代码有语法错误",
+   "page": "zh"
+  },
+  "ScriptFailed.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 5280,
+   "title": "26 脚本运行出错",
+   "page": "zh"
+  },
+  "Stopped.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 6600,
+   "title": "27 已停止",
+   "page": "zh"
+  },
+  "Crashed.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 6600,
+   "title": "28 运行中崩溃",
+   "page": "zh"
+  },
+  "StartFailed.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 6600,
+   "title": "29 启动失败的三种情况",
+   "page": "zh"
+  },
+  "Templates.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 7920,
+   "title": "30 模板管理",
+   "page": "zh"
+  },
+  "SaveTemplate.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 7920,
+   "title": "31 另存为模板",
+   "page": "zh"
+  },
+  "Unused.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 9240,
+   "title": "32 长期未使用（第二优先级，第一版不做）",
+   "page": "zh"
+  },
+  "Settings.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 9240,
+   "title": "33 设置",
+   "page": "zh"
+  },
+  "MainEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 0,
+   "title": "01 Library",
+   "page": "en"
+  },
+  "MainNarrowEn.dc.html": {
+   "w": 1100,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 0,
+   "title": "02 Narrow window: the table scrolls sideways",
+   "page": "en"
+  },
+  "EmptyEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 2700,
+   "y": 0,
+   "title": "03 First launch, nothing here yet",
+   "page": "en"
+  },
+  "NoResultsEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4220,
+   "y": 0,
+   "title": "04 Search with no results",
+   "page": "en"
+  },
+  "FolderMissingEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 5740,
+   "y": 0,
+   "title": "05 Folder not found",
+   "page": "en"
+  },
+  "RowMenuEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 1320,
+   "title": "06 The More menu",
+   "page": "en"
+  },
+  "RenameInlineEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 1320,
+   "title": "07 Rename and edit the note",
+   "page": "en"
+  },
+  "DeleteConfirmEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 1320,
+   "title": "08 Confirm before moving to Trash",
+   "page": "en"
+  },
+  "RunningPopoverEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 1320,
+   "title": "09 Running list",
+   "page": "en"
+  },
+  "AgentActivityEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 1320,
+   "title": "10 An agent just created a playground",
+   "page": "en"
+  },
+  "CleanReminderEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 7600,
+   "y": 1320,
+   "title": "11 Auto-clean reminder",
+   "page": "en"
+  },
+  "PickerEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 2640,
+   "title": "12 Choose a template",
+   "page": "en"
+  },
+  "CreateDialogEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 2640,
+   "title": "13 Name, note, auto-clean",
+   "page": "en"
+  },
+  "CreateDialogOnEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 2640,
+   "title": "14 Auto-clean switched on",
+   "page": "en"
+  },
+  "CreatingEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 2640,
+   "title": "15 Starting up",
+   "page": "en"
+  },
+  "MissingLightEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 2640,
+   "title": "16 Toolchain missing",
+   "page": "en"
+  },
+  "UrlConfirmEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 7600,
+   "y": 2640,
+   "title": "17 Confirm a new playground from a link",
+   "page": "en"
+  },
+  "WebLightEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 3960,
+   "title": "18 Web workspace",
+   "page": "en"
+  },
+  "ServiceEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 3960,
+   "title": "19 Service workspace",
+   "page": "en"
+  },
+  "WorkspaceMenuEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 3960,
+   "title": "20 The workspace More menu",
+   "page": "en"
+  },
+  "AttachedRunEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 3960,
+   "title": "21 Started from the command line",
+   "page": "en"
+  },
+  "CloseConfirmEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 3960,
+   "title": "22 Confirm before closing a running tab",
+   "page": "en"
+  },
+  "ScriptEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 5280,
+   "title": "23 Script workspace",
+   "page": "en"
+  },
+  "ScriptRunningEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 5280,
+   "title": "24 Script running",
+   "page": "en"
+  },
+  "ScriptStaleEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 5280,
+   "title": "25 Syntax error in the code",
+   "page": "en"
+  },
+  "ScriptFailedEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 5280,
+   "title": "26 Script failed",
+   "page": "en"
+  },
+  "StoppedEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 6600,
+   "title": "27 Stopped",
+   "page": "en"
+  },
+  "CrashedEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 6600,
+   "title": "28 Crashed while running",
+   "page": "en"
+  },
+  "StartFailedEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 6600,
+   "title": "29 Three ways a start can fail",
+   "page": "en"
+  },
+  "TemplatesEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 7920,
+   "title": "30 Templates",
+   "page": "en"
+  },
+  "SaveTemplateEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 7920,
+   "title": "31 Save as template",
+   "page": "en"
+  },
+  "UnusedEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 9240,
+   "title": "32 Unused for a while (P1, not in the first version)",
+   "page": "en"
+  },
+  "SettingsEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 9240,
+   "title": "33 Settings",
+   "page": "en"
+  },
+  "MainDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 0,
+   "title": "01 资源库",
+   "page": "zhDark"
+  },
+  "MainNarrowDark.dc.html": {
+   "w": 1100,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 0,
+   "title": "02 窗口变窄时，表格横向滚动",
+   "page": "zhDark"
+  },
+  "EmptyDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 2700,
+   "y": 0,
+   "title": "03 第一次打开，还没有项目",
+   "page": "zhDark"
+  },
+  "NoResultsDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4220,
+   "y": 0,
+   "title": "04 搜索没有结果",
+   "page": "zhDark"
+  },
+  "FolderMissingDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 5740,
+   "y": 0,
+   "title": "05 找不到项目文件夹",
+   "page": "zhDark"
+  },
+  "RowMenuDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 1320,
+   "title": "06 点“更多”之后的菜单",
+   "page": "zhDark"
+  },
+  "RenameInlineDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 1320,
+   "title": "07 重命名与编辑备注",
+   "page": "zhDark"
+  },
+  "DeleteConfirmDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 1320,
+   "title": "08 移到废纸篓前的确认",
+   "page": "zhDark"
+  },
+  "RunningPopoverDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 1320,
+   "title": "09 运行中列表",
+   "page": "zhDark"
+  },
+  "AgentActivityDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 1320,
+   "title": "10 智能体刚创建了项目",
+   "page": "zhDark"
+  },
+  "CleanReminderDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 7600,
+   "y": 1320,
+   "title": "11 自动清理提醒",
+   "page": "zhDark"
+  },
+  "PickerDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 2640,
+   "title": "12 选模板",
+   "page": "zhDark"
+  },
+  "CreateDialogDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 2640,
+   "title": "13 填写名称、备注、自动清理",
+   "page": "zhDark"
+  },
+  "CreateDialogOnDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 2640,
+   "title": "14 打开自动清理之后",
+   "page": "zhDark"
+  },
+  "CreatingDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 2640,
+   "title": "15 启动过程",
+   "page": "zhDark"
+  },
+  "Missing.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 2640,
+   "title": "16 缺少运行环境",
+   "page": "zhDark"
+  },
+  "UrlConfirmDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 7600,
+   "y": 2640,
+   "title": "17 从链接新建项目前的确认",
+   "page": "zhDark"
+  },
+  "Web.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 3960,
+   "title": "18 网页工作区",
+   "page": "zhDark"
+  },
+  "ServiceDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 3960,
+   "title": "19 服务工作区",
+   "page": "zhDark"
+  },
+  "WorkspaceMenuDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 3960,
+   "title": "20 工作区的“更多”菜单",
+   "page": "zhDark"
+  },
+  "AttachedRunDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 3960,
+   "title": "21 由命令行启动的项目",
+   "page": "zhDark"
+  },
+  "CloseConfirmDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 3960,
+   "title": "22 关闭运行中的标签页前的确认",
+   "page": "zhDark"
+  },
+  "ScriptDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 5280,
+   "title": "23 脚本工作区",
+   "page": "zhDark"
+  },
+  "ScriptRunningDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 5280,
+   "title": "24 脚本运行中",
+   "page": "zhDark"
+  },
+  "ScriptStaleDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 5280,
+   "title": "25 代码有语法错误",
+   "page": "zhDark"
+  },
+  "ScriptFailedDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 5280,
+   "title": "26 脚本运行出错",
+   "page": "zhDark"
+  },
+  "StoppedDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 6600,
+   "title": "27 已停止",
+   "page": "zhDark"
+  },
+  "CrashedDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 6600,
+   "title": "28 运行中崩溃",
+   "page": "zhDark"
+  },
+  "StartFailedDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 6600,
+   "title": "29 启动失败的三种情况",
+   "page": "zhDark"
+  },
+  "TemplatesDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 7920,
+   "title": "30 模板管理",
+   "page": "zhDark"
+  },
+  "SaveTemplateDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 7920,
+   "title": "31 另存为模板",
+   "page": "zhDark"
+  },
+  "UnusedDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 9240,
+   "title": "32 长期未使用（第二优先级，第一版不做）",
+   "page": "zhDark"
+  },
+  "SettingsDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 9240,
+   "title": "33 设置",
+   "page": "zhDark"
+  },
+  "MainDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 0,
+   "title": "01 Library",
+   "page": "enDark"
+  },
+  "MainNarrowDarkEn.dc.html": {
+   "w": 1100,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 0,
+   "title": "02 Narrow window: the table scrolls sideways",
+   "page": "enDark"
+  },
+  "EmptyDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 2700,
+   "y": 0,
+   "title": "03 First launch, nothing here yet",
+   "page": "enDark"
+  },
+  "NoResultsDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4220,
+   "y": 0,
+   "title": "04 Search with no results",
+   "page": "enDark"
+  },
+  "FolderMissingDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 5740,
+   "y": 0,
+   "title": "05 Folder not found",
+   "page": "enDark"
+  },
+  "RowMenuDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 1320,
+   "title": "06 The More menu",
+   "page": "enDark"
+  },
+  "RenameInlineDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 1320,
+   "title": "07 Rename and edit the note",
+   "page": "enDark"
+  },
+  "DeleteConfirmDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 1320,
+   "title": "08 Confirm before moving to Trash",
+   "page": "enDark"
+  },
+  "RunningPopoverDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 1320,
+   "title": "09 Running list",
+   "page": "enDark"
+  },
+  "AgentActivityDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 1320,
+   "title": "10 An agent just created a playground",
+   "page": "enDark"
+  },
+  "CleanReminderDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 7600,
+   "y": 1320,
+   "title": "11 Auto-clean reminder",
+   "page": "enDark"
+  },
+  "PickerDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 2640,
+   "title": "12 Choose a template",
+   "page": "enDark"
+  },
+  "CreateDialogDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 2640,
+   "title": "13 Name, note, auto-clean",
+   "page": "enDark"
+  },
+  "CreateDialogOnDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 2640,
+   "title": "14 Auto-clean switched on",
+   "page": "enDark"
+  },
+  "CreatingDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 2640,
+   "title": "15 Starting up",
+   "page": "enDark"
+  },
+  "MissingEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 2640,
+   "title": "16 Toolchain missing",
+   "page": "enDark"
+  },
+  "UrlConfirmDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 7600,
+   "y": 2640,
+   "title": "17 Confirm a new playground from a link",
+   "page": "enDark"
+  },
+  "WebEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 3960,
+   "title": "18 Web workspace",
+   "page": "enDark"
+  },
+  "ServiceDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 3960,
+   "title": "19 Service workspace",
+   "page": "enDark"
+  },
+  "WorkspaceMenuDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 3960,
+   "title": "20 The workspace More menu",
+   "page": "enDark"
+  },
+  "AttachedRunDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 3960,
+   "title": "21 Started from the command line",
+   "page": "enDark"
+  },
+  "CloseConfirmDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 3960,
+   "title": "22 Confirm before closing a running tab",
+   "page": "enDark"
+  },
+  "ScriptDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 5280,
+   "title": "23 Script workspace",
+   "page": "enDark"
+  },
+  "ScriptRunningDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 5280,
+   "title": "24 Script running",
+   "page": "enDark"
+  },
+  "ScriptStaleDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 5280,
+   "title": "25 Syntax error in the code",
+   "page": "enDark"
+  },
+  "ScriptFailedDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 5280,
+   "title": "26 Script failed",
+   "page": "enDark"
+  },
+  "StoppedDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 6600,
+   "title": "27 Stopped",
+   "page": "enDark"
+  },
+  "CrashedDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 6600,
+   "title": "28 Crashed while running",
+   "page": "enDark"
+  },
+  "StartFailedDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 6600,
+   "title": "29 Three ways a start can fail",
+   "page": "enDark"
+  },
+  "TemplatesDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 7920,
+   "title": "30 Templates",
+   "page": "enDark"
+  },
+  "SaveTemplateDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 7920,
+   "title": "31 Save as template",
+   "page": "enDark"
+  },
+  "UnusedDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 9240,
+   "title": "32 Unused for a while (P1, not in the first version)",
+   "page": "enDark"
+  },
+  "SettingsDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 9240,
+   "title": "33 Settings",
+   "page": "enDark"
+  },
+  "Brand.dc.html": {
+   "h": 730,
+   "radius": 26,
+   "title": "图标与启动画面",
+   "w": 1440,
+   "x": 3040,
+   "y": 9850,
+   "page": "spec"
+  },
+  "BrandEn.dc.html": {
+   "h": 730,
+   "page": "specEn",
+   "radius": 26,
+   "title": "Icon and launch screen",
+   "w": 1440,
+   "x": 3040,
+   "y": 9850
+  },
+  "SpecColor.dc.html": {
+   "w": 1440,
+   "h": 1100,
+   "radius": 26,
+   "x": 0,
+   "y": 0,
+   "title": "规范 1 · 颜色",
+   "page": "spec"
+  },
+  "SpecMaterial.dc.html": {
+   "w": 1440,
+   "h": 1100,
+   "radius": 26,
+   "x": 1520,
+   "y": 0,
+   "title": "规范 2 · 材质、层级与形状",
+   "page": "spec"
+  },
+  "SpecType.dc.html": {
+   "w": 1440,
+   "h": 1100,
+   "radius": 26,
+   "x": 3040,
+   "y": 0,
+   "title": "规范 3 · 字体与图标",
+   "page": "spec"
+  },
+  "SpecControls.dc.html": {
+   "w": 1440,
+   "h": 1840,
+   "radius": 26,
+   "x": 0,
+   "y": 1520,
+   "title": "规范 4 · 控件",
+   "page": "spec"
+  },
+  "SpecStates.dc.html": {
+   "w": 1440,
+   "h": 1640,
+   "radius": 26,
+   "x": 1520,
+   "y": 1520,
+   "title": "规范 5 · 状态与反馈",
+   "page": "spec"
+  },
+  "SpecMotion.dc.html": {
+   "w": 1440,
+   "h": 1340,
+   "radius": 26,
+   "x": 3040,
+   "y": 1520,
+   "title": "规范 6 · 动效与无障碍",
+   "page": "spec"
+  },
+  "SpecColorEn.dc.html": {
+   "w": 1440,
+   "h": 1100,
+   "radius": 26,
+   "x": 0,
+   "y": 0,
+   "title": "Spec 1 · Colour",
+   "page": "specEn"
+  },
+  "SpecMaterialEn.dc.html": {
+   "w": 1440,
+   "h": 1100,
+   "radius": 26,
+   "x": 1520,
+   "y": 0,
+   "title": "Spec 2 · Materials, layers and shape",
+   "page": "specEn"
+  },
+  "SpecTypeEn.dc.html": {
+   "w": 1440,
+   "h": 1100,
+   "radius": 26,
+   "x": 3040,
+   "y": 0,
+   "title": "Spec 3 · Type and icons",
+   "page": "specEn"
+  },
+  "SpecControlsEn.dc.html": {
+   "w": 1440,
+   "h": 1840,
+   "radius": 26,
+   "x": 0,
+   "y": 1520,
+   "title": "Spec 4 · Controls",
+   "page": "specEn"
+  },
+  "SpecStatesEn.dc.html": {
+   "w": 1440,
+   "h": 1640,
+   "radius": 26,
+   "x": 1520,
+   "y": 1520,
+   "title": "Spec 5 · States and feedback",
+   "page": "specEn"
+  },
+  "SpecMotionEn.dc.html": {
+   "w": 1440,
+   "h": 1340,
+   "radius": 26,
+   "x": 3040,
+   "y": 1520,
+   "title": "Spec 6 · Motion and accessibility",
+   "page": "specEn"
+  },
+  "LogoType.dc.html": {
+   "w": 1440,
+   "h": 920,
+   "radius": 26,
+   "x": 0,
+   "y": 3780,
+   "title": "图标 A、B · 极简标志方向",
+   "page": "spec"
+  },
+  "LogoBrand.dc.html": {
+   "w": 1440,
+   "h": 1850,
+   "radius": 26,
+   "x": 1520,
+   "y": 3780,
+   "title": "图标 C、D · 品牌概念方向",
+   "page": "spec"
+  },
+  "LogoCraft.dc.html": {
+   "w": 1440,
+   "h": 1000,
+   "radius": 26,
+   "x": 3040,
+   "y": 3780,
+   "title": "图标 E、F · macOS 工艺方向",
+   "page": "spec"
+  },
+  "LogoTypeEn.dc.html": {
+   "w": 1440,
+   "h": 920,
+   "radius": 26,
+   "x": 0,
+   "y": 3780,
+   "title": "Icons A, B · reductive mark",
+   "page": "specEn"
+  },
+  "LogoBrandEn.dc.html": {
+   "w": 1440,
+   "h": 1850,
+   "radius": 26,
+   "x": 1520,
+   "y": 3780,
+   "title": "Icons C, D · brand concept",
+   "page": "specEn"
+  },
+  "LogoCraftEn.dc.html": {
+   "w": 1440,
+   "h": 1000,
+   "radius": 26,
+   "x": 3040,
+   "y": 3780,
+   "title": "Icons E, F · macOS craft",
+   "page": "specEn"
+  },
+  "LogoWit.dc.html": {
+   "w": 1440,
+   "h": 1280,
+   "radius": 26,
+   "x": 0,
+   "y": 6070,
+   "title": "图标 A 的三个变体（请选一个）",
+   "page": "spec"
+  },
+  "LogoWitEn.dc.html": {
+   "w": 1440,
+   "h": 1280,
+   "radius": 26,
+   "x": 0,
+   "y": 6070,
+   "title": "Icon A: three variants (please choose)",
+   "page": "specEn"
+  },
+  "LogoRun.dc.html": {
+   "w": 1440,
+   "h": 1340,
+   "radius": 26,
+   "x": 1520,
+   "y": 6070,
+   "title": "图标 A 融入“运行代码”（请选一个）",
+   "page": "spec"
+  },
+  "LogoRunEn.dc.html": {
+   "w": 1440,
+   "h": 1340,
+   "radius": 26,
+   "x": 1520,
+   "y": 6070,
+   "title": "Icon A with running code (please choose)",
+   "page": "specEn"
+  },
+  "LogoCodeBrand.dc.html": {
+   "w": 1440,
+   "h": 1640,
+   "radius": 26,
+   "x": 0,
+   "y": 7790,
+   "title": "不带字母的图标 · 方案一、二",
+   "page": "spec"
+  },
+  "LogoCodeCraft.dc.html": {
+   "w": 1440,
+   "h": 1580,
+   "radius": 26,
+   "x": 1520,
+   "y": 7790,
+   "title": "不带字母的图标 · 方案三、四",
+   "page": "spec"
+  },
+  "LogoCodeType.dc.html": {
+   "w": 1440,
+   "h": 1340,
+   "radius": 26,
+   "x": 3040,
+   "y": 7790,
+   "title": "不带字母的图标 · 方案五、六、七",
+   "page": "spec"
+  },
+  "LogoCodeBrandEn.dc.html": {
+   "w": 1440,
+   "h": 1640,
+   "radius": 26,
+   "x": 0,
+   "y": 7790,
+   "title": "Icons without a letter · options 1 and 2",
+   "page": "specEn"
+  },
+  "LogoCodeCraftEn.dc.html": {
+   "w": 1440,
+   "h": 1580,
+   "radius": 26,
+   "x": 1520,
+   "y": 7790,
+   "title": "Icons without a letter · options 3 and 4",
+   "page": "specEn"
+  },
+  "LogoCodeTypeEn.dc.html": {
+   "w": 1440,
+   "h": 1340,
+   "radius": 26,
+   "x": 3040,
+   "y": 7790,
+   "title": "Icons without a letter · options 5, 6 and 7",
+   "page": "specEn"
+  },
+  "LogoLine.dc.html": {
+   "w": 1440,
+   "h": 1280,
+   "radius": 26,
+   "x": 0,
+   "y": 9850,
+   "title": "“正在执行的那一行”的优化：四个版本，已选 D",
+   "page": "spec"
+  },
+  "LogoLineEn.dc.html": {
+   "w": 1440,
+   "h": 1280,
+   "radius": 26,
+   "x": 0,
+   "y": 9850,
+   "title": "Refining the current line: four versions, D chosen",
+   "page": "specEn"
+  },
+  "LogoFinal.dc.html": {
+   "w": 1440,
+   "h": 1400,
+   "radius": 26,
+   "x": 1520,
+   "y": 9850,
+   "title": "图标成品：正在执行的那一行",
+   "page": "spec"
+  },
+  "LogoFinalEn.dc.html": {
+   "w": 1440,
+   "h": 1400,
+   "radius": 26,
+   "x": 1520,
+   "y": 9850,
+   "title": "Finished icon: the current line",
+   "page": "specEn"
+  }
+ },
+ "createdOnFiles": {
+  "at": "2026-10-11T12:40:00Z",
+  "v": 1
+ },
+ "designSystems": [],
+ "launch": {
+  "view": "canvas"
+ },
+ "notes": {
+  "spec1spec": {
+   "kind": "title1",
+   "text": "设计规范：颜色、材质、字体",
+   "x": 0,
+   "y": -260,
+   "maxW": 4480,
+   "page": "spec"
+  },
+  "spec2spec": {
+   "kind": "title1",
+   "text": "控件、状态、动效",
+   "x": 0,
+   "y": 1260,
+   "maxW": 4480,
+   "page": "spec"
+  },
+  "spec1specEn": {
+   "kind": "title1",
+   "text": "Foundations: colour, materials, type",
+   "x": 0,
+   "y": -260,
+   "maxW": 4480,
+   "page": "specEn"
+  },
+  "spec2specEn": {
+   "kind": "title1",
+   "text": "Controls, states, motion",
+   "x": 0,
+   "y": 1260,
+   "maxW": 4480,
+   "page": "specEn"
+  },
+  "spec3spec": {
+   "kind": "title1",
+   "text": "软件图标：六个方案，请选一个方向",
+   "x": 0,
+   "y": 3520,
+   "maxW": 6000,
+   "page": "spec"
+  },
+  "spec3specEn": {
+   "kind": "title1",
+   "text": "App icon: six options, please choose a direction",
+   "x": 0,
+   "y": 3520,
+   "maxW": 6000,
+   "page": "specEn"
+  },
+  "spec4spec": {
+   "kind": "title1",
+   "text": "方向 A 的进一步设计",
+   "x": 0,
+   "y": 5810,
+   "maxW": 2960,
+   "page": "spec"
+  },
+  "spec4specEn": {
+   "kind": "title1",
+   "text": "Direction A, developed further",
+   "x": 0,
+   "y": 5810,
+   "maxW": 2960,
+   "page": "specEn"
+  },
+  "spec5spec": {
+   "kind": "title1",
+   "text": "不带字母的图标：表达“运行代码”，七个方案（请选一个方向）",
+   "x": 0,
+   "y": 7530,
+   "maxW": 4480,
+   "page": "spec"
+  },
+  "spec5specEn": {
+   "kind": "title1",
+   "text": "Icons without a letter: seven ways to say running code (please choose a direction)",
+   "x": 0,
+   "y": 7530,
+   "maxW": 4480,
+   "page": "specEn"
+  },
+  "spec6spec": {
+   "kind": "title1",
+   "text": "已选方向：正在执行的那一行",
+   "x": 0,
+   "y": 9590,
+   "maxW": 4480,
+   "page": "spec"
+  },
+  "spec6specEn": {
+   "kind": "title1",
+   "text": "Chosen direction: the current line",
+   "x": 0,
+   "y": 9590,
+   "maxW": 4480,
+   "page": "specEn"
+  },
+  "row1zh": {
+   "kind": "title1",
+   "text": "一、资源库",
+   "x": 0,
+   "y": -260,
+   "maxW": 7180,
+   "page": "zh"
+  },
+  "row2zh": {
+   "kind": "title1",
+   "text": "二、资源库里的操作",
+   "x": 0,
+   "y": 1060,
+   "maxW": 9040,
+   "page": "zh"
+  },
+  "row3zh": {
+   "kind": "title1",
+   "text": "三、新建项目",
+   "x": 0,
+   "y": 2380,
+   "maxW": 9040,
+   "page": "zh"
+  },
+  "row4zh": {
+   "kind": "title1",
+   "text": "四、工作区：网页与服务",
+   "x": 0,
+   "y": 3700,
+   "maxW": 7520,
+   "page": "zh"
+  },
+  "row5zh": {
+   "kind": "title1",
+   "text": "五、工作区：脚本",
+   "x": 0,
+   "y": 5020,
+   "maxW": 6000,
+   "page": "zh"
+  },
+  "row6zh": {
+   "kind": "title1",
+   "text": "六、停止与出错",
+   "x": 0,
+   "y": 6340,
+   "maxW": 4480,
+   "page": "zh"
+  },
+  "row7zh": {
+   "kind": "title1",
+   "text": "七、模板",
+   "x": 0,
+   "y": 7660,
+   "maxW": 2960,
+   "page": "zh"
+  },
+  "saveTplzh": {
+   "x": 3040,
+   "y": 7920,
+   "w": 640,
+   "maxH": 900,
+   "text": "这一步怎么来、怎么走\n\n1. 从哪里打开：在某个项目上点“更多”（资源库每行末尾的三个点，或工作区右上角），选“另存为模板…”。\n\n2. 弹出这个窗口，背后是你正在看的那个项目。填模板名称和说明，勾选要放进模板的文件。依赖、构建产物和可能含密钥的文件默认不勾。\n\n3. 点“保存模板”后窗口关闭，回到原来的项目，底部提示“已保存为模板”。\n\n4. 以后新建项目时，在选模板那一步的“我的”分组里就能看到它。",
+   "page": "zh",
+   "size": "l",
+   "fill": "blue"
+  },
+  "row8zh": {
+   "kind": "title1",
+   "text": "八、清理与设置",
+   "x": 0,
+   "y": 8980,
+   "maxW": 2960,
+   "page": "zh"
+  },
+  "row1en": {
+   "kind": "title1",
+   "text": "1 · Library",
+   "x": 0,
+   "y": -260,
+   "maxW": 7180,
+   "page": "en"
+  },
+  "row2en": {
+   "kind": "title1",
+   "text": "2 · Actions in the library",
+   "x": 0,
+   "y": 1060,
+   "maxW": 9040,
+   "page": "en"
+  },
+  "row3en": {
+   "kind": "title1",
+   "text": "3 · New playground",
+   "x": 0,
+   "y": 2380,
+   "maxW": 9040,
+   "page": "en"
+  },
+  "row4en": {
+   "kind": "title1",
+   "text": "4 · Workspace: web and service",
+   "x": 0,
+   "y": 3700,
+   "maxW": 7520,
+   "page": "en"
+  },
+  "row5en": {
+   "kind": "title1",
+   "text": "5 · Workspace: scripts",
+   "x": 0,
+   "y": 5020,
+   "maxW": 6000,
+   "page": "en"
+  },
+  "row6en": {
+   "kind": "title1",
+   "text": "6 · Stopped and failed",
+   "x": 0,
+   "y": 6340,
+   "maxW": 4480,
+   "page": "en"
+  },
+  "row7en": {
+   "kind": "title1",
+   "text": "7 · Templates",
+   "x": 0,
+   "y": 7660,
+   "maxW": 2960,
+   "page": "en"
+  },
+  "saveTplen": {
+   "x": 3040,
+   "y": 7920,
+   "w": 640,
+   "maxH": 900,
+   "text": "How you get here and what happens next\n\n1. Where it opens from: on any playground choose More (the three dots at the end of a library row, or the top right of the workspace), then Save as template…\n\n2. This sheet appears over the playground you were looking at. Fill in the name and description and tick the files to include. Dependencies, build output and files that may hold secrets are unticked by default.\n\n3. After Save template the sheet closes, you are back in the playground, and a notice says Saved as template.\n\n4. Next time you create a playground, it is listed under Mine in the template picker.",
+   "page": "en",
+   "size": "l",
+   "fill": "blue"
+  },
+  "row8en": {
+   "kind": "title1",
+   "text": "8 · Clean-up and settings",
+   "x": 0,
+   "y": 8980,
+   "maxW": 2960,
+   "page": "en"
+  },
+  "row1zhDark": {
+   "kind": "title1",
+   "text": "一、资源库",
+   "x": 0,
+   "y": -260,
+   "maxW": 7180,
+   "page": "zhDark"
+  },
+  "row2zhDark": {
+   "kind": "title1",
+   "text": "二、资源库里的操作",
+   "x": 0,
+   "y": 1060,
+   "maxW": 9040,
+   "page": "zhDark"
+  },
+  "row3zhDark": {
+   "kind": "title1",
+   "text": "三、新建项目",
+   "x": 0,
+   "y": 2380,
+   "maxW": 9040,
+   "page": "zhDark"
+  },
+  "row4zhDark": {
+   "kind": "title1",
+   "text": "四、工作区：网页与服务",
+   "x": 0,
+   "y": 3700,
+   "maxW": 7520,
+   "page": "zhDark"
+  },
+  "row5zhDark": {
+   "kind": "title1",
+   "text": "五、工作区：脚本",
+   "x": 0,
+   "y": 5020,
+   "maxW": 6000,
+   "page": "zhDark"
+  },
+  "row6zhDark": {
+   "kind": "title1",
+   "text": "六、停止与出错",
+   "x": 0,
+   "y": 6340,
+   "maxW": 4480,
+   "page": "zhDark"
+  },
+  "row7zhDark": {
+   "kind": "title1",
+   "text": "七、模板",
+   "x": 0,
+   "y": 7660,
+   "maxW": 2960,
+   "page": "zhDark"
+  },
+  "saveTplzhDark": {
+   "x": 3040,
+   "y": 7920,
+   "w": 640,
+   "maxH": 900,
+   "text": "这一步怎么来、怎么走\n\n1. 从哪里打开：在某个项目上点“更多”（资源库每行末尾的三个点，或工作区右上角），选“另存为模板…”。\n\n2. 弹出这个窗口，背后是你正在看的那个项目。填模板名称和说明，勾选要放进模板的文件。依赖、构建产物和可能含密钥的文件默认不勾。\n\n3. 点“保存模板”后窗口关闭，回到原来的项目，底部提示“已保存为模板”。\n\n4. 以后新建项目时，在选模板那一步的“我的”分组里就能看到它。",
+   "page": "zhDark",
+   "size": "l",
+   "fill": "blue"
+  },
+  "row8zhDark": {
+   "kind": "title1",
+   "text": "八、清理与设置",
+   "x": 0,
+   "y": 8980,
+   "maxW": 2960,
+   "page": "zhDark"
+  },
+  "row1enDark": {
+   "kind": "title1",
+   "text": "1 · Library",
+   "x": 0,
+   "y": -260,
+   "maxW": 7180,
+   "page": "enDark"
+  },
+  "row2enDark": {
+   "kind": "title1",
+   "text": "2 · Actions in the library",
+   "x": 0,
+   "y": 1060,
+   "maxW": 9040,
+   "page": "enDark"
+  },
+  "row3enDark": {
+   "kind": "title1",
+   "text": "3 · New playground",
+   "x": 0,
+   "y": 2380,
+   "maxW": 9040,
+   "page": "enDark"
+  },
+  "row4enDark": {
+   "kind": "title1",
+   "text": "4 · Workspace: web and service",
+   "x": 0,
+   "y": 3700,
+   "maxW": 7520,
+   "page": "enDark"
+  },
+  "row5enDark": {
+   "kind": "title1",
+   "text": "5 · Workspace: scripts",
+   "x": 0,
+   "y": 5020,
+   "maxW": 6000,
+   "page": "enDark"
+  },
+  "row6enDark": {
+   "kind": "title1",
+   "text": "6 · Stopped and failed",
+   "x": 0,
+   "y": 6340,
+   "maxW": 4480,
+   "page": "enDark"
+  },
+  "row7enDark": {
+   "kind": "title1",
+   "text": "7 · Templates",
+   "x": 0,
+   "y": 7660,
+   "maxW": 2960,
+   "page": "enDark"
+  },
+  "saveTplenDark": {
+   "x": 3040,
+   "y": 7920,
+   "w": 640,
+   "maxH": 900,
+   "text": "How you get here and what happens next\n\n1. Where it opens from: on any playground choose More (the three dots at the end of a library row, or the top right of the workspace), then Save as template…\n\n2. This sheet appears over the playground you were looking at. Fill in the name and description and tick the files to include. Dependencies, build output and files that may hold secrets are unticked by default.\n\n3. After Save template the sheet closes, you are back in the playground, and a notice says Saved as template.\n\n4. Next time you create a playground, it is listed under Mine in the template picker.",
+   "page": "enDark",
+   "size": "l",
+   "fill": "blue"
+  },
+  "row8enDark": {
+   "kind": "title1",
+   "text": "8 · Clean-up and settings",
+   "x": 0,
+   "y": 8980,
+   "maxW": 2960,
+   "page": "enDark"
+  }
+ },
+ "order": [
+  "Main.dc.html",
+  "MainNarrow.dc.html",
+  "Empty.dc.html",
+  "NoResults.dc.html",
+  "FolderMissing.dc.html",
+  "RowMenu.dc.html",
+  "RenameInline.dc.html",
+  "DeleteConfirm.dc.html",
+  "RunningPopover.dc.html",
+  "AgentActivity.dc.html",
+  "CleanReminder.dc.html",
+  "Picker.dc.html",
+  "CreateDialog.dc.html",
+  "CreateDialogOn.dc.html",
+  "Creating.dc.html",
+  "MissingLight.dc.html",
+  "UrlConfirm.dc.html",
+  "WebLight.dc.html",
+  "Service.dc.html",
+  "WorkspaceMenu.dc.html",
+  "AttachedRun.dc.html",
+  "CloseConfirm.dc.html",
+  "Script.dc.html",
+  "ScriptRunning.dc.html",
+  "ScriptStale.dc.html",
+  "ScriptFailed.dc.html",
+  "Stopped.dc.html",
+  "Crashed.dc.html",
+  "StartFailed.dc.html",
+  "Templates.dc.html",
+  "SaveTemplate.dc.html",
+  "Unused.dc.html",
+  "Settings.dc.html",
+  "MainEn.dc.html",
+  "MainNarrowEn.dc.html",
+  "EmptyEn.dc.html",
+  "NoResultsEn.dc.html",
+  "FolderMissingEn.dc.html",
+  "RowMenuEn.dc.html",
+  "RenameInlineEn.dc.html",
+  "DeleteConfirmEn.dc.html",
+  "RunningPopoverEn.dc.html",
+  "AgentActivityEn.dc.html",
+  "CleanReminderEn.dc.html",
+  "PickerEn.dc.html",
+  "CreateDialogEn.dc.html",
+  "CreateDialogOnEn.dc.html",
+  "CreatingEn.dc.html",
+  "MissingLightEn.dc.html",
+  "UrlConfirmEn.dc.html",
+  "WebLightEn.dc.html",
+  "ServiceEn.dc.html",
+  "WorkspaceMenuEn.dc.html",
+  "AttachedRunEn.dc.html",
+  "CloseConfirmEn.dc.html",
+  "ScriptEn.dc.html",
+  "ScriptRunningEn.dc.html",
+  "ScriptStaleEn.dc.html",
+  "ScriptFailedEn.dc.html",
+  "StoppedEn.dc.html",
+  "CrashedEn.dc.html",
+  "StartFailedEn.dc.html",
+  "TemplatesEn.dc.html",
+  "SaveTemplateEn.dc.html",
+  "UnusedEn.dc.html",
+  "SettingsEn.dc.html",
+  "MainDark.dc.html",
+  "MainNarrowDark.dc.html",
+  "EmptyDark.dc.html",
+  "NoResultsDark.dc.html",
+  "FolderMissingDark.dc.html",
+  "RowMenuDark.dc.html",
+  "RenameInlineDark.dc.html",
+  "DeleteConfirmDark.dc.html",
+  "RunningPopoverDark.dc.html",
+  "AgentActivityDark.dc.html",
+  "CleanReminderDark.dc.html",
+  "PickerDark.dc.html",
+  "CreateDialogDark.dc.html",
+  "CreateDialogOnDark.dc.html",
+  "CreatingDark.dc.html",
+  "Missing.dc.html",
+  "UrlConfirmDark.dc.html",
+  "Web.dc.html",
+  "ServiceDark.dc.html",
+  "WorkspaceMenuDark.dc.html",
+  "AttachedRunDark.dc.html",
+  "CloseConfirmDark.dc.html",
+  "ScriptDark.dc.html",
+  "ScriptRunningDark.dc.html",
+  "ScriptStaleDark.dc.html",
+  "ScriptFailedDark.dc.html",
+  "StoppedDark.dc.html",
+  "CrashedDark.dc.html",
+  "StartFailedDark.dc.html",
+  "TemplatesDark.dc.html",
+  "SaveTemplateDark.dc.html",
+  "UnusedDark.dc.html",
+  "SettingsDark.dc.html",
+  "MainDarkEn.dc.html",
+  "MainNarrowDarkEn.dc.html",
+  "EmptyDarkEn.dc.html",
+  "NoResultsDarkEn.dc.html",
+  "FolderMissingDarkEn.dc.html",
+  "RowMenuDarkEn.dc.html",
+  "RenameInlineDarkEn.dc.html",
+  "DeleteConfirmDarkEn.dc.html",
+  "RunningPopoverDarkEn.dc.html",
+  "AgentActivityDarkEn.dc.html",
+  "CleanReminderDarkEn.dc.html",
+  "PickerDarkEn.dc.html",
+  "CreateDialogDarkEn.dc.html",
+  "CreateDialogOnDarkEn.dc.html",
+  "CreatingDarkEn.dc.html",
+  "MissingEn.dc.html",
+  "UrlConfirmDarkEn.dc.html",
+  "WebEn.dc.html",
+  "ServiceDarkEn.dc.html",
+  "WorkspaceMenuDarkEn.dc.html",
+  "AttachedRunDarkEn.dc.html",
+  "CloseConfirmDarkEn.dc.html",
+  "ScriptDarkEn.dc.html",
+  "ScriptRunningDarkEn.dc.html",
+  "ScriptStaleDarkEn.dc.html",
+  "ScriptFailedDarkEn.dc.html",
+  "StoppedDarkEn.dc.html",
+  "CrashedDarkEn.dc.html",
+  "StartFailedDarkEn.dc.html",
+  "TemplatesDarkEn.dc.html",
+  "SaveTemplateDarkEn.dc.html",
+  "UnusedDarkEn.dc.html",
+  "SettingsDarkEn.dc.html",
+  "Brand.dc.html",
+  "BrandEn.dc.html",
+  "SpecColor.dc.html",
+  "SpecMaterial.dc.html",
+  "SpecType.dc.html",
+  "SpecControls.dc.html",
+  "SpecStates.dc.html",
+  "SpecMotion.dc.html",
+  "SpecColorEn.dc.html",
+  "SpecMaterialEn.dc.html",
+  "SpecTypeEn.dc.html",
+  "SpecControlsEn.dc.html",
+  "SpecStatesEn.dc.html",
+  "SpecMotionEn.dc.html",
+  "LogoType.dc.html",
+  "LogoBrand.dc.html",
+  "LogoCraft.dc.html",
+  "LogoTypeEn.dc.html",
+  "LogoBrandEn.dc.html",
+  "LogoCraftEn.dc.html",
+  "LogoWit.dc.html",
+  "LogoWitEn.dc.html",
+  "LogoRun.dc.html",
+  "LogoRunEn.dc.html",
+  "LogoCodeBrand.dc.html",
+  "LogoCodeCraft.dc.html",
+  "LogoCodeType.dc.html",
+  "LogoCodeBrandEn.dc.html",
+  "LogoCodeCraftEn.dc.html",
+  "LogoCodeTypeEn.dc.html",
+  "LogoLine.dc.html",
+  "LogoLineEn.dc.html",
+  "LogoFinal.dc.html",
+  "LogoFinalEn.dc.html"
+ ],
+ "pages": [
+  {
+   "id": "zh",
+   "name": "中文 · 浅色"
+  },
+  {
+   "id": "zhDark",
+   "name": "中文 · 深色"
+  },
+  {
+   "id": "spec",
+   "name": "设计规范"
+  },
+  {
+   "id": "en",
+   "name": "English · Light"
+  },
+  {
+   "id": "enDark",
+   "name": "English · Dark"
+  },
+  {
+   "id": "specEn",
+   "name": "Design spec"
+  }
+ ],
+ "title": "Runyard 设计稿"
+}

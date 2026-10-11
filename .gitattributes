@@ -1,0 +1,6 @@
+# 全部文本文件用 LF 换行（Windows 上也一样），否则 Biome 的格式检查会在 Windows CI 上变红
+* text=auto eol=lf
+*.png binary
+*.ico binary
+*.icns binary
+*.exe binary

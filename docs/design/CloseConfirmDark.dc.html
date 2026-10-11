@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Runyard 关闭确认</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:#4DA3FF}a:hover{color:#7DBBFF}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; box-sizing: border-box; position: relative; overflow: hidden; background: #161618; color: #F5F5F7; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 13px; line-height: 1.4">
+
+<div aria-hidden="true" style="position: absolute; inset: 0">
+<dc-import name="ServiceDark" hint-size="1440px,900px"></dc-import>
+</div>
+<div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(0,0,0,0.45)"></div>
+<div role="alertdialog" aria-label="关闭确认" style="position: absolute; left: 430px; top: 290px; width: 580px; box-sizing: border-box; border-radius: 28px; padding: 26px 28px 22px 28px; display: flex; flex-direction: column; gap: 18px; background: rgba(44,44,48,0.78); backdrop-filter: blur(50px) saturate(190%); border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 0 0 0.5px rgba(255,255,255,0.10), 0 40px 90px rgba(0,0,0,0.60), inset 0 1px 0 rgba(255,255,255,0.14)">
+<div style="display: flex; gap: 14px; align-items: flex-start">
+<span aria-hidden="true" style="width: 40px; height: 40px; border-radius: 12px; background: rgba(10,132,255,0.20); display: flex; align-items: center; justify-content: center; flex: none">
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#4DA3FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="10" height="10" rx="2.5"/></svg></span>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 20px; font-weight: 700; line-height: 1.25">关闭 hono-todo-api 并停止运行？</div>
+<div style="color: #A1A1A6; font-size: 13px">关闭标签页会停止这个项目。代码和文件不受影响，下次打开会重新运行。</div>
+</div>
+</div>
+<label style="display: flex; align-items: flex-start; gap: 10px">
+<span role="checkbox" aria-checked="false" aria-label="不再提示" style="width: 18px; height: 18px; box-sizing: border-box; border-radius: 5px; border: 1.5px solid #8E8E93; flex: none; margin-top: 0px; display: inline-block"></span>
+<span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-weight: 500">不再提示</span><span style="font-size: 12px; color: #A1A1A6">以后关闭标签页直接停止。可以在“设置 › 编辑与运行”里重新打开提示。</span></span>
+</label>
+<div style="display: flex; justify-content: flex-end; gap: 10px"><button style="height: 40px; padding: 0 22px; border-radius: 20px; border: none; flex: none; white-space: nowrap; display: flex; align-items: center; gap: 8px; font-size: 14px; background: rgba(118,118,128,0.24); font-weight: 500">取消</button><button style="height: 40px; padding: 0 22px; border-radius: 20px; border: none; flex: none; white-space: nowrap; display: flex; align-items: center; gap: 8px; font-size: 14px; background: #0071E3; color: #FFFFFF; font-weight: 600; box-shadow: 0 4px 14px rgba(10,132,255,0.35)">关闭并停止</button></div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

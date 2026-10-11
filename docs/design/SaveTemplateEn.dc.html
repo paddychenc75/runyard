@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Runyard Save as Template</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+input::placeholder,textarea::placeholder{color:#6E6E73;opacity:1}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:#0071E3}a:hover{color:#0058B0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; box-sizing: border-box; position: relative; overflow: hidden; background: #F5F5F7; color: #1D1D1F; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 13px; line-height: 1.4">
+<div aria-hidden="true" style="position: absolute; inset: 0">
+<dc-import name="ServiceEn" hint-size="1440px,900px"></dc-import>
+</div>
+<div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(20,22,30,0.22)"></div>
+
+<div role="dialog" aria-label="Save as template" style="position: absolute; left: 360px; top: 66px; width: 720px; height: 790px; box-sizing: border-box; border-radius: 28px; display: flex; flex-direction: column; overflow: hidden; background: rgba(250,250,252,0.82); backdrop-filter: blur(50px) saturate(190%); border: 1px solid rgba(255,255,255,0.95); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.14), 0 40px 90px rgba(15,23,42,0.32), inset 0 1px 0 rgba(255,255,255,1)">
+
+<div style="flex: none; padding: 22px 28px 0 28px">
+<h2 style="margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.2px">Save as template</h2>
+<div style="margin-top: 2px; color: #3A3A3C">Save hono-todo-api as it is now as a template, so you can start from it later.</div>
+</div>
+
+<div style="flex: 1; min-height: 0; padding: 14px 28px 0 28px; display: flex; flex-direction: column; gap: 12px; overflow: hidden">
+<label style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-weight: 600">Template name</span>
+<input type="text" value="Todo API starter" style="height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.10); background: #FFFFFF; font: inherit; color: #1D1D1F; outline: none; box-sizing: border-box; width: 100%">
+</label>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<label for="tpl-id" style="font-weight: 600">Template id</label>
+<input id="tpl-id" type="text" value="todo-api" style="height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.10); background: #FFFFFF; font: inherit; color: #1D1D1F; outline: none; box-sizing: border-box; width: 100%; font-family: 'SF Mono', Menlo, monospace">
+<div style="font-size: 12px; color: #3A3A3C">Lowercase letters, numbers and hyphens only. Used on the command line: <span style="font-family: 'SF Mono', Menlo, monospace">runyard new todo-api</span></div>
+</div>
+<label style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-weight: 600">Description</span>
+<input type="text" value="Hono todo API with in-memory data and two routes" style="height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.10); background: #FFFFFF; font: inherit; color: #1D1D1F; outline: none; box-sizing: border-box; width: 100%">
+</label>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="font-weight: 600">Included files</div>
+<div style="padding: 6px 10px; border-radius: 12px; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08); display: flex; flex-direction: column">
+<sc-for list="{{filesOn}}" as="f" hint-placeholder-count="4">
+<div style="height: 28px; display: flex; align-items: center; white-space: nowrap">
+<span role="checkbox" aria-checked="{{f.checked}}" aria-label="{{f.name}}" style="width: 16px; height: 16px; border-radius: 5px; box-sizing: border-box; background: {{f.cbBg}}; border: 1.5px solid {{f.cbBorder}}; display: flex; align-items: center; justify-content: center; flex: none; margin-right: 12px"><svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="{{f.cbTick}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5.2 4.2 7.4 8 3"/></svg></span>
+<span aria-hidden="true" style="width: {{f.indent}}; flex: none"></span>
+<svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="{{f.chev}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-right: 4px"><path d="M2 3.5 5 6.5 8 3.5"/></svg><svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="{{f.icon}}" stroke-width="1.4" stroke-linejoin="round" style="flex: none; margin-right: 8px"><path d="{{f.path}}"/></svg>
+<span style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: {{f.color}}; font-weight: {{f.weight}}; flex: none">{{f.name}}</span>
+<span style="flex: 1; min-width: 16px"></span>
+<span style="font-size: 12px; color: #6E6E73; overflow: hidden; text-overflow: ellipsis">{{f.note}}</span>
+</div>
+</sc-for>
+<div style="height: 28px; margin-top: 4px; box-sizing: border-box; border-top: 1px solid rgba(0,0,0,0.08); display: flex; align-items: center; font-size: 12px; font-weight: 600; color: #6E6E73">Not included by default</div>
+<sc-for list="{{filesOff}}" as="f" hint-placeholder-count="4">
+<div style="height: 28px; display: flex; align-items: center; white-space: nowrap">
+<span role="checkbox" aria-disabled="true" aria-checked="{{f.checked}}" aria-label="{{f.name}}" style="width: 16px; height: 16px; border-radius: 5px; box-sizing: border-box; background: {{f.cbBg}}; border: 1.5px solid {{f.cbBorder}}; display: flex; align-items: center; justify-content: center; flex: none; margin-right: 12px; opacity: {{f.cbOp}}"><svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="{{f.cbTick}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5.2 4.2 7.4 8 3"/></svg></span>
+<span aria-hidden="true" style="width: {{f.indent}}; flex: none"></span>
+<svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="{{f.chev}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-right: 4px"><path d="M2 3.5 5 6.5 8 3.5"/></svg><svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="{{f.icon}}" stroke-width="1.4" stroke-linejoin="round" style="flex: none; margin-right: 8px"><path d="{{f.path}}"/></svg>
+<span style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: {{f.color}}; font-weight: {{f.weight}}; flex: none">{{f.name}}</span>
+<span style="flex: 1; min-width: 16px"></span>
+<span style="font-size: 12px; color: #6E6E73; overflow: hidden; text-overflow: ellipsis">{{f.note}}</span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; min-height: 34px">
+<span style="font-weight: 600; flex: none">Required tools</span>
+<span style="color: #3A3A3C; min-width: 0">Same as the original template, Hono: Node ≥ 20.19 and < 27, pnpm ≥ 9</span>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; min-height: 28px">
+<button role="switch" aria-checked="true" aria-label="Replace the playground name with a variable" style="width: 40px; height: 24px; padding: 0; border-radius: 12px; border: none; background: #28A745; position: relative; flex: none"><span aria-hidden="true" style="position: absolute; top: 2px; left: 18px; width: 20px; height: 20px; border-radius: 10px; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.3)"></span></button>
+<span style="min-width: 0">Replace the playground name with a variable so new playgrounds get their own name</span>
+</div>
+</div>
+
+<div style="height: 56px; flex: none; margin-top: 8px; padding: 0 20px 0 28px; display: flex; align-items: center; gap: 12px; border-top: 1px solid rgba(0,0,0,0.08)">
+<span style="flex: 1; min-width: 0; color: #3A3A3C; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Appears under Mine when creating · <span style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px">~/.runyard/templates/todo-api</span></span>
+<button style="height: 36px; padding: 0 18px; border-radius: 18px; border: none; background: rgba(118,118,128,0.14); flex: none; white-space: nowrap">Cancel</button>
+<button style="height: 36px; padding: 0 20px; border-radius: 18px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; flex: none; white-space: nowrap; box-shadow: 0 4px 14px rgba(0,113,227,0.25)">Save template</button>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+const lines = [
+'import { Hono } from \'hono\'',
+'',
+'const app = new Hono()',
+'const todos = []',
+'app.get(\'/todos\', (c) => c.json(todos))',
+'export default app'
+].map((t, i) => ({ no: i + 1, text: t }));
+const fileData = [
+['src/', '', true, 0, true], ['index.ts', '', true, 1], ['package.json', '', true], ['pnpm-lock.yaml', '', true], ['tsconfig.json', '', true],
+['node_modules/', 'dependencies, not included', false],
+['.env', 'may contain secrets, off by default', false],
+['dist/', 'build output, not included', false]
+];
+const DIRC = '#B8860B';
+const typeColor = (n) => /\.tsx?$/.test(n) ? '#0F68A0' : /\.css$/.test(n) ? '#7A2E9E' : /\.html$/.test(n) ? '#B3470B' : /\.(json|yaml)$/.test(n) ? '#8A6D00' : '#6E6E73';
+const files = fileData.map((f) => { const dir = f[0].slice(-1) === '/'; const on = f[2]; return { name: f[0], note: f[1], on, checked: on ? 'true' : 'false', cbBg: on ? '#0071E3' : 'transparent', cbBorder: on ? '#0071E3' : '#8E8E93', cbOp: (f[0] === 'node_modules/' || f[0] === 'dist/') ? 0.4 : 1, cbTick: on ? '#FFFFFF' : 'transparent', indent: ((f[3] || 0) * 20) + 'px', chev: dir && on ? '#6E6E73' : 'transparent', path: dir ? 'M1.5 4.5a1 1 0 0 1 1-1h3.2l1.5 1.6h6.3a1 1 0 0 1 1 1v6.4a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1z' : 'M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5', color: on ? '#1D1D1F' : '#6E6E73', weight: dir ? 600 : 400, icon: !on ? '#8E8E93' : dir ? DIRC : typeColor(f[0]) }; });
+const filesOn = files.filter((f) => f.on);
+const filesOff = files.filter((f) => !f.on);
+return { lines, filesOn, filesOff };
+}
+}
+</script>
+</body>
+</html>

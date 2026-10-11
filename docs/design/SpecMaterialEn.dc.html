@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Runyard materials spec</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:#0071E3}a:hover{color:#0058B0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1100px; box-sizing: border-box; overflow: hidden; padding: 40px 44px; background: #FFFFFF; color: #1D1D1F; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 13px; line-height: 1.45; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.3px">Materials, layers and shape</h1>
+<div style="color: #6E6E73; font-size: 14px">Content sits below and is opaque. Navigation and controls float above in glass. Glass is for the floating layer only, never for content.</div>
+</div>
+<div style="color: #6E6E73; font-size: 12px; text-align: right">Controls, states and feedback, motion and accessibility: see the other spec boards</div>
+</div>
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 424px; column-gap: 28px; align-items: start">
+
+<div style="display: flex; flex-direction: column; gap: 18px">
+<section style="display: flex; flex-direction: column">
+<h2 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600">Glass recipes</h2>
+<div style="display: grid; grid-template-columns: 92px 160px 160px minmax(0, 1fr) minmax(0, 1fr); column-gap: 10px; height: 20px; font-size: 12px; color: #6E6E73"><span></span><span>Light</span><span>Dark</span><span>Background and shape</span><span>Blur and border</span></div>
+<sc-for list="{{recipes}}" as="r" hint-placeholder-count="6">
+<div style="display: grid; grid-template-columns: 92px 160px 160px minmax(0, 1fr) minmax(0, 1fr); column-gap: 10px; align-items: center; height: 62px; border-top: 1px solid rgba(0,0,0,0.06)">
+<span style="font-weight: 600; font-size: 12px">{{r.name}}</span>
+<div style="position: relative; width: 160px; height: 52px; border-radius: 12px; overflow: hidden; background: #F5F5F7; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08)">
+<span aria-hidden="true" style="position: absolute; left: 8px; top: 6px; width: 54px; height: 40px; border-radius: 10px; background: #0071E3"></span>
+<span aria-hidden="true" style="position: absolute; left: 60px; top: 20px; width: 50px; height: 28px; border-radius: 10px; background: #C27400"></span>
+<span aria-hidden="true" style="position: absolute; left: 104px; top: 4px; width: 46px; height: 40px; border-radius: 10px; background: #28A745"></span>
+<div style="position: absolute; {{r.pos}}; box-sizing: border-box; border-radius: {{r.rr}}px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: #1D1D1F; background: {{r.bgl}}; backdrop-filter: {{r.filt}}; border: 1px solid rgba(255,255,255,0.9); box-shadow: {{r.shl}}">{{r.lab}}</div>
+</div>
+<div style="position: relative; width: 160px; height: 52px; border-radius: 12px; overflow: hidden; background: #161618; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.14)">
+<span aria-hidden="true" style="position: absolute; left: 8px; top: 6px; width: 54px; height: 40px; border-radius: 10px; background: #0A84FF"></span>
+<span aria-hidden="true" style="position: absolute; left: 60px; top: 20px; width: 50px; height: 28px; border-radius: 10px; background: #FFD60A"></span>
+<span aria-hidden="true" style="position: absolute; left: 104px; top: 4px; width: 46px; height: 40px; border-radius: 10px; background: #30D158"></span>
+<div style="position: absolute; {{r.pos}}; box-sizing: border-box; border-radius: {{r.rr}}px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: #F5F5F7; background: {{r.bgd}}; backdrop-filter: {{r.filt}}; border: 1px solid rgba(255,255,255,0.14); box-shadow: {{r.shd}}">{{r.lab}}</div>
+</div>
+<div style="display: flex; flex-direction: column; font-family: 'SF Mono', Menlo, monospace; font-size: 10.5px; line-height: 14px; color: #3A3A3C; min-width: 0"><span>{{r.r1}}</span><span>{{r.r2}}</span><span>{{r.r3}}</span><span>{{r.r4}}</span></div>
+<div style="display: flex; flex-direction: column; font-family: 'SF Mono', Menlo, monospace; font-size: 10.5px; line-height: 14px; color: #3A3A3C; min-width: 0"><span>{{r.f1}}</span><span>{{r.f2}}</span><span>{{r.f3}}</span><span>{{r.f4}}</span></div>
+</div>
+</sc-for>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Elevation</h2>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+<sc-for list="{{elev}}" as="e" hint-placeholder-count="3">
+<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<div style="display: flex; flex-direction: column"><span style="font-weight: 600">{{e.title}}</span><span style="font-size: 12px; color: #6E6E73">{{e.use}}</span></div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px">
+<div style="height: 54px; border-radius: 12px; background: #F5F5F7; display: flex; align-items: center; justify-content: center"><span style="width: 84px; height: 30px; border-radius: 15px; background: {{e.bgl}}; border: 1px solid rgba(255,255,255,0.9); box-shadow: {{e.shl}}"></span></div>
+<div style="height: 54px; border-radius: 12px; background: #161618; display: flex; align-items: center; justify-content: center"><span style="width: 84px; height: 30px; border-radius: 15px; background: {{e.bgd}}; border: 1px solid rgba(255,255,255,0.14); box-shadow: {{e.shd}}"></span></div>
+</div>
+<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 10.5px; line-height: 14px; color: #3A3A3C; word-break: break-word">L {{e.shl}}</div>
+<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 10.5px; line-height: 14px; color: #3A3A3C; word-break: break-word">D {{e.shd}}</div>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Spacing scale (bar = 4x)</h2>
+<div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px 12px">
+<sc-for list="{{spacing}}" as="s" hint-placeholder-count="10">
+<div style="display: flex; align-items: center; gap: 8px; height: 18px"><span style="width: 22px; flex: none; text-align: right; font-family: 'SF Mono', Menlo, monospace; font-size: 11px; font-weight: 600">{{s.v}}</span><span aria-hidden="true" style="height: 10px; width: {{s.w}}px; border-radius: 3px; background: #6E6E73"></span></div>
+</sc-for>
+</div>
+</section>
+
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 18px">
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Two-layer model</h2>
+<div style="position: relative; height: 196px">
+<span aria-hidden="true" style="position: absolute; left: 56px; top: 24px; width: 120px; height: 36px; border-radius: 12px; background: #0071E3"></span>
+<span aria-hidden="true" style="position: absolute; left: 250px; top: 10px; width: 110px; height: 44px; border-radius: 12px; background: #C27400"></span>
+<div style="position: absolute; left: 12px; right: 12px; top: 0; height: 80px; box-sizing: border-box; border-radius: 20px; padding: 10px 12px; display: flex; flex-direction: column; justify-content: space-between; background: rgba(255,255,255,0.66); backdrop-filter: blur(28px) saturate(180%); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.08), 0 8px 24px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.9)">
+<span style="font-size: 12px; font-weight: 600">Floating layer · glass</span>
+<span style="display: flex; flex-wrap: wrap; gap: 4px"><span style="padding: 2px 8px; border-radius: 10px; font-size: 11px; background: #FFFFFF">Toolbar</span><span style="padding: 2px 8px; border-radius: 10px; font-size: 11px; background: #FFFFFF">Sidebar</span><span style="padding: 2px 8px; border-radius: 10px; font-size: 11px; background: #FFFFFF">Dialog</span><span style="padding: 2px 8px; border-radius: 10px; font-size: 11px; background: #FFFFFF">Menu</span></span>
+</div>
+<span aria-hidden="true" style="position: absolute; left: 72px; top: 84px; height: 28px; border-left: 1.5px dashed #8E8E93"></span>
+<span aria-hidden="true" style="position: absolute; left: 212px; top: 84px; height: 28px; border-left: 1.5px dashed #8E8E93"></span>
+<span aria-hidden="true" style="position: absolute; left: 352px; top: 84px; height: 28px; border-left: 1.5px dashed #8E8E93"></span>
+<div style="position: absolute; left: 0; right: 0; top: 116px; height: 80px; box-sizing: border-box; border-radius: 16px; padding: 10px 12px; display: flex; flex-direction: column; justify-content: space-between; background: #F5F5F7; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08)">
+<span style="font-size: 12px; font-weight: 600">Content layer · opaque</span>
+<span style="display: flex; flex-wrap: wrap; gap: 4px"><span style="padding: 2px 8px; border-radius: 10px; font-size: 11px; background: #FFFFFF; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08)">Cards</span><span style="padding: 2px 8px; border-radius: 10px; font-size: 11px; background: #FFFFFF; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08)">Tables</span><span style="padding: 2px 8px; border-radius: 10px; font-size: 11px; background: #FFFFFF; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08)">Editor</span><span style="padding: 2px 8px; border-radius: 10px; font-size: 11px; background: #FFFFFF; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08)">Preview</span><span style="padding: 2px 8px; border-radius: 10px; font-size: 11px; background: #FFFFFF; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08)">Terminal</span></span>
+</div>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Radii: concentric</h2>
+<div style="display: flex; gap: 16px">
+<div style="flex: none; width: 170px; height: 176px; box-sizing: border-box; padding: 6px; border-radius: 26px; background: #F5F5F7; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08); display: flex">
+<div style="flex: 1; padding: 4px; border-radius: 20px; background: #FFFFFF; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08); display: flex">
+<div style="flex: 1; padding: 4px; border-radius: 16px; background: #F5F5F7; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08); display: flex">
+<div style="flex: 1; padding: 3px; border-radius: 12px; background: #FFFFFF; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08); display: flex">
+<div style="flex: 1; border-radius: 9px; background: #F0F0F3; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 6px; font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: #6E6E73">9</div>
+</div>
+</div>
+</div>
+</div>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+<sc-for list="{{radii}}" as="a" hint-placeholder-count="7">
+<div style="display: flex; gap: 8px; align-items: baseline; font-size: 12px"><span style="width: 50px; flex: none; font-family: 'SF Mono', Menlo, monospace; font-weight: 600">{{a.n}}</span><span style="color: #3A3A3C">{{a.t}}</span></div>
+</sc-for>
+<div style="margin-top: 4px; height: 40px; box-sizing: border-box; padding: 6px; border-radius: 20px; background: #F5F5F7; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08); display: flex"><div style="flex: 1; border-radius: 14px; background: #FFFFFF; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08)"></div></div>
+</div>
+</div>
+<div style="font-size: 12px; color: #3A3A3C"><span style="font-weight: 600">inner radius = outer radius − inset.</span> <span style="font-family: 'SF Mono', Menlo, monospace; font-size: 11px">26−6=20, 20−4=16, 16−4=12, 12−3=9, 20−6=14</span></div>
+</section>
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Fixed layout numbers</h2>
+<div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{layout}}" as="n" hint-placeholder-count="5">
+<div style="padding: 10px 12px; border-radius: 14px; background: #F5F5F7; display: flex; flex-direction: column"><span style="font-family: 'SF Mono', Menlo, monospace; font-size: 20px; font-weight: 700">{{n.n}}</span><span style="font-size: 12px; color: #6E6E73">{{n.t}}</span></div>
+</sc-for>
+</div>
+</section>
+
+
+</div>
+</div>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; align-items: baseline; gap: 16px"><h2 style="margin: 0; font-size: 16px; font-weight: 600; flex: none; white-space: nowrap">Where glass is not used, and with reduce transparency</h2><span style="font-size: 12px; color: #6E6E73; line-height: 1.35">Cards, tables and the code editor are always opaque. With reduce transparency on, glass becomes an opaque grey and the layout stays the same. The preview address bar is a fixed opaque bar at the top of the preview card, because the preview is a native view that floating controls cannot cover.</span></div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+<sc-for list="{{themes}}" as="t" hint-placeholder-count="2">
+<div style="display: flex; gap: 10px; padding: 10px; border-radius: 20px; background: {{t.win}}; box-shadow: inset 0 0 0 1px {{t.ring}}; color: {{t.fg}}; height: 92px; box-sizing: border-box">
+<div style="flex: 1; min-width: 0; padding: 8px 10px; border-radius: 16px; background: {{t.card}}; box-shadow: inset 0 0 0 1px {{t.ring}}; display: flex; flex-direction: column; gap: 3px"><span style="font-size: 12px; font-weight: 600">Content card</span><span style="font-size: 11px; color: {{t.fg2}}">Opaque</span></div>
+<div style="flex: 1; min-width: 0; border-radius: 16px; background: {{t.card}}; box-shadow: inset 0 0 0 1px {{t.ring}}; overflow: hidden; font-size: 11px"><div style="padding: 3px 10px; color: {{t.fg2}}">Table</div><div style="padding: 4px 10px; border-top: 1px solid {{t.line}}">demo-todo</div><div style="padding: 4px 10px; border-top: 1px solid {{t.line}}">api-lab</div></div>
+<div style="flex: 1; min-width: 0; padding: 6px 8px; border-radius: 12px; background: {{t.inset}}; font-family: 'SF Mono', Menlo, monospace; font-size: 11px; line-height: 16px; white-space: pre; overflow: hidden"><span style="color: {{t.kw}}">const</span> a = <span style="color: {{t.fn}}">f</span>()
+<span style="color: {{t.kw}}">return</span> <span style="color: {{t.st}}">"ok"</span></div>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 4px"><span style="height: 32px; border-radius: 16px; background: {{t.fb}}; box-shadow: inset 0 0 0 1px {{t.ring}}; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600">Toolbar</span><span style="font-size: 11px; color: {{t.fg2}}; text-align: center">{{t.fbl}} <span style="font-family: 'SF Mono', Menlo, monospace">{{t.fbv}}</span></span></div>
+</div>
+</sc-for>
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+renderVals() {
+const recipes = [
+{
+"name": "Toolbar capsule",
+"sub": "",
+"pos": "left: 10px; right: 10px; top: 14px; height: 32px",
+"lab": "",
+"bgl": "rgba(255,255,255,0.66)",
+"bgd": "rgba(72,72,78,0.55)",
+"filt": "blur(28px) saturate(180%)",
+"rad": "radius capsule",
+"shl": "0 0 0 0.5px rgba(0,0,0,0.08), 0 8px 24px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.9)",
+"shd": "0 10px 28px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.14)",
+"r1": "bg L rgba(255,255,255,0.66)",
+"r2": "bg D rgba(72,72,78,0.55)",
+"r3": "radius capsule",
+"r4": "shadow: toolbar",
+"f1": "blur(28px) saturate(180%)",
+"f2": "border 1px solid",
+"f3": "L rgba(255,255,255,0.9)",
+"f4": "D rgba(255,255,255,0.14)",
+"rr": 16
+},
+{
+"name": "Sidebar panel",
+"sub": "",
+"pos": "left: 8px; top: 5px; bottom: 5px; width: 74px",
+"lab": "",
+"bgl": "rgba(242,243,247,0.78)",
+"bgd": "rgba(58,58,62,0.55)",
+"filt": "blur(40px) saturate(180%)",
+"rad": "radius 20",
+"shl": "0 0 0 0.5px rgba(0,0,0,0.10), 0 12px 36px rgba(15,23,42,0.12), inset 0 1px 0 rgba(255,255,255,1)",
+"shd": "0 12px 36px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.12)",
+"r1": "bg L rgba(242,243,247,0.78)",
+"r2": "bg D rgba(58,58,62,0.55)",
+"r3": "radius 20",
+"r4": "shadow: sidebar",
+"f1": "blur(40px) saturate(180%)",
+"f2": "border 1px solid",
+"f3": "L rgba(255,255,255,0.9)",
+"f4": "D rgba(255,255,255,0.14)",
+"rr": 20
+},
+{
+"name": "File tree panel",
+"sub": "",
+"pos": "left: 8px; top: 5px; bottom: 5px; width: 74px",
+"lab": "",
+"bgl": "rgba(255,255,255,0.62)",
+"bgd": "rgba(58,58,62,0.55)",
+"filt": "blur(28px) saturate(180%)",
+"rad": "radius 20",
+"shl": "0 0 0 0.5px rgba(0,0,0,0.10), 0 12px 36px rgba(15,23,42,0.12), inset 0 1px 0 rgba(255,255,255,1)",
+"shd": "0 12px 36px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.12)",
+"r1": "bg L rgba(255,255,255,0.62)",
+"r2": "bg D rgba(58,58,62,0.55)",
+"r3": "radius 20",
+"r4": "shadow: sidebar",
+"f1": "blur(28px) saturate(180%)",
+"f2": "border 1px solid",
+"f3": "L rgba(255,255,255,0.9)",
+"f4": "D rgba(255,255,255,0.14)",
+"rr": 20
+},
+{
+"name": "Dialog",
+"sub": "",
+"pos": "left: 20px; right: 20px; top: 6px; bottom: 6px",
+"lab": "",
+"bgl": "rgba(250,250,252,0.82)",
+"bgd": "rgba(44,44,48,0.78)",
+"filt": "blur(50px) saturate(190%)",
+"rad": "radius 28",
+"shl": "0 0 0 0.5px rgba(0,0,0,0.14), 0 40px 90px rgba(15,23,42,0.32), inset 0 1px 0 rgba(255,255,255,1)",
+"shd": "0 0 0 0.5px rgba(255,255,255,0.10), 0 40px 90px rgba(0,0,0,0.60), inset 0 1px 0 rgba(255,255,255,0.14)",
+"r1": "bg L rgba(250,250,252,0.82)",
+"r2": "bg D rgba(44,44,48,0.78)",
+"r3": "radius 28",
+"r4": "shadow: dialog",
+"f1": "blur(50px) saturate(190%)",
+"f2": "border 1px solid",
+"f3": "L rgba(255,255,255,0.9)",
+"f4": "D rgba(255,255,255,0.14)",
+"rr": 28
+},
+{
+"name": "Menu",
+"sub": "",
+"pos": "left: 40px; width: 88px; top: 6px; bottom: 6px",
+"lab": "",
+"bgl": "rgba(250,250,252,0.82)",
+"bgd": "rgba(44,44,48,0.78)",
+"filt": "blur(40px) saturate(190%)",
+"rad": "radius 16",
+"shl": "0 0 0 0.5px rgba(0,0,0,0.14), 0 40px 90px rgba(15,23,42,0.32), inset 0 1px 0 rgba(255,255,255,1)",
+"shd": "0 0 0 0.5px rgba(255,255,255,0.10), 0 40px 90px rgba(0,0,0,0.60), inset 0 1px 0 rgba(255,255,255,0.14)",
+"r1": "bg L rgba(250,250,252,0.82)",
+"r2": "bg D rgba(44,44,48,0.78)",
+"r3": "radius 16",
+"r4": "shadow: dialog",
+"f1": "blur(40px) saturate(190%)",
+"f2": "border 1px solid",
+"f3": "L rgba(255,255,255,0.9)",
+"f4": "D rgba(255,255,255,0.14)",
+"rr": 16
+},
+{
+"name": "Fixed address bar",
+"sub": "",
+"pos": "left: 0; right: 0; top: 0; height: 16px",
+"lab": "",
+"bgl": "#FFFFFF",
+"bgd": "#1E1E21",
+"filt": "none",
+"rad": "Rectangle",
+"shl": "none",
+"shd": "none",
+"r1": "Background L #FFFFFF",
+"r2": "Background D #1E1E21",
+"r3": "Field L #F5F5F7 · D rgba(0,0,0,0.35)",
+"r4": "Top of preview card, 44 high",
+"f1": "No blur, no shadow",
+"f2": "1px divider below",
+"f3": "L rgba(0,0,0,0.07)",
+"f4": "D rgba(255,255,255,0.08)",
+"rr": 0
+}
+];
+const elev = [
+{
+"title": "Level 1: toolbar",
+"use": "Toolbar, tabs",
+"bgl": "rgba(255,255,255,0.66)",
+"bgd": "rgba(72,72,78,0.55)",
+"shl": "0 0 0 0.5px rgba(0,0,0,0.08), 0 8px 24px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.9)",
+"shd": "0 10px 28px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.14)",
+"rad": 18
+},
+{
+"title": "Level 2: sidebar",
+"use": "Floating sidebar, file tree",
+"bgl": "rgba(242,243,247,0.78)",
+"bgd": "rgba(58,58,62,0.55)",
+"shl": "0 0 0 0.5px rgba(0,0,0,0.10), 0 12px 36px rgba(15,23,42,0.12), inset 0 1px 0 rgba(255,255,255,1)",
+"shd": "0 12px 36px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.12)",
+"rad": 18
+},
+{
+"title": "Level 3: dialog",
+"use": "Dialogs, menus",
+"bgl": "rgba(250,250,252,0.82)",
+"bgd": "rgba(44,44,48,0.78)",
+"shl": "0 0 0 0.5px rgba(0,0,0,0.14), 0 40px 90px rgba(15,23,42,0.32), inset 0 1px 0 rgba(255,255,255,1)",
+"shd": "0 0 0 0.5px rgba(255,255,255,0.10), 0 40px 90px rgba(0,0,0,0.60), inset 0 1px 0 rgba(255,255,255,0.14)",
+"rad": 18
+}
+];
+const layout = [
+{
+"n": "8",
+"t": "Floating panel inset"
+},
+{
+"n": "8",
+"t": "Gap between cards"
+},
+{
+"n": "44",
+"t": "Toolbar height"
+},
+{
+"n": "240",
+"t": "Sidebar width"
+},
+{
+"n": "216",
+"t": "File tree width"
+}
+];
+const spacing = [
+{
+"v": "2",
+"w": 8
+},
+{
+"v": "4",
+"w": 16
+},
+{
+"v": "6",
+"w": 24
+},
+{
+"v": "8",
+"w": 32
+},
+{
+"v": "10",
+"w": 40
+},
+{
+"v": "12",
+"w": 48
+},
+{
+"v": "16",
+"w": 64
+},
+{
+"v": "20",
+"w": 80
+},
+{
+"v": "24",
+"w": 96
+},
+{
+"v": "28",
+"w": 112
+}
+];
+const radii = [
+{
+"n": "26",
+"t": "Window. The window corner radius is provided by the system and not drawn by the app; 26 in these boards is an approximation"
+},
+{
+"n": "20",
+"t": "Floating sidebar"
+},
+{
+"n": "16",
+"t": "Content card, menu"
+},
+{
+"n": "12",
+"t": "List row, input"
+},
+{
+"n": "8 to 9",
+"t": "Small control"
+},
+{
+"n": "28",
+"t": "Dialog"
+},
+{
+"n": "Capsule",
+"t": "half the height"
+}
+];
+const themes = [
+{
+"label": "Light",
+"win": "#F5F5F7",
+"card": "#FFFFFF",
+"inset": "#F5F5F7",
+"line": "rgba(0,0,0,0.06)",
+"ring": "rgba(0,0,0,0.08)",
+"fg": "#1D1D1F",
+"fg2": "#6E6E73",
+"fb": "#F0F0F3",
+"fbl": "Opaque light grey",
+"fbv": "#F0F0F3",
+"kw": "#AD3DA4",
+"st": "#B3261E",
+"fn": "#0F68A0"
+},
+{
+"label": "Dark",
+"win": "#161618",
+"card": "#1E1E21",
+"inset": "rgba(0,0,0,0.35)",
+"line": "rgba(255,255,255,0.08)",
+"ring": "rgba(255,255,255,0.14)",
+"fg": "#F5F5F7",
+"fg2": "#A1A1A6",
+"fb": "#1E1E21",
+"fbl": "Opaque dark grey",
+"fbv": "#1E1E21",
+"kw": "#FF7AB2",
+"st": "#FF8170",
+"fn": "#6BDFFF"
+}
+];
+return { recipes, elev, layout, spacing, radii, themes };
+}
+}
+</script>
+</body>
+</html>

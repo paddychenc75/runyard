@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Runyard 字体与图标规范</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:#0071E3}a:hover{color:#0058B0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1100px; box-sizing: border-box; overflow: hidden; padding: 40px 44px; background: #FFFFFF; color: #1D1D1F; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 13px; line-height: 1.45; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.3px">字体与图标</h1>
+<div style="color: #6E6E73; font-size: 14px">系统字体负责界面，等宽字体负责代码和标识符。图标统一用细线条。</div>
+</div>
+<div style="color: #6E6E73; font-size: 12px; text-align: right">控件、状态与反馈、动效与无障碍见其他规范页</div>
+</div>
+<div style="display: grid; grid-template-columns: 640px minmax(0, 1fr); column-gap: 36px; align-items: start">
+
+<div style="display: flex; flex-direction: column; gap: 18px">
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">字体族</h2>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+<div style="padding: 10px 14px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; font-weight: 600">界面字体</span><span style="font-family: 'SF Mono', Menlo, monospace; font-size: 10.5px; line-height: 15px; color: #3A3A3C">-apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif</span><span style="font-size: 16px; font-weight: 600">苹方与 SF Pro 同排 Aa 123</span></div>
+<div style="padding: 10px 14px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; font-weight: 600">等宽字体</span><span style="font-family: 'SF Mono', Menlo, monospace; font-size: 10.5px; line-height: 15px; color: #3A3A3C">'SF Mono', Menlo, monospace</span><span style="font-family: 'SF Mono', Menlo, monospace; font-size: 16px">Aa 123 { } => :7101</span></div>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 4px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">字号表</h2>
+<div style="display: grid; grid-template-columns: 118px minmax(0, 1fr) 150px; column-gap: 12px; font-size: 12px; color: #6E6E73"><span>字号 / 字重 / 行高</span><span>示例</span><span>用途</span></div>
+<sc-for list="{{scale}}" as="s" hint-placeholder-count="8">
+<div style="display: grid; grid-template-columns: 118px minmax(0, 1fr) 150px; column-gap: 12px; align-items: center; padding: 5px 0; border-top: 1px solid rgba(0,0,0,0.06)">
+<span style="font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: #6E6E73">{{s.spec}}</span>
+<span style="font-size: {{s.fs}}; font-weight: {{s.fw}}; line-height: {{s.lh}}; letter-spacing: {{s.ls}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #1D1D1F; font-family: {{s.ff}}">{{s.sample}}</span>
+<span style="font-size: 12px; color: #6E6E73">{{s.use}}</span>
+</div>
+</sc-for>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">数字与标识符</h2>
+<div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{idents}}" as="i" hint-placeholder-count="5">
+<div style="padding: 8px 10px; border-radius: 12px; background: #F5F5F7; display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 12px; color: #6E6E73">{{i.k}}</span><span style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{i.v}}</span></div>
+</sc-for>
+</div>
+<div style="color: #3A3A3C">端口、版本、路径、命令和大小一律用等宽字体，不拆行，不翻译。</div>
+<div style="padding: 10px 14px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 4px">
+<span style="font-weight: 600">中英文混排</span>
+<span style="color: #3A3A3C">中文与英文字母、数字之间留一个半角空格；全角标点前后不加空格。</span>
+<span style="font-size: 12px; color: #6E6E73">正确：已打开 3 个 React 项目，端口 <span style="font-family: 'SF Mono', Menlo, monospace">:7101</span>。 避免：已打开3个React项目，端口:7101。</span>
+</div>
+</section>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 16px">
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">图标：16 px 与 24 px</h2>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px">
+<sc-for list="{{icons}}" as="c" hint-placeholder-count="19">
+<div style="display: flex; align-items: center; gap: 8px; height: 46px; box-sizing: border-box; padding: 0 8px; border-radius: 12px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08)">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1D1D1F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="{{c.d}}"/></svg>
+<svg aria-hidden="true" width="24" height="24" viewBox="0 0 16 16" fill="none" stroke="#1D1D1F" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="{{c.d}}"/></svg>
+<div style="display: flex; flex-direction: column; min-width: 0; line-height: 15px"><span style="font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{c.name}}</span><span style="font-size: 11px; color: #6E6E73; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{c.use}}</span></div>
+</div>
+</sc-for>
+</div>
+<div style="font-size: 12px; color: #3A3A3C">线宽 1.4 至 1.6 px（两种尺寸下视觉线宽一致），圆头圆角，不填充，只有状态标记例外。画在 12、14、16 px 网格上，图标颜色跟随所在位置的文字颜色。</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">状态标记</h2>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+<sc-for list="{{mthemes}}" as="t" hint-placeholder-count="2">
+<div style="display: flex; justify-content: space-between; padding: 10px 12px; border-radius: 14px; background: {{t.bg}}; box-shadow: inset 0 0 0 1px {{t.ring}}; color: {{t.fg}}">
+<sc-for list="{{t.items}}" as="m" hint-placeholder-count="5">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><svg role="img" aria-label="{{m.label}}" width="20" height="20" viewBox="0 0 12 12" fill="{{m.fill}}" stroke="{{m.stroke}}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="{{m.d}}"/></svg><span style="font-size: 11px; font-weight: 500">{{m.label}}</span></div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+<div style="font-size: 12px; color: #3A3A3C">每个状态有独立的形状：实心圆、留缺口的空心环、空心圆、方块、三角。颜色只是补充。</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">文件类型图标颜色</h2>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+<sc-for list="{{fthemes}}" as="t" hint-placeholder-count="2">
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px 6px; padding: 10px 12px; border-radius: 14px; background: {{t.bg}}; box-shadow: inset 0 0 0 1px {{t.ring}}; color: {{t.fg}}">
+<sc-for list="{{t.items}}" as="m" hint-placeholder-count="7">
+<div style="display: flex; align-items: center; gap: 5px; min-width: 0"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="{{m.c}}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="{{m.d}}"/></svg><span style="font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{m.name}}</span></div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</section>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+renderVals() {
+const scale = [
+{
+"spec": "28 / 700 / 34",
+"fs": "28px",
+"fw": "700",
+"lh": "34px",
+"ls": "-0.3px",
+"mono": false,
+"sample": "项目库 Runyard 3.2",
+"use": "页面大标题",
+"ff": "-apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif"
+},
+{
+"spec": "20 / 700 / 26",
+"fs": "20px",
+"fw": "700",
+"lh": "26px",
+"ls": "0",
+"mono": false,
+"sample": "新建项目 New project",
+"use": "对话框标题",
+"ff": "-apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif"
+},
+{
+"spec": "16 / 600 / 22",
+"fs": "16px",
+"fw": "600",
+"lh": "22px",
+"ls": "0",
+"mono": false,
+"sample": "运行中的 4 个服务",
+"use": "分区标题",
+"ff": "-apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif"
+},
+{
+"spec": "14 / 600 / 20",
+"fs": "14px",
+"fw": "600",
+"lh": "20px",
+"ls": "0",
+"mono": false,
+"sample": "React 待办清单 · 启动",
+"use": "项目名、主要按钮",
+"ff": "-apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif"
+},
+{
+"spec": "13 / 400 / 19",
+"fs": "13px",
+"fw": "400",
+"lh": "19px",
+"ls": "0",
+"mono": false,
+"sample": "使用 Vite 创建，共 12 个文件。",
+"use": "正文、列表内容",
+"ff": "-apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif"
+},
+{
+"spec": "12 / 400 / 17",
+"fs": "12px",
+"fw": "400",
+"lh": "17px",
+"ls": "0",
+"mono": false,
+"sample": "2 分钟前更新 · 名称",
+"use": "辅助说明、列标题",
+"ff": "-apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif"
+},
+{
+"spec": "mono 13 / 400 / 20",
+"fs": "13px",
+"fw": "400",
+"lh": "20px",
+"ls": "0",
+"mono": true,
+"sample": "npm run dev",
+"use": "代码、命令",
+"ff": "'SF Mono', Menlo, monospace"
+},
+{
+"spec": "mono 12 / 400 / 18",
+"fs": "12px",
+"fw": "400",
+"lh": "18px",
+"ls": "0",
+"mono": true,
+"sample": "~/Runyard/demo-todo  :7101",
+"use": "路径、端口",
+"ff": "'SF Mono', Menlo, monospace"
+}
+];
+const idents = [
+{
+"k": "端口",
+"v": ":7101"
+},
+{
+"k": "版本",
+"v": "React 19.1"
+},
+{
+"k": "路径",
+"v": "~/Runyard/api-lab"
+},
+{
+"k": "命令",
+"v": "npm run dev"
+},
+{
+"k": "大小",
+"v": "2.9 GB"
+}
+];
+const icons = [
+{
+"name": "资源库",
+"use": "回到全部项目",
+"d": "M3 2h3a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM10 2h3a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM3 9h3a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1zM10 9h3a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1z"
+},
+{
+"name": "加号",
+"use": "新建",
+"d": "M8 2.5v11M2.5 8h11"
+},
+{
+"name": "关闭",
+"use": "关闭标签页",
+"d": "M3.5 3.5l9 9M12.5 3.5l-9 9"
+},
+{
+"name": "搜索",
+"use": "查找项目",
+"d": "M7 2.5a4.5 4.5 0 1 0 0 9a4.5 4.5 0 1 0 0-9zM10.5 10.5l3 3"
+},
+{
+"name": "箭头",
+"use": "展开、菜单",
+"d": "M3.5 6l4.5 4.5L12.5 6"
+},
+{
+"name": "更多",
+"use": "行菜单",
+"d": "M3.5 7a1 1 0 1 0 0 2a1 1 0 1 0 0-2zM8 7a1 1 0 1 0 0 2a1 1 0 1 0 0-2zM12.5 7a1 1 0 1 0 0 2a1 1 0 1 0 0-2z"
+},
+{
+"name": "重启",
+"use": "重启服务",
+"d": "M13.5 8a5.5 5.5 0 1 1-1.8-4.1M13.5 2.5v3h-3"
+},
+{
+"name": "停止",
+"use": "停止服务",
+"d": "M4 2.5h8a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5H4A1.5 1.5 0 0 1 2.5 12V4A1.5 1.5 0 0 1 4 2.5z"
+},
+{
+"name": "对勾",
+"use": "已保存、完成",
+"d": "M3 8.5 6.5 12 13 4.5"
+},
+{
+"name": "警告",
+"use": "缺少环境",
+"d": "M8 2 14.5 13.5h-13zM8 6.5v3.5M8 12v.2"
+},
+{
+"name": "模板",
+"use": "模板列表",
+"d": "M8 1.5 14 5v6l-6 3.5L2 11V5zM2 5l6 3.5L14 5M8 8.5v6"
+},
+{
+"name": "时钟",
+"use": "长期未使用",
+"d": "M8 2a6 6 0 1 0 0 12a6 6 0 1 0 0-12zM8 4.5V8l2.5 1.5"
+},
+{
+"name": "设置",
+"use": "应用设置",
+"d": "M2 4.5h7M12 4.5h2M2 11.5h2M7 11.5h7M10.5 3a1.5 1.5 0 1 0 0 3a1.5 1.5 0 1 0 0-3zM5.5 10a1.5 1.5 0 1 0 0 3a1.5 1.5 0 1 0 0-3z"
+},
+{
+"name": "文件夹",
+"use": "文件树",
+"d": "M1.5 4.5a1 1 0 0 1 1-1h3.2l1.5 1.5h6.3a1 1 0 0 1 1 1V12a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1z"
+},
+{
+"name": "文件",
+"use": "文件树",
+"d": "M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5"
+},
+{
+"name": "智能体",
+"use": "智能体标记",
+"d": "M8 2v2.5M8 11.5V14M2 8h2.5M11.5 8H14M4 4l1.6 1.6M10.4 10.4 12 12M12 4l-1.6 1.6M5.6 10.4 4 12"
+},
+{
+"name": "外链",
+"use": "在浏览器打开",
+"d": "M9 2.5h4.5V7M13.5 2.5 7.5 8.5M12 9.5v3a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h2.5"
+},
+{
+"name": "复制",
+"use": "复制命令、地址",
+"d": "M6 5.5h6.5a1 1 0 0 1 1 1V13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6.5a1 1 0 0 1 1-1zM10.5 3.5V3a1 1 0 0 0-1-1H3.5a1 1 0 0 0-1 1v6.5a1 1 0 0 0 1 1H5"
+},
+{
+"name": "终端",
+"use": "命令提示符",
+"d": "M2.5 3.5h11a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1zM4.5 6.5 6.5 8l-2 1.5M8 10h3"
+}
+];
+const mthemes = [
+{
+"label": "浅色",
+"bg": "#FFFFFF",
+"ring": "rgba(0,0,0,0.08)",
+"fg": "#1D1D1F",
+"items": [
+{
+"d": "M6 1.5a4.5 4.5 0 1 0 0 9a4.5 4.5 0 1 0 0-9z",
+"fill": "#28A745",
+"stroke": "none",
+"label": "运行中"
+},
+{
+"d": "M6 1.5a4.5 4.5 0 1 0 4.5 4.5",
+"fill": "none",
+"stroke": "#C27400",
+"label": "启动中"
+},
+{
+"d": "M6 1.5a4.5 4.5 0 1 0 0 9a4.5 4.5 0 1 0 0-9z",
+"fill": "none",
+"stroke": "#8E8E93",
+"label": "已停止"
+},
+{
+"d": "M3 1.5h6A1.5 1.5 0 0 1 10.5 3v6A1.5 1.5 0 0 1 9 10.5H3A1.5 1.5 0 0 1 1.5 9V3A1.5 1.5 0 0 1 3 1.5z",
+"fill": "#D70015",
+"stroke": "none",
+"label": "已崩溃"
+},
+{
+"d": "M6 1.5 11 10.5H1zM6 5v2.5M6 9v.2",
+"fill": "none",
+"stroke": "#C27400",
+"label": "缺环境"
+}
+]
+},
+{
+"label": "深色",
+"bg": "#1C1C1E",
+"ring": "rgba(255,255,255,0.14)",
+"fg": "#F5F5F7",
+"items": [
+{
+"d": "M6 1.5a4.5 4.5 0 1 0 0 9a4.5 4.5 0 1 0 0-9z",
+"fill": "#30D158",
+"stroke": "none",
+"label": "运行中"
+},
+{
+"d": "M6 1.5a4.5 4.5 0 1 0 4.5 4.5",
+"fill": "none",
+"stroke": "#FFD60A",
+"label": "启动中"
+},
+{
+"d": "M6 1.5a4.5 4.5 0 1 0 0 9a4.5 4.5 0 1 0 0-9z",
+"fill": "none",
+"stroke": "#8E8E93",
+"label": "已停止"
+},
+{
+"d": "M3 1.5h6A1.5 1.5 0 0 1 10.5 3v6A1.5 1.5 0 0 1 9 10.5H3A1.5 1.5 0 0 1 1.5 9V3A1.5 1.5 0 0 1 3 1.5z",
+"fill": "#FF453A",
+"stroke": "none",
+"label": "已崩溃"
+},
+{
+"d": "M6 1.5 11 10.5H1zM6 5v2.5M6 9v.2",
+"fill": "none",
+"stroke": "#FFD60A",
+"label": "缺环境"
+}
+]
+}
+];
+const fthemes = [
+{
+"label": "浅色",
+"bg": "#FFFFFF",
+"ring": "rgba(0,0,0,0.08)",
+"fg": "#1D1D1F",
+"items": [
+{
+"name": "文件夹",
+"d": "M1.5 4.5a1 1 0 0 1 1-1h3.2l1.5 1.5h6.3a1 1 0 0 1 1 1V12a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1z",
+"c": "#B8860B"
+},
+{
+"name": "TS",
+"d": "M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5",
+"c": "#0F68A0"
+},
+{
+"name": "CSS",
+"d": "M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5",
+"c": "#7A2E9E"
+},
+{
+"name": "HTML",
+"d": "M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5",
+"c": "#B3470B"
+},
+{
+"name": "JSON / YAML",
+"d": "M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5",
+"c": "#8A6D00"
+},
+{
+"name": "其他",
+"d": "M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5",
+"c": "#6E6E73"
+},
+{
+"name": "箭头",
+"d": "M3.5 6l4.5 4.5L12.5 6",
+"c": "#6E6E73"
+}
+]
+},
+{
+"label": "深色",
+"bg": "#1C1C1E",
+"ring": "rgba(255,255,255,0.14)",
+"fg": "#F5F5F7",
+"items": [
+{
+"name": "文件夹",
+"d": "M1.5 4.5a1 1 0 0 1 1-1h3.2l1.5 1.5h6.3a1 1 0 0 1 1 1V12a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1z",
+"c": "#FFD60A"
+},
+{
+"name": "TS",
+"d": "M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5",
+"c": "#6BDFFF"
+},
+{
+"name": "CSS",
+"d": "M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5",
+"c": "#D0A8FF"
+},
+{
+"name": "HTML",
+"d": "M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5",
+"c": "#FFA14A"
+},
+{
+"name": "JSON / YAML",
+"d": "M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5",
+"c": "#FFD60A"
+},
+{
+"name": "其他",
+"d": "M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5",
+"c": "#A1A1A6"
+},
+{
+"name": "箭头",
+"d": "M3.5 6l4.5 4.5L12.5 6",
+"c": "#A1A1A6"
+}
+]
+}
+];
+return { scale, idents, icons, mthemes, fthemes };
+}
+}
+</script>
+</body>
+</html>

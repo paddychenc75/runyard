@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Runyard Toolchain missing</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:#0071E3}a:hover{color:#0058B0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; box-sizing: border-box; position: relative; overflow: hidden; background: #F5F5F7; color: #1D1D1F; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 13px; line-height: 1.4">
+
+<div style="position: absolute; left: 20px; right: 16px; top: 14px; height: 44px; display: flex; align-items: center; gap: 12px">
+<div style="display: flex; align-items: center; gap: 8px; padding-right: 6px">
+<span aria-hidden="true" style="width: 12px; height: 12px; border-radius: 6px; background: #FF5F57; border: 0.5px solid rgba(0,0,0,0.12)"></span>
+<span aria-hidden="true" style="width: 12px; height: 12px; border-radius: 6px; background: #FEBC2E; border: 0.5px solid rgba(0,0,0,0.12)"></span>
+<span aria-hidden="true" style="width: 12px; height: 12px; border-radius: 6px; background: #28C840; border: 0.5px solid rgba(0,0,0,0.12)"></span>
+</div>
+<div style="height: 44px; padding: 4px; box-sizing: border-box; border-radius: 22px; display: flex; align-items: center; gap: 2px; background: rgba(255,255,255,0.66); backdrop-filter: blur(28px) saturate(180%); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.08), 0 8px 24px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.9)">
+<button style="height: 36px; padding: 0 16px; border-radius: 18px; border: none; background: transparent; color: #3A3A3C; display: flex; align-items: center; gap: 7px">
+<svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#3A3A3C" stroke-width="1.5" stroke-linejoin="round"><rect x="1.5" y="1.5" width="4.5" height="4.5" rx="1.2"/><rect x="8" y="1.5" width="4.5" height="4.5" rx="1.2"/><rect x="1.5" y="8" width="4.5" height="4.5" rx="1.2"/><rect x="8" y="8" width="4.5" height="4.5" rx="1.2"/></svg>Library</button>
+<button style="height: 36px; padding: 0 12px 0 14px; border-radius: 18px; border: none; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 0 0 0.5px rgba(0,0,0,0.06); font-weight: 600; display: flex; align-items: center; gap: 8px">
+<svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#C27400" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"><path d="M6 1.5 11 10.5H1zM6 5v2.5M6 9v.2"/></svg>go-1
+<svg role="img" aria-label="Close" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#3A3A3C" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l6 6M8 2 2 8"/></svg></button>
+</div>
+<div style="flex: 1"></div>
+<div style="height: 44px; padding: 0 6px 0 18px; border-radius: 22px; display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.66); backdrop-filter: blur(28px) saturate(180%); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.08), 0 8px 24px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.9)">
+<span style="font-weight: 600; font-size: 14px">go-1</span>
+<span style="color: #6E6E73">Go</span>
+<span style="display: flex; align-items: center; gap: 6px; color: #8A4B00; font-weight: 500">
+<svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#C27400" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"><path d="M6 1.5 11 10.5H1zM6 5v2.5M6 9v.2"/></svg>Go missing</span>
+<button style="height: 32px; padding: 0 16px; border-radius: 16px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; display: flex; align-items: center; gap: 6px">
+<svg aria-hidden="true" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6a4 4 0 1 1-1.2-2.85M10 2v2.2H7.8"/></svg>Check again</button>
+<button aria-label="More actions" style="width: 32px; height: 32px; padding: 0; border-radius: 16px; border: none; background: rgba(118,118,128,0.14); display: flex; align-items: center; justify-content: center; flex: none">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="#1D1D1F"><circle cx="3.5" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="12.5" cy="8" r="1.3"/></svg></button>
+</div>
+<button style="height: 44px; padding: 0 16px; border-radius: 22px; display: flex; align-items: center; gap: 8px; font-weight: 500; background: rgba(255,255,255,0.66); backdrop-filter: blur(28px) saturate(180%); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.08), 0 8px 24px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.9)">
+<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: #28A745; box-shadow: 0 0 0 3px rgba(40,167,69,0.18)"></span>2 running</button>
+</div>
+
+<nav aria-label="Files" style="position: absolute; left: 8px; top: 70px; bottom: 8px; width: 216px; box-sizing: border-box; border-radius: 20px; padding: 14px 8px; display: flex; flex-direction: column; gap: 1px; background: rgba(255,255,255,0.62); backdrop-filter: blur(40px) saturate(180%); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.10), 0 12px 36px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,1)">
+<div style="padding: 0 10px 8px 10px; font-size: 12px; font-weight: 600; color: #6E6E73">Files</div>
+<button style="height: 28px; padding: 0 8px 0 8px; border-radius: 8px; border: none; background: #0071E3; color: #FFFFFF; display: flex; align-items: center; gap: 6px; text-align: left; width: 100%"><span aria-hidden="true" style="width: 10px; flex: none"></span><svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#FFFFFF" stroke-width="1.4" stroke-linejoin="round" style="flex: none"><path d="M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5"/></svg><span style="flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">main.go</span></button>
+<button style="height: 28px; padding: 0 8px 0 8px; border-radius: 8px; border: none; background: transparent; color: #1D1D1F; display: flex; align-items: center; gap: 6px; text-align: left; width: 100%"><span aria-hidden="true" style="width: 10px; flex: none"></span><svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#6E6E73" stroke-width="1.4" stroke-linejoin="round" style="flex: none"><path d="M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5"/></svg><span style="flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">go.mod</span></button>
+</nav>
+
+<div style="position: absolute; left: 232px; right: 8px; top: 70px; bottom: 8px; display: flex; flex-direction: column; gap: 8px">
+<div style="flex: 1; min-height: 0; display: flex; gap: 8px">
+
+<div style="flex: 1.05; min-width: 0; border-radius: 16px; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.07); display: flex; flex-direction: column; overflow: hidden">
+<div style="height: 40px; flex: none; padding: 0 8px; display: flex; align-items: center; gap: 4px; border-bottom: 1px solid rgba(0,0,0,0.07)">
+<button style="height: 28px; padding: 0 12px; border-radius: 9px; border: none; background: rgba(118,118,128,0.14); font-weight: 500">main.go</button>
+<span style="flex: 1"></span>
+<span style="font-size: 12px; color: #6E6E73; padding-right: 8px">You can still edit the code</span>
+</div>
+<div style="flex: 1; min-height: 0; padding: 10px 0; font-family: 'SF Mono', Menlo, monospace; font-size: 13px; line-height: 22px">
+<sc-for list="{{lines}}" as="line" hint-placeholder-count="13">
+<div style="display: flex">
+<span style="width: 48px; flex: none; text-align: right; padding-right: 16px; color: #6E6E73">{{line.no}}</span>
+<span style="white-space: pre"><sc-for list="{{line.tokens}}" as="tk" hint-placeholder-count="3"><span style="color: {{tk.c}}">{{tk.t}}</span></sc-for></span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="flex: 1; min-width: 0; border-radius: 16px; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.07); display: flex; flex-direction: column; padding: 20px; box-sizing: border-box">
+<div style="border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 18px; background: rgba(255,255,255,0.60); backdrop-filter: blur(30px) saturate(180%); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.10), 0 16px 40px rgba(15,23,42,0.12), inset 0 1px 0 rgba(255,255,255,1)">
+<div style="display: flex; align-items: center; gap: 12px">
+<span aria-hidden="true" style="width: 40px; height: 40px; border-radius: 12px; background: rgba(194,116,0,0.08); display: flex; align-items: center; justify-content: center">
+<svg width="20" height="20" viewBox="0 0 12 12" fill="none" stroke="#C27400" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round"><path d="M6 1.5 11 10.5H1zM6 5v2.5M6 9v.2"/></svg></span>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<div style="font-size: 20px; font-weight: 700">Go not found</div>
+<div style="color: #3A3A3C">The playground is created. Install Go, then click “Check again” and it will start.</div>
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: 88px minmax(0, 1fr); row-gap: 12px; column-gap: 12px; align-items: center">
+<div style="color: #6E6E73">Required</div>
+<div style="font-family: 'SF Mono', Menlo, monospace">Go ≥ 1.22 and &lt; 2</div>
+<div style="color: #6E6E73">Current</div>
+<div style="color: #8A4B00; font-weight: 500">Not installed</div>
+<div style="color: #6E6E73">Command</div>
+<div style="height: 40px; padding: 0 14px; border-radius: 12px; background: #F5F5F7; border: 1px solid rgba(0,0,0,0.08); display: flex; align-items: center; font-family: 'SF Mono', Menlo, monospace">brew install go</div>
+<div style="color: #6E6E73">Website</div>
+<div><a href="https://go.dev/dl/">go.dev/dl</a></div>
+</div>
+
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<button style="height: 40px; padding: 0 18px; border-radius: 20px; border: none; background: rgba(118,118,128,0.14); font-weight: 500">Copy command</button>
+<button style="height: 40px; padding: 0 18px; border-radius: 20px; border: none; background: rgba(118,118,128,0.14); font-weight: 500">Run in Terminal</button>
+<button style="height: 40px; padding: 0 18px; border-radius: 20px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600">Check again</button>
+</div>
+<div style="font-size: 13px; color: #6E6E73">Already installed? <a href="#">Set the path…</a></div>
+<div style="font-size: 12px; color: #6E6E73">Runyard never installs anything for you. You decide whether to run the command.</div>
+</div>
+</div>
+</div>
+
+<div style="height: 218px; flex: none; border-radius: 16px; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.07); display: flex; flex-direction: column; overflow: hidden">
+<div style="height: 44px; flex: none; padding: 0 10px; display: flex; align-items: center; gap: 10px">
+<div role="tablist" style="display: flex; padding: 2px; border-radius: 11px; background: rgba(118,118,128,0.14)">
+<button role="tab" aria-selected="false" style="height: 28px; padding: 0 14px; border-radius: 9px; border: none; background: transparent; color: #3A3A3C">Output</button>
+<button role="tab" aria-selected="true" style="height: 28px; padding: 0 14px; border-radius: 9px; border: none; background: #FFFFFF; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.14), 0 0 0 0.5px rgba(0,0,0,0.05)">Terminal</button>
+</div>
+<span style="flex: 1"></span>
+</div>
+<div style="flex: 1; padding: 2px 18px 12px 18px; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; line-height: 21px; color: #3A3A3C">
+<div><span style="color: #1B7A34">~/Runyard/go-1</span> <span style="color: #6E6E73">❯</span> go version</div>
+<div style="color: #C4001A">zsh: command not found: go</div>
+<div><span style="color: #1B7A34">~/Runyard/go-1</span> <span style="color: #6E6E73">❯</span> <span style="display: inline-block; width: 7px; height: 14px; background: #1D1D1F; vertical-align: -2px"></span></div>
+</div>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+const K = '#AD3DA4', S = '#B3261E', F = '#0F68A0', P = '#1D1D1F', N = '#1C00CF';
+const t = (text, c) => ({ t: text, c: c || P });
+const src = [
+[t('package', K), t(' main')],
+[t(' ')],
+[t('import', K), t(' "fmt"', S)],
+[t(' ')],
+[t('func', K), t(' worker', F), t('(id '), t('int', K), t(', done '), t('chan', K), t('<- '), t('string', K), t(') {')],
+[t('  done <- fmt.'), t('Sprintf', F), t('('), t('"worker %d done"', S), t(', id)')],
+[t('}')],
+[t(' ')],
+[t('func', K), t(' main', F), t('() {')],
+[t('  done := '), t('make', F), t('('), t('chan', K), t(' '), t('string', K), t(', '), t('2', N), t(')')],
+[t('  go', K), t(' worker', F), t('('), t('1', N), t(', done)')],
+[t('  fmt.'), t('Println', F), t('(<-done)')],
+[t('}')]
+];
+const lines = src.map((tokens, i) => ({ no: String(i + 1), tokens }));
+return { lines };
+}
+}
+</script>
+</body>
+</html>

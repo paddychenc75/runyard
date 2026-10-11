@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Runyard 图标与启动画面</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+a{color:#0071E3}a:hover{color:#0058B0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 730px; box-sizing: border-box; padding: 36px 44px; background: #FFFFFF; color: #1D1D1F; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 13px; line-height: 1.45; display: flex; flex-direction: column; gap: 18px; overflow: hidden">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.3px">图标与启动画面</h1>
+<div style="color: #6E6E73; font-size: 14px">图标画的是代码里正在执行的那一行：两行已经执行，一行还没轮到，中间亮着的一行冲出边缘。</div>
+</div>
+<div style="flex: 1; min-height: 0; display: flex; gap: 32px">
+
+<section style="width: 600px; flex: none; display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">软件图标</h2>
+<div style="display: flex; gap: 12px">
+<div style="flex: 1; height: 250px; border-radius: 20px; background: #F5F5F7; position: relative; display: flex; align-items: center; justify-content: center"><span style="position: absolute; left: 16px; top: 12px"><span style="font-size: 12px; font-weight: 600; color: #6E6E73">浅色</span></span><img src="/_blob/8ae06472bff19363541a49903d238262" alt="Runyard" width="216" height="216" style="display: block; flex: none"></div>
+<div style="flex: 1; height: 250px; border-radius: 20px; background: #1C1C1E; position: relative; display: flex; align-items: center; justify-content: center"><span style="position: absolute; left: 16px; top: 12px"><span style="font-size: 12px; font-weight: 600; color: #A1A1A6">深色模式</span></span><img src="/_blob/b949b1de812eedc271edc3beefc4ed73" alt="Runyard" width="216" height="216" style="display: block; flex: none"></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px; margin-top: 6px"><span style="font-size: 12px; font-weight: 600; color: #1D1D1F">程序坞里用的版本</span><span style="color: #6E6E73; font-size: 12px">系统会把图标套进圆角方形，所以这里的亮线正好切到右边缘。</span></div>
+<div style="display: flex; gap: 12px">
+<div style="flex: 1; height: 124px; border-radius: 20px; background: linear-gradient(120deg, #9CC4F5, #C9BDF2 60%, #F0C6D9); display: flex; align-items: center; justify-content: center"><div style="padding: 10px 14px; border-radius: 24px; background: rgba(255,255,255,0.42); border: 1px solid rgba(255,255,255,0.7); display: flex; gap: 12px; align-items: center"><span aria-hidden="true" style="width: 64px; height: 64px; border-radius: 15px; background: #2F7BF6"></span><img src="/_blob/1414e170e52e75ccf01a45d10204bd76" alt="" width="80" height="80" style="display: block; flex: none"><span aria-hidden="true" style="width: 64px; height: 64px; border-radius: 15px; background: #34C759"></span></div></div>
+<div style="flex: 1; height: 124px; border-radius: 20px; background: linear-gradient(120deg, #17193A, #2A1D4A 60%, #4A2350); display: flex; align-items: center; justify-content: center"><div style="padding: 10px 14px; border-radius: 24px; background: rgba(30,30,40,0.5); border: 1px solid rgba(255,255,255,0.16); display: flex; gap: 12px; align-items: center"><span aria-hidden="true" style="width: 64px; height: 64px; border-radius: 15px; background: #2F7BF6"></span><img src="/_blob/a61ca27db30001f6996ac77e6c0a8f30" alt="" width="80" height="80" style="display: block; flex: none"><span aria-hidden="true" style="width: 64px; height: 64px; border-radius: 15px; background: #34C759"></span></div></div>
+</div>
+<div style="display: flex; gap: 12px; margin-top: 6px">
+<div style="flex: 1; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; font-weight: 600; color: #6E6E73">小尺寸</span>
+<div style="height: 60px; border-radius: 16px; background: #F5F5F7; display: flex; align-items: center; justify-content: center; gap: 18px"><img src="/_blob/82a3785b6bc604d328c186297df42c70" alt="" width="32" height="32" style="display: block; flex: none"><img src="/_blob/a546075467b8f46480a44a717fed96d5" alt="" width="16" height="16" style="display: block; flex: none"><span aria-hidden="true" style="width: 1px; height: 28px; background: rgba(0,0,0,0.10)"></span><span style="display: flex; align-items: center; gap: 18px; padding: 8px 14px; border-radius: 12px; background: #1C1C1E"><img src="/_blob/477cbfce95fc1ce8bd2eef873c5957bc" alt="" width="32" height="32" style="display: block; flex: none"><img src="/_blob/cb6725d49291fcbf9e43ece6cc085559" alt="" width="16" height="16" style="display: block; flex: none"></span></div></div>
+<div style="flex: 1; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; font-weight: 600; color: #6E6E73">菜单栏用的单色版本</span>
+<div style="height: 60px; border-radius: 16px; background: #F5F5F7; display: flex; align-items: center; justify-content: center; gap: 12px"><span style="height: 30px; padding: 0 14px; border-radius: 15px; background: rgba(246,246,248,0.95); border: 1px solid rgba(0,0,0,0.10); display: flex; align-items: center"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" style="flex: none"><rect x="1" y="1" width="8" height="3" rx="1.5" fill="#000"/><path d="M6.5,6 H18 V11 H6.5 A2.5,2.5 0 0 1 6.5,6 Z" fill="#000"/><rect x="1.5" y="13.5" width="9" height="3" rx="1.5" fill="none" stroke="#000" stroke-width="1"/></svg></span><span style="height: 30px; padding: 0 14px; border-radius: 15px; background: #2C2C2E; display: flex; align-items: center"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" style="flex: none"><rect x="1" y="1" width="8" height="3" rx="1.5" fill="#FFF"/><path d="M6.5,6 H18 V11 H6.5 A2.5,2.5 0 0 1 6.5,6 Z" fill="#FFF"/><rect x="1.5" y="13.5" width="9" height="3" rx="1.5" fill="none" stroke="#FFF" stroke-width="1"/></svg></span></div></div>
+</div>
+</section>
+
+<section style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">启动画面</h2>
+<div style="color: #6E6E73; font-size: 12px; margin-top: -4px">窗口出现到资源库可用之间显示，通常不到一秒。进度线就是图标里那条亮线，从左跑到右边缘。</div>
+<div style="display: flex; gap: 16px"><div style="flex: 1; min-width: 0; height: 330px; border-radius: 20px; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.10); box-shadow: 0 18px 44px rgba(15,23,42,0.16); position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px"><div aria-hidden="true" style="position: absolute; left: 16px; top: 16px; display: flex; gap: 8px"><span style="width: 12px; height: 12px; border-radius: 6px; background: #FF5F57"></span><span style="width: 12px; height: 12px; border-radius: 6px; background: #FEBC2E"></span><span style="width: 12px; height: 12px; border-radius: 6px; background: #28C840"></span></div><img src="/_blob/1414e170e52e75ccf01a45d10204bd76" alt="Runyard" width="104" height="104" style="display: block; flex: none"><div style="font-size: 24px; font-weight: 700; letter-spacing: -0.3px; color: #1D1D1F">Runyard</div><div style="font-size: 12px; color: #6E6E73">正在读取资源库…</div><div aria-hidden="true" style="position: absolute; left: 0; right: 0; bottom: 0; height: 5px; background: rgba(0,0,0,0.07)"><div style="width: 68%; height: 5px; border-radius: 0 3px 3px 0; background: linear-gradient(90deg, #E8451A 0%, #FA6A1A 60%, #FF9A22 86%, #FFC94A 100%)"></div></div></div><div style="flex: 1; min-width: 0; height: 330px; border-radius: 20px; background: #1E1E21; border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 18px 44px rgba(15,23,42,0.16); position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px"><div aria-hidden="true" style="position: absolute; left: 16px; top: 16px; display: flex; gap: 8px"><span style="width: 12px; height: 12px; border-radius: 6px; background: #FF5F57"></span><span style="width: 12px; height: 12px; border-radius: 6px; background: #FEBC2E"></span><span style="width: 12px; height: 12px; border-radius: 6px; background: #28C840"></span></div><img src="/_blob/a61ca27db30001f6996ac77e6c0a8f30" alt="Runyard" width="104" height="104" style="display: block; flex: none"><div style="font-size: 24px; font-weight: 700; letter-spacing: -0.3px; color: #F5F5F7">Runyard</div><div style="font-size: 12px; color: #A1A1A6">正在读取资源库…</div><div aria-hidden="true" style="position: absolute; left: 0; right: 0; bottom: 0; height: 5px; background: rgba(255,255,255,0.10)"><div style="width: 68%; height: 5px; border-radius: 0 3px 3px 0; background: linear-gradient(90deg, #E8451A 0%, #FA6A1A 60%, #FF9A22 86%, #FFC94A 100%)"></div></div></div></div>
+<div style="display: flex; gap: 28px; margin-top: 14px">
+<div style="display: flex; flex-direction: column; gap: 8px; flex: none"><span style="font-size: 12px; font-weight: 600; color: #6E6E73">颜色</span><div style="display: grid; grid-template-columns: auto auto; gap: 10px 22px"><div style="display: flex; align-items: center; gap: 8px"><span aria-hidden="true" style="width: 40px; height: 24px; border-radius: 8px; background: linear-gradient(90deg, #FFFEFC, #F5F2EB); border: 1px solid rgba(0,0,0,0.10); flex: none"></span><span style="display: flex; flex-direction: column"><span style="font-weight: 600">底板</span><span style="font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: #6E6E73">#FFFEFC</span></span></div><div style="display: flex; align-items: center; gap: 8px"><span aria-hidden="true" style="width: 40px; height: 24px; border-radius: 8px; background: linear-gradient(90deg, #24232B, #24232B); border: 1px solid rgba(0,0,0,0.10); flex: none"></span><span style="display: flex; flex-direction: column"><span style="font-weight: 600">已执行</span><span style="font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: #6E6E73">#24232B</span></span></div><div style="display: flex; align-items: center; gap: 8px"><span aria-hidden="true" style="width: 40px; height: 24px; border-radius: 8px; background: linear-gradient(90deg, #C4C1C6, #C4C1C6); border: 1px solid rgba(0,0,0,0.10); flex: none"></span><span style="display: flex; flex-direction: column"><span style="font-weight: 600">未执行</span><span style="font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: #6E6E73">#C4C1C6</span></span></div><div style="display: flex; align-items: center; gap: 8px"><span aria-hidden="true" style="width: 40px; height: 24px; border-radius: 8px; background: linear-gradient(90deg, #E8451A, #FFC94A); border: 1px solid rgba(0,0,0,0.10); flex: none"></span><span style="display: flex; flex-direction: column"><span style="font-weight: 600">执行中</span><span style="font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: #6E6E73">#E8451A → #FFC94A</span></span></div></div></div>
+<div style="display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0"><span style="font-size: 12px; font-weight: 600; color: #6E6E73">用在哪里</span><ul style="margin: 0; padding-left: 18px; color: #3A3A3C"><li style="margin: 0 0 4px 0">程序坞、访达、应用切换：线切到边缘的版本。</li><li style="margin: 0 0 4px 0">网站、说明文档、GitHub 头像：线冲出去的版本。</li><li style="margin: 0 0 4px 0">橙色只属于图标和启动画面；软件界面里的强调色仍然是系统蓝。</li><li style="margin: 0 0 4px 0">程序坞里的效果是模拟的，要在打出真正的应用包后再验证。</li></ul></div>
+</div>
+</section>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":730}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

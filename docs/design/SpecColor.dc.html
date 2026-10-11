@@ -1,0 +1,776 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Runyard 颜色规范</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:#0071E3}a:hover{color:#0058B0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1100px; box-sizing: border-box; overflow: hidden; padding: 40px 44px; background: #FFFFFF; color: #1D1D1F; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 13px; line-height: 1.45; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.3px">颜色</h1>
+<div style="color: #6E6E73; font-size: 14px">完整调色板，按角色分组，每个角色都有浅色和深色一对值。</div>
+</div>
+<div style="color: #6E6E73; font-size: 12px; text-align: right">控件、状态与反馈、动效与无障碍见其他规范页</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 36px; align-items: start">
+
+<div style="display: flex; flex-direction: column; gap: 20px">
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
+<section style="display: flex; flex-direction: column">
+<div style="display: grid; grid-template-columns: 190px minmax(0, 1fr) minmax(0, 1fr); column-gap: 8px; align-items: baseline; height: 28px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">{{g.title}}</h2>
+<span style="font-size: 12px; color: #6E6E73">浅色</span>
+<span style="font-size: 12px; color: #6E6E73">深色</span>
+</div>
+<sc-for list="{{g.rows}}" as="r" hint-placeholder-count="8">
+<div style="display: grid; grid-template-columns: 190px minmax(0, 1fr) minmax(0, 1fr); column-gap: 8px; align-items: center; height: 36px; border-top: 1px solid rgba(0,0,0,0.06)">
+<div style="display: flex; flex-direction: column; min-width: 0"><span style="font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.name}}</span><span style="font-size: 12px; color: #6E6E73; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.use}}</span></div>
+<div style="display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 6px"><span aria-hidden="true" style="flex: none; width: 36px; height: 22px; border-radius: 7px; background: {{r.ls}}; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.10)"></span><span style="font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: #6E6E73; white-space: nowrap">{{r.lt}}</span></div>
+<div style="display: flex; align-items: center; gap: 8px; height: 32px; background: #1C1C1E; border-radius: 10px; padding: 3px 6px; box-sizing: border-box; color: #A1A1A6"><span aria-hidden="true" style="flex: none; width: 36px; height: 22px; border-radius: 7px; background: {{r.ds}}; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.14)"></span><span style="font-family: 'SF Mono', Menlo, monospace; font-size: 11px; white-space: nowrap">{{r.dt}}</span></div>
+</div>
+</sc-for>
+</section>
+</sc-for>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">文件树图标</h2>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 24px">
+<sc-for list="{{ftree}}" as="f" hint-placeholder-count="8">
+<div style="display: grid; grid-template-columns: 78px minmax(0, 1fr) minmax(0, 1fr); gap: 8px; align-items: center; height: 28px">
+<span style="font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{f.name}}</span>
+<span style="display: flex; align-items: center; gap: 6px"><span style="display: inline-flex; padding: 3px; border-radius: 6px; background: {{f.bgl}}"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="{{f.l}}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="{{f.d}}"/></svg></span><span style="font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: #6E6E73">{{f.l}}</span></span>
+<span style="display: flex; align-items: center; gap: 6px; height: 26px; padding: 0 6px; box-sizing: border-box; border-radius: 8px; background: #1C1C1E; color: #A1A1A6"><span style="display: inline-flex; padding: 2px; border-radius: 6px; background: {{f.bgd}}"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="{{f.dd}}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="{{f.d}}"/></svg></span><span style="font-family: 'SF Mono', Menlo, monospace; font-size: 11px">{{f.dd}}</span></span>
+</div>
+</sc-for>
+</div>
+</section>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 20px">
+<section style="display: flex; flex-direction: column">
+<div style="display: grid; grid-template-columns: 190px minmax(0, 1fr) minmax(0, 1fr); column-gap: 8px; align-items: baseline; height: 28px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">文字层级</h2>
+<span style="font-size: 12px; color: #6E6E73">浅色</span>
+<span style="font-size: 12px; color: #6E6E73">深色</span>
+</div>
+<sc-for list="{{texts}}" as="t" hint-placeholder-count="5">
+<div style="display: grid; grid-template-columns: 190px minmax(0, 1fr) minmax(0, 1fr); column-gap: 8px; align-items: center; height: 40px; border-top: 1px solid rgba(0,0,0,0.06)">
+<div style="display: flex; flex-direction: column; min-width: 0"><span style="font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{t.name}}</span><span style="font-size: 12px; color: #6E6E73; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{t.use}}</span></div>
+<div style="height: 32px; padding: 0 3px; box-sizing: border-box; display: flex; align-items: center"><div style="flex: 1; height: 30px; box-sizing: border-box; padding: 0 10px; border-radius: 9px; display: flex; align-items: center; justify-content: space-between; background: {{t.bl}}; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08); color: {{t.fl}}"><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px"><sc-if value="{{t.mark}}" hint-placeholder-val="{{false}}"><span aria-hidden="true" style="width: 9px; height: 9px; border-radius: 50%; background: #8E8E93"></span><span aria-hidden="true" style="width: 9px; height: 9px; border-radius: 50%; box-sizing: border-box; border: 1.5px solid #8E8E93"></span></sc-if>{{t.sample}}</span><span style="font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: {{t.hl}}">{{t.lt}}</span></div></div>
+<div style="background: #1C1C1E; border-radius: 10px; padding: 3px 6px; box-sizing: border-box; color: #A1A1A6; height: 36px; padding: 3px 6px; display: flex; align-items: center"><div style="flex: 1; height: 30px; box-sizing: border-box; padding: 0 10px; border-radius: 9px; display: flex; align-items: center; justify-content: space-between; background: {{t.bd}}; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08); color: {{t.fd}}"><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px"><sc-if value="{{t.mark}}" hint-placeholder-val="{{false}}"><span aria-hidden="true" style="width: 9px; height: 9px; border-radius: 50%; background: #8E8E93"></span><span aria-hidden="true" style="width: 9px; height: 9px; border-radius: 50%; box-sizing: border-box; border: 1.5px solid #8E8E93"></span></sc-if>{{t.sample}}</span><span style="font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: {{t.hd}}">{{t.dt}}</span></div></div>
+</div>
+</sc-for>
+</section>
+
+<section style="display: flex; flex-direction: column">
+<div style="display: grid; grid-template-columns: 120px minmax(0, 1fr) minmax(0, 1fr); column-gap: 8px; align-items: baseline; height: 28px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">状态</h2>
+<span style="font-size: 12px; color: #6E6E73">浅色：标记、文字、底色</span>
+<span style="font-size: 12px; color: #6E6E73">深色：标记、文字、底色</span>
+</div>
+<sc-for list="{{statuses}}" as="s" hint-placeholder-count="4">
+<div style="display: grid; grid-template-columns: 120px minmax(0, 1fr) minmax(0, 1fr); column-gap: 8px; align-items: center; height: 52px; border-top: 1px solid rgba(0,0,0,0.06)">
+<div style="display: flex; flex-direction: column; min-width: 0"><span style="font-weight: 600; font-size: 12px">{{s.name}}</span><span style="font-size: 11px; color: #6E6E73">{{s.shape}}</span></div>
+<div style="display: flex; align-items: center; gap: 8px; padding: 0 6px"><span style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 9px; border-radius: 12px; font-size: 12px; font-weight: 500; white-space: nowrap; background: {{s.l.bg}}; color: {{s.l.c}}"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="{{s.l.fill}}" stroke="{{s.l.stroke}}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="{{s.l.d}}"/></svg>{{s.word}}</span><span style="display: flex; flex-direction: column; font-family: 'SF Mono', Menlo, monospace; font-size: 10.5px; line-height: 13px; color: #6E6E73"><span>{{s.l.v1}}</span><span>{{s.l.v2}}</span><span>{{s.l.v3}}</span></span></div>
+<div style="background: #1C1C1E; border-radius: 10px; padding: 3px 6px; box-sizing: border-box; color: #A1A1A6; height: 48px; display: flex; align-items: center; gap: 8px"><span style="flex: none; display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 9px; border-radius: 12px; font-size: 12px; font-weight: 500; white-space: nowrap; background: {{s.d.bg}}; color: {{s.d.c}}"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="{{s.d.fill}}" stroke="{{s.d.stroke}}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="{{s.d.d}}"/></svg>{{s.word}}</span><span style="display: flex; flex-direction: column; font-family: 'SF Mono', Menlo, monospace; font-size: 10.5px; line-height: 13px"><span>{{s.d.v1}}</span><span>{{s.d.v2}}</span><span>{{s.d.v3}}</span></span></div>
+</div>
+</sc-for>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">代码语法</h2>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+<sc-for list="{{code}}" as="p" hint-placeholder-count="2">
+<div style="padding: 8px; border-radius: 14px; background: {{p.wrap}}; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08)">
+<div style="border-radius: 10px; background: {{p.bg}}; padding: 6px 0; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; line-height: 20px">
+<sc-for list="{{p.lines}}" as="l" hint-placeholder-count="3">
+<div style="display: flex; gap: 10px; padding: 0 10px; background: {{l.curbg}}; white-space: pre"><span aria-hidden="true" style="width: 12px; text-align: right; color: {{p.ln}}">{{l.no}}</span><span><sc-for list="{{l.segs}}" as="g" hint-placeholder-count="6"><span style="color: {{g.c}}">{{g.t}}</span></sc-for></span></div>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 24px">
+<sc-for list="{{legend}}" as="k" hint-placeholder-count="8">
+<div style="display: grid; grid-template-columns: 82px 12px 64px 12px 64px; column-gap: 6px; align-items: center; height: 20px; font-size: 12px"><span style="font-weight: 600; white-space: nowrap">{{k.name}}</span><span aria-hidden="true" style="width: 12px; height: 12px; border-radius: 4px; background: {{k.l}}; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.10)"></span><span style="font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: #6E6E73">{{k.l}}</span><span aria-hidden="true" style="width: 12px; height: 12px; border-radius: 4px; background: {{k.d}}; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.10)"></span><span style="font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: #6E6E73">{{k.d}}</span></div>
+</sc-for>
+</div>
+<div style="font-size: 12px; color: #6E6E73">当前行底色：<span style="font-family: 'SF Mono', Menlo, monospace; font-size: 11px">rgba(0,113,227,0.07)</span> / <span style="font-family: 'SF Mono', Menlo, monospace; font-size: 11px">rgba(255,255,255,0.06)</span></div>
+</section>
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+<sc-for list="{{rules}}" as="u" hint-placeholder-count="4">
+<div style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 16px; background: #F5F5F7; color: #3A3A3C; font-size: 12.5px; min-height: 64px; box-sizing: border-box"><span style="flex: none; font-family: 'SF Mono', Menlo, monospace; font-weight: 700; color: #1D1D1F">{{u.n}}</span><span>{{u.t}}</span></div>
+</sc-for>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+renderVals() {
+const groups = [
+{
+"title": "表面",
+"rows": [
+{
+"name": "窗口背景（资源库）",
+"use": "资源库、对话框背后",
+"ls": "#FFFFFF",
+"ds": "#1C1C1E",
+"lt": "#FFFFFF",
+"dt": "#1C1C1E"
+},
+{
+"name": "窗口背景（工作区）",
+"use": "编辑器、预览、终端周围",
+"ls": "#F5F5F7",
+"ds": "#161618",
+"lt": "#F5F5F7",
+"dt": "#161618"
+},
+{
+"name": "内容卡片",
+"use": "编辑器、面板、表格、设置",
+"ls": "#FFFFFF",
+"ds": "#1E1E21",
+"lt": "#FFFFFF",
+"dt": "#1E1E21"
+},
+{
+"name": "内嵌区",
+"use": "输入框、代码块底",
+"ls": "#F5F5F7",
+"ds": "rgba(0,0,0,0.35)",
+"lt": "#F5F5F7",
+"dt": "rgba(0,0,0,0.35)"
+},
+{
+"name": "小芯片",
+"use": "徽章底、标签",
+"ls": "#F0F0F3",
+"ds": "rgba(255,255,255,0.10)",
+"lt": "#F0F0F3",
+"dt": "rgba(255,255,255,0.10)"
+},
+{
+"name": "白色凸起块",
+"use": "模板徽章、选中分段",
+"ls": "#FFFFFF",
+"ds": "rgba(255,255,255,0.18)",
+"lt": "#FFFFFF",
+"dt": "rgba(255,255,255,0.18)"
+},
+{
+"name": "中性填充",
+"use": "次要按钮、分段轨道",
+"ls": "rgba(118,118,128,0.14)",
+"ds": "rgba(118,118,128,0.24)",
+"lt": "rgba(118,118,128,0.14)",
+"dt": "rgba(118,118,128,0.24)"
+},
+{
+"name": "遮罩",
+"use": "对话框背后",
+"ls": "rgba(20,22,30,0.22)",
+"ds": "rgba(0,0,0,0.45)",
+"lt": "rgba(20,22,30,0.22)",
+"dt": "rgba(0,0,0,0.45)"
+}
+]
+},
+{
+"title": "线条",
+"rows": [
+{
+"name": "细分隔线",
+"use": "行分隔、卡片边框（0.06 至 0.08）",
+"ls": "rgba(0,0,0,0.06)",
+"ds": "rgba(255,255,255,0.08)",
+"lt": "rgba(0,0,0,0.06)",
+"dt": "rgba(255,255,255,0.08)"
+},
+{
+"name": "强分隔线",
+"use": "输入框边框（0.10 至 0.14）",
+"ls": "rgba(0,0,0,0.10)",
+"ds": "rgba(255,255,255,0.14)",
+"lt": "rgba(0,0,0,0.10)",
+"dt": "rgba(255,255,255,0.14)"
+}
+]
+},
+{
+"title": "强调色",
+"rows": [
+{
+"name": "强调填充",
+"use": "主要按钮、当前选中",
+"ls": "#0071E3",
+"ds": "#0A84FF",
+"lt": "#0071E3",
+"dt": "#0A84FF"
+},
+{
+"name": "强调文字",
+"use": "链接、选中项文字",
+"ls": "#0058B0",
+"ds": "#4DA3FF",
+"lt": "#0058B0",
+"dt": "#4DA3FF"
+},
+{
+"name": "强调浅底",
+"use": "选中行、焦点环",
+"ls": "rgba(0,113,227,0.08)",
+"ds": "rgba(10,132,255,0.32)",
+"lt": "rgba(0,113,227,0.08)",
+"dt": "rgba(10,132,255,0.32)"
+}
+]
+}
+];
+const texts = [
+{
+"name": "主要文字",
+"use": "标题、项目名",
+"bl": "#FFFFFF",
+"bd": "#1E1E21",
+"fl": "#1D1D1F",
+"fd": "#F5F5F7",
+"hl": "#1D1D1F",
+"hd": "#F5F5F7",
+"lt": "#1D1D1F",
+"dt": "#F5F5F7",
+"sample": "项目 Runyard 14",
+"mark": false,
+"accent": false
+},
+{
+"name": "次强文字",
+"use": "图标、按钮文字",
+"bl": "#FFFFFF",
+"bd": "#1E1E21",
+"fl": "#3A3A3C",
+"fd": "#D1D1D6",
+"hl": "#3A3A3C",
+"hd": "#D1D1D6",
+"lt": "#3A3A3C",
+"dt": "#D1D1D6",
+"sample": "重启 Restart 端口",
+"mark": false,
+"accent": false
+},
+{
+"name": "次要文字",
+"use": "说明、列标题",
+"bl": "#F5F5F7",
+"bd": "rgba(0,0,0,0.35)",
+"fl": "#6E6E73",
+"fd": "#A1A1A6",
+"hl": "#6E6E73",
+"hd": "#A1A1A6",
+"lt": "#6E6E73",
+"dt": "#A1A1A6",
+"sample": "2 分钟前 Updated",
+"mark": false,
+"accent": false
+},
+{
+"name": "三级标记",
+"use": "只用于圆点和边框，不用于文字",
+"bl": "#FFFFFF",
+"bd": "#1E1E21",
+"fl": "#8E8E93",
+"fd": "#8E8E93",
+"hl": "#6E6E73",
+"hd": "#A1A1A6",
+"lt": "#8E8E93",
+"dt": "#8E8E93",
+"sample": "",
+"mark": true,
+"accent": false
+},
+{
+"name": "强调底上的文字",
+"use": "主要按钮文字",
+"bl": "#0071E3",
+"bd": "#0A84FF",
+"fl": "#FFFFFF",
+"fd": "#FFFFFF",
+"hl": "#FFFFFF",
+"hd": "#FFFFFF",
+"lt": "#FFFFFF",
+"dt": "#FFFFFF",
+"sample": "新建 New",
+"mark": false,
+"accent": true
+}
+];
+const statuses = [
+{
+"name": "运行中",
+"shape": "实心圆",
+"word": "运行中",
+"l": {
+"d": "M6 1.5a4.5 4.5 0 1 0 0 9a4.5 4.5 0 1 0 0-9z",
+"fill": "#28A745",
+"stroke": "none",
+"c": "#1B7A34",
+"bg": "transparent",
+"v1": "#28A745",
+"v2": "#1B7A34",
+"v3": "无"
+},
+"d": {
+"d": "M6 1.5a4.5 4.5 0 1 0 0 9a4.5 4.5 0 1 0 0-9z",
+"fill": "#30D158",
+"stroke": "none",
+"c": "#30D158",
+"bg": "transparent",
+"v1": "#30D158",
+"v2": "#30D158",
+"v3": "无"
+}
+},
+{
+"name": "启动中 / 警告",
+"shape": "空心环，留缺口",
+"word": "启动中",
+"l": {
+"d": "M6 1.5a4.5 4.5 0 1 0 4.5 4.5",
+"fill": "none",
+"stroke": "#C27400",
+"c": "#8A4B00",
+"bg": "rgba(194,116,0,0.08)",
+"v1": "#C27400",
+"v2": "#8A4B00",
+"v3": "rgba(194,116,0,0.08)"
+},
+"d": {
+"d": "M6 1.5a4.5 4.5 0 1 0 4.5 4.5",
+"fill": "none",
+"stroke": "#FFD60A",
+"c": "#FFD60A",
+"bg": "rgba(255,214,10,0.14)",
+"v1": "#FFD60A",
+"v2": "#FFD60A",
+"v3": "rgba(255,214,10,0.14)"
+}
+},
+{
+"name": "已崩溃 / 删除",
+"shape": "方块",
+"word": "已崩溃",
+"l": {
+"d": "M3 1.5h6A1.5 1.5 0 0 1 10.5 3v6A1.5 1.5 0 0 1 9 10.5H3A1.5 1.5 0 0 1 1.5 9V3A1.5 1.5 0 0 1 3 1.5z",
+"fill": "#D70015",
+"stroke": "none",
+"c": "#C4001A",
+"bg": "rgba(215,0,21,0.10)",
+"v1": "#D70015",
+"v2": "#C4001A",
+"v3": "rgba(215,0,21,0.10)"
+},
+"d": {
+"d": "M3 1.5h6A1.5 1.5 0 0 1 10.5 3v6A1.5 1.5 0 0 1 9 10.5H3A1.5 1.5 0 0 1 1.5 9V3A1.5 1.5 0 0 1 3 1.5z",
+"fill": "#FF453A",
+"stroke": "none",
+"c": "#FF6961",
+"bg": "rgba(255,69,58,0.18)",
+"v1": "#FF453A",
+"v2": "#FF6961",
+"v3": "rgba(255,69,58,0.18)"
+}
+},
+{
+"name": "智能体",
+"shape": "火花图标",
+"word": "智能体",
+"l": {
+"d": "M6 1.5v2M6 8.5v2M1.5 6h2M8.5 6h2M3 3l1.2 1.2M7.8 7.8 9 9M9 3 7.8 4.2M4.2 7.8 3 9",
+"fill": "none",
+"stroke": "#7A2E9E",
+"c": "#7A2E9E",
+"bg": "rgba(175,82,222,0.12)",
+"v1": "#7A2E9E",
+"v2": "#7A2E9E",
+"v3": "rgba(175,82,222,0.12)"
+},
+"d": {
+"d": "M6 1.5v2M6 8.5v2M1.5 6h2M8.5 6h2M3 3l1.2 1.2M7.8 7.8 9 9M9 3 7.8 4.2M4.2 7.8 3 9",
+"fill": "none",
+"stroke": "#D0A8FF",
+"c": "#D0A8FF",
+"bg": "rgba(191,90,242,0.24)",
+"v1": "#D0A8FF",
+"v2": "#D0A8FF",
+"v3": "rgba(191,90,242,0.24)"
+}
+}
+];
+const code = [
+{
+"label": "浅色",
+"wrap": "#FFFFFF",
+"bg": "#F5F5F7",
+"cur": "rgba(0,113,227,0.07)",
+"ln": "#6E6E73",
+"lines": [
+{
+"no": "1",
+"cur": false,
+"segs": [
+{
+"t": "import",
+"c": "#AD3DA4"
+},
+{
+"t": " { ",
+"c": "#6E6E73"
+},
+{
+"t": "serve",
+"c": "#0F68A0"
+},
+{
+"t": " } ",
+"c": "#6E6E73"
+},
+{
+"t": "from",
+"c": "#AD3DA4"
+},
+{
+"t": " ",
+"c": "#1D1D1F"
+},
+{
+"t": "\"vite\"",
+"c": "#B3261E"
+},
+{
+"t": ";",
+"c": "#6E6E73"
+}
+],
+"curbg": "transparent"
+},
+{
+"no": "2",
+"cur": true,
+"segs": [
+{
+"t": "const",
+"c": "#AD3DA4"
+},
+{
+"t": " port = ",
+"c": "#1D1D1F"
+},
+{
+"t": "7101",
+"c": "#1C00CF"
+},
+{
+"t": ";",
+"c": "#6E6E73"
+}
+],
+"curbg": "rgba(0,113,227,0.07)"
+},
+{
+"no": "3",
+"cur": false,
+"segs": [
+{
+"t": "<",
+"c": "#6E6E73"
+},
+{
+"t": "div",
+"c": "#1B7A34"
+},
+{
+"t": ">",
+"c": "#6E6E73"
+},
+{
+"t": "serve",
+"c": "#0F68A0"
+},
+{
+"t": "(port)",
+"c": "#1D1D1F"
+},
+{
+"t": "</",
+"c": "#6E6E73"
+},
+{
+"t": "div",
+"c": "#1B7A34"
+},
+{
+"t": ">",
+"c": "#6E6E73"
+}
+],
+"curbg": "transparent"
+}
+]
+},
+{
+"label": "深色",
+"wrap": "#1C1C1E",
+"bg": "rgba(0,0,0,0.35)",
+"cur": "rgba(255,255,255,0.06)",
+"ln": "#8E8E93",
+"lines": [
+{
+"no": "1",
+"cur": false,
+"segs": [
+{
+"t": "import",
+"c": "#FF7AB2"
+},
+{
+"t": " { ",
+"c": "#A1A1A6"
+},
+{
+"t": "serve",
+"c": "#6BDFFF"
+},
+{
+"t": " } ",
+"c": "#A1A1A6"
+},
+{
+"t": "from",
+"c": "#FF7AB2"
+},
+{
+"t": " ",
+"c": "#F5F5F7"
+},
+{
+"t": "\"vite\"",
+"c": "#FF8170"
+},
+{
+"t": ";",
+"c": "#A1A1A6"
+}
+],
+"curbg": "transparent"
+},
+{
+"no": "2",
+"cur": true,
+"segs": [
+{
+"t": "const",
+"c": "#FF7AB2"
+},
+{
+"t": " port = ",
+"c": "#F5F5F7"
+},
+{
+"t": "7101",
+"c": "#D9C97C"
+},
+{
+"t": ";",
+"c": "#A1A1A6"
+}
+],
+"curbg": "rgba(255,255,255,0.06)"
+},
+{
+"no": "3",
+"cur": false,
+"segs": [
+{
+"t": "<",
+"c": "#A1A1A6"
+},
+{
+"t": "div",
+"c": "#4EB0CC"
+},
+{
+"t": ">",
+"c": "#A1A1A6"
+},
+{
+"t": "serve",
+"c": "#6BDFFF"
+},
+{
+"t": "(port)",
+"c": "#F5F5F7"
+},
+{
+"t": "</",
+"c": "#A1A1A6"
+},
+{
+"t": "div",
+"c": "#4EB0CC"
+},
+{
+"t": ">",
+"c": "#A1A1A6"
+}
+],
+"curbg": "transparent"
+}
+]
+}
+];
+const legend = [
+{
+"name": "普通",
+"l": "#1D1D1F",
+"d": "#F5F5F7"
+},
+{
+"name": "关键字",
+"l": "#AD3DA4",
+"d": "#FF7AB2"
+},
+{
+"name": "字符串",
+"l": "#B3261E",
+"d": "#FF8170"
+},
+{
+"name": "函数、属性",
+"l": "#0F68A0",
+"d": "#6BDFFF"
+},
+{
+"name": "数字",
+"l": "#1C00CF",
+"d": "#D9C97C"
+},
+{
+"name": "标签名",
+"l": "#1B7A34",
+"d": "#4EB0CC"
+},
+{
+"name": "标点",
+"l": "#6E6E73",
+"d": "#A1A1A6"
+},
+{
+"name": "行号",
+"l": "#6E6E73",
+"d": "#8E8E93"
+}
+];
+const ftree = [
+{
+"name": "文件夹",
+"d": "M1.5 4.5a1 1 0 0 1 1-1h3.2l1.5 1.5h6.3a1 1 0 0 1 1 1V12a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1z",
+"l": "#B8860B",
+"dd": "#FFD60A",
+"bgl": "transparent",
+"bgd": "transparent"
+},
+{
+"name": "TypeScript",
+"d": "M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5",
+"l": "#0F68A0",
+"dd": "#6BDFFF",
+"bgl": "transparent",
+"bgd": "transparent"
+},
+{
+"name": "CSS",
+"d": "M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5",
+"l": "#7A2E9E",
+"dd": "#D0A8FF",
+"bgl": "transparent",
+"bgd": "transparent"
+},
+{
+"name": "HTML",
+"d": "M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5",
+"l": "#B3470B",
+"dd": "#FFA14A",
+"bgl": "transparent",
+"bgd": "transparent"
+},
+{
+"name": "JSON / YAML",
+"d": "M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5",
+"l": "#8A6D00",
+"dd": "#FFD60A",
+"bgl": "transparent",
+"bgd": "transparent"
+},
+{
+"name": "其他文件",
+"d": "M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5",
+"l": "#6E6E73",
+"dd": "#A1A1A6",
+"bgl": "transparent",
+"bgd": "transparent"
+},
+{
+"name": "展开箭头",
+"d": "M3.5 6l4.5 4.5L12.5 6",
+"l": "#6E6E73",
+"dd": "#A1A1A6",
+"bgl": "transparent",
+"bgd": "transparent"
+},
+{
+"name": "选中行图标",
+"d": "M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5",
+"l": "#FFFFFF",
+"dd": "#FFFFFF",
+"bgl": "#0071E3",
+"bgd": "#0A84FF"
+}
+];
+const rules = [
+{
+"n": "1",
+"t": "状态不只靠颜色表达：每种状态都配有形状和文字。"
+},
+{
+"n": "2",
+"t": "玻璃上的文字始终用实色，不用半透明。"
+},
+{
+"n": "3",
+"t": "文字对比度至少 4.5:1。"
+},
+{
+"n": "4",
+"t": "强调色只用于主要操作和当前选中项。"
+}
+];
+return { groups, texts, statuses, code, legend, ftree, rules };
+}
+}
+</script>
+</body>
+</html>

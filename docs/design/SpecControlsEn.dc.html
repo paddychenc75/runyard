@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Runyard controls</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+input::placeholder,textarea::placeholder{color:#6E6E73;opacity:1}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:#0071E3}a:hover{color:#0058B0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1840px; box-sizing: border-box; overflow: hidden; padding: 40px 44px; background: #FFFFFF; color: #1D1D1F; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 13px; line-height: 1.45; display: flex; flex-direction: column; gap: 22px">
+
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.3px">Controls</h1>
+<div style="color: #6E6E73; font-size: 14px">Every control used in the screens, in all of its states. Light theme on the left, dark on the right. Hover and pressed are static samples. Colour, materials and type have their own boards.</div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; align-items: start">
+<sc-for list="{{themes}}" as="th" hint-placeholder-count="2">
+<div style="box-sizing: border-box; border-radius: 24px; padding: 20px; background: {{th.panel}}; border: 1px solid {{th.line}}; color: {{th.ink}}; display: flex; flex-direction: column; gap: 20px; min-width: 0">
+
+<div style="display: flex; align-items: baseline; gap: 10px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">{{th.title}}</h2>
+<span style="font-size: 12px; color: {{th.ink2}}">{{th.note}}</span>
+</div>
+
+<!-- buttons -->
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h3 style="margin: 0; font-size: 13px; font-weight: 600">Buttons</h3>
+<div style="display: grid; grid-template-columns: 112px repeat(5, minmax(0, 1fr)); column-gap: 8px; font-size: 12px; color: {{th.ink2}}">
+<span></span>
+<sc-for list="{{th.states}}" as="st" hint-placeholder-count="5"><span>{{st.n}}</span></sc-for>
+</div>
+<sc-for list="{{th.btnRows}}" as="row" hint-placeholder-count="5">
+<div style="display: grid; grid-template-columns: 112px repeat(5, minmax(0, 1fr)); column-gap: 8px; align-items: center">
+<div style="display: flex; flex-direction: column">
+<span style="font-weight: 600">{{row.name}}</span>
+<span style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: {{th.ink2}}">{{row.cap}}</span>
+</div>
+<sc-for list="{{row.cells}}" as="c" hint-placeholder-count="5">
+<div>
+<button aria-label="{{c.aria}}" aria-disabled="{{c.dis}}" style="display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; box-sizing: border-box; {{c.css}}">
+<sc-if value="{{c.icon}}" hint-placeholder-val="{{false}}"><svg aria-hidden="true" width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="{{th.ink3}}" stroke-width="1.6" stroke-linecap="round"><path d="M6 1.5v9M1.5 6h9"/></svg></sc-if>
+<sc-if value="{{c.text}}" hint-placeholder-val="{{true}}"><span>{{c.label}}</span></sc-if>
+</button>
+</div>
+</sc-for>
+</div>
+</sc-for>
+<div style="font-size: 12px; color: {{th.ink2}}">The three numbers are height, radius and side padding in px. Hover adds one step of fill and pressed two. Rule: {{th.stepNote}} Focus is a 1.5 px accent edge plus a 3 px tint ring. Disabled drops to 40% opacity.</div>
+</section>
+
+<!-- fields -->
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h3 style="margin: 0; font-size: 13px; font-weight: 600">Text field and search field</h3>
+<div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px 8px; align-items: start">
+<sc-for list="{{th.fields}}" as="f" hint-placeholder-count="9">
+<div style="display: flex; flex-direction: column; gap: 5px; min-width: 0">
+<span style="font-size: 12px; color: {{th.ink2}}; white-space: nowrap">{{f.label}}</span>
+<sc-if value="{{f.isText}}" hint-placeholder-val="{{true}}">
+<input type="text" value="{{f.value}}" placeholder="{{f.ph}}" aria-label="{{f.aria}}" aria-disabled="{{f.dis}}" aria-invalid="{{f.invalid}}" style="width: 100%; box-sizing: border-box; height: 40px; padding: 0 12px; border-radius: 12px; font: inherit; font-size: 14px; color: {{th.ink}}; outline: none; {{f.css}}">
+</sc-if>
+<sc-if value="{{f.isSearch}}" hint-placeholder-val="{{false}}">
+<label style="display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border-radius: 18px; box-sizing: border-box; {{f.css}}">
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="{{th.ink2}}" stroke-width="1.5" stroke-linecap="round" style="flex: none"><circle cx="6" cy="6" r="4.2"/><path d="M9.2 9.2 12.5 12.5"/></svg>
+<input type="search" value="{{f.value}}" placeholder="{{f.ph}}" aria-label="{{f.aria}}" aria-disabled="{{f.dis}}" style="flex: 1; min-width: 0; border: none; outline: none; background: transparent; font: inherit; font-size: 13px; color: {{th.ink}}">
+<sc-if value="{{f.clear}}" hint-placeholder-val="{{false}}"><svg role="img" aria-label="Clear" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="{{th.ink2}}" stroke-width="1.5" stroke-linecap="round" style="flex: none"><path d="M3 3l6 6M9 3 3 9"/></svg></sc-if>
+</label>
+</sc-if>
+<sc-if value="{{f.msg}}" hint-placeholder-val="{{false}}">
+<span style="display: flex; align-items: center; gap: 5px; font-size: 12px; color: {{th.destText}}"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="{{th.destText}}" stroke-width="1.3" stroke-linecap="round" style="flex: none"><circle cx="6" cy="6" r="5"/><path d="M6 3.4v3M6 8.4v.1"/></svg>{{f.msgText}}</span>
+</sc-if>
+</div>
+</sc-for>
+</div>
+<div style="font-size: 12px; color: {{th.ink2}}">Field: 40 high, radius 12, padding 12. Search: 36 high, capsule, padding 12. The error is one line, shown by a mark and words, not red alone.</div>
+</section>
+
+<!-- selection controls -->
+<section style="display: flex; flex-direction: column; gap: 10px">
+<h3 style="margin: 0; font-size: 13px; font-weight: 600">Segmented control, switch, checkbox</h3>
+<div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap">
+<sc-for list="{{th.segs}}" as="g" hint-placeholder-count="3">
+<div role="group" aria-label="{{g.aria}}" style="display: flex; padding: 2px; border-radius: 11px; background: {{th.fill0}}">
+<sc-for list="{{g.items}}" as="i" hint-placeholder-count="3"><button aria-current="{{i.cur}}" style="height: 28px; padding: 0 12px; border-radius: 9px; border: none; white-space: nowrap; {{i.css}}">{{i.t}}</button></sc-for>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap">
+<sc-for list="{{th.switches}}" as="s" hint-placeholder-count="3">
+<span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: {{th.ink3}}">
+<span role="switch" aria-checked="{{s.checked}}" aria-label="{{s.aria}}" aria-disabled="{{s.dis}}" style="width: 42px; height: 26px; border-radius: 13px; position: relative; display: inline-block; flex: none; box-sizing: border-box; {{s.track}}"><span style="position: absolute; {{s.knob}} width: 22px; height: 22px; border-radius: 11px; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.25)"></span></span>{{s.label}}</span>
+</sc-for>
+<span aria-hidden="true" style="width: 1px; height: 18px; background: {{th.line}}"></span>
+<sc-for list="{{th.checks}}" as="k" hint-placeholder-count="4">
+<span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: {{th.ink3}}">
+<span role="checkbox" aria-checked="{{k.checked}}" aria-label="{{k.aria}}" aria-disabled="{{k.dis}}" style="width: 18px; height: 18px; border-radius: 5px; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; flex: none; {{k.css}}">
+<sc-if value="{{k.check}}" hint-placeholder-val="{{false}}"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.5 5 9l4.5-5.5"/></svg></sc-if>
+<sc-if value="{{k.dash}}" hint-placeholder-val="{{false}}"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"><path d="M3 6h6"/></svg></sc-if>
+</span>{{k.label}}</span>
+</sc-for>
+</div>
+<div style="font-size: 12px; color: {{th.ink2}}">Segmented: item 28 high, radius 9, track padding 2; the selected item is raised and bold. Switch 42 × 26: on sits right, off sits left with an outline. Checkbox 18 × 18, radius 5: tick is checked, dash is mixed.</div>
+</section>
+
+<!-- tags -->
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h3 style="margin: 0; font-size: 13px; font-weight: 600">Tags and pills</h3>
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap">
+<sc-for list="{{th.tags}}" as="g" hint-placeholder-count="6">
+<span style="display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; box-sizing: border-box; {{g.css}}">
+<sc-if value="{{g.dot}}" hint-placeholder-val="{{false}}"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: {{g.dotColor}}"></span></sc-if>{{g.text}}</span>
+</sc-for>
+</div>
+<div style="font-size: 12px; color: {{th.ink2}}">Kept, days left (dashed), Agent, status pill, template tile at 22 and 40. Tags 22 high, padding 9; tiles radius 7 and 12.</div>
+</section>
+
+<!-- lower: two columns -->
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 20px; align-items: start">
+
+<div style="display: flex; flex-direction: column; gap: 20px; min-width: 0">
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h3 style="margin: 0; font-size: 13px; font-weight: 600">Library list row</h3>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<sc-for list="{{th.listRows}}" as="r" hint-placeholder-count="3">
+<div style="display: grid; grid-template-columns: 76px minmax(0, 1fr); column-gap: 8px; align-items: center">
+<span style="font-size: 12px; color: {{th.ink2}}">{{r.label}}</span>
+<div style="height: 54px; box-sizing: border-box; padding: 0 14px; border-radius: 12px; display: flex; align-items: center; gap: 10px; {{r.css}}">
+<span aria-hidden="true" style="width: 9px; height: 9px; border-radius: 50%; background: {{th.run}}; flex: none"></span>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+<span style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">react-counter</span>
+<span style="font-size: 12px; color: {{th.ink2}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Counter practice</span>
+</div>
+<span style="display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 12px; box-sizing: border-box; flex: none; {{th.keptCss}}">Kept</span>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="font-size: 12px; color: {{th.ink2}}">Row 54, radius 12, padding 14. Selected: accent tint plus a 3 px left bar.</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h3 style="margin: 0; font-size: 13px; font-weight: 600">Dialog anatomy</h3>
+<div role="group" aria-label="Dialog sample" style="box-sizing: border-box; padding: 16px 18px; border-radius: 24px; display: flex; flex-direction: column; gap: 12px; background: {{th.dialogBg}}; backdrop-filter: blur(50px) saturate(190%); border: {{th.menuEdge}}; box-shadow: {{th.menuShadow}}">
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="width: 16px; height: 16px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex: none; background: {{th.badgeBg}}; color: {{th.badgeFg}}">1</span>
+<span aria-hidden="true" style="width: 32px; height: 32px; border-radius: 10px; background: {{th.raised}}; border: 1px solid {{th.line}}; display: flex; align-items: center; justify-content: center; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; font-weight: 600; color: {{th.ink3}}; flex: none; box-sizing: border-box">Re</span>
+<div style="display: flex; flex-direction: column; min-width: 0"><span style="font-size: 16px; font-weight: 700">New playground</span><span style="font-size: 12px; color: {{th.ink2}}">Template: React 19</span></div>
+</div>
+<div style="display: flex; align-items: flex-start; gap: 8px">
+<span style="width: 16px; height: 16px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex: none; background: {{th.badgeBg}}; color: {{th.badgeFg}}">2</span>
+<label style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; font-weight: 600">Name</span>
+<input type="text" value="react-app" aria-label="Name" style="width: 100%; box-sizing: border-box; height: 36px; padding: 0 12px; border-radius: 12px; font: inherit; font-size: 14px; color: {{th.ink}}; outline: none; {{th.focusField}}"></label>
+</div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 6px">
+<span style="width: 16px; height: 16px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex: none; background: {{th.badgeBg}}; color: {{th.badgeFg}}">3</span>
+<button style="height: 36px; padding: 0 14px; border-radius: 18px; border: none; background: {{th.fill0}}; white-space: nowrap">Cancel</button>
+<span style="width: 16px; height: 16px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex: none; background: {{th.badgeBg}}; color: {{th.badgeFg}}">4</span>
+<button style="height: 36px; padding: 0 16px; border-radius: 18px; border: none; background: {{th.accent0}}; color: #FFFFFF; font-weight: 600; white-space: nowrap; box-shadow: {{th.accentShadow}}">Create and run</button>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px; font-size: 12px">
+<sc-for list="{{th.legend}}" as="l" hint-placeholder-count="4">
+<div style="display: flex; gap: 8px; align-items: flex-start"><span style="width: 16px; height: 16px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex: none; background: {{th.badgeBg}}; color: {{th.badgeFg}}">{{l.n}}</span><span style="color: {{th.ink3}}">{{l.t}}</span></div>
+</sc-for>
+</div>
+<div style="font-size: 12px; color: {{th.ink2}}">Actual size: 580 wide, radius 28, padding 26 / 28 / 22; the sample is scaled down.</div>
+</section>
+
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 20px; min-width: 0">
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h3 style="margin: 0; font-size: 13px; font-weight: 600">File tree row</h3>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<sc-for list="{{th.treeRows}}" as="r" hint-placeholder-count="4">
+<div style="display: grid; grid-template-columns: 76px minmax(0, 1fr); column-gap: 8px; align-items: center">
+<span style="font-size: 12px; color: {{th.ink2}}">{{r.label}}</span>
+<button style="height: 28px; padding: 0 8px; border-radius: 8px; border: none; display: flex; align-items: center; gap: 6px; text-align: left; width: 100%; box-sizing: border-box; {{r.css}}">
+<sc-if value="{{r.dir}}" hint-placeholder-val="{{false}}"><svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="{{r.chev}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M2 3.5 5 6.5 8 3.5"/></svg><svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="{{r.icon}}" stroke-width="1.4" stroke-linejoin="round" style="flex: none"><path d="M1.5 4.5a1 1 0 0 1 1-1h3.2l1.5 1.6h6.3a1 1 0 0 1 1 1v6.4a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1z"/></svg></sc-if>
+<sc-if value="{{r.file}}" hint-placeholder-val="{{true}}"><span aria-hidden="true" style="width: 10px; flex: none"></span><svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="{{r.icon}}" stroke-width="1.4" stroke-linejoin="round" style="flex: none"><path d="M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5"/></svg></sc-if>
+<span style="flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.name}}</span>
+</button>
+</div>
+</sc-for>
+</div>
+<div style="font-size: 12px; color: {{th.ink2}}">Row 28, radius 8, padding 8. Selected: solid accent, white text.</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h3 style="margin: 0; font-size: 13px; font-weight: 600">Menu</h3>
+<div style="display: grid; grid-template-columns: 76px minmax(0, 1fr); column-gap: 8px; align-items: start">
+<div style="display: flex; flex-direction: column; padding-top: 7px; font-size: 12px; color: {{th.ink2}}">
+<sc-for list="{{th.menuLabels}}" as="m" hint-placeholder-count="5"><span style="display: block; height: {{m.h}}; line-height: {{m.h}}">{{m.t}}</span></sc-for>
+</div>
+<div role="menu" aria-label="Menu sample" style="box-sizing: border-box; padding: 6px; border-radius: 16px; display: flex; flex-direction: column; background: {{th.menuBg}}; backdrop-filter: blur(40px) saturate(190%); border: {{th.menuEdge}}; box-shadow: {{th.menuShadow}}">
+<sc-for list="{{th.menuItems}}" as="it" hint-placeholder-count="5">
+<sc-if value="{{it.line}}" hint-placeholder-val="{{false}}"><div aria-hidden="true" style="height: 1px; margin: 5px 10px; background: {{th.hair}}"></div></sc-if>
+<sc-if value="{{it.item}}" hint-placeholder-val="{{true}}">
+<button role="menuitem" style="height: 32px; padding: 0 10px; border-radius: 9px; border: none; background: {{it.bg}}; color: {{it.color}}; font-weight: {{it.weight}}; display: flex; align-items: center; gap: 10px; text-align: left; width: 100%">
+<span style="flex: 1; white-space: nowrap">{{it.label}}</span>
+<span style="font-size: 12px; color: {{it.hintColor}}; white-space: nowrap">{{it.hint}}</span>
+</button>
+</sc-if>
+</sc-for>
+</div>
+</div>
+<div style="font-size: 12px; color: {{th.ink2}}">Item 32, radius 9, padding 10; menu radius 16, padding 6. Destructive item last, after a separator.</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 10px">
+<h3 style="margin: 0; font-size: 13px; font-weight: 600">Tabs</h3>
+<div role="tablist" aria-label="Window tabs" style="align-self: flex-start; height: 44px; padding: 4px; box-sizing: border-box; border-radius: 22px; display: flex; align-items: center; gap: 2px; background: {{th.glass0}}; backdrop-filter: blur(28px) saturate(180%); border: {{th.glassEdge}}; box-shadow: {{th.glassShadow}}">
+<sc-for list="{{th.winTabs}}" as="w" hint-placeholder-count="3">
+<button role="tab" aria-selected="{{w.sel}}" style="height: 36px; padding: 0 12px 0 14px; border-radius: 18px; border: none; display: flex; align-items: center; gap: 8px; white-space: nowrap; {{w.css}}">
+<sc-if value="{{w.dot}}" hint-placeholder-val="{{false}}"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: {{th.run}}"></span></sc-if>{{w.name}}
+<sc-if value="{{w.close}}" hint-placeholder-val="{{false}}"><svg role="img" aria-label="Close and stop" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="{{th.ink2}}" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l6 6M8 2 2 8"/></svg></sc-if>
+</button>
+</sc-for>
+</div>
+<div role="tablist" aria-label="Panel tabs" style="align-self: flex-start; display: flex; padding: 2px; border-radius: 11px; background: {{th.fill0}}">
+<sc-for list="{{th.panelTabs}}" as="i" hint-placeholder-count="3"><button role="tab" aria-selected="{{i.cur}}" style="height: 28px; padding: 0 14px; border-radius: 9px; border: none; white-space: nowrap; {{i.css}}">{{i.t}}</button></sc-for>
+</div>
+<div style="font-size: 12px; color: {{th.ink2}}">Window tabs: capsule 44, tab 36: selected, running dot, hover (close mark). Panel tabs: item 28.</div>
+</section>
+
+</div>
+</div>
+
+</div>
+</sc-for>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1840}}'>
+class Component extends DCLogic {
+renderVals() {
+const P = {
+light: {
+id: 'light', panel: '#FFFFFF', line: 'rgba(0,0,0,0.08)', ink: '#1D1D1F', ink2: '#6E6E73', ink3: '#3A3A3C',
+fill: ['rgba(118,118,128,0.14)', 'rgba(118,118,128,0.22)', 'rgba(118,118,128,0.30)'],
+glass: ['rgba(255,255,255,0.66)', 'rgba(255,255,255,0.78)', 'rgba(255,255,255,0.90)'],
+glassEdge: '1px solid rgba(255,255,255,0.9)',
+glassShadow: '0 0 0 0.5px rgba(0,0,0,0.08), 0 8px 24px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.9)',
+accent: ['#0071E3', '#0068D1', '#005FBF'], accentShadow: '0 4px 14px rgba(0,113,227,0.25)',
+ring: 'rgba(0,113,227,0.18)',
+dest: ['rgba(215,0,21,0.10)', 'rgba(215,0,21,0.16)', 'rgba(215,0,21,0.22)'], destText: '#C4001A', destMark: '#D70015',
+field: '#F5F5F7', fieldLine: 'rgba(0,0,0,0.12)',
+selBg: '#FFFFFF', selShadow: '0 1px 3px rgba(0,0,0,0.14), 0 0 0 0.5px rgba(0,0,0,0.05)',
+tabSel: '#FFFFFF', tabShadow: '0 1px 3px rgba(0,0,0,0.12), 0 0 0 0.5px rgba(0,0,0,0.06)',
+chip: '#F0F0F3', chipLine: 'rgba(0,0,0,0.16)', dashLine: 'rgba(0,0,0,0.25)', raised: '#FFFFFF',
+agentText: '#7A2E9E', agentBg: 'rgba(175,82,222,0.12)',
+run: '#28A745', runText: '#1B7A34', runBg: 'rgba(40,167,69,0.14)',
+mark: '#8E8E93', rowHover: 'rgba(0,0,0,0.04)', rowSel: 'rgba(0,113,227,0.08)',
+menuBg: 'rgba(250,250,252,0.86)', menuEdge: '1px solid rgba(255,255,255,0.95)',
+menuShadow: '0 0 0 0.5px rgba(0,0,0,0.14), 0 24px 60px rgba(15,23,42,0.28), inset 0 1px 0 rgba(255,255,255,1)',
+dialogBg: 'rgba(250,250,252,0.86)', hair: 'rgba(0,0,0,0.10)',
+folder: '#B8860B', ts: '#0F68A0', css: '#7A2E9E', chev: '#6E6E73',
+offTrack: 'rgba(118,118,128,0.30)', switchOn: '#28A745', badgeBg: '#1D1D1F', badgeFg: '#FFFFFF'
+},
+dark: {
+id: 'dark', panel: '#1C1C1E', line: 'rgba(255,255,255,0.08)', ink: '#F5F5F7', ink2: '#A1A1A6', ink3: '#D1D1D6',
+fill: ['rgba(118,118,128,0.24)', 'rgba(118,118,128,0.32)', 'rgba(118,118,128,0.40)'],
+glass: ['rgba(72,72,78,0.55)', 'rgba(72,72,78,0.68)', 'rgba(72,72,78,0.80)'],
+glassEdge: '1px solid rgba(255,255,255,0.14)',
+glassShadow: '0 10px 28px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.14)',
+accent: ['#0A84FF', '#0979EB', '#086FD6'], accentShadow: '0 4px 14px rgba(10,132,255,0.35)',
+ring: 'rgba(10,132,255,0.32)',
+dest: ['rgba(255,69,58,0.18)', 'rgba(255,69,58,0.26)', 'rgba(255,69,58,0.34)'], destText: '#FF6961', destMark: '#FF453A',
+field: 'rgba(0,0,0,0.35)', fieldLine: 'rgba(255,255,255,0.14)',
+selBg: 'rgba(255,255,255,0.18)', selShadow: 'inset 0 1px 0 rgba(255,255,255,0.18)',
+tabSel: 'rgba(255,255,255,0.16)', tabShadow: 'inset 0 1px 0 rgba(255,255,255,0.18)',
+chip: 'rgba(255,255,255,0.10)', chipLine: 'rgba(255,255,255,0.22)', dashLine: 'rgba(255,255,255,0.30)', raised: 'rgba(255,255,255,0.18)',
+agentText: '#D0A8FF', agentBg: 'rgba(191,90,242,0.24)',
+run: '#30D158', runText: '#30D158', runBg: 'rgba(48,209,88,0.18)',
+mark: '#8E8E93', rowHover: 'rgba(255,255,255,0.06)', rowSel: 'rgba(10,132,255,0.32)',
+menuBg: 'rgba(44,44,48,0.78)', menuEdge: '1px solid rgba(255,255,255,0.14)',
+menuShadow: '0 0 0 0.5px rgba(255,255,255,0.10), 0 24px 60px rgba(0,0,0,0.60), inset 0 1px 0 rgba(255,255,255,0.14)',
+dialogBg: 'rgba(44,44,48,0.78)', hair: 'rgba(255,255,255,0.14)',
+folder: '#FFD60A', ts: '#6BDFFF', css: '#D0A8FF', chev: '#A1A1A6',
+offTrack: 'rgba(118,118,128,0.40)', switchOn: '#30D158', badgeBg: '#F5F5F7', badgeFg: '#1C1C1E'
+}
+};
+
+const ringOf = (t, filled) => filled
+  ? '0 0 0 2px ' + t.panel + ', 0 0 0 3.5px ' + t.accent[0] + ', 0 0 0 6.5px ' + t.ring
+  : '0 0 0 1.5px ' + t.accent[0] + ', 0 0 0 4.5px ' + t.ring;
+
+const states = [{ n: 'Default' }, { n: 'Hover' }, { n: 'Pressed' }, { n: 'Focused' }, { n: 'Disabled' }];
+
+const buttonCells = (t, kind, label) => [0, 1, 2, 3, 4].map((i) => {
+  const step = i === 1 ? 1 : i === 2 ? 2 : 0;
+  const focus = i === 3;
+  let css = '';
+  if (kind === 'primary') {
+    css = 'height:40px;padding:0 18px;border-radius:20px;border:none;font-size:14px;font-weight:600;color:#FFFFFF;background:' + t.accent[step] + ';box-shadow:' + (focus ? ringOf(t, true) : step === 2 ? 'none' : t.accentShadow) + ';';
+  } else if (kind === 'glass') {
+    css = 'height:40px;padding:0 18px;border-radius:20px;font-size:14px;font-weight:500;color:' + t.ink + ';background:' + t.glass[step] + ';border:' + t.glassEdge + ';box-shadow:' + (focus ? ringOf(t, false) + ', ' + t.glassShadow : step === 2 ? 'none' : t.glassShadow) + ';';
+  } else if (kind === 'secondary') {
+    css = 'height:32px;padding:0 14px;border-radius:16px;border:none;font-size:13px;color:' + t.ink + ';background:' + t.fill[step] + ';' + (focus ? 'box-shadow:' + ringOf(t, false) + ';' : '');
+  } else if (kind === 'destructive') {
+    css = 'height:32px;padding:0 14px;border-radius:16px;border:none;font-size:13px;font-weight:500;color:' + t.destText + ';background:' + t.dest[step] + ';' + (focus ? 'box-shadow:' + ringOf(t, false) + ';' : '');
+  } else {
+    css = 'width:32px;height:32px;padding:0;border-radius:16px;border:none;background:' + t.fill[step] + ';' + (focus ? 'box-shadow:' + ringOf(t, false) + ';' : '');
+  }
+  if (i === 4) css += 'opacity:0.4;';
+  return { css: css, label: label, aria: label, dis: i === 4 ? 'true' : 'false', icon: kind === 'icon', text: kind !== 'icon' };
+});
+
+const build = (t) => {
+  const rows = [
+    { name: 'Primary', cap: '40 · 20 · 18', cells: buttonCells(t, 'primary', 'Run') },
+    { name: 'Glass capsule', cap: '40 · 20 · 18', cells: buttonCells(t, 'glass', 'New') },
+    { name: 'Secondary', cap: '32 · 16 · 14', cells: buttonCells(t, 'secondary', 'Rename') },
+    { name: 'Destructive', cap: '32 · 16 · 14', cells: buttonCells(t, 'destructive', 'Delete') },
+    { name: 'Icon only', cap: '32 · 16 · 0', cells: buttonCells(t, 'icon', 'New') }
+  ];
+  const tf = (label, value, ph, css, extra) => Object.assign({ label: label, isText: true, isSearch: false, value: value, ph: ph, aria: 'Name', dis: 'false', invalid: 'false', css: css, msg: false, msgText: '', clear: false }, extra || {});
+  const sf = (label, value, ph, css, extra) => Object.assign({ label: label, isText: false, isSearch: true, value: value, ph: ph, aria: 'Search', dis: 'false', invalid: 'false', css: css, msg: false, msgText: '', clear: false }, extra || {});
+  const base = 'background:' + t.field + ';border:1px solid ' + t.fieldLine + ';';
+  const foc = 'background:' + t.field + ';border:1.5px solid ' + t.accent[0] + ';box-shadow:0 0 0 3px ' + t.ring + ';';
+  const err = 'background:' + t.field + ';border:1.5px solid ' + t.destMark + ';box-shadow:0 0 0 3px ' + t.dest[0] + ';';
+  const off = base + 'opacity:0.4;';
+  const fields = [
+    tf('Field empty', '', 'Name', base),
+    tf('Field filled', 'my-app', '', base),
+    tf('Field focused', 'my-ap', '', foc),
+    tf('Field error', 'react-app', '', err, { invalid: 'true', msg: true, msgText: 'Name taken' }),
+    tf('Field disabled', 'react-app', '', off, { dis: 'true' }),
+    sf('Search empty', '', 'Search', base),
+    sf('Search filled', 'react', '', base, { clear: true }),
+    sf('Search focused', 'rea', '', foc, { clear: true }),
+    sf('Search disabled', '', 'Search', off, { dis: 'true' })
+  ];
+  const seg = (aria, labels, sel) => ({ aria: aria, items: labels.map((l, k) => ({ t: l, cur: k === sel ? 'true' : 'false', css: k === sel ? 'background:' + t.selBg + ';box-shadow:' + t.selShadow + ';font-weight:600;color:' + t.ink + ';' : 'background:transparent;color:' + t.ink3 + ';' })) });
+  const segs = [
+    seg('View', ['List', 'Grid'], 0),
+    seg('Filter', ['All', 'Kept', 'Due'], 1),
+    seg('Clean up after unused for', ['7 days', '30 days', '90 days', 'Custom'], 1)
+  ];
+  const sw = (label, on, dis) => ({ label: label, aria: label, checked: on ? 'true' : 'false', dis: dis ? 'true' : 'false', track: on ? 'background:' + t.switchOn + ';' + (dis ? 'opacity:0.4;' : '') : 'background:' + t.offTrack + ';border:1px solid ' + t.mark + ';', knob: on ? 'right:2px;top:2px;' : 'left:1px;top:1px;' });
+  const switches = [sw('On', true, false), sw('Off', false, false), sw('Disabled', true, true)];
+  const ck = (label, state, dis) => ({ label: label, aria: label, checked: state === 'off' ? 'false' : state === 'mixed' ? 'mixed' : 'true', dis: dis ? 'true' : 'false', check: state === 'on', dash: state === 'mixed', css: state === 'off' ? 'border:1.5px solid ' + t.mark + ';background:transparent;' : 'border:1.5px solid ' + t.accent[0] + ';background:' + t.accent[0] + ';' + (dis ? 'opacity:0.4;' : '') });
+  const checks = [ck('Unchecked', 'off', false), ck('Checked', 'on', false), ck('Mixed', 'mixed', false), ck('Disabled', 'on', true)];
+  const tagBase = 'height:22px;padding:0 9px;border-radius:11px;font-size:12px;';
+  const tags = [
+    { css: tagBase + 'background:' + t.chip + ';border:1px solid ' + t.chipLine + ';color:' + t.ink + ';', text: 'Kept', dot: false, dotColor: '' },
+    { css: tagBase + 'color:' + t.ink2 + ';border:1px dashed ' + t.dashLine + ';', text: '29 days left', dot: false, dotColor: '' },
+    { css: tagBase + 'font-weight:500;color:' + t.agentText + ';background:' + t.agentBg + ';', text: 'Agent', dot: false, dotColor: '' },
+    { css: tagBase + 'font-weight:500;color:' + t.runText + ';background:' + t.runBg + ';', text: 'Running', dot: true, dotColor: t.run },
+    { css: 'width:22px;height:22px;border-radius:7px;justify-content:center;background:' + t.chip + ';border:1px solid ' + t.line + ';font-family:\'SF Mono\', Menlo, monospace;font-size:10px;font-weight:600;color:' + t.ink3 + ';', text: 'Re', dot: false, dotColor: '' },
+    { css: 'width:40px;height:40px;border-radius:12px;justify-content:center;background:' + t.raised + ';border:1px solid ' + t.line + ';box-shadow:0 1px 2px rgba(0,0,0,0.06);font-family:\'SF Mono\', Menlo, monospace;font-size:13px;font-weight:600;color:' + t.ink3 + ';', text: 'Re', dot: false, dotColor: '' }
+  ];
+  const listRows = [
+    { label: 'Default', css: 'background:transparent;' },
+    { label: 'Hover', css: 'background:' + t.rowHover + ';' },
+    { label: 'Selected', css: 'background:' + t.rowSel + ';box-shadow:inset 3px 0 0 ' + t.accent[0] + ';' }
+  ];
+  const tr = (label, name, dir, css, icon, chev) => ({ label: label, name: name, dir: dir, file: !dir, css: css, icon: icon, chev: chev });
+  const treeRows = [
+    tr('Default', 'App.tsx', false, 'background:transparent;color:' + t.ink + ';', t.ts, t.chev),
+    tr('Hover', 'main.tsx', false, 'background:' + t.rowHover + ';color:' + t.ink + ';', t.ts, t.chev),
+    tr('Selected', 'App.css', false, 'background:' + t.accent[0] + ';color:#FFFFFF;font-weight:600;', '#FFFFFF', '#FFFFFF'),
+    tr('Folder open', 'src', true, 'background:transparent;color:' + t.ink + ';', t.folder, t.chev)
+  ];
+  const mi = (label, hint, kind) => ({ line: false, item: true, label: label, hint: hint || '', bg: kind === 'hi' ? t.accent[0] : 'transparent', color: kind === 'hi' ? '#FFFFFF' : kind === 'danger' ? t.destText : t.ink, weight: kind === 'hi' ? 600 : 400, hintColor: kind === 'hi' ? '#FFFFFF' : t.ink2 });
+  const menuItems = [
+    mi('Stop', '', ''),
+    mi('Open', 'Return', 'hi'),
+    mi('Auto-clean…', 'Now: kept', ''),
+    { line: true, item: false },
+    mi('Move to Trash', '', 'danger')
+  ];
+  const menuLabels = [
+    { t: 'Default', h: '32px' }, { t: 'Highlighted', h: '32px' }, { t: 'With hint', h: '32px' }, { t: '', h: '11px' }, { t: 'Destructive', h: '32px' }
+  ];
+  const wt = (name, sel, dot, close) => ({ name: name, sel: sel ? 'true' : 'false', dot: dot, close: close, css: sel ? 'background:' + t.tabSel + ';box-shadow:' + t.tabShadow + ';font-weight:600;color:' + t.ink + ';' : 'background:transparent;color:' + t.ink3 + ';' });
+  const winTabs = [wt('react-app', true, true, true), wt('api', false, true, false), wt('web', false, false, true)];
+  const panelTabs = ['Output', 'Browser console', 'Terminal'].map((l, k) => ({ t: l, cur: k === 0 ? 'true' : 'false', css: k === 0 ? 'background:' + t.selBg + ';box-shadow:' + t.selShadow + ';font-weight:600;color:' + t.ink + ';' : 'background:transparent;color:' + t.ink3 + ';' }));
+  const legend = [
+    { n: '1', t: 'Title block: tile, 20/700 title, one line of context' },
+    { n: '2', t: 'Fields: 13/600 label, input 40 high, radius 12' },
+    { n: '3', t: 'Secondary button, left of the primary' },
+    { n: '4', t: 'Primary button, rightmost. Return triggers it, Esc cancels' }
+  ];
+  return {
+    title: t.id === 'light' ? 'Light theme' : 'Dark theme',
+    note: t.id === 'light' ? 'Panel #FFFFFF' : 'Panel #1C1C1E',
+    panel: t.panel, line: t.line, ink: t.ink, ink2: t.ink2, ink3: t.ink3, run: t.run, destText: t.destText, hair: t.hair,
+    fill0: t.fill[0], glass0: t.glass[0], glassEdge: t.glassEdge, glassShadow: t.glassShadow,
+    menuBg: t.menuBg, menuEdge: t.menuEdge, menuShadow: t.menuShadow, dialogBg: t.dialogBg,
+    accent0: t.accent[0], accentShadow: t.accentShadow, raised: t.raised, badgeBg: t.badgeBg, badgeFg: t.badgeFg,
+    focusField: foc, keptCss: 'background:' + t.chip + ';border:1px solid ' + t.chipLine + ';color:' + t.ink + ';',
+    stepNote: t.id === 'light' ? 'neutral fill 14% → 22% → 30%, accent darkens 8% then 16%.' : 'neutral fill 24% → 32% → 40%, accent darkens 8% then 16%.',
+    states: states, btnRows: rows, fields: fields, segs: segs, switches: switches, checks: checks, tags: tags,
+    listRows: listRows, treeRows: treeRows, menuItems: menuItems, menuLabels: menuLabels, winTabs: winTabs, panelTabs: panelTabs, legend: legend
+  };
+};
+
+return { themes: [build(P.light), build(P.dark)] };
+}
+}
+</script>
+</body>
+</html>

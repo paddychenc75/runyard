@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Runyard 设计规范</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:#0071E3}a:hover{color:#0058B0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; box-sizing: border-box; padding: 40px 44px; background: #FFFFFF; color: #1D1D1F; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 13px; line-height: 1.45; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 36px; row-gap: 28px; align-content: start">
+
+<div style="grid-column: 1 / -1; display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.3px">设计规范</h1>
+<div style="color: #6E6E73; font-size: 14px">两层结构：内容在下，是不透明的；导航和控件浮在上面，用玻璃材质。玻璃只用于浮层，不用于内容本身。</div>
+</div>
+
+<!-- materials -->
+<section style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">玻璃材质</h2>
+<div style="position: relative; height: 250px; border-radius: 20px; overflow: hidden; background: #F5F5F7">
+<div aria-hidden="true" style="position: absolute; left: 24px; top: 24px; width: 150px; height: 110px; border-radius: 16px; background: #0071E3"></div>
+<div aria-hidden="true" style="position: absolute; left: 150px; top: 96px; width: 170px; height: 120px; border-radius: 16px; background: #FF9F0A"></div>
+<div aria-hidden="true" style="position: absolute; right: 24px; top: 34px; width: 120px; height: 150px; border-radius: 16px; background: #1D1D1F"></div>
+<div style="position: absolute; left: 44px; top: 54px; right: 44px; height: 56px; padding: 0 20px; box-sizing: border-box; border-radius: 28px; display: flex; align-items: center; font-weight: 600; background: rgba(255,255,255,0.66); backdrop-filter: blur(28px) saturate(180%); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.08), 0 8px 24px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.9)">浅色玻璃 · 工具栏、标签页</div>
+<div style="position: absolute; left: 44px; top: 140px; right: 44px; height: 56px; padding: 0 20px; box-sizing: border-box; border-radius: 28px; display: flex; align-items: center; font-weight: 600; color: #F5F5F7; background: rgba(72,72,78,0.55); backdrop-filter: blur(28px) saturate(180%); border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 10px 28px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.14)">深色玻璃 · 深色主题下同样位置</div>
+</div>
+<div style="color: #6E6E73">模糊 28 到 50，饱和度 180%，一圈高光描边，加一层柔和投影。越大的浮层模糊越强。</div>
+</section>
+
+<!-- colour -->
+<section style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">颜色</h2>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{colors}}" as="c" hint-placeholder-count="8">
+<div style="display: flex; align-items: center; gap: 10px">
+<span aria-hidden="true" style="width: 40px; height: 40px; border-radius: 12px; background: {{c.hex}}; border: 1px solid rgba(0,0,0,0.08); flex: none"></span>
+<div style="display: flex; flex-direction: column">
+<span style="font-weight: 600">{{c.name}}</span>
+<span style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #6E6E73">{{c.hex}}</span>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="color: #6E6E73">状态除了颜色，还配形状和文字：运行中是实心圆，已停止是空心圆，崩溃是方块，缺环境是三角。</div>
+</section>
+
+<!-- type -->
+<section style="display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">字体</h2>
+<div style="font-size: 28px; font-weight: 700; letter-spacing: -0.3px">页面大标题 28</div>
+<div style="font-size: 20px; font-weight: 700">浮层标题 20</div>
+<div style="font-size: 14px; font-weight: 600">项目名称、按钮 14</div>
+<div style="font-size: 13px">正文、列表内容 13</div>
+<div style="font-size: 12px; color: #6E6E73">辅助说明、列标题 12</div>
+<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 13px">代码、端口、命令 SF Mono 13 :7101</div>
+<div style="color: #6E6E73">界面用系统字体，中文是苹方。代码用 SF Mono。</div>
+</section>
+
+<!-- radius -->
+<section style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">圆角：由外到内逐级变小</h2>
+<div style="height: 190px; border-radius: 26px; background: #F5F5F7; border: 1px solid rgba(0,0,0,0.08); padding: 8px; box-sizing: border-box; display: flex">
+<div style="flex: 1; border-radius: 20px; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08); padding: 10px; box-sizing: border-box; display: flex">
+<div style="flex: 1; border-radius: 12px; background: #F5F5F7; border: 1px solid rgba(0,0,0,0.08); padding: 8px; box-sizing: border-box; display: flex; align-items: flex-start">
+<span style="height: 28px; padding: 0 12px; border-radius: 9px; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08); display: inline-flex; align-items: center">9</span>
+</div>
+</div>
+</div>
+<div style="color: #6E6E73">窗口 26，浮动侧栏 20，内容卡片 16，列表行和输入框 12，小控件 9。按钮和工具栏用全圆角的胶囊形。</div>
+</section>
+
+<!-- controls -->
+<section style="grid-column: span 2; display: flex; flex-direction: column; gap: 14px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">控件</h2>
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+<button style="height: 44px; padding: 0 20px; border-radius: 22px; border: 1px solid rgba(255,255,255,0.35); background: #0071E3; color: #FFFFFF; font-weight: 600; font-size: 14px; box-shadow: 0 8px 22px rgba(0,113,227,0.32), inset 0 1px 0 rgba(255,255,255,0.35)">主要按钮</button>
+<button style="height: 44px; padding: 0 18px; border-radius: 22px; font-weight: 500; background: rgba(255,255,255,0.66); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.08), 0 8px 24px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.9)">玻璃按钮</button>
+<button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; background: rgba(118,118,128,0.14)">次要按钮</button>
+<button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; background: rgba(215,0,21,0.10); color: #C4001A; font-weight: 500">删除到废纸篓</button>
+<div role="group" aria-label="版本" style="display: flex; padding: 2px; border-radius: 11px; background: rgba(118,118,128,0.14)">
+<button style="height: 28px; min-width: 40px; padding: 0 10px; border-radius: 9px; border: none; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; font-weight: 600; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.14), 0 0 0 0.5px rgba(0,0,0,0.05)">19</button>
+<button style="height: 28px; min-width: 40px; padding: 0 10px; border-radius: 9px; border: none; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; font-weight: 600; background: transparent; color: #48484A">18</button>
+</div>
+<span aria-hidden="true" style="width: 34px; height: 20px; border-radius: 10px; background: #28A745; position: relative; display: inline-block"><span style="position: absolute; right: 2px; top: 2px; width: 16px; height: 16px; border-radius: 8px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(0,0,0,0.25)"></span></span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap">
+<span style="display: flex; align-items: center; gap: 8px; color: #1B7A34; font-weight: 500"><span aria-hidden="true" style="width: 9px; height: 9px; border-radius: 50%; background: #28A745"></span>运行中</span>
+<span style="display: flex; align-items: center; gap: 8px; color: #8A4B00; font-weight: 500"><span aria-hidden="true" style="width: 9px; height: 9px; border-radius: 50%; box-sizing: border-box; border: 2px solid #C27400; border-right-color: transparent"></span>启动中</span>
+<span style="display: flex; align-items: center; gap: 8px; color: #6E6E73; font-weight: 500"><span aria-hidden="true" style="width: 9px; height: 9px; border-radius: 50%; box-sizing: border-box; border: 1.5px solid #8E8E93"></span>已停止</span>
+<span style="display: flex; align-items: center; gap: 8px; color: #C4001A; font-weight: 500"><span aria-hidden="true" style="width: 9px; height: 9px; border-radius: 2px; background: #D70015"></span>已崩溃</span>
+<span style="display: flex; align-items: center; gap: 8px; color: #8A4B00; font-weight: 500">
+<svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#C27400" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"><path d="M6 1.5 11 10.5H1zM6 5v2.5M6 9v.2"/></svg>缺少环境</span>
+<span style="display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 12px; background: #F0F0F3; border: 1px solid rgba(0,0,0,0.16)">已保留</span>
+<span style="display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 12px; color: #6E6E73; border: 1px dashed rgba(0,0,0,0.25)">临时</span>
+<span style="display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 12px; font-weight: 500; color: #7A2E9E; background: rgba(175,82,222,0.12)">智能体</span>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; color: #3A3A3C">
+<div style="padding: 14px 16px; border-radius: 16px; background: #F5F5F7"><span style="font-weight: 600; color: #1D1D1F">动效</span><br>浮层从触发它的按钮位置放大出现，约 0.25 秒，带轻微回弹。启动过程分四步依次点亮：复制、安装、启动、就绪。系统开启“减弱动态效果”时改为淡入淡出。</div>
+<div style="padding: 14px 16px; border-radius: 16px; background: #F5F5F7"><span style="font-weight: 600; color: #1D1D1F">可读性</span><br>玻璃上的文字始终用实色，不用半透明。系统开启“降低透明度”时，玻璃改为不透明的浅灰或深灰底，布局不变。</div>
+</div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+const colors = [
+{ name: '强调色', hex: '#0071E3' },
+{ name: '运行中', hex: '#28A745' },
+{ name: '启动中 / 缺环境', hex: '#C27400' },
+{ name: '崩溃 / 删除', hex: '#D70015' },
+{ name: '智能体', hex: '#AF52DE' },
+{ name: '主要文字', hex: '#1D1D1F' },
+{ name: '次要文字', hex: '#6E6E73' },
+{ name: '内容底色', hex: '#F5F5F7' }
+];
+return { colors };
+}
+}
+</script>
+</body>
+</html>

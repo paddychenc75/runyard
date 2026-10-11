@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Runyard 新建项目：自动清理已打开</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+input::placeholder{color:#A1A1A6;opacity:1}
+a{color:#4DA3FF}a:hover{color:#7DBBFF}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; box-sizing: border-box; position: relative; overflow: hidden; background: #1C1C1E; color: #F5F5F7; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 13px; line-height: 1.4">
+
+<div aria-hidden="true" style="position: absolute; inset: 0">
+<dc-import name="MainDark" hint-size="1440px,900px"></dc-import>
+</div>
+<div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(0,0,0,0.45)"></div>
+<div role="dialog" aria-label="新建项目" style="position: absolute; left: 430px; top: 130px; width: 580px; box-sizing: border-box; border-radius: 28px; padding: 26px 28px 22px 28px; display: flex; flex-direction: column; gap: 18px; background: rgba(44,44,48,0.78); backdrop-filter: blur(50px) saturate(190%); border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 0 0 0.5px rgba(255,255,255,0.10), 0 40px 90px rgba(0,0,0,0.60), inset 0 1px 0 rgba(255,255,255,0.14)">
+<div style="display: flex; align-items: center; gap: 12px">
+<span aria-hidden="true" style="width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.08); box-shadow: none; display: flex; align-items: center; justify-content: center; font-family: 'SF Mono', Menlo, monospace; font-size: 13px; font-weight: 600; color: #D1D1D6; flex: none">Re</span>
+<div style="display: flex; flex-direction: column; gap: 1px; flex: 1; min-width: 0">
+<div style="font-size: 20px; font-weight: 700">新建项目</div>
+<div style="color: #A1A1A6">模板：React 19 + TypeScript</div>
+</div>
+<button style="height: 30px; padding: 0 12px; border-radius: 15px; border: none; background: rgba(118,118,128,0.24); flex: none; white-space: nowrap">换一个模板</button>
+</div>
+<label style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-weight: 600">名称</span>
+<input type="text" value="react19-4" aria-label="名称" style="height: 40px; padding: 0 12px; border-radius: 12px; background: rgba(0,0,0,0.35); font: inherit; font-size: 14px; color: #F5F5F7; outline: none; border: 1.5px solid #0A84FF; box-shadow: 0 0 0 3px rgba(10,132,255,0.20)">
+<span style="font-size: 12px; color: #A1A1A6">文件夹：<span style="font-family: 'SF Mono', Menlo, monospace">~/Runyard/react19-4</span></span>
+</label>
+<label style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-weight: 600">备注 <span style="font-weight: 400; color: #A1A1A6">可选</span></span>
+<input type="text" placeholder="这个项目用来做什么？" aria-label="备注" style="height: 40px; padding: 0 12px; border-radius: 12px; background: rgba(0,0,0,0.35); font: inherit; font-size: 14px; color: #F5F5F7; outline: none; border: 1px solid rgba(255,255,255,0.14)">
+</label>
+<div style="border-radius: 16px; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.08); padding: 14px 16px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; gap: 12px">
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<span style="font-weight: 600">自动清理 <span style="font-weight: 400; color: #A1A1A6">可选</span></span>
+<span style="font-size: 12px; color: #A1A1A6">打开后，这个项目很久没用时会自动移到废纸篓。不打开则一直保留。</span>
+</div>
+<span role="switch" aria-checked="true" aria-label="自动清理" style="width: 42px; height: 26px; border-radius: 13px; background: #30D158; position: relative; display: inline-block; flex: none"><span style="position: absolute; right: 2px; top: 2px; width: 22px; height: 22px; border-radius: 11px; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.25)"></span></span>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08)">
+<span style="flex: 1">多久没打开后清理</span>
+<div role="group" aria-label="多久没打开后清理" style="display: flex; padding: 2px; border-radius: 11px; background: rgba(118,118,128,0.24); flex: none">
+<button style="height: 28px; padding: 0 14px; border-radius: 9px; border: none; background: transparent; color: #D1D1D6; white-space: nowrap">7 天</button>
+<button aria-pressed="true" style="height: 28px; padding: 0 14px; border-radius: 9px; border: none; background: rgba(255,255,255,0.18); box-shadow: none; font-weight: 600; white-space: nowrap">30 天</button>
+<button style="height: 28px; padding: 0 14px; border-radius: 9px; border: none; background: transparent; color: #D1D1D6; white-space: nowrap">90 天</button>
+<button style="height: 28px; padding: 0 14px; border-radius: 9px; border: none; background: transparent; color: #D1D1D6; white-space: nowrap">自定义</button>
+</div>
+</div>
+<div style="font-size: 12px; color: #A1A1A6">30 天没打开就移到废纸篓，清理前一天会提醒你，可以随时改成保留。</div>
+</div>
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="flex: 1; font-size: 12px; color: #A1A1A6">按回车直接创建并运行</span>
+<button style="height: 40px; padding: 0 18px; border-radius: 20px; border: none; background: rgba(118,118,128,0.24); flex: none; white-space: nowrap">取消</button>
+<button style="height: 40px; padding: 0 22px; border-radius: 20px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; font-size: 14px; flex: none; white-space: nowrap; box-shadow: 0 4px 14px rgba(10,132,255,0.35)">创建并运行</button>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

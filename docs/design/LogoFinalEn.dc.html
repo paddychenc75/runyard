@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Finished icon: the current line</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+a{color:#0071E3}a:hover{color:#0058B0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1400px; box-sizing: border-box; padding: 40px 44px; background: #FFFFFF; color: #1D1D1F; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 14px; line-height: 1.5; display: flex; flex-direction: column; gap: 20px; overflow: hidden">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.3px">Finished icon: the current line</h1>
+<div style="color: #6E6E73; font-size: 15px">Row 1: before, after (on light grey and on white), and the dark appearance. Row 2: in a mock Dock, using the version where the line stops at the edge. Rows 3 and 4: small sizes, single-colour glyphs, and the small icon next to media player, text-align, notes and terminal icons.</div>
+</div>
+<img src="/_blob/8811623674c2f1f29548c88c257a7c92" alt="Finished icon: the current line" style="width: 1352px; height: 869px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.08); flex: none">
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px">
+<div style="padding: 16px 18px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 16px; font-weight: 700">What it shows</div>
+<div style="color: #3A3A3C">Four lines of code: two dark lines have run, one pale line is still waiting, and the orange line is the one being executed. Its leading end is brightest and it crosses the edge of the tile.</div>
+<div><span style="font-weight: 600">Weak point: </span><span style="color: #3A3A3C">The sense of motion is moderate; it is still a static bar.</span></div>
+</div>
+<div style="padding: 16px 18px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 16px; font-weight: 700">What changed in this pass</div>
+<div style="color: #3A3A3C">The tile went from beige to a clean warm white; five rows became four heavier ones; hollow bars became pale solid bars; the indent went from a wedge to a code-like staircase; the lit line is bright at the front and casts a shadow where it crosses the edge.</div>
+<div><span style="font-weight: 600">Weak point: </span><span style="color: #3A3A3C">Without colour the glyph is still close to a generic indent symbol and relies on the heavy bar leaving the edge.</span></div>
+</div>
+<div style="padding: 16px 18px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 16px; font-weight: 700">Dock version</div>
+<div style="color: #3A3A3C">Recent macOS fits icons into the system rounded square, so the Dock uses the version where the line is cut exactly at the right edge; the website, README and GitHub avatar use the overshoot version.</div>
+<div><span style="font-weight: 600">Weak point: </span><span style="color: #3A3A3C">The Dock picture is a mock-up, not yet checked on a real system; the overshoot is reduced to a cut at the edge.</span></div>
+</div>
+<div style="padding: 16px 18px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 16px; font-weight: 700">Dark appearance and small sizes</div>
+<div style="color: #3A3A3C">Dark appearance uses a warm charcoal tile where the lit line is the brightest thing. 32 px is redrawn with four rows and 16 px with three.</div>
+<div><span style="font-weight: 600">Weak point: </span><span style="color: #3A3A3C">The dark version belongs to the dark-tile-with-orange-bars family, like OmniOutliner, although only one bar is orange.</span></div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1400}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

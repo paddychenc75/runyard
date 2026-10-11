@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>图标 A 的进一步设计：三个有巧思的变体</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+a{color:#0071E3}a:hover{color:#0058B0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1280px; box-sizing: border-box; padding: 40px 44px; background: #FFFFFF; color: #1D1D1F; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 14px; line-height: 1.5; display: flex; flex-direction: column; gap: 20px; overflow: hidden">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.3px">图标 A 的进一步设计：三个有巧思的变体</h1>
+<div style="color: #6E6E73; font-size: 15px">都保留了一笔写成的 R 和跑出右边缘的底线。图里从左到右：原来的版本、变体一、变体二、变体三。每列上面是纯黑的标志，下面是放在图标上的效果和各个尺寸。</div>
+</div>
+<img src="/_blob/4042af26934417c51d2752bceee7512e" alt="图标 A 的进一步设计：三个有巧思的变体" style="width: 1352px; height: 774px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.08)">
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px">
+<div style="padding: 16px 18px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 16px; font-weight: 700">原来的版本</div>
+<div style="color: #3A3A3C">上一轮选定的样子，放在这里做对照。</div>
+<div><span style="font-weight: 600">不足：</span><span style="color: #3A3A3C">没有第二层意思。</span></div>
+</div>
+<div style="padding: 16px 18px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 16px; font-weight: 700">变体一 · 双道</div>
+<div style="color: #3A3A3C">线的粗细、R 里面的空白、竖线和腿之间的缺口，三者一样宽。于是白色的空白也成了一条路：黑线跑出去，白道走进来。</div>
+<div><span style="font-weight: 600">不足：</span><span style="color: #3A3A3C">巧思最含蓄，不说的话很难发现；和常见的圆头单线 R 最像。</span></div>
+</div>
+<div style="padding: 16px 18px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 16px; font-weight: 700">变体二 · 穿场（设计师推荐）</div>
+<div style="color: #3A3A3C">线从图标左边缘进来，写完一个 R，再从右边缘出去，没有起点也没有终点。图标就是院子，R 是穿过院子的路。两个图标并排时线能接上。</div>
+<div><span style="font-weight: 600">不足：</span><span style="color: #3A3A3C">R 认出来会慢半拍；去掉图标底色后，形状容易被读成 J 和 R 连在一起。</span></div>
+</div>
+<div style="padding: 16px 18px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 16px; font-weight: 700">变体三 · 路线</div>
+<div style="color: #3A3A3C">竖线向下穿出图标底边，底线从右边穿出。线从下面进院子，向右离开。</div>
+<div><span style="font-weight: 600">不足：</span><span style="color: #3A3A3C">R 读得最快，但第二层意思比较弱。</span></div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1280}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

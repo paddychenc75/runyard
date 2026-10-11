@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Runyard delete confirmation</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+input::placeholder{color:#6E6E73;opacity:1}
+a{color:#0071E3}a:hover{color:#0058B0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #1D1D1F; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 13px; line-height: 1.4">
+
+<div aria-hidden="true" style="position: absolute; inset: 0">
+<dc-import name="MainEn" hint-size="1440px,900px"></dc-import>
+</div>
+<div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(20,22,30,0.22)"></div>
+<div role="alertdialog" aria-label="Confirm delete" style="position: absolute; left: 450px; top: 300px; width: 540px; box-sizing: border-box; border-radius: 28px; padding: 26px 28px 22px 28px; display: flex; flex-direction: column; gap: 18px; background: rgba(250,250,252,0.86); backdrop-filter: blur(50px) saturate(190%); border: 1px solid rgba(255,255,255,0.95); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.14), 0 40px 90px rgba(15,23,42,0.32), inset 0 1px 0 rgba(255,255,255,1)">
+<div style="display: flex; gap: 14px; align-items: flex-start">
+<span aria-hidden="true" style="width: 40px; height: 40px; border-radius: 12px; background: rgba(215,0,21,0.10); display: flex; align-items: center; justify-content: center; flex: none">
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#C4001A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 5.5h13M8 5.5V3.8h4v1.7M5 5.5l.8 10.2a1.5 1.5 0 0 0 1.5 1.3h5.4a1.5 1.5 0 0 0 1.5-1.3L15 5.5M8.5 9v5M11.5 9v5"/></svg></span>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 20px; font-weight: 700; line-height: 1.25">Move react18-1 to the Trash?</div>
+<div style="color: #6E6E73; font-size: 13px">The folder moves to the Trash, where you can restore it. It is not running right now.</div>
+</div>
+</div>
+<div style="display: flex; justify-content: flex-end; gap: 10px"><button style="height: 40px; padding: 0 22px; border-radius: 20px; border: none; flex: none; white-space: nowrap; display: flex; align-items: center; gap: 8px; font-size: 14px; background: rgba(118,118,128,0.14); font-weight: 500">Cancel</button><button style="height: 40px; padding: 0 22px; border-radius: 20px; border: none; flex: none; white-space: nowrap; display: flex; align-items: center; gap: 8px; font-size: 14px; background: #D70015; color: #FFFFFF; font-weight: 600">Move to Trash</button></div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

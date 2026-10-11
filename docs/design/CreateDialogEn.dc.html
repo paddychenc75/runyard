@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Runyard new playground</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+input::placeholder,textarea::placeholder{color:#6E6E73;opacity:1}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:#0071E3}a:hover{color:#0058B0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #1D1D1F; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 13px; line-height: 1.4">
+
+<div aria-hidden="true" style="position: absolute; inset: 0">
+<dc-import name="MainEn" hint-size="1440px,900px"></dc-import>
+</div>
+<div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(20,22,30,0.22)"></div>
+
+<div role="dialog" aria-label="New playground" style="position: absolute; left: 430px; top: 190px; width: 580px; box-sizing: border-box; border-radius: 28px; padding: 26px 28px 22px 28px; display: flex; flex-direction: column; gap: 18px; background: rgba(250,250,252,0.86); backdrop-filter: blur(50px) saturate(190%); border: 1px solid rgba(255,255,255,0.95); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.14), 0 40px 90px rgba(15,23,42,0.32), inset 0 1px 0 rgba(255,255,255,1)">
+
+<div style="display: flex; align-items: center; gap: 12px">
+<span aria-hidden="true" style="width: 40px; height: 40px; border-radius: 12px; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 1px 2px rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center; font-family: 'SF Mono', Menlo, monospace; font-size: 13px; font-weight: 600; color: #3A3A3C; flex: none">Re</span>
+<div style="display: flex; flex-direction: column; gap: 1px; flex: 1; min-width: 0">
+<div style="font-size: 20px; font-weight: 700">New playground</div>
+<div style="color: #6E6E73">Template: React 19 + TypeScript</div>
+</div>
+<button style="height: 30px; padding: 0 12px; border-radius: 15px; border: none; background: rgba(118,118,128,0.14); flex: none; white-space: nowrap">Change template</button>
+</div>
+
+<label style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-weight: 600">Name</span>
+<input type="text" value="react19-4" aria-label="Name" style="height: 40px; padding: 0 12px; border-radius: 12px; border: 1.5px solid #0071E3; background: #FFFFFF; font: inherit; font-size: 14px; color: #1D1D1F; outline: none; box-shadow: 0 0 0 3px rgba(0,113,227,0.18)">
+<span style="font-size: 12px; color: #6E6E73; white-space: nowrap">Folder: <span style="font-family: 'SF Mono', Menlo, monospace">~/Runyard/react19-4</span></span>
+</label>
+
+<label style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-weight: 600">Note <span style="font-weight: 400; color: #6E6E73">optional</span></span>
+<input type="text" placeholder="What is this playground for?" aria-label="Note" style="height: 40px; padding: 0 12px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.12); background: #FFFFFF; font: inherit; font-size: 14px; color: #1D1D1F; outline: none">
+</label>
+
+<div style="border-radius: 16px; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08); padding: 14px 16px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; gap: 12px">
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<span style="font-weight: 600">Auto-clean <span style="font-weight: 400; color: #6E6E73">optional, off by default</span></span>
+<span style="font-size: 12px; color: #6E6E73; white-space: nowrap">When on, it moves to the Trash after going unused</span>
+</div>
+<span role="switch" aria-checked="false" aria-label="Auto-clean" style="width: 42px; height: 26px; border-radius: 13px; background: rgba(120,120,128,0.32); position: relative; display: inline-block; flex: none"><span style="position: absolute; left: 2px; top: 2px; width: 22px; height: 22px; border-radius: 11px; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.25)"></span></span>
+</div>
+</div>
+
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="flex: 1; font-size: 12px; color: #6E6E73">Press Return to create and run</span>
+<button style="height: 40px; padding: 0 18px; border-radius: 20px; border: none; background: rgba(118,118,128,0.14); flex: none; white-space: nowrap">Cancel</button>
+<button style="height: 40px; padding: 0 22px; border-radius: 20px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; font-size: 14px; flex: none; white-space: nowrap; box-shadow: 0 4px 14px rgba(0,113,227,0.25)">Create and run</button>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

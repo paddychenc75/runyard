@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Runyard states</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+input::placeholder,textarea::placeholder{color:#6E6E73;opacity:1}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:#0071E3}a:hover{color:#0058B0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1640px; box-sizing: border-box; overflow: hidden; padding: 40px 44px; background: #FFFFFF; color: #1D1D1F; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 13px; line-height: 1.45; display: flex; flex-direction: column; gap: 24px">
+
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.3px">States and feedback</h1>
+<div style="color: #6E6E73; font-size: 14px">What state a playground is in, what the user sees and what they can do; and how saving, empty states, messages and auto-clean speak.</div>
+</div>
+
+<!-- run states -->
+<section style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: baseline; gap: 12px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Run states</h2>
+<span style="font-size: 12px; color: #6E6E73">Each state has a mark, a word and a colour. Light on top, dark below, then what the preview shows and the action offered.</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); column-gap: 10px; align-items: start">
+<sc-for list="{{runStates}}" as="s" hint-placeholder-count="8">
+<div style="display: flex; flex-direction: column; gap: 8px; min-width: 0">
+<div style="height: 40px; box-sizing: border-box; padding: 0 10px; border-radius: 12px; background: #F5F5F7; border: 1px solid rgba(0,0,0,0.08); display: flex; align-items: center; gap: 7px; white-space: nowrap; font-weight: 500; color: {{s.l.fg}}">
+<sc-if value="{{s.dot}}" hint-placeholder-val="{{true}}"><span aria-hidden="true" style="flex: none; {{s.l.markCss}}"></span></sc-if>
+<sc-if value="{{s.svg}}" hint-placeholder-val="{{false}}"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="{{s.l.mark}}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="{{s.path}}"/></svg></sc-if>
+<span>{{s.word}}</span>
+<sc-if value="{{s.hasExtra}}" hint-placeholder-val="{{false}}"><span style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; font-weight: 400">{{s.extra}}</span></sc-if>
+</div>
+<div style="height: 40px; box-sizing: border-box; padding: 0 10px; border-radius: 12px; background: #1C1C1E; border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 7px; white-space: nowrap; font-weight: 500; color: {{s.dk.fg}}">
+<sc-if value="{{s.dot}}" hint-placeholder-val="{{true}}"><span aria-hidden="true" style="flex: none; {{s.dk.markCss}}"></span></sc-if>
+<sc-if value="{{s.svg}}" hint-placeholder-val="{{false}}"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="{{s.dk.mark}}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="{{s.path}}"/></svg></sc-if>
+<span>{{s.word}}</span>
+<sc-if value="{{s.hasExtra}}" hint-placeholder-val="{{false}}"><span style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; font-weight: 400">{{s.extra}}</span></sc-if>
+</div>
+<div style="font-size: 12px; color: #6E6E73"><span style="font-weight: 600; color: #1D1D1F">Preview</span><br>{{s.preview}}</div>
+<div style="font-size: 12px; color: #6E6E73"><span style="font-weight: 600; color: #1D1D1F">Action</span><br>{{s.action}}</div>
+</div>
+</sc-for>
+</div>
+</section>
+
+<!-- progress + save -->
+<div style="display: grid; grid-template-columns: 2.1fr 1fr; column-gap: 24px; align-items: start">
+
+<section style="display: flex; flex-direction: column; gap: 10px; min-width: 0">
+<div style="display: flex; align-items: baseline; gap: 12px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Start-up progress</h2>
+<span style="font-size: 12px; color: #6E6E73">Four steps light up in order: tick when done, spinner when active, hollow circle when waiting.</span>
+</div>
+<div style="display: flex; gap: 12px">
+<sc-for list="{{snaps}}" as="sn" hint-placeholder-count="3">
+<div style="flex: 1; min-width: 0; box-sizing: border-box; padding: 14px; border-radius: 16px; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08); display: flex; flex-direction: column; gap: 8px">
+<div style="font-size: 12px; font-weight: 600; color: #6E6E73">{{sn.title}}</div>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<sc-for list="{{sn.steps}}" as="p" hint-placeholder-count="4">
+<div style="height: 34px; box-sizing: border-box; padding: 0 10px; border-radius: 10px; display: flex; align-items: center; gap: 10px; background: {{p.bg}}">
+<span aria-hidden="true" style="width: 18px; height: 18px; border-radius: 50%; box-sizing: border-box; display: flex; align-items: center; justify-content: center; flex: none; {{p.markCss}}">
+<sc-if value="{{p.done}}" hint-placeholder-val="{{false}}"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#FFFFFF" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.5 5 9l4.5-5.5"/></svg></sc-if>
+</span>
+<span style="flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: {{p.weight}}; color: {{p.color}}">{{p.label}}</span>
+<span style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #6E6E73; white-space: nowrap">{{p.time}}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 10px; min-width: 0">
+<div style="display: flex; align-items: baseline; gap: 12px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Save indicator</h2>
+<span style="font-size: 12px; color: #6E6E73">Light | dark</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{saves}}" as="v" hint-placeholder-count="3">
+<div style="display: grid; grid-template-columns: 76px minmax(0, 1fr) minmax(0, 1fr); column-gap: 8px; align-items: center">
+<span style="font-size: 12px; color: #6E6E73">{{v.name}}</span>
+<div style="height: 34px; box-sizing: border-box; padding: 0 10px; border-radius: 10px; background: #F5F5F7; border: 1px solid rgba(0,0,0,0.08); display: flex; align-items: center; gap: 6px; font-size: 12px; white-space: nowrap; color: {{v.l.fg}}">
+<sc-if value="{{v.arc}}" hint-placeholder-val="{{false}}"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 50%; box-sizing: border-box; flex: none; {{v.l.markCss}}"></span></sc-if>
+<sc-if value="{{v.svg}}" hint-placeholder-val="{{true}}"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="{{v.l.mark}}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="{{v.path}}"/></svg></sc-if>{{v.word}}</div>
+<div style="height: 34px; box-sizing: border-box; padding: 0 10px; border-radius: 10px; background: #1C1C1E; border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 6px; font-size: 12px; white-space: nowrap; color: {{v.dk.fg}}">
+<sc-if value="{{v.arc}}" hint-placeholder-val="{{false}}"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 50%; box-sizing: border-box; flex: none; {{v.dk.markCss}}"></span></sc-if>
+<sc-if value="{{v.svg}}" hint-placeholder-val="{{true}}"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="{{v.dk.mark}}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="{{v.path}}"/></svg></sc-if>{{v.word}}</div>
+</div>
+</sc-for>
+</div>
+<div style="font-size: 12px; color: #6E6E73">Top right of the editor, 12 px. Next to Changed on disk, offer Reload and Keep mine. Never overwrite silently.</div>
+</section>
+</div>
+
+<!-- empty states -->
+<section style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: baseline; gap: 12px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Empty states</h2>
+<span style="font-size: 12px; color: #6E6E73">A title, one sentence, one action. No decorative illustration.</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 16px">
+<sc-for list="{{empties}}" as="e" hint-placeholder-count="3">
+<div style="box-sizing: border-box; padding: 22px 20px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; background: {{e.bg}}; border: 1px solid {{e.line}}; color: {{e.ink}}">
+<span aria-hidden="true" style="width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: {{e.tile}}; border: 1px solid {{e.line}}"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="{{e.ink2}}" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"><path d="{{e.path}}"/></svg></span>
+<div style="font-size: 16px; font-weight: 600">{{e.title}}</div>
+<div style="color: {{e.ink2}}">{{e.body}}</div>
+<button style="margin-top: 6px; height: 36px; padding: 0 18px; border-radius: 18px; border: none; white-space: nowrap; font-weight: 500; {{e.btn}}">{{e.action}}</button>
+</div>
+</sc-for>
+</div>
+</section>
+
+<!-- messages -->
+<section style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: baseline; gap: 12px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Messages and confirmation</h2>
+<span style="font-size: 12px; color: #6E6E73">The toolchain card, an error under a field, a transient toast and the confirmation for a destructive action.</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 16px; align-items: start">
+
+<div style="display: flex; flex-direction: column; gap: 8px; min-width: 0">
+<div style="box-sizing: border-box; padding: 14px; border-radius: 16px; background: #F5F5F7; border: 1px solid rgba(0,0,0,0.08); display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: flex-start; gap: 10px">
+<span aria-hidden="true" style="width: 32px; height: 32px; border-radius: 10px; background: rgba(194,116,0,0.08); display: flex; align-items: center; justify-content: center; flex: none"><svg width="16" height="16" viewBox="0 0 12 12" fill="none" stroke="#C27400" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round"><path d="M6 1.5 11 10.5H1zM6 5v2.5M6 9v.2"/></svg></span>
+<div style="display: flex; flex-direction: column; min-width: 0"><span style="font-size: 15px; font-weight: 700">Go not found</span><span style="font-size: 12px; color: #6E6E73">Playground created. Install Go, then choose Re-check.</span></div>
+</div>
+<div style="height: 34px; box-sizing: border-box; padding: 0 12px; border-radius: 10px; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.10); display: flex; align-items: center; font-family: 'SF Mono', Menlo, monospace; font-size: 12px">brew install go</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; background: rgba(118,118,128,0.14); white-space: nowrap">Copy command</button>
+<button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; white-space: nowrap">Re-check</button>
+</div>
+<div style="font-size: 12px; color: #6E6E73">Runyard never installs anything for you.</div>
+</div>
+<div style="font-size: 12px; color: #6E6E73">Toolchain card: what is needed, what was found, how to install. The user decides whether to run it.</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px; min-width: 0">
+<div style="box-sizing: border-box; padding: 14px; border-radius: 16px; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08); display: flex; flex-direction: column; gap: 5px">
+<span style="font-weight: 600">Name</span>
+<input type="text" value="react-counter" aria-label="Name" aria-invalid="true" style="width: 100%; box-sizing: border-box; height: 40px; padding: 0 12px; border-radius: 12px; font: inherit; font-size: 14px; color: #1D1D1F; outline: none; background: #F5F5F7; border: 1.5px solid #D70015; box-shadow: 0 0 0 3px rgba(215,0,21,0.10)">
+<span style="display: flex; align-items: flex-start; gap: 6px; font-size: 12px; color: #C4001A"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#C4001A" stroke-width="1.3" stroke-linecap="round" style="flex: none; margin-top: 2px"><circle cx="6" cy="6" r="5"/><path d="M6 3.4v3M6 8.4v.1"/></svg>That name is already used. Pick another, or add a number at the end.</span>
+</div>
+<div style="font-size: 12px; color: #6E6E73">Inline error under a field: red edge, circled mark, one sentence. Say what happened, then what to do.</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px; min-width: 0">
+<div style="box-sizing: border-box; height: 200px; padding: 16px; border-radius: 16px; background: #F5F5F7; border: 1px solid rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 8px">
+<sc-for list="{{toasts}}" as="t" hint-placeholder-count="3">
+<div role="status" style="height: 40px; box-sizing: border-box; padding: 0 18px; border-radius: 20px; display: flex; align-items: center; gap: 14px; white-space: nowrap; font-weight: 500; background: rgba(255,255,255,0.66); backdrop-filter: blur(28px) saturate(180%); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.08), 0 8px 24px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.9)">
+<span>{{t.text}}</span>
+<sc-if value="{{t.hasAction}}" hint-placeholder-val="{{false}}"><button style="height: 28px; padding: 0 10px; margin-right: -8px; border-radius: 14px; border: none; background: transparent; color: #0058B0; font-weight: 600">{{t.action}}</button></sc-if>
+</div>
+</sc-for>
+</div>
+<div style="font-size: 12px; color: #6E6E73">Toast: a glass capsule, bottom centre, gone after 3 s, never takes focus. Drawn together here; only one shows at a time.</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px; min-width: 0">
+<div role="alertdialog" aria-label="Confirm delete" style="box-sizing: border-box; padding: 20px; border-radius: 28px; display: flex; flex-direction: column; gap: 8px; background: rgba(250,250,252,0.86); backdrop-filter: blur(50px) saturate(190%); border: 1px solid rgba(255,255,255,0.95); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.14), 0 20px 50px rgba(15,23,42,0.22), inset 0 1px 0 rgba(255,255,255,1)">
+<div style="font-size: 18px; font-weight: 700">Move react-counter to the Trash?</div>
+<div style="color: #3A3A3C">The folder goes to the Trash and is not erased. Put it back from the Trash, or choose Undo in the notice.</div>
+<div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px">
+<button style="height: 36px; padding: 0 16px; border-radius: 18px; border: none; background: rgba(118,118,128,0.14); white-space: nowrap; box-shadow: 0 0 0 1.5px #0071E3, 0 0 0 4.5px rgba(0,113,227,0.18)">Cancel</button>
+<button style="height: 36px; padding: 0 16px; border-radius: 18px; border: none; background: rgba(215,0,21,0.10); color: #C4001A; font-weight: 600; white-space: nowrap">Move to Trash</button>
+</div>
+</div>
+<div style="font-size: 12px; color: #6E6E73">Confirm delete: state the effect and the undo. Return defaults to Cancel; the destructive button must be clicked.</div>
+</div>
+
+</div>
+</section>
+
+<!-- auto clean + rules -->
+<div style="display: grid; grid-template-columns: 1fr 1.15fr; column-gap: 24px; align-items: start">
+
+<section style="display: flex; flex-direction: column; gap: 10px; min-width: 0">
+<div style="display: flex; align-items: baseline; gap: 12px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Auto-clean indicators</h2>
+</div>
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap">
+<span style="display: inline-flex; align-items: center; height: 22px; padding: 0 9px; box-sizing: border-box; border-radius: 11px; font-size: 12px; background: #F0F0F3; border: 1px solid rgba(0,0,0,0.16)">Kept</span>
+<span style="display: inline-flex; align-items: center; height: 22px; padding: 0 9px; box-sizing: border-box; border-radius: 11px; font-size: 12px; color: #6E6E73; border: 1px dashed rgba(0,0,0,0.25)">29 days left</span>
+<span style="display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 9px; box-sizing: border-box; border-radius: 11px; font-size: 12px; font-weight: 500; color: #8A4B00; background: rgba(194,116,0,0.08); border: 1px solid rgba(194,116,0,0.35)"><svg aria-hidden="true" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#C27400" stroke-width="1.4" stroke-linecap="round"><circle cx="6" cy="6" r="5"/><path d="M6 3.2V6l1.8 1.1"/></svg>Cleans up tomorrow</span>
+</div>
+<div role="status" style="box-sizing: border-box; padding: 12px 14px; border-radius: 16px; display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.66); backdrop-filter: blur(28px) saturate(180%); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.08), 0 8px 24px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.9)">
+<span aria-hidden="true" style="width: 28px; height: 28px; border-radius: 9px; background: rgba(194,116,0,0.08); display: flex; align-items: center; justify-content: center; flex: none"><svg width="15" height="15" viewBox="0 0 12 12" fill="none" stroke="#C27400" stroke-width="1.3" stroke-linecap="round"><circle cx="6" cy="6" r="5"/><path d="M6 3.2V6l1.8 1.1"/></svg></span>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column"><span style="font-weight: 600">react-counter will be cleaned up tomorrow</span><span style="font-size: 12px; color: #6E6E73">It moves to the Trash and can be restored.</span></div>
+<button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; white-space: nowrap; flex: none">Keep it</button>
+<button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; background: rgba(118,118,128,0.14); white-space: nowrap; flex: none">Dismiss</button>
+</div>
+<div style="font-size: 12px; color: #6E6E73">One reminder the day before. A near-due tag uses the warning tint plus a clock shape, not colour alone.</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 10px; min-width: 0">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Rules</h2>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{rules}}" as="r" hint-placeholder-count="4">
+<div style="box-sizing: border-box; padding: 12px; border-radius: 12px; background: #F5F5F7; display: flex; gap: 10px; align-items: flex-start">
+<span aria-hidden="true" style="width: 20px; height: 20px; border-radius: 10px; background: #1D1D1F; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex: none">{{r.n}}</span>
+<div style="display: flex; flex-direction: column; min-width: 0"><span style="font-weight: 600">{{r.t}}</span><span style="font-size: 12px; color: #6E6E73">{{r.d}}</span></div>
+</div>
+</sc-for>
+</div>
+</section>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1640}}'>
+class Component extends DCLogic {
+renderVals() {
+const tones = {
+gray: { l: { mark: '#8E8E93', fg: '#6E6E73' }, dk: { mark: '#8E8E93', fg: '#A1A1A6' } },
+amber: { l: { mark: '#C27400', fg: '#8A4B00' }, dk: { mark: '#FFD60A', fg: '#FFD60A' } },
+green: { l: { mark: '#28A745', fg: '#1B7A34' }, dk: { mark: '#30D158', fg: '#30D158' } },
+red: { l: { mark: '#D70015', fg: '#C4001A' }, dk: { mark: '#FF453A', fg: '#FF6961' } }
+};
+const markCss = (kind, mark) => {
+  if (kind === 'ring') return 'width:10px;height:10px;border-radius:50%;box-sizing:border-box;border:1.5px solid ' + mark + ';';
+  if (kind === 'arc') return 'width:10px;height:10px;border-radius:50%;box-sizing:border-box;border:2px solid ' + mark + ';border-right-color:transparent;';
+  if (kind === 'solid') return 'width:10px;height:10px;border-radius:50%;background:' + mark + ';';
+  return 'width:10px;height:10px;border-radius:2px;background:' + mark + ';';
+};
+const side = (tone, kind, which) => ({ mark: tones[tone][which].mark, fg: tones[tone][which].fg, markCss: kind ? markCss(kind, tones[tone][which].mark) : '' });
+const rs = (word, extra, tone, kind, path, preview, action) => ({ word: word, extra: extra, hasExtra: extra !== '', dot: !!kind, svg: !kind, path: path || '', l: side(tone, kind, 'l'), dk: side(tone, kind, 'dk'), preview: preview, action: action });
+const runStates = [
+  rs('Stopped', '', 'gray', 'ring', '', 'Shows the name and a Run button. No page is loaded.', 'Run'),
+  rs('Installing', '', 'amber', '', 'M6 2v6M3.5 5.5 6 8l2.5-2.5M2 10.5h8', 'Step list rests on Install dependencies; output streams below.', 'View full output, or cancel'),
+  rs('Starting', '', 'amber', 'arc', '', 'Shows start-up progress. Code stays editable.', 'Cancel start'),
+  rs('Running', ':7101', 'green', 'solid', '', 'Shows your own page. The port is in the toolbar.', 'Restart or stop'),
+  rs('Reloading', '', 'green', '', 'M10 6a4 4 0 1 1-1.2-2.85M10 2v2.2H7.8', 'The page stays; Reloading shows briefly at top right.', 'None needed'),
+  rs('Crashed', 'exit 1', 'red', 'square', '', 'Keeps the last frame under a notice: exit code and last output lines.', 'Run again, or view output'),
+  rs('No toolchain', '', 'amber', '', 'M6 1.5 11 10.5H1zM6 5v2.5M6 9v.2', 'Shows the toolchain card: what is needed, what was found, how to install.', 'Copy the command, then re-check'),
+  rs('Start failed', '', 'red', '', 'M6 1a5 5 0 1 0 0 10A5 5 0 0 0 6 1zM4.2 4.2l3.6 3.6M7.8 4.2 4.2 7.8', 'Names the step that failed, with the reason.', 'Retry, or view output')
+];
+
+const doneMark = 'background:#28A745;border:2px solid #28A745;';
+const doingMark = 'border:2px solid #C27400;border-right-color:transparent;';
+const todoMark = 'border:2px solid #C7C7CC;';
+const done = (label, time) => ({ label: label, time: time, done: true, markCss: doneMark, bg: 'transparent', weight: 400, color: '#1D1D1F' });
+const doing = (label, time) => ({ label: label, time: time, done: false, markCss: doingMark, bg: 'rgba(194,116,0,0.10)', weight: 600, color: '#1D1D1F' });
+const todo = (label) => ({ label: label, time: '', done: false, markCss: todoMark, bg: 'transparent', weight: 400, color: '#6E6E73' });
+const L1 = 'Copy template files', L2 = 'Install dependencies', L3 = 'Start dev server', L4 = 'Ready, show the page';
+const snaps = [
+  { title: 'Snapshot 1: step 2 active', steps: [done(L1, '0.1 s'), doing(L2, 'Working'), todo(L3), todo(L4)] },
+  { title: 'Snapshot 2: step 3 active', steps: [done(L1, '0.1 s'), done(L2, '0.3 s'), doing(L3, 'Working'), todo(L4)] },
+  { title: 'Snapshot 3: all done', steps: [done(L1, '0.1 s'), done(L2, '0.3 s'), done(L3, '0.9 s'), done(L4, 'Done')] }
+];
+
+const sv = (name, word, tone, kind, path) => ({ name: name, word: word, arc: kind === 'arc', svg: kind !== 'arc', path: path || '', l: side(tone, kind === 'arc' ? 'arc' : '', 'l'), dk: side(tone, kind === 'arc' ? 'arc' : '', 'dk') });
+const saves = [
+  sv('Saving', 'Saving…', 'amber', 'arc', ''),
+  sv('Saved', 'Saved', 'green', 'check', 'M2.5 6.5 5 9l4.5-5.5'),
+  sv('On disk', 'Changed on disk', 'amber', 'warn', 'M6 1.5 11 10.5H1zM6 5v2.5M6 9v.2')
+];
+saves[0].l.markCss = markCss('arc', '#C27400');
+saves[0].dk.markCss = markCss('arc', '#FFD60A');
+saves[1].l.fg = '#6E6E73'; saves[1].dk.fg = '#A1A1A6';
+saves[0].l.fg = '#6E6E73'; saves[0].dk.fg = '#A1A1A6';
+
+const lightCard = { bg: '#F5F5F7', line: 'rgba(0,0,0,0.08)', ink: '#1D1D1F', ink2: '#6E6E73', tile: '#FFFFFF' };
+const darkCard = { bg: '#1C1C1E', line: 'rgba(255,255,255,0.08)', ink: '#F5F5F7', ink2: '#A1A1A6', tile: 'rgba(255,255,255,0.10)' };
+const prim = 'background:#0071E3;color:#FFFFFF;font-weight:600;box-shadow:0 4px 14px rgba(0,113,227,0.25);';
+const primDark = 'background:#0A84FF;color:#FFFFFF;font-weight:600;';
+const sec = 'background:rgba(118,118,128,0.14);color:#1D1D1F;';
+const secDark = 'background:rgba(118,118,128,0.24);color:#F5F5F7;';
+const empties = [
+  Object.assign({}, lightCard, { path: 'M2 2h4.5v4.5H2zM9.5 2H14v4.5H9.5zM2 9.5h4.5V14H2zM9.5 9.5H14V14H9.5z', title: 'No playgrounds yet', body: 'Start from a template and have a demo running in seconds.', action: 'New playground', btn: prim }),
+  Object.assign({}, darkCard, { path: 'M7 12.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM11 11l3.5 3.5', title: 'Nothing matches "react-x"', body: 'Try another keyword, or clear the search.', action: 'Clear search', btn: secDark }),
+  Object.assign({}, lightCard, { path: 'M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5', title: 'No custom templates yet', body: 'Choose Save as template in a playground menu and it appears here.', action: 'Go to the library', btn: sec })
+];
+const toasts = [
+  { text: 'Stopped react-counter', hasAction: false, action: '' },
+  { text: 'Command copied', hasAction: false, action: '' },
+  { text: 'Moved to the Trash', hasAction: true, action: 'Undo' }
+];
+const rules = [
+  { n: '1', t: 'State is never colour alone', d: 'Every state has a word and a shape: solid circle, hollow circle, square, triangle.' },
+  { n: '2', t: 'Errors say what happened and what next', d: '"Port 7111 is busy, using 7112", not "Something went wrong".' },
+  { n: '3', t: 'Nothing is deleted unless the user chose it', d: 'Auto-clean is off by default; items go to the Trash, not erased; a reminder comes the day before.' },
+  { n: '4', t: 'The app never installs anything by itself', d: 'When a toolchain is missing it shows the command; the user copies or runs it.' }
+];
+return { runStates, snaps, saves, empties, toasts, rules };
+}
+}
+</script>
+</body>
+</html>

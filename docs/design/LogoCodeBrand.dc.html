@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>不带字母的图标 · 方案一、二</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+a{color:#0071E3}a:hover{color:#0058B0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1640px; box-sizing: border-box; padding: 40px 44px; background: #FFFFFF; color: #1D1D1F; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 14px; line-height: 1.5; display: flex; flex-direction: column; gap: 20px; overflow: hidden">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.3px">不带字母的图标 · 方案一、二</h1>
+<div style="color: #6E6E73; font-size: 15px">品牌概念方向的设计师。每个方案从上到下：浅色背景、深色背景、单色版本；最下面是缩小后夹在播放器图标和终端图标中间的对照。</div>
+</div>
+<div style="display: flex; gap: 28px; align-items: flex-start">
+<img src="/_blob/9e1dcc9b28f53cc1d5e6c8bf5eceab5a" alt="不带字母的图标 · 方案一、二" style="width: 540px; height: 1440px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.08); flex: none">
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<div style="padding: 16px 18px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 16px; font-weight: 700">方案一 · 正在执行的那一行（设计师推荐）</div>
+<div style="color: #3A3A3C">几行代码：深色的是已经执行过的，灰色的是还没轮到的，中间正在执行的那一行亮成橙色，并且冲出图标的右边缘。“运行”不靠任何符号，靠的是“这一行正亮着、正在往外走”。</div>
+<div><span style="font-weight: 600">不足：</span><span style="color: #3A3A3C">暖米白的底放在浅色背景上边界偏弱；缩到 16 像素时只剩几条小横线。</span></div>
+</div>
+<div style="padding: 16px 18px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 16px; font-weight: 700">方案二 · 胖箭头</div>
+<div style="color: #3A3A3C">“=&gt;”是代码里的箭头函数符号，写代码的人一眼认得。两条横线带着拖尾，表示正在往前跑。橙红色的底。</div>
+<div><span style="font-weight: 600">不足：</span><span style="color: #3A3A3C">不写代码的人只会读成“前进”或“下一步”，离“快进”不远；橙色底加箭头的图标市面上比较多。</span></div>
+</div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1640}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

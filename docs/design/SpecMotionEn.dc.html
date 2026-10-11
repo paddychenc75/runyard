@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Runyard motion</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+input::placeholder,textarea::placeholder{color:#6E6E73;opacity:1}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:#0071E3}a:hover{color:#0058B0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1340px; box-sizing: border-box; overflow: hidden; padding: 40px 44px; background: #FFFFFF; color: #1D1D1F; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 13px; line-height: 1.45; display: flex; flex-direction: column; gap: 22px">
+
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.3px">Motion and accessibility</h1>
+<div style="color: #6E6E73; font-size: 14px">What moves, for how long, how to drive the app from the keyboard, and the accessibility floor every control must meet. Colour, materials and type have their own boards.</div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1.55fr 1fr; column-gap: 28px; align-items: start">
+
+<!-- left column -->
+<div style="display: flex; flex-direction: column; gap: 22px; min-width: 0">
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Motion principles</h2>
+<div style="box-sizing: border-box; padding: 12px 16px; border-radius: 16px; background: #F5F5F7; display: flex; flex-direction: column; gap: 4px">
+<sc-for list="{{principles}}" as="p" hint-placeholder-count="4">
+<div style="display: flex; gap: 10px; align-items: flex-start"><span aria-hidden="true" style="width: 6px; height: 6px; border-radius: 3px; background: #1D1D1F; margin-top: 7px; flex: none"></span><span style="color: #3A3A3C">{{p.t}}</span></div>
+</sc-for>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Every transition</h2>
+<div style="display: flex; flex-direction: column">
+<div style="display: grid; grid-template-columns: 1.4fr 2fr 0.9fr 1.1fr; column-gap: 12px; padding: 0 0 6px 0; font-size: 12px; font-weight: 600; color: #6E6E73; border-bottom: 1px solid rgba(0,0,0,0.10)">
+<span>Trigger</span><span>What moves</span><span>Duration</span><span>Easing</span>
+</div>
+<sc-for list="{{transitions}}" as="r" hint-placeholder-count="8">
+<div style="display: grid; grid-template-columns: 1.4fr 2fr 0.9fr 1.1fr; column-gap: 12px; padding: 6px 0; align-items: start; border-bottom: 1px solid rgba(0,0,0,0.06)">
+<span style="font-weight: 600">{{r.trigger}}</span>
+<span style="font-size: 12px; color: #3A3A3C">{{r.moves}}</span>
+<span style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px">{{r.time}}</span>
+<span style="font-size: 12px; color: #3A3A3C">{{r.ease}}</span>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Before and after</h2>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 20px; align-items: start">
+<sc-for list="{{pairs}}" as="pr" hint-placeholder-count="3">
+<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 8px">
+<sc-for list="{{pr.frames}}" as="fr" hint-placeholder-count="2">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="position: relative; width: 120px; height: 78px; box-sizing: border-box; overflow: hidden; border-radius: 10px; background: #F5F5F7; border: 1px solid rgba(0,0,0,0.08)">
+<sc-for list="{{fr.boxes}}" as="b" hint-placeholder-count="6"><div aria-hidden="true" style="position: absolute; box-sizing: border-box; {{b.css}}"></div></sc-for>
+</div>
+<span style="font-size: 12px; color: #6E6E73; font-family: 'SF Mono', Menlo, monospace">{{fr.label}}</span>
+</div>
+<sc-if value="{{fr.arrow}}" hint-placeholder-val="{{true}}"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#6E6E73" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-bottom: 20px"><path d="M3 8h10M9 4l4 4-4 4"/></svg></sc-if>
+</sc-for>
+</div>
+<div style="font-size: 12px"><span style="font-weight: 600">{{pr.title}}</span><br><span style="color: #6E6E73">{{pr.desc}}</span></div>
+</div>
+</sc-for>
+</div>
+</section>
+
+</div>
+
+<!-- right column -->
+<div style="display: flex; flex-direction: column; gap: 22px; min-width: 0">
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Keyboard</h2>
+<div style="display: flex; flex-direction: column">
+<sc-for list="{{keys}}" as="k" hint-placeholder-count="11">
+<div style="display: grid; grid-template-columns: 84px minmax(0, 1fr); column-gap: 12px; align-items: center; height: 30px; border-bottom: 1px solid rgba(0,0,0,0.06)">
+<span style="display: inline-flex; align-items: center; justify-self: start; height: 22px; padding: 0 8px; box-sizing: border-box; border-radius: 7px; background: #F0F0F3; border: 1px solid rgba(0,0,0,0.10); font-family: 'SF Mono', Menlo, monospace; font-size: 12px; font-weight: 600; white-space: nowrap">{{k.key}}</span>
+<span>{{k.what}}</span>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Focus order and focus ring</h2>
+<div style="color: #3A3A3C">Left to right, top to bottom. While a layer is open, focus stays inside it; on close it returns to the control that opened it.</div>
+<div style="display: flex; gap: 10px; align-items: stretch">
+<div style="flex: 1; min-width: 0; box-sizing: border-box; padding: 14px; border-radius: 14px; background: #F5F5F7; display: flex; align-items: center; gap: 14px">
+<button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; background: rgba(118,118,128,0.14); white-space: nowrap; box-shadow: 0 0 0 1.5px #0071E3, 0 0 0 4.5px rgba(0,113,227,0.18)">Rename</button>
+<input type="text" value="my-app" aria-label="Name" style="width: 80px; box-sizing: border-box; height: 32px; padding: 0 10px; border-radius: 10px; font: inherit; color: #1D1D1F; outline: none; background: #FFFFFF; border: 1.5px solid #0071E3; box-shadow: 0 0 0 3px rgba(0,113,227,0.18)">
+</div>
+<div style="box-sizing: border-box; padding: 14px; border-radius: 14px; background: #1C1C1E; display: flex; align-items: center">
+<button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; background: rgba(118,118,128,0.24); color: #F5F5F7; white-space: nowrap; box-shadow: 0 0 0 1.5px #0A84FF, 0 0 0 4.5px rgba(10,132,255,0.32)">Rename</button>
+</div>
+</div>
+<div style="font-size: 12px; color: #6E6E73">Focus ring: a 1.5 px accent edge plus a 3 px tint ring, in both themes. Any control with keyboard focus must show it.</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Reduced motion</h2>
+<div style="color: #3A3A3C">When the system setting is on, scale and slide become plain fades; nothing loops.</div>
+<div style="box-sizing: border-box; padding: 8px 14px; border-radius: 14px; background: #F5F5F7; display: flex; flex-direction: column">
+<sc-for list="{{reduced}}" as="m" hint-placeholder-count="3">
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 16px minmax(0, 1.3fr); column-gap: 10px; align-items: center; min-height: 28px">
+<span style="color: #6E6E73">{{m.from}}</span>
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#6E6E73" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+<span style="font-weight: 600">{{m.to}}</span>
+</div>
+</sc-for>
+</div>
+</section>
+
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1.3fr; column-gap: 28px; align-items: start">
+
+<section style="display: flex; flex-direction: column; gap: 10px; min-width: 0">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Accessibility requirements</h2>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 20px">
+<sc-for list="{{access}}" as="a" hint-placeholder-count="8">
+<div style="display: flex; gap: 8px; align-items: flex-start; min-width: 0">
+<svg aria-hidden="true" width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="#1B7A34" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 3px"><path d="M2.5 6.5 5 9l4.5-5.5"/></svg>
+<div style="display: flex; flex-direction: column; min-width: 0"><span style="font-weight: 600">{{a.t}}</span><span style="font-size: 12px; color: #6E6E73">{{a.d}}</span></div>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 10px; min-width: 0">
+<h2 style="margin: 0; font-size: 16px; font-weight: 600">Do and do not</h2>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 20px">
+
+<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<span style="font-weight: 600">Glass only on the floating layer</span>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 10px">
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<div style="height: 64px; box-sizing: border-box; border-radius: 12px; background: #F5F5F7; display: flex; flex-direction: column; align-items: center; justify-content: center">
+<div style="position: relative; z-index: 1; height: 24px; width: 110px; border-radius: 12px; box-sizing: border-box; background: rgba(255,255,255,0.66); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.08), 0 8px 24px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.9)"></div>
+<div style="margin-top: -8px; height: 30px; width: 130px; border-radius: 10px; box-sizing: border-box; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08)"></div>
+</div>
+<span style="display: flex; gap: 5px; font-size: 12px; color: #1B7A34"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#1B7A34" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 3px"><path d="M2.5 6.5 5 9l4.5-5.5"/></svg>Navigation floats above content</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<div style="height: 64px; box-sizing: border-box; border-radius: 12px; background: #F5F5F7; display: flex; align-items: center; justify-content: center">
+<div style="height: 44px; width: 130px; border-radius: 10px; box-sizing: border-box; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; background: rgba(255,255,255,0.40); backdrop-filter: blur(28px); border: 1px dashed rgba(0,0,0,0.25)"><span style="height: 6px; width: 80px; border-radius: 3px; background: #C7C7CC"></span><span style="height: 6px; width: 100px; border-radius: 3px; background: #C7C7CC"></span><span style="height: 6px; width: 60px; border-radius: 3px; background: #C7C7CC"></span></div>
+</div>
+<span style="display: flex; gap: 5px; font-size: 12px; color: #C4001A"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#C4001A" stroke-width="1.7" stroke-linecap="round" style="flex: none; margin-top: 3px"><path d="M3 3l6 6M9 3 3 9"/></svg>Content itself is never translucent</span>
+</div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<span style="font-weight: 600">One accent action per view</span>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 10px">
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<div style="height: 64px; box-sizing: border-box; border-radius: 12px; background: #F5F5F7; display: flex; align-items: center; justify-content: center; gap: 8px">
+<button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; background: rgba(118,118,128,0.14); white-space: nowrap">Cancel</button>
+<button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; white-space: nowrap">Create</button>
+</div>
+<span style="display: flex; gap: 5px; font-size: 12px; color: #1B7A34"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#1B7A34" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 3px"><path d="M2.5 6.5 5 9l4.5-5.5"/></svg>One primary, the rest secondary</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<div style="height: 64px; box-sizing: border-box; border-radius: 12px; background: #F5F5F7; display: flex; align-items: center; justify-content: center; gap: 6px">
+<button style="height: 32px; padding: 0 9px; border-radius: 16px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; white-space: nowrap">Create</button>
+<button style="height: 32px; padding: 0 9px; border-radius: 16px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; white-space: nowrap">Run</button>
+<button style="height: 32px; padding: 0 9px; border-radius: 16px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; white-space: nowrap">Open</button>
+</div>
+<span style="display: flex; gap: 5px; font-size: 12px; color: #C4001A"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#C4001A" stroke-width="1.7" stroke-linecap="round" style="flex: none; margin-top: 3px"><path d="M3 3l6 6M9 3 3 9"/></svg>Several primaries in one view</span>
+</div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<span style="font-weight: 600">No decorative colour blends</span>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 10px">
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<div style="height: 64px; box-sizing: border-box; border-radius: 12px; background: #F5F5F7; display: flex; align-items: center; justify-content: center">
+<div style="height: 40px; width: 130px; border-radius: 10px; background: #0071E3; color: #FFFFFF; font-weight: 600; display: flex; align-items: center; justify-content: center">Flat fill</div>
+</div>
+<span style="display: flex; gap: 5px; font-size: 12px; color: #1B7A34"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#1B7A34" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 3px"><path d="M2.5 6.5 5 9l4.5-5.5"/></svg>Flat fills only</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<div style="height: 64px; box-sizing: border-box; border-radius: 12px; background: #F5F5F7; display: flex; align-items: center; justify-content: center">
+<div style="height: 40px; width: 130px; border-radius: 10px; box-sizing: border-box; border: 1px dashed rgba(0,0,0,0.30); color: #6E6E73; text-decoration: line-through; display: flex; align-items: center; justify-content: center">Colour blend (not used)</div>
+</div>
+<span style="display: flex; gap: 5px; font-size: 12px; color: #C4001A"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#C4001A" stroke-width="1.7" stroke-linecap="round" style="flex: none; margin-top: 3px"><path d="M3 3l6 6M9 3 3 9"/></svg>Decorative colour blends</span>
+</div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<span style="font-weight: 600">No shortcut glyphs in buttons</span>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 10px">
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<div style="height: 64px; box-sizing: border-box; border-radius: 12px; background: #F5F5F7; display: flex; align-items: center; justify-content: center; gap: 10px">
+<button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; white-space: nowrap">Run</button>
+<span style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #6E6E73">⌘R</span>
+</div>
+<span style="display: flex; gap: 5px; font-size: 12px; color: #1B7A34"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#1B7A34" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 3px"><path d="M2.5 6.5 5 9l4.5-5.5"/></svg>Shortcuts live in menus and tooltips</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<div style="height: 64px; box-sizing: border-box; border-radius: 12px; background: #F5F5F7; display: flex; align-items: center; justify-content: center">
+<div style="height: 32px; padding: 0 14px; border-radius: 16px; box-sizing: border-box; border: 1px dashed rgba(0,0,0,0.30); color: #6E6E73; text-decoration: line-through; display: flex; align-items: center; white-space: nowrap">Run + key glyph</div>
+</div>
+<span style="display: flex; gap: 5px; font-size: 12px; color: #C4001A"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#C4001A" stroke-width="1.7" stroke-linecap="round" style="flex: none; margin-top: 3px"><path d="M3 3l6 6M9 3 3 9"/></svg>Key glyphs inside a button</span>
+</div>
+</div>
+</div>
+
+</div>
+</section>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1340}}'>
+class Component extends DCLogic {
+renderVals() {
+const principles = [
+  { t: 'Motion explains what happened; it is never decoration.' },
+  { t: 'A floating layer grows from the control that opened it and returns to it on close.' },
+  { t: 'Short: mostly 150 to 250 ms; feedback to a user action is immediate.' },
+  { t: 'With Reduce Motion on, only fades remain and nothing loops.' }
+];
+const tr = (trigger, moves, time, ease) => ({ trigger: trigger, moves: moves, time: time, ease: ease });
+const transitions = [
+  tr('Open or close a dialog or the picker', 'Scale from 0.96 and fade, from the control that opened it', '250 ms', 'Spring-like ease-out'),
+  tr('Open a menu', 'Fade and slight scale, anchored to the button', '150 ms', 'Ease-out'),
+  tr('Switch a tab', 'Content cross-fades; no sliding', '150 ms', 'Ease-in-out'),
+  tr('Start-up steps', 'Four steps light in turn, 120 ms apart', '200 ms each', 'Ease-out'),
+  tr('Preview ready', 'The preview fades in over the progress card', '200 ms', 'Ease-out'),
+  tr('List row hover', 'The background changes at once; no transition', 'Instant', '—'),
+  tr('Toast in and out', 'Slides up 8 px and fades in; fades out on its own after 3 s', '200 ms', 'Ease-out in, ease-in out'),
+  tr('Press a glass control', 'Highlight edge brightens and fill steps up; restores on release', '100 ms', 'Linear')
+];
+const box = (css) => ({ css: css });
+const dlgFinal = 'left:30px;top:10px;width:76px;height:50px;border-radius:10px;';
+const opener = box('left:10px;bottom:8px;width:30px;height:14px;border-radius:7px;background:#0071E3;');
+const dialogPair = {
+  title: 'Dialog opens', desc: 'Scale 0.96 to 1 and opacity 0 to 100%, origin at the trigger button.',
+  frames: [
+    { label: '0 ms', arrow: true, boxes: [opener, box(dlgFinal + 'border:1px dashed rgba(0,0,0,0.25);'), box(dlgFinal + 'background:#FFFFFF;border:1px solid rgba(0,0,0,0.12);opacity:0.35;transform:scale(0.96);transform-origin:10% 100%;')] },
+    { label: '250 ms', arrow: false, boxes: [opener, box(dlgFinal + 'background:#FFFFFF;border:1px solid rgba(0,0,0,0.12);box-shadow:0 8px 20px rgba(15,23,42,0.18);')] }
+  ]
+};
+const bars = [box('left:12px;top:10px;width:70px;height:6px;border-radius:3px;background:#D1D1D6;'), box('left:12px;top:22px;width:92px;height:6px;border-radius:3px;background:#D1D1D6;')];
+const toastCss = 'left:28px;width:64px;height:18px;border-radius:9px;';
+const toastPair = {
+  title: 'Toast appears', desc: 'Slides up 8 px from below and fades in; after 3 s it fades out the same way.',
+  frames: [
+    { label: '0 ms', arrow: true, boxes: bars.concat([box(toastCss + 'bottom:12px;border:1px dashed rgba(0,0,0,0.25);'), box(toastCss + 'bottom:4px;background:#FFFFFF;border:1px solid rgba(0,0,0,0.12);opacity:0.3;')]) },
+    { label: '200 ms', arrow: false, boxes: bars.concat([box(toastCss + 'bottom:12px;background:#FFFFFF;border:1px solid rgba(0,0,0,0.12);box-shadow:0 6px 16px rgba(15,23,42,0.16);')]) }
+  ]
+};
+const stepBoxes = (states) => {
+  const out = [];
+  states.forEach((s, i) => {
+    const top = 10 + i * 16;
+    const dot = s === 'done' ? 'background:#28A745;border:2px solid #28A745;' : s === 'doing' ? 'border:2px solid #C27400;border-right-color:transparent;' : 'border:2px solid #C7C7CC;';
+    out.push(box('left:12px;top:' + top + 'px;width:10px;height:10px;border-radius:50%;' + dot));
+    out.push(box('left:30px;top:' + (top + 2) + 'px;width:72px;height:6px;border-radius:3px;background:' + (s === 'doing' ? '#6E6E73' : s === 'done' ? '#A1A1A6' : '#E5E5EA') + ';'));
+  });
+  return out;
+};
+const stepsPair = {
+  title: 'Start-up steps light up', desc: 'The finished step becomes a tick and the next one starts spinning, 120 ms apart.',
+  frames: [
+    { label: 'step 2', arrow: true, boxes: stepBoxes(['done', 'doing', 'todo', 'todo']) },
+    { label: 'step 3', arrow: false, boxes: stepBoxes(['done', 'done', 'doing', 'todo']) }
+  ]
+};
+const pairs = [dialogPair, toastPair, stepsPair];
+const keys = [
+  { key: '⌘N', what: 'New playground' },
+  { key: '⌘K', what: 'Command palette' },
+  { key: '⌘F', what: 'Search the library' },
+  { key: '⌘P', what: 'Quick open file' },
+  { key: '⌘S', what: 'Save now' },
+  { key: '⌘R', what: 'Run or re-run' },
+  { key: '⌘W', what: 'Close tab and stop' },
+  { key: '⌘,', what: 'Settings' },
+  { key: 'Return', what: 'Confirm; triggers the primary button' },
+  { key: 'Esc', what: 'Dismiss a layer; same as Cancel' },
+  { key: '↑ ↓', what: 'Move in lists and menus' }
+];
+const reduced = [
+  { from: 'Scale + fade', to: 'Fade only' },
+  { from: 'Slide + fade', to: 'Fade only' },
+  { from: 'Spinner', to: 'Static mark plus the word Working' }
+];
+const access = [
+  { t: 'Contrast', d: 'Text 4.5:1; marks and icons 3:1.' },
+  { t: 'Never colour alone', d: 'Every state also has a word and a shape.' },
+  { t: 'Icon-only controls have a label', d: 'Every icon-only button has a screen-reader label and a tooltip.' },
+  { t: 'Hit targets', d: 'At least 28 × 28 for pointer controls; 44 for primary list rows.' },
+  { t: 'Reduce transparency', d: 'Glass becomes an opaque light or dark grey; layout is unchanged.' },
+  { t: 'Text scaling', d: 'Base size scales from 12 to 16 px with the system setting, without clipping.' },
+  { t: 'Both languages', d: 'Simplified Chinese and English both fit every control; English is longer.' },
+  { t: 'Keyboard reachable', d: 'Every control can be reached and used by keyboard, with a visible ring.' }
+];
+return { principles, transitions, pairs, keys, reduced, access };
+}
+}
+</script>
+</body>
+</html>

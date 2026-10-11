@@ -1,0 +1,21 @@
+# 依赖和构建物
+node_modules/
+.turbo/
+.tsbuild/
+dist/
+coverage/
+*.tsbuildinfo
+
+# 过程产物不进仓库（负责人 2026-10-12 决定，技术设计 §11.4）：万一还有残留，这些保险也不会被误提交
+/docs/discussions/
+/docs/01-research.md
+/docs/prototype/
+/docs/design-renders/
+/docs/design/logo/*
+!/docs/design/logo/final/
+/tooling/design-render/png/
+/tooling/design-render/build/
+/tooling/design-render/sheets/
+
+# 系统和编辑器产生的文件
+.DS_Store

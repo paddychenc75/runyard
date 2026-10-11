@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Runyard 链接新建确认</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:#0071E3}a:hover{color:#0058B0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #1D1D1F; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 13px; line-height: 1.4">
+
+<div aria-hidden="true" style="position: absolute; inset: 0">
+<dc-import name="Main" hint-size="1440px,900px"></dc-import>
+</div>
+<div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(20,22,30,0.22)"></div>
+<div role="dialog" aria-label="从链接新建" style="position: absolute; left: 430px; top: 190px; width: 580px; box-sizing: border-box; border-radius: 28px; padding: 26px 28px 22px 28px; display: flex; flex-direction: column; gap: 18px; background: rgba(250,250,252,0.86); backdrop-filter: blur(50px) saturate(190%); border: 1px solid rgba(255,255,255,0.95); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.14), 0 40px 90px rgba(15,23,42,0.32), inset 0 1px 0 rgba(255,255,255,1)">
+
+<div style="display: flex; align-items: center; gap: 12px">
+<span aria-hidden="true" style="width: 40px; height: 40px; border-radius: 12px; background: rgba(0,113,227,0.10); display: flex; align-items: center; justify-content: center; flex: none"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0058B0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 11.5a3 3 0 0 0 4.2 0l2.6-2.6a3 3 0 0 0-4.2-4.2l-.9.9M11.5 8.5a3 3 0 0 0-4.2 0l-2.6 2.6a3 3 0 0 0 4.2 4.2l.9-.9"/></svg></span>
+<div style="display: flex; flex-direction: column; gap: 1px; flex: 1; min-width: 0">
+<div style="font-size: 20px; font-weight: 700">要新建并运行这个项目吗？</div>
+<div style="color: #6E6E73">来自一个链接</div>
+</div>
+</div>
+
+<div style="border-radius: 16px; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.08); padding: 4px 16px; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; gap: 12px; min-height: 40px; "><span style="width: 72px; flex: none; color: #6E6E73">来源</span><span style="flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; font-weight: 500"><span style="color: #6E6E73">自称来自</span>docs.example.dev</span></div>
+<div style="display: flex; align-items: center; gap: 12px; min-height: 40px; border-top: 1px solid rgba(0,0,0,0.08); "><span style="width: 72px; flex: none; color: #6E6E73">模板</span><span style="flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; font-weight: 500"><span aria-hidden="true" style="width: 22px; height: 22px; border-radius: 7px; background: #F0F0F3; border: 1px solid rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center; font-family: 'SF Mono', Menlo, monospace; font-size: 10px; font-weight: 600; color: #48484A; flex: none">Re</span>React 19 + TypeScript</span></div>
+<div style="display: flex; align-items: center; gap: 12px; min-height: 40px; border-top: 1px solid rgba(0,0,0,0.08); "><span style="width: 72px; flex: none; color: #6E6E73">名称</span><span style="flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; font-weight: 500">react19-4</span></div>
+<div style="display: flex; align-items: center; gap: 12px; min-height: 40px; border-top: 1px solid rgba(0,0,0,0.08); "><span style="width: 72px; flex: none; color: #6E6E73">文件夹</span><span style="flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; font-family: 'SF Mono', Menlo, monospace; font-weight: 500">~/Runyard/react19-4</span></div>
+</div>
+
+<div style="border-radius: 12px; background: rgba(194,116,0,0.08); padding: 10px 12px; display: flex; align-items: flex-start; gap: 10px; color: #8A4B00">
+<span style="margin-top: 2px; display: flex"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="#C27400" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M6 1.6 11 10.4H1z"/><path d="M6 5v2.4M6 9v.1"/></svg></span>
+<span style="flex: 1; min-width: 0">这个来源是链接自己写的，Runyard 无法核实。新建后会安装依赖并运行模板里的代码，只在你信任它时继续。</span>
+</div>
+
+
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 10px"><button autofocus style="height: 40px; padding: 0 18px; border-radius: 20px; border: none; flex: none; white-space: nowrap; display: flex; align-items: center; gap: 8px; font-size: 14px; background: rgba(118,118,128,0.14); font-weight: 600; box-shadow: 0 0 0 3px rgba(0,113,227,0.55)">取消</button><button style="height: 40px; padding: 0 22px; border-radius: 20px; border: none; flex: none; white-space: nowrap; display: flex; align-items: center; gap: 8px; font-size: 14px; background: #0071E3; color: #FFFFFF; font-weight: 600">新建并运行</button></div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

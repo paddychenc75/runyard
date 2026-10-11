@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Runyard Library, inline rename</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+input::placeholder{color:#A1A1A6;opacity:1}
+a{color:#4DA3FF}a:hover{color:#7DBBFF}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; box-sizing: border-box; position: relative; overflow: hidden; background: #1C1C1E; color: #F5F5F7; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 13px; line-height: 1.4">
+
+<div style="position: absolute; left: 256px; right: 0; top: 0; bottom: 0; display: flex; flex-direction: column">
+<div style="height: 68px; flex: none"></div>
+<div style="padding: 20px 28px 0 28px; display: flex; align-items: flex-end; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0">
+<h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.3px">All</h1>
+<div style="color: #A1A1A6">20 playgrounds · 4 running · stored in ~/Runyard</div>
+</div>
+<div style="display: flex; gap: 8px">
+<button style="height: 32px; padding: 0 14px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); background: rgba(118,118,128,0.24); display: flex; align-items: center; gap: 6px; flex: none; white-space: nowrap">Type: All
+<svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#A1A1A6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5 5 6.5 8 3.5"/></svg></button>
+<button style="height: 32px; padding: 0 14px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); background: rgba(118,118,128,0.24); display: flex; align-items: center; gap: 6px; flex: none; white-space: nowrap">Status: All
+<svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#A1A1A6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5 5 6.5 8 3.5"/></svg></button>
+<button style="height: 32px; padding: 0 14px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); background: rgba(118,118,128,0.24); display: flex; align-items: center; gap: 6px; flex: none; white-space: nowrap">Sort: Recently opened
+<svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#A1A1A6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5 5 6.5 8 3.5"/></svg></button>
+</div>
+</div>
+<div style="margin: 18px 28px 0 28px; display: grid; grid-template-columns: minmax(0, 1.5fr) 132px minmax(0, 1fr) 84px 96px 110px 110px 36px; column-gap: 12px; padding: 0 14px 8px 14px; color: #A1A1A6; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.08)">
+<div>Name and note</div><div>Status</div><div>Template</div><div>Port</div><div>Retention</div><div>Last opened</div><div>Created by</div><div></div>
+</div>
+<div style="margin: 6px 28px 0 28px; display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{{rowsA}}" as="row" hint-placeholder-count="1">
+<div style="display: grid; grid-template-columns: minmax(0, 1.5fr) 132px minmax(0, 1fr) 84px 96px 110px 110px 36px; column-gap: 12px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: {{row.bg}}; box-shadow: {{row.bar}}">
+<div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<div style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{row.name}}</div>
+<div style="font-size: 12px; color: {{row.noteColor}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{row.note}}</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px; color: {{row.statusColor}}; font-weight: 500; white-space: nowrap">
+<span aria-hidden="true" style="width: 9px; height: 9px; border-radius: {{row.dotRadius}}; box-sizing: border-box; background: {{row.dotFill}}; border: 1.5px solid {{row.dotColor}}; flex: none"></span>{{row.status}}
+</div>
+<div style="display: flex; align-items: center; gap: 8px; color: #D1D1D6; white-space: nowrap; overflow: hidden">
+<span aria-hidden="true" style="width: 22px; height: 22px; border-radius: 7px; background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-family: 'SF Mono', Menlo, monospace; font-size: 10px; font-weight: 600; color: #D1D1D6; flex: none">{{row.badge}}</span>{{row.template}}
+</div>
+<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #D1D1D6">{{row.port}}</div>
+<div><span title="{{row.tip}}" style="display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 11px; box-sizing: border-box; font-size: 12px; white-space: nowrap; color: {{row.keepColor}}; background: {{row.keepBg}}; border: 1px {{row.keepBorder}}">{{row.keep}}</span></div>
+<div style="color: #A1A1A6; white-space: nowrap">{{row.opened}}</div>
+<div>
+<sc-if value="{{row.agent}}" hint-placeholder-val="{{false}}">
+<span style="display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 12px; font-weight: 500; white-space: nowrap; color: #D0A8FF; background: rgba(191,90,242,0.24)"><svg aria-hidden="true" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#D0A8FF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 1.5v2M6 8.5v2M1.5 6h2M8.5 6h2M3 3l1.2 1.2M7.8 7.8 9 9M9 3 7.8 4.2M4.2 7.8 3 9"/></svg>{{row.agentLabel}}</span>
+</sc-if>
+<sc-if value="{{row.mine}}" hint-placeholder-val="{{true}}"><span style="color: #A1A1A6">{{row.meLabel}}</span></sc-if>
+</div>
+<div>
+<sc-if value="{{row.collapsed}}" hint-placeholder-val="{{true}}">
+<button aria-label="{{row.moreLabel}}" style="width: 32px; height: 32px; border-radius: 16px; border: none; background: transparent; display: flex; align-items: center; justify-content: center; flex: none">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="#A1A1A6"><circle cx="3.5" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="12.5" cy="8" r="1.3"/></svg>
+</button>
+</sc-if>
+<sc-if value="{{row.expanded}}" hint-placeholder-val="{{false}}">
+<button aria-label="{{row.collapseLabel}}" aria-expanded="true" style="width: 32px; height: 32px; border-radius: 16px; border: none; background: rgba(10,132,255,0.20); display: flex; align-items: center; justify-content: center; flex: none">
+<svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#4DA3FF" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7.5 6 4l3.5 3.5"/></svg>
+</button>
+</sc-if>
+</div>
+</div>
+</sc-for>
+<div style="display: grid; grid-template-columns: minmax(0, 1.5fr) 132px minmax(0, 1fr) 84px 96px 110px 110px 36px; column-gap: 12px; align-items: center; padding: 12px 14px; border-radius: 12px; background: rgba(10,132,255,0.20); border: 1px solid rgba(77,163,255,0.6); margin: 0 0 0 0; box-sizing: border-box">
+<div style="grid-column: 1 / span 3; min-width: 0; display: flex; flex-direction: column; gap: 6px">
+<input type="text" value="todo-api" aria-label="Name" style="width: 100%; box-sizing: border-box; height: 34px; padding: 0 11px; border-radius: 10px; border: 1.5px solid #0A84FF; background: rgba(0,0,0,0.35); font: inherit; font-size: 14px; font-weight: 600; color: #F5F5F7; outline: none; box-shadow: 0 0 0 3px rgba(10,132,255,0.20)">
+<div style="font-size: 12px; color: #A1A1A6">Also the folder name. This playground is running, so saving restarts it under the new name.</div>
+<input type="text" value="Todo API, backend for the frontend demo" aria-label="Note" style="width: 100%; box-sizing: border-box; height: 30px; padding: 0 11px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.14); background: rgba(0,0,0,0.35); font: inherit; font-size: 13px; color: #F5F5F7; outline: none; ">
+</div>
+<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #D1D1D6">:7102</div>
+<div><span style="display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 11px; box-sizing: border-box; font-size: 12px; white-space: nowrap; color: #F5F5F7; background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.14)">Kept</span></div>
+<div style="grid-column: 6 / span 3; justify-self: end; display: flex; gap: 8px"><button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; flex: none; white-space: nowrap; height: 30px; border-radius: 15px; background: rgba(118,118,128,0.24)">Cancel</button><button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; flex: none; white-space: nowrap; height: 30px; border-radius: 15px; background: #0071E3; color: #FFFFFF; font-weight: 600">Save</button></div>
+</div>
+<sc-for list="{{rowsB}}" as="row" hint-placeholder-count="9">
+<div style="display: grid; grid-template-columns: minmax(0, 1.5fr) 132px minmax(0, 1fr) 84px 96px 110px 110px 36px; column-gap: 12px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: {{row.bg}}; box-shadow: {{row.bar}}">
+<div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<div style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{row.name}}</div>
+<div style="font-size: 12px; color: {{row.noteColor}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{row.note}}</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px; color: {{row.statusColor}}; font-weight: 500; white-space: nowrap">
+<span aria-hidden="true" style="width: 9px; height: 9px; border-radius: {{row.dotRadius}}; box-sizing: border-box; background: {{row.dotFill}}; border: 1.5px solid {{row.dotColor}}; flex: none"></span>{{row.status}}
+</div>
+<div style="display: flex; align-items: center; gap: 8px; color: #D1D1D6; white-space: nowrap; overflow: hidden">
+<span aria-hidden="true" style="width: 22px; height: 22px; border-radius: 7px; background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-family: 'SF Mono', Menlo, monospace; font-size: 10px; font-weight: 600; color: #D1D1D6; flex: none">{{row.badge}}</span>{{row.template}}
+</div>
+<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #D1D1D6">{{row.port}}</div>
+<div><span title="{{row.tip}}" style="display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 11px; box-sizing: border-box; font-size: 12px; white-space: nowrap; color: {{row.keepColor}}; background: {{row.keepBg}}; border: 1px {{row.keepBorder}}">{{row.keep}}</span></div>
+<div style="color: #A1A1A6; white-space: nowrap">{{row.opened}}</div>
+<div>
+<sc-if value="{{row.agent}}" hint-placeholder-val="{{false}}">
+<span style="display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 12px; font-weight: 500; white-space: nowrap; color: #D0A8FF; background: rgba(191,90,242,0.24)"><svg aria-hidden="true" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#D0A8FF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 1.5v2M6 8.5v2M1.5 6h2M8.5 6h2M3 3l1.2 1.2M7.8 7.8 9 9M9 3 7.8 4.2M4.2 7.8 3 9"/></svg>{{row.agentLabel}}</span>
+</sc-if>
+<sc-if value="{{row.mine}}" hint-placeholder-val="{{true}}"><span style="color: #A1A1A6">{{row.meLabel}}</span></sc-if>
+</div>
+<div>
+<sc-if value="{{row.collapsed}}" hint-placeholder-val="{{true}}">
+<button aria-label="{{row.moreLabel}}" style="width: 32px; height: 32px; border-radius: 16px; border: none; background: transparent; display: flex; align-items: center; justify-content: center; flex: none">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="#A1A1A6"><circle cx="3.5" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="12.5" cy="8" r="1.3"/></svg>
+</button>
+</sc-if>
+<sc-if value="{{row.expanded}}" hint-placeholder-val="{{false}}">
+<button aria-label="{{row.collapseLabel}}" aria-expanded="true" style="width: 32px; height: 32px; border-radius: 16px; border: none; background: rgba(10,132,255,0.20); display: flex; align-items: center; justify-content: center; flex: none">
+<svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#4DA3FF" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7.5 6 4l3.5 3.5"/></svg>
+</button>
+</sc-if>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="position: absolute; left: 268px; right: 16px; top: 14px; height: 44px; display: flex; align-items: center; gap: 10px">
+<div style="height: 44px; padding: 4px; box-sizing: border-box; border-radius: 22px; display: flex; align-items: center; gap: 2px; background: rgba(72,72,78,0.55); backdrop-filter: blur(28px) saturate(180%); border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 10px 28px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.14)">
+<button style="height: 36px; padding: 0 16px; border-radius: 18px; border: none; background: rgba(255,255,255,0.16); box-shadow: inset 0 1px 0 rgba(255,255,255,0.18); font-weight: 600; display: flex; align-items: center; gap: 7px; white-space: nowrap">
+<svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#F5F5F7" stroke-width="1.5" stroke-linejoin="round"><rect x="1.5" y="1.5" width="4.5" height="4.5" rx="1.2"/><rect x="8" y="1.5" width="4.5" height="4.5" rx="1.2"/><rect x="1.5" y="8" width="4.5" height="4.5" rx="1.2"/><rect x="8" y="8" width="4.5" height="4.5" rx="1.2"/></svg>Library</button>
+<button style="height: 36px; padding: 0 12px 0 14px; border-radius: 18px; border: none; background: transparent; color: #D1D1D6; display: flex; align-items: center; gap: 8px; white-space: nowrap">
+<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: #30D158"></span>react-counter
+<svg role="img" aria-label="Close and stop" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#A1A1A6" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l6 6M8 2 2 8"/></svg></button>
+<button style="height: 36px; padding: 0 12px 0 14px; border-radius: 18px; border: none; background: transparent; color: #D1D1D6; display: flex; align-items: center; gap: 8px; white-space: nowrap">
+<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: #30D158"></span>hono-todo-api
+<svg role="img" aria-label="Close and stop" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#A1A1A6" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l6 6M8 2 2 8"/></svg></button>
+</div>
+<div style="flex: 1"></div>
+<label style="height: 44px; width: 300px; padding: 0 16px; box-sizing: border-box; border-radius: 22px; display: flex; align-items: center; gap: 9px; flex: none; background: rgba(72,72,78,0.55); backdrop-filter: blur(28px) saturate(180%); border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 10px 28px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.14)">
+<svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#A1A1A6" stroke-width="1.6" stroke-linecap="round" style="flex: none"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg>
+<input type="search" placeholder="Search name, note, template" aria-label="Search playgrounds" style="flex: 1; min-width: 0; border: none; outline: none; background: transparent; font: inherit; color: #F5F5F7">
+<span style="font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: #A1A1A6; border: 1px solid rgba(255,255,255,0.14); border-radius: 6px; padding: 1px 6px">⌘F</span>
+</label>
+<button style="height: 44px; padding: 0 16px; border-radius: 22px; display: flex; align-items: center; gap: 8px; font-weight: 500; flex: none; white-space: nowrap; background: rgba(72,72,78,0.55); backdrop-filter: blur(28px) saturate(180%); border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 10px 28px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.14)">
+<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: #30D158; box-shadow: 0 0 0 3px rgba(48,209,88,0.22)"></span>4 running</button>
+<button style="height: 44px; padding: 0 20px; border-radius: 22px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; flex: none; white-space: nowrap; box-shadow: 0 4px 14px rgba(10,132,255,0.35)">
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"><path d="M6 1.5v9M1.5 6h9"/></svg>New</button>
+</div>
+<nav aria-label="Library navigation" style="position: absolute; left: 8px; top: 8px; bottom: 8px; width: 240px; box-sizing: border-box; border-radius: 20px; padding: 14px 10px 12px 10px; display: flex; flex-direction: column; gap: 4px; background: rgba(58,58,62,0.55); backdrop-filter: blur(40px) saturate(180%); border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 12px 36px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.12)">
+<div style="display: flex; align-items: center; gap: 8px; height: 28px; padding: 0 8px">
+<span aria-hidden="true" style="width: 12px; height: 12px; border-radius: 6px; background: #FF5F57; border: none"></span><span aria-hidden="true" style="width: 12px; height: 12px; border-radius: 6px; background: #FEBC2E; border: none"></span><span aria-hidden="true" style="width: 12px; height: 12px; border-radius: 6px; background: #28C840; border: none"></span>
+</div>
+<div style="padding: 14px 10px 6px 10px; font-size: 20px; font-weight: 700; letter-spacing: -0.2px">Runyard</div>
+<div style="padding: 10px 10px 4px 10px; font-size: 12px; font-weight: 600; color: #A1A1A6">Library</div>
+<button style="height: 36px; padding: 0 10px; border-radius: 10px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; display: flex; align-items: center; gap: 10px; text-align: left; width: 100%">
+<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 3px; background: #FFFFFF"></span>
+<span style="flex: 1">All</span>
+<span style="font-size: 12px; color: #FFFFFF">20</span>
+</button>
+<button style="height: 36px; padding: 0 10px; border-radius: 10px; border: none; background: transparent; color: #F5F5F7; font-weight: 400; display: flex; align-items: center; gap: 10px; text-align: left; width: 100%">
+<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 3px; background: #8E8E93"></span>
+<span style="flex: 1">Kept</span>
+<span style="font-size: 12px; color: #A1A1A6">16</span>
+</button>
+<button style="height: 36px; padding: 0 10px; border-radius: 10px; border: none; background: transparent; color: #F5F5F7; font-weight: 400; display: flex; align-items: center; gap: 10px; text-align: left; width: 100%">
+<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 3px; background: #8E8E93"></span>
+<span style="flex: 1">Auto-clean</span>
+<span style="font-size: 12px; color: #A1A1A6">4</span>
+</button>
+<button style="height: 36px; padding: 0 10px; border-radius: 10px; border: none; background: transparent; color: #F5F5F7; font-weight: 400; display: flex; align-items: center; gap: 10px; text-align: left; width: 100%">
+<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 3px; background: #8E8E93"></span>
+<span style="flex: 1">Created by agents</span>
+<span style="font-size: 12px; color: #A1A1A6">6</span>
+</button>
+<div style="padding: 16px 10px 4px 10px; font-size: 12px; font-weight: 600; color: #A1A1A6">Manage</div>
+<button style="height: 36px; padding: 0 10px; border-radius: 10px; border: none; background: transparent; display: flex; align-items: center; gap: 10px; text-align: left; width: 100%">
+<svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#D1D1D6" stroke-width="1.4" stroke-linejoin="round"><path d="M8 1.5 14 5v6l-6 3.5L2 11V5z"/><path d="M2 5l6 3.5L14 5M8 8.5v6"/></svg><span style="flex: 1">Templates</span><span style="font-size: 12px; color: #A1A1A6">13</span></button>
+<button style="height: 36px; padding: 0 10px; border-radius: 10px; border: none; background: transparent; display: flex; align-items: center; gap: 10px; text-align: left; width: 100%">
+<svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#D1D1D6" stroke-width="1.4" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 1.5"/></svg><span style="flex: 1">Unused for a while</span><span style="font-size: 12px; color: #A1A1A6">7</span></button>
+<button style="height: 36px; padding: 0 10px; border-radius: 10px; border: none; background: transparent; display: flex; align-items: center; gap: 10px; text-align: left; width: 100%">
+<svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#D1D1D6" stroke-width="1.4" stroke-linecap="round"><path d="M2 4.5h7M12 4.5h2M2 11.5h2M7 11.5h7"/><circle cx="10.5" cy="4.5" r="1.5"/><circle cx="5.5" cy="11.5" r="1.5"/></svg><span style="flex: 1">Settings</span></button>
+<div style="flex: 1"></div>
+<div style="padding: 10px; border-radius: 12px; background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 2px">
+<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px">~/Runyard</div>
+<div style="font-size: 12px; color: #A1A1A6">20 playgrounds · 2.9 GB total</div>
+</div>
+</nav>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+const rowsA = [{"agentLabel":"Claude Code","meLabel":"Me","moreLabel":"More actions","collapseLabel":"","name":"react-counter","badge":"Re","template":"React 19","port":":7101","opened":"2 min ago","note":"Counter, trying useState batching","noteColor":"#D1D1D6","status":"Running","statusColor":"#30D158","dotColor":"#30D158","dotFill":"#30D158","dotRadius":"50%","agent":false,"mine":true,"bg":"transparent","bar":"none","expanded":false,"collapsed":true,"keep":"Kept","keepColor":"#F5F5F7","keepBg":"rgba(255,255,255,0.10)","keepBorder":"solid rgba(255,255,255,0.14)","tip":""}];
+const rowsB = [{"agentLabel":"Claude Code","meLabel":"Me","moreLabel":"More actions","collapseLabel":"","name":"hono-1","badge":"Ho","template":"Hono","port":":7103","opened":"31 min ago","note":"Echo webhook requests, check signature headers","noteColor":"#D1D1D6","status":"Running","statusColor":"#30D158","dotColor":"#30D158","dotFill":"#30D158","dotRadius":"50%","agent":true,"mine":false,"bg":"transparent","bar":"none","expanded":false,"collapsed":true,"keep":"30 d left","keepColor":"#A1A1A6","keepBg":"transparent","keepBorder":"dashed rgba(255,255,255,0.14)","tip":"Moved to Trash after 30 days without being opened; the timer restarts each time you open it"},{"agentLabel":"Claude Code","meLabel":"Me","moreLabel":"More actions","collapseLabel":"","name":"react19-3","badge":"Re","template":"React 19","port":":7104","opened":"1 hr ago","note":"Chart library comparison: bar chart render speed","noteColor":"#D1D1D6","status":"Running","statusColor":"#30D158","dotColor":"#30D158","dotFill":"#30D158","dotRadius":"50%","agent":true,"mine":false,"bg":"transparent","bar":"none","expanded":false,"collapsed":true,"keep":"30 d left","keepColor":"#A1A1A6","keepBg":"transparent","keepBorder":"dashed rgba(255,255,255,0.14)","tip":"Moved to Trash after 30 days without being opened; the timer restarts each time you open it"},{"agentLabel":"Claude Code","meLabel":"Me","moreLabel":"More actions","collapseLabel":"","name":"landing-hero","badge":"HT","template":"Static page","port":":7105","opened":"3 hr ago","note":"Layout practice for the homepage hero","noteColor":"#D1D1D6","status":"Stopped","statusColor":"#A1A1A6","dotColor":"#8E8E93","dotFill":"transparent","dotRadius":"50%","agent":false,"mine":true,"bg":"transparent","bar":"none","expanded":false,"collapsed":true,"keep":"Kept","keepColor":"#F5F5F7","keepBg":"rgba(255,255,255,0.10)","keepBorder":"solid rgba(255,255,255,0.14)","tip":""},{"agentLabel":"Claude Code","meLabel":"Me","moreLabel":"More actions","collapseLabel":"","name":"go-channels","badge":"Go","template":"Go","port":"—","opened":"1 day ago","note":"Buffered channels and worker coordination","noteColor":"#D1D1D6","status":"Stopped","statusColor":"#A1A1A6","dotColor":"#8E8E93","dotFill":"transparent","dotRadius":"50%","agent":false,"mine":true,"bg":"transparent","bar":"none","expanded":false,"collapsed":true,"keep":"Kept","keepColor":"#F5F5F7","keepBg":"rgba(255,255,255,0.10)","keepBorder":"solid rgba(255,255,255,0.14)","tip":""},{"agentLabel":"Claude Code","meLabel":"Me","moreLabel":"More actions","collapseLabel":"","name":"python-2","badge":"Py","template":"Python","port":"—","opened":"1 day ago","note":"Validation differences: dataclass vs pydantic","noteColor":"#D1D1D6","status":"Stopped","statusColor":"#A1A1A6","dotColor":"#8E8E93","dotFill":"transparent","dotRadius":"50%","agent":true,"mine":false,"bg":"transparent","bar":"none","expanded":false,"collapsed":true,"keep":"29 d left","keepColor":"#A1A1A6","keepBg":"transparent","keepBorder":"dashed rgba(255,255,255,0.14)","tip":"Moved to Trash after 30 days without being opened; the timer restarts each time you open it"},{"agentLabel":"Claude Code","meLabel":"Me","moreLabel":"More actions","collapseLabel":"","name":"vue-drag-list","badge":"Vu","template":"Vue 3","port":":7106","opened":"2 days ago","note":"Drag-to-sort list","noteColor":"#D1D1D6","status":"Stopped","statusColor":"#A1A1A6","dotColor":"#8E8E93","dotFill":"transparent","dotRadius":"50%","agent":false,"mine":true,"bg":"transparent","bar":"none","expanded":false,"collapsed":true,"keep":"Kept","keepColor":"#F5F5F7","keepBg":"rgba(255,255,255,0.10)","keepBorder":"solid rgba(255,255,255,0.14)","tip":""},{"agentLabel":"Claude Code","meLabel":"Me","moreLabel":"More actions","collapseLabel":"","name":"next16-1","badge":"Nx","template":"Next.js 16","port":":7107","opened":"2 days ago","note":"No note","noteColor":"#A1A1A6","status":"Stopped","statusColor":"#A1A1A6","dotColor":"#8E8E93","dotFill":"transparent","dotRadius":"50%","agent":false,"mine":true,"bg":"transparent","bar":"none","expanded":false,"collapsed":true,"keep":"Kept","keepColor":"#F5F5F7","keepBg":"rgba(255,255,255,0.10)","keepBorder":"solid rgba(255,255,255,0.14)","tip":""},{"agentLabel":"Claude Code","meLabel":"Me","moreLabel":"More actions","collapseLabel":"","name":"nuxt-blog-demo","badge":"Nu","template":"Nuxt 4","port":":7108","opened":"4 days ago","note":"Content module with Markdown rendering","noteColor":"#D1D1D6","status":"Stopped","statusColor":"#A1A1A6","dotColor":"#8E8E93","dotFill":"transparent","dotRadius":"50%","agent":false,"mine":true,"bg":"transparent","bar":"none","expanded":false,"collapsed":true,"keep":"Kept","keepColor":"#F5F5F7","keepBg":"rgba(255,255,255,0.10)","keepBorder":"solid rgba(255,255,255,0.14)","tip":""},{"agentLabel":"Codex","meLabel":"Me","moreLabel":"More actions","collapseLabel":"","name":"node-ts-1","badge":"TS","template":"Node + TypeScript","port":"—","opened":"6 days ago","note":"Clean a CSV, drop duplicate rows","noteColor":"#D1D1D6","status":"Stopped","statusColor":"#A1A1A6","dotColor":"#8E8E93","dotFill":"transparent","dotRadius":"50%","agent":true,"mine":false,"bg":"transparent","bar":"none","expanded":false,"collapsed":true,"keep":"24 d left","keepColor":"#A1A1A6","keepBg":"transparent","keepBorder":"dashed rgba(255,255,255,0.14)","tip":"Moved to Trash after 30 days without being opened; the timer restarts each time you open it"},{"agentLabel":"Claude Code","meLabel":"Me","moreLabel":"More actions","collapseLabel":"","name":"react18-1","badge":"Re","template":"React 18","port":":7109","opened":"2 mo ago","note":"No note","noteColor":"#A1A1A6","status":"Stopped","statusColor":"#A1A1A6","dotColor":"#8E8E93","dotFill":"transparent","dotRadius":"50%","agent":false,"mine":true,"bg":"transparent","bar":"none","expanded":false,"collapsed":true,"keep":"Kept","keepColor":"#F5F5F7","keepBg":"rgba(255,255,255,0.10)","keepBorder":"solid rgba(255,255,255,0.14)","tip":""}];
+return { rowsA, rowsB };
+}
+}
+</script>
+</body>
+</html>
