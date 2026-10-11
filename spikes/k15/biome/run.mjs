@@ -11,8 +11,10 @@ write(tool, "package.json", JSON.stringify({ name: "b", private: true, version: 
 write(tool, "pnpm-workspace.yaml", `storeDir: ${tool}/.store\ncacheDir: ${tool}/.cache\nminimumReleaseAge: 20160\nsavePrefix: ""\n`);
 const inst = run("pnpm", ["add", "-D", `@biomejs/biome@${BIOME}`, "--save-exact"], { cwd: tool, env: { CI: "" } });
 if (inst.code !== 0) { console.error(inst.out); process.exit(1); }
-const biome = join(tool, "node_modules/.bin/biome");
-const version = run(biome, ["--version"]).out.trim();
+// 直接用 Node 运行 Biome 的 JS 入口：Windows 上 .bin/biome 是 .cmd，不能不经 shell 执行
+const biomeJs = join(tool, "node_modules/@biomejs/biome/bin/biome");
+const biomeRun = (args, opts) => run(process.execPath, [biomeJs, ...args], opts);
+const version = biomeRun(["--version"]).out.trim();
 
 const categoryOf = (c) => ({ "lint/style/noJsxLiterals": "jsx", plugin: "attr", "lint/style/noRestrictedImports": "imports", "lint/correctness/noNodejsModules": "node" })[c] ?? c;
 const walk = (d) => readdirSync(d).flatMap((f) => (statSync(join(d, f)).isDirectory() ? walk(join(d, f)) : [join(d, f)]));
@@ -21,7 +23,7 @@ function evaluate(label, mutate = (dir) => {}) {
   const dir = tempDir("biome-fx");
   cpSync(join(HERE, "biome/fixture"), dir, { recursive: true });
   mutate(dir);
-  const r = run(biome, ["lint", "--reporter=json", "--max-diagnostics=none", "."], { cwd: dir });
+  const r = biomeRun(["lint", "--reporter=json", "--max-diagnostics=none", "."], { cwd: dir });
   let diags = [];
   try { diags = JSON.parse(r.out.slice(r.out.indexOf("{"), r.out.lastIndexOf("}") + 1)).diagnostics ?? []; } catch { return { label, error: tail(r.out, 12).slice(0, 800) }; }
   const actual = new Set();

@@ -25,7 +25,7 @@ await step("launch", async () => {
   return "launched";
 });
 if (app) {
-  await step("versions", () => app.evaluate(({ process }) => ({ electron: process.versions.electron, chrome: process.versions.chrome, node: process.versions.node })));
+  await step("versions", () => app.evaluate(() => ({ electron: process.versions.electron, chrome: process.versions.chrome, node: process.versions.node, v8: process.versions.v8 })));
   await step("waitReady", async () => { await app.waitForEvent("window", { timeout: 30000 }).catch(() => {}); await app.evaluate(async () => { while (!globalThis.__ready) await new Promise((r) => setTimeout(r, 100)); }); return "ready"; });
   let host;
   await step("firstWindow", async () => { host = await app.firstWindow(); return { title: await host.title(), url: host.url().slice(0, 40) }; });

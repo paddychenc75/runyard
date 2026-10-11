@@ -24,7 +24,9 @@ process.on("SIGINT", () => process.exit(130));
 const strip = (s) => s.replace(/\u001b\[[0-9;]*[A-Za-z]/g, "");
 
 export function run(cmd, args, { cwd, env = {}, input, timeout = 240000 } = {}) {
+  // Windows 上 pnpm 是 pnpm.cmd 垫片，Node 不许不经 shell 直接执行 .cmd（会 ENOENT/EINVAL），所以只对 pnpm 开 shell
   const r = spawnSync(cmd, args, {
+    shell: process.platform === "win32" && cmd === "pnpm",
     cwd,
     env: { ...process.env, NO_COLOR: "1", ...env },
     input,
@@ -32,7 +34,7 @@ export function run(cmd, args, { cwd, env = {}, input, timeout = 240000 } = {}) 
     timeout,
     maxBuffer: 64 * 1024 * 1024,
   });
-  const out = strip(`${r.stdout ?? ""}${r.stderr ?? ""}`);
+  const out = strip(`${r.stdout ?? ""}${r.stderr ?? ""}${r.error ? `\n[spawn error] ${r.error.message}` : ""}`);
   return { code: r.status, signal: r.signal, out };
 }
 

@@ -137,6 +137,10 @@ jobs:
         run: node node-ts/run.mjs
       - name: Biome（noJsxLiterals、GritQL、按目录配置）
         run: node biome/run.mjs
+      - name: localhost、端口连接数采样、pnpm 无终端提示
+        run: node small/run.mjs
+      - name: 真实 Vite 的热更新长连接能否被采样看到
+        run: node small/vite-hmr.mjs
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
         with:
