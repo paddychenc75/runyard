@@ -12,7 +12,7 @@ const isLinux = process.platform === "linux";
 
 function run(file, args, opts = {}) {
   return new Promise((resolve) => {
-    execFile(file, args, { maxBuffer: 64 * 1024 * 1024, windowsHide: true, ...opts }, (err, stdout, stderr) =>
+    execFile(file, args, { maxBuffer: 64 * 1024 * 1024, windowsHide: true, timeout: 20000, ...opts }, (err, stdout, stderr) =>
       resolve({ code: err ? (err.code ?? 1) : 0, stdout, stderr }),
     );
   });

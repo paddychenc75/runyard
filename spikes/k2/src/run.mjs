@@ -18,7 +18,7 @@ const args = Object.fromEntries(
 const list = (v, d) => (v ? v.split(",").filter(Boolean) : d);
 const REPS = Number(args.reps ?? 50);
 const GRACE_MS = Number(args.grace ?? 3000); // §4.4 例子里的 graceMs
-const READY_TIMEOUT = Number(args["ready-timeout"] ?? 180000);
+const READY_TIMEOUT = Number(args["ready-timeout"] ?? 90000);
 const runnerIds = list(args.runners, Object.keys(RUNNERS));
 const methods = list(args.methods, isWin ? ["taskkill", "job"] : ["group"]);
 const scenarios = new Set(list(args.scenarios, ["cycle", "inflight", "startup", "kill", "interrupt", "install", "variants"]));
@@ -28,6 +28,11 @@ const root = realpathSync(mkdtempSync(join(args.tmp ? resolve(args.tmp) : os.tmp
 const session = `k2${process.pid}x${Date.now().toString(36)}`;
 const procs = initProcs(root);
 const SAMPLE_MS = isWin ? 350 : 120;
+const DEADLINE_MIN = Number(args["deadline-min"] ?? 0); // 0 = 不限。CI 上设成比任务超时短几分钟，保证结果写得出来
+const T0 = performance.now();
+const elapsed = () => `[${Math.round((performance.now() - T0) / 1000)}s]`;
+const pastDeadline = () => DEADLINE_MIN > 0 && performance.now() - T0 > DEADLINE_MIN * 60000;
+let activity = "启动";
 const records = [];
 const notes = [];
 let seq = 0;
@@ -129,6 +134,7 @@ async function cycle(ctx, opt = {}) {
   const argv = fill(opt.argv ?? RUNNERS[runnerId].run, port, dir);
   const tag = `${session}-${++seq}`;
   const rec = { runner: runnerId, method, scenario: opt.scenario ?? "cycle", i: opt.i ?? 0, port };
+  activity = `${runnerId}/${method}/${rec.scenario} #${rec.i}：启动`;
   let pre = await canBind(port);
   for (let i = 0; i < 20 && !pre.ok; i++) {
     await sleep(100);
@@ -162,10 +168,12 @@ async function cycle(ctx, opt = {}) {
       inflight = openInflight(port, RUNNERS[runnerId].slowPath ?? "/slow");
       await sleep(300);
     }
+    if (ready.ready && opt.settleMs) await sleep(opt.settleMs);
   } else {
     await Promise.race([sleep(opt.stopAfterMs), h.exited]);
     rec.stoppedAtMs = Math.round(opt.stopAfterMs);
   }
+  activity = `${runnerId}/${method}/${rec.scenario} #${rec.i}：停止`;
   const stopAt = now();
   const portProbe = timeUntilBindable(port, stopAt, 8000);
   let stop;
@@ -179,6 +187,7 @@ async function cycle(ctx, opt = {}) {
   const bind = await portProbe;
   rec.portMs = bind.ms === null ? null : Math.round(bind.ms);
   if (bind.ms === null) rec.portLastError = bind.lastCode;
+  activity = `${runnerId}/${method}/${rec.scenario} #${rec.i}：查残留`;
   rec.leftover = await verify(h, tag, stopAt);
   rec.pipeHeld = rec.leftover.pipeHeld;
   // go run 被结束时有没有来得及删掉自己的 go-build 临时目录
@@ -200,11 +209,15 @@ async function runToEnd(ctx, argv, cwd, extraEnv = {}) {
   const tag = `${session}-${++seq}`;
   const startedAt = now();
   const h = startRun({ argv, cwd, env: { ...childEnv(ctx.port, tag), ...extraEnv }, method: isWin ? "taskkill" : "group", sampleMs: SAMPLE_MS });
-  const exit = await h.exited;
+  activity = `${ctx.runnerId}：等 ${argv.join(" ")} 结束`;
+  // 最多等 4 分钟：没有终端时有的工具会停在一个没人回答的确认提示上
+  let exit = await Promise.race([h.exited, sleep(240000).then(() => null)]);
+  const timedOut = exit === null;
+  if (timedOut) exit = (await stopRun(h, { mode: "kill", graceMs: 0 })).exit;
   const ms = Math.round(now() - startedAt);
   const leftover = await verify(h, tag, now());
   forgetRun(h);
-  return { code: exit.code, signal: exit.signal, ms, leftover, outputTail: h.output.slice(-1200) };
+  return { code: timedOut ? "超时" : exit.code, signal: exit.signal, ms, leftover, outputTail: h.output.slice(-1200) };
 }
 
 // Windows 上刚被结束的进程可能还占着文件一小会儿：删不掉就记一笔，不让实验中断
@@ -237,6 +250,7 @@ async function installScenario(ctx) {
     rec.reinstall = { code: again.code, ms: again.ms };
     if (again.code !== 0) {
       rec.reinstall.outputTail = again.outputTail;
+      console.log(`  [${ctx.runnerId}/${ctx.method}] 中途停止后原样重装失败（${again.code}）：\n${again.outputTail.slice(-800)}`);
       again = await runToEnd(sub, runner.setup, dir, { CI: "true" });
       rec.reinstallWithCI = { code: again.code, ms: again.ms, outputTail: again.code === 0 ? undefined : again.outputTail };
     }
@@ -246,48 +260,74 @@ async function installScenario(ctx) {
   }
 }
 
+// 把一个场景重复 count 次。连续两次出错就放弃这个场景（免得每次都等到超时），过了时限也不再开始新的。
+async function repeat(ctx, scenario, count, fn) {
+  const t0 = now();
+  let failures = 0;
+  let done = 0;
+  for (let i = 0; i < count; i++) {
+    if (pastDeadline()) {
+      notes.push({ runner: ctx.runnerId, method: ctx.method, note: `到时限，${scenario} 只做了 ${done}/${count} 次` });
+      break;
+    }
+    const rec = await fn(i);
+    done++;
+    failures = rec.error ? failures + 1 : 0;
+    if (rec.error) console.log(`  [${ctx.runnerId}/${ctx.method}/${scenario} #${i}] ${rec.error}\n${(rec.outputTail ?? "").slice(-600)}`);
+    if (failures >= 2) {
+      notes.push({ runner: ctx.runnerId, method: ctx.method, note: `${scenario} 连续两次出错，放弃（做了 ${done}/${count} 次）` });
+      break;
+    }
+  }
+  console.log(`  ${elapsed()} ${ctx.runnerId}/${ctx.method}/${scenario} ×${done} 用时 ${Math.round((now() - t0) / 1000)} 秒`);
+  return failures < 2;
+}
+
 async function runnerMethod(ctx, reps) {
   const runner = RUNNERS[ctx.runnerId];
   const full = ["group", "taskkill", "job"].includes(ctx.method); // 其余办法只做对比，次数少
   const n = runner.control ? 3 : full ? reps : ctx.method === "pty-ctrlc" ? Math.min(reps, 5) : Math.min(reps, 15);
   if (scenarios.has("cycle")) {
-    for (let i = 0; i < n; i++) {
-      const rec = await cycle(ctx, { i, wantTree: i === 0 });
-      if (i === 0 && rec.error) {
-        console.log(`  [${ctx.runnerId}/${ctx.method}] 第一次就失败：${rec.error}\n${rec.outputTail ?? ""}`);
-        if (rec.ready === false) return; // 起不来就不必重复了
-      }
-    }
+    // 对照组要等中间进程退出（300 毫秒后）再停，孙进程才真的成了孤儿
+    const ok = await repeat(ctx, "cycle", n, (i) => cycle(ctx, { i, wantTree: i === 0, settleMs: runner.control ? 900 : 0 }));
+    if (!ok) return; // 起不来就不必做别的场景了
   }
   if (runner.control) return;
   const typical = median(records.filter((r) => r.runner === ctx.runnerId && r.method === ctx.method && r.ready).map((r) => r.startMs));
-  if (scenarios.has("inflight")) for (let i = 0; i < (full ? 5 : 3); i++) await cycle(ctx, { scenario: "inflight", i, inflight: true });
+  if (scenarios.has("inflight")) await repeat(ctx, "inflight", full ? 5 : 3, (i) => cycle(ctx, { scenario: "inflight", i, inflight: true }));
   if (!full) return;
   if (scenarios.has("startup")) {
     // 启动到一半就停，然后马上正常启动一次：看残留的锁文件、写了一半的缓存会不会挡住下一次
-    for (const [i, frac] of [0.1, 0.3, 0.5, 0.7, 0.9].entries()) {
-      const rec = await cycle(ctx, { scenario: "startup-stop", i, stopAfterMs: typical * frac });
+    const fracs = [0.1, 0.3, 0.5, 0.7, 0.9];
+    await repeat(ctx, "startup-stop", fracs.length, async (i) => {
+      const rec = await cycle(ctx, { scenario: "startup-stop", i, stopAfterMs: typical * fracs[i] });
       const after = await cycle(ctx, { scenario: "startup-then-run", i });
       rec.runAfter = after.ready === true;
-    }
+      return after;
+    });
   }
   if (!isWin && scenarios.has("kill")) {
     // POSIX 上优雅停止几乎总是成功，这里单独逼出“强制结束”，再看下一次启动
-    for (let i = 0; i < 10; i++) {
+    await repeat(ctx, "kill", 10, async (i) => {
       const rec = await cycle(ctx, { scenario: "kill", i, mode: "kill" });
       const after = await cycle(ctx, { scenario: "kill-then-run", i });
       rec.runAfter = after.ready === true;
-    }
+      return after;
+    });
   }
-  if (!isWin && scenarios.has("interrupt")) for (let i = 0; i < 10; i++) await cycle(ctx, { scenario: "interrupt", i, mode: "interrupt" });
-  if (scenarios.has("install") && runner.setup) await installScenario(ctx);
+  if (!isWin && scenarios.has("interrupt")) await repeat(ctx, "interrupt", 10, (i) => cycle(ctx, { scenario: "interrupt", i, mode: "interrupt" }));
+  if (scenarios.has("install") && runner.setup && !pastDeadline()) {
+    const t0 = now();
+    await installScenario(ctx);
+    console.log(`  ${elapsed()} ${ctx.runnerId}/${ctx.method}/install 用时 ${Math.round((now() - t0) / 1000)} 秒`);
+  }
   if (scenarios.has("variants")) {
     for (const [name, argv] of Object.entries(runner.variants ?? {})) {
       if (!which(argv[0], process.env)) {
         notes.push({ runner: ctx.runnerId, note: `变体 ${name} 跳过：本机没有 ${argv[0]}` });
         continue;
       }
-      for (let i = 0; i < 5; i++) await cycle(ctx, { scenario: `variant:${name}`, i, argv, wantTree: i === 0 });
+      await repeat(ctx, `variant:${name}`, 5, (i) => cycle(ctx, { scenario: `variant:${name}`, i, argv, wantTree: i === 0 }));
     }
   }
 }
@@ -374,7 +414,11 @@ async function main() {
         }
       }
       for (const method of methods) {
-        console.log(`== ${runnerId} / ${method}`);
+        if (pastDeadline()) {
+          notes.push({ runner: runnerId, method, note: "到时限，整个办法没有做" });
+          continue;
+        }
+        console.log(`== ${elapsed()} ${runnerId} / ${method}`);
         await runnerMethod({ ...ctx, method }, REPS);
       }
       if (runnerId === "go") {
@@ -413,4 +457,16 @@ async function main() {
   }
 }
 
+// 硬时限：过了时限再给 3 分钟还没收尾，就把手头的结果写出来再退出，至少知道卡在哪
+if (DEADLINE_MIN > 0) {
+  setTimeout(() => {
+    console.log(`硬时限到，卡在：${activity}`);
+    mkdirSync(dirname(outFile), { recursive: true });
+    writeFileSync(outFile, JSON.stringify({ meta: { label: args.label ?? "", platform: process.platform, os: os.release(), image: "", node: process.version, cpus: "", tools: {}, hung: activity }, notes, records }, null, 1));
+    process.exit(3);
+  }, (DEADLINE_MIN + 3) * 60000).unref();
+}
+
 await main();
+// node-pty 等会留下还开着的句柄，不显式退出进程就一直挂着
+process.exit(0);

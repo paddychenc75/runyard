@@ -40,7 +40,7 @@ jobs:
       run:
         shell: bash
     env:
-      REPS: ${{ inputs.reps || '6' }}
+      REPS: ${{ inputs.reps || '50' }}
       OUT: ${{ matrix.os }}-${{ matrix.group }}-${{ matrix.half }}
     steps:
       - name: 关闭换行转换
@@ -97,7 +97,7 @@ jobs:
           if [ "${{ runner.os }}" = "Windows" ]; then
             if [ "${{ matrix.half }}" = "a" ]; then METHODS="taskkill,taskkill-obs"; else METHODS="job,job-ctrlc,pty-ctrlc"; fi
           fi
-          node src/run.mjs --runners "$RUNNERS" --methods "$METHODS" --reps "$REPS" --tmp "$RUNNER_TEMP" --label "$OUT" --out "results/$OUT.json"
+          node src/run.mjs --runners "$RUNNERS" --methods "$METHODS" --reps "$REPS" --tmp "$RUNNER_TEMP" --deadline-min 23 --label "$OUT" --out "results/$OUT.json"
 
       - name: 把汇总写进任务摘要
         if: always()

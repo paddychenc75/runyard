@@ -105,6 +105,9 @@ int main(void) {
     SetStdHandle(STD_INPUT_HANDLE, hIn);
     SetStdHandle(STD_OUTPUT_HANDLE, hOut);
     SetStdHandle(STD_ERROR_HANDLE, hErr);
+    // “忽略 Ctrl+C”是会从父进程继承下来的属性：调用方若是被别人用“新进程组”方式启动的（CI 的执行器就是），
+    // 这棵树上人人都忽略 Ctrl+C。第一轮实验里正因为这样，Ctrl+C 发出去了却没人理。这里先清掉，再装自己的处理函数。
+    SetConsoleCtrlHandler(NULL, FALSE);
     SetConsoleCtrlHandler(on_ctrl, TRUE);
   }
 
