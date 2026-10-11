@@ -1,0 +1,13 @@
+{
+  "name": "runyard-spike-k2",
+  "private": true,
+  "description": "K2 技术验证：输出走管道时，能否干净地停掉整棵进程树并释放端口。一次性代码，M0a 结束时删除",
+  "type": "module",
+  "engines": {
+    "node": ">=24.21.0 <25"
+  },
+  "scripts": {
+    "k2": "node src/run.mjs",
+    "summarize": "node src/summarize.mjs"
+  }
+}
