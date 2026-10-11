@@ -1,0 +1,13 @@
+# K1 自己的安装设置：不属于根工作区，但依赖安全规则与根目录一致（技术设计 §8.6）。
+packages:
+  - .
+
+# 发布不满 14 天的版本不装（单位：分钟，20160 = 14 天）
+minimumReleaseAge: 20160
+# 写入 package.json 时不加 ^ 或 ~
+savePrefix: ""
+# 安装脚本白名单：与根目录相同，只放行 electron 和 esbuild
+allowBuilds:
+  electron: true
+  esbuild: true
+engineStrict: true
