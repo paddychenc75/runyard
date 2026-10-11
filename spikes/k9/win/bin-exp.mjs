@@ -60,6 +60,9 @@ export function candidates(helperExe, npmTrashJs) {
   add("exe-ifo-recycle(UNDO|SILENT|NOERRORUI|RECYCLEONDELETE)", "ifo", F.ALLOWUNDO | F.SILENT | F.NOERRORUI | F.RECYCLEONDELETE);
   add("exe-ifo-recycle-noconfirm(+NOCONFIRM)", "ifo", F.ALLOWUNDO | F.NOCONFIRMATION | F.SILENT | F.NOERRORUI | F.RECYCLEONDELETE);
   add("exe-ifo-recycle-early(+EARLYFAILURE)", "ifo", F.ALLOWUNDO | F.NOCONFIRMATION | F.SILENT | F.NOERRORUI | F.RECYCLEONDELETE | F.EARLYFAILURE);
+  // 受 npm 包 windows-trash.exe 的表现启发（它在所有会永久删除的场景里都是失败）：不带 ALLOWUNDO，只靠 RECYCLEONDELETE
+  add("exe-ifo-recycleonly(RECYCLEONDELETE|NOCONFIRM|SILENT|NOERRORUI, no UNDO)", "ifo", F.NOCONFIRMATION | F.SILENT | F.NOERRORUI | F.RECYCLEONDELETE);
+  add("exe-ifo-recycleonly-early(+EARLYFAILURE)", "ifo", F.NOCONFIRMATION | F.SILENT | F.NOERRORUI | F.RECYCLEONDELETE | F.EARLYFAILURE);
   if (npmTrashJs) c["npm-trash@10.1.1(windows-trash.exe)"] = (p) => run(process.execPath, [npmTrashJs, p], { timeout: 45000 });
   return c;
 }
