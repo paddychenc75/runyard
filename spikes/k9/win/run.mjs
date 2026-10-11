@@ -10,11 +10,22 @@ import * as B from "./bin-exp.mjs";
 import { renameEdgeCases } from "./rename-exp.mjs";
 import { makeTree } from "../lib/make-tree.mjs";
 
-const QUICK = process.argv.includes("--quick");
+// 调试用：win/args.txt 里的参数追加到命令行后面（推送触发时没法传参数）
+const extra = fs.existsSync(path.join(import.meta.dirname, "args.txt")) ? fs.readFileSync(path.join(import.meta.dirname, "args.txt"), "utf8").trim().split(/\s+/).filter(Boolean) : [];
+const ARGV = [...process.argv.slice(2), ...extra];
+const QUICK = ARGV.includes("--quick");
+const onlyArg = ARGV.indexOf("--only");
+const ONLY = onlyArg >= 0 ? ARGV[onlyArg + 1].split(",") : null; // 例：--only diag,bin-30k
+const want = (n) => !ONLY || ONLY.includes(n);
+const dump = () => {
+  fs.mkdirSync(path.join(import.meta.dirname, "..", "results"), { recursive: true });
+  fs.writeFileSync(path.join(import.meta.dirname, "..", "results", "windows.json"), JSON.stringify(results, null, 2));
+};
 const ROOT = G.makeRoot();
 const results = { label: "windows", node: process.version, exps: {}, cleanup: {} };
 const log = (...a) => console.log("[k9]", ...a);
 async function exp(name, fn) {
+  if (!want(name.split(":")[0])) return;
   log("==", name);
   const t = now();
   try {
@@ -23,6 +34,7 @@ async function exp(name, fn) {
     results.exps[name] = { error: String(e && e.stack ? e.stack.split("\n").slice(0, 4).join(" | ") : e) };
   }
   log(`(${round(now() - t)} ms)`, JSON.stringify(results.exps[name]).slice(0, 1500));
+  dump();
 }
 const regRestore = [];
 const SINGLE_FLAGS = (0x40 | 0x10 | 0x4 | 0x400 | 0x80000 | 0x100000).toString(16);
@@ -79,11 +91,13 @@ try {
   results.env.recycleBinDir = bin.dir;
   const npmJs = path.join(import.meta.dirname, "npm-trash.mjs");
   const cands = B.candidates(helperExe, fs.existsSync(path.join(import.meta.dirname, "..", "node_modules", "trash")) ? npmJs : null);
+  await exp("diag", () => B.diagnose(ROOT, bin, drive, helperExe));
   await exp("bin-readable", () => {
     const e = B.binEntries(bin);
     return { err: e.err, entries: e.items.length };
   });
 
+  if (want("bin")) {
   const trials = [];
   results.exps["bin-30k"] = trials;
   const FILES = QUICK ? 2000 : 30000;
@@ -182,6 +196,8 @@ try {
         lp.push({ cand: name, error: String(e).slice(0, 200) });
       }
     }
+  }
+
   }
 
   // 单文件命令行里带着小工具：把 exe 以 base64 嵌进一个 .mjs，运行时写到临时目录再调用

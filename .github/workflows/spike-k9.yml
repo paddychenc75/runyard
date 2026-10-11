@@ -9,6 +9,11 @@ on:
       - "spikes/k9/**"
       - ".github/workflows/spike-k9.yml"
   workflow_dispatch:
+    inputs:
+      win_args:
+        description: "传给 win/run.mjs 的参数，如 --only compile-helpers,diag"
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -16,6 +21,8 @@ permissions:
 jobs:
   macos:
     name: K9a macOS（废纸篓）
+    # 推送时只有提交信息里带 [mac] 才跑（macOS 部分已有结果，迭代 Windows 时不重复跑）
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[mac]')
     runs-on: macos-26
     timeout-minutes: 45
     defaults:
@@ -62,7 +69,9 @@ jobs:
       - name: 安装依赖（vite 8.3.1、trash 10.1.1，精确版本）
         run: pnpm install --frozen-lockfile
       - name: 运行 K9b 实验
-        run: node win/run.mjs
+        env:
+          WIN_ARGS: ${{ github.event.inputs.win_args }}
+        run: node win/run.mjs $WIN_ARGS
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
         with:

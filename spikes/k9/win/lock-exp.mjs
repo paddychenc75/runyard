@@ -147,8 +147,9 @@ export function detectionMatrix(proj, helpers) {
   const listFile = path.join(G.root(), "files.txt");
   for (const [name, start] of Object.entries(scenarios)) {
     const child = start();
-    sleepMs(name.startsWith("powershell") ? 2500 : 1000);
     const pid = child.pid;
+    try {
+    sleepMs(name.startsWith("powershell") ? 2500 : 1000);
     const r = {};
     // 办法 1：命令行或可执行文件路径里带有该目录（PowerShell CIM）
     let t = now();
@@ -158,14 +159,19 @@ export function detectionMatrix(proj, helpers) {
     fs.writeFileSync(listFile, [...listFiles(proj, 3000), proj].join("\n"));
     t = now();
     const p2 = run(helpers.lockers, [listFile]);
+    if (p2.stdout === null || p2.stdout === undefined) throw new Error("lockers.exe 没有输出: " + p2.error);
     r.restartManager = { found: p2.stdout.split("\n").some((l) => l.startsWith(pid + "\t")), ms: round(now() - t), raw: p2.stdout.trim().slice(0, 120) };
     // 办法 3：读每个进程的 PEB 取当前目录
     t = now();
     const p3 = run(helpers.lockers, ["cwd", proj]);
     r.pebCwd = { found: p3.stdout.split("\n").some((l) => l.startsWith(pid + "\t")), ms: round(now() - t) };
     res[name] = r;
-    killTree(pid);
-    sleepMs(300);
+    } catch (e) {
+      res[name] = { error: String(e).slice(0, 200) };
+    } finally {
+      killTree(pid);
+      sleepMs(300);
+    }
   }
   return res;
 }

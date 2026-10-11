@@ -14,6 +14,14 @@ export function renameEdgeCases(root) {
       out[label] = { ok: false, code: e.code };
     }
   };
+  let k = 0;
+  const moveAway = (p) => {
+    try {
+      fs.renameSync("\\\\?\\" + p, path.join(root, `moved-${k++}`));
+    } catch (e) {
+      out[`(could not move away ${path.basename(p)})`] = { code: e.code };
+    }
+  };
   const mk = (n) => {
     const d = path.join(root, n);
     fs.mkdirSync(d);
@@ -27,13 +35,16 @@ export function renameEdgeCases(root) {
   for (const n of ["con", "nul", "com1", "CON.txt", "aux", "lpt1"]) {
     d = mk("src-" + n.replace(/\W/g, ""));
     tryRename(`reserved ${n}`, d, path.join(root, n));
+    moveAway(path.join(root, n)); // 挪开，免得下一个变体撞上已存在的目标
     d = mk("srcx-" + n.replace(/\W/g, ""));
     tryRename(`reserved ${n} (\\\\?\\ prefix)`, d, "\\\\?\\" + path.join(root, n));
+    moveAway(path.join(root, n));
   }
   // 末尾的点和空格
   for (const [label, n] of [["trailing dot", "foo."], ["trailing space", "bar "], ["trailing dots", "baz.."]]) {
     d = mk("t-" + label.replace(/\W/g, ""));
     tryRename(label, d, path.join(root, n));
+    moveAway(path.join(root, n));
     d = mk("tx-" + label.replace(/\W/g, ""));
     tryRename(`${label} (\\\\?\\ prefix)`, d, "\\\\?\\" + path.join(root, n));
   }

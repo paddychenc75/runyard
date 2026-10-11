@@ -3,11 +3,10 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
 using System.Diagnostics;
 
 static class L {
-    [StructLayout(LayoutKind.Sequential)] struct RM_UNIQUE_PROCESS { public int dwProcessId; public FILETIME ProcessStartTime; }
+    [StructLayout(LayoutKind.Sequential)] struct RM_UNIQUE_PROCESS { public int dwProcessId; public System.Runtime.InteropServices.ComTypes.FILETIME ProcessStartTime; }
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     struct RM_PROCESS_INFO {
         public RM_UNIQUE_PROCESS Process;
