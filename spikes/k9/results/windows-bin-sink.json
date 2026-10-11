@@ -1,0 +1,1187 @@
+{
+  "label": "windows",
+  "node": "v24.21.0",
+  "exps": {
+    "compile-helpers": {
+      "Trash.cs": {
+        "status": 0,
+        "ms": 1401.1,
+        "bytes": 8704,
+        "err": ""
+      },
+      "Lockers.cs": {
+        "status": 0,
+        "ms": 148.4,
+        "bytes": 6144,
+        "err": ""
+      }
+    },
+    "diag": {
+      "session": "True 1 2",
+      "regHKCU": "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\BitBucket\r\n    LastEnum    REG_MULTI_SZ    0,{6f146b24-4f0e-4ba2-97d1-29ea630e5753}\\00,{d16b4f06-0000-0000-0000-100000000000}\r\n\r\nHKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\BitBucket\\Volume\r\n\r\nHKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\BitBucket\\Volume\\{6f146b24-4f0e-4ba2-97d1-29ea630e5753}\r\n    MaxCapacity    REG_DWORD    0x25e3\r\n    NukeOnDelete    REG_DWORD    0x0\r\n\r\nHKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\BitBucket\\Volume\\{d16b4f06-0000-0000-0000-100000000000}\r\n    MaxCapacity    REG_DWORD    0x25ff\r\n    NukeOnDelete    REG_DWORD    0x0",
+      "regHKLM": "",
+      "policyHKLM": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\r\n    ForceActiveDesktopOn    REG_DWORD    0x0\r\n    NoActiveDesktop    REG_DWORD    0x1\r\n    NoActiveDesktopChanges    REG_DWORD    0x1\r\n    ShowSuperHidden    REG_DWORD    0x1",
+      "policyHKCU": "",
+      "binDirTop": "Volume in drive C is Windows\r\n Volume Serial Number is 2C40-3FBA\r\n\r\n Directory of C:\\$Recycle.Bin\r\n\r\n10/11/2026  08:08 PM    <DIR>          .\r\n10/11/2026  08:08 PM    <DIR>          ..\r\n10/11/2026  08:08 PM    <DIR>          S-1-5-21-1643835476-1616584234-1346609752-500\r\n09/05/2026  05:59 PM    <DIR>          S-1-5-21-2306304950-4049356440-1197365651-500\r\n09/26/2026  02:25 AM    <DIR>          S-1-5-21-526553204-2045674998-886536606-500\r\n               0 File(s)              0 bytes\r\n               5 Dir(s)  34,554,662,912 bytes free",
+      "binDirMine": "",
+      "queryRecycleBin": "rc=0 size=0 items=0",
+      "tinyVBInSystemTemp": "recycled",
+      "psListBin": "$RBXN5TG          \r\n$RUMWP8N          \r\n$IBXN5TG    180   \r\n$IUMWP8N    176   \r\ndesktop.ini 129",
+      "tinyVB": {
+        "status": 0,
+        "verdict": "recycled",
+        "binAfter": ""
+      }
+    },
+    "bin-30k": [
+      {
+        "cand": "ps-visualbasic",
+        "kind": "tree",
+        "ms": 10012.4,
+        "status": 0,
+        "out": "",
+        "verdict": "recycled",
+        "preflight": "pass",
+        "binSize": 4082793,
+        "restore": {
+          "restored": true,
+          "intact": true
+        }
+      },
+      {
+        "cand": "ps-shell-application",
+        "kind": "tree",
+        "ms": 12614.4,
+        "status": 0,
+        "out": "",
+        "verdict": "recycled",
+        "preflight": "pass",
+        "binSize": 4082793,
+        "restore": {
+          "restored": true,
+          "intact": true
+        }
+      },
+      {
+        "cand": "exe-sh-quiet(UNDO|NOCONFIRM|SILENT|NOERRORUI)",
+        "kind": "tree",
+        "ms": 9774.8,
+        "status": 0,
+        "out": "sh rc=0x0 aborted=False",
+        "verdict": "recycled",
+        "preflight": "pass",
+        "binSize": 4082793,
+        "restore": {
+          "restored": true,
+          "intact": true
+        }
+      },
+      {
+        "cand": "exe-sh-confirm(UNDO|SILENT|NOERRORUI|WANTNUKEWARNING)",
+        "kind": "tree",
+        "ms": 10387,
+        "status": 0,
+        "out": "sh rc=0x0 aborted=False",
+        "verdict": "recycled",
+        "preflight": "pass",
+        "binSize": 4082793,
+        "restore": {
+          "restored": true,
+          "intact": true
+        }
+      },
+      {
+        "cand": "exe-ifo-quiet(UNDO|NOCONFIRM|SILENT|NOERRORUI)",
+        "kind": "tree",
+        "ms": 10241.2,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "recycled",
+        "preflight": "pass",
+        "binSize": 4082793,
+        "restore": {
+          "restored": true,
+          "intact": true
+        }
+      },
+      {
+        "cand": "exe-ifo-recycle(UNDO|SILENT|NOERRORUI|RECYCLEONDELETE)",
+        "kind": "tree",
+        "ms": 9751.2,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "recycled",
+        "preflight": "pass",
+        "binSize": 4082793,
+        "restore": {
+          "restored": true,
+          "intact": true
+        }
+      },
+      {
+        "cand": "exe-ifo-recycle-noconfirm(+NOCONFIRM)",
+        "kind": "tree",
+        "ms": 9835.7,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "recycled",
+        "preflight": "pass",
+        "binSize": 4082793,
+        "restore": {
+          "restored": true,
+          "intact": true
+        }
+      },
+      {
+        "cand": "exe-ifo-recycle-early(+EARLYFAILURE)",
+        "kind": "tree",
+        "ms": 9612.3,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "recycled",
+        "preflight": "pass",
+        "binSize": 4082793,
+        "restore": {
+          "restored": true,
+          "intact": true
+        }
+      },
+      {
+        "cand": "exe-ifo-sink(UNDO|NOCONFIRM|SILENT|NOERRORUI|RECYCLEONDELETE + PreDeleteItem guard)",
+        "kind": "tree",
+        "ms": 9785.7,
+        "status": 0,
+        "out": "ifo ok aborted=False sink: pre(flags=0x282) post(hr=0x270008,recycled=True)",
+        "verdict": "recycled",
+        "preflight": "pass",
+        "binSize": 4082793,
+        "restore": {
+          "restored": true,
+          "intact": true
+        }
+      },
+      {
+        "cand": "exe-ifo-recycleonly(RECYCLEONDELETE|NOCONFIRM|SILENT|NOERRORUI, no UNDO)",
+        "kind": "tree",
+        "ms": 11547.8,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "recycled",
+        "preflight": "pass",
+        "binSize": 4082793,
+        "restore": {
+          "restored": true,
+          "intact": true
+        }
+      },
+      {
+        "cand": "exe-ifo-recycleonly-early(+EARLYFAILURE)",
+        "kind": "tree",
+        "ms": 10692.2,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "recycled",
+        "preflight": "pass",
+        "binSize": 4082793,
+        "restore": {
+          "restored": true,
+          "intact": true
+        }
+      },
+      {
+        "cand": "npm-trash@10.1.1(windows-trash.exe)",
+        "kind": "tree",
+        "ms": 9798,
+        "status": 0,
+        "out": "",
+        "verdict": "recycled",
+        "preflight": "pass",
+        "binSize": 4082793,
+        "restore": {
+          "restored": true,
+          "intact": true
+        }
+      }
+    ],
+    "bin-30k-repeats": [
+      {
+        "cand": "ps-visualbasic#rep2",
+        "kind": "tree",
+        "ms": 10951.4,
+        "status": 0,
+        "out": "",
+        "verdict": "recycled",
+        "preflight": "pass",
+        "binSize": 4082793,
+        "restore": {
+          "restored": true,
+          "intact": true
+        }
+      },
+      {
+        "cand": "ps-visualbasic#rep3",
+        "kind": "tree",
+        "ms": 10064.1,
+        "status": 0,
+        "out": "",
+        "verdict": "recycled",
+        "preflight": "pass",
+        "binSize": 4082793,
+        "restore": {
+          "restored": true,
+          "intact": true
+        }
+      },
+      {
+        "cand": "exe-ifo-recycle(UNDO|SILENT|NOERRORUI|RECYCLEONDELETE)#rep2",
+        "kind": "tree",
+        "ms": 10179.3,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "recycled",
+        "preflight": "pass",
+        "binSize": 4082793,
+        "restore": {
+          "restored": true,
+          "intact": true
+        }
+      },
+      {
+        "cand": "exe-ifo-recycle(UNDO|SILENT|NOERRORUI|RECYCLEONDELETE)#rep3",
+        "kind": "tree",
+        "ms": 11052.2,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "recycled",
+        "preflight": "pass",
+        "binSize": 4082793,
+        "restore": {
+          "restored": true,
+          "intact": true
+        }
+      }
+    ],
+    "bin-over-capacity": [
+      {
+        "cand": "ps-visualbasic",
+        "kind": "big",
+        "ms": 484.9,
+        "status": 0,
+        "out": "",
+        "verdict": "PERMANENTLY-DELETED",
+        "preflight": "TOO_BIG_FOR_BIN(24MB>1MB)",
+        "binNew": [],
+        "scenario": "folder 25MB > MaxCapacity 1MB"
+      },
+      {
+        "cand": "ps-shell-application",
+        "kind": "big",
+        "ms": 45034.5,
+        "status": null,
+        "signal": "SIGTERM",
+        "out": "",
+        "verdict": "failed-safe(folder intact)",
+        "preflight": "TOO_BIG_FOR_BIN(24MB>1MB)",
+        "scenario": "folder 25MB > MaxCapacity 1MB"
+      },
+      {
+        "cand": "exe-sh-quiet(UNDO|NOCONFIRM|SILENT|NOERRORUI)",
+        "kind": "big",
+        "ms": 203.2,
+        "status": 0,
+        "out": "sh rc=0x0 aborted=False",
+        "verdict": "PERMANENTLY-DELETED",
+        "preflight": "TOO_BIG_FOR_BIN(24MB>1MB)",
+        "binNew": [],
+        "scenario": "folder 25MB > MaxCapacity 1MB"
+      },
+      {
+        "cand": "exe-sh-confirm(UNDO|SILENT|NOERRORUI|WANTNUKEWARNING)",
+        "kind": "big",
+        "ms": 45015.6,
+        "status": null,
+        "signal": "SIGTERM",
+        "out": "",
+        "verdict": "failed-safe(folder intact)",
+        "preflight": "TOO_BIG_FOR_BIN(24MB>1MB)",
+        "scenario": "folder 25MB > MaxCapacity 1MB"
+      },
+      {
+        "cand": "exe-ifo-quiet(UNDO|NOCONFIRM|SILENT|NOERRORUI)",
+        "kind": "big",
+        "ms": 230.6,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "PERMANENTLY-DELETED",
+        "preflight": "TOO_BIG_FOR_BIN(24MB>1MB)",
+        "binNew": [],
+        "scenario": "folder 25MB > MaxCapacity 1MB"
+      },
+      {
+        "cand": "exe-ifo-recycle(UNDO|SILENT|NOERRORUI|RECYCLEONDELETE)",
+        "kind": "big",
+        "ms": 45014.5,
+        "status": null,
+        "signal": "SIGTERM",
+        "out": "",
+        "verdict": "failed-safe(folder intact)",
+        "preflight": "TOO_BIG_FOR_BIN(24MB>1MB)",
+        "scenario": "folder 25MB > MaxCapacity 1MB"
+      },
+      {
+        "cand": "exe-ifo-recycle-noconfirm(+NOCONFIRM)",
+        "kind": "big",
+        "ms": 194,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "PERMANENTLY-DELETED",
+        "preflight": "TOO_BIG_FOR_BIN(24MB>1MB)",
+        "binNew": [],
+        "scenario": "folder 25MB > MaxCapacity 1MB"
+      },
+      {
+        "cand": "exe-ifo-recycle-early(+EARLYFAILURE)",
+        "kind": "big",
+        "ms": 200.8,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "PERMANENTLY-DELETED",
+        "preflight": "TOO_BIG_FOR_BIN(24MB>1MB)",
+        "binNew": [],
+        "scenario": "folder 25MB > MaxCapacity 1MB"
+      },
+      {
+        "cand": "exe-ifo-sink(UNDO|NOCONFIRM|SILENT|NOERRORUI|RECYCLEONDELETE + PreDeleteItem guard)",
+        "kind": "big",
+        "ms": 149.4,
+        "status": 2,
+        "out": "EXC COMException hr=0x80004005 Error HRESULT E_FAIL has been returned from a call to a COM component.",
+        "verdict": "failed-safe(folder intact)",
+        "preflight": "TOO_BIG_FOR_BIN(24MB>1MB)",
+        "scenario": "folder 25MB > MaxCapacity 1MB"
+      },
+      {
+        "cand": "exe-ifo-recycleonly(RECYCLEONDELETE|NOCONFIRM|SILENT|NOERRORUI, no UNDO)",
+        "kind": "big",
+        "ms": 184.2,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "PERMANENTLY-DELETED",
+        "preflight": "TOO_BIG_FOR_BIN(24MB>1MB)",
+        "binNew": [],
+        "scenario": "folder 25MB > MaxCapacity 1MB"
+      },
+      {
+        "cand": "exe-ifo-recycleonly-early(+EARLYFAILURE)",
+        "kind": "big",
+        "ms": 205.7,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "PERMANENTLY-DELETED",
+        "preflight": "TOO_BIG_FOR_BIN(24MB>1MB)",
+        "binNew": [],
+        "scenario": "folder 25MB > MaxCapacity 1MB"
+      },
+      {
+        "cand": "npm-trash@10.1.1(windows-trash.exe)",
+        "kind": "big",
+        "ms": 256.7,
+        "status": 1,
+        "out": "npm-trash-error: C:\\Users\\runneradmin\\runyard-spike-k9-u8gN1Y\\runyard-spike-k9-5073fe7c-big | exit=2147549183",
+        "verdict": "failed-safe(folder intact)",
+        "preflight": "TOO_BIG_FOR_BIN(24MB>1MB)",
+        "scenario": "folder 25MB > MaxCapacity 1MB"
+      }
+    ],
+    "bin-nuke-on-delete": [
+      {
+        "cand": "ps-visualbasic",
+        "kind": "tree",
+        "ms": 479.4,
+        "status": 0,
+        "out": "",
+        "verdict": "PERMANENTLY-DELETED",
+        "preflight": "BIN_DISABLED(NukeOnDelete)",
+        "binNew": [],
+        "scenario": "NukeOnDelete=1"
+      },
+      {
+        "cand": "ps-shell-application",
+        "kind": "tree",
+        "ms": 1188.2,
+        "status": 0,
+        "out": "",
+        "verdict": "PERMANENTLY-DELETED",
+        "preflight": "BIN_DISABLED(NukeOnDelete)",
+        "binNew": [],
+        "scenario": "NukeOnDelete=1"
+      },
+      {
+        "cand": "exe-sh-quiet(UNDO|NOCONFIRM|SILENT|NOERRORUI)",
+        "kind": "tree",
+        "ms": 208.6,
+        "status": 0,
+        "out": "sh rc=0x0 aborted=False",
+        "verdict": "PERMANENTLY-DELETED",
+        "preflight": "BIN_DISABLED(NukeOnDelete)",
+        "binNew": [],
+        "scenario": "NukeOnDelete=1"
+      },
+      {
+        "cand": "exe-sh-confirm(UNDO|SILENT|NOERRORUI|WANTNUKEWARNING)",
+        "kind": "tree",
+        "ms": 207.3,
+        "status": 0,
+        "out": "sh rc=0x0 aborted=False",
+        "verdict": "PERMANENTLY-DELETED",
+        "preflight": "BIN_DISABLED(NukeOnDelete)",
+        "binNew": [],
+        "scenario": "NukeOnDelete=1"
+      },
+      {
+        "cand": "exe-ifo-quiet(UNDO|NOCONFIRM|SILENT|NOERRORUI)",
+        "kind": "tree",
+        "ms": 220.8,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "PERMANENTLY-DELETED",
+        "preflight": "BIN_DISABLED(NukeOnDelete)",
+        "binNew": [],
+        "scenario": "NukeOnDelete=1"
+      },
+      {
+        "cand": "exe-ifo-recycle(UNDO|SILENT|NOERRORUI|RECYCLEONDELETE)",
+        "kind": "tree",
+        "ms": 217.6,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "PERMANENTLY-DELETED",
+        "preflight": "BIN_DISABLED(NukeOnDelete)",
+        "binNew": [],
+        "scenario": "NukeOnDelete=1"
+      },
+      {
+        "cand": "exe-ifo-recycle-noconfirm(+NOCONFIRM)",
+        "kind": "tree",
+        "ms": 215.2,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "PERMANENTLY-DELETED",
+        "preflight": "BIN_DISABLED(NukeOnDelete)",
+        "binNew": [],
+        "scenario": "NukeOnDelete=1"
+      },
+      {
+        "cand": "exe-ifo-recycle-early(+EARLYFAILURE)",
+        "kind": "tree",
+        "ms": 228.6,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "PERMANENTLY-DELETED",
+        "preflight": "BIN_DISABLED(NukeOnDelete)",
+        "binNew": [],
+        "scenario": "NukeOnDelete=1"
+      },
+      {
+        "cand": "exe-ifo-sink(UNDO|NOCONFIRM|SILENT|NOERRORUI|RECYCLEONDELETE + PreDeleteItem guard)",
+        "kind": "tree",
+        "ms": 115.7,
+        "status": 2,
+        "out": "EXC COMException hr=0x80004005 Error HRESULT E_FAIL has been returned from a call to a COM component.",
+        "verdict": "failed-safe(folder intact)",
+        "preflight": "BIN_DISABLED(NukeOnDelete)",
+        "scenario": "NukeOnDelete=1"
+      },
+      {
+        "cand": "exe-ifo-recycleonly(RECYCLEONDELETE|NOCONFIRM|SILENT|NOERRORUI, no UNDO)",
+        "kind": "tree",
+        "ms": 201.8,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "PERMANENTLY-DELETED",
+        "preflight": "BIN_DISABLED(NukeOnDelete)",
+        "binNew": [],
+        "scenario": "NukeOnDelete=1"
+      },
+      {
+        "cand": "exe-ifo-recycleonly-early(+EARLYFAILURE)",
+        "kind": "tree",
+        "ms": 197.6,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "PERMANENTLY-DELETED",
+        "preflight": "BIN_DISABLED(NukeOnDelete)",
+        "binNew": [],
+        "scenario": "NukeOnDelete=1"
+      },
+      {
+        "cand": "npm-trash@10.1.1(windows-trash.exe)",
+        "kind": "tree",
+        "ms": 222.6,
+        "status": 1,
+        "out": "npm-trash-error: C:\\Users\\runneradmin\\runyard-spike-k9-u8gN1Y\\runyard-spike-k9-3b2a61c0-tree | exit=2147549183",
+        "verdict": "failed-safe(folder intact)",
+        "preflight": "BIN_DISABLED(NukeOnDelete)",
+        "scenario": "NukeOnDelete=1"
+      }
+    ],
+    "bin-long-path": [
+      {
+        "cand": "ps-visualbasic",
+        "kind": "longpath",
+        "ms": 469.6,
+        "status": 0,
+        "out": "",
+        "verdict": "PERMANENTLY-DELETED",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)",
+        "binNew": []
+      },
+      {
+        "cand": "ps-visualbasic [\\\\?\\ path]",
+        "kind": "longpath",
+        "ms": 461.1,
+        "status": 1,
+        "out": "Exception calling \"DeleteDirectory\" with \"3\" argument(s): \"The given path's format is not supported.\" At line:1 char:47 + ... isualBasic; [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteDirector ... + ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ + CategoryInfo : NotSpecified: (:) [], MethodInvocationException + FullyQualifiedErrorId : NotSupportedException",
+        "verdict": "failed-safe(folder intact)",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)"
+      },
+      {
+        "cand": "ps-shell-application",
+        "kind": "longpath",
+        "ms": 45033,
+        "status": null,
+        "signal": "SIGTERM",
+        "out": "",
+        "verdict": "failed-safe(folder intact)",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)"
+      },
+      {
+        "cand": "ps-shell-application [\\\\?\\ path]",
+        "kind": "longpath",
+        "ms": 415.8,
+        "status": 3,
+        "out": "PARSE_NULL You cannot call a method on a null-valued expression. At line:1 char:46 + ... pplication; $i=$sh.NameSpace('\\\\?\\C:\\Users\\runneradmin\\runyard-spike- ... + ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ + CategoryInfo : InvalidOperation: (:) [], RuntimeException + FullyQualifiedErrorId : InvokeMethodOnNull",
+        "verdict": "failed-safe(folder intact)",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)"
+      },
+      {
+        "cand": "exe-sh-quiet(UNDO|NOCONFIRM|SILENT|NOERRORUI)",
+        "kind": "longpath",
+        "ms": 183.3,
+        "status": 0,
+        "out": "sh rc=0x0 aborted=False",
+        "verdict": "recycled",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)",
+        "binSize": 600,
+        "restore": {
+          "restored": true,
+          "deepFileIntact": true
+        }
+      },
+      {
+        "cand": "exe-sh-quiet(UNDO|NOCONFIRM|SILENT|NOERRORUI) [\\\\?\\ path]",
+        "kind": "longpath",
+        "ms": 53.6,
+        "status": 2,
+        "out": "sh rc=0x7c aborted=False",
+        "verdict": "failed-safe(folder intact)",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)"
+      },
+      {
+        "cand": "exe-sh-confirm(UNDO|SILENT|NOERRORUI|WANTNUKEWARNING)",
+        "kind": "longpath",
+        "ms": 179.4,
+        "status": 0,
+        "out": "sh rc=0x0 aborted=False",
+        "verdict": "recycled",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)",
+        "binSize": 600,
+        "restore": {
+          "restored": true,
+          "deepFileIntact": true
+        }
+      },
+      {
+        "cand": "exe-sh-confirm(UNDO|SILENT|NOERRORUI|WANTNUKEWARNING) [\\\\?\\ path]",
+        "kind": "longpath",
+        "ms": 50.7,
+        "status": 2,
+        "out": "sh rc=0x7c aborted=False",
+        "verdict": "failed-safe(folder intact)",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)"
+      },
+      {
+        "cand": "exe-ifo-quiet(UNDO|NOCONFIRM|SILENT|NOERRORUI)",
+        "kind": "longpath",
+        "ms": 181.9,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "recycled",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)",
+        "binSize": 600,
+        "restore": {
+          "restored": true,
+          "deepFileIntact": true
+        }
+      },
+      {
+        "cand": "exe-ifo-quiet(UNDO|NOCONFIRM|SILENT|NOERRORUI) [\\\\?\\ path]",
+        "kind": "longpath",
+        "ms": 52.8,
+        "status": 2,
+        "out": "EXC ArgumentException hr=0x80070057 Value does not fall within the expected range.",
+        "verdict": "failed-safe(folder intact)",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)"
+      },
+      {
+        "cand": "exe-ifo-recycle(UNDO|SILENT|NOERRORUI|RECYCLEONDELETE)",
+        "kind": "longpath",
+        "ms": 180.3,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "recycled",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)",
+        "binSize": 600,
+        "restore": {
+          "restored": true,
+          "deepFileIntact": true
+        }
+      },
+      {
+        "cand": "exe-ifo-recycle(UNDO|SILENT|NOERRORUI|RECYCLEONDELETE) [\\\\?\\ path]",
+        "kind": "longpath",
+        "ms": 54.5,
+        "status": 2,
+        "out": "EXC ArgumentException hr=0x80070057 Value does not fall within the expected range.",
+        "verdict": "failed-safe(folder intact)",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)"
+      },
+      {
+        "cand": "exe-ifo-recycle-noconfirm(+NOCONFIRM)",
+        "kind": "longpath",
+        "ms": 174.8,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "recycled",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)",
+        "binSize": 600,
+        "restore": {
+          "restored": true,
+          "deepFileIntact": true
+        }
+      },
+      {
+        "cand": "exe-ifo-recycle-noconfirm(+NOCONFIRM) [\\\\?\\ path]",
+        "kind": "longpath",
+        "ms": 51.2,
+        "status": 2,
+        "out": "EXC ArgumentException hr=0x80070057 Value does not fall within the expected range.",
+        "verdict": "failed-safe(folder intact)",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)"
+      },
+      {
+        "cand": "exe-ifo-recycle-early(+EARLYFAILURE)",
+        "kind": "longpath",
+        "ms": 172.6,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "recycled",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)",
+        "binSize": 600,
+        "restore": {
+          "restored": true,
+          "deepFileIntact": true
+        }
+      },
+      {
+        "cand": "exe-ifo-recycle-early(+EARLYFAILURE) [\\\\?\\ path]",
+        "kind": "longpath",
+        "ms": 56,
+        "status": 2,
+        "out": "EXC ArgumentException hr=0x80070057 Value does not fall within the expected range.",
+        "verdict": "failed-safe(folder intact)",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)"
+      },
+      {
+        "cand": "exe-ifo-sink(UNDO|NOCONFIRM|SILENT|NOERRORUI|RECYCLEONDELETE + PreDeleteItem guard)",
+        "kind": "longpath",
+        "ms": 183.1,
+        "status": 0,
+        "out": "ifo ok aborted=False sink: pre(flags=0x282) post(hr=0x270008,recycled=True)",
+        "verdict": "recycled",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)",
+        "binSize": 600,
+        "restore": {
+          "restored": true,
+          "deepFileIntact": true
+        }
+      },
+      {
+        "cand": "exe-ifo-sink(UNDO|NOCONFIRM|SILENT|NOERRORUI|RECYCLEONDELETE + PreDeleteItem guard) [\\\\?\\ path]",
+        "kind": "longpath",
+        "ms": 53.3,
+        "status": 2,
+        "out": "EXC ArgumentException hr=0x80070057 Value does not fall within the expected range.",
+        "verdict": "failed-safe(folder intact)",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)"
+      },
+      {
+        "cand": "exe-ifo-recycleonly(RECYCLEONDELETE|NOCONFIRM|SILENT|NOERRORUI, no UNDO)",
+        "kind": "longpath",
+        "ms": 165.5,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "recycled",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)",
+        "binSize": 600,
+        "restore": {
+          "restored": true,
+          "deepFileIntact": true
+        }
+      },
+      {
+        "cand": "exe-ifo-recycleonly(RECYCLEONDELETE|NOCONFIRM|SILENT|NOERRORUI, no UNDO) [\\\\?\\ path]",
+        "kind": "longpath",
+        "ms": 52,
+        "status": 2,
+        "out": "EXC ArgumentException hr=0x80070057 Value does not fall within the expected range.",
+        "verdict": "failed-safe(folder intact)",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)"
+      },
+      {
+        "cand": "exe-ifo-recycleonly-early(+EARLYFAILURE)",
+        "kind": "longpath",
+        "ms": 169.1,
+        "status": 0,
+        "out": "ifo ok aborted=False",
+        "verdict": "recycled",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)",
+        "binSize": 600,
+        "restore": {
+          "restored": true,
+          "deepFileIntact": true
+        }
+      },
+      {
+        "cand": "exe-ifo-recycleonly-early(+EARLYFAILURE) [\\\\?\\ path]",
+        "kind": "longpath",
+        "ms": 51.6,
+        "status": 2,
+        "out": "EXC ArgumentException hr=0x80070057 Value does not fall within the expected range.",
+        "verdict": "failed-safe(folder intact)",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)"
+      },
+      {
+        "cand": "npm-trash@10.1.1(windows-trash.exe)",
+        "kind": "longpath",
+        "ms": 300.9,
+        "status": 0,
+        "out": "",
+        "verdict": "recycled",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)",
+        "binSize": 600,
+        "restore": {
+          "restored": true,
+          "deepFileIntact": true
+        }
+      },
+      {
+        "cand": "npm-trash@10.1.1(windows-trash.exe) [\\\\?\\ path]",
+        "kind": "longpath",
+        "ms": 1417.3,
+        "status": 1,
+        "out": "npm-trash-error: \\\\?\\C:\\Users\\runneradmin\\runyard-spike-k9-u8gN1Y\\runyard-spike-k9-c88c96a6-longpath | exit=2147942414",
+        "verdict": "failed-safe(folder intact)",
+        "deepLen": 414,
+        "preflight": "PATH_TOO_LONG(414)"
+      }
+    ],
+    "bin-path-scan": {
+      "exe-ifo-quiet": [
+        {
+          "fileLen": 200,
+          "ms": 143.3,
+          "status": 0,
+          "verdict": "recycled",
+          "out": "ifo ok aborted=False",
+          "binSize": 29,
+          "restored": true
+        },
+        {
+          "fileLen": 240,
+          "ms": 144.6,
+          "status": 0,
+          "verdict": "recycled",
+          "out": "ifo ok aborted=False",
+          "binSize": 29,
+          "restored": true
+        },
+        {
+          "fileLen": 259,
+          "ms": 145.6,
+          "status": 0,
+          "verdict": "recycled",
+          "out": "ifo ok aborted=False",
+          "binSize": 29,
+          "restored": true
+        },
+        {
+          "fileLen": 260,
+          "ms": 153.6,
+          "status": 0,
+          "verdict": "recycled",
+          "out": "ifo ok aborted=False",
+          "binSize": 29,
+          "restored": true
+        },
+        {
+          "fileLen": 261,
+          "ms": 153.4,
+          "status": 0,
+          "verdict": "recycled",
+          "out": "ifo ok aborted=False",
+          "binSize": 29,
+          "restored": true
+        },
+        {
+          "fileLen": 300,
+          "ms": 143.8,
+          "status": 0,
+          "verdict": "recycled",
+          "out": "ifo ok aborted=False",
+          "binSize": 29,
+          "restored": true
+        },
+        {
+          "fileLen": 399,
+          "ms": 157.1,
+          "status": 0,
+          "verdict": "recycled",
+          "out": "ifo ok aborted=False",
+          "binSize": 29,
+          "restored": true
+        },
+        {
+          "fileLen": 500,
+          "ms": 151.8,
+          "status": 0,
+          "verdict": "recycled",
+          "out": "ifo ok aborted=False",
+          "binSize": 29,
+          "restored": true
+        },
+        {
+          "fileLen": 520,
+          "ms": 156.1,
+          "status": 0,
+          "verdict": "recycled",
+          "out": "ifo ok aborted=False",
+          "binSize": 29,
+          "restored": true
+        },
+        {
+          "fileLen": 600,
+          "ms": 238.1,
+          "status": 0,
+          "verdict": "PERMANENTLY-DELETED",
+          "out": "ifo ok aborted=False"
+        },
+        {
+          "fileLen": 800,
+          "ms": 258.5,
+          "status": 0,
+          "verdict": "PERMANENTLY-DELETED",
+          "out": "ifo ok aborted=False"
+        },
+        {
+          "fileLen": 1000,
+          "ms": 287,
+          "status": 0,
+          "verdict": "PERMANENTLY-DELETED",
+          "out": "ifo ok aborted=False"
+        },
+        {
+          "fileLen": 1500,
+          "ms": 348.5,
+          "status": 0,
+          "verdict": "PERMANENTLY-DELETED",
+          "out": "ifo ok aborted=False"
+        }
+      ],
+      "ps-visualbasic": [
+        {
+          "fileLen": 240,
+          "ms": 405.3,
+          "status": 0,
+          "verdict": "recycled",
+          "binSize": 29,
+          "restored": true
+        },
+        {
+          "fileLen": 259,
+          "ms": 410.7,
+          "status": 0,
+          "verdict": "recycled",
+          "binSize": 29,
+          "restored": true
+        },
+        {
+          "fileLen": 260,
+          "ms": 428.6,
+          "status": 0,
+          "verdict": "PERMANENTLY-DELETED"
+        },
+        {
+          "fileLen": 300,
+          "ms": 437.1,
+          "status": 0,
+          "verdict": "PERMANENTLY-DELETED"
+        },
+        {
+          "fileLen": 399,
+          "ms": 455.5,
+          "status": 0,
+          "verdict": "PERMANENTLY-DELETED"
+        },
+        {
+          "fileLen": 500,
+          "ms": 447.1,
+          "status": 0,
+          "verdict": "PERMANENTLY-DELETED"
+        },
+        {
+          "fileLen": 600,
+          "ms": 491.1,
+          "status": 0,
+          "verdict": "PERMANENTLY-DELETED"
+        },
+        {
+          "fileLen": 1000,
+          "ms": 574,
+          "status": 0,
+          "verdict": "PERMANENTLY-DELETED"
+        }
+      ],
+      "exe-ifo-sink": [
+        {
+          "fileLen": 259,
+          "ms": 270.3,
+          "status": 0,
+          "verdict": "recycled",
+          "out": "ifo ok aborted=False sink: pre(flags=0x282) post(hr=0x270008,recycled=True)",
+          "binSize": 29,
+          "restored": true
+        },
+        {
+          "fileLen": 300,
+          "ms": 150.8,
+          "status": 0,
+          "verdict": "recycled",
+          "out": "ifo ok aborted=False sink: pre(flags=0x282) post(hr=0x270008,recycled=True)",
+          "binSize": 29,
+          "restored": true
+        },
+        {
+          "fileLen": 520,
+          "ms": 163.3,
+          "status": 0,
+          "verdict": "recycled",
+          "out": "ifo ok aborted=False sink: pre(flags=0x282) post(hr=0x270008,recycled=True)",
+          "binSize": 29,
+          "restored": true
+        },
+        {
+          "fileLen": 560,
+          "ms": 164.7,
+          "status": 0,
+          "verdict": "recycled",
+          "out": "ifo ok aborted=False sink: pre(flags=0x282) post(hr=0x270008,recycled=True)",
+          "binSize": 29,
+          "restored": true
+        },
+        {
+          "fileLen": 600,
+          "ms": 144.8,
+          "status": 2,
+          "verdict": "failed-safe(folder intact)",
+          "out": "EXC COMException hr=0x80004005 Error HRESULT E_FAIL has been returned from a call to a COM component."
+        },
+        {
+          "fileLen": 800,
+          "ms": 152.9,
+          "status": 2,
+          "verdict": "failed-safe(folder intact)",
+          "out": "EXC COMException hr=0x80004005 Error HRESULT E_FAIL has been returned from a call to a COM component."
+        },
+        {
+          "fileLen": 1000,
+          "ms": 152.8,
+          "status": 2,
+          "verdict": "failed-safe(folder intact)",
+          "out": "EXC COMException hr=0x80004005 Error HRESULT E_FAIL has been returned from a call to a COM component."
+        }
+      ],
+      "exe-ifo-recycleonly": [
+        {
+          "fileLen": 259,
+          "ms": 142.3,
+          "status": 0,
+          "verdict": "recycled",
+          "out": "ifo ok aborted=False",
+          "binSize": 29,
+          "restored": true
+        },
+        {
+          "fileLen": 300,
+          "ms": 141.5,
+          "status": 0,
+          "verdict": "recycled",
+          "out": "ifo ok aborted=False",
+          "binSize": 29,
+          "restored": true
+        },
+        {
+          "fileLen": 520,
+          "ms": 166.3,
+          "status": 0,
+          "verdict": "recycled",
+          "out": "ifo ok aborted=False",
+          "binSize": 29,
+          "restored": true
+        },
+        {
+          "fileLen": 560,
+          "ms": 156.2,
+          "status": 0,
+          "verdict": "recycled",
+          "out": "ifo ok aborted=False",
+          "binSize": 29,
+          "restored": true
+        },
+        {
+          "fileLen": 600,
+          "ms": 223,
+          "status": 0,
+          "verdict": "PERMANENTLY-DELETED",
+          "out": "ifo ok aborted=False"
+        },
+        {
+          "fileLen": 800,
+          "ms": 232.3,
+          "status": 0,
+          "verdict": "PERMANENTLY-DELETED",
+          "out": "ifo ok aborted=False"
+        },
+        {
+          "fileLen": 1000,
+          "ms": 248.5,
+          "status": 0,
+          "verdict": "PERMANENTLY-DELETED",
+          "out": "ifo ok aborted=False"
+        }
+      ],
+      "npm-trash@10.1.1": [
+        {
+          "fileLen": 259,
+          "ms": 271.8,
+          "status": 0,
+          "verdict": "recycled",
+          "binSize": 29,
+          "restored": true
+        },
+        {
+          "fileLen": 300,
+          "ms": 279.6,
+          "status": 0,
+          "verdict": "recycled",
+          "binSize": 29,
+          "restored": true
+        },
+        {
+          "fileLen": 520,
+          "ms": 275.4,
+          "status": 0,
+          "verdict": "recycled",
+          "binSize": 29,
+          "restored": true
+        },
+        {
+          "fileLen": 560,
+          "ms": 280.7,
+          "status": 0,
+          "verdict": "recycled",
+          "binSize": 29,
+          "restored": true
+        },
+        {
+          "fileLen": 600,
+          "ms": 251.3,
+          "status": 1,
+          "verdict": "failed-safe(folder intact)",
+          "out": "npm-trash-error: C:\\Users\\runneradmin\\runyard-spike-k9-u8gN1Y\\runyard-spike-k9-94d55829-scan | exit=2147549183"
+        },
+        {
+          "fileLen": 800,
+          "ms": 252.7,
+          "status": 1,
+          "verdict": "failed-safe(folder intact)",
+          "out": "npm-trash-error: C:\\Users\\runneradmin\\runyard-spike-k9-u8gN1Y\\runyard-spike-k9-f9ed02f8-scan | exit=2147549183"
+        },
+        {
+          "fileLen": 1000,
+          "ms": 256.9,
+          "status": 1,
+          "verdict": "failed-safe(folder intact)",
+          "out": "npm-trash-error: C:\\Users\\runneradmin\\runyard-spike-k9-u8gN1Y\\runyard-spike-k9-1887e4a2-scan | exit=2147549183"
+        }
+      ]
+    },
+    "single-file-embed": {
+      "exeBytes": 8704,
+      "scriptBytes": 12066,
+      "status": 0,
+      "ms": 318.7,
+      "verdict": "recycled"
+    }
+  },
+  "cleanup": {
+    "leftoverProcessesBefore": "{\"ProcessId\":6180,\"Name\":\"powershell.exe\"}",
+    "rootGone": true
+  },
+  "env": {
+    "ver": "Microsoft Windows Server 2025 Datacenter 10.0.26100",
+    "root": "C:\\Users\\runneradmin\\runyard-spike-k9-u8gN1Y",
+    "drive": "C:",
+    "isAdmin": "True",
+    "defender": "{\"AMServiceEnabled\":true,\"AntivirusEnabled\":true,\"RealTimeProtectionEnabled\":false,\"BehaviorMonitorEnabled\":false,\"IoavProtectionEnabled\":false,\"OnAccessProtectionEnabled\":false,\"AntivirusSignatureVersion\":\"1.459.675.0\"}",
+    "longPathsEnabled": "0x1",
+    "psVersion": "5.1.26100.33438",
+    "recycleBinDir": "C:\\$Recycle.Bin\\S-1-5-21-1643835476-1616584234-1346609752-500",
+    "volumeKey": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\BitBucket\\Volume\\{6f146b24-4f0e-4ba2-97d1-29ea630e5753}",
+    "maxCapacityNow": "0x1",
+    "nukeNow": "0x1"
+  }
+}
