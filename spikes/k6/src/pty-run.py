@@ -3,7 +3,7 @@
 用途：作为"终端用户实际拿到什么"的对照（ground truth）。伪终端保证 shell 像在 Terminal.app 里一样：
 有控制终端、会画提示符、会跑 precmd/chpwd 钩子。
 用法：pty-run.py <cwd> <timeout秒> <shell> [shell参数...]   命令从 stdin 读入，以 EOF 结束。"""
-import os, pty, sys, time, select, signal
+import os, pty, sys, time, select, signal, fcntl, termios, struct
 
 cwd, timeout, argv = sys.argv[1], float(sys.argv[2]), sys.argv[3:]
 script = sys.stdin.read()
@@ -11,6 +11,9 @@ pid, fd = pty.fork()
 if pid == 0:
     os.chdir(cwd)
     os.execvp(argv[0], argv)
+# 窗口大小：Linux 上 pty 默认 0x0，zsh 的行编辑器在 0 列时行为异常；设成常见的 80x24
+try: fcntl.ioctl(fd, termios.TIOCSWINSZ, struct.pack('HHHH', 24, 80, 0, 0))
+except Exception: pass
 out = bytearray()
 
 def pump(dur):

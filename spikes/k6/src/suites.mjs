@@ -6,7 +6,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { CASES } from "./cases.mjs";
-import { SANDBOX_ROOT, compareAll, groundTruth, gtToTools, isGood, runCase, shellPath } from "./lab.mjs";
+import { SANDBOX_ROOT, compareAll, groundTruth, gtToTools, isGood, runCase, runCaseVariants, shellPath } from "./lab.mjs";
 import { captureOnce, buildCommand, dotfileStamp, findLoginShell, resolveLoginEnv, shellKind } from "./resolve-env.mjs";
 import { detectAll, scanFallbackEnv } from "./tools.mjs";
 
@@ -147,25 +147,23 @@ export async function timing(N = 25) {
 export async function ablation(kinds) {
   const variants = {
     full: {},
-    "no-hooks": { resolveOpts: { hooks: false } },
-    "no-warmup": { resolveOpts: { warmup: false } },
-    "no-hooks-no-warmup": { resolveOpts: { hooks: false, warmup: false } },
-    "login-noninteractive-only": { resolveOpts: { strategy: "noninteractive-only" } },
-    "interactive-only-no-stdin-fallback": { resolveOpts: { strategy: "interactive-only" } },
+    "no-hooks": { hooks: false },
+    "no-warmup": { warmup: false },
+    "no-hooks-no-warmup": { hooks: false, warmup: false },
+    "login-noninteractive-only": { strategy: "noninteractive-only" },
+    "interactive-only-no-stdin-fallback": { strategy: "interactive-only" },
   };
-  const rows = [];
-  for (const [vname, v] of Object.entries(variants)) {
-    let good = 0, total = 0; const bad = [];
-    for (const def of CASES) for (const kind of kinds) {
-      const r = await runCase(def, kind, { cwdMode: "home", ...v });
-      if (r.skipped) continue;
-      const cells = typeof r.resolver === "string" ? [] : Object.entries(r.resolver).filter(([, s]) => s !== "both-missing");
-      for (const [tool, s] of cells) { total++; if (isGood(s)) good++; else bad.push(`${def.id}/${kind}/${tool}=${s}`); }
+  const agg = Object.fromEntries(Object.keys(variants).map((v) => [v, { variant: v, good: 0, total: 0, bad: [] }]));
+  for (const def of CASES) for (const kind of kinds) {
+    const r = await runCaseVariants(def, kind, variants);
+    if (!r) continue;
+    for (const [v, res] of Object.entries(r)) {
+      const cells = typeof res === "string" ? [] : Object.entries(res).filter(([, s]) => s !== "both-missing");
+      for (const [tool, st] of cells) { agg[v].total++; if (isGood(st)) agg[v].good++; else agg[v].bad.push(`${def.id}/${kind}/${tool}=${st}`); }
     }
-    rows.push({ variant: vname, good, total, bad });
-    console.log(`${vname}: ${good}/${total}${bad.length ? "  bad: " + bad.join(", ") : ""}`);
   }
-  return rows;
+  for (const a of Object.values(agg)) console.log(`${a.variant}: ${a.good}/${a.total}${a.bad.length ? "  bad: " + a.bad.join(", ") : ""}`);
+  return Object.values(agg);
 }
 
 // ---- 6. 按项目目录：三种做法对比

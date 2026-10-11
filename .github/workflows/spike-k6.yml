@@ -47,16 +47,18 @@ jobs:
       - name: 杂乱的启动文件
         if: always()
         run: node spikes/k6/src/run.mjs messy
-      - name: 消融和按项目目录
-        if: always()
-        run: node spikes/k6/src/run.mjs ablation project
       - name: 真实版本管理器
         if: always()
+        timeout-minutes: 40
         run: node spikes/k6/src/run.mjs real-managers
       - name: 计时、模拟 Finder、真实 GUI 启动
         if: always()
         continue-on-error: true
         run: K6_N=25 node spikes/k6/src/run.mjs timing finder gui
+      - name: 消融和按项目目录
+        if: always()
+        timeout-minutes: 20
+        run: node spikes/k6/src/run.mjs ablation project
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
         with:
@@ -86,6 +88,7 @@ jobs:
         run: node spikes/k6/src/run.mjs messy
       - name: 计时、消融、按项目目录
         if: always()
+        timeout-minutes: 15
         run: K6_N=20 node spikes/k6/src/run.mjs ablation project timing finder
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()

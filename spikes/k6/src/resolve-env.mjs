@@ -74,6 +74,11 @@ export function buildCommand(kind, nonce, opts = {}) {
   let cmd = "";
   if (opts.hooks !== false) cmd += hooksSnippet(kind);
   if (opts.warmup !== false) cmd += warmupSnippet(kind);
+  if (opts.pathOnly) {
+    // 备用：只用 shell 内建打印 PATH，不 exec 任何外部命令。绕开单个变量过大导致 env 无法 exec 的情况（E2BIG）
+    const printPath = kind === "fish" ? "string join : $PATH" : `printf '%s' "$PATH"`;
+    return { cmd: cmd + `printf '%s' '${start}PATH='; ${printPath}; printf '%s' '${end}'`, start, end };
+  }
   // 绝对路径的 env：避免用户把 env 定义成函数/别名；-0 用 NUL 分隔，值里有换行也不会乱
   cmd += `printf '%s' '${start}'; /usr/bin/env -0; printf '%s' '${end}'`;
   return { cmd, start, end };
@@ -98,15 +103,17 @@ export function parseEnvDump(buf, start, end) {
     if (v.includes("�")) lossy = true;
     env[k] = v;
   }
+  // env 命令本身失败（例如 Linux 上单个变量超过 128 KB 时 exec 报 E2BIG）会得到标记齐全但内容为空的输出
+  if (!env.PATH && !env.HOME) return { ok: false, reason: "EMPTY_ENV" };
   const noiseBytes = s + (buf.length - (e + end.length));
   return { ok: true, env, lossy, noiseBytes };
 }
 
 // ---------- 4. 运行 ----------
 // baseEnv：给 shell 的初始环境（Finder 里是极简的）。shellArgs：['-l','-i','-c'] 或 ['-l','-c']。
-export function captureOnce({ shell, kind, cwd, baseEnv, timeoutMs = 10000, interactive = true, earlyExit = true, hooks, warmup, viaStdin = false }) {
+export function captureOnce({ shell, kind, cwd, baseEnv, timeoutMs = 10000, interactive = true, earlyExit = true, hooks, warmup, viaStdin = false, pathOnly = false }) {
   const nonce = randomBytes(8).toString("hex");
-  const { cmd, start, end } = buildCommand(kind, nonce, { hooks, warmup });
+  const { cmd, start, end } = buildCommand(kind, nonce, { hooks, warmup, pathOnly });
   // viaStdin：命令不放在 -c 里而是写进 stdin。rc 里 `exec 另一个 shell` 会吞掉 -c 的命令，
   // 但新 shell 继承了 stdin，所以还能执行。代价：rc 里的 read 会把这行命令吃掉，所以只作第二次尝试。
   const args = viaStdin ? ["-l", "-i"] : ["-l", ...(interactive ? ["-i"] : []), "-c", cmd];
@@ -125,7 +132,7 @@ export function captureOnce({ shell, kind, cwd, baseEnv, timeoutMs = 10000, inte
       const ms = performance.now() - t0;
       const buf = Buffer.concat(chunks);
       const parsed = parseEnvDump(buf, start, end);
-      resolve({ ms, shell, kind, interactive, timedOut, stdoutBytes: buf.length, stderrTail: errTail.slice(-400), ...extra, ...(parsed.ok ? parsed : { ok: false, reason: timedOut ? "TIMEOUT" : parsed.reason }) });
+      resolve({ ms, shell, kind, interactive, timedOut, stdoutBytes: buf.length, stderrTail: errTail.slice(-400), stdoutHead: buf.subarray(0, 200).toString("latin1").replace(/[^\x20-\x7e\n]/g, "?"), ...extra, ...(parsed.ok ? parsed : { ok: false, reason: timedOut ? "TIMEOUT" : parsed.reason }) });
     };
     // 杀进程组：detached 让子进程自成一组（也等于没有控制终端，和 Finder 启动的情形一致）。
     // 只杀我们自己启动的这个组。
@@ -166,27 +173,38 @@ export function captureOnce({ shell, kind, cwd, baseEnv, timeoutMs = 10000, inte
   });
 }
 
-// 完整流程：登录+交互 → （若 shell 提前退出且没有标记，例如 .zshrc 里 exec 了别的 shell）登录非交互 → 失败。
+// 完整流程（依次尝试，前一个失败且不是超时才试下一个）：
+//   1. 登录 + 交互，命令放 -c         —— 正常路径，拿到 .zshrc 里设置的一切
+//   2. 登录 + 交互，命令走 stdin       —— 穿过 rc 里的 `exec 另一个shell`
+//   3. 登录 + 交互，只用内建打印 PATH   —— env 无法 exec 时（单个变量过大）
+//   4. 登录 + 非交互                   —— 读不到 .zshrc，结果降级（degraded），但好过什么都没有
+// 超时不重试：再试一次只会再等一个超时。
 export async function resolveLoginEnv({ baseEnv = process.env, cwd = os.homedir(), shell, timeoutMs = 10000, strategy = "full", ...rest } = {}) {
   const found = shell ? { shell, via: "given" } : findLoginShell(baseEnv);
   const kind = shellKind(found.shell);
   if (kind === "unknown") return { ok: false, reason: "UNSUPPORTED_SHELL", shell: found.shell, via: found.via, ms: 0 };
   const env = { ...baseEnv, RUNYARD_RESOLVING_ENV: "1" }; // 让用户的启动文件能识别并跳过交互类内容
-  // strategy 只用于消融实验：interactive-only = 只试 -l -i；noninteractive-only = 只试 -l（不读 .zshrc）
-  const a = await captureOnce({ shell: found.shell, kind, cwd, baseEnv: env, timeoutMs, interactive: strategy !== "noninteractive-only", ...rest });
-  a.shellVia = found.via;
-  if (a.ok || a.timedOut || strategy !== "full") return a;
-  // 第二次机会：命令走 stdin（能穿过 rc 里的 exec）
-  const s2 = await captureOnce({ shell: found.shell, kind, cwd, baseEnv: env, timeoutMs: Math.min(timeoutMs, 4000), interactive: true, viaStdin: true, hooks: false, warmup: false, ...rest });
-  s2.shellVia = found.via; s2.via = "stdin"; s2.firstAttempt = { reason: a.reason, ms: a.ms }; s2.ms += a.ms;
-  if (s2.ok) { s2.degraded = false; return s2; }
-  // 第三次机会：只读 profile 类文件，拿不到 .zshrc 里的内容，但比什么都没有好
-  const b = await captureOnce({ shell: found.shell, kind, cwd, baseEnv: env, timeoutMs: Math.min(timeoutMs, 4000), interactive: false, ...rest });
-  b.shellVia = found.via;
-  b.firstAttempt = { reason: a.reason, ms: a.ms };
-  b.degraded = b.ok; // 非交互：缺 .zshrc 里设置的内容
-  b.ms += a.ms;
-  return b;
+  const common = { shell: found.shell, kind, cwd, baseEnv: env, ...rest };
+  const steps = strategy === "noninteractive-only"
+    ? [["lc", { interactive: false, timeoutMs }]]
+    : strategy === "interactive-only"
+      ? [["lic", { interactive: true, timeoutMs }]]
+      : [["lic", { interactive: true, timeoutMs }], ["stdin", { interactive: true, viaStdin: true, hooks: false, warmup: false, timeoutMs: Math.min(timeoutMs, 4000) }],
+         ["path-only", { interactive: true, pathOnly: true, timeoutMs: Math.min(timeoutMs, 4000) }], ["lc", { interactive: false, timeoutMs: Math.min(timeoutMs, 4000) }]];
+  const trace = [];
+  let total = 0;
+  for (const [via, o] of steps) {
+    const r = await captureOnce({ ...common, ...o });
+    total += r.ms;
+    trace.push({ via, ok: r.ok, reason: r.reason, ms: Math.round(r.ms), stdoutHead: r.ok ? undefined : r.stdoutHead, stderrTail: r.ok ? undefined : r.stderrTail?.slice(-160) });
+    if (r.ok || r.timedOut) {
+      r.shellVia = found.via; r.via = via; r.trace = trace; r.ms = total;
+      r.degraded = r.ok && via === "lc" && steps.length > 1;
+      if (r.ok && via === "path-only") { r.envIsPathOnly = true; r.env = { ...baseEnv, PATH: r.env.PATH }; }
+      return r;
+    }
+  }
+  return { ok: false, reason: trace.at(-1).reason, shell: found.shell, shellVia: found.via, ms: total, trace };
 }
 
 // ---------- 5. 缓存 ----------

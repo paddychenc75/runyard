@@ -182,3 +182,22 @@ export async function runCase(def, kind, { cwdMode = "home", captureCwdMode = cw
     pathResolved: env?.PATH, fish, ctx, setupErrors: ctx.setupErrors,
   };
 }
+
+// 消融用：沙箱和对照只做一次，然后用多种解析策略分别解析
+export async function runCaseVariants(def, kind, variants, { cwdMode = "home", timeoutMs = 10000 } = {}) {
+  const shell = shellPath(kind);
+  if (!shell || (def.only && !def.only.includes(kind)) || (def.when && !def.when())) return null;
+  const ctx = makeSandbox(def.id, kind);
+  if (!def.noBrew) addBrew(ctx);
+  def.setup(ctx);
+  def.project?.(ctx);
+  ctx._finish();
+  const cwd = cwdMode === "project" ? ctx.project : ctx.home;
+  const gt = gtToTools(groundTruth(kind, ctx.home, cwd));
+  const out = {};
+  for (const [name, opts] of Object.entries(variants)) {
+    const res = await resolveLoginEnv({ baseEnv: finderEnv(ctx.home), cwd, shell, timeoutMs, ...opts });
+    out[name] = res.ok ? compareAll(gt, await detectAll(res.env, cwd)) : "RESOLVE-FAILED";
+  }
+  return out;
+}
