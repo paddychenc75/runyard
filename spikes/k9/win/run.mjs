@@ -202,6 +202,13 @@ try {
 
   }
 
+  if (want("bin-path-scan")) {
+    await exp("bin-path-scan", () => ({
+      "exe-ifo-quiet": B.pathLengthScan(ROOT, bin, cands["exe-ifo-quiet(UNDO|NOCONFIRM|SILENT|NOERRORUI)"], [200, 240, 259, 260, 261, 300, 400, 500, 520, 600, 800, 1000, 1500]),
+      "ps-visualbasic": B.pathLengthScan(ROOT, bin, cands["ps-visualbasic"], [240, 259, 260, 300, 400, 500, 600, 1000]),
+    }));
+  }
+
   // 单文件命令行里带着小工具：把 exe 以 base64 嵌进一个 .mjs，运行时写到临时目录再调用
   await exp("single-file-embed", () => {
     const b64 = fs.readFileSync(helperExe).toString("base64");

@@ -179,7 +179,18 @@ export function trial(root, bin, name, fn, kind, files, usePrefix = false) {
   if (oc.entry) {
     res.binSize = oc.entry.size;
     if (kind !== "longpath") res.restore = restore(oc.entry, dir, { hash, count });
-    else res.restore = restore(oc.entry, dir, { hash: sampleHash(dir), count: countEntries(dir) });
+    else {
+      // 超长路径场景：还原后看最深处的文件还在不在
+      try {
+        fs.renameSync(oc.entry.r, dir);
+        let deep = dir;
+        for (let i = 0; i < 12; i++) deep = path.join(deep, `segment-${i}-0123456789abcdef`);
+        res.restore = { restored: true, deepFileIntact: fs.existsSync(path.join(deep, "deep.txt")) && fs.readFileSync(path.join(deep, "deep.txt"), "utf8") === "deep\n" };
+        try { fs.unlinkSync(oc.entry.i); } catch {}
+      } catch (e) {
+        res.restore = { restored: false, err: e.code };
+      }
+    }
   }
   // 清理这一轮留下的东西（都在临时根内）
   try {
@@ -231,5 +242,44 @@ export function diagnose(root, bin, drive, helperExe) {
   out.psListBin = ps(`Get-ChildItem -Force '${bin.dir}' | Select-Object Name,Length | Format-Table -HideTableHeaders | Out-String`).stdout.trim().slice(0, 500);
   out.tinyVB = { status: r.status, verdict: outcome(bin, before, tiny).verdict, binAfter: sh(`dir /a /s "${bin.dir}"`).slice(0, 600) };
   if (fs.existsSync(tiny)) G.removeInRoot(tiny);
+  return out;
+}
+
+/** 找“路径多长时外壳开始静默永久删除”：造一个文件全路径长度恰为 L 的小目录，用安静的标志组合送回收站，看结果。 */
+export function pathLengthScan(root, bin, fn, lengths) {
+  const out = [];
+  for (const L of lengths) {
+    const dir = path.join(root, G.newName("scan"));
+    G.assertInRoot(dir);
+    fs.mkdirSync(dir);
+    fs.writeFileSync(path.join(dir, G.MARKER), G.token() + "\n");
+    let cur = dir;
+    const fileName = "deep.txt";
+    // 一段一段往下加，最后一段补齐到总长 L
+    while (path.join(cur, fileName).length + 21 < L) cur = path.join(cur, "seg-0123456789abcdef");
+    const remain = L - path.join(cur, fileName).length - 1;
+    if (remain >= 1) cur = path.join(cur, "x".repeat(remain));
+    fs.mkdirSync(cur, { recursive: true });
+    const f = path.join(cur, fileName);
+    fs.writeFileSync(f, "payload-" + L + "\n");
+    const before = binEntries(bin).items;
+    const t0 = now();
+    const r = fn(dir);
+    const ms = round(now() - t0);
+    const oc = outcome(bin, before, dir);
+    const row = { fileLen: f.length, ms, status: r.status, verdict: oc.verdict };
+    if (oc.entry) {
+      row.binSize = oc.entry.size;
+      try {
+        fs.renameSync(oc.entry.r, dir);
+        row.restored = fs.existsSync(f) && fs.readFileSync(f, "utf8") === "payload-" + L + "\n";
+        try { fs.unlinkSync(oc.entry.i); } catch {}
+      } catch (e) {
+        row.restoreErr = e.code;
+      }
+    }
+    try { if (fs.existsSync(dir)) G.removeInRoot(dir); } catch (e) { row.cleanupErr = e.code; }
+    out.push(row);
+  }
   return out;
 }
