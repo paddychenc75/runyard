@@ -202,6 +202,19 @@ try {
 
   }
 
+  await exp("rm-30k-direct-delete", () => {
+    // §12 第 16 项的对照：依赖目录直接删除要多久（只对本脚本自己造的临时树做）
+    const r = [];
+    for (let i = 0; i < 3; i++) {
+      const d = path.join(ROOT, G.newName("rm"));
+      makeTree(d, { files: QUICK ? 2000 : 30000, symlinks: false, xattrs: false, bigMB: 1, deep: false });
+      const t = now();
+      G.removeInRoot(d);
+      r.push(round(now() - t));
+    }
+    return { rmMsPerRun: r, note: "removeInRoot = 先放开只读再 fs.rmSync；Defender 实时保护在运行器上是关的" };
+  });
+
   if (want("bin-path-scan")) {
     await exp("bin-path-scan", () => ({
       "exe-ifo-quiet": B.pathLengthScan(ROOT, bin, cands["exe-ifo-quiet(UNDO|NOCONFIRM|SILENT|NOERRORUI)"], [200, 240, 259, 260, 261, 300, 400, 500, 520, 600, 800, 1000, 1500]),
