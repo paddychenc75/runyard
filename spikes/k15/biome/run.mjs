@@ -16,7 +16,7 @@ const biomeJs = join(tool, "node_modules/@biomejs/biome/bin/biome");
 const biomeRun = (args, opts) => run(process.execPath, [biomeJs, ...args], opts);
 const version = biomeRun(["--version"]).out.trim();
 
-const categoryOf = (c) => ({ "lint/style/noJsxLiterals": "jsx", plugin: "attr", "lint/style/noRestrictedImports": "imports", "lint/correctness/noNodejsModules": "node" })[c] ?? c;
+const categoryOf = (c) => ({ "lint/style/noJsxLiterals": "jsx", plugin: "grit", "lint/style/noRestrictedImports": "imports", "lint/correctness/noNodejsModules": "node" })[c] ?? c;
 const walk = (d) => readdirSync(d).flatMap((f) => (statSync(join(d, f)).isDirectory() ? walk(join(d, f)) : [join(d, f)]));
 
 function evaluate(label, mutate = (dir) => {}) {

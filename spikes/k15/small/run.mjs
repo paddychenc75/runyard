@@ -73,14 +73,27 @@ function sample(port) {
       const ws = (extra) => `storeDir: ${dir}/.store\ncacheDir: ${dir}/.cache\nminimumReleaseAge: 0\n${extra}`;
       write(dir, "package.json", JSON.stringify({ name: "t", private: true, version: "1.0.0", dependencies: { "is-number": "7.0.0" } }));
       write(dir, "pnpm-workspace.yaml", ws(before));
-      const first = run("pnpm", ["install"], { cwd: dir, env: { CI: "" } });
+      const first = run("pnpm", ["install"], { cwd: dir, env: { CI: "", GITHUB_ACTIONS: "" } });
       write(dir, "pnpm-workspace.yaml", ws(after));
-      const env = { CI: ci, ...(label.includes("环境变量") ? { npm_config_confirm_modules_purge: "false" } : {}) };
+      // GitHub 的机器上还会设 GITHUB_ACTIONS，pnpm（ci-info）靠它也认出“在 CI 里”，所以一并清掉，才能测“真的没有 CI”
+      const env = { CI: ci, GITHUB_ACTIONS: ci ? "true" : "", ...(label.includes("环境变量") ? { npm_config_confirm_modules_purge: "false" } : {}) };
       const r = run("pnpm", ["install", ...extra], { cwd: dir, env, input: "" });
       out[`${name} / ${label}`] = { firstInstall: first.code, code: r.code, text: tail(r.out.replace(/\s+\n/g, "\n"), 5).slice(0, 420) };
     }
   }
   results.pnpmNoTty = out;
+}
+
+// 4) Windows：Node 能不能直接执行 .cmd 垫片（pnpm 在 Windows 上是 pnpm.cmd）
+if (process.platform === "win32") {
+  const { spawnSync } = await import("node:child_process");
+  const probe = (cmd, args, opts = {}) => { const r = spawnSync(cmd, args, { encoding: "utf8", ...opts }); return { status: r.status, errorCode: r.error?.code ?? null, errorMessage: r.error?.message?.slice(0, 120) ?? null, stdout: (r.stdout ?? "").trim().slice(0, 40) }; };
+  results.windowsCmdSpawn = {
+    "spawnSync('pnpm', ['-v'])（无 shell）": probe("pnpm", ["-v"]),
+    "spawnSync('pnpm.cmd', ['-v'])（无 shell）": probe("pnpm.cmd", ["-v"]),
+    "spawnSync('pnpm', ['-v'], {shell:true})": probe("pnpm", ["-v"], { shell: true }),
+    "spawnSync('cmd.exe', ['/d','/s','/c','pnpm -v'])": probe("cmd.exe", ["/d", "/s", "/c", "pnpm -v"]),
+  };
 }
 
 saveResult(`small-${process.platform}`, results);

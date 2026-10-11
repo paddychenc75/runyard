@@ -10,6 +10,8 @@
     "biome": "node biome/run.mjs",
     "release": "node release-please/run.mjs",
     "osv": "node osv/run.mjs",
-    "audit": "node audit/run.mjs"
+    "audit": "node audit/run.mjs",
+    "all": "node pnpm/run.mjs && node audit/run.mjs && node node-ts/run.mjs && node biome/run.mjs && node release-please/run.mjs && node osv/run.mjs && node small/run.mjs && node small/vite-hmr.mjs && node small/zod-jsonschema.mjs",
+    "small": "node small/run.mjs"
   }
 }

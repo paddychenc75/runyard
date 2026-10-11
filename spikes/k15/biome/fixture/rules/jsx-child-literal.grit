@@ -1,0 +1,12 @@
+// 技术设计 §6.8 第 1 层的补充：JSX 子节点里的字符串字面量表达式（{"文字"}、{`模板`}、{c ? "是" : t("x")}、{a || "默认"}）。
+// 用它代替 noJsxLiterals 的 noStrings:true——后者会把 t("key") 的参数也当成界面文字拦下（见 README）。
+JsxExpressionChild(expression=$e) as $c where {
+  $e <: or {
+    JsStringLiteralExpression(),
+    JsTemplateExpression(),
+    JsConditionalExpression(consequent=JsStringLiteralExpression()),
+    JsConditionalExpression(alternate=JsStringLiteralExpression()),
+    JsLogicalExpression(right=JsStringLiteralExpression())
+  },
+  register_diagnostic(span=$c, message="JSX 里不许直接写字符串字面量，文字走 t()。", severity="error")
+}

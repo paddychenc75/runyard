@@ -131,5 +131,9 @@ await S("L 1.x：feat! -> major", { start: "1.2.0", commits: [{ message: "feat(c
 await S("M 只改了 apps/desktop 和 packages/cli 下的文件（单版本号应当照常发版）", { commits: [{ message: "fix(desktop): 修复窗口闪烁", file: "apps/desktop/src/a.ts" }, { message: "feat(cli): 增加 doctor 命令", file: "packages/cli/src/b.ts" }] });
 await S("N 自定义中文章节标题", { commits: [{ message: "feat(core): 增加运行状态机" }, { message: "fix(platform): 修复路径问题" }, { message: "perf(core): 加快启动" }], config: baseConfig({ "changelog-sections": [{ type: "feat", section: "新功能" }, { type: "fix", section: "修复" }, { type: "perf", section: "性能" }, { type: "chore", section: "杂项", hidden: true }] }) });
 await S("O 提交主题带 PR 号（squash 合并的真实形态）", { commits: [{ message: "feat(core): 增加运行状态机 (#12)" }] });
+await S("P 冒号后没有空格 “feat(core):增加”（PR 标题检查会先拦下）", { commits: [{ message: "feat(core):增加运行状态机" }] });
+await S("Q 大写类型 “Feat(core): 增加”（PR 标题检查会先拦下）", { commits: [{ message: "Feat(core): 增加运行状态机" }] });
+await S("R 页脚写成 BREAKING-CHANGE（连字符）", { commits: [{ message: "fix(core): 修复崩溃\n\nBREAKING-CHANGE: 配置文件格式改变" }] });
+await S("S 感叹号加页脚都写（不应重复计）", { commits: [{ message: "feat(core)!: 去掉旧接口\n\nBREAKING CHANGE: 旧接口不再可用" }] });
 saveResult(`release-please-${process.platform}`, results);
 for (const s of results.scenarios) console.log(`${s.name} => ${s.nextVersion ?? s.result ?? s.error}`);

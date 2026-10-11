@@ -1,7 +1,7 @@
 {
   "node": "v24.21.0",
   "releasePlease": "17.11.2",
-  "when": "2026-10-11T23:06:18.583Z",
+  "when": "2026-10-11T23:25:34.750Z",
   "scenarios": [
     {
       "name": "A feat（0.x，patch-for-minor）",
@@ -22,7 +22,7 @@
       "changelogBody": [
         "## [0.3.1](https://github.com/local/runyard/compare/v0.3.0...v0.3.1) (2026-10-11)",
         "### Features",
-        "* **core:** 增加运行状态机 ([ed210f9](https://github.com/local/runyard/commit/ed210f919a7810a6b929746fa8f4dc41d0d51af7))",
+        "* **core:** 增加运行状态机 ([44536bd](https://github.com/local/runyard/commit/44536bd436568b67b7cc9e92b132acb5b60ce219))",
         "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
       ]
     },
@@ -45,7 +45,7 @@
       "changelogBody": [
         "## [0.4.0](https://github.com/local/runyard/compare/v0.3.0...v0.4.0) (2026-10-11)",
         "### Features",
-        "* **core:** 增加运行状态机 ([a12b995](https://github.com/local/runyard/commit/a12b99522ffcc86bda79fbb46d8fc355f53484ae))",
+        "* **core:** 增加运行状态机 ([1427c9f](https://github.com/local/runyard/commit/1427c9f78f373ac2dbf3bd6d231c4a7f1cd9d735))",
         "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
       ]
     },
@@ -68,7 +68,7 @@
       "changelogBody": [
         "## [0.3.1](https://github.com/local/runyard/compare/v0.3.0...v0.3.1) (2026-10-11)",
         "### Bug Fixes",
-        "* **platform:** 修复 Windows 上进程树未完全结束 ([d5c4397](https://github.com/local/runyard/commit/d5c4397b7af21ec7770f00090bfbf3f0f7113a42))",
+        "* **platform:** 修复 Windows 上进程树未完全结束 ([a7ce3f3](https://github.com/local/runyard/commit/a7ce3f32f8fabc74a42a0422f2795191602cb250))",
         "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
       ]
     },
@@ -93,7 +93,7 @@
         "### ⚠ BREAKING CHANGES",
         "* **cli:** 移除旧命令",
         "### Features",
-        "* **cli:** 移除旧命令 ([92e7add](https://github.com/local/runyard/commit/92e7add99a65808d240c78e11a9520a5634dbee7))",
+        "* **cli:** 移除旧命令 ([05c4c58](https://github.com/local/runyard/commit/05c4c58c0029bb088cdf8de40dfe781548fd6169))",
         "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
       ]
     },
@@ -118,7 +118,7 @@
         "### ⚠ BREAKING CHANGES",
         "* **core:** 配置文件格式改变，需要重新生成",
         "### Bug Fixes",
-        "* **core:** 修复崩溃 ([9b2da95](https://github.com/local/runyard/commit/9b2da95eb82249210068e4e511085bdd4ff2d203))",
+        "* **core:** 修复崩溃 ([89fdea0](https://github.com/local/runyard/commit/89fdea0347f5bacff5c77df1f515fda39a1efb22))",
         "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
       ]
     },
@@ -141,7 +141,7 @@
       "changelogBody": [
         "## [0.3.1](https://github.com/local/runyard/compare/v0.3.0...v0.3.1) (2026-10-11)",
         "### Bug Fixes",
-        "* **core:** 修复崩溃 ([7c8ef25](https://github.com/local/runyard/commit/7c8ef255d3ce4db104b4f1340a0cfac79eb6abe2))",
+        "* **core:** 修复崩溃 ([ed2d88c](https://github.com/local/runyard/commit/ed2d88c852298259b9df31131bd7e6d25cf146da))",
         "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
       ]
     },
@@ -174,9 +174,9 @@
       "changelogBody": [
         "## [0.3.1](https://github.com/local/runyard/compare/v0.3.0...v0.3.1) (2026-10-11)",
         "### Features",
-        "* **core:** 增加运行状态机 ([81ba4aa](https://github.com/local/runyard/commit/81ba4aa4a96c55628cbc8f941c20bb17cb8035d5))",
+        "* **core:** 增加运行状态机 ([b672349](https://github.com/local/runyard/commit/b6723492cd77100284d6681e327b7576ba11852a))",
         "### Bug Fixes",
-        "* **platform:** 修复路径问题 ([ca8bb3b](https://github.com/local/runyard/commit/ca8bb3b56b74044655172937d4edc3de82ad3fd9))",
+        "* **platform:** 修复路径问题 ([85c20da](https://github.com/local/runyard/commit/85c20daeb1bab49aaaedc5779091311e991459aa))",
         "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
       ]
     },
@@ -199,7 +199,7 @@
       "changelogBody": [
         "## [0.3.1](https://github.com/local/runyard/compare/v0.3.0...v0.3.1) (2026-10-11)",
         "### Features",
-        "* 新增示例模板 ([7be13e5](https://github.com/local/runyard/commit/7be13e5e33f2ceee912dd23f14f23db6a34a6a5a))",
+        "* 新增示例模板 ([0bd62e9](https://github.com/local/runyard/commit/0bd62e94beadc5f66d5d6a00bd3a798ec177edb7))",
         "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
       ]
     },
@@ -222,7 +222,7 @@
       "changelogBody": [
         "## [1.3.0](https://github.com/local/runyard/compare/v1.2.0...v1.3.0) (2026-10-11)",
         "### Features",
-        "* **core:** 增加运行状态机 ([346f6cf](https://github.com/local/runyard/commit/346f6cf6e23021df885c874970ba0395adab4915))",
+        "* **core:** 增加运行状态机 ([dd9f22a](https://github.com/local/runyard/commit/dd9f22a1b46c63117080558c737be9bb5b6ba0f7))",
         "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
       ]
     },
@@ -245,7 +245,7 @@
       "changelogBody": [
         "## [1.2.1](https://github.com/local/runyard/compare/v1.2.0...v1.2.1) (2026-10-11)",
         "### Bug Fixes",
-        "* **core:** 修复崩溃 ([47a0778](https://github.com/local/runyard/commit/47a07784b17cca090bd9e957dbf0b6baf10cc147))",
+        "* **core:** 修复崩溃 ([a1cd7a5](https://github.com/local/runyard/commit/a1cd7a5048ce6e2b5f049303c9472805bf7e0e01))",
         "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
       ]
     },
@@ -270,7 +270,7 @@
         "### ⚠ BREAKING CHANGES",
         "* **core:** 去掉旧接口",
         "### Features",
-        "* **core:** 去掉旧接口 ([ea2c952](https://github.com/local/runyard/commit/ea2c95241fb9324ce4c0c045bbb1626fa7c4b89d))",
+        "* **core:** 去掉旧接口 ([4196f69](https://github.com/local/runyard/commit/4196f69e0f170845fdac0a3891b8fd73ee683d3a))",
         "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
       ]
     },
@@ -293,9 +293,9 @@
       "changelogBody": [
         "## [0.3.1](https://github.com/local/runyard/compare/v0.3.0...v0.3.1) (2026-10-11)",
         "### Features",
-        "* **cli:** 增加 doctor 命令 ([a675702](https://github.com/local/runyard/commit/a67570279eb4012911324428d561045dac2b09b9))",
+        "* **cli:** 增加 doctor 命令 ([81239fc](https://github.com/local/runyard/commit/81239fcfeb8c6e634c1035289a3c3b8b13e6f294))",
         "### Bug Fixes",
-        "* **desktop:** 修复窗口闪烁 ([4d9a54f](https://github.com/local/runyard/commit/4d9a54f2892a273ecb6990953601383db4c9cd0a))",
+        "* **desktop:** 修复窗口闪烁 ([4585a79](https://github.com/local/runyard/commit/4585a79bb4b17b68b43335b7f001a53275516e79))",
         "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
       ]
     },
@@ -318,11 +318,11 @@
       "changelogBody": [
         "## [0.3.1](https://github.com/local/runyard/compare/v0.3.0...v0.3.1) (2026-10-11)",
         "### 新功能",
-        "* **core:** 增加运行状态机 ([ca0a380](https://github.com/local/runyard/commit/ca0a3800a707ef6856925862887917d90de93e87))",
+        "* **core:** 增加运行状态机 ([6f19a93](https://github.com/local/runyard/commit/6f19a9379a80e21ad5da8d6d24e525b1375a2213))",
         "### 修复",
-        "* **platform:** 修复路径问题 ([efccd4b](https://github.com/local/runyard/commit/efccd4b6562c4f0abf61961f894510e6bfc3e152))",
+        "* **platform:** 修复路径问题 ([1840db9](https://github.com/local/runyard/commit/1840db9a1e9504b86d05c3350f66ea61da07c26a))",
         "### 性能",
-        "* **core:** 加快启动 ([b922724](https://github.com/local/runyard/commit/b9227246e165d1e3a9ec0f3fe1f503f9c3078abd))",
+        "* **core:** 加快启动 ([6441649](https://github.com/local/runyard/commit/6441649cf762953af932d5696d132ec988b1105b))",
         "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
       ]
     },
@@ -345,7 +345,103 @@
       "changelogBody": [
         "## [0.3.1](https://github.com/local/runyard/compare/v0.3.0...v0.3.1) (2026-10-11)",
         "### Features",
-        "* **core:** 增加运行状态机 ([#12](https://github.com/local/runyard/issues/12)) ([aa7a139](https://github.com/local/runyard/commit/aa7a1396479ab555db12ced9329109e6cee0ac85))",
+        "* **core:** 增加运行状态机 ([#12](https://github.com/local/runyard/issues/12)) ([5e4b5a5](https://github.com/local/runyard/commit/5e4b5a53adf11dc5060f8e14964a8a4540369408))",
+        "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
+      ]
+    },
+    {
+      "name": "P 冒号后没有空格 “feat(core):增加”（PR 标题检查会先拦下）",
+      "start": "0.3.0",
+      "nextVersion": "0.3.1",
+      "title": "chore(main): release 0.3.1",
+      "updatedFiles": [
+        ".release-please-manifest.json",
+        "CHANGELOG.md",
+        "apps/desktop/package.json",
+        "changelog.json",
+        "npm-shrinkwrap.json",
+        "package-lock.json",
+        "package.json",
+        "packages/cli/package.json",
+        "samples/package.json"
+      ],
+      "changelogBody": [
+        "## [0.3.1](https://github.com/local/runyard/compare/v0.3.0...v0.3.1) (2026-10-11)",
+        "### Features",
+        "* **core:** 增加运行状态机 ([a435702](https://github.com/local/runyard/commit/a4357022bfabdeb68131a409a98267bb8d648bd5))",
+        "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
+      ]
+    },
+    {
+      "name": "Q 大写类型 “Feat(core): 增加”（PR 标题检查会先拦下）",
+      "start": "0.3.0",
+      "nextVersion": "0.3.1",
+      "title": "chore(main): release 0.3.1",
+      "updatedFiles": [
+        ".release-please-manifest.json",
+        "CHANGELOG.md",
+        "apps/desktop/package.json",
+        "changelog.json",
+        "npm-shrinkwrap.json",
+        "package-lock.json",
+        "package.json",
+        "packages/cli/package.json",
+        "samples/package.json"
+      ],
+      "changelogBody": [
+        "## [0.3.1](https://github.com/local/runyard/compare/v0.3.0...v0.3.1) (2026-10-11)",
+        "### Features",
+        "* **core:** 增加运行状态机 ([88b8f47](https://github.com/local/runyard/commit/88b8f4713d8513f47a1fc7fcc6d6d795b3400c1c))",
+        "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
+      ]
+    },
+    {
+      "name": "R 页脚写成 BREAKING-CHANGE（连字符）",
+      "start": "0.3.0",
+      "nextVersion": "0.4.0",
+      "title": "chore(main): release 0.4.0",
+      "updatedFiles": [
+        ".release-please-manifest.json",
+        "CHANGELOG.md",
+        "apps/desktop/package.json",
+        "changelog.json",
+        "npm-shrinkwrap.json",
+        "package-lock.json",
+        "package.json",
+        "packages/cli/package.json",
+        "samples/package.json"
+      ],
+      "changelogBody": [
+        "## [0.4.0](https://github.com/local/runyard/compare/v0.3.0...v0.4.0) (2026-10-11)",
+        "### ⚠ BREAKING CHANGES",
+        "* **core:** 配置文件格式改变",
+        "### Bug Fixes",
+        "* **core:** 修复崩溃 ([b91095e](https://github.com/local/runyard/commit/b91095e0863a45e65cb1c3bc8e40dc231eabc4a3))",
+        "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
+      ]
+    },
+    {
+      "name": "S 感叹号加页脚都写（不应重复计）",
+      "start": "0.3.0",
+      "nextVersion": "0.4.0",
+      "title": "chore(main): release 0.4.0",
+      "updatedFiles": [
+        ".release-please-manifest.json",
+        "CHANGELOG.md",
+        "apps/desktop/package.json",
+        "changelog.json",
+        "npm-shrinkwrap.json",
+        "package-lock.json",
+        "package.json",
+        "packages/cli/package.json",
+        "samples/package.json"
+      ],
+      "changelogBody": [
+        "## [0.4.0](https://github.com/local/runyard/compare/v0.3.0...v0.4.0) (2026-10-11)",
+        "### ⚠ BREAKING CHANGES",
+        "* **core:** 旧接口不再可用",
+        "### Features",
+        "* **core:** 去掉旧接口 ([4a4ce55](https://github.com/local/runyard/commit/4a4ce5516d31765126f8afebbef036058804cc67))",
         "This PR was generated with [Release Please](https://github.com/googleapis/release-please). See [documentation](https://github.com/googleapis/release-please#release-please)."
       ]
     }

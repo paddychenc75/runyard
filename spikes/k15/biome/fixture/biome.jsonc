@@ -16,7 +16,7 @@
         }
       },
       // 第 2 层的 Biome 部分：GritQL 自定义规则
-      "plugins": ["./rules/native-attr-literal.grit"]
+      "plugins": ["./rules/native-attr-literal.grit", "./rules/jsx-child-literal.grit"]
     },
     {
       "includes": ["packages/**"],

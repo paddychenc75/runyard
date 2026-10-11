@@ -1,6 +1,6 @@
 {
   "node": "v24.21.0",
-  "when": "2026-10-11T22:58:59.248Z",
+  "when": "2026-10-11T23:26:06.559Z",
   "install": {
     "code": 0
   },
@@ -31,7 +31,7 @@
     },
     "4b 导入 enum，加 --experimental-transform-types": {
       "code": 0,
-      "out": "1\n(node:42843) ExperimentalWarning: Transform Types is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)"
+      "out": "1\n(node:8785) ExperimentalWarning: Transform Types is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)"
     },
     "5 导入 namespace（有运行时代码）": {
       "code": 1,
@@ -43,7 +43,7 @@
     },
     "7 包内相对导入不写 .ts 扩展名": {
       "code": 1,
-      "out": "    at ModuleJob.link (node:internal/modules/esm/module_job:381:17) {\n  code: 'ERR_MODULE_NOT_FOUND',\n  url: 'file:///private/var/folders/d7/sf0fm6j14gz5736y52xg9mm40000gn/T/k15-nodets-cYxxyr/packages/a/src/helper'\n}\n\nNode.js v24.21.0"
+      "out": "    at ModuleJob.link (node:internal/modules/esm/module_job:381:17) {\n  code: 'ERR_MODULE_NOT_FOUND',\n  url: 'file:///private/var/folders/d7/sf0fm6j14gz5736y52xg9mm40000gn/T/k15-nodets-88rPLf/packages/a/src/helper'\n}\n\nNode.js v24.21.0"
     },
     "8 b 自己的文件里用 as / satisfies / 泛型 / 可选参数（可擦除语法）": {
       "code": 0,
@@ -55,7 +55,7 @@
     },
     "10 相对导入不写扩展名": {
       "code": 1,
-      "out": "    at ModuleJob.link (node:internal/modules/esm/module_job:381:17) {\n  code: 'ERR_MODULE_NOT_FOUND',\n  url: 'file:///private/var/folders/d7/sf0fm6j14gz5736y52xg9mm40000gn/T/k15-nodets-cYxxyr/packages/b/lib'\n}\n\nNode.js v24.21.0"
+      "out": "    at ModuleJob.link (node:internal/modules/esm/module_job:381:17) {\n  code: 'ERR_MODULE_NOT_FOUND',\n  url: 'file:///private/var/folders/d7/sf0fm6j14gz5736y52xg9mm40000gn/T/k15-nodets-88rPLf/packages/b/lib'\n}\n\nNode.js v24.21.0"
     },
     "11 tsconfig paths 别名（Node 不认）": {
       "code": 1,
@@ -67,7 +67,7 @@
     },
     "13 包没有 type: module，.ts 里写 ESM 导入": {
       "code": 0,
-      "out": "(node:42941) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///private/var/folders/d7/sf0fm6j14gz5736y52xg9mm40000gn/T/k15-nodets-cYxxyr/nt/t13.ts is not specified and it doesn't parse as CommonJS.\nReparsing as ES module because module syntax was detected. This incurs a performance overhead.\nTo eliminate this warning, add \"type\": \"module\" to /private/var/folders/d7/sf0fm6j14gz5736y52xg9mm40000gn/T/k15-nodets-cYxxyr/nt/package.json.\n(Use `node --trace-warnings ...` to show where the "
+      "out": "(node:8875) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///private/var/folders/d7/sf0fm6j14gz5736y52xg9mm40000gn/T/k15-nodets-88rPLf/nt/t13.ts is not specified and it doesn't parse as CommonJS.\nReparsing as ES module because module syntax was detected. This incurs a performance overhead.\nTo eliminate this warning, add \"type\": \"module\" to /private/var/folders/d7/sf0fm6j14gz5736y52xg9mm40000gn/T/k15-nodets-88rPLf/nt/package.json.\n(Use `node --trace-warnings ...` to show where the w"
     }
   },
   "syntaxCheck": {
@@ -89,7 +89,7 @@
       "enum -> ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX",
       "bad -> ERR_INVALID_TYPESCRIPT_SYNTAX",
       "features.typescript = strip",
-      "(node:42981) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time",
+      "(node:8915) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time",
       "(Use `node --trace-warnings ...` to show where the warning was created)"
     ]
   }

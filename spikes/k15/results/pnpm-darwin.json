@@ -1,7 +1,194 @@
 {
   "node": "v24.21.0",
   "pnpm": "11.28.0",
-  "when": "2026-10-11T22:54:41.845Z",
+  "when": "2026-10-11T23:20:16.997Z",
+  "allowBuilds": {
+    "不写任何设置": {
+      "code": 1,
+      "errors": [
+        "[ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: esbuild@0.25.12"
+      ],
+      "postinstallRan": false
+    },
+    "allowBuilds: {esbuild: true}": {
+      "code": 0,
+      "errors": [
+        ".../esbuild@0.25.12/node_modules/esbuild postinstall$ node install.js",
+        ".../esbuild@0.25.12/node_modules/esbuild postinstall: Done"
+      ],
+      "postinstallRan": true
+    },
+    "allowBuilds: {esbuild: false}": {
+      "code": 0,
+      "errors": [
+        ""
+      ],
+      "postinstallRan": false
+    },
+    "旧写法 onlyBuiltDependencies": {
+      "code": 1,
+      "errors": [
+        "[ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: esbuild@0.25.12"
+      ],
+      "postinstallRan": false
+    },
+    "strictDepBuilds: false（不写 allowBuilds）": {
+      "code": 0,
+      "errors": [
+        "Ignored build scripts: esbuild@0.25.12."
+      ],
+      "postinstallRan": false
+    }
+  },
+  "minimumReleaseAge": {
+    "createLockWithAge0": {
+      "code": 0,
+      "errors": [
+        ""
+      ]
+    },
+    "lockHasZod466": true,
+    "frozenInstallWithFreshLockedVersion": {
+      "code": 1,
+      "errors": [
+        "[ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION] 1 lockfile entries failed verification:"
+      ]
+    },
+    "plainInstallWithFreshLockedVersion": {
+      "code": 1,
+      "errors": [
+        "[ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION] 1 lockfile entries failed verification:"
+      ]
+    },
+    "lockfileOnlyReresolve": {
+      "code": 1,
+      "errors": [
+        "[WARN] using --force I sure hope you know what you are doing",
+        "[ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION] 1 lockfile entries failed verification:"
+      ]
+    },
+    "freshResolveFreshVersion": {
+      "code": 1,
+      "errors": [
+        "[ERR_PNPM_NO_MATURE_MATCHING_VERSION] 1 version does not meet the minimumReleaseAge constraint:"
+      ]
+    },
+    "addOldVersion_zod465": {
+      "code": 0,
+      "errors": [
+        ""
+      ]
+    },
+    "addRangeLatest_zod": {
+      "code": 0,
+      "errors": [
+        ""
+      ]
+    },
+    "addRangeLatest_zodVersion": "^4.6.5",
+    "excludeVersionEntry_addFresh": {
+      "code": 0,
+      "errors": [
+        ""
+      ]
+    },
+    "excludeBareNameEntry_addFresh": {
+      "code": 0,
+      "errors": [
+        ""
+      ]
+    }
+  },
+  "excludePrune": {
+    "install / prune=true": {
+      "code": 0,
+      "entriesBefore": [
+        "zod@4.6.5",
+        "zod@4.6.6",
+        "ms",
+        "left-pad@1.3.0",
+        "no-such-package-xyz@1.0.0"
+      ],
+      "entriesAfter": [
+        "zod@4.6.5"
+      ],
+      "errors": [
+        ""
+      ]
+    },
+    "install / prune=false": {
+      "code": 0,
+      "entriesBefore": [
+        "zod@4.6.5",
+        "zod@4.6.6",
+        "ms",
+        "left-pad@1.3.0",
+        "no-such-package-xyz@1.0.0"
+      ],
+      "entriesAfter": [
+        "zod@4.6.5",
+        "zod@4.6.6",
+        "ms",
+        "left-pad@1.3.0",
+        "no-such-package-xyz@1.0.0"
+      ],
+      "errors": [
+        ""
+      ]
+    },
+    "add / prune=true": {
+      "code": 0,
+      "entriesBefore": [
+        "zod@4.6.5",
+        "zod@4.6.6",
+        "ms",
+        "left-pad@1.3.0",
+        "no-such-package-xyz@1.0.0"
+      ],
+      "entriesAfter": [
+        "zod@4.6.5"
+      ],
+      "errors": [
+        ""
+      ]
+    },
+    "add / prune=false": {
+      "code": 0,
+      "entriesBefore": [
+        "zod@4.6.5",
+        "zod@4.6.6",
+        "ms",
+        "left-pad@1.3.0",
+        "no-such-package-xyz@1.0.0"
+      ],
+      "entriesAfter": [
+        "zod@4.6.5",
+        "zod@4.6.6",
+        "ms",
+        "left-pad@1.3.0",
+        "no-such-package-xyz@1.0.0"
+      ],
+      "errors": [
+        ""
+      ]
+    },
+    "在用且不满14天：add zod@4.6.6": {
+      "code": 0,
+      "errors": [
+        ""
+      ]
+    },
+    "在用且不满14天：之后 install，条目还在吗": {
+      "code": 0,
+      "entries": [
+        "zod@4.6.6"
+      ]
+    },
+    "升级到 zod@4.6.5 之后（锁文件不再用 4.6.6）": {
+      "code": 0,
+      "entries": []
+    }
+  },
   "trustPolicy": {
     "repoCopyFiles": [
       "package.json",
@@ -45,8 +232,8 @@
       "errors": [
         "[WARN] 28 deprecated subdependencies found: @yuku-codegen/binding-android-arm64@0.10.2, @yuku-codegen/binding-darwin-arm64@0.10.2, @yuku-codegen/binding-darwin-x64@0.10.2, @yuku-codegen/binding-freebsd-x64@0.10.2, @yuku-codegen/binding-linux-arm-gnu@0.10.2, @yuku-codegen/binding-linux-arm-musl@0.10.2, @yuku-codegen/binding-linux-arm64-gnu@0.10.2, @yuku-codegen/binding-linux-arm64-musl@0.10.2, @yuku-codegen/binding-linux-x64-gnu@0.10.2, @yuku-codegen/binding-linux-x64-musl@0.10.2, @yuku-codegen/binding-win32-arm64@0.10.2, @yuku-codegen/binding-win32-x64@0.10.2, @yuku-parser/binding-android-arm64@0.10.2, @yuku-parser/binding-darwin-arm64@0.10.2, @yuku-parser/binding-darwin-x64@0.10.2, @yuku-parser/binding-freebsd-x64@0.10.2, @yuku-parser/binding-linux-arm-gnu@0.10.2, @yuku-parser/binding-linux-arm-musl@0.10.2, @yuku-parser/binding-linux-arm64-gnu@0.10.2, @yuku-parser/binding-linux-arm64-musl@0.10.2, @yuku-parser/binding-linux-x64-gnu@0.10.2, @yuku-parser/binding-linux-x64-musl@0.10.2, @yuku-parser/binding-win32-arm64@0.10.2, @yuku-parser/binding-win32-x64@0.10.2, boolean@3.2.0, glob@7.2.3, inflight@1.0.6, rimraf@2.6.3"
       ],
-      "seconds": 14,
-      "tail": "Progress: resolved 899, reused 0, downloaded 0, added 0\nProgress: resolved 908, reused 0, downloaded 0, added 0\n[WARN] 28 deprecated subdependencies found: @yuku-codegen/binding-android-arm64@0.10.2, @yuku-codegen/binding-darwin-arm64@0.10.2, @yuku-codegen/binding-darwin-x64@0.10.2, @yuku-codegen/binding-freebsd-x64@0.10.2, @yuku-codegen/binding-linux-arm-gnu@0.10.2, @yuku-codegen/binding-linux-arm-musl@0.10.2, @yuku-codegen/binding-linux-arm64-gnu@0.10.2, @yuku-codegen/binding-linux-arm64-musl@0.10.2, @yuku-codegen/binding-linux-x64-gnu@0.10.2, @yuku-codegen/binding-linux-x64-musl@0.10.2, @yuku-codegen/binding-win32-arm64@0.10.2, @yuku-codegen/binding-win32-x64@0.10.2, @yuku-parser/binding-android-arm64@0.10.2, @yuku-parser/binding-darwin-arm64@0.10.2, @yuku-parser/binding-darwin-x64@0.10.2, @yuku-parser/binding-freebsd-x64@0.10.2, @yuku-parser/binding-linux-arm-gnu@0.10.2, @yuku-parser/binding-linux-arm-musl@0.10.2, @yuku-parser/binding-linux-arm64-gnu@0.10.2, @yuku-parser/binding-linux-arm64-musl@0.10.2, @yuku-parser/binding-linux-x64-gnu@0.10.2, @yuku-parser/binding-linux-x64-musl@0.10.2, @yuku-parser/binding-win32-arm64@0.10.2, @yuku-parser/binding-win32-x64@0.10.2, boolean@3.2.0, glob@7.2.3, inflight@1.0.6, rimraf@2.6.3\nProgress: resolved 909, reused 0, downloaded 0, added 0, done\n\nDone in 13.9s using pnpm v11.28.0"
+      "seconds": 13,
+      "tail": "Progress: resolved 899, reused 0, downloaded 0, added 0\nProgress: resolved 908, reused 0, downloaded 0, added 0\n[WARN] 28 deprecated subdependencies found: @yuku-codegen/binding-android-arm64@0.10.2, @yuku-codegen/binding-darwin-arm64@0.10.2, @yuku-codegen/binding-darwin-x64@0.10.2, @yuku-codegen/binding-freebsd-x64@0.10.2, @yuku-codegen/binding-linux-arm-gnu@0.10.2, @yuku-codegen/binding-linux-arm-musl@0.10.2, @yuku-codegen/binding-linux-arm64-gnu@0.10.2, @yuku-codegen/binding-linux-arm64-musl@0.10.2, @yuku-codegen/binding-linux-x64-gnu@0.10.2, @yuku-codegen/binding-linux-x64-musl@0.10.2, @yuku-codegen/binding-win32-arm64@0.10.2, @yuku-codegen/binding-win32-x64@0.10.2, @yuku-parser/binding-android-arm64@0.10.2, @yuku-parser/binding-darwin-arm64@0.10.2, @yuku-parser/binding-darwin-x64@0.10.2, @yuku-parser/binding-freebsd-x64@0.10.2, @yuku-parser/binding-linux-arm-gnu@0.10.2, @yuku-parser/binding-linux-arm-musl@0.10.2, @yuku-parser/binding-linux-arm64-gnu@0.10.2, @yuku-parser/binding-linux-arm64-musl@0.10.2, @yuku-parser/binding-linux-x64-gnu@0.10.2, @yuku-parser/binding-linux-x64-musl@0.10.2, @yuku-parser/binding-win32-arm64@0.10.2, @yuku-parser/binding-win32-x64@0.10.2, boolean@3.2.0, glob@7.2.3, inflight@1.0.6, rimraf@2.6.3\nProgress: resolved 909, reused 0, downloaded 0, added 0, done\n\nDone in 13s using pnpm v11.28.0"
     },
     "tree: trustPolicyIgnoreAfter=20160 分钟": {
       "code": 0,
@@ -68,5 +255,11 @@
       ],
       "lastError": null
     }
+  },
+  "corepack": {
+    "node": "v24.21.0",
+    "corepackVersion": "0.36.0",
+    "path": "/Users/fengchen/.nvm/versions/node/v24.21.0/bin/corepack",
+    "nextToNode": true
   }
 }

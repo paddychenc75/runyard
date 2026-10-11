@@ -203,11 +203,11 @@ jobs:
           printf 'module k15\n\ngo 1.27.2\n' > go.mod
           printf 'package main\n\nimport ("fmt"; "runtime")\n\nfunc main() { fmt.Println("running", runtime.Version()) }\n' > main.go
           echo "=== 默认（GOTOOLCHAIN=auto）：go.mod 要求 go 1.27.2"
-          start=$(date +%s); go run . ; echo "exit=$? seconds=$(( $(date +%s) - start ))"
+          start=$(date +%s); go run . && echo "exit=0 seconds=$(( $(date +%s) - start ))"
           echo "=== 第二次（工具链已缓存）"
-          start=$(date +%s); go run . ; echo "exit=$? seconds=$(( $(date +%s) - start ))"
+          start=$(date +%s); go run . && echo "exit=0 seconds=$(( $(date +%s) - start ))"
           echo "=== GOTOOLCHAIN=local"
-          GOTOOLCHAIN=local go run . ; echo "exit=$?"
+          GOTOOLCHAIN=local go run . || echo "exit=$?"
           echo "=== 缓存位置与大小"
           du -sh "$(go env GOMODCACHE)/golang.org/toolchain"* 2>/dev/null || ls "$(go env GOMODCACHE)/golang.org" 2>/dev/null
           cd /; rm -rf "$d"

@@ -2,7 +2,7 @@
   "node": "v24.21.0",
   "platform": "darwin",
   "arch": "arm64",
-  "when": "2026-10-11T23:12:47.487Z",
+  "when": "2026-10-11T23:26:13.205Z",
   "localhost": {
     "lookupAll": [
       {
@@ -18,7 +18,7 @@
     "只绑 127.0.0.1": {
       "http://localhost": {
         "ok": true,
-        "ms": 9
+        "ms": 8
       },
       "http://127.0.0.1": {
         "ok": true,
@@ -90,12 +90,12 @@
     "shamefullyHoist 开关（会触发清空 node_modules 的确认） / 无终端、CI=true": {
       "firstInstall": 0,
       "code": 0,
-      "text": "+\nProgress: resolved 1, reused 1, downloaded 0, added 1, done\ndependencies:\n+ is-number 7.0.0\nDone in 274ms using pnpm v11.28.0"
+      "text": "+\nProgress: resolved 1, reused 1, downloaded 0, added 1, done\ndependencies:\n+ is-number 7.0.0\nDone in 250ms using pnpm v11.28.0"
     },
     "shamefullyHoist 开关（会触发清空 node_modules 的确认） / 无终端、无 CI、--config.confirmModulesPurge=false": {
       "firstInstall": 0,
       "code": 0,
-      "text": "+\nProgress: resolved 1, reused 1, downloaded 0, added 1, done\ndependencies:\n+ is-number 7.0.0\nDone in 272ms using pnpm v11.28.0"
+      "text": "+\nProgress: resolved 1, reused 1, downloaded 0, added 1, done\ndependencies:\n+ is-number 7.0.0\nDone in 252ms using pnpm v11.28.0"
     },
     "shamefullyHoist 开关（会触发清空 node_modules 的确认） / 无终端、无 CI、环境变量 npm_config_confirm_modules_purge=false": {
       "firstInstall": 0,
