@@ -140,7 +140,16 @@ async function windowsJobCase(flagsName, via) {
       // 留空，下面如实报告
     }
     const supPid = liveSupervisors(cfg)[0];
-    if (!supPid) return { job: flagsName, via: via ?? "spawn", jobStatus, error: "管理进程没有起来", cliOut };
+    if (!supPid) {
+      const tail = (name) => {
+        try {
+          return fs.readFileSync(path.join(cfg.stateDir, "logs", name), "utf8").slice(-600);
+        } catch {
+          return null;
+        }
+      };
+      return { job: flagsName, via: via ?? "spawn", jobStatus, error: "管理进程没有起来", cliOut, diag: { cim: tail("cim-launch.log"), starts: tail("starts.jsonl"), out: tail("supervisor.out.log") } };
+    }
     // 只杀 job-host 自己（不带 /T）：Job 的句柄随之关闭，剩下的交给系统按 Job 的规则处理
     execFileSync("taskkill", ["/PID", String(host.pid), "/F"], { stdio: "ignore", windowsHide: true });
     const v = await verdict(cfg, supPid);
@@ -189,6 +198,7 @@ export async function parentExit({ quick }) {
       out[key].rounds++;
       if (c.survived) out[key].survived++;
       if (c.error) out[key].errors.push(c.error);
+      if (c.diag && !out[key].diag) out[key].diag = c.diag;
       if (c.jobStatus && !out[key].jobStatus) out[key].jobStatus = c.jobStatus;
       if (c.launchToHandshakeMs) (out[key].launchToHandshakeMs ??= []).push(c.launchToHandshakeMs);
     }

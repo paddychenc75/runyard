@@ -119,7 +119,7 @@ export function launchSupervisor(cfg, opts = {}) {
   const exec = opts.exec ?? process.execPath;
   const asElectron = opts.electron ?? Boolean(process.versions.electron);
   const args = [SUPERVISOR_ENTRY, ...supervisorArgs(cfg), "--launcher", asElectron ? "electron" : "node", ...(opts.extraArgs ?? [])];
-  if (opts.via === "cim") return launchViaCim(exec, args);
+  if (opts.via === "cim") return launchViaCim(exec, args, path.join(p.logDir, "cim-launch.log"));
   const env = { ...process.env };
   if (asElectron) env.ELECTRON_RUN_AS_NODE = "1";
   else delete env.ELECTRON_RUN_AS_NODE;
@@ -138,19 +138,23 @@ export function launchSupervisor(cfg, opts = {}) {
   return { pid: child.pid, at: Date.now() };
 }
 
-function launchViaCim(exec, args) {
-  // 命令行里的每一项都加双引号；路径里不会有双引号。CreateFlags 0x08000000 = CREATE_NO_WINDOW，ShowWindow 0 = 隐藏。
+function launchViaCim(exec, args, logFile) {
+  // 命令行里的每一项都加双引号；路径里不会有双引号。
+  // CreateFlags 8 = DETACHED_PROCESS（Win32_ProcessStartup 只接受它列出的那几个值，CREATE_NO_WINDOW 不在其中，实测会被拒绝）；ShowWindow 0 = 隐藏。
+  // 这样创建的进程拿不到调用者的环境变量和工作目录，所以管理进程需要的一切都在命令行参数里。
   const commandLine = [exec, ...args].map((a) => `"${a}"`).join(" ");
   const script = [
-    "$si = New-CimInstance -ClassName Win32_ProcessStartup -ClientOnly -Property @{ ShowWindow = [uint16]0; CreateFlags = [uint32]0x08000000 }",
+    "$si = New-CimInstance -ClassName Win32_ProcessStartup -ClientOnly -Property @{ ShowWindow = [uint16]0; CreateFlags = [uint32]8 }",
     "$r = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{ CommandLine = $env:K1_CMDLINE; ProcessStartupInformation = $si }",
-    "Write-Output ('{0} {1}' -f $r.ReturnValue, $r.ProcessId)",
+    "Write-Output ('cim-create return={0} pid={1}' -f $r.ReturnValue, $r.ProcessId)",
   ].join("; ");
+  const out = fs.openSync(logFile, "a");
   const child = spawn("powershell.exe", ["-NoProfile", "-NonInteractive", "-Command", script], {
     env: { ...process.env, K1_CMDLINE: commandLine },
-    stdio: "ignore",
+    stdio: ["ignore", out, out],
     windowsHide: true,
   });
+  fs.closeSync(out);
   child.on("error", () => {});
   child.unref();
   return { pid: null, at: Date.now() };

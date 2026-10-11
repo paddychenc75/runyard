@@ -15,7 +15,9 @@ import { hiddenWindows, parentExit } from "./exp-survival.mjs";
 const argv = process.argv.slice(2);
 const opt = (name) => (argv.includes(`--${name}`) ? argv[argv.indexOf(`--${name}`) + 1] : undefined);
 const quick = argv.includes("--quick");
-const only = opt("only")?.split(",");
+// spikes/k1/ci-only.txt（可选，一行逗号分隔的名字）：让 CI 的一轮只跑指定的实验，调试某一项时不必每次全跑
+const onlyFile = path.join(spikeRoot, "ci-only.txt");
+const only = (opt("only") ?? (process.env.GITHUB_ACTIONS && fs.existsSync(onlyFile) ? fs.readFileSync(onlyFile, "utf8").trim() : undefined))?.split(",");
 const tag = opt("tag") ?? (process.env.GITHUB_ACTIONS ? "ci" : "local");
 
 const experiments = { concurrency, appQuit, appKill, reconnect, parentExit, squatter, otherUser, hiddenWindows, staleRecovery, versionSkew, startup, memoryAndDock, pathLength };

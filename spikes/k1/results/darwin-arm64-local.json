@@ -1,8 +1,8 @@
 {
   "tag": "local",
   "quick": false,
-  "session": "k1s7598d87b",
-  "startedAt": "2026-10-11T21:48:04.877Z",
+  "session": "k1sf5c518da",
+  "startedAt": "2026-10-11T21:58:59.176Z",
   "env": {
     "platform": "darwin",
     "arch": "arm64",
@@ -34,7 +34,7 @@
           "roundsWhereAppMissedTheStartTime": 0,
           "ensureMs": {
             "n": 40,
-            "min": 37,
+            "min": 40,
             "median": 60,
             "p95": 64,
             "max": 64
@@ -56,10 +56,10 @@
           "roundsWhereAppMissedTheStartTime": 0,
           "ensureMs": {
             "n": 160,
-            "min": 54,
-            "median": 57,
-            "p95": 64,
-            "max": 67
+            "min": 40,
+            "median": 63,
+            "p95": 68,
+            "max": 71
           }
         },
         {
@@ -78,10 +78,10 @@
           "roundsWhereAppMissedTheStartTime": 0,
           "ensureMs": {
             "n": 40,
-            "min": 38,
-            "median": 59,
-            "p95": 63,
-            "max": 78
+            "min": 40,
+            "median": 62,
+            "p95": 66,
+            "max": 68
           }
         },
         {
@@ -100,10 +100,10 @@
           "roundsWhereAppMissedTheStartTime": 0,
           "ensureMs": {
             "n": 160,
-            "min": 55,
-            "median": 59,
-            "p95": 65,
-            "max": 68
+            "min": 53,
+            "median": 62,
+            "p95": 68,
+            "max": 70
           }
         },
         {
@@ -122,10 +122,10 @@
           "roundsWhereAppMissedTheStartTime": 0,
           "ensureMs": {
             "n": 40,
-            "min": 36,
-            "median": 59,
-            "p95": 62,
-            "max": 62
+            "min": 54,
+            "median": 62,
+            "p95": 66,
+            "max": 67
           }
         },
         {
@@ -144,10 +144,10 @@
           "roundsWhereAppMissedTheStartTime": 0,
           "ensureMs": {
             "n": 160,
-            "min": 54,
+            "min": 39,
             "median": 59,
-            "p95": 65,
-            "max": 66
+            "p95": 67,
+            "max": 68
           }
         },
         {
@@ -157,8 +157,8 @@
           "n": 2,
           "electron": false,
           "rounds": 20,
-          "violations": 8,
-          "roundsWithTwoLive": 8,
+          "violations": 12,
+          "roundsWithTwoLive": 12,
           "roundsWithTwoInstancesSeenByClients": 0,
           "roundsWithClientFailure": 0,
           "sampleFailures": [],
@@ -166,10 +166,10 @@
           "roundsWhereAppMissedTheStartTime": 0,
           "ensureMs": {
             "n": 40,
-            "min": 38,
-            "median": 58,
-            "p95": 62,
-            "max": 63
+            "min": 58,
+            "median": 62,
+            "p95": 67,
+            "max": 77
           }
         },
         {
@@ -179,8 +179,8 @@
           "n": 8,
           "electron": false,
           "rounds": 20,
-          "violations": 19,
-          "roundsWithTwoLive": 19,
+          "violations": 18,
+          "roundsWithTwoLive": 18,
           "roundsWithTwoInstancesSeenByClients": 0,
           "roundsWithClientFailure": 0,
           "sampleFailures": [],
@@ -188,10 +188,10 @@
           "roundsWhereAppMissedTheStartTime": 0,
           "ensureMs": {
             "n": 160,
-            "min": 55,
-            "median": 61,
-            "p95": 65,
-            "max": 76
+            "min": 56,
+            "median": 62,
+            "p95": 68,
+            "max": 69
           }
         },
         {
@@ -210,10 +210,10 @@
           "roundsWhereAppMissedTheStartTime": 0,
           "ensureMs": {
             "n": 40,
-            "min": 38,
-            "median": 60,
-            "p95": 64,
-            "max": 76
+            "min": 57,
+            "median": 64,
+            "p95": 66,
+            "max": 67
           }
         },
         {
@@ -233,13 +233,13 @@
           "ensureMs": {
             "n": 20,
             "min": 57,
-            "median": 62,
-            "p95": 69,
-            "max": 69
+            "median": 64,
+            "p95": 68,
+            "max": 68
           }
         }
       ],
-      "tookMs": 203160
+      "tookMs": 204102
     },
     "appQuit": {
       "pass": true,
@@ -249,23 +249,23 @@
       "tabGoneMs": {
         "n": 10,
         "min": 11,
-        "median": 13,
-        "p95": 36,
-        "max": 36
+        "median": 12,
+        "p95": 34,
+        "max": 34
       },
       "tabGoneMsVite": {
         "n": 4,
-        "min": 12,
+        "min": 11,
         "median": 13,
-        "p95": 36,
-        "max": 36
+        "p95": 24,
+        "max": 24
       },
       "appExitMs": {
         "n": 10,
         "min": 16,
-        "median": 20,
-        "p95": 44,
-        "max": 44
+        "median": 21,
+        "p95": 40,
+        "max": 40
       },
       "supervisorSurvived": 10,
       "supervisorStartedByElectronApp": 10,
@@ -273,31 +273,31 @@
       "breakdown": {
         "signalToQuitHandlerMs": {
           "n": 10,
-          "min": 2,
-          "median": 7,
-          "p95": 26,
-          "max": 26
+          "min": 4,
+          "median": 8,
+          "p95": 25,
+          "max": 25
         },
         "stopBeginMs": {
           "n": 10,
-          "min": 2,
-          "median": 7,
-          "p95": 26,
-          "max": 26
+          "min": 4,
+          "median": 8,
+          "p95": 25,
+          "max": 25
         },
         "runExitMs": {
           "n": 10,
           "min": 5,
-          "median": 9,
-          "p95": 31,
-          "max": 31
+          "median": 11,
+          "p95": 26,
+          "max": 26
         },
         "byeDoneMs": {
           "n": 10,
           "min": 5,
-          "median": 9,
-          "p95": 31,
-          "max": 31
+          "median": 11,
+          "p95": 27,
+          "max": 27
         }
       },
       "dockSamples": [
@@ -315,7 +315,7 @@
         }
       ],
       "failures": [],
-      "tookMs": 26097
+      "tookMs": 26105
     },
     "appKill": {
       "pass": true,
@@ -324,17 +324,17 @@
       "limitMs": 10000,
       "tabGoneMs": {
         "n": 10,
-        "min": 5014,
-        "median": 5023,
-        "p95": 5036,
-        "max": 5036
+        "min": 5012,
+        "median": 5025,
+        "p95": 5039,
+        "max": 5039
       },
       "tabGoneMsVite": {
         "n": 4,
-        "min": 5019,
-        "median": 5027,
-        "p95": 5036,
-        "max": 5036
+        "min": 5024,
+        "median": 5025,
+        "p95": 5039,
+        "max": 5039
       },
       "appExitMs": {
         "n": 10,
@@ -363,10 +363,10 @@
         },
         "runExitMs": {
           "n": 10,
-          "min": 5013,
-          "median": 5016,
-          "p95": 5024,
-          "max": 5024
+          "min": 5009,
+          "median": 5017,
+          "p95": 5028,
+          "max": 5028
         }
       },
       "dockSamples": [
@@ -384,7 +384,7 @@
         }
       ],
       "failures": [],
-      "tookMs": 76061
+      "tookMs": 76097
     },
     "reconnect": {
       "pass": true,
@@ -401,11 +401,11 @@
         },
         {
           "aliveAt8s": true,
-          "goneAfterByeMs": 11,
-          "totalMs": 11
+          "goneAfterByeMs": 12,
+          "totalMs": 12
         }
       ],
-      "tookMs": 24588
+      "tookMs": 24599
     },
     "parentExit": {
       "pass": true,
@@ -460,7 +460,7 @@
         }
       },
       "failures": [],
-      "tookMs": 82082
+      "tookMs": 82181
     },
     "squatter": {
       "pass": true,
@@ -473,7 +473,7 @@
           "ok": false,
           "code": "SUPERVISOR_UNAVAILABLE",
           "detail": "timeout-at-await-challenge",
-          "ms": 4061,
+          "ms": 4060,
           "bytesSentToSquatter": 0,
           "sentHello": false,
           "tokenLeaked": false
@@ -485,7 +485,7 @@
           "launch": true,
           "ok": true,
           "connectedTo": "node",
-          "ms": 4091,
+          "ms": 4094,
           "bytesSentToSquatter": 0,
           "sentHello": false,
           "tokenLeaked": false
@@ -510,7 +510,7 @@
           "launch": true,
           "ok": true,
           "connectedTo": "node",
-          "ms": 4098,
+          "ms": 4088,
           "bytesSentToSquatter": 0,
           "sentHello": false,
           "tokenLeaked": false
@@ -523,7 +523,7 @@
           "ok": false,
           "code": "SUPERVISOR_UNAVAILABLE",
           "detail": "endpoint answered but is not a genuine supervisor (garbage-at-await-challenge)",
-          "ms": 72,
+          "ms": 70,
           "bytesSentToSquatter": 0,
           "sentHello": false,
           "tokenLeaked": false
@@ -535,6 +535,19 @@
           "launch": true,
           "ok": true,
           "connectedTo": "node",
+          "ms": 74,
+          "bytesSentToSquatter": 0,
+          "sentHello": false,
+          "tokenLeaked": false
+        },
+        {
+          "mode": "garbage",
+          "discovery": "stale",
+          "hs": "v1",
+          "launch": false,
+          "ok": false,
+          "code": "SUPERVISOR_UNAVAILABLE",
+          "detail": "endpoint answered but is not a genuine supervisor (garbage-at-await-challenge)",
           "ms": 69,
           "bytesSentToSquatter": 0,
           "sentHello": false,
@@ -544,23 +557,10 @@
           "mode": "garbage",
           "discovery": "stale",
           "hs": "v1",
-          "launch": false,
-          "ok": false,
-          "code": "SUPERVISOR_UNAVAILABLE",
-          "detail": "endpoint answered but is not a genuine supervisor (garbage-at-await-challenge)",
-          "ms": 68,
-          "bytesSentToSquatter": 0,
-          "sentHello": false,
-          "tokenLeaked": false
-        },
-        {
-          "mode": "garbage",
-          "discovery": "stale",
-          "hs": "v1",
           "launch": true,
           "ok": true,
           "connectedTo": "node",
-          "ms": 71,
+          "ms": 70,
           "bytesSentToSquatter": 0,
           "sentHello": false,
           "tokenLeaked": false
@@ -573,7 +573,7 @@
           "ok": false,
           "code": "SUPERVISOR_UNAVAILABLE",
           "detail": "endpoint answered but is not a genuine supervisor (no-token-to-verify)",
-          "ms": 66,
+          "ms": 67,
           "bytesSentToSquatter": 0,
           "sentHello": false,
           "tokenLeaked": false
@@ -585,7 +585,7 @@
           "launch": true,
           "ok": true,
           "connectedTo": "node",
-          "ms": 72,
+          "ms": 70,
           "bytesSentToSquatter": 0,
           "sentHello": false,
           "tokenLeaked": false
@@ -598,7 +598,7 @@
           "ok": false,
           "code": "SUPERVISOR_UNAVAILABLE",
           "detail": "endpoint answered but is not a genuine supervisor (bad-server-proof)",
-          "ms": 71,
+          "ms": 73,
           "bytesSentToSquatter": 810,
           "sentHello": true,
           "tokenLeaked": false
@@ -610,7 +610,7 @@
           "launch": true,
           "ok": true,
           "connectedTo": "node",
-          "ms": 71,
+          "ms": 70,
           "bytesSentToSquatter": 540,
           "sentHello": true,
           "tokenLeaked": false
@@ -623,7 +623,7 @@
           "ok": false,
           "code": "SUPERVISOR_UNAVAILABLE",
           "detail": "endpoint answered but is not a genuine supervisor (bad-challenge)",
-          "ms": 67,
+          "ms": 69,
           "bytesSentToSquatter": 0,
           "sentHello": false,
           "tokenLeaked": false
@@ -635,7 +635,7 @@
           "launch": true,
           "ok": true,
           "connectedTo": "node",
-          "ms": 71,
+          "ms": 74,
           "bytesSentToSquatter": 0,
           "sentHello": false,
           "tokenLeaked": false
@@ -648,7 +648,7 @@
           "ok": false,
           "code": "SUPERVISOR_UNAVAILABLE",
           "detail": "endpoint answered but is not a genuine supervisor (bad-challenge)",
-          "ms": 70,
+          "ms": 69,
           "bytesSentToSquatter": 0,
           "sentHello": false,
           "tokenLeaked": false
@@ -660,7 +660,7 @@
           "launch": true,
           "ok": true,
           "connectedTo": "node",
-          "ms": 72,
+          "ms": 71,
           "bytesSentToSquatter": 0,
           "sentHello": false,
           "tokenLeaked": false
@@ -668,14 +668,14 @@
       ],
       "unavailableMs": {
         "noLaunch": [
-          4061,
+          4060,
           4063,
-          72,
-          68,
-          66,
-          71,
+          70,
+          69,
           67,
-          70
+          73,
+          69,
+          69
         ],
         "withLaunch": []
       },
@@ -706,13 +706,13 @@
           "ok": false,
           "code": "SUPERVISOR_UNAVAILABLE",
           "detail": "endpoint answered but is not a genuine supervisor (bad-server-proof)",
-          "ms": 68,
+          "ms": 69,
           "bytesSentToSquatter": 816,
           "sentHello": true,
           "tokenLeaked": false
         }
       },
-      "tookMs": 20075
+      "tookMs": 20089
     },
     "otherUser": {
       "pass": null,
@@ -726,7 +726,7 @@
       },
       "note": "本机只检查权限位；跨用户连接在 CI（sudo -u nobody）上实测",
       "supervisorStillAlive": true,
-      "tookMs": 82
+      "tookMs": 80
     },
     "hiddenWindows": {
       "skipped": "只在 Windows 上有意义",
@@ -739,7 +739,7 @@
       "recoverMs": {
         "n": 20,
         "min": 36,
-        "median": 39,
+        "median": 38,
         "p95": 40,
         "max": 40
       },
@@ -747,7 +747,7 @@
       "leftDiscoveryFile": 20,
       "orphanStillAlive": "10/10",
       "failures": [],
-      "tookMs": 4655
+      "tookMs": 4620
     },
     "versionSkew": {
       "pass": true,
@@ -773,7 +773,7 @@
             "started": true,
             "samePid": false,
             "oldAlive": false,
-            "ensureMs": 159
+            "ensureMs": 161
           }
         },
         {
@@ -822,7 +822,7 @@
           }
         }
       ],
-      "tookMs": 983
+      "tookMs": 988
     },
     "startup": {
       "pass": null,
@@ -836,11 +836,11 @@
           "max": 37
         },
         "first5": [
-          37,
-          37,
+          36,
+          36,
           36,
           37,
-          35
+          36
         ],
         "supervisorCodeBootMs": {
           "n": 30,
@@ -851,26 +851,26 @@
         },
         "cliColdWallMs": {
           "n": 30,
-          "min": 65,
+          "min": 66,
           "median": 69,
-          "p95": 71,
-          "max": 71
+          "p95": 70,
+          "max": 70
         }
       },
       "electron-as-node": {
         "launchToHandshakeMs": {
           "n": 30,
-          "min": 53,
+          "min": 52,
           "median": 54,
           "p95": 70,
-          "max": 71
+          "max": 70
         },
         "first5": [
+          54,
+          52,
           53,
           69,
-          70,
-          53,
-          54
+          52
         ],
         "supervisorCodeBootMs": {
           "n": 30,
@@ -882,9 +882,9 @@
         "cliColdWallMs": {
           "n": 30,
           "min": 84,
-          "median": 88,
-          "p95": 106,
-          "max": 106
+          "median": 87,
+          "p95": 103,
+          "max": 103
         }
       },
       "warmCliWith_node": {
@@ -893,23 +893,23 @@
           "min": 29,
           "median": 31,
           "p95": 33,
-          "max": 33
+          "max": 34
         },
         "connectAndHandshakeMs": {
           "n": 30,
           "min": 2,
           "median": 2,
-          "p95": 3,
-          "max": 3
+          "p95": 2,
+          "max": 2
         }
       },
       "warmCliWith_electron-as-node": {
         "wholeCommandWallMs": {
           "n": 30,
-          "min": 53,
+          "min": 52,
           "median": 54,
           "p95": 56,
-          "max": 56
+          "max": 57
         },
         "connectAndHandshakeMs": {
           "n": 30,
@@ -919,19 +919,19 @@
           "max": 2
         }
       },
-      "tookMs": 8291
+      "tookMs": 8178
     },
     "memoryAndDock": {
       "pass": true,
       "node": {
         "idleRssMb": [
-          51,
-          50.9,
-          51
+          51.1,
+          51.1,
+          51.1
         ],
         "psRssMb": [
-          51,
-          51,
+          51.1,
+          51.1,
           51.1
         ],
         "runtime": {
@@ -953,13 +953,13 @@
       "electron-as-node": {
         "idleRssMb": [
           61.6,
-          61.5,
+          61.6,
           61.6
         ],
         "psRssMb": [
           61.6,
-          61.6,
-          61.7
+          61.7,
+          61.6
         ],
         "runtime": {
           "node": "24.21.0",
@@ -977,7 +977,7 @@
           ]
         ]
       },
-      "tookMs": 29618
+      "tookMs": 29605
     },
     "pathLength": {
       "pass": null,
@@ -1015,7 +1015,7 @@
     }
   },
   "cleanup": {
-    "session": "k1s7598d87b",
+    "session": "k1sf5c518da",
     "statesCreated": 356,
     "leakedProcessesFoundAndKilled": [],
     "processesAfter": [],
@@ -1024,5 +1024,5 @@
     "portsStillOpen": [],
     "dirsLeft": []
   },
-  "finishedAt": "2026-10-11T21:56:01.213Z"
+  "finishedAt": "2026-10-11T22:06:56.463Z"
 }
