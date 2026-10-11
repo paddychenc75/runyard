@@ -1,0 +1,251 @@
+{
+  "label": "local",
+  "node": "v24.21.0",
+  "os": {
+    "sw_vers": "ProductName: macOS ProductVersion: 27.0.1 BuildVersion: 26A434",
+    "arch": "arm64",
+    "uid": 501,
+    "term": "ghostty",
+    "ci": false,
+    "trashBinary": "/usr/bin/trash",
+    "swiftc": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+  },
+  "files": 30000,
+  "exps": {
+    "tcc-home-trash": {
+      "stat ~/.Trash": "40700",
+      "readdir ~/.Trash": "ERR EPERM",
+      "access W_OK": "ok",
+      "tinyDest": "/Users/fengchen/.Trash/runyard-spike-k9-c8272aed-tcc",
+      "trashByRename(tiny)": "ok",
+      "readdir after (names only own)": "ERR EPERM"
+    },
+    "rename-30k-home": {
+      "genMs": 2089.44,
+      "counts": {
+        "files": 30012,
+        "dirs": 2284,
+        "links": 4
+      },
+      "runs": [
+        {
+          "trashMs": 0.28,
+          "restoreMs": 0.14,
+          "gone": true,
+          "there": true,
+          "method": "rename-home"
+        },
+        {
+          "trashMs": 0.16,
+          "restoreMs": 0.09,
+          "gone": true,
+          "there": true,
+          "method": "rename-home"
+        },
+        {
+          "trashMs": 0.17,
+          "restoreMs": 0.11,
+          "gone": true,
+          "there": true,
+          "method": "rename-home"
+        },
+        {
+          "trashMs": 0.16,
+          "restoreMs": 0.09,
+          "gone": true,
+          "there": true,
+          "method": "rename-home"
+        },
+        {
+          "trashMs": 0.2,
+          "restoreMs": 0.1,
+          "gone": true,
+          "there": true,
+          "method": "rename-home"
+        }
+      ],
+      "fingerprintEqual": true,
+      "countsEqual": true,
+      "leftoverDest": "/Users/fengchen/.Trash/runyard-spike-k9-273a49a2-tree"
+    },
+    "collisions": {
+      "names": [
+        "<NAME>",
+        "<NAME> 02.10.19",
+        "<NAME> 02.10.19 2",
+        "<NAME> 02.10.19 3",
+        "<FILE>.txt",
+        "<FILE> 02.10.19.txt"
+      ],
+      "fileDests": [
+        "/Users/fengchen/.Trash/runyard-spike-k9-4a54d409-file.txt",
+        "/Users/fengchen/.Trash/runyard-spike-k9-4a54d409-file 02.10.19.txt"
+      ],
+      "naiveRenameOverEmptyDir": "静默成功（会覆盖同名空目录）",
+      "naiveRenameOverNonEmptyDir": "ENOTEMPTY"
+    },
+    "symlink-folder": {
+      "dest": "runyard-spike-k9-cbcaa47a-link",
+      "destIsSymlink": true,
+      "targetIntact": true,
+      "linkGone": true
+    },
+    "busy-folder": {
+      "renameOk": true,
+      "cwdProcAlive": true,
+      "handleProcAlive": true,
+      "cwdNow": "n~/.Trash/runyard-spike-k9-5958d557-busy",
+      "handleNow": "n~/.Trash/runyard-spike-k9-5958d557-busy/log.txt"
+    },
+    "volume-apfs": {
+      "mount": "/dev/disk17",
+      "trashesDirBefore": "ENOENT",
+      "genMs": 4657.26,
+      "volRename": {
+        "ms": 0.58,
+        "dest": ".Trashes/501/runyard-spike-k9-538ce7c8-vol",
+        "method": "rename-volume",
+        "restoreMs": 0.1,
+        "restoredIntact": true
+      },
+      "trashesDirAfter": "41333",
+      "trashesUidDir": "40700",
+      "copyDelete": {
+        "ms": 7796.93,
+        "srcGone": true,
+        "dest": "runyard-spike-k9-538ce7c8-vol",
+        "countsEqual": true,
+        "backByRename": "EXDEV",
+        "fingerprintDiff": [
+          "xattr",
+          "rodirMode"
+        ]
+      }
+    },
+    "volume-exfat": {
+      "mount": "/dev/disk19",
+      "trashesDirBefore": "ENOENT",
+      "genMs": 3819.03,
+      "volRename": {
+        "ms": 6.21,
+        "dest": ".Trashes/501/runyard-spike-k9-0ac446f3-vol",
+        "method": "rename-volume",
+        "restoreMs": 1.26,
+        "restoredIntact": true
+      },
+      "trashesDirAfter": "40700",
+      "trashesUidDir": "40700",
+      "copyDelete": {
+        "ms": 3671.65,
+        "srcGone": true,
+        "dest": "runyard-spike-k9-0ac446f3-vol",
+        "countsEqual": true,
+        "backByRename": "EXDEV",
+        "fingerprintDiff": []
+      }
+    },
+    "volume-fat": {
+      "mount": "/dev/disk20",
+      "trashesDirBefore": "ENOENT",
+      "genMs": 5961.47,
+      "volRename": {
+        "ms": 8.92,
+        "dest": ".Trashes/501/runyard-spike-k9-d5d6a26b-vol",
+        "method": "rename-volume",
+        "restoreMs": 4.67,
+        "restoredIntact": true
+      },
+      "trashesDirAfter": "40700",
+      "trashesUidDir": "40700",
+      "copyDelete": {
+        "ms": 5038.9,
+        "srcGone": true,
+        "dest": "runyard-spike-k9-d5d6a26b-vol",
+        "countsEqual": true,
+        "backByRename": "EXDEV",
+        "fingerprintDiff": []
+      }
+    },
+    "copy-failure-safety": {
+      "failed": {
+        "code": "EACCES",
+        "step": "copy",
+        "msg": "EACCES, Permission denied '/Users/fengchen/.Trash/runyard-spike-k9-5e995df3-fail.runyard-partial/node_modules/pkg-3/lib/dist'"
+      },
+      "srcIntact": true,
+      "srcMarker": true,
+      "trashLeftovers": []
+    },
+    "baseline-rename-putback-evidence": {
+      "dsStoreReadable": true,
+      "size": 16388,
+      "hasPtbL": true,
+      "hasPtbN": true,
+      "hasName": false,
+      "hasOrigParent": false
+    },
+    "alt-usrbintrash": {
+      "ms": 18.27,
+      "status": 0,
+      "stderr": "",
+      "stdout": "# Moved \"/private/var/folders/d7/sf0fm6j14gz5736y52xg9mm40000gn/T/runyard-spike-k9-XAQreF/runyard-spike-k9-f65bc692-usrbintrash\" to \"~/.Trash/runyard-spike-k9-f65bc692-usrbintrash\"",
+      "gone": true,
+      "foundInHomeTrash": true,
+      "putBack": {
+        "dsStoreReadable": true,
+        "size": 16388,
+        "hasPtbL": true,
+        "hasPtbN": true,
+        "hasName": true,
+        "hasOrigParent": true
+      }
+    },
+    "swift-compile": {
+      "status": 0,
+      "ms": 685.28,
+      "bytes": 59552,
+      "err": ""
+    },
+    "alt-swifthelper": {
+      "ms": 44.48,
+      "status": 0,
+      "stderr": "",
+      "stdout": "~/.Trash/runyard-spike-k9-36217dd4-swifthelper",
+      "gone": true,
+      "foundInHomeTrash": true,
+      "putBack": {
+        "dsStoreReadable": true,
+        "size": 18436,
+        "hasPtbL": true,
+        "hasPtbN": true,
+        "hasName": true,
+        "hasOrigParent": true
+      }
+    },
+    "alt-npm-trash": {
+      "ms": 25.64,
+      "status": 0,
+      "stderr": "",
+      "stdout": "",
+      "gone": true,
+      "foundInHomeTrash": true,
+      "putBack": {
+        "dsStoreReadable": true,
+        "size": 20484,
+        "hasPtbL": true,
+        "hasPtbN": true,
+        "hasName": true,
+        "hasOrigParent": true
+      }
+    }
+  },
+  "cleanup": {
+    "trashItemsRemoved": 17,
+    "errors": [],
+    "homeTrashLeftoverWithPrefix": [
+      "(无法列出 ~/.Trash: EPERM)"
+    ],
+    "stillRegisteredExist": [],
+    "rootGone": true
+  }
+}

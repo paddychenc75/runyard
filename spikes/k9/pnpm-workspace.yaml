@@ -1,0 +1,6 @@
+# 本 spike 自己的工作区根（不属于仓库根工作区）。
+# 安全设置照仓库规则：发布不满 14 天的版本不装，版本全部精确。
+packages: []
+minimumReleaseAge: 20160
+savePrefix: ""
+engineStrict: true
