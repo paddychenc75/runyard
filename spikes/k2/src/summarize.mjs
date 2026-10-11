@@ -109,11 +109,11 @@ export function summarize({ meta, notes, records }) {
     lines.push("树外短命进程是谁（停止后自己很快退出的）：");
     for (const [what, count] of transient) lines.push(`- ${count} 次：\`${what}\``);
   }
-  const bad = records.filter((r) => r.error || r.leftover?.survivors?.length || r.leftover?.untracked?.length);
+  const bad = records.filter((r) => r.error || r.leftover?.survivors?.length || r.leftover?.untracked?.length || r.leftover?.byPort);
   if (bad.length) {
     lines.push("");
     lines.push("出错或有残留的记录（最多列 12 条）：");
-    for (const r of bad.slice(0, 12)) lines.push(`- ${r.runner} / ${r.method} / ${r.scenario} #${r.i}：${r.error ?? ""} 残留=${JSON.stringify(r.leftover?.survivors ?? [])} 树外=${JSON.stringify(r.leftover?.untracked ?? [])} 步骤=${JSON.stringify(r.stop?.steps ?? [])}`);
+    for (const r of bad.slice(0, 12)) lines.push(`- ${r.runner} / ${r.method} / ${r.scenario} #${r.i}：${r.error ?? ""} 残留=${JSON.stringify(r.leftover?.survivors ?? [])} 树外=${JSON.stringify(r.leftover?.untracked ?? [])} 按端口查到=${r.leftover?.byPort ?? "—"} 步骤=${JSON.stringify(r.stop?.steps ?? [])}`);
   }
   if (notes.length) {
     lines.push("");

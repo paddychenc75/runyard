@@ -138,7 +138,7 @@ function taskkill(pid) {
   const startedAt = now();
   return new Promise((resolve) => {
     execFile(TASKKILL, ["/PID", String(pid), "/T", "/F"], { windowsHide: true }, (err, stdout, stderr) =>
-      resolve({ what: "taskkill /T /F", code: err ? (err.code ?? 1) : 0, ms: now() - startedAt, out: `${stdout}${stderr}`.trim().slice(0, 400) }),
+      resolve({ what: "taskkill /T /F", code: err ? (err.code ?? 1) : 0, ms: now() - startedAt, out: `${stdout}${stderr}`.trim().slice(0, 3000) }),
     );
   });
 }
@@ -228,10 +228,13 @@ export async function stopRun(h, { mode, graceMs }) {
   return { steps, escalated, exit: exit === "timeout" ? { timeout: true } : { code: exit.code, signal: exit.signal }, rootExitMs: exit === "timeout" ? null : exit.at - t0 };
 }
 
-// 兜底清理：只结束采样记录过、而且进程号和启动时间都对得上的进程
-export function killLeftover(proc, snap) {
+// 兜底清理：只结束采样记录过、而且进程号和启动时间都对得上的进程。
+// Windows 上再加两道保险（见 procs.mjs 里那次事故）：必须是这次运行的根进程启动之后才创建的，而且程序名是实验里会出现的那几种。
+const WIN_KILLABLE = /^(node|python|go|k2go|esbuild|uv|cmd|conhost|runyard-job|pnpm|powershell|git)\.exe$/i;
+export function killLeftover(proc, snap, rootStart) {
   const live = snap.find((p) => p.pid === proc.pid && p.start === proc.start);
   if (!live) return false;
+  if (isWin && !(proc.start > 0 && rootStart > 0 && proc.start >= rootStart && WIN_KILLABLE.test(proc.name ?? ""))) return false;
   try {
     process.kill(proc.pid, "SIGKILL");
     return true;

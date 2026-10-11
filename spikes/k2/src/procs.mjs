@@ -138,14 +138,29 @@ export class Tracker {
         if (same(this.known.get(p.pid), p)) continue;
         const parent = this.known.get(p.ppid);
         const live = byPid.get(p.ppid);
-        // Windows 上父进程死了，子进程的父进程号也不变，所以父进程不在快照里时也认（只要它确实比孩子早启动）
-        const viaParent = parent && (same(parent, live) || (isWin && !live && parent.start <= p.start));
+        // Windows 的“父进程号”只是一个数字：父进程死后不会改，而进程号很快被复用。
+        // 第 2 轮里就因此出过事：我们树上某个进程恰好拿到了一个早已死掉的 smss.exe 用过的进程号，
+        // 开机时就在的 csrss、winlogon 的父进程号正是它，于是被当成“后代”，接着被当成残留结束掉，整台 CI 机器起不了新进程。
+        // 所以必须同时满足：孩子的创建时间不早于父进程；父进程已死时，孩子还得是在“父进程最后一次被看到”后不久创建的。
+        let viaParent;
+        if (isWin) {
+          const born = p.start > 0 && parent && parent.start > 0 && p.start >= parent.start;
+          const whileParentAlive = same(parent, live) || (!live && parent && p.start <= parent.lastSeen + 20_000_000); // 2 秒，单位 100 纳秒
+          viaParent = Boolean(born && whileParentAlive);
+        } else {
+          viaParent = parent && same(parent, live);
+        }
         const viaGroup = !isWin && p.pgid === this.rootPid && this.known.has(this.rootPid);
         if (p.pid === this.rootPid ? this.known.size === 0 : viaParent || viaGroup) {
           this.known.set(p.pid, p);
           changed = true;
         }
       }
+    }
+    // 记下每个已知进程最后一次活着被看到的时刻（Windows：FILETIME，和创建时间同一个刻度）
+    if (isWin) {
+      const nowFt = (Date.now() + 11644473600000) * 10000;
+      for (const k of this.known.values()) if (same(k, byPid.get(k.pid))) k.lastSeen = nowFt;
     }
     this.maxAlive = Math.max(this.maxAlive, this.alive(snap).length);
   }
@@ -246,4 +261,15 @@ export function scanCmdline(snap, needle, excludePids) {
   for (let p = byPid.get(process.pid), n = 0; p && n < 30; p = byPid.get(p.ppid), n++) skip.add(p.pid);
   const lower = needle.toLowerCase();
   return snap.filter((p) => !skip.has(p.pid) && !p.zombie && p.cmd.toLowerCase().includes(lower)).map((p) => p.pid);
+}
+
+// 谁在监听 127.0.0.1:<port>（Windows：netstat -ano）。这就是设计里说的“按端口复查”。
+export async function portOwner(port) {
+  if (!isWin) return null;
+  const r = await run("netstat", ["-ano", "-p", "TCP"]);
+  for (const line of r.stdout.split("\n")) {
+    const f = line.trim().split(/\s+/);
+    if (f.length >= 5 && f[3] === "LISTENING" && f[1].endsWith(`:${port}`)) return Number(f[4]);
+  }
+  return null;
 }

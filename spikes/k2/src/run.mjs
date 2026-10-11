@@ -7,7 +7,7 @@ import os from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { RUNNERS, writeFixture } from "./fixtures.mjs";
 import { canBind, httpStatus, now, openInflight, pickPort, sleep, timeUntilBindable, waitReady } from "./ports.mjs";
-import { initProcs, scanCmdline, scanCwd, scanEnvTag, snapshot } from "./procs.mjs";
+import { initProcs, portOwner, scanCmdline, scanCwd, scanEnvTag, snapshot } from "./procs.mjs";
 import { forgetRun, JOB_EXE, killLeftover, readReport, startRun, stopRun, which } from "./runs.mjs";
 import { summarize } from "./summarize.mjs";
 
@@ -114,7 +114,8 @@ async function verify(h, tag, stopAt) {
     result.pipeHeld = closedAt === null;
   }
   // 兜底清理：采样记录过的按“进程号 + 启动时间”核对后结束；带本次标记的一定是自己的；只凭命令行认的只在 Windows 的 CI 上结束
-  for (const p of alive) killLeftover(p, snap);
+  const rootStart = h.tracker.known.get(h.rootPid)?.start ?? 0;
+  result.notKilled = alive.filter((p) => !killLeftover(p, snap, rootStart)).map(describe);
   if (alive.length || untracked.length) await sleep(300);
   for (const pid of untracked) {
     const mine = byTag.includes(pid) || (isWin && byCmd.includes(pid));
@@ -190,6 +191,21 @@ async function cycle(ctx, opt = {}) {
   if (bind.ms === null) rec.portLastError = bind.lastCode;
   activity = `${runnerId}/${method}/${rec.scenario} #${rec.i}：查残留`;
   rec.leftover = await verify(h, tag, stopAt);
+  // Windows 上进程树和命令行都查不出的残留，最后靠端口找：端口还绑不上，就看是谁在监听。
+  // 这个端口从启动前就确认过是空的，监听者只能是这次运行留下的，所以直接结束它（只在 Windows 的 CI 上会走到）。
+  if (isWin && rec.portMs === null) {
+    const owner = await portOwner(port);
+    if (owner) {
+      const p = (await snapshot()).find((x) => x.pid === owner);
+      rec.leftover.byPort = p ? describe(p) : String(owner);
+      try {
+        process.kill(owner, "SIGKILL");
+      } catch {
+        // 已经没了
+      }
+      await sleep(300);
+    }
+  }
   rec.pipeHeld = rec.leftover.pipeHeld;
   // go run 被结束时有没有来得及删掉自己的 go-build 临时目录
   if (runnerId === "go") rec.goTmpLeft = readdirSync(goTmp).length - goTmpBefore;
