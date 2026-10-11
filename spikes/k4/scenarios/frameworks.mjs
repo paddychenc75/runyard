@@ -31,15 +31,29 @@ export async function runPnpm(ctx) {
   for (const [pn, pe, args] of variants) if (ctx.wantProfile(pn)) await install(ctx, dir, pn, pe, args);
 }
 
+// 带已知高危公告的依赖不提交进仓库（含锁文件和 package.json）：运行时在一次性运行器的临时目录里写出并安装，
+// 仍受夹具目录里 pnpm-workspace.yaml 的 minimumReleaseAge 约束，版本精确。
+const RUNTIME_PACKAGE_JSON = {
+  next: { name: "k4-next", private: true, dependencies: { next: "16.3.6", react: "19.3.0", "react-dom": "19.3.0" } },
+};
+
 async function ensureInstalled(ctx, name) {
   const dir = path.join(ctx.base, name);
   copyFixture(name, dir);
-  const r = resolveCommand("pnpm", ["install", "--frozen-lockfile", "--reporter=silent", `--store-dir=${path.join(ctx.base, "pnpm-store")}`]);
+  const runtime = RUNTIME_PACKAGE_JSON[name];
+  if (runtime) writeFileSync(path.join(dir, "package.json"), JSON.stringify(runtime, null, 2));
+  const r = resolveCommand("pnpm", ["install", ...(runtime ? [] : ["--frozen-lockfile"]), "--reporter=silent", `--store-dir=${path.join(ctx.base, "pnpm-store")}`]);
   if (!r) throw new Error("没找到 pnpm");
   const { startCapture } = await import("../lib/capture.mjs");
   const h = startCapture({ ...r, cwd: dir, env: pnpmEnv(ctx) });
   const exit = await h.finish(300000);
   if (exit.code !== 0) throw new Error(`pnpm install ${name} 失败：${exit.code}\n${h.text()}`);
+  if (runtime) {
+    // 记录实际装上的版本，写进结果（README 要写明）
+    const v = JSON.parse(readFileSync(path.join(dir, "node_modules", name, "package.json"), "utf8")).version;
+    (ctx.installed ??= {})[name] = v;
+    console.log(`[installed] ${name}@${v}`);
+  }
   return dir;
 }
 

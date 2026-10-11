@@ -63,7 +63,7 @@ try {
   }));
   ctx.cleanup = { pidsStarted: startedPids.length, pidsStillAlive: alive, aliveInfo, portsStillOpen: portsOpen };
   console.log("[cleanup]", JSON.stringify(ctx.cleanup));
-  writeFileSync(path.join(out, "results.json"), JSON.stringify({ env, selfTest: ctx.selfTest, cleanup: ctx.cleanup, skipped: ctx.skipped, results: ctx.results }, null, 2));
+  writeFileSync(path.join(out, "results.json"), JSON.stringify({ env, selfTest: ctx.selfTest, cleanup: ctx.cleanup, installedAtRuntime: ctx.installed, skipped: ctx.skipped, results: ctx.results }, null, 2));
   writeReport(out, { env, ctx });
 } catch (e) {
   console.error("FAILED", e);
