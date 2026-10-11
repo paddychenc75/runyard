@@ -105,6 +105,7 @@ async function verify(h, tag, stopAt) {
     untracked: extra.text,
     treeDeadMs,
     maxProcs: h.tracker.maxAlive,
+    sysProcs: snap.length, // 整台机器的进程数：一路上涨就说明有东西在漏，而上面几种查法都没看见
   };
   const { byTag, byCmd } = extra;
   // 管道：树死光后 1 秒内 close 事件来了没有（有残留时不等，直接看）。没来就是有后代还拿着写端；产品代码不能等 close。
@@ -260,6 +261,25 @@ async function installScenario(ctx) {
   }
 }
 
+// 整台机器上按程序名数进程，用来对比实验前后多出了谁
+const procName = (p) => (p.name ?? p.cmd.split(" ")[0].split("/").pop()).toLowerCase();
+function histogram(snap) {
+  const h = {};
+  for (const p of snap) h[procName(p)] = (h[procName(p)] ?? 0) + 1;
+  return h;
+}
+let baseline = null;
+function growth(snap) {
+  const h = histogram(snap);
+  return Object.entries(h)
+    .map(([name, count]) => [name, count - (baseline?.[name] ?? 0)])
+    .filter(([, d]) => d !== 0)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 12)
+    .map(([name, d]) => `${name}${d > 0 ? "+" : ""}${d}`)
+    .join(" ");
+}
+
 // 把一个场景重复 count 次。连续两次出错就放弃这个场景（免得每次都等到超时），过了时限也不再开始新的。
 async function repeat(ctx, scenario, count, fn) {
   const t0 = now();
@@ -274,6 +294,11 @@ async function repeat(ctx, scenario, count, fn) {
     done++;
     failures = rec.error ? failures + 1 : 0;
     if (rec.error) console.log(`  [${ctx.runnerId}/${ctx.method}/${scenario} #${i}] ${rec.error}\n${(rec.outputTail ?? "").slice(-600)}`);
+    if (rec.error) {
+      const snap = await snapshot();
+      notes.push({ runner: ctx.runnerId, method: ctx.method, note: `${scenario} #${i} 出错时整机进程数 ${snap.length}，相对开始时的变化：${growth(snap)}`, exit: rec.stop?.exit });
+      console.log(`  整机进程数 ${snap.length}，相对开始时的变化：${growth(snap)}`);
+    }
     if (failures >= 2) {
       notes.push({ runner: ctx.runnerId, method: ctx.method, note: `${scenario} 连续两次出错，放弃（做了 ${done}/${count} 次）` });
       break;
@@ -385,6 +410,7 @@ async function main() {
   console.log(JSON.stringify(meta, null, 2));
   if (isWin && methods.some((m) => m !== "taskkill" && m !== "pty-ctrlc") && !existsSync(JOB_EXE)) throw new Error(`先编译辅助程序：${JOB_EXE}`);
   const versions = {};
+  baseline = histogram(await snapshot());
   try {
     for (const runnerId of runnerIds) {
       if (runnerId === "static-inproc") {
@@ -433,6 +459,8 @@ async function main() {
     // 收尾：再查一遍整台机器上有没有带本次标记、或命令行里带临时目录的进程
     await sleep(500);
     const snap = await snapshot();
+    meta.procGrowth = growth(snap);
+    meta.sysProcsEnd = snap.length;
     const strayCmd = scanCmdline(snap, root, procs.helperPids());
     const strayCwd = (await scanCwd(root)) ?? [];
     meta.finalStray = { byCmdline: strayCmd.length, byCwd: strayCwd.length, detail: snap.filter((p) => strayCmd.includes(p.pid) || strayCwd.includes(p.pid)).map(describe) };

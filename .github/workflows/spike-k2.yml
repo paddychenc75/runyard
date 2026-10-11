@@ -29,13 +29,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-26, windows-2025]
-        group: [light, vite, next, nuxt4, nuxt3]
-        # Windows 的停止办法多，分两半跑，每个任务才不超过 30 分钟；另两个系统只有一种办法
-        half: [a, b]
-        exclude:
-          - { os: ubuntu-latest, half: b }
-          - { os: macos-26, half: b }
+        # 全量矩阵（第 2 轮跑过，结果见 README）：
+        #   os: [ubuntu-latest, macos-26, windows-2025] × group: [light, vite, next, nuxt4, nuxt3] × half: [a, b]（half b 只有 Windows）
+        # Windows 的停止办法多，分两半跑，每个任务才不超过 30 分钟；另两个系统只有一种办法。
+        # 这一轮只补跑上一轮没拿到结果的三个任务。
+        include:
+          - { os: windows-2025, group: nuxt3, half: a }
+          - { os: windows-2025, group: nuxt3, half: b }
+          - { os: macos-26, group: light, half: a }
     defaults:
       run:
         shell: bash

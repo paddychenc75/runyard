@@ -121,6 +121,8 @@ export function summarize({ meta, notes, records }) {
     for (const n of notes) lines.push(`- ${JSON.stringify(n).slice(0, 700)}`);
   }
   lines.push("");
+  const sys = records.map((r) => r.leftover?.sysProcs).filter((v) => typeof v === "number");
+  if (sys.length) lines.push(`整机进程数：第一次停止后 ${sys[0]}，最后一次停止后 ${sys[sys.length - 1]}，最多 ${Math.max(...sys)}；结束时相对开始时的变化：${meta.procGrowth || "无"}`);
   lines.push(`收尾：临时目录已删除=${meta.tmpRemoved}；全机扫描残留进程=${(meta.finalStray?.byCmdline ?? 0) + (meta.finalStray?.byCwd ?? 0)}`);
   return lines.join("\n");
 }

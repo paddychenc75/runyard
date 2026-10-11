@@ -107,7 +107,7 @@ createRoot(document.getElementById("root")).render(<h1>vite</h1>);
   },
   python: {
     files: {
-      "main.py": `import os, time
+      "main.py": `import os, socketserver, time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 class H(BaseHTTPRequestHandler):
@@ -121,9 +121,16 @@ class H(BaseHTTPRequestHandler):
     def log_message(self, *a):
         pass
 
+class S(ThreadingHTTPServer):
+    # 标准库的 server_bind 会做一次反向域名查询（socket.getfqdn），在 GitHub 的 macOS 机器上要等 35 秒；绕开它
+    def server_bind(self):
+        socketserver.TCPServer.server_bind(self)
+        self.server_name = "127.0.0.1"
+        self.server_port = self.server_address[1]
+
 port = int(os.environ["PORT"])
 print("listening", port, flush=True)
-ThreadingHTTPServer(("127.0.0.1", port), H).serve_forever()
+S(("127.0.0.1", port), H).serve_forever()
 `,
     },
     // 附录 A 第 20 行：python -u main.py。Windows 上没有 python3 这个名字（§7.2 第 10 行）
