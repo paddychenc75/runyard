@@ -219,6 +219,7 @@ try {
     await exp("bin-path-scan", () => ({
       "exe-ifo-quiet": B.pathLengthScan(ROOT, bin, cands["exe-ifo-quiet(UNDO|NOCONFIRM|SILENT|NOERRORUI)"], [200, 240, 259, 260, 261, 300, 400, 500, 520, 600, 800, 1000, 1500]),
       "ps-visualbasic": B.pathLengthScan(ROOT, bin, cands["ps-visualbasic"], [240, 259, 260, 300, 400, 500, 600, 1000]),
+      ...(cands["npm-trash@10.1.1(windows-trash.exe)"] ? { "npm-trash@10.1.1": B.pathLengthScan(ROOT, bin, cands["npm-trash@10.1.1(windows-trash.exe)"], [259, 300, 520, 560, 600, 800, 1000]) } : {}),
     }));
   }
 

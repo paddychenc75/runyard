@@ -267,7 +267,7 @@ export function pathLengthScan(root, bin, fn, lengths) {
     const r = fn(dir);
     const ms = round(now() - t0);
     const oc = outcome(bin, before, dir);
-    const row = { fileLen: f.length, ms, status: r.status, verdict: oc.verdict };
+    const row = { fileLen: f.length, ms, status: r.status, verdict: oc.verdict, out: ((r.stdout || '') + (r.stderr || '')).trim().replace(/\s+/g, ' ').slice(-200) || undefined };
     if (oc.entry) {
       row.binSize = oc.entry.size;
       try {
