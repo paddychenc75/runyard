@@ -38,7 +38,7 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .node-version
-      - name: 安装依赖（只有对照用的 trash 包）
+      - name: 安装依赖（vite 8.3.1，精确版本）
         run: pnpm install --frozen-lockfile
       - name: 运行 K9a 实验（含会弹权限框的变体，只在运行器上跑）
         run: node mac/run.mjs --ci --label ci-macos26
@@ -66,7 +66,7 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .node-version
-      - name: 安装依赖（vite 8.3.1、trash 10.1.1，精确版本）
+      - name: 安装依赖（vite 8.3.1，精确版本）
         run: pnpm install --frozen-lockfile
       - name: 运行 K9b 实验
         env:
