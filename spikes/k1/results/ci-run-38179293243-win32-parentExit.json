@@ -1,0 +1,124 @@
+{
+  "tag": "ci",
+  "quick": false,
+  "session": "k1s702d5249",
+  "startedAt": "2026-10-11T22:10:22.604Z",
+  "env": {
+    "platform": "win32",
+    "arch": "x64",
+    "osRelease": "10.0.26100",
+    "osVersion": "Windows Server 2025 Datacenter",
+    "cpus": "4 x AMD EPYC 7763 64-Core Processor                ",
+    "totalMemGb": 16,
+    "node": "v24.21.0",
+    "electronExec": "D:\\a\\runyard\\runyard\\spikes\\k1\\node_modules\\.pnpm\\electron@44.4.5\\node_modules\\electron\\dist\\electron.exe",
+    "runnerImage": "win25-vs2026 20260925.250.1"
+  },
+  "results": {
+    "parentExit": {
+      "pass": true,
+      "shells": {
+        "powershell/node": {
+          "rounds": 3,
+          "survived": 3,
+          "errors": []
+        },
+        "pwsh/node": {
+          "rounds": 3,
+          "survived": 3,
+          "errors": []
+        },
+        "cmd/node": {
+          "rounds": 3,
+          "survived": 3,
+          "errors": []
+        },
+        "git-bash/node": {
+          "rounds": 3,
+          "survived": 3,
+          "errors": []
+        },
+        "powershell/electron": {
+          "rounds": 1,
+          "survived": 1,
+          "errors": []
+        },
+        "cmd/electron": {
+          "rounds": 1,
+          "survived": 1,
+          "errors": []
+        }
+      },
+      "jobObject": {
+        "none/spawn": {
+          "rounds": 3,
+          "survived": 3,
+          "errors": [],
+          "jobStatus": "ok script-exit=0",
+          "launchToHandshakeMs": [
+            67,
+            67,
+            70
+          ]
+        },
+        "killOnClose/spawn": {
+          "rounds": 3,
+          "survived": 0,
+          "errors": [],
+          "jobStatus": "ok script-exit=0",
+          "launchToHandshakeMs": [
+            60,
+            60,
+            66
+          ]
+        },
+        "killOnClose/cim": {
+          "rounds": 3,
+          "survived": 3,
+          "errors": [],
+          "jobStatus": "ok script-exit=0",
+          "launchToHandshakeMs": [
+            665,
+            461,
+            458
+          ]
+        },
+        "killOnCloseBreakawayOk/spawn": {
+          "rounds": 3,
+          "survived": 0,
+          "errors": [],
+          "jobStatus": "ok script-exit=0",
+          "launchToHandshakeMs": [
+            66,
+            71,
+            65
+          ]
+        },
+        "killOnCloseSilentBreakaway/spawn": {
+          "rounds": 3,
+          "survived": 3,
+          "errors": [],
+          "jobStatus": "ok script-exit=0",
+          "launchToHandshakeMs": [
+            64,
+            62,
+            64
+          ]
+        }
+      },
+      "note": "CI 的 Windows 机器在任务结束时会清掉残留进程，所以存活只在任务之内测量（启动者被结束后 2.5 秒）",
+      "tookMs": 94727
+    }
+  },
+  "cleanup": {
+    "session": "k1s702d5249",
+    "statesCreated": 29,
+    "leakedProcessesFoundAndKilled": [],
+    "processesAfter": [],
+    "foreignProcessesMentioningMarker": [],
+    "portsChecked": 0,
+    "portsStillOpen": [],
+    "dirsLeft": []
+  },
+  "finishedAt": "2026-10-11T22:11:58.889Z"
+}

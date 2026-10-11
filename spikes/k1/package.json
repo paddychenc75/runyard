@@ -1,0 +1,17 @@
+{
+  "name": "runyard-spike-k1",
+  "private": true,
+  "description": "技术验证 K1：共用的管理进程（一次性实验，M0a 结束时删除）",
+  "type": "module",
+  "packageManager": "pnpm@11.28.0",
+  "engines": {
+    "node": ">=24.21.0 <25"
+  },
+  "scripts": {
+    "spike": "node experiments/run-all.mjs",
+    "spike:quick": "node experiments/run-all.mjs --quick"
+  },
+  "devDependencies": {
+    "electron": "44.4.5"
+  }
+}

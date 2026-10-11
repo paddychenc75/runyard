@@ -1,0 +1,6 @@
+{
+  "name": "runyard-spike-k1-app",
+  "private": true,
+  "type": "module",
+  "main": "main.mjs"
+}
