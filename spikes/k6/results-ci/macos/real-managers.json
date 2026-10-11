@@ -1,0 +1,5660 @@
+[
+  {
+    "case": "real-nvm",
+    "kind": "zsh",
+    "cwdMode": "home",
+    "captureCwdMode": "home",
+    "meta": {
+      "ms": 653.5282080000015,
+      "shell": "/bin/zsh",
+      "kind": "zsh",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1659,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_a1b51c9f07ccd1cb_START__HOME=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-nvm-zsh/home?USER=k6user?LOGNAME=k6user?PATH=/var/folders/36/tjdph2t965j8snz9_vkdnw0r",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 654
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-nvm-zsh/home/.nvm/versions/node/v22.23.3/bin/node",
+        "version": "22.23.3",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-nvm-zsh/home/.nvm/versions/node/v22.23.3/bin/node",
+          "version": "22.23.3",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-nvm-zsh/home/.nvm/versions/node/v22.23.3/bin/node",
+          "version": "22.23.3"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-nvm-zsh/home/.nvm/versions/node/v22.23.3/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false
+  },
+  {
+    "case": "real-nvm",
+    "kind": "zsh",
+    "cwdMode": "project",
+    "captureCwdMode": "project",
+    "meta": {
+      "ms": 664.9915000000001,
+      "shell": "/bin/zsh",
+      "kind": "zsh",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1669,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_626212bc8af6eb3f_START__HOME=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-nvm-zsh/home?USER=k6user?LOGNAME=k6user?PATH=/var/folders/36/tjdph2t965j8snz9_vkdnw0r",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 665
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-nvm-zsh/home/.nvm/versions/node/v22.23.3/bin/node",
+        "version": "22.23.3",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-nvm-zsh/home/.nvm/versions/node/v22.23.3/bin/node",
+          "version": "22.23.3",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-nvm-zsh/home/.nvm/versions/node/v22.23.3/bin/node",
+          "version": "22.23.3"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-nvm-zsh/home/.nvm/versions/node/v22.23.3/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false
+  },
+  {
+    "case": "real-nvm",
+    "kind": "bash",
+    "cwdMode": "home",
+    "captureCwdMode": "home",
+    "meta": {
+      "ms": 247.3729999999996,
+      "shell": "/bin/bash",
+      "kind": "bash",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1415,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_eac56e315075544b_START__NVM_INC=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-nvm-bash/home/.nvm/versions/node/v22.23.3/include/node?NVM_CD_FLAGS=?HOMEBREW_REPO",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 247
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-nvm-bash/home/.nvm/versions/node/v22.23.3/bin/node",
+        "version": "22.23.3",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-nvm-bash/home/.nvm/versions/node/v22.23.3/bin/node",
+          "version": "22.23.3",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-nvm-bash/home/.nvm/versions/node/v22.23.3/bin/node",
+          "version": "22.23.3"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-nvm-bash/home/.nvm/versions/node/v22.23.3/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false
+  },
+  {
+    "case": "real-nvm",
+    "kind": "bash",
+    "cwdMode": "project",
+    "captureCwdMode": "project",
+    "meta": {
+      "ms": 270.7737500000003,
+      "shell": "/bin/bash",
+      "kind": "bash",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1428,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_10e066a25bbea2c5_START__NVM_INC=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-nvm-bash/home/.nvm/versions/node/v22.23.3/include/node?NVM_CD_FLAGS=?HOMEBREW_REPO",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 271
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-nvm-bash/home/.nvm/versions/node/v22.23.3/bin/node",
+        "version": "22.23.3",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-nvm-bash/home/.nvm/versions/node/v22.23.3/bin/node",
+          "version": "22.23.3",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-nvm-bash/home/.nvm/versions/node/v22.23.3/bin/node",
+          "version": "22.23.3"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-nvm-bash/home/.nvm/versions/node/v22.23.3/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false
+  },
+  {
+    "case": "real-fnm",
+    "kind": "zsh",
+    "cwdMode": "home",
+    "captureCwdMode": "home",
+    "meta": {
+      "ms": 51.45241700000042,
+      "shell": "/bin/zsh",
+      "kind": "zsh",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1733,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_1b72b9b846845b48_START__HOME=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-zsh/home?USER=k6user?LOGNAME=k6user?PATH=/var/folders/36/tjdph2t965j8snz9_vkdnw0r",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 51
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-zsh/home/.local/state/fnm_multishells/24139_1791744537136/bin/node",
+        "version": "22.23.3",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same(real)",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-zsh/home/.local/state/fnm_multishells/24139_1791744537136/bin/node",
+          "version": "22.23.3",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-zsh/home/.local/state/fnm_multishells/24393_1791744540260/bin/node",
+          "version": "22.23.3"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-zsh/home/.local/state/fnm_multishells/24393_1791744540260/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false,
+    "notes": {
+      "multishellInPath": "~/.local/state/fnm_multishells/24393_1791744540260",
+      "existsAfterShellKilled": true,
+      "linkTarget": "~/.local/share/fnm/aliases/default"
+    }
+  },
+  {
+    "case": "real-fnm",
+    "kind": "zsh",
+    "cwdMode": "project",
+    "captureCwdMode": "project",
+    "meta": {
+      "ms": 40.91204200000357,
+      "shell": "/bin/zsh",
+      "kind": "zsh",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1743,
+      "stderrTail": "Using Node v20.20.2\n",
+      "stdoutHead": "__RUNYARD_ENV_bf26f25f289bae08_START__HOME=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-zsh/home?USER=k6user?LOGNAME=k6user?PATH=/var/folders/36/tjdph2t965j8snz9_vkdnw0r",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 41
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-zsh/home/.local/state/fnm_multishells/24425_1791744540849/bin/node",
+        "version": "20.20.2",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same(real)",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-zsh/home/.local/state/fnm_multishells/24425_1791744540849/bin/node",
+          "version": "20.20.2",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-zsh/home/.local/state/fnm_multishells/24458_1791744543881/bin/node",
+          "version": "20.20.2"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-zsh/home/.local/state/fnm_multishells/24458_1791744543881/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false,
+    "notes": {
+      "multishellInPath": "~/.local/state/fnm_multishells/24458_1791744543881",
+      "existsAfterShellKilled": true,
+      "linkTarget": "~/.local/share/fnm/node-versions/v20.20.2/installation"
+    }
+  },
+  {
+    "case": "real-fnm",
+    "kind": "bash",
+    "cwdMode": "home",
+    "captureCwdMode": "home",
+    "meta": {
+      "ms": 45.82495799999742,
+      "shell": "/bin/bash",
+      "kind": "bash",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1490,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_5c37ae18bc6933a2_START__FNM_LOGLEVEL=info?FNM_NODE_DIST_MIRROR=https://nodejs.org/dist?HOMEBREW_REPOSITORY=/opt/homebrew?TMPDIR=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/?FNM_CORE",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 46
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-bash/home/.local/state/fnm_multishells/24736_1791744550956/bin/node",
+        "version": "22.23.3",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same(real)",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-bash/home/.local/state/fnm_multishells/24736_1791744550956/bin/node",
+          "version": "22.23.3",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-bash/home/.local/state/fnm_multishells/24769_1791744553851/bin/node",
+          "version": "22.23.3"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-bash/home/.local/state/fnm_multishells/24769_1791744553851/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false,
+    "notes": {
+      "multishellInPath": "~/.local/state/fnm_multishells/24769_1791744553851",
+      "existsAfterShellKilled": true,
+      "linkTarget": "~/.local/share/fnm/aliases/default"
+    }
+  },
+  {
+    "case": "real-fnm",
+    "kind": "bash",
+    "cwdMode": "project",
+    "captureCwdMode": "project",
+    "meta": {
+      "ms": 41.939457999993465,
+      "shell": "/bin/bash",
+      "kind": "bash",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1503,
+      "stderrTail": "Using Node v20.20.2\n",
+      "stdoutHead": "__RUNYARD_ENV_b5f536bf4891f916_START__FNM_LOGLEVEL=info?FNM_NODE_DIST_MIRROR=https://nodejs.org/dist?HOMEBREW_REPOSITORY=/opt/homebrew?TMPDIR=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/?FNM_CORE",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 42
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-bash/home/.local/state/fnm_multishells/24804_1791744554420/bin/node",
+        "version": "20.20.2",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same(real)",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-bash/home/.local/state/fnm_multishells/24804_1791744554420/bin/node",
+          "version": "20.20.2",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-bash/home/.local/state/fnm_multishells/24838_1791744557391/bin/node",
+          "version": "20.20.2"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-bash/home/.local/state/fnm_multishells/24838_1791744557391/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false,
+    "notes": {
+      "multishellInPath": "~/.local/state/fnm_multishells/24838_1791744557391",
+      "existsAfterShellKilled": true,
+      "linkTarget": "~/.local/share/fnm/node-versions/v20.20.2/installation"
+    }
+  },
+  {
+    "case": "real-fnm",
+    "kind": "fish",
+    "cwdMode": "home",
+    "captureCwdMode": "home",
+    "meta": {
+      "ms": 61.066791999997804,
+      "shell": "/opt/homebrew/bin/fish",
+      "kind": "fish",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 2694,
+      "stderrTail": "",
+      "stdoutHead": "Welcome to fish, the friendly interactive shell\nType ?[32mhelp?[m for instructions on how to use fish\n?]7;file://sat12-dp155-05c6071b-674e-427d-a5e6-9d819d515274-A6E4CB41154A.local/private/var/folders",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 274,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 61
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-fish/home/.local/state/fnm_multishells/25106_1791744564634/bin/node",
+        "version": "22.23.3",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same(real)",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-fish/home/.local/state/fnm_multishells/25106_1791744564634/bin/node",
+          "version": "22.23.3",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-fish/home/.local/state/fnm_multishells/25409_1791744579122/bin/node",
+          "version": "22.23.3"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-fish/home/.local/state/fnm_multishells/25409_1791744579122/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/opt/homebrew/opt/mise/bin:/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-fish/home/.local/share/mise/shims:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": true,
+    "notes": {
+      "multishellInPath": "~/.local/state/fnm_multishells/25409_1791744579122",
+      "existsAfterShellKilled": true,
+      "linkTarget": "~/.local/share/fnm/aliases/default"
+    }
+  },
+  {
+    "case": "real-fnm",
+    "kind": "fish",
+    "cwdMode": "project",
+    "captureCwdMode": "project",
+    "meta": {
+      "ms": 65.87545800000953,
+      "shell": "/opt/homebrew/bin/fish",
+      "kind": "fish",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 2710,
+      "stderrTail": "Using Node v20.20.2\n",
+      "stdoutHead": "Welcome to fish, the friendly interactive shell\nType ?[32mhelp?[m for instructions on how to use fish\n?]7;file://sat12-dp155-05c6071b-674e-427d-a5e6-9d819d515274-A6E4CB41154A.local/private/var/folders",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 279,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 66
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-fish/home/.local/state/fnm_multishells/25431_1791744579750/bin/node",
+        "version": "20.20.2",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same(real)",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-fish/home/.local/state/fnm_multishells/25431_1791744579750/bin/node",
+          "version": "20.20.2",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-fish/home/.local/state/fnm_multishells/26045_1791744593883/bin/node",
+          "version": "20.20.2"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-fish/home/.local/state/fnm_multishells/26045_1791744593883/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/opt/homebrew/opt/mise/bin:/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-fnm-fish/home/.local/share/mise/shims:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": true,
+    "notes": {
+      "multishellInPath": "~/.local/state/fnm_multishells/26045_1791744593883",
+      "existsAfterShellKilled": true,
+      "linkTarget": "~/.local/share/fnm/node-versions/v20.20.2/installation"
+    }
+  },
+  {
+    "case": "real-volta",
+    "kind": "zsh",
+    "cwdMode": "home",
+    "captureCwdMode": "home",
+    "meta": {
+      "ms": 41.86237499999697,
+      "shell": "/bin/zsh",
+      "kind": "zsh",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1378,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_65269d80ce2295ad_START__HOME=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-zsh/home?USER=k6user?LOGNAME=k6user?PATH=/var/folders/36/tjdph2t965j8snz9_vkdnw",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 42
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-zsh/home/.volta/bin/node",
+        "version": "22.23.3",
+        "fn": false
+      },
+      "pnpm": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-zsh/home/.volta/bin/pnpm",
+        "version": null,
+        "broken": "Volta error: Could not find executable \"pnpm\"",
+        "fn": false
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "miss",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-zsh/home/.volta/bin/node",
+          "version": "22.23.3",
+          "fn": false
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-zsh/home/.volta/bin/pnpm",
+          "version": null,
+          "broken": "Volta error: Could not find executable \"pnpm\"",
+          "fn": false
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-zsh/home/.volta/bin/node",
+          "version": "22.23.3"
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-zsh/home/.volta/bin/pnpm",
+          "version": null,
+          "broken": "Volta error: Could not find executable \"pnpm\""
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-zsh/home/.volta/bin/pnpm",
+          "version": null,
+          "broken": "Volta error: Could not find executable \"pnpm\""
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-zsh/home/.volta/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false
+  },
+  {
+    "case": "real-volta",
+    "kind": "zsh",
+    "cwdMode": "project",
+    "captureCwdMode": "project",
+    "meta": {
+      "ms": 34.56812499999069,
+      "shell": "/bin/zsh",
+      "kind": "zsh",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1388,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_810215bdad63d7a6_START__HOME=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-zsh/home?USER=k6user?LOGNAME=k6user?PATH=/var/folders/36/tjdph2t965j8snz9_vkdnw",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 35
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-zsh/home/.volta/bin/node",
+        "version": "20.20.2",
+        "fn": false
+      },
+      "pnpm": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-zsh/home/.volta/bin/pnpm",
+        "version": null,
+        "broken": "Volta error: Could not find executable \"pnpm\"",
+        "fn": false
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "miss",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-zsh/home/.volta/bin/node",
+          "version": "20.20.2",
+          "fn": false
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-zsh/home/.volta/bin/pnpm",
+          "version": null,
+          "broken": "Volta error: Could not find executable \"pnpm\"",
+          "fn": false
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-zsh/home/.volta/bin/node",
+          "version": "20.20.2"
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-zsh/home/.volta/bin/pnpm",
+          "version": null,
+          "broken": "Volta error: Could not find executable \"pnpm\""
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-zsh/home/.volta/bin/pnpm",
+          "version": null,
+          "broken": "Volta error: Could not find executable \"pnpm\""
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-zsh/home/.volta/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false
+  },
+  {
+    "case": "real-volta",
+    "kind": "bash",
+    "cwdMode": "home",
+    "captureCwdMode": "home",
+    "meta": {
+      "ms": 36.92358400000376,
+      "shell": "/bin/bash",
+      "kind": "bash",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1132,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_14d364433660eab9_START__HOMEBREW_REPOSITORY=/opt/homebrew?TMPDIR=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/?VOLTA_HOME=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 37
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-bash/home/.volta/bin/node",
+        "version": "22.23.3",
+        "fn": false
+      },
+      "pnpm": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-bash/home/.volta/bin/pnpm",
+        "version": null,
+        "broken": "Volta error: Could not find executable \"pnpm\"",
+        "fn": false
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "miss",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-bash/home/.volta/bin/node",
+          "version": "22.23.3",
+          "fn": false
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-bash/home/.volta/bin/pnpm",
+          "version": null,
+          "broken": "Volta error: Could not find executable \"pnpm\"",
+          "fn": false
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-bash/home/.volta/bin/node",
+          "version": "22.23.3"
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-bash/home/.volta/bin/pnpm",
+          "version": null,
+          "broken": "Volta error: Could not find executable \"pnpm\""
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-bash/home/.volta/bin/pnpm",
+          "version": null,
+          "broken": "Volta error: Could not find executable \"pnpm\""
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-bash/home/.volta/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false
+  },
+  {
+    "case": "real-volta",
+    "kind": "bash",
+    "cwdMode": "project",
+    "captureCwdMode": "project",
+    "meta": {
+      "ms": 35.855374999999185,
+      "shell": "/bin/bash",
+      "kind": "bash",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1145,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_8df89025063f4bd0_START__HOMEBREW_REPOSITORY=/opt/homebrew?TMPDIR=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/?VOLTA_HOME=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 36
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-bash/home/.volta/bin/node",
+        "version": "20.20.2",
+        "fn": false
+      },
+      "pnpm": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-bash/home/.volta/bin/pnpm",
+        "version": null,
+        "broken": "Volta error: Could not find executable \"pnpm\"",
+        "fn": false
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "miss",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-bash/home/.volta/bin/node",
+          "version": "20.20.2",
+          "fn": false
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-bash/home/.volta/bin/pnpm",
+          "version": null,
+          "broken": "Volta error: Could not find executable \"pnpm\"",
+          "fn": false
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-bash/home/.volta/bin/node",
+          "version": "20.20.2"
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-bash/home/.volta/bin/pnpm",
+          "version": null,
+          "broken": "Volta error: Could not find executable \"pnpm\""
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-bash/home/.volta/bin/pnpm",
+          "version": null,
+          "broken": "Volta error: Could not find executable \"pnpm\""
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-volta-bash/home/.volta/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false
+  },
+  {
+    "case": "real-mise-activate",
+    "kind": "zsh",
+    "cwdMode": "home",
+    "captureCwdMode": "home",
+    "meta": {
+      "ms": 77.29399999999441,
+      "shell": "/bin/zsh",
+      "kind": "zsh",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 2556,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_71506f356cfb9d05_START__HOME=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-zsh/home?USER=k6user?LOGNAME=k6user?PATH=/var/folders/36/tjdph2t965j8sn",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 77
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-zsh/home/.local/share/mise/installs/node/22/bin/node",
+        "version": "22.23.3",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-zsh/home/.local/share/mise/installs/node/22/bin/node",
+          "version": "22.23.3",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-zsh/home/.local/share/mise/installs/node/22/bin/node",
+          "version": "22.23.3"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-zsh/home/.local/share/mise/installs/node/22/bin:/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-zsh/home/.local/share/mise/shims:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false
+  },
+  {
+    "case": "real-mise-activate",
+    "kind": "zsh",
+    "cwdMode": "project",
+    "captureCwdMode": "project",
+    "meta": {
+      "ms": 72.65170799999032,
+      "shell": "/bin/zsh",
+      "kind": "zsh",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 2592,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_fa22bc1d606fd3cc_START__HOME=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-zsh/home?USER=k6user?LOGNAME=k6user?PATH=/var/folders/36/tjdph2t965j8sn",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 73
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-zsh/home/.local/share/mise/installs/node/20/bin/node",
+        "version": "20.20.2",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-zsh/home/.local/share/mise/installs/node/20/bin/node",
+          "version": "20.20.2",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-zsh/home/.local/share/mise/installs/node/20/bin/node",
+          "version": "20.20.2"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-zsh/home/.local/share/mise/installs/node/20/bin:/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-zsh/home/.local/share/mise/shims:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false
+  },
+  {
+    "case": "real-mise-activate",
+    "kind": "bash",
+    "cwdMode": "home",
+    "captureCwdMode": "home",
+    "meta": {
+      "ms": 61.61624999999185,
+      "shell": "/bin/bash",
+      "kind": "bash",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 2292,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_00536dc6ef53178d_START____MISE_DIFF=eAFrXpyfk9KwOC+1vGFJQWJJxsSbbfpliUX6afk5KalFxfrGZvolWSkFGUYllmamWRbFeVWW8WXZKXnlBkUGBgYG6Xn6IfpFpXmViUUputlmuqaRAX7mEfpFqYk5urmZxam6icklmWWJJam6SYnFGf",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 62
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-bash/home/.local/share/mise/installs/node/22/bin/node",
+        "version": "22.23.3",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-bash/home/.local/share/mise/installs/node/22/bin/node",
+          "version": "22.23.3",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-bash/home/.local/share/mise/installs/node/22/bin/node",
+          "version": "22.23.3"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-bash/home/.local/share/mise/installs/node/22/bin:/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-bash/home/.local/share/mise/shims:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false
+  },
+  {
+    "case": "real-mise-activate",
+    "kind": "bash",
+    "cwdMode": "project",
+    "captureCwdMode": "project",
+    "meta": {
+      "ms": 67.05087500001537,
+      "shell": "/bin/bash",
+      "kind": "bash",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 2332,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_32e9ffd0eb5be8f1_START____MISE_DIFF=eAFrXpyfk9KwOC+1vGFJQWJJxsSbbfpliUX6afk5KalFxfrGZvolWSkFGUYllmamWRbFeVWW8WXZKXnlBkUGBgYG6Xn6IfpFpXmViUUputlmuqaRAX7mEfpFqYk5urmZxam6icklmWWJJam6SYnFGf",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 67
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-bash/home/.local/share/mise/installs/node/20/bin/node",
+        "version": "20.20.2",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-bash/home/.local/share/mise/installs/node/20/bin/node",
+          "version": "20.20.2",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-bash/home/.local/share/mise/installs/node/20/bin/node",
+          "version": "20.20.2"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-bash/home/.local/share/mise/installs/node/20/bin:/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-bash/home/.local/share/mise/shims:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false
+  },
+  {
+    "case": "real-mise-activate",
+    "kind": "fish",
+    "cwdMode": "home",
+    "captureCwdMode": "home",
+    "meta": {
+      "ms": 94.75849999999627,
+      "shell": "/opt/homebrew/bin/fish",
+      "kind": "fish",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 2544,
+      "stderrTail": "",
+      "stdoutHead": "Welcome to fish, the friendly interactive shell\nType ?[32mhelp?[m for instructions on how to use fish\n?]7;file://sat12-dp155-05c6071b-674e-427d-a5e6-9d819d515274-A6E4CB41154A.local/private/var/folders",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 284,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 95
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-fish/home/.local/share/mise/installs/node/22/bin/node",
+        "version": "22.23.3",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-fish/home/.local/share/mise/installs/node/22/bin/node",
+          "version": "22.23.3",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-fish/home/.local/share/mise/installs/node/22/bin/node",
+          "version": "22.23.3"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-fish/home/.local/share/mise/installs/node/22/bin:/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-fish/home/.local/share/mise/shims:/opt/homebrew/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/sbin:/opt/homebrew/opt/mise/bin",
+    "fish": true
+  },
+  {
+    "case": "real-mise-activate",
+    "kind": "fish",
+    "cwdMode": "project",
+    "captureCwdMode": "project",
+    "meta": {
+      "ms": 88.2510000000184,
+      "shell": "/opt/homebrew/bin/fish",
+      "kind": "fish",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 2580,
+      "stderrTail": "",
+      "stdoutHead": "Welcome to fish, the friendly interactive shell\nType ?[32mhelp?[m for instructions on how to use fish\n?]7;file://sat12-dp155-05c6071b-674e-427d-a5e6-9d819d515274-A6E4CB41154A.local/private/var/folders",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 289,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 88
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-fish/home/.local/share/mise/installs/node/20/bin/node",
+        "version": "20.20.2",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-fish/home/.local/share/mise/installs/node/20/bin/node",
+          "version": "20.20.2",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-fish/home/.local/share/mise/installs/node/20/bin/node",
+          "version": "20.20.2"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-fish/home/.local/share/mise/installs/node/20/bin:/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-activate-fish/home/.local/share/mise/shims:/opt/homebrew/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/sbin:/opt/homebrew/opt/mise/bin",
+    "fish": true
+  },
+  {
+    "case": "real-mise-shims",
+    "kind": "zsh",
+    "cwdMode": "home",
+    "captureCwdMode": "home",
+    "meta": {
+      "ms": 41.763165999989724,
+      "shell": "/bin/zsh",
+      "kind": "zsh",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1306,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_8e1e579063c30bd1_START__HOME=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-shims-zsh/home?USER=k6user?LOGNAME=k6user?PATH=/var/folders/36/tjdph2t965j8snz9_",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 42
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-shims-zsh/home/.local/share/mise/shims/node",
+        "version": "22.23.3",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-shims-zsh/home/.local/share/mise/shims/node",
+          "version": "22.23.3",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-shims-zsh/home/.local/share/mise/shims/node",
+          "version": "22.23.3"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-shims-zsh/home/.local/share/mise/shims:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false
+  },
+  {
+    "case": "real-mise-shims",
+    "kind": "zsh",
+    "cwdMode": "project",
+    "captureCwdMode": "project",
+    "meta": {
+      "ms": 42.4320000000007,
+      "shell": "/bin/zsh",
+      "kind": "zsh",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1316,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_577f11d0a0172f4e_START__HOME=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-shims-zsh/home?USER=k6user?LOGNAME=k6user?PATH=/var/folders/36/tjdph2t965j8snz9_",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 42
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-shims-zsh/home/.local/share/mise/shims/node",
+        "version": "20.20.2",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-shims-zsh/home/.local/share/mise/shims/node",
+          "version": "20.20.2",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-shims-zsh/home/.local/share/mise/shims/node",
+          "version": "20.20.2"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-shims-zsh/home/.local/share/mise/shims:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false
+  },
+  {
+    "case": "real-mise-shims",
+    "kind": "bash",
+    "cwdMode": "home",
+    "captureCwdMode": "home",
+    "meta": {
+      "ms": 39.90008399999351,
+      "shell": "/bin/bash",
+      "kind": "bash",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1054,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_4c15672d3c83fb5d_START__HOMEBREW_REPOSITORY=/opt/homebrew?TMPDIR=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/?USER=k6user?RUNYARD_RESOLVING_ENV=1?PATH=/var/folders/36/tjdph2t965j8sn",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 40
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-shims-bash/home/.local/share/mise/shims/node",
+        "version": "22.23.3",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-shims-bash/home/.local/share/mise/shims/node",
+          "version": "22.23.3",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-shims-bash/home/.local/share/mise/shims/node",
+          "version": "22.23.3"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-shims-bash/home/.local/share/mise/shims:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false
+  },
+  {
+    "case": "real-mise-shims",
+    "kind": "bash",
+    "cwdMode": "project",
+    "captureCwdMode": "project",
+    "meta": {
+      "ms": 35.5570000000007,
+      "shell": "/bin/bash",
+      "kind": "bash",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1067,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_2e7dbe82b90182c4_START__HOMEBREW_REPOSITORY=/opt/homebrew?TMPDIR=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/?USER=k6user?RUNYARD_RESOLVING_ENV=1?PATH=/var/folders/36/tjdph2t965j8sn",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 36
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-shims-bash/home/.local/share/mise/shims/node",
+        "version": "20.20.2",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-shims-bash/home/.local/share/mise/shims/node",
+          "version": "20.20.2",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-shims-bash/home/.local/share/mise/shims/node",
+          "version": "20.20.2"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-mise-shims-bash/home/.local/share/mise/shims:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false
+  },
+  {
+    "case": "real-asdf",
+    "kind": "zsh",
+    "cwdMode": "home",
+    "captureCwdMode": "home",
+    "meta": {
+      "ms": 39.14437499997439,
+      "shell": "/bin/zsh",
+      "kind": "zsh",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1270,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_c735d77a42070469_START__HOME=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-asdf-zsh/home?USER=k6user?LOGNAME=k6user?PATH=/var/folders/36/tjdph2t965j8snz9_vkdnw0",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 39
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-asdf-zsh/home/.asdf/shims/node",
+        "version": "22.11.0",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-asdf-zsh/home/.asdf/shims/node",
+          "version": "22.11.0",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-asdf-zsh/home/.asdf/shims/node",
+          "version": "22.11.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-asdf-zsh/home/.asdf/shims:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false
+  },
+  {
+    "case": "real-asdf",
+    "kind": "zsh",
+    "cwdMode": "project",
+    "captureCwdMode": "project",
+    "meta": {
+      "ms": 31.313790999993216,
+      "shell": "/bin/zsh",
+      "kind": "zsh",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1280,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_f2826743b3873315_START__HOME=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-asdf-zsh/home?USER=k6user?LOGNAME=k6user?PATH=/var/folders/36/tjdph2t965j8snz9_vkdnw0",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 31
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-asdf-zsh/home/.asdf/shims/node",
+        "version": "20.18.0",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-asdf-zsh/home/.asdf/shims/node",
+          "version": "20.18.0",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-asdf-zsh/home/.asdf/shims/node",
+          "version": "20.18.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-asdf-zsh/home/.asdf/shims:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false
+  },
+  {
+    "case": "real-asdf",
+    "kind": "bash",
+    "cwdMode": "home",
+    "captureCwdMode": "home",
+    "meta": {
+      "ms": 35.220665999979246,
+      "shell": "/bin/bash",
+      "kind": "bash",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1024,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_974b52ff5d6d0c34_START__HOMEBREW_REPOSITORY=/opt/homebrew?TMPDIR=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/?USER=k6user?RUNYARD_RESOLVING_ENV=1?PATH=/var/folders/36/tjdph2t965j8sn",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 35
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-asdf-bash/home/.asdf/shims/node",
+        "version": "22.11.0",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-asdf-bash/home/.asdf/shims/node",
+          "version": "22.11.0",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-asdf-bash/home/.asdf/shims/node",
+          "version": "22.11.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-asdf-bash/home/.asdf/shims:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false
+  },
+  {
+    "case": "real-asdf",
+    "kind": "bash",
+    "cwdMode": "project",
+    "captureCwdMode": "project",
+    "meta": {
+      "ms": 37.168625000020256,
+      "shell": "/bin/bash",
+      "kind": "bash",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1037,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_765ba0161620e950_START__HOMEBREW_REPOSITORY=/opt/homebrew?TMPDIR=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/?USER=k6user?RUNYARD_RESOLVING_ENV=1?PATH=/var/folders/36/tjdph2t965j8sn",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 37
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-asdf-bash/home/.asdf/shims/node",
+        "version": "20.18.0",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-asdf-bash/home/.asdf/shims/node",
+          "version": "20.18.0",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-asdf-bash/home/.asdf/shims/node",
+          "version": "20.18.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-asdf-bash/home/.asdf/shims:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false
+  },
+  {
+    "case": "real-pyenv",
+    "kind": "zsh",
+    "cwdMode": "home",
+    "captureCwdMode": "home",
+    "meta": {
+      "ms": 157.09887500002515,
+      "shell": "/bin/zsh",
+      "kind": "zsh",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1494,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_494a9db9fe1744f6_START__HOME=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-zsh/home?USER=k6user?LOGNAME=k6user?PATH=/var/folders/36/tjdph2t965j8snz9_vkdnw",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 157
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/opt/homebrew/bin/node",
+        "version": "24.20.0",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-zsh/home/.pyenv/shims/python3",
+        "version": "3.12.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-zsh/home/.pyenv/shims/python3",
+          "version": "3.12.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-zsh/home/.pyenv/shims/python3",
+          "version": "3.12.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-zsh/home/.pyenv/shims:/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-zsh/home/.pyenv/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false
+  },
+  {
+    "case": "real-pyenv",
+    "kind": "zsh",
+    "cwdMode": "project",
+    "captureCwdMode": "project",
+    "meta": {
+      "ms": 140.50941699999385,
+      "shell": "/bin/zsh",
+      "kind": "zsh",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1504,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_9abf095ee8ae49d5_START__HOME=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-zsh/home?USER=k6user?LOGNAME=k6user?PATH=/var/folders/36/tjdph2t965j8snz9_vkdnw",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 141
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/opt/homebrew/bin/node",
+        "version": "24.20.0",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-zsh/home/.pyenv/shims/python3",
+        "version": "3.11.10",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-zsh/home/.pyenv/shims/python3",
+          "version": "3.11.10",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-zsh/home/.pyenv/shims/python3",
+          "version": "3.11.10"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-zsh/home/.pyenv/shims:/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-zsh/home/.pyenv/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false,
+    "setupErrors": [
+      "export PYENV_ROOT=$HOME/.pyenv; export PATH=$PYENV_ROOT/bin: → 1 pyenv: /var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-zsh/home/.pyenv/versions/3.12.7 already exists\n"
+    ]
+  },
+  {
+    "case": "real-pyenv",
+    "kind": "bash",
+    "cwdMode": "home",
+    "captureCwdMode": "home",
+    "meta": {
+      "ms": 132.69900000002235,
+      "shell": "/bin/bash",
+      "kind": "bash",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1250,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_8e8050e345151a62_START__PYENV_ROOT=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-bash/home/.pyenv?HOMEBREW_REPOSITORY=/opt/homebrew?TMPDIR=/var/folders/36",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 133
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/opt/homebrew/bin/node",
+        "version": "24.20.0",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-bash/home/.pyenv/shims/python3",
+        "version": "3.12.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-bash/home/.pyenv/shims/python3",
+          "version": "3.12.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-bash/home/.pyenv/shims/python3",
+          "version": "3.12.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-bash/home/.pyenv/shims:/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-bash/home/.pyenv/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false
+  },
+  {
+    "case": "real-pyenv",
+    "kind": "bash",
+    "cwdMode": "project",
+    "captureCwdMode": "project",
+    "meta": {
+      "ms": 129.120833999943,
+      "shell": "/bin/bash",
+      "kind": "bash",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1263,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_a4b08c202d47fc56_START__PYENV_ROOT=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-bash/home/.pyenv?HOMEBREW_REPOSITORY=/opt/homebrew?TMPDIR=/var/folders/36",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 129
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/opt/homebrew/bin/node",
+        "version": "24.20.0",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-bash/home/.pyenv/shims/python3",
+        "version": "3.11.10",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-bash/home/.pyenv/shims/python3",
+          "version": "3.11.10",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-bash/home/.pyenv/shims/python3",
+          "version": "3.11.10"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-bash/home/.pyenv/shims:/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-bash/home/.pyenv/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false,
+    "setupErrors": [
+      "export PYENV_ROOT=$HOME/.pyenv; export PATH=$PYENV_ROOT/bin: → 1 pyenv: /var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-pyenv-bash/home/.pyenv/versions/3.12.7 already exists\n"
+    ]
+  },
+  {
+    "case": "real-uv-python",
+    "kind": "zsh",
+    "cwdMode": "home",
+    "captureCwdMode": "home",
+    "meta": {
+      "ms": 36.87100000004284,
+      "shell": "/bin/zsh",
+      "kind": "zsh",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1289,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_fd0282844f1641ab_START__HOME=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-uv-python-zsh/home?USER=k6user?LOGNAME=k6user?PATH=/opt/homebrew/bin:/opt/homebrew/sb",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 37
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/opt/homebrew/bin/node",
+        "version": "24.20.0",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-uv-python-zsh/home/.local/bin",
+    "fish": false
+  },
+  {
+    "case": "real-uv-python",
+    "kind": "bash",
+    "cwdMode": "home",
+    "captureCwdMode": "home",
+    "meta": {
+      "ms": 36.305874999961816,
+      "shell": "/bin/bash",
+      "kind": "bash",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1038,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_03270a0c830314dd_START__HOMEBREW_REPOSITORY=/opt/homebrew?TMPDIR=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/?USER=k6user?RUNYARD_RESOLVING_ENV=1?PATH=/opt/homebrew/bin:/opt/homebre",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 36
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/opt/homebrew/bin/node",
+        "version": "24.20.0",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/opt/homebrew/bin:/opt/homebrew/sbin:/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-uv-python-bash/home/.local/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false
+  },
+  {
+    "case": "real-uv-python",
+    "kind": "fish",
+    "cwdMode": "home",
+    "captureCwdMode": "home",
+    "meta": {
+      "ms": 53.62891699990723,
+      "shell": "/opt/homebrew/bin/fish",
+      "kind": "fish",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 2262,
+      "stderrTail": "",
+      "stdoutHead": "Welcome to fish, the friendly interactive shell\nType ?[32mhelp?[m for instructions on how to use fish\n?]7;file://sat12-dp155-05c6071b-674e-427d-a5e6-9d819d515274-A6E4CB41154A.local/private/var/folders",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 280,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 54
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/opt/homebrew/bin/node",
+        "version": "24.20.0",
+        "fn": false
+      },
+      "pnpm": {
+        "missing": true
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0",
+          "fn": false
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "missing": true
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/opt/homebrew/bin:/opt/homebrew/sbin:/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-uv-python-fish/home/.local/bin:/opt/homebrew/opt/mise/bin:/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-uv-python-fish/home/.local/share/mise/shims:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": true
+  },
+  {
+    "case": "real-corepack-pnpm",
+    "kind": "zsh",
+    "cwdMode": "home",
+    "captureCwdMode": "home",
+    "meta": {
+      "ms": 57.398667000001296,
+      "shell": "/bin/zsh",
+      "kind": "zsh",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1483,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_8eaa135a9d935939_START__HOME=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-corepack-pnpm-zsh/home?USER=k6user?LOGNAME=k6user?PATH=/opt/homebrew/bin:/opt/homebre",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 57
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/opt/homebrew/bin/node",
+        "version": "24.20.0",
+        "fn": false
+      },
+      "pnpm": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-corepack-pnpm-zsh/home/.local/bin/pnpm",
+        "version": "12.11.2",
+        "fn": false
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "miss",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "same",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0",
+          "fn": false
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-corepack-pnpm-zsh/home/.local/bin/pnpm",
+          "version": "12.11.2",
+          "fn": false
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-corepack-pnpm-zsh/home/.local/bin/pnpm",
+          "version": "12.11.2"
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-corepack-pnpm-zsh/home/.local/bin/pnpm",
+          "version": "12.11.2"
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-corepack-pnpm-zsh/home/.local/bin:/Users/runner/hostedtoolcache/node/24.20.0/arm64/bin",
+    "fish": false,
+    "notes": {
+      "firstPnpmVersion": "10.12.1",
+      "firstMs": 2154,
+      "secondMs": 227
+    }
+  },
+  {
+    "case": "real-corepack-pnpm",
+    "kind": "zsh",
+    "cwdMode": "project",
+    "captureCwdMode": "project",
+    "meta": {
+      "ms": 45.26712500001304,
+      "shell": "/bin/zsh",
+      "kind": "zsh",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1493,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_93cac28cb932c17b_START__HOME=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-corepack-pnpm-zsh/home?USER=k6user?LOGNAME=k6user?PATH=/opt/homebrew/bin:/opt/homebre",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 45
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/opt/homebrew/bin/node",
+        "version": "24.20.0",
+        "fn": false
+      },
+      "pnpm": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-corepack-pnpm-zsh/home/.local/bin/pnpm",
+        "version": "10.12.1",
+        "fn": false
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "miss",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "same",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0",
+          "fn": false
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-corepack-pnpm-zsh/home/.local/bin/pnpm",
+          "version": "10.12.1",
+          "fn": false
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-corepack-pnpm-zsh/home/.local/bin/pnpm",
+          "version": "10.12.1"
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-corepack-pnpm-zsh/home/.local/bin/pnpm",
+          "version": "10.12.1"
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-corepack-pnpm-zsh/home/.local/bin:/Users/runner/hostedtoolcache/node/24.20.0/arm64/bin",
+    "fish": false,
+    "notes": {
+      "firstPnpmVersion": "10.12.1",
+      "firstMs": 176,
+      "secondMs": 174
+    }
+  },
+  {
+    "case": "real-corepack-pnpm",
+    "kind": "bash",
+    "cwdMode": "home",
+    "captureCwdMode": "home",
+    "meta": {
+      "ms": 39.01441599999089,
+      "shell": "/bin/bash",
+      "kind": "bash",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1229,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_742ade70ce040640_START__HOMEBREW_REPOSITORY=/opt/homebrew?TMPDIR=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/?COREPACK_HOME=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 39
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/opt/homebrew/bin/node",
+        "version": "24.20.0",
+        "fn": false
+      },
+      "pnpm": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-corepack-pnpm-bash/home/.local/bin/pnpm",
+        "version": "12.11.2",
+        "fn": false
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "miss",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "same",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0",
+          "fn": false
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-corepack-pnpm-bash/home/.local/bin/pnpm",
+          "version": "12.11.2",
+          "fn": false
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-corepack-pnpm-bash/home/.local/bin/pnpm",
+          "version": "12.11.2"
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-corepack-pnpm-bash/home/.local/bin/pnpm",
+          "version": "12.11.2"
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/opt/homebrew/bin:/opt/homebrew/sbin:/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-corepack-pnpm-bash/home/.local/bin:/Users/runner/hostedtoolcache/node/24.20.0/arm64/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false,
+    "notes": {
+      "firstPnpmVersion": "10.12.1",
+      "firstMs": 867,
+      "secondMs": 184
+    }
+  },
+  {
+    "case": "real-corepack-pnpm",
+    "kind": "bash",
+    "cwdMode": "project",
+    "captureCwdMode": "project",
+    "meta": {
+      "ms": 35.71804200008046,
+      "shell": "/bin/bash",
+      "kind": "bash",
+      "interactive": true,
+      "timedOut": false,
+      "stdoutBytes": 1242,
+      "stderrTail": "",
+      "stdoutHead": "__RUNYARD_ENV_3b1c890821e072a2_START__HOMEBREW_REPOSITORY=/opt/homebrew?TMPDIR=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/?COREPACK_HOME=/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-",
+      "exitCode": null,
+      "signal": "early",
+      "ok": true,
+      "lossy": false,
+      "noiseBytes": 0,
+      "shellVia": "given",
+      "via": "lic",
+      "trace": [
+        {
+          "via": "lic",
+          "ok": true,
+          "ms": 36
+        }
+      ],
+      "degraded": false
+    },
+    "gt": {
+      "node": {
+        "path": "/opt/homebrew/bin/node",
+        "version": "24.20.0",
+        "fn": false
+      },
+      "pnpm": {
+        "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-corepack-pnpm-bash/home/.local/bin/pnpm",
+        "version": "10.12.1",
+        "fn": false
+      },
+      "python": {
+        "path": "/opt/homebrew/bin/python3",
+        "version": "3.14.7",
+        "fn": false
+      },
+      "uv": {
+        "path": "/opt/homebrew/bin/uv",
+        "version": "0.12.10",
+        "fn": false
+      },
+      "go": {
+        "missing": true
+      }
+    },
+    "naive": {
+      "node": "miss",
+      "pnpm": "miss",
+      "python": "WRONG-version",
+      "uv": "miss",
+      "go": "both-missing"
+    },
+    "resolver": {
+      "node": "same",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "scan": {
+      "node": "same",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "same",
+      "go": "both-missing"
+    },
+    "detail": {
+      "gt": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0",
+          "fn": false
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-corepack-pnpm-bash/home/.local/bin/pnpm",
+          "version": "10.12.1",
+          "fn": false
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7",
+          "fn": false
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10",
+          "fn": false
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "resolved": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-corepack-pnpm-bash/home/.local/bin/pnpm",
+          "version": "10.12.1"
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      },
+      "scan": {
+        "node": {
+          "path": "/opt/homebrew/bin/node",
+          "version": "24.20.0"
+        },
+        "pnpm": {
+          "path": "/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-corepack-pnpm-bash/home/.local/bin/pnpm",
+          "version": "10.12.1"
+        },
+        "python": {
+          "path": "/opt/homebrew/bin/python3",
+          "version": "3.14.7"
+        },
+        "uv": {
+          "path": "/opt/homebrew/bin/uv",
+          "version": "0.12.10"
+        },
+        "go": {
+          "missing": true
+        }
+      }
+    },
+    "pathResolved": "/opt/homebrew/bin:/opt/homebrew/sbin:/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/runyard-k6-5YPN7X/real-corepack-pnpm-bash/home/.local/bin:/Users/runner/hostedtoolcache/node/24.20.0/arm64/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin",
+    "fish": false,
+    "notes": {
+      "firstPnpmVersion": "10.12.1",
+      "firstMs": 177,
+      "secondMs": 173
+    }
+  }
+]

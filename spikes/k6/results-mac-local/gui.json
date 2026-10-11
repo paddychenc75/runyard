@@ -1,0 +1,77 @@
+{
+ "open from a terminal (full env passed through)": {
+  "receivedKeys": [
+   "(128 keys, full terminal environment passed through; names omitted)"
+  ],
+  "received": {
+   "TERM_PROGRAM": "ghostty",
+   "SHELL": "/bin/zsh",
+   "TERM": "xterm-256color",
+   "TMPDIR": "/var/folders/d7/sf0fm6j14gz5736y52xg9mm40000gn/T/",
+   "USER": "fengchen",
+   "PATH": "(terminal PATH, omitted)",
+   "LANG": "zh_CN.UTF-8",
+   "HOME": "~"
+  },
+  "wallMs": 1566,
+  "resolverMs": 905,
+  "ok": true,
+  "login": {
+   "shell": "/bin/zsh",
+   "via": "os.userInfo"
+  },
+  "node": {
+   "path": "~/.nvm/versions/node/v24.21.0/bin/node",
+   "version": "24.21.0"
+  },
+  "python": {
+   "path": "/opt/homebrew/bin/python3",
+   "version": "3.14.3"
+  }
+ },
+ "open with a launchd-like minimal env": {
+  "receivedKeys": [
+   "COMMAND_MODE",
+   "HOME",
+   "LANG",
+   "LOGNAME",
+   "OLLAMA_CONTEXT_LENGTH",
+   "OSLogRateLimit",
+   "PATH",
+   "PWD",
+   "SHELL",
+   "SHLVL",
+   "SSH_AUTH_SOCK",
+   "TMPDIR",
+   "USER",
+   "XPC_FLAGS",
+   "XPC_SERVICE_NAME",
+   "_",
+   "__CFBundleIdentifier",
+   "__CF_USER_TEXT_ENCODING"
+  ],
+  "received": {
+   "SHELL": "/bin/zsh",
+   "TMPDIR": "/var/folders/d7/sf0fm6j14gz5736y52xg9mm40000gn/T/",
+   "USER": "fengchen",
+   "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+   "LANG": "en_US.UTF-8",
+   "HOME": "~"
+  },
+  "wallMs": 1854,
+  "resolverMs": 1198,
+  "ok": true,
+  "login": {
+   "shell": "/bin/zsh",
+   "via": "os.userInfo"
+  },
+  "node": {
+   "path": "~/.nvm/versions/node/v24.21.0/bin/node",
+   "version": "24.21.0"
+  },
+  "python": {
+   "path": "/opt/homebrew/bin/python3",
+   "version": "3.14.3"
+  }
+ }
+}

@@ -1,0 +1,402 @@
+[
+  {
+    "case": "nvm-default",
+    "kind": "zsh",
+    "capture@project+detect@project": {
+      "node": "same",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@project": {
+      "node": "same",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@home(全局缓存)": {
+      "node": "same",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    }
+  },
+  {
+    "case": "nvm-default",
+    "kind": "bash",
+    "capture@project+detect@project": {
+      "node": "same",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@project": {
+      "node": "same",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@home(全局缓存)": {
+      "node": "same",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    }
+  },
+  {
+    "case": "fnm",
+    "kind": "zsh",
+    "capture@project+detect@project": {
+      "node": "same(real)",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@project": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@home(全局缓存)": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    }
+  },
+  {
+    "case": "fnm",
+    "kind": "bash",
+    "capture@project+detect@project": {
+      "node": "same(real)",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@project": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@home(全局缓存)": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    }
+  },
+  {
+    "case": "volta",
+    "kind": "zsh",
+    "capture@project+detect@project": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@project": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@home(全局缓存)": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    }
+  },
+  {
+    "case": "volta",
+    "kind": "bash",
+    "capture@project+detect@project": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@project": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@home(全局缓存)": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    }
+  },
+  {
+    "case": "mise-shims",
+    "kind": "zsh",
+    "capture@project+detect@project": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@project": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@home(全局缓存)": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    }
+  },
+  {
+    "case": "mise-shims",
+    "kind": "bash",
+    "capture@project+detect@project": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@project": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@home(全局缓存)": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    }
+  },
+  {
+    "case": "mise-activate",
+    "kind": "zsh",
+    "capture@project+detect@project": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@project": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@home(全局缓存)": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    }
+  },
+  {
+    "case": "mise-activate",
+    "kind": "bash",
+    "capture@project+detect@project": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@project": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@home(全局缓存)": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    }
+  },
+  {
+    "case": "asdf",
+    "kind": "zsh",
+    "capture@project+detect@project": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@project": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@home(全局缓存)": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "both-missing",
+      "go": "both-missing"
+    }
+  },
+  {
+    "case": "asdf",
+    "kind": "bash",
+    "capture@project+detect@project": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@project": {
+      "node": "same",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@home(全局缓存)": {
+      "node": "WRONG-version",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "both-missing",
+      "go": "both-missing"
+    }
+  },
+  {
+    "case": "pyenv",
+    "kind": "zsh",
+    "capture@project+detect@project": {
+      "node": "both-missing",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@project": {
+      "node": "both-missing",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@home(全局缓存)": {
+      "node": "both-missing",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "both-missing",
+      "go": "both-missing"
+    }
+  },
+  {
+    "case": "pyenv",
+    "kind": "bash",
+    "capture@project+detect@project": {
+      "node": "both-missing",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@project": {
+      "node": "both-missing",
+      "pnpm": "both-missing",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@home(全局缓存)": {
+      "node": "both-missing",
+      "pnpm": "both-missing",
+      "python": "WRONG-version",
+      "uv": "both-missing",
+      "go": "both-missing"
+    }
+  },
+  {
+    "case": "pnpm-corepack",
+    "kind": "zsh",
+    "capture@project+detect@project": {
+      "node": "same",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@project": {
+      "node": "same",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@home(全局缓存)": {
+      "node": "same",
+      "pnpm": "WRONG-version",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    }
+  },
+  {
+    "case": "pnpm-corepack",
+    "kind": "bash",
+    "capture@project+detect@project": {
+      "node": "same",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@project": {
+      "node": "same",
+      "pnpm": "same",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    },
+    "capture@home+detect@home(全局缓存)": {
+      "node": "same",
+      "pnpm": "WRONG-version",
+      "python": "same",
+      "uv": "both-missing",
+      "go": "both-missing"
+    }
+  }
+]

@@ -1,0 +1,228 @@
+{
+  "pairs": 180,
+  "naive": 92,
+  "resolver": 111,
+  "scan": 66,
+  "scanBad": {
+    "baseline-system/zsh/home": [
+      "node:extra",
+      "python:extra",
+      "go:extra"
+    ],
+    "baseline-system/bash/home": [
+      "node:WRONG-version"
+    ],
+    "baseline-system/fish/home": [
+      "node:WRONG-version"
+    ],
+    "nvm-default/zsh/home": [
+      "node:extra",
+      "pnpm:extra",
+      "python:extra",
+      "go:extra"
+    ],
+    "nvm-default/zsh/project": [
+      "node:extra",
+      "pnpm:extra",
+      "python:extra",
+      "go:extra"
+    ],
+    "nvm-default/bash/home": [
+      "node:WRONG-version",
+      "pnpm:same-version-other-path"
+    ],
+    "nvm-default/bash/project": [
+      "node:WRONG-version",
+      "pnpm:same-version-other-path"
+    ],
+    "nvm-lazy/zsh/home": [
+      "node:extra",
+      "pnpm:extra",
+      "python:extra",
+      "go:extra"
+    ],
+    "nvm-lazy/bash/home": [
+      "node:WRONG-version"
+    ],
+    "fnm/zsh/home": [
+      "node:extra",
+      "python:extra",
+      "go:extra"
+    ],
+    "fnm/zsh/project": [
+      "node:extra",
+      "python:extra",
+      "go:extra"
+    ],
+    "fnm/bash/home": [
+      "node:WRONG-version"
+    ],
+    "fnm/bash/project": [
+      "node:WRONG-version"
+    ],
+    "volta/zsh/home": [
+      "node:extra",
+      "python:extra",
+      "go:extra"
+    ],
+    "volta/zsh/project": [
+      "node:extra",
+      "python:extra",
+      "go:extra"
+    ],
+    "volta/bash/home": [
+      "node:WRONG-version"
+    ],
+    "volta/bash/project": [
+      "node:WRONG-version"
+    ],
+    "mise-shims/zsh/home": [
+      "node:extra",
+      "python:extra",
+      "go:extra"
+    ],
+    "mise-shims/zsh/project": [
+      "node:extra",
+      "python:extra",
+      "go:extra"
+    ],
+    "mise-shims/bash/home": [
+      "node:WRONG-version"
+    ],
+    "mise-shims/bash/project": [
+      "node:WRONG-version"
+    ],
+    "mise-activate/zsh/home": [
+      "node:extra",
+      "python:extra",
+      "go:extra"
+    ],
+    "mise-activate/zsh/project": [
+      "node:extra",
+      "python:extra",
+      "go:extra"
+    ],
+    "mise-activate/bash/home": [
+      "node:WRONG-version"
+    ],
+    "mise-activate/bash/project": [
+      "node:WRONG-version"
+    ],
+    "mise-activate/fish/home": [
+      "node:WRONG-version"
+    ],
+    "mise-activate/fish/project": [
+      "node:WRONG-version"
+    ],
+    "asdf/zsh/home": [
+      "node:extra",
+      "python:extra",
+      "go:extra"
+    ],
+    "asdf/zsh/project": [
+      "node:extra",
+      "python:extra",
+      "go:extra"
+    ],
+    "asdf/bash/home": [
+      "node:WRONG-version",
+      "python:WRONG-version"
+    ],
+    "asdf/bash/project": [
+      "node:WRONG-version",
+      "python:WRONG-version"
+    ],
+    "pyenv/zsh/home": [
+      "node:extra",
+      "python:extra",
+      "go:extra"
+    ],
+    "pyenv/zsh/project": [
+      "node:extra",
+      "python:extra",
+      "go:extra"
+    ],
+    "pyenv/bash/home": [
+      "node:extra",
+      "python:WRONG-version"
+    ],
+    "pyenv/bash/project": [
+      "node:extra",
+      "python:WRONG-version"
+    ],
+    "uv-python/zsh/home": [
+      "node:extra",
+      "python:extra",
+      "uv:extra",
+      "go:extra"
+    ],
+    "uv-python/bash/home": [
+      "node:extra",
+      "python:WRONG-version"
+    ],
+    "uv-python/fish/home": [
+      "python:WRONG-version"
+    ],
+    "uv-not-on-path/zsh/home": [
+      "node:extra",
+      "python:extra",
+      "uv:extra",
+      "go:extra"
+    ],
+    "uv-not-on-path/bash/home": [
+      "node:extra",
+      "uv:extra"
+    ],
+    "uv-not-on-path/fish/home": [
+      "uv:extra"
+    ],
+    "pnpm-global/zsh/home": [
+      "node:extra",
+      "python:extra",
+      "go:extra"
+    ],
+    "pnpm-global/bash/home": [
+      "node:WRONG-version",
+      "pnpm:miss"
+    ],
+    "pnpm-global/fish/home": [
+      "node:WRONG-version",
+      "pnpm:miss"
+    ],
+    "pnpm-corepack/zsh/home": [
+      "node:extra",
+      "pnpm:extra",
+      "python:extra",
+      "go:extra"
+    ],
+    "pnpm-corepack/zsh/project": [
+      "node:extra",
+      "pnpm:extra",
+      "python:extra",
+      "go:extra"
+    ],
+    "pnpm-corepack/bash/home": [
+      "node:WRONG-version"
+    ],
+    "pnpm-corepack/bash/project": [
+      "node:WRONG-version"
+    ],
+    "pnpm-corepack/fish/home": [
+      "node:WRONG-version"
+    ],
+    "pnpm-corepack/fish/project": [
+      "node:WRONG-version"
+    ],
+    "path-only-in-zshrc/zsh/home": [
+      "node:extra",
+      "python:extra",
+      "go:extra"
+    ],
+    "path-only-in-zshrc/bash/home": [
+      "node:WRONG-version"
+    ],
+    "path-only-in-zshrc/fish/home": [
+      "node:WRONG-version"
+    ]
+  }
+}

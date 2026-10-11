@@ -210,3 +210,39 @@ export function score(rows) {
   }
   return { ...t, scanBad: perScanBad };
 }
+
+// ---- 5b. 缓存何时过期：四种变化各自要不要重新向 shell 要环境
+export async function staleness() {
+  const kind = shellPath("zsh") ? "zsh" : "bash";
+  const { makeSandbox, finderEnv } = await import("./lab.mjs");
+  const { writeFileSync: wf, appendFileSync } = await import("node:fs");
+  const c = makeSandbox("staleness", kind);
+  for (const v of ["v22.1.0", "v24.0.0"]) c.tool(`.nvm/versions/node/${v}/bin/node`, v);
+  c.write(".nvm/alias/default", "22.1.0\n");
+  c.write(".nvm/nvm.sh", `__d=$(cat "$NVM_DIR/alias/default")\nexport PATH="$NVM_DIR/versions/node/v$__d/bin:$PATH"\n`);
+  c.add("rc", 'export NVM_DIR="$HOME/.nvm"\n. "$NVM_DIR/nvm.sh"');
+  c._finish();
+  const base = finderEnv(c.home);
+  const rcFile = path.join(c.home, kind === "zsh" ? ".zshrc" : ".bashrc");
+  const stamp = () => dotfileStamp(kind, c.home, {});
+  const nodeOf = async (env) => (await detectAll(env, c.home)).node?.version ?? "missing";
+  const out = {};
+  const r1 = await resolveLoginEnv({ baseEnv: base, cwd: c.home, shell: shellPath(kind) });
+  const s1 = stamp();
+  out["1 初次解析"] = { node: await nodeOf(r1.env) };
+  // a) 用户执行 nvm alias default 24（只改 ~/.nvm/alias/default，不碰任何启动文件）
+  wf(path.join(c.home, ".nvm/alias/default"), "24.0.0\n");
+  out["a 改了 nvm 默认版本（启动文件没变）"] = { stampChanged: stamp() !== s1, cachedAnswer: await nodeOf(r1.env), afterRecapture: await nodeOf((await resolveLoginEnv({ baseEnv: base, cwd: c.home, shell: shellPath(kind) })).env) };
+  // b) 往 PATH 里已有的目录装了新工具（brew install uv 这类）
+  c.tool(".nvm/versions/node/v22.1.0/bin/uv", "uv 0.9.0 (x)");
+  const det = await detectAll(r1.env, c.home);
+  out["b 往已在 PATH 的目录里装了新工具"] = { stampChanged: stamp() !== s1, foundWithCachedEnv: det.uv?.version ?? "missing" };
+  // c) 用户在 rc 里加了一个新的 PATH 目录
+  c.tool("newbin/go", "go version go1.23.0 darwin/arm64");
+  appendFileSync(rcFile, `\nexport PATH="$HOME/newbin:$PATH"\n`);
+  const det2 = await detectAll(r1.env, c.home);
+  const r3 = await resolveLoginEnv({ baseEnv: base, cwd: c.home, shell: shellPath(kind) });
+  out["c 在启动文件里新加了 PATH 目录"] = { stampChanged: stamp() !== s1, foundWithCachedEnv: det2.go?.version ?? "missing", afterRecapture: (await detectAll(r3.env, c.home)).go?.version ?? "missing" };
+  console.log(JSON.stringify(out, null, 1));
+  return out;
+}

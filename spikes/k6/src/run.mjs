@@ -41,6 +41,7 @@ import * as X from "./suites.mjs";
 const suites = {
   matrix, messy,
   "real-managers": async () => { const { runReal } = await import("./real-managers.mjs"); const rows = await runReal(SHELL_KINDS); save("real-managers", rows.map(({ ctx, ...r }) => r)); },
+  staleness: async () => save("staleness", await X.staleness()),
   real: async () => save("real", await X.real()),
   finder: async () => save("finder", await X.finder()),
   gui: async () => save("gui", await X.gui()),
