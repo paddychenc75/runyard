@@ -89,3 +89,29 @@ export function orderInversions(chunks) {
   }
   return { arrivalOrder: seen, inversions: inv };
 }
+
+/** 数据块边界落在多字节字符或转义序列中间的次数——证明“先按字节切行再解码”是必要的，不是多余的。 */
+export function boundarySplits(chunks) {
+  let utf8 = 0;
+  let esc = 0;
+  for (const src of ["stdout", "stderr"]) {
+    const cs = chunks.filter((c) => c.src === src);
+    for (let k = 0; k < cs.length - 1; k++) {
+      const b = cs[k].buf;
+      // 末尾是 UTF-8 多字节序列的前半截
+      for (let back = 1; back <= Math.min(3, b.length); back++) {
+        const x = b[b.length - back];
+        if (x >= 0xc0) {
+          const need = x >= 0xf0 ? 4 : x >= 0xe0 ? 3 : 2;
+          if (need > back) utf8++;
+          break;
+        }
+        if (x < 0x80) break;
+      }
+      // 末尾停在一个没写完的 ESC 序列里（ESC，或 ESC [ 后还没有终止字节）
+      const tail = b.subarray(Math.max(0, b.length - 32)).toString("latin1");
+      if (/\u001b(?:\[[0-?]*[ -/]*)?$/.test(tail)) esc++;
+    }
+  }
+  return { utf8MidSequence: utf8, escMidSequence: esc };
+}

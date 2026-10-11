@@ -10,6 +10,8 @@ const HELLO = ["中文测试：你好，世界 ASCII ok", "中文错误输出（
 const SYMBOLS = ["symbols ✓ ✗ → … 😀 ▲ ⨯"];
 const ERR = ["中文错误：出错了", "before error 中文测试"];
 
+const U8 = { PYTHONUTF8: "1" };
+
 export async function runLanguages(ctx) {
   const dir = path.join(ctx.base, "programs");
   copyFixture("programs", dir);
@@ -79,9 +81,11 @@ export async function runLanguages(ctx) {
     // 4. tick：一秒一行，看缓冲
     const tickVariants = L.python
       ? [
-          ["default", {}, []],
-          ["flag-u", {}, ["-u"]],
-          ["env-PYTHONUNBUFFERED", { PYTHONUNBUFFERED: "1" }, []],
+          ["default", {}, []], // Windows 上会因 cp1252 编码失败直接崩溃（见 hello），留着作对照
+          // 下面四行都先用 PYTHONUTF8=1 排除编码崩溃，这样只剩缓冲这一个变量
+          ["utf8-buffered", U8, []],
+          ["utf8-flag-u", U8, ["-u"]],
+          ["utf8-env-PYTHONUNBUFFERED", { ...U8, PYTHONUNBUFFERED: "1" }, []],
           ["rec-nocolor", REC_NOCOLOR, []],
         ]
       : [
@@ -102,7 +106,7 @@ export async function runLanguages(ctx) {
       }
     }
     // 6. hang：打印 5 行后被强杀，看丢不丢
-    const hang = L.python ? [["default", {}, []], ["flag-u", {}, ["-u"]], ["env-PYTHONUNBUFFERED", { PYTHONUNBUFFERED: "1" }, []]] : [["default", {}, []]];
+    const hang = L.python ? [["default", {}, []], ["utf8-buffered", U8, []], ["utf8-flag-u", U8, ["-u"]], ["utf8-env-PYTHONUNBUFFERED", { ...U8, PYTHONUNBUFFERED: "1" }, []]] : [["default", {}, []]];
     for (const [pn, pe, flags] of hang) {
       await runCase(ctx, {
         id: `${L.tool}.hang-kill.${pn}`, tool: L.tool, scenario: "force-kill", profile: pn, envDelta: pe, run: mk(["hang", "5"], pe, flags),

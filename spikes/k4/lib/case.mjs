@@ -1,8 +1,9 @@
 // 跑一个实验用例：启动、（可选）驱动、收尾，写出原始字节日志和纯文本日志，返回一条结果记录。
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import net from "node:net";
 import { startCapture } from "./capture.mjs";
-import { census, textHealth, tickLatency, orderInversions } from "./analyze.mjs";
+import { census, textHealth, tickLatency, orderInversions, boundarySplits } from "./analyze.mjs";
 import { toPlainLines } from "./plain-text.mjs";
 
 export async function runCase(ctx, spec) {
@@ -28,6 +29,7 @@ export async function runCase(ctx, spec) {
     }
     const exit = await h.finish(drive ? 6000 : 20000);
     clearTimeout(timer);
+    if (spec.port) rec.portStillOpenAfterStop = await portOpen(spec.port);
     Object.assign(rec, { exit: { code: exit.code, signal: exit.signal, pipesClosed: exit.pipesClosed !== false, error: exit.error }, driveResult });
   } catch (e) {
     rec.fatal = String(e.message ?? e);
@@ -48,6 +50,7 @@ function finalize(ctx, rec, name, chunks, spec, t0) {
   rec.chunkCount = chunks.length;
   rec.census = census(chunks);
   rec.health = textHealth(lines);
+  rec.splits = boundarySplits(chunks);
   rec.encodings = [...new Set(lines.map((l) => l.encoding))];
   rec.markers = Object.fromEntries((spec.markers ?? []).map((m) => [m, all.includes(m)]));
   if (spec.tick) rec.latency = tickLatency(chunks);
@@ -65,4 +68,13 @@ function finalize(ctx, rec, name, chunks, spec, t0) {
       (rec.fatal ? ` FATAL=${rec.fatal}` : ""),
   );
   return rec;
+}
+
+function portOpen(port) {
+  return new Promise((resolve) => {
+    const s = net.connect(port, "127.0.0.1");
+    s.once("connect", () => (s.destroy(), resolve(true)));
+    s.once("error", () => resolve(false));
+    setTimeout(() => (s.destroy(), resolve(false)), 2000);
+  });
 }

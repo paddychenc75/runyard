@@ -1,9 +1,10 @@
 // 入口：node run.mjs --out <结果目录> [--only languages,vite,next,pnpm,native,selftest] [--cn] [--profiles default,rec-nocolor]
 // 全部临时文件放在系统临时目录下一个自建目录里，结束（或失败）时整个删掉。
-import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, realpathSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { parseArgs } from "node:util";
+import { isAlive, startedPids } from "./lib/capture.mjs";
 import { rmrf } from "./lib/helpers.mjs";
 import { toolVersions } from "./lib/tools.mjs";
 import { collectEncodingInfo, runWindowsNative, selfTest } from "./scenarios/encoding.mjs";
@@ -15,7 +16,8 @@ const { values } = parseArgs({ options: { out: { type: "string" }, only: { type:
 const out = path.resolve(values.out ?? "k4-results");
 const only = values.only ? values.only.split(",") : ["selftest", "native", "languages", "pnpm", "vite", "next"];
 const want = values.profiles ? new Set(values.profiles.split(",")) : null;
-const tmpRoot = mkdtempSync(path.join(os.tmpdir(), "k4-"));
+// Windows 的临时目录常是 8.3 短名（RUNNER~1），Vite 的 fs.allow 比较的是真实路径，不展开会得到 403
+const tmpRoot = realpathSync.native(mkdtempSync(path.join(os.tmpdir(), "k4-")));
 // --cn：把所有工作目录放进“含中文和空格”的路径（任务 5）
 const base = values.cn ? path.join(tmpRoot, "运行场 测试", "项目 一") : path.join(tmpRoot, "work");
 mkdirSync(base, { recursive: true });
@@ -49,7 +51,12 @@ try {
   if (only.includes("pnpm")) await runPnpm(ctx);
   if (only.includes("vite")) await runVite(ctx);
   if (only.includes("next")) await runNext(ctx);
-  writeFileSync(path.join(out, "results.json"), JSON.stringify({ env, selfTest: ctx.selfTest, skipped: ctx.skipped, results: ctx.results }, null, 2));
+  // 清理核对：我们启动的每个 pid 是否还活着；有端口的用例结束后端口是否已关
+  const alive = startedPids.filter(isAlive);
+  const portsOpen = ctx.results.filter((r) => r.portStillOpenAfterStop).map((r) => r.id);
+  ctx.cleanup = { pidsStarted: startedPids.length, pidsStillAlive: alive, portsStillOpen: portsOpen };
+  console.log("[cleanup]", JSON.stringify(ctx.cleanup));
+  writeFileSync(path.join(out, "results.json"), JSON.stringify({ env, selfTest: ctx.selfTest, cleanup: ctx.cleanup, skipped: ctx.skipped, results: ctx.results }, null, 2));
   writeReport(out, { env, ctx });
 } catch (e) {
   console.error("FAILED", e);

@@ -25,8 +25,8 @@ export function resolveCommand(name, args) {
   return { cmd: p, args, via: "direct" };
 }
 
-export function tryRun(cmd, args) {
-  const r = spawnSync(cmd, args, { encoding: "utf8", windowsHide: true });
+export function tryRun(cmd, args, windowsVerbatimArguments) {
+  const r = spawnSync(cmd, args, { encoding: "utf8", windowsHide: true, windowsVerbatimArguments });
   return r.error ? null : (r.stdout + r.stderr).trim();
 }
 
@@ -42,7 +42,8 @@ export function toolVersions() {
     ["pnpm", "pnpm", ["--version"]],
   ]) {
     const full = k === "node" ? c : which(c);
-    v[k] = full ? { path: full, version: tryRun(full, a) } : null;
+    const r = full && /\.(cmd|bat)$/i.test(full) ? resolveCommand(k, a) : null;
+    v[k] = full ? { path: full, version: r ? tryRun(r.cmd, r.args, r.windowsVerbatimArguments) : tryRun(full, a) } : null;
   }
   return v;
 }
