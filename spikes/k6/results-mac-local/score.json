@@ -1,0 +1,106 @@
+{
+  "pairs": 98,
+  "naive": 4,
+  "resolver": 98,
+  "scan": 60,
+  "scanBad": {
+    "baseline-system/zsh/home": [
+      "node:miss",
+      "python:WRONG-version"
+    ],
+    "baseline-system/bash/home": [
+      "node:miss",
+      "python:WRONG-version"
+    ],
+    "nvm-default/zsh/home": [
+      "node:WRONG-version",
+      "pnpm:same-version-other-path"
+    ],
+    "nvm-default/zsh/project": [
+      "node:WRONG-version",
+      "pnpm:same-version-other-path"
+    ],
+    "nvm-default/bash/home": [
+      "node:WRONG-version",
+      "pnpm:same-version-other-path"
+    ],
+    "nvm-default/bash/project": [
+      "node:WRONG-version",
+      "pnpm:same-version-other-path"
+    ],
+    "fnm/zsh/project": [
+      "node:WRONG-version"
+    ],
+    "fnm/bash/project": [
+      "node:WRONG-version"
+    ],
+    "mise-activate/zsh/home": [
+      "node:miss"
+    ],
+    "mise-activate/zsh/project": [
+      "node:miss"
+    ],
+    "mise-activate/bash/home": [
+      "node:miss"
+    ],
+    "mise-activate/bash/project": [
+      "node:miss"
+    ],
+    "asdf/zsh/home": [
+      "python:WRONG-version"
+    ],
+    "asdf/zsh/project": [
+      "python:WRONG-version"
+    ],
+    "asdf/bash/home": [
+      "python:WRONG-version"
+    ],
+    "asdf/bash/project": [
+      "python:WRONG-version"
+    ],
+    "pyenv/zsh/home": [
+      "python:WRONG-version"
+    ],
+    "pyenv/zsh/project": [
+      "python:WRONG-version"
+    ],
+    "pyenv/bash/home": [
+      "python:WRONG-version"
+    ],
+    "pyenv/bash/project": [
+      "python:WRONG-version"
+    ],
+    "uv-not-on-path/zsh/home": [
+      "uv:extra"
+    ],
+    "uv-not-on-path/bash/home": [
+      "uv:extra"
+    ],
+    "pnpm-global/zsh/home": [
+      "node:miss",
+      "pnpm:miss"
+    ],
+    "pnpm-global/bash/home": [
+      "node:miss",
+      "pnpm:miss"
+    ],
+    "pnpm-corepack/zsh/home": [
+      "node:miss"
+    ],
+    "pnpm-corepack/zsh/project": [
+      "node:miss"
+    ],
+    "pnpm-corepack/bash/home": [
+      "node:miss"
+    ],
+    "pnpm-corepack/bash/project": [
+      "node:miss"
+    ],
+    "path-only-in-zshrc/zsh/home": [
+      "node:miss"
+    ],
+    "path-only-in-zshrc/bash/home": [
+      "node:miss"
+    ]
+  }
+}
