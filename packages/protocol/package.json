@@ -1,0 +1,19 @@
+{
+  "name": "@runyard/protocol",
+  "version": "0.0.0",
+  "private": true,
+  "description": "所有跨进程约定：消息、事件、错误码、文件格式定义",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "vitest": "catalog:"
+  }
+}

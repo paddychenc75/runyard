@@ -1,0 +1,10 @@
+{
+  // Node 环境：只有 Node 类型，没有 DOM
+  "extends": "./base.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2023"],
+    "types": ["node"]
+  }
+}

@@ -1,0 +1,29 @@
+# 工作区范围、统一版本表（catalog）、安装安全设置（技术设计 §8.6）。
+# 这里的安全设置只许收紧，不许放松；deps-policy 检查会核对（tooling/checks/deps-policy.ts）。
+packages:
+  - apps/*
+  - packages/*
+  - tooling
+
+# 统一版本表：全部精确版本（§8.6.1 规则 7），选版本的依据见 docs/architecture/dependencies.md
+catalog:
+  "@biomejs/biome": 2.5.14
+  "@types/node": 24.19.0
+  turbo: 2.11.4
+  typescript: 6.0.3
+  vitest: 4.1.11
+  yaml: 2.9.1
+  zod: 4.6.5
+
+# 发布不满 14 天的版本不装（单位：分钟，20160 = 14 天）
+minimumReleaseAge: 20160
+# 例外条目满 14 天后自动清除
+minimumReleaseAgeExcludePrune: true
+# 写入 package.json 时不加 ^ 或 ~
+savePrefix: ""
+# 安装脚本白名单：只放行 electron 和 esbuild；strictDepBuilds 保持默认（true）
+allowBuilds:
+  electron: true
+  esbuild: true
+# Node 版本不符直接拒绝安装
+engineStrict: true

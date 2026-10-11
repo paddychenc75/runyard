@@ -1,0 +1,16 @@
+{
+  "name": "@runyard/tooling",
+  "private": true,
+  "description": "仓库检查脚本和构建脚本（不是业务包，不在 layers.json 的管辖范围内）",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "yaml": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "vitest": "catalog:"
+  }
+}

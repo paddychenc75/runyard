@@ -1,0 +1,10 @@
+{
+  // 中立环境：既没有 Node 类型也没有浏览器类型（protocol 用，它要被三种环境导入）
+  "extends": "./base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2023"],
+    "types": []
+  }
+}

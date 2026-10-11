@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig/node.json",
+  "compilerOptions": {
+    "outDir": "../.tsbuild/tooling",
+    "tsBuildInfoFile": "../.tsbuild/tooling/tsconfig.tsbuildinfo",
+    "rootDir": "."
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["tsconfig"]
+}
