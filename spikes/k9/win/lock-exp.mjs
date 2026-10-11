@@ -160,6 +160,9 @@ export function detectionMatrix(proj, helpers) {
     t = now();
     const p2 = run(helpers.lockers, [listFile]);
     if (p2.stdout === null || p2.stdout === undefined) throw new Error("lockers.exe 没有输出: " + p2.error);
+    fs.writeFileSync(listFile + ".one", dep);
+    const p2b = run(helpers.lockers, [listFile + ".one"]);
+    r.restartManagerSingleFile = { found: p2b.stdout.split("\n").some((l) => l.startsWith(pid + "\t")), raw: p2b.stdout.trim().slice(0, 120) };
     r.restartManager = { found: p2.stdout.split("\n").some((l) => l.startsWith(pid + "\t")), ms: round(now() - t), raw: p2.stdout.trim().slice(0, 120) };
     // 办法 3：读每个进程的 PEB 取当前目录
     t = now();

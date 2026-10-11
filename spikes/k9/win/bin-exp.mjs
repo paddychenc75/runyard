@@ -64,19 +64,22 @@ export function candidates(helperExe, npmTrashJs) {
   return c;
 }
 
-/** 看磁盘判结果：recycled / PERMANENTLY-DELETED / failed-safe / both */
+/** 看磁盘判结果：recycled / PERMANENTLY-DELETED / failed-safe / partial。
+ * 按“新出现的 $I 记录里原路径的最后一段 == 目标名”匹配（名字带随机串，唯一；
+ * 不比较整条路径，因为回收站可能记录短路径或不同写法）。 */
 export function outcome(bin, before, target) {
   const exists = fs.existsSync(target);
   const after = binEntries(bin).items;
   const beforeIds = new Set(before.map((x) => x.id));
-  const fresh = after.filter((x) => !beforeIds.has(x.id) && norm(x.original) === norm(target));
   const anyFresh = after.filter((x) => !beforeIds.has(x.id));
+  const leaf = path.basename(target).toLowerCase();
+  const fresh = anyFresh.filter((x) => path.basename(x.original.replace(/\\/g, "/")).toLowerCase() === leaf);
   let verdict;
   if (!exists && fresh.length) verdict = "recycled";
   else if (!exists && !fresh.length) verdict = "PERMANENTLY-DELETED";
   else if (exists && !anyFresh.length) verdict = "failed-safe(folder intact)";
   else verdict = "partial(folder still there, bin has new entries)";
-  return { verdict, entry: fresh[0] || null };
+  return { verdict, entry: fresh[0] || null, freshOriginals: anyFresh.map((x) => x.original).slice(0, 3) };
 }
 
 function sampleHash(dir) {
@@ -131,7 +134,7 @@ export function trial(root, bin, name, fn, kind, files, usePrefix = false) {
   const r = fn(target);
   const ms = round(now() - t0);
   const oc = outcome(bin, before, dir);
-  const res = { cand: name, kind, ms, status: r.status, signal: r.signal || undefined, out: ((r.stdout || "") + (r.stderr || "")).trim().replace(/\s+/g, " ").slice(0, 400), verdict: oc.verdict, deepLen };
+  const res = { cand: name, kind, ms, status: r.status, signal: r.signal || undefined, out: ((r.stdout || "") + (r.stderr || "")).trim().replace(/\s+/g, " ").slice(0, 400), verdict: oc.verdict, deepLen, binNew: oc.verdict === 'PERMANENTLY-DELETED' ? oc.freshOriginals : undefined };
   if (oc.entry) {
     res.binSize = oc.entry.size;
     if (kind !== "longpath") res.restore = restore(oc.entry, dir, { hash, count });
