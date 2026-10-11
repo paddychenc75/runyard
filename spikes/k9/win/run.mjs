@@ -88,6 +88,7 @@ try {
 
   // ---------- 实验 2：回收站 ----------
   const bin = B.binInfo(drive);
+  B.setVolumeKey(B.volumeKey(drive));
   results.env.recycleBinDir = bin.dir;
   const npmJs = path.join(import.meta.dirname, "npm-trash.mjs");
   const cands = B.candidates(helperExe, fs.existsSync(path.join(import.meta.dirname, "..", "node_modules", "trash")) ? npmJs : null);
@@ -140,6 +141,7 @@ try {
 
   // 容量不足和“不要移到回收站”：改注册表（运行器是一次性虚拟机；结束时还原）
   const vkey = B.volumeKey(drive);
+  B.setVolumeKey(vkey);
   results.env.volumeKey = vkey;
   const dangerous = [];
   results.exps["bin-over-capacity"] = dangerous;
@@ -215,7 +217,7 @@ fs.rmSync(dir,{recursive:true,force:true});console.log(r.stdout.trim());process.
     );
     const before = B.binEntries(bin).items;
     const d = path.join(ROOT, G.newName("single"));
-    makeTree(d, { files: 100, symlinks: false, xattrs: false, bigMB: 0 });
+    makeTree(d, { files: 100, symlinks: false, xattrs: false, bigMB: 0, deep: false });
     const t = now();
     const r = run(process.execPath, [single, d]);
     const oc = B.outcome(bin, before, d);

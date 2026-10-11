@@ -1,1 +1,1 @@
---only compile-helpers,diag,vite-setup,lock-detection,bin,single-file-embed
+--only compile-helpers,diag,bin,single-file-embed

@@ -15,6 +15,7 @@ export function makeTree(dir, o = {}) {
   const symlinks = o.symlinks ?? true;
   const xattrs = o.xattrs ?? true;
   const bigMB = o.bigMB ?? 8;
+  const deep_ = o.deep ?? true; // 深层嵌套目录；Windows 回收站实验必须关掉（路径超过 260 会被外壳静默永久删除）
   assertInRoot(dir);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, MARKER), token() + "\n");
@@ -32,10 +33,12 @@ export function makeTree(dir, o = {}) {
     }
   }
   // 深层嵌套：30 层（macOS 路径上限 1024 字节，再深会 ENAMETOOLONG）
-  let deep = path.join(dir, "deep");
-  for (let i = 0; i < 30; i++) deep = path.join(deep, `lv-${i}-abcdefghij`);
-  fs.mkdirSync(deep, { recursive: true });
-  fs.writeFileSync(path.join(deep, "bottom.txt"), "bottom\n");
+  if (deep_) {
+    let deep = path.join(dir, "deep");
+    for (let i = 0; i < 30; i++) deep = path.join(deep, `lv-${i}-abcdefghij`);
+    fs.mkdirSync(deep, { recursive: true });
+    fs.writeFileSync(path.join(deep, "bottom.txt"), "bottom\n");
+  }
   // 中文、emoji、隐藏文件、空格
   fs.writeFileSync(path.join(dir, "说明 文档.md"), "你好\n");
   fs.writeFileSync(path.join(dir, "🚀rocket 火箭.txt"), "🚀\n");

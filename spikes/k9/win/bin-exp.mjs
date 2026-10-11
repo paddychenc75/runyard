@@ -111,7 +111,7 @@ export function buildCase(root, kind, files) {
   const name = G.newName(kind);
   const dir = path.join(root, name);
   if (kind === "longpath") {
-    makeTree(dir, { files: 20, symlinks: false, xattrs: false, bigMB: 0 });
+    makeTree(dir, { files: 20, symlinks: false, xattrs: false, bigMB: 0, deep: false });
     let deep = dir;
     for (let i = 0; i < 12; i++) deep = path.join(deep, `segment-${i}-0123456789abcdef`);
     G.assertInRoot(deep);
@@ -119,8 +119,48 @@ export function buildCase(root, kind, files) {
     fs.writeFileSync(path.join(deep, "deep.txt"), "deep\n");
     return { dir, deepLen: path.join(deep, "deep.txt").length };
   }
-  makeTree(dir, { files, symlinks: false, xattrs: false, bigMB: kind === "big" ? 8 : 1 });
+  makeTree(dir, { files, symlinks: false, xattrs: false, bigMB: kind === "big" ? 8 : 1, deep: kind === "deepish" });
   return { dir };
+}
+
+let VKEY = null;
+export const setVolumeKey = (k) => (VKEY = k);
+
+/**
+ * 预检：这是“绝不静默永久删除”的真正保证（外壳的任何标志组合都挡不住，见 README）。
+ * 返回 {ok, reasons}。reasons 非空就必须拒绝，向用户报 PATH_NOT_RECYCLABLE 一类的错误码。
+ */
+export function preflight(dir) {
+  const reasons = [];
+  let maxLen = 0;
+  let total = 0;
+  const stack = [dir];
+  while (stack.length) {
+    const d = stack.pop();
+    for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+      const p = path.join(d, e.name);
+      maxLen = Math.max(maxLen, p.length);
+      if (e.isDirectory()) stack.push(p);
+      else {
+        try {
+          total += fs.lstatSync(p).size;
+        } catch {}
+      }
+    }
+  }
+  // 外壳回收站不接受 >= MAX_PATH(260) 的路径；目录要给文件名留位置，所以目录阈值更小。保守取 248。
+  if (maxLen >= 248) reasons.push(`PATH_TOO_LONG(${maxLen})`);
+  if (VKEY) {
+    const cap = regGet(VKEY, "MaxCapacity");
+    const nuke = regGet(VKEY, "NukeOnDelete");
+    if (nuke && parseInt(nuke, 16) === 1) reasons.push("BIN_DISABLED(NukeOnDelete)");
+    if (cap && total > parseInt(cap, 16) * 1024 * 1024) reasons.push(`TOO_BIG_FOR_BIN(${Math.round(total / 1048576)}MB>${parseInt(cap, 16)}MB)`);
+  }
+  for (const k of ["HKLM", "HKCU"]) {
+    const v = regGet(`${k}\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer`, "NoRecycleFiles");
+    if (v && parseInt(v, 16) === 1) reasons.push(`BIN_DISABLED_BY_POLICY(${k})`);
+  }
+  return { ok: reasons.length === 0, reasons, maxPathLen: maxLen, totalBytes: total };
 }
 
 /** 跑一个候选 × 一个场景 */
@@ -128,13 +168,14 @@ export function trial(root, bin, name, fn, kind, files, usePrefix = false) {
   const { dir, deepLen } = buildCase(root, kind, files);
   const hash = sampleHash(dir);
   const count = countEntries(dir);
+  const pre = preflight(dir);
   const before = binEntries(bin).items;
   const target = usePrefix ? "\\\\?\\" + dir : dir;
   const t0 = now();
   const r = fn(target);
   const ms = round(now() - t0);
   const oc = outcome(bin, before, dir);
-  const res = { cand: name, kind, ms, status: r.status, signal: r.signal || undefined, out: ((r.stdout || "") + (r.stderr || "")).trim().replace(/\s+/g, " ").slice(0, 400), verdict: oc.verdict, deepLen, binNew: oc.verdict === 'PERMANENTLY-DELETED' ? oc.freshOriginals : undefined };
+  const res = { cand: name, kind, ms, status: r.status, signal: r.signal || undefined, out: ((r.stdout || "") + (r.stderr || "")).trim().replace(/\s+/g, " ").slice(0, 400), verdict: oc.verdict, deepLen, preflight: pre.ok ? "pass" : pre.reasons.join("+"), binNew: oc.verdict === 'PERMANENTLY-DELETED' ? oc.freshOriginals : undefined };
   if (oc.entry) {
     res.binSize = oc.entry.size;
     if (kind !== "longpath") res.restore = restore(oc.entry, dir, { hash, count });
@@ -176,7 +217,7 @@ export function diagnose(root, bin, drive, helperExe) {
   out.queryRecycleBin = ps(`Add-Type -TypeDefinition 'using System;using System.Runtime.InteropServices;public static class RB{[StructLayout(LayoutKind.Sequential)]public struct Q{public int cb;public long size;public long n;}[DllImport("shell32.dll",CharSet=CharSet.Unicode)]public static extern int SHQueryRecycleBinW(string p,ref Q q);}'; $q=New-Object RB+Q; $q.cb=[Runtime.InteropServices.Marshal]::SizeOf($q); $rc=[RB]::SHQueryRecycleBinW('${drive}\\',[ref]$q); "rc=$rc size=$($q.size) items=$($q.n)"`).stdout.trim();
   // 小文件夹试一次，然后看回收站目录里有没有东西
   const tiny = path.join(root, G.newName("diag"));
-  makeTree(tiny, { files: 3, symlinks: false, xattrs: false, bigMB: 0 });
+  makeTree(tiny, { files: 3, symlinks: false, xattrs: false, bigMB: 0, deep: false });
   const before = binEntries(bin).items;
   const r = ps(`Add-Type -AssemblyName Microsoft.VisualBasic; [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteDirectory('${tiny}','OnlyErrorDialogs','SendToRecycleBin')`, 45000);
   // 对照：放在系统临时目录里的小文件夹，同样的调用
