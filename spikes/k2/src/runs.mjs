@@ -244,6 +244,12 @@ export function killLeftover(proc, snap, rootStart) {
 }
 
 export function forgetRun(h) {
+  // 伪终端要显式关掉：第 4 轮里每开一次伪终端就留下一个 conhost.exe（一个任务累计 46 个），因为进程退出后没有调用 kill()
+  try {
+    h.term?.kill();
+  } catch {
+    // 已经关了
+  }
   h.child?.stdout?.destroy();
   h.child?.stderr?.destroy();
   h.child?.stdin?.destroy();
