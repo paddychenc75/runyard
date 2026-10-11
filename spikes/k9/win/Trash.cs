@@ -47,6 +47,43 @@ static class T {
         [return: MarshalAs(UnmanagedType.Bool)] bool GetAnyOperationsAborted();
     }
 
+    // 进度回调接口：外壳在真正删除前调用 PreDeleteItem，并告诉我们“会不会进回收站”。
+    // 若不会（dwFlags 不含 TSF_DELETE_RECYCLE_IF_POSSIBLE），返回失败即可中止，文件夹原样保留。
+    [ComImport, Guid("04b0f1a7-9490-44bc-96e1-4296a31252e2"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    interface IFileOperationProgressSink {
+        void StartOperations(); void FinishOperations(uint hr);
+        void PreRenameItem(uint f, IShellItem i, [MarshalAs(UnmanagedType.LPWStr)] string n);
+        void PostRenameItem(uint f, IShellItem i, [MarshalAs(UnmanagedType.LPWStr)] string n, uint hr, IShellItem nw);
+        void PreMoveItem(uint f, IShellItem i, IShellItem d, [MarshalAs(UnmanagedType.LPWStr)] string n);
+        void PostMoveItem(uint f, IShellItem i, IShellItem d, [MarshalAs(UnmanagedType.LPWStr)] string n, uint hr, IShellItem nw);
+        void PreCopyItem(uint f, IShellItem i, IShellItem d, [MarshalAs(UnmanagedType.LPWStr)] string n);
+        void PostCopyItem(uint f, IShellItem i, IShellItem d, [MarshalAs(UnmanagedType.LPWStr)] string n, uint hr, IShellItem nw);
+        void PreDeleteItem(uint f, IShellItem i);
+        void PostDeleteItem(uint f, IShellItem i, uint hr, IShellItem nw);
+        void PreNewItem(uint f, IShellItem d, [MarshalAs(UnmanagedType.LPWStr)] string n);
+        void PostNewItem(uint f, IShellItem d, [MarshalAs(UnmanagedType.LPWStr)] string n, [MarshalAs(UnmanagedType.LPWStr)] string t, uint attr, uint hr, IShellItem ni);
+        void UpdateProgress(uint total, uint sofar);
+        void ResetTimer(); void PauseTimer(); void ResumeTimer();
+    }
+    [ClassInterface(ClassInterfaceType.None)]
+    class Sink : IFileOperationProgressSink {
+        public static string Log = "";
+        public void StartOperations() {} public void FinishOperations(uint hr) {}
+        public void PreRenameItem(uint f, IShellItem i, string n) {}
+        public void PostRenameItem(uint f, IShellItem i, string n, uint hr, IShellItem nw) {}
+        public void PreMoveItem(uint f, IShellItem i, IShellItem d, string n) {}
+        public void PostMoveItem(uint f, IShellItem i, IShellItem d, string n, uint hr, IShellItem nw) {}
+        public void PreCopyItem(uint f, IShellItem i, IShellItem d, string n) {}
+        public void PostCopyItem(uint f, IShellItem i, IShellItem d, string n, uint hr, IShellItem nw) {}
+        public void PreDeleteItem(uint f, IShellItem i) {
+            Log += "pre(flags=0x" + f.ToString("x") + ") ";
+            if ((f & 0x80) == 0) throw new COMException("不会进回收站，中止", unchecked((int)0x80004005));
+        }
+        public void PostDeleteItem(uint f, IShellItem i, uint hr, IShellItem nw) { Log += "post(hr=0x" + hr.ToString("x") + ",recycled=" + (nw != null) + ") "; }
+        public void PreNewItem(uint f, IShellItem d, string n) {} public void PostNewItem(uint f, IShellItem d, string n, string t, uint attr, uint hr, IShellItem ni) {}
+        public void UpdateProgress(uint total, uint sofar) {} public void ResetTimer() {} public void PauseTimer() {} public void ResumeTimer() {}
+    }
+
     [STAThread]
     static int Main(string[] a) {
         if (a.Length != 3) { Console.Error.WriteLine("usage: trash.exe sh|ifo <flagsHex> <path>"); return 3; }
@@ -59,16 +96,19 @@ static class T {
                 Console.WriteLine("sh rc=0x" + rc.ToString("x") + " aborted=" + op.fAnyOperationsAborted);
                 return rc == 0 && !op.fAnyOperationsAborted ? 0 : 2;
             } else {
+                bool useSink = a[0] == "ifos";
                 var clsid = new Guid("3ad05575-8857-4850-9277-11b85bdb8e09");
                 var fo = (IFileOperation)Activator.CreateInstance(Type.GetTypeFromCLSID(clsid));
                 fo.SetOperationFlags(flags);
                 var iid = new Guid("43826d1e-e718-42ee-bc55-a1e261c37bfe");
                 IShellItem item;
                 SHCreateItemFromParsingName(path, IntPtr.Zero, ref iid, out item);
+                uint cookie = 0;
+                if (useSink) cookie = fo.Advise(Marshal.GetComInterfaceForObject(new Sink(), typeof(IFileOperationProgressSink)));
                 fo.DeleteItem(item, IntPtr.Zero);
                 fo.PerformOperations();
                 bool aborted = fo.GetAnyOperationsAborted();
-                Console.WriteLine("ifo ok aborted=" + aborted);
+                Console.WriteLine("ifo ok aborted=" + aborted + (useSink ? " sink: " + Sink.Log : ""));
                 return aborted ? 2 : 0;
             }
         } catch (Exception e) {
