@@ -1,7 +1,7 @@
 import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { REPO_ROOT, readHookInput } from "./hook-input.ts";
+import { isStopContinuation, REPO_ROOT, readHookInput } from "./hook-input.ts";
 
 // 智能体准备结束回复时的钩子（Stop）：只跑 tsc -b 和仓库检查，不跑测试（技术设计 §9.1、§9.3）。
 // 不通过：退出码 2，把报错交给智能体，让它继续修。
@@ -11,7 +11,16 @@ import { REPO_ROOT, readHookInput } from "./hook-input.ts";
 // 环境变量只给测试这个脚本用（把上限调小来验证“超时放行”），平时不设
 const LIMIT_MS = Number(process.env.RUNYARD_STOP_HOOK_LIMIT_MS) || 90_000;
 const started = Date.now();
-readHookInput();
+const input = readHookInput();
+
+// 官方文档（code.claude.com/docs/en/hooks，Stop input）：stop_hook_active 为 true 表示
+// 已经在因结束钩子而继续；要检查它，避免在一个永远不会解决的条件上反复拦截。
+if (isStopContinuation(input)) {
+  process.stderr.write(
+    "警告：结束前检查已拦过一次，本次不再重复检查，已放行；请手动运行 pnpm verify。\n",
+  );
+  process.exit(0);
+}
 
 const steps: { name: string; args: string[] }[] = [
   { name: "tsc -b", args: [join(REPO_ROOT, "node_modules", "typescript", "bin", "tsc"), "-b"] },

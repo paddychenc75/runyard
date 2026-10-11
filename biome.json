@@ -10,7 +10,8 @@
       "!docs/design",
       "!tooling/design-render/build",
       "!tooling/design-render/png",
-      "!tooling/design-render/sheets"
+      "!tooling/design-render/sheets",
+      "!spikes"
     ]
   },
   "formatter": {

@@ -13,6 +13,12 @@ export interface HookInput {
   stop_hook_active?: boolean;
 }
 
+// Stop 事件的 stop_hook_active 为 true，表示 Claude Code 已经因为上一次的结束钩子在继续工作。
+// 此时钩子必须放行，否则一个一直不通过的检查会让会话永远结束不了。
+export function isStopContinuation(input: HookInput): boolean {
+  return input.stop_hook_active === true;
+}
+
 export function readHookInput(): HookInput {
   try {
     return JSON.parse(readFileSync(0, "utf8")) as HookInput;
