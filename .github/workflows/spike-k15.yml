@@ -186,3 +186,28 @@ jobs:
     with:
       fail-on-vuln: false
       export-results: true
+
+  # Go 按 go.mod 自动下载更新的工具链（技术设计 §8.6 表里“Go 1.21 起会按 go.mod 自动下载”标了未核实）。
+  # 用 ubuntu 镜像自带的 Go（不装新的）：go.mod 写一个比它新的版本，看默认设置下发生什么。
+  go-toolchain:
+    name: Go 自动下载工具链（ubuntu）
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: 实验
+        shell: bash
+        run: |
+          set -u
+          which go; go version; go env GOTOOLCHAIN GOPROXY GOFLAGS GOMODCACHE
+          d="$(mktemp -d)"; cd "$d"
+          printf 'module k15\n\ngo 1.27.2\n' > go.mod
+          printf 'package main\n\nimport ("fmt"; "runtime")\n\nfunc main() { fmt.Println("running", runtime.Version()) }\n' > main.go
+          echo "=== 默认（GOTOOLCHAIN=auto）：go.mod 要求 go 1.27.2"
+          start=$(date +%s); go run . ; echo "exit=$? seconds=$(( $(date +%s) - start ))"
+          echo "=== 第二次（工具链已缓存）"
+          start=$(date +%s); go run . ; echo "exit=$? seconds=$(( $(date +%s) - start ))"
+          echo "=== GOTOOLCHAIN=local"
+          GOTOOLCHAIN=local go run . ; echo "exit=$?"
+          echo "=== 缓存位置与大小"
+          du -sh "$(go env GOMODCACHE)/golang.org/toolchain"* 2>/dev/null || ls "$(go env GOMODCACHE)/golang.org" 2>/dev/null
+          cd /; rm -rf "$d"
