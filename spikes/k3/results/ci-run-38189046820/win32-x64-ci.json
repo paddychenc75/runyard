@@ -1,0 +1,993 @@
+{
+  "startedAt": "2026-10-12T00:43:18.356Z",
+  "steps": {
+    "env": {
+      "os": {
+        "Caption": "Microsoft Windows Server 2025 Datacenter",
+        "Version": "10.0.26100",
+        "BuildNumber": "26100"
+      },
+      "imageVersion": "20260925.250.1",
+      "cpu": "AMD EPYC 9V74 80-Core Processor                ",
+      "cores": 4,
+      "memGb": 16,
+      "node": "v24.21.0",
+      "user": "runneradmin",
+      "isAdmin": "True",
+      "codePage": "Active code page: 437",
+      "defender": {
+        "AMServiceEnabled": true,
+        "AntivirusEnabled": true,
+        "RealTimeProtectionEnabled": false,
+        "AntivirusSignatureVersion": "1.459.676.0",
+        "IsTamperProtected": false
+      },
+      "developerMode": "1",
+      "stepMs": 5470
+    },
+    "build": {
+      "mainBuildMs": 167936,
+      "prepackagedNsisOnlyMs": [
+        286438,
+        294856
+      ],
+      "secondFullBuildMs": 153660,
+      "allOk": {
+        "hook-0.3.0": true,
+        "default-0.3.0": true,
+        "nocheck-0.3.0": true,
+        "hook-0.3.1": true
+      },
+      "setupMb": 104.4,
+      "unpackedMb": 367.5,
+      "biggestMb": {
+        "RunyardK3.exe": 234.6,
+        "locales": 48.3,
+        "dxcompiler.dll": 24.6,
+        "LICENSES.chromium.html": 19.5,
+        "resources.pak": 11.9,
+        "icudtl.dat": 10.4,
+        "vk_swiftshader.dll": 5.3,
+        "d3dcompiler_47.dll": 4.5
+      },
+      "binDir": [
+        "runyard",
+        "runyard.cmd"
+      ],
+      "pnpm": [
+        "• identified pnpm workspace root  path=D:\\a\\runyard\\runyard\\spikes\\k3",
+        "• detected workspace root for project using packageManager field  pm=pnpm config=pnpm@11.28.0 resolved=D:\\a\\runyard\\runyard\\spikes\\k3 projectDir=D:\\a\\runyard\\runyard\\spikes\\k3",
+        "• searching for node modules  pm=pnpm searchDir=D:\\a\\runyard\\runyard\\spikes\\k3",
+        "• collected node modules  pm=pnpm searchDir=D:\\a\\runyard\\runyard\\spikes\\k3 depCount=2",
+        "• identified module  dep=chokidar from=node_modules\\.pnpm\\chokidar@5.0.0\\node_modules\\chokidar to=<root>\\out\\hook-0.3.0\\win-unpacked\\resources\\app\\node_modules\\chokidar filesCount=4",
+        "• identified module  dep=readdirp from=node_modules\\.pnpm\\readdirp@5.1.1\\node_modules\\readdirp to=<root>\\out\\hook-0.3.0\\win-unpacked\\resources\\app\\node_modules\\readdirp filesCount=3"
+      ],
+      "signLog": [
+        "• no code signing certificate configured, signing is skipped  path=<root>\\out\\hook-0.3.0\\win-unpacked\\RunyardK3.exe",
+        "• no event listeners found  event=afterSign",
+        "• no code signing certificate configured, signing is skipped  path=C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\t-zsYXXz\\elevate-staging-2\\resources\\elevate.exe",
+        "• no code signing certificate configured, signing is skipped  path=<root>\\out\\hook-0.3.0\\RunyardK3-0.3.0-win-x64-setup.__uninstaller.exe",
+        "• no code signing certificate configured, signing is skipped  path=<root>\\out\\hook-0.3.0\\RunyardK3-0.3.0-win-x64-setup.exe"
+      ],
+      "downloadLog": [
+        "• downloaded      label=electron progress=100%",
+        "• downloaded electron zip extracted successfully  output=<root>\\out\\hook-0.3.0\\win-unpacked",
+        "• downloading     file=7zip-win-x64.tar.gz",
+        "• downloaded      label=7zip-win-x64.tar.gz progress=100%",
+        "• downloading     file=nsis-3.0.4.1.7z",
+        "• downloaded      label=nsis-3.0.4.1.7z progress=100%",
+        "• executing       file=<root>\\eb-cache\\7zip@1.0.0\\7zip-win-x64-a34pt\\bin\\7za.exe args=x -bd <root>\\eb-cache\\downloads\\3b42a86add36a87dd480358d9be45adedd964ac4dd3b1cc01787c737be65a863\\nsis-3.0.4.1.7z -o<root>\\eb-cache\\nsis-3.0.4.1\\nsis-3.0.4.1-1mx3n.tmp -y",
+        "Extracting archive: <root>\\eb-cache\\downloads\\3b42a86add36a87dd480358d9be45adedd964ac4dd3b1cc01787c737be65a863\\nsis-3.0.4.1.7z",
+        "Path = <root>\\eb-cache\\downloads\\3b42a86add36a87dd480358d9be45adedd964ac4dd3b1cc01787c737be65a863\\nsis-3.0.4.1.7z",
+        "• downloading     file=nsis-resources-3.4.1.7z",
+        "• downloaded      label=nsis-resources-3.4.1.7z progress=100%",
+        "• executing       file=<root>\\eb-cache\\7zip@1.0.0\\7zip-win-x64-a34pt\\bin\\7za.exe args=x -bd <root>\\eb-cache\\downloads\\3e60dc68ed9a10cd610cacaebc815013a691eb4cc87b7b3a07af429b945c4a01\\nsis-resources-3.4.1.7z -o<root>\\eb-cache\\nsis-resources-3.4.1\\nsis-resources",
+        "Extracting archive: <root>\\eb-cache\\downloads\\3e60dc68ed9a10cd610cacaebc815013a691eb4cc87b7b3a07af429b945c4a01\\nsis-resources-3.4.1.7z",
+        "Path = <root>\\eb-cache\\downloads\\3e60dc68ed9a10cd610cacaebc815013a691eb4cc87b7b3a07af429b945c4a01\\nsis-resources-3.4.1.7z"
+      ],
+      "builderCache": [
+        "7zip@1.0.0/7zip-win-x64-a34pt",
+        "7zip@1.0.0/7zip-win-x64.tar.gz",
+        "downloads/3b42a86add36a87dd480358d9be45adedd964ac4dd3b1cc01787c737be65a863",
+        "downloads/3e60dc68ed9a10cd610cacaebc815013a691eb4cc87b7b3a07af429b945c4a01",
+        "downloads/cfdeea0a4db84f58987e55bae3e48d9bcc36b8af815bd084b4474995879db443",
+        "nsis-3.0.4.1/nsis-3.0.4.1-1mx3n",
+        "nsis-3.0.4.1/nsis-3.0.4.1.7z",
+        "nsis-resources-3.4.1/nsis-resources-3.4.1-2jx2y",
+        "nsis-resources-3.4.1/nsis-resources-3.4.1.7z"
+      ],
+      "stepMs": 902904
+    },
+    "unsigned": {
+      "signature": {
+        "Status": "NotSigned",
+        "StatusMessage": "The file D:\\a\\_temp\\k3s-ASi1Zj\\out\\hook-0.3.0\\RunyardK3-0.3.0-win-x64-setup.exe is not digitally signed. You cannot run this script on the current system. For more information about running scripts and setting execution policy, see about_Execution_Policies at https:/go.microsoft.com/fwlink/?LinkID=135170",
+        "Signer": ""
+      },
+      "sha256": "6d1f415ace62660b99357081e4c8598b298fff4f4bb94b61ba7fe12b1bf26c82",
+      "versionInfo": {
+        "CompanyName": "Runyard spike",
+        "ProductName": "RunyardK3",
+        "FileVersion": "0.3.0",
+        "LegalCopyright": "Copyright c 2026 Runyard spike"
+      },
+      "defenderScanInstaller": {
+        "exit": 0,
+        "ms": 1126,
+        "tail": [
+          "Scan starting...",
+          "Scan finished.",
+          "Scanning D:\\a\\_temp\\k3s-ASi1Zj\\out\\hook-0.3.0\\RunyardK3-0.3.0-win-x64-setup.exe found no threats."
+        ]
+      },
+      "defenderScanAppExe": {
+        "exit": 0,
+        "tail": [
+          "Scan starting...",
+          "Scan finished.",
+          "Scanning D:\\a\\_temp\\k3s-ASi1Zj\\out\\hook-0.3.0\\win-unpacked\\RunyardK3.exe found no threats."
+        ]
+      },
+      "motwStream": [
+        "[ZoneTransfer]",
+        "ZoneId=3",
+        "HostUrl=https://github.com/paddychenc75/runyard/releases/download/v0.3.0/setup.exe"
+      ],
+      "installViaCreateProcess": {
+        "how": "CreateProcess（node spawn），带网络标记",
+        "exit": 0,
+        "signal": null,
+        "ms": 36031,
+        "installedVersion": "0.3.0",
+        "location": "C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3",
+        "buildInfo": "0.3.0",
+        "hook": [
+          "installer-stop skipped: no previous install at C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3",
+          "customInstall done at C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3"
+        ]
+      },
+      "installedExeHasMotw": "False",
+      "installViaShellExecute": {
+        "result": "",
+        "stderr": "Start-Process : This command cannot be run due to the error: The operation was canceled by the user.\r\nAt line:1 char:6\r\n+ $p = Start-Process -FilePath 'D:\\a\\_temp\\k3s-ASi1Zj\\motw-setup.exe' - ...\r\n+      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : ",
+        "ms": 2259,
+        "hook": []
+      },
+      "smartScreenPolicy": {
+        "explorer": null,
+        "policy": null,
+        "sac": null
+      },
+      "stepMs": 42279
+    },
+    "install": {
+      "location": "~\\AppData\\Local\\Programs\\runyard-spike-k3",
+      "perUser": true,
+      "installedMb": 367.7,
+      "topLevel": [
+        "bin",
+        "chrome_100_percent.pak",
+        "chrome_200_percent.pak",
+        "d3dcompiler_47.dll",
+        "dxcompiler.dll",
+        "dxil.dll",
+        "ffmpeg.dll",
+        "icudtl.dat",
+        "LICENSE.electron.txt",
+        "LICENSES.chromium.html",
+        "locales",
+        "resources",
+        "resources.pak",
+        "RunyardK3.exe",
+        "snapshot_blob.bin",
+        "Uninstall RunyardK3.exe",
+        "v8_context_snapshot.bin",
+        "vk_swiftshader.dll",
+        "vk_swiftshader_icd.json",
+        "vulkan-1.dll"
+      ],
+      "uninstallEntry": [
+        {
+          "key": "97d415d9-1d2d-5757-bd6b-ce46057f1790",
+          "name": "RunyardK3 0.3.0",
+          "version": "0.3.0",
+          "location": "C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3",
+          "uninstallString": "\"C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3\\Uninstall RunyardK3.exe\" /currentuser",
+          "publisher": "Runyard spike",
+          "props": [
+            "DisplayName",
+            "UninstallString",
+            "QuietUninstallString",
+            "DisplayVersion",
+            "DisplayIcon",
+            "Publisher",
+            "Comments",
+            "NoModify",
+            "NoRepair",
+            "EstimatedSize"
+          ]
+        }
+      ],
+      "urlKeyAfterInstall": true,
+      "urlCommand": "\"<install>\\RunyardK3.exe\" \"%1\"",
+      "userPathChangedByInstaller": false,
+      "shortcuts": {
+        "startMenu": [
+          "RunyardK3.lnk"
+        ],
+        "desktop": [
+          "RunyardK3.lnk"
+        ]
+      },
+      "exeSubsystem": 2,
+      "exeSignature": {
+        "Status": "NotSigned"
+      },
+      "stepMs": 1841
+    },
+    "app": {
+      "versions": {
+        "electron": "44.4.5",
+        "node": "24.21.0",
+        "chrome": "152.0.7977.130"
+      },
+      "isPackaged": true,
+      "window": {
+        "shown": true,
+        "loadVia": "app-protocol",
+        "title": "Runyard K3 技术验证"
+      },
+      "bundledDeps": true,
+      "supervisor": {
+        "started": true,
+        "ms": 85,
+        "launcher": "electron",
+        "execInInstallDir": true,
+        "versions": {
+          "node": "24.21.0",
+          "electron": "44.4.5"
+        },
+        "rssMb": 71.2
+      },
+      "processes": [
+        "7240:RunyardK3.exe",
+        "1136:RunyardK3.exe",
+        "7004:RunyardK3.exe",
+        "3348:RunyardK3.exe",
+        "1636:RunyardK3.exe"
+      ],
+      "installCli": {
+        "ok": true,
+        "result": {
+          "ok": true,
+          "mode": "add",
+          "binDir": "C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3\\bin",
+          "changed": true,
+          "kind": "ExpandString",
+          "stderr": ""
+        }
+      },
+      "userPathAfter": {
+        "containsBin": true,
+        "kind": "ExpandString",
+        "kindBefore": "ExpandString",
+        "prefixUnchanged": true
+      },
+      "installCliAgain": false,
+      "cliStatus": {
+        "code": 0,
+        "samePid": true
+      },
+      "cliRun": {
+        "ok": true,
+        "portOpen": true
+      },
+      "quit": {
+        "wasAlive": true,
+        "reply": {
+          "ok": true,
+          "result": {
+            "quitting": true
+          }
+        },
+        "ms": 97,
+        "forced": false
+      },
+      "afterQuit": {
+        "supervisorAlive": true,
+        "runAlive": true,
+        "portOpen": true
+      },
+      "stop": {
+        "ok": true,
+        "wasRunning": true,
+        "runs": 1,
+        "asked": true,
+        "forced": false,
+        "gone": true,
+        "ms": 81,
+        "reason": "test",
+        "supervisorPid": 1636
+      },
+      "afterStop": {
+        "supervisorAlive": false,
+        "runAlive": false,
+        "portOpen": false
+      },
+      "stepMs": 9963
+    },
+    "cli": {
+      "cmd": {
+        "exit": 0,
+        "where": "<install>\\bin\\runyard.cmd",
+        "version": "runyard 0.3.0",
+        "args": [
+          "hello world",
+          "中文 参数",
+          "a&b",
+          "50%",
+          "x^y",
+          ""
+        ],
+        "argsIntact": true,
+        "exitCodeSeen": "7",
+        "raw": "where=C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3\\bin\\runyard.cmd \r\nrunyard 0.3.0 (k3 spike)\n\n{\"args\":[\"hello world\",\"\\u4e2d\\u6587 \\u53c2\\u6570\",\"a&b\",\"50%\",\"x^y\",\"\"]}\n\nexit=7",
+        "stderr": ""
+      },
+      "cmdExitPropagates": 9,
+      "powershell51": {
+        "exit": 0,
+        "where": "<install>\\bin\\runyard.cmd",
+        "version": "runyard 0.3.0",
+        "args": [
+          "hello world",
+          "中文 参数",
+          "a"
+        ],
+        "argsIntact": false,
+        "exitCodeSeen": "7",
+        "raw": "where=C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3\\bin\\runyard.cmd\r\nrunyard 0.3.0 (k3 spike)\n{\"args\":[\"hello world\",\"\\u4e2d\\u6587 \\u53c2\\u6570\",\"a\"]}\nexit=7",
+        "stderr": "'b' is not recognized as an internal or external command,\r\noperable program or batch file."
+      },
+      "pwsh7": {
+        "path": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "exit": 0,
+        "where": "<install>\\bin\\runyard.cmd",
+        "version": "runyard 0.3.0",
+        "args": [
+          "hello world",
+          "中文 参数",
+          "a"
+        ],
+        "argsIntact": false,
+        "exitCodeSeen": "7",
+        "raw": "where=C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3\\bin\\runyard.cmd\r\nrunyard 0.3.0 (k3 spike)\n{\"args\":[\"hello world\",\"\\u4e2d\\u6587 \\u53c2\\u6570\",\"a\"]}\nexit=7",
+        "stderr": "'b' is not recognized as an internal or external command,\r\noperable program or batch file."
+      },
+      "powershell51WithoutAmpersand": {
+        "args": [
+          "hello world",
+          "中文 参数",
+          "50%",
+          "xy"
+        ],
+        "exit": "0"
+      },
+      "ps1Shim": {
+        "executionPolicy": [
+          "MachinePolicy=Undefined",
+          "UserPolicy=Undefined",
+          "Process=Bypass",
+          "CurrentUser=Undefined",
+          "LocalMachine=Unrestricted"
+        ],
+        "powershell51Bypass": {
+          "exit": 0,
+          "where": "<root>\\ps1shim\\runyard.ps1",
+          "version": "runyard 0.3.0",
+          "args": [
+            "hello world",
+            "中文 参数",
+            "a&b",
+            "50%",
+            "x^y"
+          ],
+          "argsIntact": false,
+          "exitCodeSeen": "0",
+          "raw": "where=D:\\a\\_temp\\k3s-ASi1Zj\\ps1shim\\runyard.ps1\r\nexit=0\r\nleak=[]\r\nrunyard 0.3.0 (k3 spike)\n{\"args\":[\"hello world\",\"\\u4e2d\\u6587 \\u53c2\\u6570\",\"a&b\",\"50%\",\"x^y\"]}",
+          "stderr": "",
+          "envLeak": ""
+        },
+        "powershell51Restricted": {
+          "exit": 0,
+          "version": null,
+          "args": null,
+          "argsIntact": false,
+          "exitCodeSeen": null,
+          "raw": "exit=",
+          "stderr": "runyard : File D:\\a\\_temp\\k3s-ASi1Zj\\ps1shim\\runyard.ps1 cannot be loaded because running scripts is disabled on this \r\nsystem. For more information, see about_Execution_Policies at https:/go.microsoft.com/fwlink/?LinkID=135170.\r\nAt line:1 char:59\r\n+ ... :Path = 'D:\\a\\_temp\\k3s-ASi1Zj\\ps1shim;' + $e"
+        },
+        "pwsh7": {
+          "exit": 0,
+          "where": "<root>\\ps1shim\\runyard.ps1",
+          "version": "runyard 0.3.0",
+          "args": [
+            "hello world",
+            "中文 参数",
+            "a&b",
+            "50%",
+            "x^y",
+            ""
+          ],
+          "argsIntact": true,
+          "exitCodeSeen": "0",
+          "raw": "where=D:\\a\\_temp\\k3s-ASi1Zj\\ps1shim\\runyard.ps1\r\nexit=0\r\nleak=[]\r\nrunyard 0.3.0 (k3 spike)\n{\"args\":[\"hello world\",\"\\u4e2d\\u6587 \\u53c2\\u6570\",\"a&b\",\"50%\",\"x^y\",\"\"]}",
+          "stderr": "",
+          "envLeak": ""
+        }
+      },
+      "gitBash": {
+        "bash": "C:\\Program Files\\Git\\bin\\bash.exe",
+        "exit": 0,
+        "where": "/c/Users/runneradmin/AppData/Local/Programs/runyard-spike-k3/bin/runyard",
+        "version": "runyard 0.3.0",
+        "args": [
+          "hello world",
+          "中文 参数",
+          "a&b",
+          "50%",
+          "x^y",
+          ""
+        ],
+        "argsIntact": true,
+        "exitCodeSeen": "7",
+        "raw": "where=/c/Users/runneradmin/AppData/Local/Programs/runyard-spike-k3/bin/runyard\nrunyard 0.3.0 (k3 spike)\n{\"args\":[\"hello world\",\"\\u4e2d\\u6587 \\u53c2\\u6570\",\"a&b\",\"50%\",\"x^y\",\"\"]}\nexit=7\nrunyard 0.3.0 (k3 spike)\ndotcmd-exit=0\nbare-name-finds-cmd-exit=127\nprobe-ran\r\nwith-ext-exit=0",
+        "stderr": "D:\\a\\_temp\\k3s-ASi1Zj\\t.sh: line 7: k3probe: command not found",
+        "dotCmd": "0",
+        "bareNameFindsCmd": "127",
+        "withExt": "0"
+      },
+      "timing": {
+        "node24:--version": {
+          "n": 30,
+          "min": 50.7,
+          "median": 55.2,
+          "p95": 61.4,
+          "max": 63.1,
+          "mean": 55.5
+        },
+        "app-runtime-direct:--version": {
+          "n": 30,
+          "min": 38.4,
+          "median": 40.5,
+          "p95": 46.5,
+          "max": 48.3,
+          "mean": 41.2
+        },
+        "app-runtime-runyard.cmd:--version": {
+          "n": 30,
+          "min": 59.3,
+          "median": 63.5,
+          "p95": 70.2,
+          "max": 74.7,
+          "mean": 64.3
+        },
+        "node24:status": {
+          "n": 30,
+          "min": 66.8,
+          "median": 70.3,
+          "p95": 79.8,
+          "max": 83.7,
+          "mean": 71.2
+        },
+        "app-runtime-direct:status": {
+          "n": 30,
+          "min": 47.9,
+          "median": 50.4,
+          "p95": 56.1,
+          "max": 59.2,
+          "mean": 50.7
+        },
+        "app-runtime-runyard.cmd:status": {
+          "n": 30,
+          "min": 69.2,
+          "median": 73.2,
+          "p95": 88.1,
+          "max": 133.9,
+          "mean": 76.9
+        },
+        "baseline:cmd /c exit": {
+          "n": 30,
+          "min": 15.4,
+          "median": 16.1,
+          "p95": 18.1,
+          "max": 21.6,
+          "mean": 16.5
+        }
+      },
+      "timingWarmupRun": {
+        "node24:--version": 60,
+        "app-runtime-direct:--version": 41,
+        "app-runtime-runyard.cmd:--version": 61,
+        "node24:status": 67,
+        "app-runtime-direct:status": 50,
+        "app-runtime-runyard.cmd:status": 72,
+        "baseline:cmd /c exit": 17
+      },
+      "timingFailures": {},
+      "runsPerVariant": 30,
+      "stop": {
+        "ok": true,
+        "wasRunning": true,
+        "runs": 0,
+        "asked": true,
+        "forced": false,
+        "gone": true,
+        "ms": 9,
+        "reason": "test",
+        "supervisorPid": 5260
+      },
+      "stepMs": 15648
+    },
+    "url": {
+      "registry": "\"<install>\\RunyardK3.exe\" \"%1\"",
+      "whileNotRunning": {
+        "startExit": 0,
+        "appStarted": true,
+        "up": true,
+        "urlsInArgv": [
+          "runyard-k3://open/demo-b"
+        ],
+        "argv": [
+          "runyard-k3://open/demo-b"
+        ]
+      },
+      "whileRunning": {
+        "startExit": 0,
+        "deliveredTo": "first-instance",
+        "urls": [
+          "runyard-k3://open/demo-a?x=1&y=2"
+        ],
+        "secondInstanceExited": true
+      },
+      "stop": {
+        "ok": true,
+        "wasRunning": true,
+        "runs": 0,
+        "asked": true,
+        "forced": false,
+        "gone": true,
+        "ms": 129,
+        "reason": "test",
+        "supervisorPid": 2156
+      },
+      "stepMs": 1714
+    },
+    "liveHook": {
+      "upgradeSupervisorOnly": {
+        "before": {
+          "supervisorAlive": true,
+          "runAlive": true,
+          "portOpen": true,
+          "appAlive": false,
+          "runOk": true
+        },
+        "installer": {
+          "how": "createprocess",
+          "exit": 0,
+          "signal": null,
+          "ms": 13686,
+          "installedVersion": "0.3.1",
+          "location": "C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3",
+          "buildInfo": "0.3.1",
+          "hook": [
+            "installer-stop exit=0 out={\"ok\":true,\"wasRunning\":true,\"runs\":1,\"asked\":true,\"forced\":false,\"gone\":true,\"ms\":74,\"reason\":\"install\",\"supervisorPid\":5512}",
+            "installer-stop exit=0 out={\"ok\":true,\"wasRunning\":false,\"runs\":0,\"asked\":false,\"forced\":false,\"gone\":true,\"ms\":5,\"reason\":\"install\",\"connect\":\"ENOENT\"}",
+            "customUnInstall: updated, keep PATH and protocol",
+            "customInstall done at C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3"
+          ]
+        },
+        "after": {
+          "supervisorAlive": false,
+          "appAlive": false,
+          "runAlive": false,
+          "runPortStillOpen": false,
+          "supervisorLoggedShutdown": "requested:install",
+          "supervisorLoggedRunStop": true,
+          "discoveryFileLeft": false,
+          "processesFromInstallDir": []
+        },
+        "pathStillHasBin": true,
+        "urlKeyStillThere": true
+      },
+      "reinstallAppRunning": {
+        "before": {
+          "supervisorAlive": true,
+          "runAlive": true,
+          "portOpen": true,
+          "appAlive": true,
+          "runOk": true
+        },
+        "installer": {
+          "how": "createprocess",
+          "exit": 0,
+          "signal": null,
+          "ms": 16041,
+          "installedVersion": "0.3.1",
+          "location": "C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3",
+          "buildInfo": "0.3.1",
+          "hook": [
+            "installer-stop exit=0 out={\"ok\":true,\"wasRunning\":true,\"runs\":1,\"asked\":true,\"forced\":false,\"gone\":true,\"ms\":71,\"reason\":\"install\",\"supervisorPid\":6916}",
+            "installer-stop exit=0 out={\"ok\":true,\"wasRunning\":false,\"runs\":0,\"asked\":false,\"forced\":false,\"gone\":true,\"ms\":4,\"reason\":\"install\",\"connect\":\"ENOENT\"}",
+            "customUnInstall: updated, keep PATH and protocol",
+            "customInstall done at C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3"
+          ]
+        },
+        "after": {
+          "supervisorAlive": false,
+          "appAlive": false,
+          "runAlive": false,
+          "runPortStillOpen": false,
+          "supervisorLoggedShutdown": "requested:install",
+          "supervisorLoggedRunStop": true,
+          "discoveryFileLeft": false,
+          "processesFromInstallDir": []
+        },
+        "newVersionStarts": {
+          "up": true,
+          "version": "0.3.1",
+          "supervisorProtocol": 2
+        }
+      },
+      "uninstall": {
+        "before": {
+          "supervisorAlive": true,
+          "runAlive": true,
+          "portOpen": true,
+          "appAlive": false,
+          "runOk": true
+        },
+        "uninstaller": {
+          "exit": 0,
+          "ms": 7828,
+          "uninstallKeyGone": true,
+          "installDirExists": false,
+          "filesLeft": [],
+          "hook": [
+            "installer-stop exit=0 out={\"ok\":true,\"wasRunning\":true,\"runs\":1,\"asked\":true,\"forced\":false,\"gone\":true,\"ms\":85,\"reason\":\"install\",\"supervisorPid\":8036}",
+            "path-remove exit=0 out={\"ok\":true,\"mode\":\"remove\",\"binDir\":\"C:\\\\Users\\\\runneradmin\\\\AppData\\\\Local\\\\Programs\\\\runyard-spike-k3\\\\bin\",\"changed\":true,\"kind\":\"ExpandString\",\"stderr\":\"\"}"
+          ]
+        },
+        "after": {
+          "supervisorAlive": false,
+          "appAlive": false,
+          "runAlive": false,
+          "runPortStillOpen": false,
+          "supervisorLoggedShutdown": "requested:install",
+          "supervisorLoggedRunStop": true,
+          "discoveryFileLeft": false,
+          "processesFromInstallDir": []
+        }
+      },
+      "residue": {
+        "userPathIdenticalToBefore": true,
+        "userPathKindIdentical": true,
+        "userPathBefore": "%USERPROFILE%\\.dotnet\\tools;%USERPROFILE%\\.cargo\\bin;%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps;",
+        "userPathAfter": "%USERPROFILE%\\.dotnet\\tools;%USERPROFILE%\\.cargo\\bin;%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps;",
+        "urlKeyGone": true,
+        "uninstallEntryGone": true,
+        "installDirGone": true,
+        "shortcutsLeft": [],
+        "softwareGuidKeysAdded": [],
+        "programsDirAdded": [],
+        "appDataAdded": []
+      },
+      "stepMs": 49510
+    },
+    "liveBuilderDefault": {
+      "firstInstall": {
+        "how": "createprocess",
+        "exit": 0,
+        "signal": null,
+        "ms": 12992,
+        "installedVersion": "0.3.0",
+        "location": "C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3",
+        "buildInfo": "0.3.0",
+        "hook": [
+          "customInstall done at C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3"
+        ]
+      },
+      "reinstall": {
+        "before": {
+          "supervisorAlive": true,
+          "runAlive": true,
+          "portOpen": true,
+          "appAlive": false,
+          "runOk": true
+        },
+        "templateProbe": {
+          "byPathAsInTemplate": "1",
+          "byExecutablePath": "1"
+        },
+        "installer": {
+          "how": "createprocess",
+          "exit": 0,
+          "signal": null,
+          "ms": 13663,
+          "installedVersion": "0.3.0",
+          "location": "C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3",
+          "buildInfo": "0.3.0",
+          "hook": [
+            "customUnInstall: updated, keep PATH and protocol",
+            "customInstall done at C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3"
+          ]
+        },
+        "after": {
+          "supervisorAlive": true,
+          "appAlive": false,
+          "runAlive": true,
+          "runPortStillOpen": true,
+          "supervisorLoggedShutdown": null,
+          "supervisorLoggedRunStop": false,
+          "discoveryFileLeft": true,
+          "processesFromInstallDir": [
+            "8540:RunyardK3.exe"
+          ]
+        },
+        "oldFilesParkedInTemp": "1",
+        "orphansReaped": [
+          8712,
+          8540
+        ]
+      },
+      "reinstallAppRunning": {
+        "before": {
+          "supervisorAlive": true,
+          "runAlive": true,
+          "portOpen": true,
+          "appAlive": true,
+          "runOk": true
+        },
+        "templateProbe": {
+          "byPathAsInTemplate": "5",
+          "byExecutablePath": "5"
+        },
+        "installer": {
+          "how": "createprocess",
+          "exit": 0,
+          "signal": null,
+          "ms": 14306,
+          "installedVersion": "0.3.0",
+          "location": "C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3",
+          "buildInfo": "0.3.0",
+          "hook": [
+            "customUnInstall: updated, keep PATH and protocol",
+            "customInstall done at C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3"
+          ]
+        },
+        "after": {
+          "supervisorAlive": false,
+          "appAlive": false,
+          "runAlive": false,
+          "runPortStillOpen": false,
+          "supervisorLoggedShutdown": null,
+          "supervisorLoggedRunStop": false,
+          "discoveryFileLeft": true,
+          "processesFromInstallDir": []
+        },
+        "orphansReaped": []
+      },
+      "uninstall": {
+        "before": {
+          "supervisorAlive": true,
+          "runAlive": true,
+          "portOpen": true,
+          "appAlive": false,
+          "runOk": true
+        },
+        "uninstaller": {
+          "exit": 0,
+          "ms": 7951,
+          "uninstallKeyGone": true,
+          "installDirExists": true,
+          "filesLeft": [
+            "RunyardK3.exe"
+          ],
+          "hook": [
+            "path-remove exit=0 out={\"ok\":true,\"mode\":\"remove\",\"binDir\":\"C:\\\\Users\\\\runneradmin\\\\AppData\\\\Local\\\\Programs\\\\runyard-spike-k3\\\\bin\",\"changed\":false,\"kind\":\"ExpandString\",\"stderr\":\"\"}"
+          ]
+        },
+        "after": {
+          "supervisorAlive": true,
+          "appAlive": false,
+          "runAlive": true,
+          "runPortStillOpen": true,
+          "supervisorLoggedShutdown": null,
+          "supervisorLoggedRunStop": false,
+          "discoveryFileLeft": true,
+          "processesFromInstallDir": [
+            "4144:RunyardK3.exe"
+          ]
+        },
+        "orphansReaped": [
+          8148,
+          4144
+        ],
+        "pathRestored": true
+      },
+      "stepMs": 61234
+    },
+    "liveNoCheck": {
+      "firstInstall": {
+        "how": "createprocess",
+        "exit": 0,
+        "signal": null,
+        "ms": 9475,
+        "installedVersion": "0.3.0",
+        "location": "C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3",
+        "buildInfo": "0.3.0",
+        "hook": [
+          "check skipped (nocheck variant)",
+          "customInstall done at C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3"
+        ]
+      },
+      "reinstall": {
+        "before": {
+          "supervisorAlive": true,
+          "runAlive": true,
+          "portOpen": true,
+          "appAlive": false,
+          "runOk": true
+        },
+        "installer": {
+          "how": "createprocess",
+          "exit": 0,
+          "signal": null,
+          "ms": 7627,
+          "installedVersion": "0.3.0",
+          "location": "C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3",
+          "buildInfo": "0.3.0",
+          "hook": [
+            "check skipped (nocheck variant)",
+            "check skipped (nocheck variant)",
+            "customUnInstall: updated, keep PATH and protocol",
+            "customInstall done at C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3"
+          ]
+        },
+        "after": {
+          "supervisorAlive": true,
+          "appAlive": false,
+          "runAlive": true,
+          "runPortStillOpen": true,
+          "supervisorLoggedShutdown": null,
+          "supervisorLoggedRunStop": false,
+          "discoveryFileLeft": true,
+          "processesFromInstallDir": [
+            "1300:RunyardK3.exe"
+          ]
+        },
+        "installDirExists": true,
+        "cliAfter": {
+          "code": 0,
+          "out": "runyard 0.3.0 (k3 spike)"
+        },
+        "tempLeftovers": "2",
+        "orphansReaped": [
+          7664,
+          1300
+        ]
+      },
+      "uninstall": {
+        "before": {
+          "supervisorAlive": true,
+          "runAlive": true,
+          "portOpen": true,
+          "appAlive": false,
+          "runOk": true
+        },
+        "uninstaller": {
+          "exit": 0,
+          "ms": 5578,
+          "uninstallKeyGone": true,
+          "installDirExists": true,
+          "filesLeft": [
+            "RunyardK3.exe"
+          ],
+          "hook": [
+            "check skipped (nocheck variant)",
+            "path-remove exit=0 out={\"ok\":true,\"mode\":\"remove\",\"binDir\":\"C:\\\\Users\\\\runneradmin\\\\AppData\\\\Local\\\\Programs\\\\runyard-spike-k3\\\\bin\",\"changed\":false,\"kind\":\"ExpandString\",\"stderr\":\"\"}"
+          ]
+        },
+        "after": {
+          "supervisorAlive": true,
+          "appAlive": false,
+          "runAlive": true,
+          "runPortStillOpen": true,
+          "supervisorLoggedShutdown": null,
+          "supervisorLoggedRunStop": false,
+          "discoveryFileLeft": true,
+          "processesFromInstallDir": [
+            "2352:RunyardK3.exe"
+          ]
+        },
+        "orphansReaped": [
+          5632,
+          2352
+        ],
+        "installDirRemovedByHand": true
+      },
+      "stepMs": 32703
+    },
+    "runAsNodeOff": {
+      "buildOk": true,
+      "cliAttempt": {
+        "printedVersion": false,
+        "startedAsFullApp": true
+      },
+      "appTriesToStartSupervisor": {
+        "outcome": "supervisor-failed",
+        "code": "SUPERVISOR_UNAVAILABLE",
+        "secondInstancesSpawned": 1
+      },
+      "leftover": [],
+      "stepMs": 26209
+    }
+  },
+  "snapshotBefore": {
+    "userPath": "%USERPROFILE%\\.dotnet\\tools;%USERPROFILE%\\.cargo\\bin;%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps;",
+    "userPathKind": "ExpandString",
+    "urlKey": false,
+    "urlCommand": "",
+    "uninstall": [],
+    "softwareGuidKeys": [],
+    "programsDir": [],
+    "startMenu": [],
+    "desktop": [],
+    "appData": [
+      "C:\\Users\\runneradmin\\AppData\\Local\\runyard-k3-spike"
+    ]
+  },
+  "snapshotAfter": {
+    "userPath": "%USERPROFILE%\\.dotnet\\tools;%USERPROFILE%\\.cargo\\bin;%USERPROFILE%\\AppData\\Local\\Microsoft\\WindowsApps;",
+    "userPathKind": "ExpandString",
+    "urlKey": false,
+    "urlCommand": "",
+    "uninstall": [],
+    "softwareGuidKeys": [],
+    "programsDir": [],
+    "startMenu": [],
+    "desktop": [],
+    "appData": [
+      "C:\\Users\\runneradmin\\AppData\\Local\\runyard-k3-spike"
+    ]
+  },
+  "cleanup": {
+    "identicalToBefore": {
+      "userPath": true,
+      "userPathKind": true,
+      "urlKey": true,
+      "urlCommand": true,
+      "uninstall": true,
+      "softwareGuidKeys": true,
+      "programsDir": true,
+      "startMenu": true,
+      "desktop": true,
+      "appData": true
+    },
+    "hookLogTail": [
+      "check skipped (nocheck variant)",
+      "check skipped (nocheck variant)",
+      "customUnInstall: updated, keep PATH and protocol",
+      "customInstall done at C:\\Users\\runneradmin\\AppData\\Local\\Programs\\runyard-spike-k3",
+      "check skipped (nocheck variant)",
+      "path-remove exit=0 out={\"ok\":true,\"mode\":\"remove\",\"binDir\":\"C:\\\\Users\\\\runneradmin\\\\AppData\\\\Local\\\\Programs\\\\runyard-spike-k3\\\\bin\",\"changed\":false,\"kind\":\"ExpandString\",\"stderr\":\"\"}"
+    ],
+    "session": {
+      "killed": [],
+      "rootRemoved": true,
+      "pointerRemoved": true
+    },
+    "processesLeft": []
+  },
+  "finishedAt": "2026-10-12T01:02:29.564Z"
+}
