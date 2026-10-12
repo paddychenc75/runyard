@@ -3,7 +3,7 @@
 ## 用途
 
 工具检测、运行引擎、资源库、模板、自动清理的判断（技术设计 §3.2）。运行引擎不知道“标签页”和“命令行”是什么，持有者只是 `supervisor` 里的概念。
-现状：日志的切行、解码和读取时清洗（`src/logs/`），一次运行的状态机和进程生命周期（`src/run/`），以及资源库里的项目创建、命名、索引和“文件夹被动过”的判断（`src/library/`）。其他模块由后续 issue 各自加入。
+现状：日志的切行、解码和读取时清洗（`src/logs/`），一次运行的状态机和进程生命周期（`src/run/`），资源库里的项目创建、命名、索引和“文件夹被动过”的判断（`src/library/`），以及工具链检测（`src/toolchain/`）。其他模块由后续 issue 各自加入。
 
 ## 对外暴露什么
 
@@ -16,6 +16,8 @@
 - `canTransition`、`allowedTransitions`、`activeStates`、`isActiveState`、`IllegalTransitionError`：转移表（按运行种类）和“N 个运行中”的活动状态集合。
 - `expandCommand`（运行器命令占位符，参数数组，不经 shell）、`childEnv`（去掉 `ELECTRON_RUN_AS_NODE`、放运行标记 `RUNYARD_RUN_ID`）、`stopProcessTree`。
 - `PlaygroundLibrary`（`src/library/`）：`open(deps)` 读 `state/library.json`，不存在或坏了（坏文件改名留存）就从磁盘重建；`list`、`find(id 或名称)`、`requireFolder`（找不到文件夹报 `FOLDER_MISSING`）、`create(seed, request)`（默认名“模板标识加序号”、`ifExists: reuse | fail`、`PATH_NEAR_LIMIT` 提示放在结果的 `notices`）、`rescan()`（返回 `ScanReport`：`added`、`changed`、`missing`、`copied` 和 `skipped`，由 supervisor 发 `playground.*` 事件）、`relocate`。错误是 `LibraryError`（`error` 里是协议的 `RunyardError`），更新版本写的 `library.json` 或 `playground.json` 只读不写（`DATA_FROM_NEWER_VERSION`）。
+- `ToolchainService`（`src/toolchain/`）：`check({ requires, cwd?, cachedOnly? })` 返回 `ToolchainResult`（`tools: ToolCheck[]`、`errors`（`TOOL_MISSING` / `TOOL_TOO_OLD`，空表示可以运行）、`notices`（`ENV_UNRESOLVED`、`ENV_DEGRADED`、`TOOL_VERSION_UNTESTED`、`PACKAGE_MANAGER_FALLBACK`）、`fallbacks`、`envSource`）；`doctor(cwd?)`、`recheck(cwd?)`（清缓存、`env.load({ refresh: true })`、重新检测）、`warmUp(cwd?)`（应用启动时后台刷新，完成后 `onChanged`）、`snapshot()`（`ToolchainFile`，由 supervisor 写 `state/toolchain.json`）、`isCacheFresh(cwd?)`。构造参数 `ToolchainServiceDeps`：平台、时钟、`definitions`（工具定义表）、`toolPaths()`（设置里的手动路径）、`onChanged`（发 `toolchain.changed`）、`initialCache`、`onCacheChange`。
+- 工具链的纯函数：`detectTool`、`extractVersion`、`evaluateRequirements`（对照 `requires` 出错误与提示，可单独用）、`toolsToDetect`、`judgeVersion` / `parseVersionNumbers`（范围比较只比范围里写了的几段）。
 - `nextDefaultName`、`createUlid` / `randomUlid`（项目 id）。
 
 ## 本包特有的规则
@@ -31,10 +33,20 @@
 - 资源库不做永久删除，也没有任何 `rm` 一类的帮助函数；创建中途失败的半成品只经平台层 `fs.trash`。改名、移到废纸篓、自动清理不在这里（#38）。
 - 创建的顺序是规格要求的：先校验名称（不碰任何东西），再查重名和路径长度，写文件，最后写 `.runyard/playground.json` 和索引；没有元数据文件的文件夹会被扫描忽略。默认名的序号只看资源库根目录里现存的文件夹。
 
+## 工具链检测的约定
+
+- 只检测请求里 `requires`（加上 `fallback` 指向的工具）的工具，什么都不依赖的模板一个进程也不起（-01）。`cachedOnly` 只读缓存、不读环境、不起进程，过期的条目也照给（-18），缓存里没有的工具是 `unknown`，并按本次请求的范围重新判断缓存里的版本。
+- 非 `cachedOnly` 的检测每次实时找、实时跑版本命令，不读工具缓存（-19）；缓存只写不读给 `cachedOnly` 用。键：项目里有版本文件（`.node-version`、`.nvmrc`、`.tool-versions`、`mise.toml`、`.python-version`、`package.json`）时是 `project:<路径>`，否则 `global`；键里没有文件修改时间（平台层的环境缓存有）。
+- 候选顺序：设置里的手动路径（不是绝对路径或执行不了就跳过）→ 登录环境 PATH 上的 → 常见目录。常见目录里的只在环境来源是 `fallback` 时才用（-20），其余来源一律以登录环境为准。每个候选都要跑版本命令并解析出版本才算找到，不行换下一个。
+- 版本命令以项目文件夹为 cwd、环境合并 `platform.env.runDefaults()`（不让 `go version` 去下载工具链），10 秒超时后结束进程、判为没找到。
+- 环境提示：来源 `fallback` 发 `ENV_UNRESOLVED`（`reason` 缺省按 `failed`），`login-shell-degraded` 发 `ENV_DEGRADED`，`path-only` 不发（没有提示码，规格也没要求）。环境结果带 `refreshing` 时，完成后用新环境重新检测、更新缓存并调 `onChanged`；同一个 `refreshing` 只通知一次。
+- 不安装任何东西；子进程环境的构建（把 `runDefaults()` 并进运行环境）属于 #36。安装提示的选择（-34 到 -36 的内容）不在本模块。
+
 ## 子目录地图
 
 - `src/logs/`：日志的切行、解码和清洗；每个文件旁有同名 `.test.ts`
 - `src/library/`：名称（`playground-name.ts`）、创建（`create-playground.ts`）、索引（`library-index.ts`）、扫描判断（`scan-library.ts`，文件头有五行判断表）、门面（`playground-library.ts`）；`library-harness.test.ts` 是测试共用的现场（假平台的内存文件系统，经平台接口 `fs` 使用）
+- `src/toolchain/`：版本比较（`version-compare.ts`）、版本命令（`run-version-command.ts`）、找一个工具（`detect-tool.ts`）、对照 requires 判定（`evaluate-requirements.ts`）、门面与缓存（`toolchain-service.ts`）；`toolchain-harness.test.ts` 是测试共用的现场（工具定义、假平台、`resolveWith` 边等边推假时钟）
 - `src/run/`：转移表（`run-transitions.ts`）、一次运行的会话（`run-session.ts`）、引擎（`run-engine.ts`）、停止（`stop-process-tree.ts`）、输出收集（`run-output.ts`）、类型与接缝（`run-types.ts`）；`run-harness.test.ts` 是测试共用的现场（假平台、记录事件的出口），只有测试文件能导入 `@runyard/testing`
 
 ## 测试
