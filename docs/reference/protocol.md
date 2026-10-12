@@ -850,6 +850,7 @@
 | `readyMs` | `number` | 否 | ≥ 0 |
 | `durationMs` | `number` | 否 | ≥ 0 |
 | `idleStopAt` | `integer` | 否 | 只有命令行持有的运行有；≥ 0 |
+| `slow` | `boolean` | 否 | starting 超过 30 秒仍未就绪：状态不变，只标较慢（RUN-LIFECYCLE-10） |
 | `cursor` | `string` | 是 | 当前日志末尾的游标；格式 `^[^:\s]+:\d+$` |
 | `alreadyRunning` | `boolean` | 否 | 对活动中的项目再次启动时为 true |
 

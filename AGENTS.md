@@ -59,6 +59,8 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `@runyard/testing` | `@runyard/protocol`、`@runyard/platform`、`@runyard/core`（只在测试里） | 已有 |
 <!-- generated:layers 结束 -->
 
+`layers` 检查只读各包的 `package.json` 和 `tsconfig.json`（依赖声明和 project references），不扫描源码里的 `import`。源码里导入了没有声明的包，由 `tsc -b` 拦住（类型检查报错）；所以别单凭 `layers` 通过就认为导入方向没问题，两个都要绿（`pnpm verify` 两个都跑）。
+
 下面几条在对应的包建立时生效（现在多数包还没建，先知道；出处是技术设计 §3.2）：
 
 - `electron` 只许出现在桌面应用里；界面进程（renderer）里不许用 Node 接口。

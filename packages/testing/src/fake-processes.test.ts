@@ -239,3 +239,38 @@ describe("假进程：进程号复用", () => {
     expect(() => fake.processes.addForeign({ pid: ref.pid })).toThrow();
   });
 });
+
+describe("假进程：按运行标记找进程", () => {
+  const marker = { name: "RUNYARD_RUN_ID", value: "run-1" };
+
+  it("[RUN-LIFECYCLE-20] 后代继承环境，脱离进程组的后代整树停止后仍在，按标记找得到并能结束", async () => {
+    const fake = createFakePlatform();
+    fake.processes.when(["next"], {
+      children: [{ atMs: 0, detached: true, behavior: { exit: { afterMs: 950, code: 0 } } }],
+    });
+    const proc = fake.platform.exec.spawn({
+      argv: ["next"],
+      cwd,
+      env: { RUNYARD_RUN_ID: "run-1" },
+      stdin: false,
+    });
+    expect(await fake.platform.proc.findByMarker(marker)).toHaveLength(2);
+    await fake.platform.proc.terminate(proc.ref, { mode: "graceful", graceMs: 100 });
+    const strays = await fake.platform.proc.findByMarker(marker);
+    expect(strays).toHaveLength(1);
+    await fake.clock.advance(950);
+    expect(await fake.platform.proc.findByMarker(marker)).toEqual([]);
+  });
+
+  it("值不同、名字不同、没有环境的进程都不命中", async () => {
+    const fake = createFakePlatform();
+    spawn(fake, ["a"]);
+    fake.platform.exec.spawn({
+      argv: ["b"],
+      cwd,
+      env: { RUNYARD_RUN_ID: "run-12" },
+      stdin: false,
+    });
+    expect(await fake.platform.proc.findByMarker(marker)).toEqual([]);
+  });
+});
