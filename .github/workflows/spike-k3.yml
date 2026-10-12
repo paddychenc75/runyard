@@ -1,0 +1,80 @@
+# 技术验证 K3（未签名的安装包能做到哪一步）在 macOS 和 Windows 上的实验。一次性的：M0a 结束时随 spikes/k3 一起删除。
+# 只在 spike/k3-* 分支上、改到 spikes/k3 或本文件时运行；不属于 PR 的必过检查。
+name: spike-k3
+
+on:
+  push:
+    branches: ["spike/k3-*"]
+    paths:
+      - "spikes/k3/**"
+      - ".github/workflows/spike-k3.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  experiments:
+    name: K3 实验（${{ matrix.os }}）
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-26, windows-2025]
+    defaults:
+      run:
+        shell: bash
+        working-directory: spikes/k3
+    steps:
+      - name: 关闭换行转换
+        working-directory: .
+        run: git config --global core.autocrlf false
+
+      - name: 检出代码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: 安装 pnpm（版本读自根 package.json 的 packageManager 字段）
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: 安装 Node（版本读自 .node-version）
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+
+      # 不提交锁文件：electron-builder 26.17.0 的间接依赖 http-cache-semantics 4.2.0 有高危公告
+      # （GHSA-ch52-4w7c-c8xp），修复版 4.3.0 发布不满 14 天。所以在一次性的机器上现装，
+      # 仍受 spikes/k3/pnpm-workspace.yaml 的 minimumReleaseAge 约束；装了什么、审计结果如何都打印出来。
+      - name: 安装 K3 自己的依赖（现装，不带锁文件）
+        run: |
+          pnpm install
+          pnpm list --depth 0
+          pnpm audit || true
+
+      - name: 运行实验（macOS）
+        if: runner.os == 'macOS'
+        run: node experiments/mac.mjs --ci --label ci
+
+      - name: 运行实验（Windows）
+        if: runner.os == 'Windows'
+        env:
+          # 默认的临时目录在这台机器上是 8.3 短路径（RUNNER~1），换成运行器给的完整路径
+          K3_TMP_BASE: ${{ runner.temp }}
+        run: node experiments/win.mjs --label ci
+
+      - name: 上传结果
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: k3-results-${{ matrix.os }}
+          path: |
+            spikes/k3/results/*.json
+            spikes/k3/results/tmp/**
+          if-no-files-found: warn
+          retention-days: 30

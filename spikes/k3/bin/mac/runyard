@@ -1,0 +1,15 @@
+#!/bin/sh
+# 内置命令行在 macOS 上的入口，位置是 Runyard.app/Contents/Resources/bin/runyard。
+# 设置里的“安装命令行工具”在用户的 bin 目录里建一个指向这个文件的符号链接。
+# 它用应用自带的运行时（Electron 当作 Node）执行命令行脚本，所以不要求用户装 Node。
+# 先顺着符号链接找到自己真正的位置；只用 shell 内置的写法（除了 readlink），少起一个进程就少几毫秒。
+self="$0"
+while [ -L "$self" ]; do
+  target=$(readlink "$self")
+  case "$target" in
+    /*) self="$target" ;;
+    *) self="${self%/*}/$target" ;;
+  esac
+done
+resources="${self%/*}/.."
+ELECTRON_RUN_AS_NODE=1 exec "$resources/../MacOS/RunyardK3" "$resources/runtime/runyard-cli.mjs" "$@"

@@ -1,0 +1,1096 @@
+{
+  "startedAt": "2026-10-12T00:43:03.122Z",
+  "ci": true,
+  "steps": {
+    "env": {
+      "os": "26.6.2",
+      "build": "25G83",
+      "arch": "arm64",
+      "cpu": "Apple M1 (Virtual)",
+      "cores": 3,
+      "memGb": 7,
+      "node": "v24.21.0",
+      "gatekeeper": "assessments enabled",
+      "rosetta": true,
+      "signingIdentities": "0 valid identities found",
+      "imageVersion": "20260907.0351.1",
+      "urlHandlerBefore": "none",
+      "stepMs": 2273
+    },
+    "build": {
+      "mainBuildMs": 76932,
+      "secondDirBuildMs": 13236,
+      "artifacts": {
+        "RunyardK3-0.3.0-mac-arm64.dmg": 123,
+        "RunyardK3-0.3.0-mac-arm64.zip": 119.2
+      },
+      "appMb": 305.7,
+      "breakdownMb": {
+        "electronFramework": 284.5,
+        "localesInResources": 0,
+        "appAsar": 0.1,
+        "runtimeJs": 0,
+        "otherFrameworks": 1.6
+      },
+      "pnpm": [
+        "• identified pnpm workspace root  path=/Users/runner/work/runyard/runyard/spikes/k3",
+        "• detected workspace root for project using packageManager field  pm=pnpm config=pnpm@11.28.0 resolved=/Users/runner/work/runyard/runyard/spikes/k3 projectDir=/Users/runner/work/runyard/runyard/spikes/k3",
+        "• searching for node modules  pm=pnpm searchDir=/Users/runner/work/runyard/runyard/spikes/k3",
+        "• node modules collection complete  packageName=runyard-spike-k3 depCount=2",
+        "• collected node modules  pm=pnpm searchDir=/Users/runner/work/runyard/runyard/spikes/k3 depCount=2",
+        "• identified module  dep=chokidar from=node_modules/.pnpm/chokidar@5.0.0/node_modules/chokidar to=<root>/out/v1/mac-arm64/Electron.app/Contents/Resources/app/node_modules/chokidar filesCount=4",
+        "• identified module  dep=readdirp from=node_modules/.pnpm/readdirp@5.1.1/node_modules/readdirp to=<root>/out/v1/mac-arm64/Electron.app/Contents/Resources/app/node_modules/readdirp filesCount=3",
+        "• executing       file=sips args=-g pixelHeight -g pixelWidth /Users/runner/work/runyard/runyard/spikes/k3/node_modules/.pnpm/dmg-builder@26.17.0_electron-builder-squirrel-windows@26.17.0_supports-color@7.2.0/node_modules/dmg-builder/templates/background.tiff",
+        "• executed        file=sips stdout=/Users/runner/work/runyard/runyard/spikes/k3/node_modules/.pnpm/dmg-builder@26.17.0_electron-builder-squirrel-windows@26.17.0_supports-color@7.2.0/node_modules/dmg-builder/templates/background.tiff"
+      ],
+      "signLog": [
+        "• skipped macOS application code signing  reason=, see https://electron.build/code-signing CSC_IDENTITY_AUTO_DISCOVERY=false",
+        "• no event listeners found  event=afterSign"
+      ],
+      "downloads": [],
+      "downloadLog": [
+        "• downloaded      label=electron progress=100%",
+        "• downloaded electron zip extracted successfully  output=<root>/out/v1/mac-arm64",
+        "• skipped macOS application code signing  reason=, see https://electron.build/code-signing CSC_IDENTITY_AUTO_DISCOVERY=false",
+        "• downloading     file=7zip-darwin-arm64.tar.gz",
+        "• downloading     file=dmgbuild-bundle-arm64-75c8a6c.tar.gz",
+        "• downloaded      label=7zip-darwin-arm64.tar.gz progress=100%",
+        "• downloaded      label=dmgbuild-bundle-arm64-75c8a6c.tar.gz progress=100%"
+      ],
+      "builderCache": [
+        "7zip@1.0.0/7zip-darwin-arm64-fti70",
+        "7zip@1.0.0/7zip-darwin-arm64.tar.gz",
+        "dmg-builder@1.2.5/dmgbuild-bundle-arm64-75c8a6c-9epj3",
+        "dmg-builder@1.2.5/dmgbuild-bundle-arm64-75c8a6c.tar.gz",
+        "downloads/cfdeea0a4db84f58987e55bae3e48d9bcc36b8af815bd084b4474995879db443",
+        "downloads/fec875fb03de9f1289d20cef63e1cc9f985fadf9530bf8f31ab9fbc02552b24c"
+      ],
+      "stepMs": 90335
+    },
+    "signing": {
+      "matrix": {
+        "v1": {
+          "buildOk": true,
+          "buildMs": 76932,
+          "signLog": [
+            "• skipped macOS application code signing  reason=, see https://electron.build/code-signing CSC_IDENTITY_AUTO_DISCOVERY=false",
+            "• no event listeners found  event=afterSign"
+          ],
+          "afterBuild": {
+            "signature": "adhoc",
+            "flags": "0x2(adhoc)",
+            "identifier": "dev.runyard.spike.k3",
+            "teamId": "not set",
+            "sealedFiles": "23",
+            "dvExit": 0,
+            "deepVerifyExit": 0,
+            "deepVerifyMessage": "<root>/out/v1/mac-arm64/RunyardK3.app: valid on disk | <root>/out/v1/mac-arm64/RunyardK3.app: satisfies its Designated Requirement",
+            "frameworkVerifyExit": 0,
+            "spctlExit": 3,
+            "spctl": "<root>/out/v1/mac-arm64/RunyardK3.app: rejected",
+            "archs": "arm64"
+          },
+          "runAsNode": {
+            "code": 0,
+            "signal": null,
+            "stdout": "arm64 44.4.5",
+            "stderr": ""
+          }
+        },
+        "fuses-none": {
+          "buildOk": true,
+          "buildMs": 10128,
+          "signLog": [
+            "• skipped macOS application code signing  reason=, see https://electron.build/code-signing CSC_IDENTITY_AUTO_DISCOVERY=false",
+            "• no event listeners found  event=afterSign"
+          ],
+          "afterBuild": {
+            "signature": "adhoc",
+            "flags": "0x20002(adhoc,linker-signed)",
+            "identifier": "Electron",
+            "teamId": "not set",
+            "sealedFiles": null,
+            "dvExit": 0,
+            "deepVerifyExit": 1,
+            "deepVerifyMessage": "<root>/out/fuses-none/mac-arm64/RunyardK3.app: code has no resources but signature indicates they must be present",
+            "frameworkVerifyExit": 1,
+            "spctlExit": 1,
+            "spctl": "<root>/out/fuses-none/mac-arm64/RunyardK3.app: code has no resources but signature indicates they must be present",
+            "archs": "arm64"
+          },
+          "runAsNode": {
+            "code": 0,
+            "signal": null,
+            "stdout": "arm64 44.4.5",
+            "stderr": ""
+          },
+          "afterManualAdhoc": {
+            "codesignExit": 0,
+            "stderr": "<root>/out/fuses-none/mac-arm64/RunyardK3.app: replacing existing signature",
+            "signature": "adhoc",
+            "flags": "0x2(adhoc)",
+            "identifier": "dev.runyard.spike.k3",
+            "teamId": "not set",
+            "sealedFiles": "23",
+            "dvExit": 0,
+            "deepVerifyExit": 0,
+            "deepVerifyMessage": "<root>/out/fuses-none/mac-arm64/RunyardK3.app: valid on disk | <root>/out/fuses-none/mac-arm64/RunyardK3.app: satisfies its Designated Requirement",
+            "frameworkVerifyExit": 0,
+            "spctlExit": 3,
+            "spctl": "<root>/out/fuses-none/mac-arm64/RunyardK3.app: rejected",
+            "archs": "arm64"
+          },
+          "runAfterManual": {
+            "code": 0,
+            "signal": null,
+            "stdout": "arm64"
+          }
+        },
+        "fuses-noreset": {
+          "buildOk": true,
+          "buildMs": 7016,
+          "signLog": [
+            "• skipped macOS application code signing  reason=, see https://electron.build/code-signing CSC_IDENTITY_AUTO_DISCOVERY=false",
+            "• no event listeners found  event=afterSign"
+          ],
+          "afterBuild": {
+            "signature": "adhoc",
+            "flags": "0x20002(adhoc,linker-signed)",
+            "identifier": "Electron",
+            "teamId": "not set",
+            "sealedFiles": null,
+            "dvExit": 0,
+            "deepVerifyExit": 1,
+            "deepVerifyMessage": "<root>/out/fuses-noreset/mac-arm64/RunyardK3.app: code has no resources but signature indicates they must be present",
+            "frameworkVerifyExit": 1,
+            "spctlExit": 1,
+            "spctl": "<root>/out/fuses-noreset/mac-arm64/RunyardK3.app: code has no resources but signature indicates they must be present",
+            "archs": "arm64"
+          },
+          "runAsNode": {
+            "code": 0,
+            "signal": null,
+            "stdout": "arm64 44.4.5",
+            "stderr": ""
+          },
+          "afterManualAdhoc": {
+            "codesignExit": 0,
+            "stderr": "<root>/out/fuses-noreset/mac-arm64/RunyardK3.app: replacing existing signature",
+            "signature": "adhoc",
+            "flags": "0x2(adhoc)",
+            "identifier": "dev.runyard.spike.k3",
+            "teamId": "not set",
+            "sealedFiles": "23",
+            "dvExit": 0,
+            "deepVerifyExit": 0,
+            "deepVerifyMessage": "<root>/out/fuses-noreset/mac-arm64/RunyardK3.app: valid on disk | <root>/out/fuses-noreset/mac-arm64/RunyardK3.app: satisfies its Designated Requirement",
+            "frameworkVerifyExit": 0,
+            "spctlExit": 3,
+            "spctl": "<root>/out/fuses-noreset/mac-arm64/RunyardK3.app: rejected",
+            "archs": "arm64"
+          },
+          "runAfterManual": {
+            "code": 0,
+            "signal": null,
+            "stdout": "arm64"
+          }
+        },
+        "identity-null": {
+          "buildOk": true,
+          "buildMs": 7661,
+          "signLog": [
+            "• skipped macOS code signing  reason=identity explicitly is set to null",
+            "• no event listeners found  event=afterSign"
+          ],
+          "afterBuild": {
+            "signature": "adhoc",
+            "flags": "0x2(adhoc)",
+            "identifier": "dev.runyard.spike.k3",
+            "teamId": "not set",
+            "sealedFiles": "23",
+            "dvExit": 0,
+            "deepVerifyExit": 0,
+            "deepVerifyMessage": "<root>/out/identity-null/mac-arm64/RunyardK3.app: valid on disk | <root>/out/identity-null/mac-arm64/RunyardK3.app: satisfies its Designated Requirement",
+            "frameworkVerifyExit": 0,
+            "spctlExit": 3,
+            "spctl": "<root>/out/identity-null/mac-arm64/RunyardK3.app: rejected",
+            "archs": "arm64"
+          },
+          "runAsNode": {
+            "code": 0,
+            "signal": null,
+            "stdout": "arm64 44.4.5",
+            "stderr": ""
+          },
+          "afterManualAdhoc": {
+            "codesignExit": 0,
+            "stderr": "<root>/out/identity-null/mac-arm64/RunyardK3.app: replacing existing signature",
+            "signature": "adhoc",
+            "flags": "0x2(adhoc)",
+            "identifier": "dev.runyard.spike.k3",
+            "teamId": "not set",
+            "sealedFiles": "23",
+            "dvExit": 0,
+            "deepVerifyExit": 0,
+            "deepVerifyMessage": "<root>/out/identity-null/mac-arm64/RunyardK3.app: valid on disk | <root>/out/identity-null/mac-arm64/RunyardK3.app: satisfies its Designated Requirement",
+            "frameworkVerifyExit": 0,
+            "spctlExit": 3,
+            "spctl": "<root>/out/identity-null/mac-arm64/RunyardK3.app: rejected",
+            "archs": "arm64"
+          },
+          "runAfterManual": {
+            "code": 0,
+            "signal": null,
+            "stdout": "arm64"
+          }
+        },
+        "identity-adhoc": {
+          "buildOk": true,
+          "buildMs": 25449,
+          "signLog": [
+            "• signing         file=<root>/out/identity-adhoc/mac-arm64/RunyardK3.app platform=darwin type=distribution identityName=- identityHash=none provisioningProfile=none",
+            "• no event listeners found  event=afterSign"
+          ],
+          "afterBuild": {
+            "signature": "adhoc",
+            "flags": "0x2(adhoc)",
+            "identifier": "dev.runyard.spike.k3",
+            "teamId": "not set",
+            "sealedFiles": "23",
+            "dvExit": 0,
+            "deepVerifyExit": 0,
+            "deepVerifyMessage": "<root>/out/identity-adhoc/mac-arm64/RunyardK3.app: valid on disk | <root>/out/identity-adhoc/mac-arm64/RunyardK3.app: satisfies its Designated Requirement",
+            "frameworkVerifyExit": 0,
+            "spctlExit": 3,
+            "spctl": "<root>/out/identity-adhoc/mac-arm64/RunyardK3.app: rejected",
+            "archs": "arm64"
+          },
+          "runAsNode": {
+            "code": 0,
+            "signal": null,
+            "stdout": "arm64 44.4.5",
+            "stderr": ""
+          },
+          "afterManualAdhoc": {
+            "codesignExit": 0,
+            "stderr": "<root>/out/identity-adhoc/mac-arm64/RunyardK3.app: replacing existing signature",
+            "signature": "adhoc",
+            "flags": "0x2(adhoc)",
+            "identifier": "dev.runyard.spike.k3",
+            "teamId": "not set",
+            "sealedFiles": "23",
+            "dvExit": 0,
+            "deepVerifyExit": 0,
+            "deepVerifyMessage": "<root>/out/identity-adhoc/mac-arm64/RunyardK3.app: valid on disk | <root>/out/identity-adhoc/mac-arm64/RunyardK3.app: satisfies its Designated Requirement",
+            "frameworkVerifyExit": 0,
+            "spctlExit": 3,
+            "spctl": "<root>/out/identity-adhoc/mac-arm64/RunyardK3.app: rejected",
+            "archs": "arm64"
+          },
+          "runAfterManual": {
+            "code": 0,
+            "signal": null,
+            "stdout": "arm64"
+          }
+        },
+        "fuses-none-identity-adhoc": {
+          "buildOk": true,
+          "buildMs": 26303,
+          "signLog": [
+            "• signing         file=<root>/out/fuses-none-identity-adhoc/mac-arm64/RunyardK3.app platform=darwin type=distribution identityName=- identityHash=none provisioningProfile=none",
+            "• no event listeners found  event=afterSign"
+          ],
+          "afterBuild": {
+            "signature": "adhoc",
+            "flags": "0x2(adhoc)",
+            "identifier": "dev.runyard.spike.k3",
+            "teamId": "not set",
+            "sealedFiles": "23",
+            "dvExit": 0,
+            "deepVerifyExit": 0,
+            "deepVerifyMessage": "<root>/out/fuses-none-identity-adhoc/mac-arm64/RunyardK3.app: valid on disk | <root>/out/fuses-none-identity-adhoc/mac-arm64/RunyardK3.app: satisfies its Designated Requirement",
+            "frameworkVerifyExit": 0,
+            "spctlExit": 3,
+            "spctl": "<root>/out/fuses-none-identity-adhoc/mac-arm64/RunyardK3.app: rejected",
+            "archs": "arm64"
+          },
+          "runAsNode": {
+            "code": 0,
+            "signal": null,
+            "stdout": "arm64 44.4.5",
+            "stderr": ""
+          },
+          "afterManualAdhoc": {
+            "codesignExit": 0,
+            "stderr": "<root>/out/fuses-none-identity-adhoc/mac-arm64/RunyardK3.app: replacing existing signature",
+            "signature": "adhoc",
+            "flags": "0x2(adhoc)",
+            "identifier": "dev.runyard.spike.k3",
+            "teamId": "not set",
+            "sealedFiles": "23",
+            "dvExit": 0,
+            "deepVerifyExit": 0,
+            "deepVerifyMessage": "<root>/out/fuses-none-identity-adhoc/mac-arm64/RunyardK3.app: valid on disk | <root>/out/fuses-none-identity-adhoc/mac-arm64/RunyardK3.app: satisfies its Designated Requirement",
+            "frameworkVerifyExit": 0,
+            "spctlExit": 3,
+            "spctl": "<root>/out/fuses-none-identity-adhoc/mac-arm64/RunyardK3.app: rejected",
+            "archs": "arm64"
+          },
+          "runAfterManual": {
+            "code": 0,
+            "signal": null,
+            "stdout": "arm64"
+          }
+        },
+        "x64": {
+          "buildOk": true,
+          "buildMs": 9441,
+          "signLog": [
+            "• skipped macOS application code signing  reason=, see https://electron.build/code-signing CSC_IDENTITY_AUTO_DISCOVERY=false",
+            "• no event listeners found  event=afterSign"
+          ],
+          "afterBuild": {
+            "signature": "adhoc",
+            "flags": "0x2(adhoc)",
+            "identifier": "dev.runyard.spike.k3",
+            "teamId": "not set",
+            "sealedFiles": "23",
+            "dvExit": 0,
+            "deepVerifyExit": 0,
+            "deepVerifyMessage": "<root>/out/x64/mac/RunyardK3.app: valid on disk | <root>/out/x64/mac/RunyardK3.app: satisfies its Designated Requirement",
+            "frameworkVerifyExit": 0,
+            "spctlExit": 3,
+            "spctl": "<root>/out/x64/mac/RunyardK3.app: rejected",
+            "archs": "x86_64"
+          },
+          "runAsNode": {
+            "code": null,
+            "signal": "SIGTERM",
+            "stdout": "",
+            "stderr": ""
+          },
+          "afterManualAdhoc": {
+            "codesignExit": 0,
+            "stderr": "<root>/out/x64/mac/RunyardK3.app: replacing existing signature",
+            "signature": "adhoc",
+            "flags": "0x2(adhoc)",
+            "identifier": "dev.runyard.spike.k3",
+            "teamId": "not set",
+            "sealedFiles": "23",
+            "dvExit": 0,
+            "deepVerifyExit": 0,
+            "deepVerifyMessage": "<root>/out/x64/mac/RunyardK3.app: valid on disk | <root>/out/x64/mac/RunyardK3.app: satisfies its Designated Requirement",
+            "frameworkVerifyExit": 0,
+            "spctlExit": 3,
+            "spctl": "<root>/out/x64/mac/RunyardK3.app: rejected",
+            "archs": "x86_64"
+          },
+          "runAfterManual": {
+            "code": null,
+            "signal": "SIGTERM",
+            "stdout": ""
+          }
+        }
+      },
+      "stepMs": 261932
+    },
+    "packages": {
+      "dmg": {
+        "attachMs": 5596,
+        "contents": [
+          ".DS_Store",
+          ".background.tiff",
+          "Applications",
+          "RunyardK3.app"
+        ],
+        "sign": {
+          "signature": "adhoc",
+          "flags": "0x2(adhoc)",
+          "identifier": "dev.runyard.spike.k3",
+          "teamId": "not set",
+          "sealedFiles": "23",
+          "dvExit": 0,
+          "deepVerifyExit": 0,
+          "deepVerifyMessage": "<root>/mnt/RunyardK3.app: valid on disk | <root>/mnt/RunyardK3.app: satisfies its Designated Requirement",
+          "frameworkVerifyExit": 0,
+          "spctlExit": 3,
+          "spctl": "<root>/mnt/RunyardK3.app: rejected",
+          "archs": "arm64"
+        },
+        "detachExit": 0
+      },
+      "zip": {
+        "extractExit": 0,
+        "sign": {
+          "signature": "adhoc",
+          "flags": "0x2(adhoc)",
+          "identifier": "dev.runyard.spike.k3",
+          "teamId": "not set",
+          "sealedFiles": "23",
+          "dvExit": 0,
+          "deepVerifyExit": 0,
+          "deepVerifyMessage": "<root>/unzipped/RunyardK3.app: valid on disk | <root>/unzipped/RunyardK3.app: satisfies its Designated Requirement",
+          "frameworkVerifyExit": 0,
+          "spctlExit": 3,
+          "spctl": "<root>/unzipped/RunyardK3.app: rejected",
+          "archs": "arm64"
+        }
+      },
+      "installedSign": {
+        "signature": "adhoc",
+        "flags": "0x2(adhoc)",
+        "identifier": "dev.runyard.spike.k3",
+        "teamId": "not set",
+        "sealedFiles": "23",
+        "dvExit": 0,
+        "deepVerifyExit": 0,
+        "deepVerifyMessage": "<root>/应用 Apps/RunyardK3.app: valid on disk | <root>/应用 Apps/RunyardK3.app: satisfies its Designated Requirement",
+        "frameworkVerifyExit": 0,
+        "spctlExit": 3,
+        "spctl": "<root>/应用 Apps/RunyardK3.app: rejected",
+        "archs": "arm64"
+      },
+      "firstCliRunAfterInstallMs": 370,
+      "firstCliRun": "runyard 0.3.0 (k3 spike)",
+      "stepMs": 17770
+    },
+    "launch": {
+      "open": {
+        "code": 0,
+        "stderr": ""
+      },
+      "versions": {
+        "electron": "44.4.5",
+        "node": "24.21.0",
+        "chrome": "152.0.7977.130"
+      },
+      "isPackaged": true,
+      "execPath": "<root>/应用 Apps/RunyardK3.app/Contents/MacOS/RunyardK3",
+      "window": {
+        "shown": true,
+        "title": "Runyard K3 技术验证"
+      },
+      "bundledDeps": {
+        "ok": true,
+        "readdirp": "<root>/应用 Apps/RunyardK3.app/Contents/Resources/app.asar/node_modules/readdirp/index.js"
+      },
+      "supervisor": {
+        "started": true,
+        "ms": 315,
+        "launcher": "electron",
+        "execPath": "<root>/应用 Apps/RunyardK3.app/Contents/MacOS/RunyardK3",
+        "versions": {
+          "node": "24.21.0",
+          "electron": "44.4.5"
+        },
+        "rssMb": 61.2
+      },
+      "appLsType": "Foreground",
+      "supervisorLsTypes": [
+        "null"
+      ],
+      "supervisorChildren": 0,
+      "supervisorPpid": 41160,
+      "cliStatus": {
+        "code": 0,
+        "samePid": true,
+        "cliVersion": {
+          "version": "0.3.0",
+          "protocol": 1
+        }
+      },
+      "cliRun": {
+        "ok": true,
+        "portOpen": true,
+        "ms": 379
+      },
+      "quit": {
+        "wasAlive": true,
+        "reply": {
+          "ok": true,
+          "result": {
+            "quitting": true
+          }
+        },
+        "ms": 364,
+        "forced": false
+      },
+      "afterQuit": {
+        "supervisorAlive": true,
+        "runAlive": true,
+        "portOpen": true,
+        "sameInstance": true
+      },
+      "singleInstanceRounds": [
+        {
+          "distinctInstances": 1,
+          "newListeners": 1,
+          "cliFailures": 0,
+          "appUp": true
+        },
+        {
+          "distinctInstances": 1,
+          "newListeners": 1,
+          "cliFailures": 0,
+          "appUp": true
+        },
+        {
+          "distinctInstances": 1,
+          "newListeners": 1,
+          "cliFailures": 0,
+          "appUp": true
+        },
+        {
+          "distinctInstances": 1,
+          "newListeners": 1,
+          "cliFailures": 0,
+          "appUp": true
+        },
+        {
+          "distinctInstances": 1,
+          "newListeners": 1,
+          "cliFailures": 0,
+          "appUp": true
+        }
+      ],
+      "singleInstanceViolations": 0,
+      "stop": {
+        "ok": true,
+        "wasRunning": true,
+        "runs": 0,
+        "asked": true,
+        "forced": false,
+        "gone": true,
+        "ms": 14,
+        "reason": "test-cleanup",
+        "supervisorPid": 42645
+      },
+      "stepMs": 18490
+    },
+    "fileProtocol": {
+      "strictFuses": {
+        "up": false,
+        "end": "failed",
+        "detail": "Error: ERR_FILE_NOT_FOUND (-6) loading 'file://<root>/%E5%BA%94%E7%94%A8%20Apps/RunyardK3.app/Contents/Resources/app.asar/app/index.html'\n    at rejectAndCleanup (node:electron/js2c/browser_init:1:94793)\n    at WebContents.finishListener (node:electron/js2c/br"
+      },
+      "withGrantFileProtocolExtraPrivileges": {
+        "up": true,
+        "end": "up",
+        "loadVia": "file"
+      },
+      "stop": {
+        "ok": true,
+        "wasRunning": true,
+        "runs": 0,
+        "asked": true,
+        "forced": false,
+        "gone": true,
+        "ms": 14,
+        "reason": "test-cleanup",
+        "supervisorPid": 43323
+      },
+      "stepMs": 17087
+    },
+    "cli": {
+      "hold": {
+        "command": "<root>/应用 Apps/RunyardK3.app/Contents/Resources/bin/../../MacOS/RunyardK3",
+        "lsTypesSeen": [
+          "null"
+        ],
+        "childProcesses": 0,
+        "frontAppBefore": "\"LSDisplayName\"=\"Finder\"",
+        "frontAppsDuring": [
+          "\"LSDisplayName\"=\"Finder\""
+        ],
+        "noDockIcon": true,
+        "focusUnchanged": true
+      },
+      "pathLink": {
+        "sh": {
+          "code": 0,
+          "stdout": "<root>/bin/runyard\nrunyard 0.3.0 (k3 spike)\n{\"args\":[\"a b\",\"\\u4e2d\\u6587 \\u53c2\\u6570\",\"q\\\"uote\"]}\nstatus-exit=0\nexit=7",
+          "stderr": ""
+        },
+        "zsh": {
+          "code": 0,
+          "stdout": "<root>/bin/runyard\nrunyard 0.3.0 (k3 spike)\nexit=9",
+          "stderr": ""
+        },
+        "bash": {
+          "code": 0,
+          "stdout": "runyard 0.3.0 (k3 spike)\nexit=0",
+          "stderr": ""
+        },
+        "relativeLink": {
+          "code": 0,
+          "stdout": "runyard 0.3.0 (k3 spike)\nexit=0",
+          "stderr": ""
+        }
+      },
+      "timing": {
+        "node24:--version": {
+          "n": 40,
+          "min": 35.7,
+          "median": 42.3,
+          "p95": 56.4,
+          "max": 188.7,
+          "mean": 47.1
+        },
+        "app-runtime-direct:--version": {
+          "n": 40,
+          "min": 66.9,
+          "median": 81.7,
+          "p95": 108.4,
+          "max": 127.3,
+          "mean": 85.1
+        },
+        "app-runtime-shim:--version": {
+          "n": 40,
+          "min": 75.3,
+          "median": 91.2,
+          "p95": 120,
+          "max": 126.9,
+          "mean": 92.4
+        },
+        "app-runtime-path-symlink:--version": {
+          "n": 40,
+          "min": 77.1,
+          "median": 97.3,
+          "p95": 121.8,
+          "max": 127.3,
+          "mean": 98.7
+        },
+        "node24:status": {
+          "n": 40,
+          "min": 44.4,
+          "median": 59.8,
+          "p95": 75.1,
+          "max": 85.7,
+          "mean": 61.4
+        },
+        "app-runtime-direct:status": {
+          "n": 40,
+          "min": 73.3,
+          "median": 94,
+          "p95": 119.2,
+          "max": 125.7,
+          "mean": 96.4
+        },
+        "app-runtime-shim:status": {
+          "n": 40,
+          "min": 76.9,
+          "median": 94.3,
+          "p95": 117.9,
+          "max": 135.1,
+          "mean": 97.6
+        },
+        "baseline:/bin/sh -c :": {
+          "n": 40,
+          "min": 4,
+          "median": 5.9,
+          "p95": 10.5,
+          "max": 11.7,
+          "mean": 6.3
+        }
+      },
+      "timingFailures": {},
+      "frontAppUnchangedAcrossLoop": true,
+      "runsPerVariant": 40,
+      "stop": {
+        "ok": true,
+        "wasRunning": true,
+        "runs": 0,
+        "asked": true,
+        "forced": false,
+        "gone": true,
+        "ms": 11,
+        "reason": "test-cleanup",
+        "supervisorPid": 43327
+      },
+      "stepMs": 31600
+    },
+    "url": {
+      "inTempDir": {
+        "handler": "none",
+        "launchServicesRecord": [
+          {
+            "path": "<root>/应用 Apps/RunyardK3.app",
+            "flags": "has-display-name  in-temp-dir (0000800000000002)"
+          },
+          {
+            "path": "<root>/out/strict-filepriv/mac-arm64/RunyardK3.app",
+            "flags": "has-display-name  in-temp-dir (0000800000000002)"
+          }
+        ],
+        "open": {
+          "exit": 1,
+          "stderr": "No application knows how to open URL runyard-k3://open/from-temp (Error Domain=NSOSStatusErrorDomain Code=-10814 \"kLSApplicationNotFoundErr: E.g. no application"
+        }
+      },
+      "handlerAfterOpen": "<spikes/k3>/.k3-install-k3s-GEONqF/RunyardK3.app",
+      "launchServicesRecord": [
+        {
+          "path": "<root>/out/strict-filepriv/mac-arm64/RunyardK3.app",
+          "flags": "has-display-name  in-temp-dir (0000800000000002)"
+        },
+        {
+          "path": "/Users/runner/work/runyard/runyard/spikes/k3/.k3-install-k3s-GEONqF/RunyardK3.app",
+          "flags": "has-display-name (0000000000000002)"
+        },
+        {
+          "line": "path:                       <spikes/k3>/.k3-install-k3s-GEONqF/RunyardK3.app (0x1ad4)"
+        }
+      ],
+      "whileRunning": {
+        "openExit": 0,
+        "stderr": "",
+        "delivered": "runyard-k3://open/demo-a?x=1",
+        "toSamePid": true
+      },
+      "whileNotRunning": {
+        "openExit": 0,
+        "stderr": "",
+        "appStarted": true,
+        "delivered": "runyard-k3://open/demo-b",
+        "beforeReady": true,
+        "urlsInArgv": []
+      },
+      "stop": {
+        "ok": true,
+        "wasRunning": true,
+        "runs": 0,
+        "asked": true,
+        "forced": false,
+        "gone": true,
+        "ms": 12,
+        "reason": "test-cleanup",
+        "supervisorPid": 47179
+      },
+      "unregisterExit": 0,
+      "handlerAfterCleanup": "none",
+      "stepMs": 23516
+    },
+    "notification": {
+      "appUp": true,
+      "open": {
+        "code": 0,
+        "stderr": ""
+      },
+      "reply": {
+        "ok": true,
+        "result": {
+          "supported": true,
+          "outcome": "failed",
+          "error": "Notifications are not allowed for this application"
+        }
+      },
+      "signature": "adhoc",
+      "systemLog": [
+        "2026-10-12 00:50:46.753 Df RunyardK3[47809:14f2e] [com.apple.xpc:connection] [0x13400100c60] activating connection: mach=true listener=false peer=false name=com.apple.usernotifications.listener",
+        "2026-10-12 00:50:46.758 Df usernoted[430:11af7] [com.apple.xpc:connection] [0x911344000] activating connection: mach=false listener=false peer=true name=com.apple.usernotifications.usernotificationservice.peer[405].0x911344000",
+        "2026-10-12 00:50:46.767 E  usernoted[430:14f98] [com.apple.unc:UserNotifications] Failed to find or validate client of identifier dev.runyard.spike.k3 with audit token <BSAuditToken: 0x91125c600; AUID: 501; EUID: 501; EGID: 20; RUID: 501; RGID: 20; PID: 47809; ASID: 100002; PIDVersion: 65524>",
+        "2026-10-12 00:50:46.767 A  RunyardK3[47809:14f2e] (RunningBoardServices) didChangeInheritances",
+        "2026-10-12 00:50:46.768 Df RunyardK3[47809:14f2e] [com.apple.UserNotifications:Connections] [dev.runyard.spike.k3] Requested authorization [ didGrant: 0 hasError: 1 hasCompletionHandler: 1 ]",
+        "2026-10-12 00:50:46.771 Df RunyardK3[47809:14f21] [com.apple.UserNotifications:Connections] [dev.runyard.spike.k3] Added notification request: [ hasError: 1 hasCompletionHandler: 1 ]",
+        "2026-10-12 00:50:46.773 Df RunyardK3[47809:14f1b] [com.apple.UserNotifications:Connections] [dev.runyard.spike.k3] Removing 1 delivered notifications with identifiers (",
+        "2026-10-12 00:50:46.857 A  RunyardK3[47809:14f21] (CoreSpotlight) end-index-batch",
+        "2026-10-12 00:50:46.857 Df RunyardK3[47809:14f21] [com.apple.corespotlight:index] *warn* MailCS ======%%% _setMailMessageAttributes skip:1",
+        "2026-10-12 00:50:46.857 A  RunyardK3[47809:14f21] (CoreSpotlight) index-items",
+        "2026-10-12 00:50:46.857 Df RunyardK3[47809:14f21] [com.apple.corespotlight:index] CSInlineDonation:<private>: Skipping donation (feature flag disabled)",
+        "2026-10-12 00:50:47.191 Df RunyardK3[47809:14f30] [com.apple.network:path] nw_path_evaluator_start [7701364E-3BC6-44DE-A8F4-F1CB21DD126F <NULL> generic, attribution: developer]"
+      ],
+      "stepMs": 4086
+    },
+    "replace": {
+      "A_protocolBump": {
+        "afterSwap": {
+          "oldSupervisorAlive": true,
+          "runAlive": true,
+          "discoveryExecExists": true,
+          "supervisorBinaryNow": "<root>/应用 Apps/RunyardK3.app/Contents/MacOS/RunyardK3"
+        },
+        "afterOldDeleted": {
+          "oldSupervisorAlive": true,
+          "statusOk": true,
+          "supervisorProtocol": 1,
+          "cliProtocol": 2
+        },
+        "newRunViaOldSupervisor": {
+          "ok": true,
+          "notice": "SUPERVISOR_OLDER_COMPAT",
+          "portOpen": true
+        },
+        "newAppWithRuns": {
+          "started": false,
+          "notice": "SUPERVISOR_OLDER_COMPAT",
+          "pid": 48021,
+          "protocol": 1,
+          "execCheck": {
+            "checked": true,
+            "execGone": false,
+            "execPath": "/private/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/k3s-GEONqF/应用 Apps/RunyardK3.app/Contents/MacOS/RunyardK3"
+          },
+          "execPath": "<root>/应用 Apps/RunyardK3.app/Contents/MacOS/RunyardK3",
+          "sameOldSupervisor": true
+        },
+        "newAppIdle": {
+          "started": true,
+          "notice": null,
+          "pid": 48328,
+          "protocol": 2,
+          "execCheck": {
+            "checked": true,
+            "execGone": false,
+            "execPath": "/private/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/k3s-GEONqF/应用 Apps/RunyardK3.app/Contents/MacOS/RunyardK3"
+          },
+          "execPath": "<root>/应用 Apps/RunyardK3.app/Contents/MacOS/RunyardK3",
+          "oldSupervisorGone": true
+        }
+      },
+      "B_sameProtocol": {
+        "afterReplace": {
+          "started": false,
+          "notice": null,
+          "pid": 48547,
+          "protocol": 1,
+          "execCheck": {
+            "checked": true,
+            "execGone": false,
+            "execPath": "/private/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/k3s-GEONqF/应用 Apps/RunyardK3.app/Contents/MacOS/RunyardK3"
+          },
+          "execPath": "<root>/应用 Apps/RunyardK3.app/Contents/MacOS/RunyardK3"
+        },
+        "oldSupervisorKept": true
+      },
+      "C_overwriteInPlace": {
+        "overwrite": {
+          "dittoExit": 0,
+          "oldSupervisorAlive": true,
+          "statusOk": true,
+          "sign": 0
+        },
+        "newApp": {
+          "started": true,
+          "notice": null,
+          "pid": 48882,
+          "protocol": 2,
+          "execCheck": {
+            "checked": true,
+            "execGone": false,
+            "execPath": "/private/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/k3s-GEONqF/应用 Apps/RunyardK3.app/Contents/MacOS/RunyardK3"
+          },
+          "execPath": "<root>/应用 Apps/RunyardK3.app/Contents/MacOS/RunyardK3",
+          "oldSupervisorGone": true
+        }
+      },
+      "D_moved": {
+        "idle": {
+          "started": true,
+          "notice": null,
+          "pid": 49118,
+          "protocol": 1,
+          "execCheck": {
+            "checked": true,
+            "execGone": true,
+            "action": "replaced",
+            "oldPid": 48979
+          },
+          "execPath": "<root>/应用 Apps/Moved/RunyardK3.app/Contents/MacOS/RunyardK3",
+          "oldSupervisorGone": true
+        },
+        "withRun": {
+          "started": false,
+          "notice": null,
+          "pid": 49118,
+          "protocol": 1,
+          "execCheck": {
+            "checked": true,
+            "execGone": true,
+            "action": "kept-has-runs",
+            "oldPid": 49118
+          },
+          "execPath": "<root>/应用 Apps/Moved/RunyardK3.app/Contents/MacOS/RunyardK3",
+          "sameSupervisor": true,
+          "runAlive": true
+        }
+      },
+      "stepMs": 22300
+    },
+    "quarantine": {
+      "gatekeeper": "assessments enabled",
+      "attrOnApp": "0081;6acc2f00;Safari;63844089-4E59-44A5-8290-63C9C032A2CC",
+      "spctl": "<root>/q-b/RunyardK3.app: rejected",
+      "clearExit": 0,
+      "attrAfterClear": "xattr: <root>/q-b/RunyardK3.app: No such xattr: com.apple.quarantine",
+      "openAfterClear": {
+        "openExit": 0,
+        "stderr": "",
+        "started": true,
+        "up": true,
+        "execPath": "<root>/q-b/RunyardK3.app/Contents/MacOS/RunyardK3"
+      },
+      "cliWhileQuarantined": {
+        "code": 0,
+        "signal": null,
+        "ms": 777,
+        "stdout": "runyard 0.3.0 (k3 spike)",
+        "stderr": ""
+      },
+      "cliStartsSupervisorWhileQuarantined": {
+        "ok": true,
+        "launcher": "electron"
+      },
+      "openWhileQuarantined": {
+        "openResult": "still-waiting-after-30s",
+        "stderr": "",
+        "ms": 30010,
+        "appStarted": false,
+        "startedFrom": null
+      },
+      "attrAfterOpen": "0081;6acc2f00;Safari;63844089-4E59-44A5-8290-63C9C032A2CC",
+      "dialogProcess": [
+        "350 /System/Library/CoreServices/CoreServicesUIAgent.app/Contents/MacOS/CoreServicesUIAgent"
+      ],
+      "systemLog": [
+        "2026-10-12 00:51:11.318 Df CoreServicesUIAgent[350:14c63] [com.apple.xpc:connection] [0x9cd091680] activating connection: mach=false listener=false peer=true name=com.apple.coreservices.quarantine-resolver.peer[49270].0x9cd091680",
+        "2026-10-12 00:51:13.621 Df open[49581:15d76] [com.apple.xpc:connection] [0x101767490] activating connection: mach=true listener=false peer=false name=com.apple.coreservices.quarantine-resolver",
+        "2026-10-12 00:51:13.621 Df CoreServicesUIAgent[350:14bed] [com.apple.xpc:connection] [0x9cd091500] activating connection: mach=false listener=false peer=true name=com.apple.coreservices.quarantine-resolver.peer[49581].0x9cd091500",
+        "2026-10-12 00:51:16.018 Df open[49636:15e6f] [com.apple.xpc:connection] [0x1012fb330] activating connection: mach=true listener=false peer=false name=com.apple.coreservices.quarantine-resolver",
+        "2026-10-12 00:51:16.018 Df CoreServicesUIAgent[350:14c63] [com.apple.xpc:connection] [0x9cd091500] activating connection: mach=false listener=false peer=true name=com.apple.coreservices.quarantine-resolver.peer[49636].0x9cd091500",
+        "2026-10-12 00:51:16.124 Df CoreServicesUIAgent[350:14c63] [com.apple.xpc:connection] [0x9cd075680] activating connection: mach=true listener=false peer=false name=com.apple.security.translocation",
+        "2026-10-12 00:51:16.125 Df lsd[357:15896] [com.apple.xpc:connection] [0xa24de7900] activating connection: mach=false listener=false peer=true name=com.apple.security.translocation.peer[350].0xa24de7900",
+        "2026-10-12 00:51:16.143 Df lsd[357:15896] [com.apple.securityd:SecWarning] SecTranslocateCreateSecureDirectoryForURL: created /private/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/AppTranslocation/EFFA3E4A-3988-444D-B519-3B6A8D85C557/d/RunyardK3.app",
+        "2026-10-12 00:51:16.192 Df lsd[163:15090] [com.apple.launchservices:default] register container file:///private/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/AppTranslocation/EFFA3E4A-3988-444D-B519-3B6A8D85C557/d/RunyardK3.app/",
+        "2026-10-12 00:51:16.267 Df lsd[163:159c0] [com.apple.launchservices:default] register container file:///var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/AppTranslocation/EFFA3E4A-3988-444D-B519-3B6A8D85C557/d/RunyardK3.app/",
+        "2026-10-12 00:51:16.276 Df CoreServicesUIAgent[350:14c63] [com.apple.xpc:connection] [0x9cd075a40] activating connection: mach=true listener=false peer=false name=com.apple.coreservices.quarantine-resolver",
+        "2026-10-12 00:51:16.277 Df CoreServicesUIAgent[350:14bed] [com.apple.xpc:connection] [0x9cd091680] activating connection: mach=false listener=false peer=true name=com.apple.coreservices.quarantine-resolver.peer[350].0x9cd091680",
+        "2026-10-12 00:51:16.278 Df CoreServicesUIAgent[350:14bed] [com.apple.launchservices:uiagent] GKQuarantineResolver initWithProperties: <private>",
+        "2026-10-12 00:51:23.402 Df syspolicyd[245:148dd] [com.apple.syspolicy.exec:default] Fast Gatekeeper overrides are: inactive"
+      ],
+      "secondOpenWhileDialogPending": {
+        "exit": 1,
+        "signal": null,
+        "stderr": "_LSOpenURLsWithCompletionHandler() failed with error -10673."
+      },
+      "dmgQuarantine": {
+        "attrOnDmg": "0081;6acc2f00;Safari;63844089-4E59-44A5-8290-63C9C032A2CC",
+        "attrOnMountedApp": "(无) xattr: <root>/mnt-q/RunyardK3.app: No such xattr: com.apple.quarantine"
+      },
+      "stepMs": 56838
+    },
+    "runAsNodeOff": {
+      "buildOk": true,
+      "cliAttempt": {
+        "printedVersion": false,
+        "startedAsFullApp": true,
+        "argvTail": [
+          "runyard-cli.mjs",
+          "--version"
+        ]
+      },
+      "appTriesToStartSupervisor": {
+        "outcome": "supervisor-failed",
+        "code": "SUPERVISOR_UNAVAILABLE",
+        "secondInstancesSpawned": 1
+      },
+      "leftover": "",
+      "stepMs": 24734
+    }
+  },
+  "cleanup": {
+    "stopSupervisor": {
+      "ok": true,
+      "wasRunning": false,
+      "runs": 0,
+      "asked": false,
+      "forced": false,
+      "gone": true,
+      "ms": 10,
+      "reason": "test-cleanup",
+      "connect": "ENOENT"
+    },
+    "urlInstallDirExists": false,
+    "lsUnregister": [
+      {
+        "path": "<root>/应用 Apps/RunyardK3.app",
+        "exit": 0
+      },
+      {
+        "path": "<root>/out/strict-filepriv/mac-arm64/RunyardK3.app",
+        "exit": 0
+      },
+      {
+        "path": "<root>/q-b/RunyardK3.app",
+        "exit": 0
+      },
+      {
+        "path": "<root>/q-a/RunyardK3.app",
+        "exit": 0
+      },
+      {
+        "path": "<root>/out/v1/mac-arm64/RunyardK3.app",
+        "exit": 1
+      },
+      {
+        "path": "<root>/out/v2/mac-arm64/RunyardK3.app",
+        "exit": 1
+      },
+      {
+        "path": "<root>/out/fuses-none/mac-arm64/RunyardK3.app",
+        "exit": 1
+      },
+      {
+        "path": "<root>/out/fuses-noreset/mac-arm64/RunyardK3.app",
+        "exit": 1
+      },
+      {
+        "path": "<root>/out/identity-null/mac-arm64/RunyardK3.app",
+        "exit": 1
+      },
+      {
+        "path": "<root>/out/identity-adhoc/mac-arm64/RunyardK3.app",
+        "exit": 1
+      },
+      {
+        "path": "<root>/out/fuses-none-identity-adhoc/mac-arm64/RunyardK3.app",
+        "exit": 1
+      },
+      {
+        "path": "<root>/out/x64/mac/RunyardK3.app",
+        "exit": 1
+      },
+      {
+        "path": "<root>/out/strict-filepriv/mac-arm64/RunyardK3.app",
+        "exit": 1
+      },
+      {
+        "path": "<root>/out/norunasnode/mac-arm64/RunyardK3.app",
+        "exit": 0
+      }
+    ],
+    "session": {
+      "killed": [],
+      "rootRemoved": true,
+      "pointerRemoved": true
+    },
+    "urlHandlerAfter": "none",
+    "lsDumpMentions": 0,
+    "crashReportsRemoved": [],
+    "residueFound": [
+      "~/Library/Preferences/dev.runyard.spike.k3.plist"
+    ],
+    "tccReset": "",
+    "residueAfter": [],
+    "processesLeft": [],
+    "translocatedLeft": [
+      49639
+    ],
+    "processesNamedRunyardK3": [],
+    "rootExists": false,
+    "realRunyardDirsTouched": {
+      "~/.runyard": false,
+      "~/Runyard": false
+    }
+  },
+  "finishedAt": "2026-10-12T00:52:46.849Z"
+}

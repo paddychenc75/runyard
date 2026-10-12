@@ -1,0 +1,27 @@
+{
+  "name": "runyard-spike-k3",
+  "productName": "RunyardK3",
+  "version": "0.3.0",
+  "private": true,
+  "description": "技术验证 K3：未签名的安装包能做到哪一步（一次性实验，M0a 结束时删除）",
+  "author": "Runyard spike",
+  "license": "MIT",
+  "type": "module",
+  "main": "app/main.mjs",
+  "packageManager": "pnpm@11.28.0",
+  "engines": {
+    "node": ">=24.21.0 <25"
+  },
+  "scripts": {
+    "spike:mac": "node experiments/mac.mjs",
+    "spike:win": "node experiments/win.mjs",
+    "build": "node scripts/build.mjs"
+  },
+  "dependencies": {
+    "chokidar": "5.0.0"
+  },
+  "devDependencies": {
+    "electron": "44.4.5",
+    "electron-builder": "26.17.0"
+  }
+}
