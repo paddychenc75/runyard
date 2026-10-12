@@ -10,7 +10,7 @@
 2. 平台包里新增 `win32` 实现目录（与 `darwin`、`linux` 并列）：按接口成员逐个实现，并让同一组契约测试通过。各区域的要点：
    - `paths`：默认 260 字符上限（保守取 248），保留设备名；名称校验在第一版已经所有系统一致（0010 第 5 条）。
    - `env`：进程继承完整环境；“重新检测”时从注册表重读 `Path`，不要求重启（技术设计 §4.8）。
-   - `exec`：`.cmd` 垫片包一层 `cmd.exe` 并按两层规则转义；一律 `windowsHide`；`spawnDetached` 默认普通方式，发现启动者把子进程放进“关闭即杀”的 Job Object 时改经 `Win32_Process.Create`（WMI，多 0.4 到 1.6 秒；0005 第 4 条）。运行器直接用 `node` 跑入口文件，绕开 `pnpm.cmd`（0006）。
+   - `exec`：`.cmd` 垫片包一层 `cmd.exe` 并按两层规则转义；一律 `windowsHide`；`spawnDetached` 默认普通方式，发现启动者把子进程放进“关闭即杀”的 Job Object 时改经 `Win32_Process.Create`（WMI，多 0.4 到 1.6 秒；0005 第 4 条）。原因：普通方式启动的管理进程会随放它进 Job 的启动者一起死，经 WMI 创建的活下来了；这个选择只在 Windows 实现内部，`spawnDetached` 的接口没有对应选项（“脱钩”本身就包含这个要求）。运行器直接用 `node` 跑入口文件，绕开 `pnpm.cmd`（0006）。
    - `proc`：先核对 pid 和创建时间，再 `taskkill /PID <pid> /T /F`，等 exit 事件，再按端口复查；结束任何进程前必须同时核对 pid 和创建时间（K2 的事故，0006）。不用信号，所以接口里本来就没有。
    - `ports`：绑定报“无权限”判为 `reserved`（原因 `PORT_RESERVED`）；占用者靠 `netstat`；只探测 `127.0.0.1` 和 `::1`。
    - `fs`：`moveDir` 的 `EBUSY`、`EPERM`、`EACCES` 归为 `PATH_LOCKED`，占用者靠读进程当前目录和命令行路径找，不靠 Restart Manager；`trash` 见第 3 项；`watch` 在 `dispose` 之后句柄必须已释放；大量事件突发时可能丢事件，按“全部重扫”处理。

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
+import { runyardErrorSchema } from "./errors.ts";
 import {
   canWrite,
   defineFileFormat,
@@ -8,6 +9,7 @@ import {
   readVersionedText,
   serializeVersioned,
 } from "./file-format.ts";
+import { libraryFileFormat } from "./file-library.ts";
 
 // 假的三版格式，用来演练升级链：
 // v1 { formatVersion, title }；v2 把 title 改名为 name；v3 加 tags（默认空数组）
@@ -131,6 +133,21 @@ describe("读到更新版本的文件", () => {
   it("newer 不许写回；ok 才许写", () => {
     expect(canWrite(readVersioned(fake, future))).toBe(false);
     expect(canWrite(readVersioned(fake, { formatVersion: 3, name: "a", tags: [] }))).toBe(true);
+  });
+
+  it("newer 的版本号可以直接填进 DATA_FROM_NEWER_VERSION 的参数，且格式名对得上登记的文件种类", () => {
+    const result = readVersioned(libraryFileFormat, { formatVersion: 7 });
+    if (result.status !== "newer") throw new Error("expected newer");
+    const error = {
+      code: "DATA_FROM_NEWER_VERSION",
+      params: {
+        file: libraryFileFormat.name,
+        found: result.fileVersion,
+        supported: result.supportedVersion,
+      },
+      debug: "library.json is newer",
+    };
+    expect(runyardErrorSchema.safeParse(error).success).toBe(true);
   });
 
   it("读它不会改动原始数据（不降级、不重写）", () => {

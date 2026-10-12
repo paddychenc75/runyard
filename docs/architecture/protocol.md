@@ -75,7 +75,7 @@ type LogEntry =
 - 时间 `at` 是 UTC 毫秒数；协议和文件里不存时区。
 - `stdout`、`stderr` 的 `text` 是已解码、未清洗的整行（0008）。
 
-### 4.1 错误码（共 26 个，已登记在 `packages/protocol/src/errors.ts`）
+### 4.1 错误码（共 28 个，已登记在 `packages/protocol/src/errors.ts`）
 
 | 退出码 | 错误码 | 参数 |
 | --- | --- | --- |
@@ -95,6 +95,7 @@ type LogEntry =
 | 9 | `NAME_EXISTS`、`BUSY`、`PATH_LOCKED`、`PATH_TOO_LONG`、`TRASH_UNAVAILABLE` | `{ name }` |
 | 10 | `APP_REQUIRED`、`SUPERVISOR_UNAVAILABLE`、`CLIENT_OUTDATED`、`NOT_SUPPORTED` | 无 |
 | 10 | `SUPERVISOR_OUTDATED` | `{ runs }`（升级会停掉的运行个数，非负整数） |
+| 10 | `DATA_FROM_NEWER_VERSION` | `{ file, found, supported }`（要写的文件是更新版本的 Runyard 写的：`file` 取自 `dataFileKinds`，`found` 是文件版本，`supported` 是本程序认识的最高版本；读仍允许，写一律拒绝，见 [storage.md](storage.md) 第 3 节） |
 
 `name` 是项目名称（命令行传路径时为用户给的原文）；`tool` 是工具标识，由模板的工具定义决定，是开放集合。退出码 8 留给以后的“需要信任”，不占用。`PORT_RESERVED` 不是错误码，只作为端口回退的原因（§5.3）。`TRASH_UNAVAILABLE` 的名字在登记时定下（0010）。
 
