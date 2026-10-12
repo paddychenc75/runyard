@@ -1,7 +1,7 @@
 import type { Platform } from "../platform.ts";
 import { notImplemented } from "./pending-members.ts";
 
-// 各块占位：负责的 issue 写在这里，替换时一目了然（环境、工具、shell：#26；exec、proc、ports：#25；
+// 各块占位：负责的 issue 写在这里，替换时一目了然（环境、工具、shell：#26；exec.which / exec.spawn、proc、ports 已在 #25 实现；
 // ipc 与 spawnDetached：#27；fs 与 watch：#28；desktop 与 cli：随桌面应用，M1 不做）。
 
 const APP = "desktop app, after M1";
@@ -11,24 +11,8 @@ export const pendingEnv: Platform["env"] = {
   runDefaults: () => notImplemented("env.runDefaults", "#26"),
 };
 
-export const pendingExec: Platform["exec"] = {
-  which: () => notImplemented("exec.which", "#25"),
-  spawn: () => notImplemented("exec.spawn", "#25"),
-  spawnDetached: () => notImplemented("exec.spawnDetached", "#27"),
-};
-
-export const pendingProc: Platform["proc"] = {
-  terminate: () => notImplemented("proc.terminate", "#25"),
-  members: () => notImplemented("proc.members", "#25"),
-  identity: () => notImplemented("proc.identity", "#25"),
-};
-
-export const pendingPorts: Platform["ports"] = {
-  isFree: () => notImplemented("ports.isFree", "#25"),
-  occupant: () => notImplemented("ports.occupant", "#25"),
-  connections: () => notImplemented("ports.connections", "#25"),
-  loopbackOnly: () => notImplemented("ports.loopbackOnly", "#25"),
-};
+export const pendingSpawnDetached: Platform["exec"]["spawnDetached"] = () =>
+  notImplemented("exec.spawnDetached", "#27");
 
 export const pendingFs: Platform["fs"] = {
   moveDir: () => notImplemented("fs.moveDir", "#28"),

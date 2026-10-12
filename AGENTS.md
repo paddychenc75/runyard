@@ -27,7 +27,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `docs/reference/` | 协议参考（方法、事件、错误码、退出码、提示码、枚举），**由 `pnpm generate` 从 `packages/protocol` 生成**，不要手改 |
 | `docs/guides/` | 操作手册和命令表。有手册的任务按手册做，不要临场发挥 |
 | `docs/glossary.md` | 术语表：中文术语、唯一的英文标识符、禁用的同义词 |
-| `packages/platform/` | 平台层：`Platform` 接口、`getPlatform()`、路径与名称校验、`darwin` 和薄 `linux` 实现、契约测试（目前只有接口、paths 和占位，各块实现随后续 issue 加入） |
+| `packages/platform/` | 平台层：`Platform` 接口、`getPlatform()`、路径与名称校验、`darwin` 和薄 `linux` 实现、契约测试（目前有接口、paths、exec、proc、ports 的实现，其余是占位，随后续 issue 加入） |
 | `packages/protocol/` | 所有跨进程约定（目前有错误码、提示码、枚举、`RunyardError` / `Notice` / `LogEntry` / `Owner`、分帧、`Frame`、握手消息、版本比对、方法与事件的登记表、`Playground` / `RunSnapshot`、磁盘文件格式与升级链） |
 | `packages/i18n/` | 文案、`createTranslator`、数字和时长格式、命令行语言解析（`resolveCliLocale`）、由中文文案生成的键和参数类型 |
 | `packages/core/` | 工具检测、运行引擎、资源库等业务逻辑（目前只有日志的切行、解码和读取时清洗） |

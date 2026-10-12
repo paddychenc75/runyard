@@ -12,16 +12,21 @@ const options = (home: string) => ({
   profile: undefined,
 });
 
+// 当前运行的系统；整个代码库里读它的只有 getPlatform（platform-branching 检查守着）
+const hostId = getPlatform({ home: absPath(process.cwd()) }).id;
+
 // 契约测试需要平台实现，所以带 platform-dependent 标记（文件名后缀），Windows 任务不跑（docs/guides/testing.md）
 const implementations: ContractContext[] = [
   {
     name: "darwin",
+    native: hostId === "darwin",
     create: (home) => createDarwinPlatform(options(home)),
     // macOS 没有标为不支持的成员；暂时还是占位，见 pending.contract.ts
     unsupported: new Set(),
   },
   {
     name: "linux",
+    native: hostId === "linux",
     create: (home) => createLinuxPlatform(options(home)),
     // 薄实现：这三组标为系统不支持（技术设计 §7.1）
     unsupported: new Set([

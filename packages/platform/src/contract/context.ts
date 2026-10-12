@@ -8,4 +8,10 @@ export interface ContractContext {
   create(home: string): Platform;
   /** 这个实现明确标为“系统不支持”的成员（抛 NOT_SUPPORTED）。其余成员必须能用 */
   readonly unsupported: ReadonlySet<string>;
+  /**
+   * 这个实现就是当前运行的系统。真进程、真端口的契约（exec、proc、ports）只对它注册：
+   * linux 的实现在 macOS 上读不了 /proc，darwin 的实现在 Linux 上没有 netstat。
+   * 换成别的系统的 CI 时，对应的那个实现就成了 native，同一组用例照样跑
+   */
+  readonly native: boolean;
 }

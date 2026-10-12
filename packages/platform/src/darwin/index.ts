@@ -1,6 +1,8 @@
 import type { Platform } from "../platform.ts";
 import type { PlatformOptions } from "../platform-options.ts";
 import { composePosix } from "../posix/compose-posix.ts";
+import { createNetstatTable } from "./netstat-table.ts";
+import { createPsSource } from "./ps-source.ts";
 
 // macOS 的 PATH_MAX 是 1024
 const MAX_PATH_BYTES = 1024;
@@ -11,6 +13,8 @@ export function createDarwinPlatform(options: PlatformOptions): Platform {
     arch: options.arch,
     // APFS 支持 clonefile；打包的应用不开沙箱
     caps: { gracefulStop: "graceful", cloneCopy: true, symlinks: true, sandbox: false },
+    processes: createPsSource(),
+    sockets: createNetstatTable(),
     paths: {
       home: options.home,
       profile: options.profile,
