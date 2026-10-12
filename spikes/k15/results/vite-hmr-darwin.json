@@ -1,9 +1,0 @@
-{
-  "vite": "7.3.6",
-  "port": "(动态)",
-  "tokenFound": true,
-  "before": 0,
-  "wsOpened": true,
-  "withHmrConnection": 2,
-  "afterClose": 0
-}

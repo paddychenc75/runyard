@@ -209,7 +209,6 @@ runyard/
 │  └─ glossary.md           中文产品术语对应到代码里唯一的英文标识符，加两种语言的禁用同义词
 ├─ openspec/                规格驱动开发（§9.6）：config.yaml、schemas/runyard/（我们自己的中文流程）、specs/（现在的规格，进 main）；changes/ 只在开发分支上，archive/ 被 .gitignore 忽略
 ├─ tooling/                 tsconfig/、checks/（仓库检查脚本）、scripts/（构建脚本；含 spec.mjs，调用 OpenSpec 的包装脚本）、hooks/（智能体在特定时机自动运行的脚本）、design-render/（设计稿渲染脚本；渲染出的 png/、build/、sheets/ 不进 git）
-├─ spikes/                  一次性验证代码；M0a、M0b 各自结束时删掉自己的，真机验证要用的留到做完
 ├─ .github/                 CI 流程、PR 和 issue 模板、CODEOWNERS
 └─ .claude/                 settings.json、skills/、agents/、rules/
 ```
@@ -1406,7 +1405,7 @@ Windows 预览版明确不包含：自动更新、代码签名、对 Windows 10 
 
 - 提交信息用 Conventional Commits 的结构，但主题和正文用中文（负责人 2026-10-12 决定，§12 第 26 项）：`type` 和 `scope` 仍是英文，例如 `feat(core): 增加运行状态机`、`fix(platform): 修复 Windows 上进程树未完全结束`。只允许 squash 合并（一个 PR 压成一个提交）；squash 后进入 `main` 的提交信息来自 PR 标题，所以 PR 标题按同样的格式写。变更只经 PR 进入 `main`；PR 通过六项必过检查后自动合并，负责人在合并之后再看，行为变化由负责人在规格阶段先同意（负责人 2026-10-12 决定，§12“由技术负责人直接决定的事项”，决策记录 0012）。`main` 由规则集保护：必过检查是 §8.3 的 `lint` 一项、`test` 三项（Ubuntu、`macos-26`、`windows-2025`）、审计闸门、依赖变更审查，共六项；不许强制推送；没有可以绕过的人或应用；只许 squash 合并；不要求批准性评审，因为负责人是唯一的维护者。**提交信息和 PR 标题里 `type(scope)` 后面必须是半角冒号“:”加一个空格；用了全角冒号“：”的标题会被 release-please 整条忽略（K15 实测，决策记录 0011），`tooling/ci/check-title.ts` 会拒绝它并提示改成半角。**
 - 中文提交信息对工具的影响（2026-10-12 已由 K15 在 release-please 库上核实，决策记录 0011；release-please 还没在真实仓库上跑过，M5 前空跑一次）：release-please 只解析 `type(scope):` 前缀，以及 `!` 或页脚 `BREAKING CHANGE:` 来决定版本号升多少，主题和正文是什么语言不影响；它把主题原样写进 `CHANGELOG.md`，所以更新日志的条目是中文，章节标题默认是英文（Features、Bug Fixes），要中文需配 `changelog-sections`。页脚的 `BREAKING CHANGE:` 这个标记必须写英文原词（写“破坏性变更：”不触发），冒号后面的说明可以用中文。**全角冒号“：”（或全角括号）会让整条提交被 release-please 忽略**，不进更新日志、不触发发版；冒号后面少了空格、`type` 写成大写，它仍能解析，所以 `check-title` 比它更严是安全的一侧。1.0 之前的版本号用 `bump-minor-pre-major` 和 `bump-patch-for-minor-pre-major` 两个选项配出（破坏性改动升次版本号，其余升修订号）。提交检查（`lefthook.yml` 的 commit-msg 钩子，以及 §8.3 `lint` 里的 PR 标题格式检查）只查三件事：`type` 在允许的列表里；`scope` 在允许的列表里或省略；冒号后主题不为空，标题不超过 72 个字符（按字符数算，一个汉字算一个）。如果用 commitlint，关掉 `subject-case`（它针对英文大小写，对中文没有意义），不加别的语言相关的规则。
-- 允许的 `scope`（2026-10-12 第 4 次提交时由 CI 脚本按 §3.1 的目录定出，负责人尚未确认；唯一实现是 `tooling/ci/check-title.ts` 的 `SCOPES`）：`repo`、`deps`、`ci`、`docs`、`security`、`release`、`spec`、`tooling`、`desktop`、`site`、`protocol`、`platform`、`core`、`supervisor`、`client`、`cli`、`tokens`、`ui`、`i18n`、`testing`、`templates`、`spikes`（技术验证，M0a 结束时随 `spikes/` 一起删除）。新增包时同一个 PR 里加一项。
+- 允许的 `scope`（2026-10-12 第 4 次提交时由 CI 脚本按 §3.1 的目录定出，负责人尚未确认；唯一实现是 `tooling/ci/check-title.ts` 的 `SCOPES`）：`repo`、`deps`、`ci`、`docs`、`security`、`release`、`spec`、`tooling`、`desktop`、`site`、`protocol`、`platform`、`core`、`supervisor`、`client`、`cli`、`tokens`、`ui`、`i18n`、`testing`、`templates`。新增包时同一个 PR 里加一项。
 - 应用、命令行、管理进程用同一个版本号；网站没有版本号。
 - release-please 根据提交记录维护一个“发版 PR”：算下一个版本号、更新 `CHANGELOG.md`。**你合并这个 PR 就是发版**。随后 CI 打标签、四个目标各自构建并启动验证、生成校验和与构建来源证明，等你在发布环境里点一次批准，再发布到 GitHub Releases，并触发网站重新部署。只发 GitHub Releases，不向 npm 发布，你不需要 npm 令牌（§5.4）。M1 结束时还没有桌面应用，没有公开的发布产物，那时不发版。
 - 构建来源证明能证明“这个文件是这个仓库的这次 CI 构建的”，用户可用 `gh attestation verify` 检查。它不会让 Gatekeeper 或 SmartScreen（两个系统各自的拦截机制，见 §10）放行。
@@ -1657,7 +1656,7 @@ owner_approved = "§12 第 30 项，2026-10-12"
 | 能用检查表达的规则不用文字表达 | 文字只解释“为什么”和“怎么改”；“不许做”交给 §3.3 的机制 |
 | 报错即指令 | 每个检查的报错写明哪里错、怎么改、看哪份手册 |
 | 文件小、名字搜得到 | 源码文件 400 行上限（由 `file-size` 检查，§3.3），函数 80 行；一个文件一个概念；不建 `utils.ts` |
-| 测试即规格 | 测试标题写行为并带它验证的**场景编号**，如 `it('[RUN-OWNERSHIP-01] 关掉正在运行的标签页后 3 秒内停止')`。场景编号定义在规格里（§9.6），PRD 锚点由规格里每条要求的“来源”一行承接，不再直接写在测试标题里。`spec-trace` 检查核对编号，脚本据此生成 `docs/reference/spec-coverage.md`（哪些 PRD 锚点还没有要求、哪些场景还没有测试）；`spikes/` 不适用 |
+| 测试即规格 | 测试标题写行为并带它验证的**场景编号**，如 `it('[RUN-OWNERSHIP-01] 关掉正在运行的标签页后 3 秒内停止')`。场景编号定义在规格里（§9.6），PRD 锚点由规格里每条要求的“来源”一行承接，不再直接写在测试标题里。`spec-trace` 检查核对编号，脚本据此生成 `docs/reference/spec-coverage.md`（哪些 PRD 锚点还没有要求、哪些场景还没有测试）；技术验证的一次性代码不适用 |
 | 决定之后落成中文 ADR | 你看中文文档（PRD、本文）做决定；之后智能体写一份中文 ADR，`Source` 一行指回 PRD 或本文的锚点。已接受的 ADR 不改正文，要改就新写一份 |
 | 长期知识写进仓库 | 不留在某台机器的智能体记忆里，否则换机器、换智能体就没了 |
 | 智能体读的说明只引用仓库里有的文件 | 根和各包的 `AGENTS.md`、手册、ADR、skills 只能引用仓库里存在的文件：PRD 和本文用稳定的锚点引用（§9.5），绝不引用本机归档（三份专家报告、评审、讨论、调研，§0）。需要的细节在需要它的代码之前，已用中文写进 `docs/architecture/` 和各包的 `AGENTS.md`（§0、§11.2）。本文迁入仓库时，与 PRD 一样要给三级及以上的标题加稳定锚点 |
@@ -1897,7 +1896,7 @@ openspec/
 | 改文案、改样式，行为不变 | 不走流程，PR 带 `no-spec` 标签并写一句原因 |
 | 拿不准 | 走简化流程。多写一个场景的成本远小于漏掉一次行为变化 |
 
-**M0a 的技术验证不走规格流程。**`spikes/` 里的代码是一次性的，目的是回答“行不行”，不是定义产品行为；产出是结论，结论写成 ADR（§11.2）。`spec-touch` 检查不看 `spikes/`。验证的结论如果改变了产品行为（比如 K1 不通过），按现有规定改 PRD；规格这时还没写，不受影响。第一次真正走流程是 M1 的第一个包。
+**M0a 的技术验证不走规格流程。**验证代码是一次性的，目的是回答“行不行”，不是定义产品行为；产出是结论，结论写成 ADR（§11.2）。验证的结论如果改变了产品行为（比如 K1 不通过），按现有规定改 PRD；规格这时还没写，不受影响。第一次真正走流程是 M1 的第一个包。
 
 #### 9.6.8 给智能体的指令
 
@@ -1915,7 +1914,7 @@ openspec/
 **根 `AGENTS.md` 加一节“规格驱动（SDD）”**（第 5 次提交时加）。根 `AGENTS.md` 上限 150 行（§9.1），草稿约 135 行，所以这一节**不超过 12 行**，只留：
 
 - 改变或新增外部看得见的行为之前，先走 `propose-change`，得到你的批准后才写代码；完整步骤只在 `docs/guides/change-with-spec.md`，不要凭记忆做。
-- 不改变行为的改动（重构、依赖、文档、工具、CI、补测试）和 `spikes/` 不走这套流程；修缺陷时规格里已有对应场景就直接写带编号的失败测试再修，没有就先补场景；拿不准就走流程。
+- 不改变行为的改动（重构、依赖、文档、工具、CI、补测试）和技术验证的一次性代码不走这套流程；修缺陷时规格里已有对应场景就直接写带编号的失败测试再修，没有就先补场景；拿不准就走流程。
 - 产品层面以 PRD 为准，规格不能与它矛盾，发现矛盾就停下报告；要动 PRD 写明的行为，先改 PRD（需要你同意）。
 - 规格只写行为，不写类名、函数名、库的选择；测试标题带它验证的场景编号。
 - 常用命令：`pnpm spec list --specs`、`pnpm spec show <能力路径> --type spec`、`pnpm spec validate --all --strict`。
@@ -2086,12 +2085,12 @@ M0a 和 M0b 里凡是 Windows 的内容，都在 GitHub 的 Windows 机器上自
 
 | 里程碑 | 前提 | 仓库里新增什么 | 退出标准（PRD 的加上新增的） | 相对大小 |
 | --- | --- | --- | --- | --- |
-| M0a 技术验证（第一段） | §11.4 的前四次提交（第 5 次最早 2026-10-15，不挡 M0a） | `spikes/`（不走规格流程，§9.6.7） | M0a 各项都有可运行的 demo 和结论；结论写成 ADR；本文按结果修订；收尾的第一项任务是文档转写（见本表后）。**已完成（2026-10-12）**：七项的结论是决策记录 0005 到 0011，本文已按结果修订，demo 代码随后删除 | **已完成（2026-10-12）**。M0a、M0b、真机验证合计 1 是第 1 稿对整个 M0 的估计（其中 Windows 约占三分之一），M0a 实际用时见本节后面的重估；M0b 和真机验证没有按新的分段重估 |
-| M0b 技术验证（第二段） | 与 M1 同时 | `spikes/` | 同上，针对 M0b 各项 | 见上 |
+| M0a 技术验证（第一段） | §11.4 的前四次提交（第 5 次最早 2026-10-15，不挡 M0a） | 一次性验证代码（不走规格流程，§9.6.7；M0a 的已于 2026-10-12 随 PR 删除） | M0a 各项都有可运行的 demo 和结论；结论写成 ADR；本文按结果修订；收尾的第一项任务是文档转写（见本表后）。**已完成（2026-10-12）**：七项的结论是决策记录 0005 到 0011，本文已按结果修订，demo 代码随后删除 | **已完成（2026-10-12）**。M0a、M0b、真机验证合计 1 是第 1 稿对整个 M0 的估计（其中 Windows 约占三分之一），M0a 实际用时见本节后面的重估；M0b 和真机验证没有按新的分段重估 |
+| M0b 技术验证（第二段） | 与 M1 同时 | 一次性验证代码（M0a 用过的放法和“不参与检查”的忽略点已随 M0a 的代码删除，M0b 开始前要重新决定放哪里、怎么不参与仓库检查） | 同上，针对 M0b 各项 | 见上 |
 | M1 核心与命令行 | M0a；§11.4 的第 5 次提交（OpenSpec）已就位 | 开始时先做文档转写（见本表后）；依次：protocol（含错误码、提示码、日志条目的登记表，按 §5.1 的“代码加参数”形状做，**这一形状在写协议之前定下来**）→ i18n（精简版，见本表后；命令行的英文和中文文案，§6.8）→ platform（darwin、win32 两份实现，加薄的 linux）→ core → supervisor → client → cli；`templates/`（先格式和工具定义，再运行器，模板从 `html` 开始逐个加）；模板的 CI 和每晚任务；每个能力的规格随实现合并（各包开工先走 `propose-change`，M1 写 11 个能力，§9.6.5） | 智能体只拿到 skill 就能创建、运行并读取一个项目，它启动的服务不会一直挂着；**同样的测试在 Windows CI 上通过**；`rm` 走废纸篓；命令行的提示和 `--help` 在英文和简体中文下都验证过（测试断言错误码和文案键，每种语言一份 `--help` 快照），同一条命令在两种语言下的 `--json` 输出逐字相同（§5.3，§11.3）；协议里没有给人看的句子（`RunyardError` 只有 `code`、`params`、`debug`、`cause`，§5.1）；命令行能从仓库源码运行（M1 没有公开的发布产物，第一版不发 npm）；M1 的 11 个能力的规格已合并进 `openspec/specs/`，`spec-trace` 全绿 | 2 |
 | M2 桌面外壳 | M0b | `apps/desktop`、端到端测试、图标、发版流程；第一个内部用的未签名 macOS 安装包；`desktop/*` 里 5 个能力的规格随实现合并（§9.6.5）。**第一个 PR 是“tokens、ui 骨架、i18n 的界面一侧、三个组件、M1 没有加的新增检查”**：`packages/tokens` 的 `tokens.json` 和生成脚本；`packages/ui`（骨架、工作台、截图流水线，`Icon` `Button` `GlassSurface` 三个组件，其余组件随功能逐个加，清单见 §6.7）；`packages/i18n`（补界面一侧：React 绑定、`useFormat()`、伪语言、界面用的文案组；包本身和命令行的文案 M1 已建好）；组件化与国际化新增检查里 M1 没有加的六项（`ui-layers`、`ui-purity`、`style-tokens`、`ui-fixtures`、`icons`、`file-size`，`site-i18n` 随 M4 的网站）；`ui-visual` 任务和 `ui-baseline` 流程 | 你不再用终端启动 demo；应用能在 Windows CI 上打包并开窗；`doctor --bundle` 和设置页的“导出诊断信息”可用；33 个画面里属于 M2 的都有对应的样例或端到端画面，并通过截图比对（含伪语言下的溢出和漏网文字检查） | 2.5（组件化与国际化新增 0.5，原为 2） |
 | M3 编辑器与终端 | M2 | 都在 `apps/desktop` 内（以及 `ui` 的 M3 组件：`Tabs` `Breadcrumb` `SplitHandle` `TreeView`，§6.7）；`desktop/editor`、`terminal`、`request-panel` 三个能力的规格随实现合并 | 不离开应用即可创建、编辑并评判一个 demo（M0 到 M3 是 P0）；工作区相关画面的样例或端到端画面都通过截图比对 | 2（PRD 认为最可能超期的一项） |
-| 真机验证 | 你有空；不挡上面任何一行 | `spikes/` 里留给真机的部分 | §11.1 标“真机”的 9 项都有结论 | 见 M0a 一行 |
+| 真机验证 | 你有空；不挡上面任何一行 | 留给真机的部分（清单见 §11.1；M0a 的验证代码已删除，做的时候按清单重写所需的小脚本） | §11.1 标“真机”的 9 项都有结论 | 见 M0a 一行 |
 | MW Windows 外壳适配（新增） | M3；真机验证 | `integration/` 的 Windows 实现、Windows 样式变量（即 `tokens.json` 的 `platform.win32` 一节）、Windows 机器上的基准图、Windows 安装包和卸载清理、命令行进 `PATH`、Windows 端到端测试 | §7.6 的“预览版必须做到”全部满足（含管理进程活着时的覆盖安装和卸载，§8.2）；在你的 Windows 电脑上按清单手测一遍 | 1（Windows 报告估 2 到 3 周） |
 | M4 管理与自定义模板 | M3 | PRD 的 P1 项（对规格的补充：多数是往已有能力里加要求，少数是新能力）；`apps/site`（带 `site-i18n` 检查）；`ui` 的 `MasterDetail`、`templates` 模块、`SaveTemplateDialog`、`UnusedPage` | PRD §8 原标准；网站可访问 | 1.5 |
 | M5 公开发布 | M4、MW | 完整 README（含“报告问题”一节）、下载页配图、第一次公开的 GitHub Release；Homebrew tap（PRD §8 已有；Homebrew 对未签名应用的政策先核实，附录 B）；Scoop 源做不做届时定（§10） | 陌生人无需帮助就能安装并运行一个模板；macOS 为正式版，Windows 标“预览”并写明缺什么 | 1 |
@@ -2523,7 +2522,7 @@ M0a 和 M0b 里凡是 Windows 的内容，都在 GitHub 的 Windows 机器上自
 
 | 草稿里的内容 | 改为 |
 | --- | --- |
-| Map 表缺 `packages/testing/`、`spikes/` | 加上；`apps/desktop/` 一行补 `src/pty-host`、`src/fs-host`、`src/main/integration` |
+| Map 表缺 `packages/testing/` | 加上；`apps/desktop/` 一行补 `src/pty-host`、`src/fs-host`、`src/main/integration` |
 | Dependency rules 表：`desktop main` 可导入 core 和 templates；`cli` 可导入 templates | 按 §3.2：main 不导入 core；`templates/` 不是可导入的包；`cli` 导入 core 只为 lint 和 test；加 `testing`、`pty-host`、`fs-host` 三行 |
 | “`electron` may be imported only in `src/main` and `src/preload`” | 改为只在 `apps/desktop` |
 | “OS branching … is allowed only in `packages/platform`” | 加上 `apps/desktop/src/main/integration` |
@@ -2538,7 +2537,7 @@ M0a 和 M0b 里凡是 Windows 的内容，都在 GitHub 的 Windows 机器上自
 | Map 表的 `packages/platform/` 一行 | 补 `linux/` 和 `win32/bin/` |
 | Never 一节、Workflow 一节 | 加依赖几条（§8.6.4）：不要手改 `package.json` 里的版本号，不要写 `^`、`~`、`latest`；加或升级依赖之前按 `docs/guides/add-a-dependency.md` 查公告（OSV、GitHub 公告库、项目公告页三处）、查年龄（满 15 天）、记进 `docs/architecture/dependencies.md`；不要设 `dangerouslyAllowAllBuilds`，也不要不看脚本就批准安装脚本；不要为了让 CI 变绿而改 `security/allowlist.toml` 或 `minimumReleaseAgeExclude`，要改先问 |
 | Never 一节 | 再加两条：不要用 `fs.rm` 一类的永久删除来删项目，只用平台层的 `fs.trash`；端口探测不要绑定 `0.0.0.0` |
-| 第 5 次提交（§11.4）加一节“规格驱动（SDD）” | 不超过 12 行，内容见 §9.6.8：改变外部行为前先走 `propose-change`、批准后才写代码，步骤只在 `docs/guides/change-with-spec.md`；不改行为的改动和 `spikes/` 不走；PRD 说了算，冲突时停下报告，改产品行为先改 PRD；规格只写行为；测试标题带场景编号；三条常用命令。其余细则放进手册。原因：根 `AGENTS.md` 上限 150 行，草稿约 135 行 |
+| 第 5 次提交（§11.4）加一节“规格驱动（SDD）” | 不超过 12 行，内容见 §9.6.8：改变外部行为前先走 `propose-change`、批准后才写代码，步骤只在 `docs/guides/change-with-spec.md`；不改行为的改动和技术验证不走；PRD 说了算，冲突时停下报告，改产品行为先改 PRD；规格只写行为；测试标题带场景编号；三条常用命令。其余细则放进手册。原因：根 `AGENTS.md` 上限 150 行，草稿约 135 行 |
 | Conventions 之后没有“界面与文案”（组件化与国际化，§6.7、§6.8） | 根 `AGENTS.md` 只加 3 行（界面分五层只能从上往下导入，`ui` 不认识产品；给人看的文字一律走 `@runyard/i18n`；管理进程一侧只发代码加参数），其余写进 `packages/ui/AGENTS.md` 和 `packages/i18n/AGENTS.md`。原因：方案给根文件加 14 行，而草稿约 135 行 + 规格驱动一节 12 行 + 14 行 = 161 行，超过 150 行的上限；3 行加上 Map 表的两行仍可能紧，复制进仓库时以 `docs-size` 实测，超了就压缩草稿里别的行 |
 | Map 表缺 `packages/ui/`、`packages/i18n/`；Dependency rules 表只有八个包 | 加上；依赖表按 §3.2 的新表（十个包），由 `layers.json` 生成 |
 
@@ -2881,5 +2880,6 @@ M0a 和 M0b 里凡是 Windows 的内容，都在 GitHub 的 Windows 机器上自
 - 汇总：§12 第 16 项移入“已决定”表，新增第 46 项；负责人已决定的项数由 15 项变为 17 项，按默认或建议执行的由 29 项变为 28 项，总数由 45 项变为 46 项，§0、§1、§12 的数字已同步。
 - 汇总：§14 加 PRD 与设计稿的后续改动，标明哪些已做（PRD 里的六处）哪些未做（设计稿的画面、下载页与 README）。
 - 汇总：本轮新增的文件——决策记录 0005 到 0012，证据文档 `docs/architecture/evidence/` 下的 0005 到 0011，写在 `docs/guides/write-an-adr.md` 和根 `AGENTS.md` 的目录表里。
+- 汇总：随后的清理 PR 删除了 M0a 的验证代码和七个验证用的 CI 流程，去掉了提交标题的 `spikes` scope、检查里对验证代码的忽略点和相应的测试，以及根 `AGENTS.md` 里的“技术验证”一节；§3.1 的目录树、§8.4 的 scope 列表和 §9.6.7、§11.2 里对该目录的引用同步改掉。结论和数据留在决策记录与证据文档里。
 
 数字的变化：需要负责人决定的事项由 45 项变为 46 项。已决定 17 项（原 15 项，加第 16 项和第 46 项）；按默认或建议执行 28 项（原 29 项，第 16 项移出）；已被决定解决 1 项；待定 0 项。风险表增加约 15 行、划掉 1 行。

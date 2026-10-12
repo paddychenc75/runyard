@@ -49,7 +49,6 @@ export const SCOPES = [
   "i18n",
   "testing",
   "templates",
-  "spikes",
 ] as const;
 
 export const MAX_LENGTH = 72;

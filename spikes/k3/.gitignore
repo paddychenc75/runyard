@@ -1,5 +1,0 @@
-node_modules/
-dist/
-results/tmp/
-pnpm-lock.yaml
-.k3-install-*/

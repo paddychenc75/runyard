@@ -1,8 +1,0 @@
-{
-  "name": "runyard-spike-k2-pty",
-  "private": true,
-  "description": "只给 K2 的“伪终端加 Ctrl+C”对比用（仅 Windows）。node-pty 的版本取自技术设计 §8.1",
-  "dependencies": {
-    "node-pty": "1.1.0"
-  }
-}

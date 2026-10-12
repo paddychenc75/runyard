@@ -1,4 +1,0 @@
-# 本实验零依赖（只用 Node 内置模块）。仍写上安全设置，以后若要加包也受同一条规则约束。
-packages: []
-minimumReleaseAge: 20160
-savePrefix: ""

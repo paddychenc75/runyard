@@ -1,4 +1,0 @@
-#!/bin/sh
-# Git Bash（MSYS）不会把 runyard 解析成 runyard.cmd，所以另放一个没有扩展名的脚本（npm 的垫片也是这样做的）。
-basedir="${0%/*}"
-ELECTRON_RUN_AS_NODE=1 exec "$basedir/../RunyardK3.exe" "$basedir/../resources/runtime/runyard-cli.mjs" "$@"
