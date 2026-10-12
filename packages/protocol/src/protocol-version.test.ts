@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { PROTOCOL_VERSION, protocolVersionSchema } from "./index.ts";
+import { PROTOCOL_VERSION, protocolVersionSchema } from "./protocol-version.ts";
 
-describe("protocol 入口", () => {
+describe("协议版本号", () => {
   it("协议版本号是通过校验的正整数", () => {
     expect(protocolVersionSchema.parse(PROTOCOL_VERSION)).toBe(PROTOCOL_VERSION);
   });
