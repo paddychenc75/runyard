@@ -3,6 +3,8 @@ import type { PlatformOptions } from "../platform-options.ts";
 import { composePosix } from "../posix/compose-posix.ts";
 import { abstractSocketLock } from "../posix/ipc/abstract-socket-lock.ts";
 import { unsupported } from "../posix/pending-members.ts";
+import { createProcNetTable } from "./proc-net-table.ts";
+import { createProcSource } from "./proc-source.ts";
 
 // Linux 的 PATH_MAX 是 4096
 const MAX_PATH_BYTES = 4096;
@@ -17,6 +19,8 @@ export function createLinuxPlatform(options: PlatformOptions): Platform {
     id: "linux",
     arch: options.arch,
     caps: { gracefulStop: "graceful", cloneCopy: true, symlinks: true, sandbox: false },
+    processes: createProcSource(),
+    sockets: createProcNetTable(),
     paths: {
       home: options.home,
       profile: options.profile,

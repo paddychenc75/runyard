@@ -1,0 +1,19 @@
+// 进程表的读取方式。proc 的算法（认身份、整组停止）只依赖这个接口，
+// 各系统只负责“怎么读”：macOS 用 ps，Linux 读 /proc（决策记录 0006）。
+
+export interface ProcessEntry {
+  readonly pid: number;
+  /** 进程组号；spawn 出来的根进程自成一组，组号等于它的 pid */
+  readonly pgid: number;
+  /** 启动时间，毫秒。起点由系统决定，只用来比较是否相等或先后，不做别的算术 */
+  readonly startTime: number;
+}
+
+export interface ProcessSource {
+  /** 整张进程表，一次调用 */
+  snapshot(): Promise<ProcessEntry[]>;
+  /** 单个进程的启动时间；进程不存在返回 null */
+  startTime(pid: number): Promise<number | null>;
+  /** 同步版本：只给 spawn 用，因为 ManagedProcess.ref 是同步返回的 */
+  startTimeSync(pid: number): number | null;
+}

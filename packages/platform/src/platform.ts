@@ -24,7 +24,10 @@ export interface Disposable {
 /** 进程身份：pid 加启动时间。pid 会被系统复用，只凭 pid 认进程会杀错（决策记录 0006 的 K2 事故） */
 export interface ProcRef {
   readonly pid: number;
-  /** 启动时间，毫秒（Unix 纪元）。同一个系统上同一个进程总是同一个值；只比较是否相等，不做算术 */
+  /**
+   * 启动时间，毫秒。同一台机器上同一个进程总是同一个值；只比较是否相等或先后，不做别的算术。
+   * 起点由实现决定（macOS 是 Unix 纪元，精度到秒；Linux 是开机时刻，精度 10 毫秒），不要拿它当墙上时间
+   */
   readonly startTime: number;
 }
 
