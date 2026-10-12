@@ -1,9 +1,12 @@
+import { userInfo } from "node:os";
 import type { Platform } from "../platform.ts";
 import type { PlatformOptions } from "../platform-options.ts";
 import { composePosix } from "../posix/compose-posix.ts";
 import { fileLock } from "../posix/ipc/file-lock.ts";
 import { createNetstatTable } from "./netstat-table.ts";
 import { createPsSource } from "./ps-source.ts";
+import { createDarwinTrash } from "./trash/darwin-trash.ts";
+import { SYSTEM_TRASH_TOOL } from "./trash/system-trash-tool.ts";
 
 // macOS 的 PATH_MAX 是 1024
 const MAX_PATH_BYTES = 1024;
@@ -11,8 +14,18 @@ const MAX_PATH_BYTES = 1024;
 const MAX_SOCKET_PATH_BYTES = 104;
 
 export function createDarwinPlatform(options: PlatformOptions): Platform {
+  // 系统的 trash 命令只会进当前账号真实的废纸篓：平台指向别的主目录（测试的临时主目录）时不用它，
+  // 免得测试往用户真实的废纸篓里放东西
+  const accountHome = userInfo().homedir;
+  const uid = userInfo().uid;
   return composePosix({
     id: "darwin",
+    trash: createDarwinTrash({
+      home: options.home,
+      uid,
+      now: () => new Date(),
+      systemTool: options.home === accountHome ? SYSTEM_TRASH_TOOL : null,
+    }),
     arch: options.arch,
     // APFS 支持 clonefile；打包的应用不开沙箱
     caps: { gracefulStop: "graceful", cloneCopy: true, symlinks: true, sandbox: false },

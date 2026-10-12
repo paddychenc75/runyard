@@ -21,7 +21,7 @@
 
 ## 子目录地图
 
-- `checks/`：`pnpm check` 的全部检查，入口 `run.ts`；`test-helpers.ts` 造临时仓库
+- `checks/`：`pnpm check` 的全部检查，入口 `run.ts`（`no-permanent-delete`：产品源码里的永久删除调用，例外只能用 `// delete-allow: 理由` 声明，平台层的递归删除只许出现在复制兜底的那一个文件）；`test-helpers.ts` 造临时仓库
 - `scripts/`：开发脚本（`generate.ts` 生成文档里的表和 `docs/reference/` 的协议参考，排版在 `render-reference.ts`、`schema-doc.ts`；查依赖版本和公告）
 - `ci/`：只在 CI 里用的脚本（标题格式、依赖审计门、更新日志防手改、发版白话说明、手动触发运行的状态回报）
 - `hooks/`：Claude Code 钩子，由 `.claude/settings.json` 调用

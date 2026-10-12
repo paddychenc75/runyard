@@ -19,6 +19,7 @@ export function createLinuxPlatform(options: PlatformOptions): Platform {
     id: "linux",
     arch: options.arch,
     caps: { gracefulStop: "graceful", cloneCopy: true, symlinks: true, sandbox: false },
+    trash: async () => unsupported("fs.trash", SYSTEM),
     processes: createProcSource(),
     sockets: createProcNetTable(),
     paths: {
@@ -37,7 +38,6 @@ export function createLinuxPlatform(options: PlatformOptions): Platform {
   });
   return {
     ...base,
-    fs: { ...base.fs, trash: () => unsupported("fs.trash", SYSTEM) },
     desktop: {
       reveal: () => unsupported("desktop.reveal", SYSTEM),
       openTerminalAt: () => unsupported("desktop.openTerminalAt", SYSTEM),

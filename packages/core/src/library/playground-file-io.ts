@@ -1,12 +1,11 @@
 import { join } from "node:path";
-import { type AbsPath, absPath } from "@runyard/platform";
+import { type AbsPath, absPath, type Platform } from "@runyard/platform";
 import {
   type PlaygroundFile,
   playgroundFileFormat,
   readVersionedText,
   serializeVersioned,
 } from "@runyard/protocol";
-import type { LibraryStorage } from "./library-types.ts";
 
 // 项目文件夹里的 .runyard/playground.json 的读写。写入由调用方经平台层的 writeAtomic 完成，
 // 这里只负责路径、解析和序列化。
@@ -23,10 +22,10 @@ export type PlaygroundFileRead =
   | { readonly status: "corrupt" };
 
 export async function readPlaygroundFile(
-  storage: LibraryStorage,
+  fs: Pick<Platform["fs"], "readText">,
   dir: AbsPath,
 ): Promise<PlaygroundFileRead> {
-  const text = await storage.readText(playgroundFilePath(dir));
+  const text = await fs.readText(playgroundFilePath(dir));
   if (text === null) return { status: "absent" };
   const result = readVersionedText(playgroundFileFormat, text);
   if (result.status === "ok") return { status: "ok", value: result.value };

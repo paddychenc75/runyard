@@ -1,4 +1,4 @@
-import { dirname, relative } from "node:path";
+import { basename, dirname, join, relative } from "node:path";
 import {
   type AbsPath,
   absPath,
@@ -18,6 +18,7 @@ export interface TrashedEntry {
 interface Watcher {
   readonly root: AbsPath;
   readonly ignore: readonly PosixRelPath[];
+  readonly depth: number;
   readonly callback: (events: WatchEvent[]) => void;
 }
 
@@ -68,6 +69,36 @@ export class MemoryFs {
     return this.#files.has(path) || this.#dirs.has(path);
   }
 
+  /** 平台接口 readText：文件的内容；不存在或不是文件返回 null */
+  readText(path: AbsPath): string | null {
+    return this.#files.get(path) ?? null;
+  }
+
+  /** 平台接口 listDirs：目录下一层的子目录名，排好序；目录不存在返回空数组 */
+  listDirs(dir: AbsPath): string[] {
+    return this.list(dir).filter((name) => this.#dirs.has(join(dir, name)));
+  }
+
+  /** 平台接口 writeFile：与真实实现一样，父目录必须已存在 */
+  writeFileChecked(path: AbsPath, data: string | Uint8Array): void {
+    if (!this.#dirs.has(dirname(path))) {
+      throw platformError("INTERNAL", {}, `ENOENT: ${dirname(path)}`);
+    }
+    this.writeFile(path, typeof data === "string" ? data : new TextDecoder().decode(data));
+  }
+
+  /** 平台接口 renameFile：目标已存在抛 NAME_EXISTS，不覆盖 */
+  renameFile(from: AbsPath, to: AbsPath): void {
+    if (!this.#files.has(from)) throw platformError("INTERNAL", {}, `ENOENT: ${from}`);
+    if (this.exists(to)) {
+      throw platformError("NAME_EXISTS", { name: basename(to) }, `EEXIST: ${to}`);
+    }
+    const data = this.readFile(from);
+    this.#files.delete(from);
+    this.#emit(from, "remove");
+    this.writeFile(to, data);
+  }
+
   /** 目录下一层的名字，排好序 */
   list(dir: AbsPath): string[] {
     const names = new Set<string>();
@@ -101,8 +132,9 @@ export class MemoryFs {
   }
 
   moveDir(from: AbsPath, to: AbsPath, name: string): void {
-    if (!this.#dirs.has(from)) throw platformError("INTERNAL", {}, `ENOENT: ${from}`);
-    if (this.exists(to)) throw platformError("INTERNAL", {}, `EEXIST: ${to}`);
+    if (!this.#dirs.has(from)) throw platformError("FOLDER_MISSING", { name }, `ENOENT: ${from}`);
+    if (this.exists(to))
+      throw platformError("NAME_EXISTS", { name: basename(to) }, `EEXIST: ${to}`);
     if ([...this.#locked].some((lock) => within(from, lock) || within(lock, from))) {
       throw platformError("PATH_LOCKED", { name }, `EBUSY: ${from}`);
     }
@@ -126,7 +158,7 @@ export class MemoryFs {
     if (this.#trashFails) {
       throw platformError("TRASH_UNAVAILABLE", { name }, "fake trash is unavailable");
     }
-    if (!this.#dirs.has(dir)) throw platformError("INTERNAL", {}, `ENOENT: ${dir}`);
+    if (!this.#dirs.has(dir)) throw platformError("FOLDER_MISSING", { name }, `ENOENT: ${dir}`);
     this.trashed.push({ path: dir, files: this.#under(dir).files as AbsPath[] });
     this.remove(dir);
     return { restorable: true, removedDirectly: [] };
@@ -140,7 +172,12 @@ export class MemoryFs {
   }
 
   watch(root: AbsPath, options: WatchOptions, callback: (events: WatchEvent[]) => void) {
-    const watcher: Watcher = { root, ignore: options.ignore ?? [], callback };
+    const watcher: Watcher = {
+      root,
+      ignore: options.ignore ?? [],
+      depth: options.depth ?? Number.POSITIVE_INFINITY,
+      callback,
+    };
     this.#watchers.add(watcher);
     return { dispose: async () => void this.#watchers.delete(watcher) };
   }
@@ -157,6 +194,7 @@ export class MemoryFs {
     for (const watcher of this.#watchers) {
       if (!within(watcher.root, path) || path === watcher.root) continue;
       const rel = posixRelPath(relative(watcher.root, path).split(SEPARATOR).join("/"));
+      if (rel.split("/").length > watcher.depth) continue;
       if (watcher.ignore.some((ignored) => rel === ignored || rel.startsWith(`${ignored}/`)))
         continue;
       watcher.callback([{ kind, path: rel }]);

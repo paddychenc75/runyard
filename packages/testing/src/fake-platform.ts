@@ -104,6 +104,12 @@ export function createFakePlatform(options: FakePlatformOptions = {}): FakePlatf
       loopbackOnly: async (port) => ports.loopbackOnly(port),
     },
     fs: {
+      readText: async (file) => fs.readText(file),
+      listDirs: async (dir) => fs.listDirs(dir),
+      exists: async (path) => fs.exists(path),
+      makeDir: async (dir) => fs.mkdir(dir),
+      writeFile: async (file, data) => fs.writeFileChecked(file, data),
+      renameFile: async (from, to) => fs.renameFile(from, to),
       moveDir: async (from, to) => fs.moveDir(from, to, name(from)),
       trash: async (dir) => fs.trash(dir, name(dir)),
       writeAtomic: async (file, data) => fs.writeAtomic(file, data),

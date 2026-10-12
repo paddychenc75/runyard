@@ -5,7 +5,6 @@ export type {
   CreatePlaygroundRequest,
   CreatePlaygroundResult,
   LibraryItem,
-  LibraryStorage,
   PlaygroundSeed,
   PortSlotAllocator,
   ScanChange,

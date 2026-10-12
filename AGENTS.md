@@ -28,7 +28,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `docs/guides/` | 操作手册和命令表。有手册的任务按手册做，不要临场发挥 |
 | `docs/releases/` | 每个版本给负责人看的白话说明（`<版本>.md`）。更新日志 `CHANGELOG.md` 在根目录，自动生成，不要手改 |
 | `docs/glossary.md` | 术语表：中文术语、唯一的英文标识符、禁用的同义词 |
-| `packages/platform/` | 平台层：`Platform` 接口、`getPlatform()`、路径与名称校验、`darwin` 和薄 `linux` 实现、契约测试（目前有接口、paths、ipc、spawnDetached、exec、proc、ports 的实现，其余是占位，随后续 issue 加入） |
+| `packages/platform/` | 平台层：`Platform` 接口、`getPlatform()`、路径与名称校验、`darwin` 和薄 `linux` 实现、契约测试（目前有接口、paths、ipc、spawnDetached、exec、proc、ports、fs（含 macOS 废纸篓）、watch 的实现，其余是占位，随后续 issue 加入） |
 | `packages/protocol/` | 所有跨进程约定（目前有错误码、提示码、枚举、`RunyardError` / `Notice` / `LogEntry` / `Owner`、分帧、`Frame`、握手消息、版本比对、方法与事件的登记表、`Playground` / `RunSnapshot`、磁盘文件格式与升级链） |
 | `packages/i18n/` | 文案、`createTranslator`、数字和时长格式、命令行语言解析（`resolveCliLocale`）、由中文文案生成的键和参数类型 |
 | `packages/core/` | 工具检测、运行引擎、资源库等业务逻辑（目前有日志的切行、解码和读取时清洗，运行状态机与进程生命周期，以及资源库的项目创建、命名、索引和文件夹被动过的判断） |
@@ -70,7 +70,8 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 - 包之间只从入口导入（如 `@runyard/core`），不伸进内部文件。
 - 管理进程一侧的包（protocol、platform、core、supervisor、client）不产生给人看的句子，只发“代码加参数”。
 - 界面分五层，只能从上往下导入，通用组件包不认识产品。
-- 给人看的文字一律走文案包。现在 `pnpm check` 已拦：缺文案或参数不一致（`i18n-keys`、`i18n-codes`）、未使用的键（`i18n-unused`）、术语和措辞（`i18n-glossary`、`i18n-wording`）、源码字符串里的汉字和命令行输出口之外的 `process.stdout.write`（`ui-strings`）；界面一侧（JSX 规则、`Localized` 属性、伪语言扫页面）随 M2 的界面包才生效。
+- 给人看的文字一律走文案包。现在 `pnpm check` 已拦：缺文案或参数不一致（`i18n-keys`、`i18n-codes`）、未使用的键（`i18n-unused`）、术语和措辞（`i18n-glossary`、`i18n-wording`）、源码字符串里的汉字和命令行输出口之外的 `process.stdout.write`（`ui-strings`）；
+- 永久删除：产品源码里的 `fs.rm`、`rmSync`、`rmdir`、`unlink`、经进程的 `rm` 一律被 `no-permanent-delete` 拦住。用户的项目只进废纸篓（`fs.trash`）；管理进程自己的临时文件、运行文件、日志轮转、刚建的占位要删，在同一行或上一行写 `// delete-allow: 理由`（理由必填）；平台层里可能递归删除的调用只许出现在 `remove-after-verified-copy.ts`；界面一侧（JSX 规则、`Localized` 属性、伪语言扫页面）随 M2 的界面包才生效。
 
 ## 命令
 

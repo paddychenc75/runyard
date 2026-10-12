@@ -12,7 +12,6 @@ import {
   serializeVersioned,
 } from "@runyard/protocol";
 import { libraryError } from "./library-error.ts";
-import type { LibraryStorage } from "./library-types.ts";
 
 // 本机索引 state/library.json（storage.md 2.2）。端口登记表就是各项的 port。
 // 写入前一律先确认文件不是更新版本写的；未知字段（顶层和每一项）随解析结果原样带回去。
@@ -32,7 +31,6 @@ export function libraryIndexPath(stateDir: AbsPath): AbsPath {
 }
 
 type IndexDeps = {
-  readonly storage: LibraryStorage;
   readonly platform: Pick<Platform, "fs">;
   readonly now: () => number;
 };
@@ -64,7 +62,7 @@ export class LibraryIndex {
     root: AbsPath,
   ): Promise<{ index: LibraryIndex; state: IndexLoadState }> {
     const empty: LibraryFile = { formatVersion: LIBRARY_FILE_VERSION, root, playgrounds: [] };
-    const text = await deps.storage.readText(path);
+    const text = await deps.platform.fs.readText(path);
     if (text === null)
       return { index: new LibraryIndex(deps, path, empty, null, true), state: "absent" };
     const result = readVersionedText(libraryFileFormat, text);
@@ -85,7 +83,7 @@ export class LibraryIndex {
     }
     // 坏文件改名留存，不删：索引是本机状态，丢了能从磁盘重建，但留着方便排查
     const quarantined = join(dirname(path), quarantineFileName(basename(path), deps.now()));
-    await deps.storage.renameFile(path, absPath(quarantined));
+    await deps.platform.fs.renameFile(path, absPath(quarantined));
     return { index: new LibraryIndex(deps, path, empty, null, true), state: "recovered" };
   }
 
@@ -143,7 +141,7 @@ export class LibraryIndex {
     this.assertWritable();
     if (!this.#dirty) return;
     const text = serializeVersioned(libraryFileFormat, { ...this.#file, root });
-    await this.#deps.storage.makeDir(absPath(dirname(this.#path)));
+    await this.#deps.platform.fs.makeDir(absPath(dirname(this.#path)));
     await this.#deps.platform.fs.writeAtomic(this.#path, text);
     this.#file = { ...this.#file, root };
     this.#dirty = false;

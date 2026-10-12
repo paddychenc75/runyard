@@ -26,6 +26,7 @@ export function createPosixPaths(config: PosixPathsConfig): Platform["paths"] {
     defaultLibrary: absPath(join(config.home, `Runyard${suffix}`)),
     validateName,
     checkLength: (p) => checkLength(p, { maxBytes: config.maxPathBytes }),
+    maxPathLength: config.maxPathBytes,
     isCloudSynced: (p) => isCloudSynced(p, rules),
     isInUserFolders: (p) => isInUserFolders(p, rules),
   };

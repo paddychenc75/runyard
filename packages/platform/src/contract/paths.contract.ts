@@ -49,6 +49,22 @@ export function pathsContract(ctx: ContractContext): void {
     });
   });
 
+  describe("paths.maxPathLength", () => {
+    it('"paths.maxPathLength" 是正整数，checkLength 以它为界：差一个字节还不是 too-long，到了就是', () => {
+      const limit = paths.maxPathLength;
+      expect(Number.isInteger(limit) && limit > 0).toBe(true);
+      // 每段 100 字节，远小于单个名字的 255 字节上限，这样判断只取决于整条路径的长度
+      const build = (bytes: number): string => {
+        let path = home;
+        while (Buffer.byteLength(path) + 102 < bytes) path = join(path, "d".repeat(100));
+        return join(path, "e".repeat(bytes - Buffer.byteLength(path) - 1));
+      };
+      expect(Buffer.byteLength(build(limit))).toBe(limit);
+      expect(paths.checkLength(absPath(build(limit - 1)))).not.toBe("too-long");
+      expect(paths.checkLength(absPath(build(limit)))).toBe("too-long");
+    });
+  });
+
   describe("paths.isCloudSynced", () => {
     it('"paths.isCloudSynced" 默认资源库不在网盘同步目录下，Dropbox 下的在', () => {
       expect(paths.isCloudSynced(paths.defaultLibrary)).toBe(false);

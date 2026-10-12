@@ -77,6 +77,8 @@ export interface TrashResult {
 export interface WatchOptions {
   /** 忽略的子路径（相对 root），其下的变化不报告 */
   readonly ignore?: readonly PosixRelPath[];
+  /** 往下看几层：1 只看 root 的直接子项，缺省看全部（管理进程监听资源库根目录只要一层） */
+  readonly depth?: number;
 }
 
 export interface WatchEvent {
@@ -124,6 +126,8 @@ export interface Platform {
     isCloudSynced(p: AbsPath): boolean;
     /** 在“桌面”“文档”“下载”之内：系统读这些文件夹会弹权限框并一直等待 */
     isInUserFolders(p: AbsPath): boolean;
+    /** 整条路径的上限（字节，含结尾的 NUL）。checkLength 以它为界，提示里要给用户看数字时用它 */
+    readonly maxPathLength: number;
   };
   readonly env: {
     load(opts?: { refresh?: boolean; cwd?: AbsPath }): Promise<EnvLoadResult>;
@@ -160,11 +164,30 @@ export interface Platform {
     loopbackOnly(port: number): Promise<boolean>;
   };
   readonly fs: {
-    /** 目录被占用或权限不足抛 PATH_LOCKED，原目录保持原样 */
+    /** 文件不存在或不是文件返回 null。UTF-8 解码 */
+    readText(file: AbsPath): Promise<string | null>;
+    /** 目录下一层的子目录名，排好序；目录不存在返回空数组 */
+    listDirs(dir: AbsPath): Promise<string[]>;
+    exists(path: AbsPath): Promise<boolean>;
+    /** 连同缺的上级目录一起建；已存在不报错 */
+    makeDir(dir: AbsPath): Promise<void>;
+    /** 直接写（不是原子的），父目录必须已存在，已有同名文件就覆盖。要求不能写坏的文件用 writeAtomic */
+    writeFile(file: AbsPath, data: string | Uint8Array): Promise<void>;
+    /** 改文件名；目标已存在抛 NAME_EXISTS，不覆盖 */
+    renameFile(from: AbsPath, to: AbsPath): Promise<void>;
+    /**
+     * 同一个卷里改名（项目文件夹改名），不退到复制再删除。
+     * 目标已存在抛 NAME_EXISTS（空目录也算，目标原样）；原目录不在抛 FOLDER_MISSING；
+     * 目录被占用或权限不足抛 PATH_LOCKED，原目录保持原样
+     */
     moveDir(from: AbsPath, to: AbsPath): Promise<void>;
     /** 只进废纸篓或回收站，放不进就失败（TRASH_UNAVAILABLE），绝不退到永久删除 */
     trash(dir: AbsPath, opts?: { regenerable?: PosixRelPath[] }): Promise<TrashResult>;
-    writeAtomic(file: AbsPath, data: string): Promise<void>;
+    /**
+     * 先写同一目录下的临时文件、刷到磁盘，再改名盖掉目标：中途出错或掉电，旧文件完好，不留半个文件。
+     * private 为 true 时只有本人能读写（口令、私有状态）；缺省沿用已有文件的权限，新文件按普通文件
+     */
+    writeAtomic(file: AbsPath, data: string, opts?: { private?: boolean }): Promise<void>;
   };
   watch(root: AbsPath, opts: WatchOptions, cb: (events: WatchEvent[]) => void): Promise<Disposable>;
   readonly ipc: {
