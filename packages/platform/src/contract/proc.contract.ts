@@ -8,8 +8,9 @@ import type { ContractContext } from "./context.ts";
 import { ProcessLedger } from "./process-ledger.ts";
 import { eventually, freePort, startTree, WAIT_MS } from "./service-harness.ts";
 
-// 重复起停的次数。技术验证 K2 每个系统做了 900 次；这里取一个放进 CI 时间的量（每次起三个 node 进程）
-const REPEAT_CYCLES = 50;
+// 重复起停的次数。技术验证 K2 每个系统做了 900 次；这里取一个放进 CI 时间的量：每次起三个 node 进程，
+// 同一个包里别的测试文件在并行跑，起得太多会把 CI 的小机器占满，让它们超时（第一次提交用 50 次就这样）
+const REPEAT_CYCLES = 20;
 // 停止之后端口必须在这个时间内能重新绑定（规格 RUN-LIFECYCLE-14，ADR 0006）
 const REBIND_LIMIT_MS = 3000;
 
