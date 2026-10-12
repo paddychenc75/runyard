@@ -1,0 +1,97 @@
+{
+  "errors.BUSY.hintCli": { "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文" },
+  "errors.BUSY.title": { "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文" },
+  "errors.DATA_FROM_NEWER_VERSION.body": {
+    "file": "数据文件名，例如 settings.json；原样显示，不翻译",
+    "found": "文件里记录的格式版本号（整数）",
+    "supported": "当前程序认识的最高格式版本号（整数）"
+  },
+  "errors.DATA_FROM_NEWER_VERSION.title": {
+    "file": "数据文件名，例如 settings.json；原样显示，不翻译"
+  },
+  "errors.DEPS_OFFLINE.hintCli": {
+    "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文"
+  },
+  "errors.DEPS_OFFLINE.title": { "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文" },
+  "errors.FOLDER_MISSING.title": {
+    "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文"
+  },
+  "errors.NAME_EXISTS.title": { "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文" },
+  "errors.NAME_INVALID.title": { "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文" },
+  "errors.NAME_RESERVED.title": {
+    "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文"
+  },
+  "errors.PATH_LOCKED.title": { "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文" },
+  "errors.PATH_TOO_LONG.title": {
+    "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文"
+  },
+  "errors.PLAYGROUND_NOT_FOUND.title": {
+    "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文"
+  },
+  "errors.READY_TIMEOUT.hintCli": {
+    "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文"
+  },
+  "errors.READY_TIMEOUT.title": {
+    "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文",
+    "seconds": "命令等待的秒数，非负数；文案里写复数"
+  },
+  "errors.RUNTIME_MISSING.body": {
+    "tool": "工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译"
+  },
+  "errors.RUNTIME_MISSING.title": {
+    "tool": "工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译"
+  },
+  "errors.RUN_FAILED.hintCli": { "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文" },
+  "errors.RUN_FAILED.title": { "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文" },
+  "errors.RUN_NOT_FOUND.body": { "runId": "用户给的运行 ID，原样显示，例如 r_8f3a" },
+  "errors.RUN_NOT_FOUND.title": { "runId": "用户给的运行 ID，原样显示，例如 r_8f3a" },
+  "errors.SCRIPT_ERRORED.hintCli": {
+    "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文"
+  },
+  "errors.SCRIPT_ERRORED.title": {
+    "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文"
+  },
+  "errors.SETUP_FAILED.hintCli": {
+    "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文"
+  },
+  "errors.SETUP_FAILED.title": { "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文" },
+  "errors.SUPERVISOR_OUTDATED.body": {
+    "runs": "升级管理进程会停掉的运行个数，非负整数；英文写复数"
+  },
+  "errors.TEMPLATE_NOT_FOUND.title": { "template": "用户给的模板标识，原样显示" },
+  "errors.TOOL_MISSING.body": {
+    "tool": "工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译",
+    "required": "模板要求的版本范围，例如 >=22.18；原样显示，不翻译"
+  },
+  "errors.TOOL_MISSING.hint": {
+    "tool": "工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译"
+  },
+  "errors.TOOL_MISSING.hintCli": {
+    "tool": "工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译",
+    "required": "模板要求的版本范围，例如 >=22.18；原样显示，不翻译"
+  },
+  "errors.TOOL_MISSING.title": {
+    "tool": "工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译"
+  },
+  "errors.TOOL_TOO_OLD.body": {
+    "tool": "工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译",
+    "required": "模板要求的版本范围，例如 >=22.18；原样显示，不翻译",
+    "found": "本机检测到的版本，例如 20.11.0；原样显示，不翻译"
+  },
+  "errors.TOOL_TOO_OLD.hint": {
+    "tool": "工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译",
+    "required": "模板要求的版本范围，例如 >=22.18；原样显示，不翻译"
+  },
+  "errors.TOOL_TOO_OLD.hintCli": {
+    "tool": "工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译",
+    "required": "模板要求的版本范围，例如 >=22.18；原样显示，不翻译"
+  },
+  "errors.TOOL_TOO_OLD.title": {
+    "tool": "工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译"
+  },
+  "errors.TRASH_UNAVAILABLE.title": {
+    "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文"
+  },
+  "errors.VAR_INVALID.body": { "key": "--var 里用户给的变量名，原样显示" },
+  "errors.VAR_INVALID.title": { "key": "--var 里用户给的变量名，原样显示" }
+}

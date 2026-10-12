@@ -1,0 +1,5 @@
+{
+  "platform.dock": "{platform, select, other {Dock}}",
+  "platform.fileManager": "{platform, select, other {Finder}}",
+  "platform.trash": "{platform, select, other {Trash}}"
+}

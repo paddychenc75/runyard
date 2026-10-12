@@ -1,0 +1,13 @@
+{
+  "notice.DEPS_FROM_CACHE": "Dependencies came from the local cache.",
+  "notice.ENV_DEGRADED": "Only the non-interactive terminal environment could be read, so tool detection may be inaccurate.",
+  "notice.ENV_UNRESOLVED": "Could not read your terminal environment ({reason, select, timeout {timed out} other {failed}}), so tool detection may be inaccurate. Runyard is using a scan of common directories for now and will try again in the background.",
+  "notice.IDLE_STOPPED": "Stopped automatically after being idle for {minutes, plural, one {# minute} other {# minutes}}.",
+  "notice.PACKAGE_MANAGER_FALLBACK": "{wanted} was not found, so {used} is used instead.",
+  "notice.PATH_NEAR_LIMIT": "The playground path is {length, plural, one {# character} other {# characters}} long, close to the system limit of {limit, number}. Creation continues. A shorter name or a shorter library location avoids the problem.",
+  "notice.PORT_FALLBACK": "Port {wanted} is {reason, select, PORT_RESERVED {reserved by the system} other {in use}}, so this run uses port {actual}. The next run tries {wanted} first.",
+  "notice.PROCESS_EXITED": "The process exited.",
+  "notice.RELOADING": "Files changed, reloading.",
+  "notice.STOPPED_BY_USER": "You stopped this playground.",
+  "notice.TOOL_VERSION_UNTESTED": "{tool} {found} is newer than the range this template was tested with ({required}). It runs as usual but is untested."
+}

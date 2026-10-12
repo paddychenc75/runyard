@@ -1,5 +1,6 @@
 // 包的唯一入口：其他包只从 @runyard/i18n 导入
 
+export { cliCatalogs } from "./cli-catalogs.ts";
 export { createTestTranslator } from "./create-test-translator.ts";
 export {
   type Catalog,
