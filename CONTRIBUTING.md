@@ -8,7 +8,7 @@
 
 - Node：版本写在 `.node-version`（24.21.0）。`package.json` 的 `engines` 和 `pnpm-workspace.yaml` 的 `engineStrict` 会让版本不符的安装直接失败。
 - pnpm：版本写在 `package.json` 的 `packageManager` 字段（11.28.0）。CI 从这个字段读版本，不另写。
-- 换行：全部文本文件用 LF（见 `.gitattributes`），Windows 上也一样。不要在 Git 里打开会改换行的自动转换。
+- 换行：全部文本文件用 LF（见 `.gitattributes`），Windows 上也一样（Windows 的 CI 任务会检查这一点）。不要在 Git 里打开会改换行的自动转换。
 
 ```sh
 pnpm install --frozen-lockfile
@@ -34,7 +34,7 @@ pnpm install --frozen-lockfile
 
 ```
 feat(core): 增加运行状态机
-fix(platform): 修复 Windows 上进程树未完全结束
+fix(platform): 修复 macOS 上进程树未完全结束
 ci(repo): 增加 PR 流水线
 ```
 
@@ -76,7 +76,7 @@ node tooling/ci/check-title.ts --range origin/main..HEAD
 
 | 工作流 | 触发 | 内容 |
 | --- | --- | --- |
-| `.github/workflows/ci.yml` | 每个 PR、`main` | `lint`（Ubuntu）：PR 标题和提交信息格式、Biome、`pnpm check`。`test`（Ubuntu、`macos-26`、`windows-2025`，三个都必须通过）：类型检查、单元测试；macOS 和 Windows 上另外重跑 Biome 和 `pnpm check` |
+| `.github/workflows/ci.yml` | 每个 PR、`main` | `lint`（Ubuntu）：PR 标题和提交信息格式、Biome、`pnpm check`。`test`（Ubuntu、`macos-26`、`windows-2025`，三个都必须通过）：类型检查、单元测试；macOS 和 Windows 上另外重跑 Biome 和 `pnpm check`。第一版只支持 macOS：`windows-2025` 只跑与系统无关的代码（检查脚本、`protocol`、`i18n` 等不需要平台实现的包），依赖平台实现的测试在 macOS 和 Ubuntu 上跑，在 Windows 上通过唯一一套文档化的机制（标签 `platform-dependent`，暂定名，以测试手册为准）跳过，不在测试里写 `process.platform` 判断（决策记录 0013） |
 | `.github/workflows/security.yml` | 每个 PR、`main` | 依赖变更审查（`dependency-review-action`）；`pnpm audit` 审计闸门（`tooling/ci/audit-gate.ts`，只统计 high 和 critical 的正式依赖，按 `security/allowlist.toml` 过滤） |
 | `.github/workflows/nightly-security.yml` | 每晚（`main`） | 含开发依赖的全量审计、`pnpm audit signatures`、OSV-Scanner（只报告，结果在仓库的 Security 页）；失败时自动开 issue（标签 `security`） |
 

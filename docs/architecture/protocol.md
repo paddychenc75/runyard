@@ -8,12 +8,12 @@
 
 | 项 | 约定 | 出处 |
 | --- | --- | --- |
-| 通道 | 一条本机连接：macOS、Linux 是 Unix socket，Windows 是命名管道。不用 HTTP 端口 | §2.3、§5.1 |
+| 通道 | 一条本机连接：macOS、Linux 是 Unix socket；对调用方是不透明的地址，Windows 以后用命名管道。不用 HTTP 端口 | §2.3、§5.1 |
 | 编码 | UTF-8，一行一个 JSON 对象（NDJSON），以 `\n` 结尾 | §5.1 |
 | 单行上限 | 8 MB；超过则断开连接。二进制内容（请求面板的响应体）用 base64 | §5.1 |
 | 方向 | 全双工。客户端发请求，管理进程回响应并推送事件 | §5.1 |
-| 连接点 | macOS：`~/.runyard/run/supervisor.sock`（目录只有本人可访问）。Windows：命名管道 `\\.\pipe\runyard-<profile>-<用户标识>`，名字固定。socket 路径不超过 104 字节（macOS 实测上限，Linux 为 108），超了由平台层报明确的错误 | §5.1、0005 |
-| 单实例 | Windows 上管道本身就是锁；macOS、Linux 上先拿 `run/supervisor.lock` 的内核锁，拿到的才许删除残留 socket 文件并监听。算法见 [证据 0005](evidence/0005-supervisor-singleton-handshake.md) | 0005 |
+| 连接点 | macOS：`~/.runyard/run/supervisor.sock`（目录只有本人可访问）。Windows（以后）：命名管道 `\\.\pipe\runyard-<profile>-<用户标识>`，名字固定。socket 路径不超过 104 字节（macOS 实测上限，Linux 为 108），超了由平台层报明确的错误 | §5.1、0005 |
+| 单实例 | macOS、Linux 上先拿 `run/supervisor.lock` 的内核锁，拿到的才许删除残留 socket 文件并监听。算法见 [证据 0005](evidence/0005-supervisor-singleton-handshake.md) | 0005 |
 | profile | 区分正式版和开发版，让两者的管理进程、发现文件、管道互不干扰 | §5.1、§8.2 |
 
 ## 2. 握手（防冒充，双向质询）
@@ -126,4 +126,4 @@ type LogEntry =
 5. 未知方法返回哪个错误码；单个请求的超时由谁定。
 6. 提示码缺少的名字：空闲自动停止的日志行（“空闲 30 分钟，已自动停止”）、“没有 pnpm 改用 npm”的说明行，设计给了文字但没有给代码。
 7. 启动步骤枚举（`setupStep.<值>`）的取值。
-8. Windows 管道名里“用户标识”的取值方式。
+8. Windows（以后）管道名里“用户标识”的取值方式。

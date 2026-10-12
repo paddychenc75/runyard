@@ -1,6 +1,6 @@
 # 存储：磁盘上的文件、谁写、怎么升级
 
-管理进程和命令行读写的每一个文件。三个系统同一种布局，`~` 在 Windows 上是 `%USERPROFILE%`。形状的唯一出处是 `@runyard/protocol` 里每种文件的 zod 定义（计划）；本篇是写前说明。
+管理进程和命令行读写的每一个文件。各系统同一种布局（第一版只有 macOS；Windows 以后，`~` 将是 `%USERPROFILE%`）。形状的唯一出处是 `@runyard/protocol` 里每种文件的 zod 定义（计划）；本篇是写前说明。
 
 出处：技术设计 §4.2、§4.5、§5.4、§2.4；决策记录 [0005](decisions/0005-supervisor-singleton-handshake.md)、[0008](decisions/0008-log-capture-and-cleaning.md)、[0009](decisions/0009-toolchain-resolution-macos.md)、[0010](decisions/0010-trash-and-delete.md)；PRD #prd-agent-created、#prd-retention。字段级细节另参考了技术设计形成过程中的专家方案，已按设计修订；冲突处以设计为准。
 
@@ -85,7 +85,7 @@
 
 `cli.json`：`formatVersion`、`lang`（`en` 或 `zh-CN`；没有这个字段就是英文）。只由 `runyard config set lang <locale>` 写入，`--lang` 和环境变量 `RUNYARD_LANG` 不写它。放单独文件是因为 `--help` 和 `config` 在管理进程没起来时也要能用。
 
-`libraryRoot` 的位置提醒（0009）：macOS 上选在“桌面”“文档”“下载”之内时给警告；Windows 上同类警告是网盘同步目录。判断在平台层 `paths`。
+`libraryRoot` 的位置提醒（0009）：macOS 上选在“桌面”“文档”“下载”之内时给警告；Windows 以后：同类警告是网盘同步目录。判断在平台层 `paths`。
 
 ### 2.4 发现文件与锁（`run/`）
 
@@ -94,7 +94,7 @@
 | `supervisor.json` | `pid`、`startedAt`、`endpoint`（连接点）、`token`（握手口令，32 字节随机数）、`protocol`、`minClientProtocol`、产品版本、构建标识、`host`（`electron` 或 `node`）、`execPath` | 只有本人可读（权限 600）；先写临时文件再改名；`doctor --bundle` 打包前去掉 `token` |
 | `supervisor.lock` | 空文件 | macOS 用 `O_EXLOCK` 持有，进程一死由内核释放；Linux 用抽象 socket，没有文件 |
 | `supervisor.sock` | socket 文件 | 持锁者才许删除残留并监听 |
-| `runs/<runId>.json` | `runId`、`playgroundId`、`owner`、`pid`、`processStart`（操作系统给出的进程启动时间）、`cwd`、`port`、`command`、`startedAt`、`state`，Windows 另需运行标记（0006） | 只为崩溃恢复：下次启动逐个核对 pid 加启动时间，仍活着的整棵结束，标 `crashed`；运行期间的真相在内存里 |
+| `runs/<runId>.json` | `runId`、`playgroundId`、`owner`、`pid`、`processStart`（操作系统给出的进程启动时间）、`cwd`、`port`、`command`、`startedAt`、`state`，运行标记另需（0006，Windows 以后必须） | 只为崩溃恢复：下次启动逐个核对 pid 加启动时间，仍活着的整棵结束，标 `crashed`；运行期间的真相在内存里 |
 
 ### 2.5 日志（0008、§4.5）
 
@@ -110,7 +110,7 @@
 
 - 每个文件有整数 `formatVersion`；每种文件一条升级链（`vN` 到 `vN+1`），读入时在内存里升到最新，下次写入时落盘。升级链放在 `protocol`。
 - 读到比程序认识的**更新**的版本：只读不写，提示需要更新版本的 Runyard。这样旧命令行不会把新应用写的文件改坏。
-- 写入一律先写临时文件再改名；Windows 上改名覆盖遇到占用时重试。
+- 写入一律先写临时文件再改名；改名覆盖遇到占用时的重试（Windows 以后）。
 - 解析失败：把坏文件改名留存，索引从磁盘重扫，设置回到默认并提示一次。
 - 改动磁盘格式属于破坏性改动，要写决策记录（AGENTS.md 完成标准）。
 

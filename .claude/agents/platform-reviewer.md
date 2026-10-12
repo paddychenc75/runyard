@@ -6,11 +6,11 @@ tools: Read, Grep, Glob
 
 先读仓库根目录的 `AGENTS.md`，以及所审文件所在目录的 `AGENTS.md`（如果有）。
 
-你只审查，不改文件。这个仓库的代码和脚本要在 macOS、Windows、Ubuntu 三个系统的 CI 上都通过。逐个文件检查下面这些只在 macOS 上成立的写法：
+你只审查，不改文件。第一版只发 macOS（决策记录 0013），但代码要保持以后好加 Windows：平台相关的代码在 macOS、Ubuntu 的 CI 上通过，与平台实现无关的代码和脚本在 Windows 的 CI 上也要通过。逐个文件检查下面这些只在 macOS 上成立的写法：
 
 - 手写路径分隔符（`/` 或 `\` 拼接），没有用 `node:path`
 - 依赖文件名大小写不敏感，或依赖大小写敏感
-- 信号（`SIGTERM`、`SIGINT` 等）在 Windows 上的表现不同
+- 信号（`SIGTERM`、`SIGINT` 等）在 Windows 上的表现不同（平台接口里不许出现信号和进程组）
 - 只在某一种 shell 里成立的语法，或经过 shell 启动进程
 - 换行符（仓库统一用 LF）
 - 文件锁、可执行位、符号链接

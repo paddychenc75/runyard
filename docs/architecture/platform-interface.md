@@ -1,27 +1,27 @@
 # 平台层：接口、各系统的差别、契约测试
 
-系统差异的唯一出口。`@runyard/platform` 每个系统一份实现，业务代码只调用接口（决策记录 [0003](decisions/0003-platform-layer.md)）。算法不在这里重复，指向决策记录和证据文件。本篇是写前说明；接口的唯一出处将是包的入口导出和契约测试。
+系统差异的唯一出口。`@runyard/platform` 是一个接口加按系统分开的实现，业务代码只调用接口（决策记录 [0003](decisions/0003-platform-layer.md)、[0013](decisions/0013-macos-only-v1.md)）。第一版只写 `darwin` 实现和薄的 `linux` 实现，`win32` 以后再写；接口依据已实测的 Windows 行为设计，不假定 POSIX：接口里没有信号和进程组（进程身份 = pid + 启动时间），有 `PATH_LOCKED` 一类的错误码，`fs.trash` 可以失败而不是永久删除，连接点是不透明的地址。算法不在这里重复，指向决策记录和证据文件。本篇是写前说明；接口的唯一出处将是包的入口导出和契约测试。
 
-出处：技术设计 §3.2、§7.1、§7.2、§4.5、§4.8；决策记录 [0005](decisions/0005-supervisor-singleton-handshake.md)、[0006](decisions/0006-stop-process-tree.md)、[0009](decisions/0009-toolchain-resolution-macos.md)、[0010](decisions/0010-trash-and-delete.md)。
+出处：技术设计 §3.2、§7.1、§7.2、§4.5、§4.8；决策记录 [0005](decisions/0005-supervisor-singleton-handshake.md)、[0006](decisions/0006-stop-process-tree.md)、[0009](decisions/0009-toolchain-resolution-macos.md)、[0010](decisions/0010-trash-and-delete.md)、[0013](decisions/0013-macos-only-v1.md)。
 
 ## 1. 计划中的文件
 
 ```
 packages/platform/src/index.ts           Platform 接口、getPlatform()、AbsPath / PosixRelPath
 packages/platform/src/darwin/            macOS 实现
-packages/platform/src/win32/             Windows 实现；bin/ 放随包的 runyard-helper.exe（暂定名，后做）
+packages/platform/src/win32/             以后，v1 不写（Windows 实现；bin/ 放随包的 runyard-helper.exe，暂定名）
 packages/platform/src/linux/             薄实现：只组合 posix/，三组抛 NOT_SUPPORTED
 packages/platform/src/posix/             darwin 与 linux 共用的部分
-packages/platform/src/contract.test.ts   同一组契约测试，对每个实现各跑一遍
+packages/platform/src/contract.test.ts   同一组契约测试，对每个已有的实现（darwin、linux）各跑一遍；以后加 win32 时同一组测试直接对它跑
 ```
 
 规则：`getPlatform()` 是整个代码库唯一读 `process.platform` 的地方；平台实现之间不互相引用；`AbsPath`（本机格式绝对路径）和 `PosixRelPath`（永远用 `/` 的相对路径）是带标记的类型，普通字符串传不进去；文件和消息里的相对路径都用 `/`。`platform-contract` 检查（M1 加入）解析 `Platform` 的成员列表，核对契约测试里每个成员至少出现一次。
 
 ## 2. 方法清单与各系统差别
 
-| 成员 | 方法 | macOS | Windows | Linux（薄） |
+| 成员 | 方法 | macOS | Windows：以后（依据决策记录中的实测） | Linux（薄） |
 | --- | --- | --- | --- | --- |
-| `id` `arch` `caps` | 只读属性；`caps`：`gracefulStop`（`signal` 或 `none`）、`cloneCopy`、`symlinks`、`sandbox` | `signal` | `none` | 同 macOS |
+| `id` `arch` `caps` | 只读属性；`caps`：`gracefulStop`（`graceful` 或 `none`，不写信号）、`cloneCopy`、`symlinks`、`sandbox` | `graceful` | `none` | 同 macOS |
 | `paths` | `home` `stateDir` `defaultLibrary`；`validateName(name)`；`checkLength(p)`（`ok` `near-limit` `too-long`）；是否在网盘同步目录下；是否在桌面、文档、下载里（macOS，选资源库位置时警告） | 路径很宽；socket 路径超 104 字节报错 | 默认 260 字符上限，保守取 248 判断；保留设备名。名称校验**所有系统一致**：保留名和末尾的点、空格都拒绝 | 同 macOS，socket 上限 108 |
 | `env` | `load({ refresh?, cwd? })` 返回 `{ env, source, ms }`；`runDefaults()` | 向登录 shell 要环境，登录加交互，`env -0`，10 秒硬超时，缓存与后台刷新，见 0009 | 进程本来就继承完整环境；“重新检测”时从注册表重读，不要求重启 | 同 macOS |
 | `exec` | `which(name, env, cwd)`；`spawn({ argv, cwd, env, stdin })` 返回 `ManagedProcess`；`spawnDetached(argv, opts)` | 直接启动；子进程环境去掉 `ELECTRON_RUN_AS_NODE` | `.cmd` 垫片包一层 `cmd.exe` 并按两层规则转义；一律 `windowsHide`；`spawnDetached` 的 `via: 'wmi'` 在启动者放进“关闭即杀”的 Job 时用（0005） | 同 macOS |
@@ -35,7 +35,7 @@ packages/platform/src/contract.test.ts   同一组契约测试，对每个实现
 | `desktop` | `reveal` `openTerminalAt` `openInEditor` | 实现 | 实现 | 抛 `NOT_SUPPORTED` |
 | `cli` | `installShim(source)` | 在用户 bin 建符号链接 | 改注册表用户 `Path`（M2 后期，随桌面应用） | 抛 `NOT_SUPPORTED` |
 
-M1 必须实现的成员：除 `desktop`、`cli.installShim` 以外的全部（它们属于桌面应用）。`fs.trash` 的 Windows 实现依赖随包小工具，**M1 只做预检和接口，小工具随 Windows 预览版里程碑做**（0010）。
+M1 必须实现的成员：除 `desktop`、`cli.installShim` 以外的全部（它们属于桌面应用），只写 `darwin` 和薄 `linux`。Windows 一列整体推迟，不在 v1 实现；其中 `fs.trash` 的 Windows 实现依赖随包小工具，做 Windows 时再做（0010、0013）。接口里 `ProcRef` 的身份只含 pid 和启动时间。
 
 ## 3. 已定的算法（按决策记录，不重复）
 
@@ -50,10 +50,10 @@ M1 必须实现的成员：除 `desktop`、`cli.installShim` 以外的全部（�
 
 ## 4. 契约测试与测试替身
 
-- 同一组测试对每个实现各跑一遍，在 macOS、Windows、Ubuntu 的 CI 上运行；Linux 上标“不支持”的三组（`fs.trash`、`desktop`、`cli.installShim`）允许跳过，其余必须过。
+- 同一组测试对每个已有的实现各跑一遍，在 macOS 和 Ubuntu 的 CI 上运行；Windows 的 CI 任务只跑与系统无关的代码，需要平台实现的测试（包括这组契约测试）在 Windows 上通过唯一一套文档化的机制（标签 `platform-dependent`，暂定名，以测试手册为准）跳过，测试里不写 `process.platform` 判断。Linux 上标“不支持”的三组（`fs.trash`、`desktop`、`cli.installShim`）允许跳过，其余必须过。
 - 核心的单元测试用 `@runyard/testing` 里的假平台（内存实现、假时钟、假进程），与系统无关（技术设计 §3.2）。
 - 测试不读写真实的 `~/Runyard` 和 `~/.runyard`；回收站与废纸篓的测试只在临时目录里做。
-- Windows 上结束进程的任何测试都要核对创建时间，避免重演 K2 的事故（0006）。
+- 结束进程的任何测试都要核对启动时间，避免重演 K2 的事故（0006：Windows 上按 pid 误杀了系统进程）。
 
 ## 未定
 
