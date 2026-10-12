@@ -31,7 +31,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `packages/platform/` | 平台层：`Platform` 接口、`getPlatform()`、路径与名称校验、`darwin` 和薄 `linux` 实现、契约测试（目前有接口、paths、ipc、spawnDetached、exec、proc、ports 的实现，其余是占位，随后续 issue 加入） |
 | `packages/protocol/` | 所有跨进程约定（目前有错误码、提示码、枚举、`RunyardError` / `Notice` / `LogEntry` / `Owner`、分帧、`Frame`、握手消息、版本比对、方法与事件的登记表、`Playground` / `RunSnapshot`、磁盘文件格式与升级链） |
 | `packages/i18n/` | 文案、`createTranslator`、数字和时长格式、命令行语言解析（`resolveCliLocale`）、由中文文案生成的键和参数类型 |
-| `packages/core/` | 工具检测、运行引擎、资源库等业务逻辑（目前有日志的切行、解码和读取时清洗，以及运行状态机与进程生命周期） |
+| `packages/core/` | 工具检测、运行引擎、资源库等业务逻辑（目前有日志的切行、解码和读取时清洗，运行状态机与进程生命周期，以及资源库的项目创建、命名、索引和文件夹被动过的判断） |
 | `packages/testing/` | 测试替身：假时钟、假平台（含假进程、假端口、内存文件系统、假工具链）、临时主目录；只在 `*.test.ts` 里导入（决策记录 0014） |
 | `tooling/checks/` | 仓库检查脚本，`pnpm check` 的全部内容；`layers.json` 是包依赖规则的唯一出处 |
 | `tooling/biome/` | Biome 的 GritQL 规则（界面里不许写死文字，随 `biome.json` 在界面包和 renderer 出现时生效） |
