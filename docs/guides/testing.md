@@ -6,13 +6,14 @@
 
 ## 步骤
 
-1. 测试放在代码旁边：`foo.ts` 的测试是 `foo.test.ts`。用 Vitest，不重试（共用配置在 `tooling/vitest/base.ts`，不要在包里改测试规则）。
+1. 测试放在代码旁边：`foo.ts` 的测试是 `foo.test.ts`。用 Vitest，不重试（共用配置在 `tooling/vitest/base.ts`，不要在包里改测试规则，也不要在单个测试上写超时）。
 2. 判断这个测试需不需要平台实现：
    - 不需要（纯函数、协议形状、检查脚本、用 `@runyard/testing` 里的假平台的核心逻辑）：照常写 `foo.test.ts`。它在 macOS、Ubuntu、Windows 三个 CI 任务里都跑。
-   - 需要：文件名以 `.platform-dependent.test.ts` 结尾，如 `contract.platform-dependent.test.ts`。它在 macOS 和 Ubuntu 里跑，在 Windows 任务里不进入测试范围。
+   - 需要：文件名以 `.platform-dependent.test.ts` 结尾，如 `contract.platform-dependent.test.ts`。它在 macOS 和 Ubuntu 里跑，在 Windows 任务里不进入测试范围，并且在单独的“进程测试阶段”里跑（见下一节）。
 3. 这是仓库里**唯一**的“平台相关测试”跳过机制（决策记录 0013）。不要用别的办法：测试里不写系统判断（`process.platform`、`os.platform()` 等，`platform-branching` 检查会拦），不用 `.skipIf` 去按系统跳过，不在工作流里按系统挑文件。
 4. 一个包的测试若全部带这个后缀，Windows 上该包就没有测试可跑，这不算失败（共用配置在 Windows 上允许“没有测试”）。
-5. 用到真实文件系统、真实进程的测试只用临时目录和动态端口，不碰真实的 `~/Runyard` 和 `~/.runyard`，结束时清理自己起的东西；结束进程要同时核对 pid 和启动时间，不按名字找（决策记录 0006）。
+5. 用到真实文件系统、真实进程的测试只用临时目录和动态端口，不碰真实的 `~/Runyard` 和 `~/.runyard`，结束时清理自己起的东西；结束进程要同时核对 pid 和启动时间，不按名字找（决策记录 0006）。起的每个进程都要登记（`ProcessLedger`、`TrackedProcesses`，core 等包用 `@runyard/testing` 的 `registerSpawned`）；进程阶段每个文件结束后有统一守卫，登记过的进程还活着就结束它并让这个文件失败。
+   等待只等可观察的条件（端口监听了、文件出现了、进程退出了），上限给宽（几十秒）；不要 `sleep` 一个“应该够了”的时间。
 6. 平台接口加了成员，就在 `packages/platform/src/contract/` 里加契约用例（`describe("分组.成员", …)`）；`platform-contract` 检查会核对每个成员都出现过。起真进程、绑真端口的契约只对“就是当前系统”的实现注册（`ContractContext.native`），起的进程要逐个记账并在 teardown 核对无遗留。暂时没有实现的成员，登记在 `pending.contract.ts` 的清单里，实现它的人把那一行换成真用例。
 7. 跳过一个测试（`.skip`、`.todo`）必须在同一行或上一行写 issue 编号（`skips` 检查）。按系统跳过不算在内，用第 2 步的后缀。
 
@@ -37,10 +38,47 @@ expect(await fake.platform.ports.isFree(7100)).toBe("free");
 
 要点：`ignoresStop` 走强制结束路径；`addForeign` 用同一个 pid 加不同启动时间模拟进程号被复用；`ports.occupy` 布置被占用的端口；`tools.install` 布置工具和版本。用到 `@runyard/testing` 的包把它写进 `devDependencies`，只在 `*.test.ts` 里导入（`testing-imports` 检查）。需要真实目录时用 `createTempHome()`，把它的 `home` 传给平台，不读环境变量。
 
+## 两个阶段
+
+同一个后缀同时决定测试跑在哪个阶段（`tooling/vitest/base.ts` 里的两个 Vitest project）：
+
+| 阶段 | 包含 | 并发 | 命令 |
+| --- | --- | --- | --- |
+| 单元（`unit`） | 其余所有 `*.test.ts` | 各包并行，包内文件并行 | `pnpm test:unit` |
+| 进程（`process`） | 所有 `*.platform-dependent.test.ts` | 一次一个包（`turbo --concurrency=1`），包内一个工作进程、一次一个文件 | `pnpm test:process` |
+
+`pnpm test`（和 `pnpm verify` 里的测试部分）先跑单元阶段，通过后再跑进程阶段，所以起真进程的测试不会和别的测试抢 CPU。只跑一个包或一个阶段：`pnpm test:unit --filter @runyard/core`、`pnpm test:process --filter @runyard/platform`；只跑一个文件：`pnpm --filter @runyard/platform exec vitest run --project process src/spawn-detached`。
+
+新包照抄任一现有包的两行脚本（`test`: `vitest run --project unit`，`test:process`: `vitest run --project process --passWithNoTests`）和 `vitest.config.ts`，它的进程测试就自动归入进程阶段；`test-phases` 检查守着这两行。
+
+进程阶段的超时只在 `tooling/vitest/base.ts` 里定一处（单个测试 120 秒，钩子 60 秒）。数字依据是实测：见该文件里的注释和下面的预算。
+
+### 进程阶段的预算
+
+进程阶段的预算：**每个系统不超过 5 分钟**（CI 的 `test` 任务上限是 15 分钟，技术设计 §8.3 要求整条流水线保持在 10 分钟内）。2026-10-12 在 GitHub 的 runner 上连续 6 次完整 CI 的实测（阶段独占机器，起停 50 次、单实例每系列 20 轮）：
+
+| 系统（runner） | CPU 数 | 进程阶段耗时（6 次） | 单元阶段耗时 | 最慢的单个测试 |
+| --- | --- | --- | --- | --- |
+| `ubuntu-latest` | 4 | 94 到 119 秒 | 12 到 17 秒 | 约 24 秒（`ipc-single-instance` 八个启动者那两个） |
+| `macos-26` | 3 | 100 到 170 秒 | 16 到 24 秒 | 约 22 秒（同上） |
+| `windows-2025` | 4 | 6 到 9 秒（进程测试不进入范围，只有启动开销） | 19 到 30 秒 | — |
+| 本机 M3 Max | 16 | 约 40 秒 | 约 2 秒 | 约 7 秒 |
+
+占大头的是 `ipc-single-instance.platform-dependent.test.ts`（约 60 到 65 秒：四个系列各 20 轮，八个启动者的两个系列各约 20 秒，每轮要起 8 个 Node 进程，进程启动本身就是 CPU 活），其次是契约测试文件（约 20 到 40 秒，其中起停 50 次约 10 到 16 秒）。这些时间是真实工作量，不是等待；要缩短只能减轮数，但那是证据 0005 的每系列 20 轮，所以不减。新增的进程测试要先估好耗时，整个阶段超过预算就先和负责人商量，而不是调大预算或超时。
+
+最慢的系统（macOS）上限 170 秒离预算还有 1.7 倍余量；超过 4 分钟就要查原因，不要先调预算。
+
+## 偶发失败的规则
+
+- 必过检查失败了，不许直接重跑了事：先开一个带 `flaky` 标签的 issue，写上失败的运行链接、哪个测试、哪个系统，再重跑。
+- 同一个测试偶发失败两次：修好它，或者把它写进隔离名单 `tooling/vitest/quarantine.json`。名单的每一项要有原因、issue 编号和到期日，经 PR 评审；到期日之前这个测试被跳过，到期后它重新参与失败，同时 `pnpm check` 的 `quarantine` 检查失败，逼着有人修好或重新评审。`id` 的写法是 `相对仓库根的测试文件路径::describe 标题 > 测试标题`。
+- 没有自动化的部分：开 `flaky` issue 和“偶发两次”的计数靠人（和审查者）；名单只管到期，不管该不该进名单。
+
 ## 验证
 
 ```sh
-pnpm test --filter @runyard/platform
+pnpm test --filter @runyard/platform   # 先单元阶段，再进程阶段
+pnpm test:process --filter @runyard/platform   # 只跑进程阶段
 pnpm check
 ```
 
@@ -49,6 +87,7 @@ pnpm check
 ## 完成标准
 
 - 需要平台实现的测试都带 `.platform-dependent.test.ts` 后缀，其余不带。
+- 起了进程的测试把进程登记了，没有固定睡眠，没有单个测试上的超时。
 - 测试里没有系统判断，也没有没带编号的跳过。
 - 新的平台接口成员在契约测试里出现过。
 - 测试在 macOS 和 Ubuntu 上通过，Windows 任务只跑平台无关的部分。

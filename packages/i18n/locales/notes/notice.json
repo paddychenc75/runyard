@@ -18,11 +18,6 @@
     "reason": "回退原因：PORT_OCCUPIED（被占用）或 PORT_RESERVED（被系统保留）；用 select 选词",
     "actual": "本次实际使用的端口号；原样显示，不加千分位"
   },
-  "notice.PORT_NOT_RELEASED": {
-    "port": "停止的那次运行用的端口号；原样显示，不加千分位",
-    "waitedMs": "停止后实际等了多少毫秒，非负整数；文案里写复数",
-    "limitMs": "等待的上限（毫秒），正整数，现在是 3000；文案里写复数"
-  },
   "notice.PROCESS_EXITED": {
     "exitCode": "进程的退出码（整数），可选；没传时翻译函数自动传 none，文案用 select 的 none 分支",
     "signal": "终止进程的信号名，例如 SIGKILL，可选；原样显示，不翻译；没传时同上"

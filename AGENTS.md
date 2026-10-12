@@ -59,8 +59,6 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `@runyard/testing` | `@runyard/protocol`、`@runyard/platform`、`@runyard/core`（只在测试里） | 已有 |
 <!-- generated:layers 结束 -->
 
-`layers` 检查只读各包的 `package.json` 和 `tsconfig.json`（依赖声明和 project references），不扫描源码里的 `import`。源码里导入了没有声明的包，由 `tsc -b` 拦住（类型检查报错）；所以别单凭 `layers` 通过就认为导入方向没问题，两个都要绿（`pnpm verify` 两个都跑）。
-
 下面几条在对应的包建立时生效（现在多数包还没建，先知道；出处是技术设计 §3.2）：
 
 - `electron` 只许出现在桌面应用里；界面进程（renderer）里不许用 Node 接口。
@@ -79,12 +77,13 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 
 ```sh
 pnpm install                 # 安装依赖
-pnpm verify                  # 交付前必跑：lint + typecheck + check + 受影响的包的测试
+pnpm verify                  # 交付前必跑：lint + typecheck + check + 受影响的包的测试（两个阶段）
 pnpm check                   # 全部仓库检查（依赖规则、文档、术语、PRD 锚点等）
 pnpm lint                    # Biome：格式和代码规则，只检查不修改
 pnpm format                  # Biome：按规则重排格式
 pnpm typecheck               # tsc -b，全仓库类型检查
-pnpm test                    # 全部包的单元测试
+pnpm test                    # 全部包的测试：先单元阶段，再进程阶段（起真进程的 *.platform-dependent.test.ts，一次一个包）
+pnpm test:unit               # 只跑单元阶段；pnpm test:process 只跑进程阶段
 pnpm test --filter <包名>     # 只跑一个包的测试，如 pnpm test --filter @runyard/protocol
 pnpm generate                # 重新生成文档里由脚本生成的部分
 pnpm deps:lookup <包名>       # 查一个依赖的候选版本、发布日期和安全公告
@@ -125,6 +124,7 @@ Claude Code 的钩子：改完文件后对那一个文件跑 Biome；结束回�
 ## 禁止事项
 
 - 不要绕过检查：不放松规则、不加例外、不删测试、不跳过测试来让检查变绿。觉得检查错了，停下来问。
+- 必过检查失败了不要直接重跑：先开带 `flaky` 标签的 issue 并附运行链接（`docs/guides/testing.md`“偶发失败的规则”）。
 - 不要无说明地压掉报错（`biome-ignore`、`@ts-expect-error`、跳过测试）：旁边必须有带 issue 编号的注释。
 - 不要手改 `package.json` 里的版本号，不要写 `^`、`~`、`latest`。加或升级依赖之前按手册查公告（OSV、GitHub 公告库、项目公告页三处）、查年龄（满 15 天）、记进 `docs/architecture/dependencies.md`。
 - 不要设 `dangerouslyAllowAllBuilds`，不要不看脚本就批准依赖的安装脚本，不要用 `--force` 或 `--no-frozen-lockfile`。

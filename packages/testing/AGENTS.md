@@ -29,6 +29,7 @@
 ## 子目录地图
 
 - `src/fake-clock.ts`、`src/fake-ports.ts`、`src/memory-fs.ts`、`src/fake-processes.ts`（类型在 `process-behavior.ts`）、`src/fake-toolchain.ts`、`src/fake-platform.ts`、`src/temp-home.ts`：每个旁边有同名 `.test.ts`
+- `src/spawned-registry.ts`：`registerSpawned(platform, ref)`，真进程测试用它把起的进程登记给进程测试阶段的遗留进程守卫（文件结束时还活着就失败）
 - `src/run-example.test.ts`：“怎样给一次运行写单元测试”的示例，`docs/guides/testing.md` 引用它
 
 ## 测试

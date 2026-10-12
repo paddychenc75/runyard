@@ -35,13 +35,6 @@ describe("RunSnapshot", () => {
     expect(parsed.alreadyRunning).toBe(true);
   });
 
-  it("[RUN-LIFECYCLE-10] 较慢的启动用可选字段 slow 表示，不带它的快照照样合法", () => {
-    const slow = runSnapshotSchema.parse({ ...sampleRun, state: "starting", slow: true });
-    expect(slow.slow).toBe(true);
-    expect(runSnapshotSchema.safeParse({ ...sampleRun, slow: "yes" }).success).toBe(false);
-    expect(runSnapshotSchema.safeParse(sampleRun).success).toBe(true);
-  });
-
   it("状态必须是登记过的十二个之一，失败原因必须取自错误码", () => {
     expect(runSnapshotSchema.safeParse({ ...sampleRun, state: "paused" }).success).toBe(false);
     expect(

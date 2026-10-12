@@ -1,4 +1,5 @@
 import type { Platform, ProcRef } from "../platform.ts";
+import { registerSpawned } from "../test-support/spawned-registry.ts";
 
 // 测试里起的每个进程都记账：pid 加启动时间。teardown 逐个核对有没有活着的，
 // 活着的只在身份对得上时才结束（绝不按 pid 或名字乱杀，决策记录 0006），然后让测试失败。
@@ -17,12 +18,24 @@ export class ProcessLedger {
     const identity = await this.#platform.proc.identity(pid);
     if (!identity) return null;
     const ref = { pid, startTime: identity.startTime };
-    this.#refs.set(pid, ref);
+    this.add(ref);
     return ref;
   }
 
   add(ref: ProcRef): void {
     this.#refs.set(ref.pid, ref);
+    // 同时登记到进程测试阶段的兜底守卫：文件结束时还活着的进程会让这个文件失败
+    registerSpawned({
+      pid: ref.pid,
+      alive: async () => (await this.#platform.proc.identity(ref.pid))?.startTime === ref.startTime,
+      kill: () => {
+        try {
+          process.kill(ref.pid, "SIGKILL");
+        } catch {
+          // 刚好退出了
+        }
+      },
+    });
   }
 
   get refs(): ProcRef[] {

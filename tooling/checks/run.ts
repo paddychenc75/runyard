@@ -21,9 +21,11 @@ import { platformBranching } from "./platform-branching.ts";
 import { platformContract } from "./platform-contract.ts";
 import { prdAnchorsKept } from "./prd-anchors-kept.ts";
 import { prdRefs } from "./prd-refs.ts";
+import { quarantine } from "./quarantine.ts";
 import { readmeSync } from "./readme-sync.ts";
 import { skips } from "./skips.ts";
 import { terms } from "./terms.ts";
+import { testPhases } from "./test-phases.ts";
 import { testingImports } from "./testing-imports.ts";
 import { uiStrings } from "./ui-strings.ts";
 import type { Check } from "./workspace.ts";
@@ -51,6 +53,8 @@ const checks: Check[] = [
   readmeSync,
   adrIndex,
   skips,
+  quarantine,
+  testPhases,
   platformContract,
   platformBranching,
   testingImports,
