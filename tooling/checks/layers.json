@@ -3,6 +3,7 @@
   "packages": {
     "@runyard/protocol": { "path": "packages/protocol", "allow": [] },
     "@runyard/tokens": { "path": "packages/tokens", "allow": [] },
+    "@runyard/i18n": { "path": "packages/i18n", "allow": ["@runyard/protocol"] },
     "@runyard/platform": { "path": "packages/platform", "allow": ["@runyard/protocol"] },
     "@runyard/core": {
       "path": "packages/core",
@@ -18,7 +19,13 @@
     },
     "runyard": {
       "path": "packages/cli",
-      "allow": ["@runyard/protocol", "@runyard/platform", "@runyard/client", "@runyard/core"]
+      "allow": [
+        "@runyard/protocol",
+        "@runyard/platform",
+        "@runyard/client",
+        "@runyard/core",
+        "@runyard/i18n"
+      ]
     },
     "@runyard/testing": {
       "path": "packages/testing",

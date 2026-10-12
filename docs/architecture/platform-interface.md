@@ -1,6 +1,6 @@
 # 平台层：接口、各系统的差别、契约测试
 
-系统差异的唯一出口。`@runyard/platform` 是一个接口加按系统分开的实现，业务代码只调用接口（决策记录 [0003](decisions/0003-platform-layer.md)、[0013](decisions/0013-macos-only-v1.md)）。第一版只写 `darwin` 实现和薄的 `linux` 实现，`win32` 以后再写；接口依据已实测的 Windows 行为设计，不假定 POSIX：接口里没有信号和进程组（进程身份 = pid + 启动时间），有 `PATH_LOCKED` 一类的错误码，`fs.trash` 可以失败而不是永久删除，连接点是不透明的地址。算法不在这里重复，指向决策记录和证据文件。本篇是写前说明；接口的唯一出处将是包的入口导出和契约测试。
+系统差异的唯一出口。`@runyard/platform` 是一个接口加按系统分开的实现，业务代码只调用接口（决策记录 [0003](decisions/0003-platform-layer.md)、[0013](decisions/0013-macos-only-v1.md)）。第一版只写 `darwin` 实现和薄的 `linux` 实现，`win32` 以后再写；接口依据已实测的 Windows 行为设计，不假定 POSIX：接口里没有信号和进程组（进程身份 = pid + 启动时间），有 `PATH_LOCKED` 一类的错误码，`fs.trash` 可以失败而不是永久删除，连接点是不透明的地址。算法不在这里重复，指向决策记录和证据文件。接口的唯一出处是包的入口导出（`packages/platform/src/platform.ts`）和契约测试；本篇解释各系统的差别。接口已定全，实现按块随 #25 到 #28 落地，没落地的块是占位。
 
 出处：技术设计 §3.2、§7.1、§7.2、§4.5、§4.8；决策记录 [0005](decisions/0005-supervisor-singleton-handshake.md)、[0006](decisions/0006-stop-process-tree.md)、[0009](decisions/0009-toolchain-resolution-macos.md)、[0010](decisions/0010-trash-and-delete.md)、[0013](decisions/0013-macos-only-v1.md)。
 
@@ -50,14 +50,14 @@ M1 必须实现的成员：除 `desktop`、`cli.installShim` 以外的全部（�
 
 ## 4. 契约测试与测试替身
 
-- 同一组测试对每个已有的实现各跑一遍，在 macOS 和 Ubuntu 的 CI 上运行；Windows 的 CI 任务只跑与系统无关的代码，需要平台实现的测试（包括这组契约测试）在 Windows 上通过唯一一套文档化的机制（标签 `platform-dependent`，暂定名，以测试手册为准）跳过，测试里不写 `process.platform` 判断。Linux 上标“不支持”的三组（`fs.trash`、`desktop`、`cli.installShim`）允许跳过，其余必须过。
+- 同一组测试对每个已有的实现各跑一遍，在 macOS 和 Ubuntu 的 CI 上运行；Windows 的 CI 任务只跑与系统无关的代码，需要平台实现的测试（包括这组契约测试）在 Windows 上通过唯一一套文档化的机制（标记 `platform-dependent`，文件名后缀 `.platform-dependent.test.ts`，见 `docs/guides/testing.md`）跳过，测试里不写 `process.platform` 判断。Linux 上标“不支持”的三组（`fs.trash`、`desktop`、`cli.installShim`）允许跳过，其余必须过。
 - 核心的单元测试用 `@runyard/testing` 里的假平台（内存实现、假时钟、假进程），与系统无关（技术设计 §3.2）。
 - 测试不读写真实的 `~/Runyard` 和 `~/.runyard`；回收站与废纸篓的测试只在临时目录里做。
 - 结束进程的任何测试都要核对启动时间，避免重演 K2 的事故（0006：Windows 上按 pid 误杀了系统进程）。
 
 ## 未定
 
-1. `ManagedProcess`、`ProcRef`、`TrashResult`、`WatchOptions`、`NameProblem`、`ToolCandidate`、`ShellInfo` 的字段（设计只给了名字和少数字段）。
+1. 已定的字段在 `platform.ts` 里：`ProcRef`（pid 加启动时间，毫秒）、`ManagedProcess`、`ExitInfo`（只有退出码，没有信号）、`TrashResult`、`WatchOptions`、`NameProblem`（代码，不是句子）、`ToolCandidate`、`ShellInfo`。随各块实现再调整时，同时改契约测试。
 2. 最初方案还有 `exec.resolve`、`exec.tokenize`、`ports.nextFree` / `waitReleased`、`fs.copyTree` / `removeTree` / `lockers`、`tools.isStub` 等；设计 §7.1 合并时没有保留。哪些需要，实现时再决定。
 3. 伪终端不在平台层：node-pty 只在桌面应用的终端进程里（设计 §3.2 规则 6），最初方案里平台层的 `pty` 一组不做。
 4. Linux 上占用者查询的实现（`ss` 或 `/proc`）；Linux 上 `isFree` 对小于 1024 的端口的处理。

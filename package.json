@@ -16,7 +16,8 @@
     "check": "node tooling/checks/run.ts",
     "verify": "pnpm lint && pnpm typecheck && pnpm check && turbo run test --affected",
     "deps:lookup": "node tooling/scripts/deps-lookup.ts",
-    "generate": "node tooling/scripts/generate.ts"
+    "generate": "node tooling/scripts/generate.ts",
+    "i18n:build": "node packages/i18n/build/build.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",

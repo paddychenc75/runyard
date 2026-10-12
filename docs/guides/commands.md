@@ -22,6 +22,7 @@
 | `pnpm typecheck` | `tsc -b`，按 project references 检查全仓库的类型 |
 | `pnpm check` | 全部仓库检查，脚本在 `tooling/checks/`，清单见 `tooling/checks/run.ts`。每条报错都写明哪里错、怎么改 |
 | `pnpm generate` | 重新生成由脚本生成的文档内容（根 `AGENTS.md` 里的包依赖表，`docs/reference/` 里的协议参考）。改了 `tooling/checks/layers.json`、新建了包，或改了 `packages/protocol` 里的方法、事件、错误码之后运行 |
+| `pnpm i18n:build` | 从 `packages/i18n/locales/zh-CN/*.json` 生成 `packages/i18n/generated/messages.d.ts`（文案的键和参数类型）。改了中文文案之后运行 |
 | `pnpm deps:lookup <包名>` | 列出一个依赖最近 10 个稳定版本、发布日期、距今天数，并查 OSV 和 GitHub 公告库。用法见 `docs/guides/add-a-dependency.md` |
 
 ## 安装
