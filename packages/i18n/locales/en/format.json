@@ -1,0 +1,10 @@
+{
+  "format.duration.days": "{count, plural, one {# day} other {# days}}",
+  "format.duration.hours": "{count, plural, one {# hr} other {# hr}}",
+  "format.duration.minutes": "{count, plural, one {# min} other {# min}}",
+  "format.duration.seconds": "{count, plural, one {# sec} other {# sec}}",
+  "format.relative.days": "{count, plural, one {# day ago} other {# days ago}}",
+  "format.relative.hours": "{count, plural, one {# hr ago} other {# hr ago}}",
+  "format.relative.justNow": "just now",
+  "format.relative.minutes": "{count, plural, one {# min ago} other {# min ago}}"
+}

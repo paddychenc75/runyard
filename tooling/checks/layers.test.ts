@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join, posix } from "node:path";
 import { describe, expect, it } from "vitest";
 import { layers } from "./layers.ts";
 import { makeRepo } from "./test-helpers.ts";
@@ -96,5 +98,51 @@ describe("layers 检查", () => {
         .run(root)
         .some((e) => e.includes("根 tsconfig.json 的 references 里没有 packages/platform")),
     ).toBe(true);
+  });
+});
+
+// 用仓库真实的 layers.json 核对 @runyard/i18n 的位置（技术设计 §3.2）：
+// 只有命令行（以后还有界面）能导入它；管理进程一侧的五个包不许，它自己只许导入 protocol
+describe("layers 检查：@runyard/i18n 的规则", () => {
+  const real = JSON.parse(
+    readFileSync(join(import.meta.dirname, "layers.json"), "utf8"),
+  ) as typeof rules;
+  const pathOf = (name: string) => (real.packages as Record<string, { path: string }>)[name]?.path;
+
+  // 造一个只有 from 和 to 两个包的仓库，from 声明并引用了 to
+  function repoWhere(from: string, to: string): string {
+    const fromPath = pathOf(from) as string;
+    const toPath = pathOf(to) as string;
+    return makeRepo({
+      "tooling/checks/layers.json": real,
+      "tsconfig.json": { references: [{ path: fromPath }, { path: toPath }] },
+      [`${fromPath}/package.json`]: { name: from, dependencies: { [to]: "workspace:*" } },
+      [`${fromPath}/tsconfig.json`]: {
+        references: [{ path: posix.relative(fromPath, toPath) }],
+      },
+      [`${toPath}/package.json`]: { name: to },
+      [`${toPath}/tsconfig.json`]: { references: [] },
+    });
+  }
+
+  it.each([
+    "@runyard/protocol",
+    "@runyard/platform",
+    "@runyard/core",
+    "@runyard/supervisor",
+    "@runyard/client",
+  ])("拒绝 %s 导入 @runyard/i18n", (name) => {
+    const errors = layers.run(repoWhere(name, "@runyard/i18n"));
+    expect(errors.some((e) => e.includes(`不允许 ${name} 依赖它`))).toBe(true);
+  });
+
+  it("拒绝 @runyard/i18n 导入 protocol 以外的内部包", () => {
+    const errors = layers.run(repoWhere("@runyard/i18n", "@runyard/core"));
+    expect(errors.some((e) => e.includes("不允许 @runyard/i18n 依赖它"))).toBe(true);
+  });
+
+  it("命令行可以导入 @runyard/i18n，@runyard/i18n 可以导入 protocol", () => {
+    expect(layers.run(repoWhere("runyard", "@runyard/i18n"))).toEqual([]);
+    expect(layers.run(repoWhere("@runyard/i18n", "@runyard/protocol"))).toEqual([]);
   });
 });

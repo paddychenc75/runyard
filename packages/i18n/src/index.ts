@@ -1,0 +1,35 @@
+// 包的唯一入口：其他包只从 @runyard/i18n 导入
+
+export { createTestTranslator } from "./create-test-translator.ts";
+export {
+  type Catalog,
+  createTranslator,
+  type Translate,
+  type Translator,
+  type TranslatorOptions,
+} from "./create-translator.ts";
+export { createFormat, type Format } from "./format.ts";
+export {
+  fallbackLocale,
+  isLocale,
+  type Locale,
+  locales,
+  type PlatformId,
+  sourceLocale,
+} from "./locale.ts";
+export type { Localized } from "./localized.ts";
+export type { MessageValue, MessageValues, TagFormatter } from "./message-format.ts";
+export type {
+  CodeMessages,
+  ErrorMessageField,
+  MessageKey,
+  MessageMap,
+  Messages,
+  ValuesArgs,
+} from "./messages.ts";
+export {
+  type CliLocaleInput,
+  type CliLocaleResolution,
+  type CliLocaleSource,
+  resolveCliLocale,
+} from "./resolve-cli-locale.ts";
