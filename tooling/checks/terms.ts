@@ -13,6 +13,8 @@ export interface Term {
   id: string;
   bannedZh: string[];
   bannedEn: string[];
+  /** 界面英文列：中文术语在英文文案里对应的词；“—”表示还没规定，为空 */
+  en: string[];
 }
 
 const cellItems = (cell: string) =>
@@ -24,7 +26,9 @@ const cellItems = (cell: string) =>
 // 读术语表里的那张表，按表头的名字找列
 export function parseGlossary(text: string): { terms: Term[]; errors: string[] } {
   const terms: Term[] = [];
-  let columns: { zh: number; id: number; bannedZh: number; bannedEn: number } | undefined;
+  let columns:
+    | { zh: number; id: number; bannedZh: number; bannedEn: number; en: number }
+    | undefined;
   for (const line of text.split("\n")) {
     if (!line.trim().startsWith("|")) continue;
     const cells = line
@@ -38,6 +42,7 @@ export function parseGlossary(text: string): { terms: Term[]; errors: string[] }
         id: cells.indexOf("代码标识符"),
         bannedZh: cells.indexOf("禁用（中文）"),
         bannedEn: cells.indexOf("禁用（英文）"),
+        en: cells.indexOf("界面英文"),
       };
       continue;
     }
@@ -47,9 +52,13 @@ export function parseGlossary(text: string): { terms: Term[]; errors: string[] }
       id: (cells[columns.id] ?? "").replaceAll("`", ""),
       bannedZh: cellItems(cells[columns.bannedZh] ?? ""),
       bannedEn: cellItems(cells[columns.bannedEn] ?? "").map((word) => word.toLowerCase()),
+      en: cellItems(cells[columns.en] ?? ""),
     });
   }
-  if (columns === undefined || Object.values(columns).includes(-1)) {
+  if (
+    columns === undefined ||
+    [columns.zh, columns.id, columns.bannedZh, columns.bannedEn].includes(-1)
+  ) {
     return {
       terms: [],
       errors: [

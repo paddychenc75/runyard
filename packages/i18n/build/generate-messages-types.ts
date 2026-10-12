@@ -1,3 +1,4 @@
+import { codeKeyOf } from "./code-families.ts";
 import { paramTypesOf } from "./icu-params.ts";
 
 // 把中文（源语言）文案生成 generated/messages.d.ts 的内容。纯函数，不读文件。
@@ -5,8 +6,6 @@ import { paramTypesOf } from "./icu-params.ts";
 // （src/messages.ts），文案 JSON 里同名前缀的键在这里跳过，免得出现第二个出处。
 
 export type CatalogFile = Readonly<Record<string, string>>;
-
-export const codeKeyPrefixes = ["errors.", "notice.", "runState."] as const;
 
 const IDENTIFIER = /^[A-Za-z_$][\w$]*$/;
 const q = (text: string) => JSON.stringify(text);
@@ -16,7 +15,7 @@ export function generateMessagesTypes(files: Readonly<Record<string, CatalogFile
   const entries = new Map<string, Map<string, string>>();
   for (const [file, messages] of Object.entries(files)) {
     for (const [key, message] of Object.entries(messages)) {
-      if (codeKeyPrefixes.some((prefix) => key.startsWith(prefix))) continue;
+      if (codeKeyOf(key)) continue;
       if (entries.has(key)) throw new Error(`键 ${key} 在 ${file} 里重复：一个键只许出现在一处`);
       try {
         entries.set(key, paramTypesOf(message));

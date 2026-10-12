@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { generate, protocolDefs, writeGenerated } from "../scripts/generate.ts";
 import type { ProtocolDefs } from "../scripts/render-reference.ts";
 import { generatedFresh } from "./generated-fresh.ts";
-import { makeRepo } from "./test-helpers.ts";
+import { I18N_GOOD, makeRepo } from "./test-helpers.ts";
 
 const BEGIN = "<!-- generated:layers 开始（由 pnpm generate 生成，不要手改） -->";
 const END = "<!-- generated:layers 结束 -->";
@@ -17,6 +17,7 @@ const LAYERS = {
 
 function repo(agents: string): string {
   return makeRepo({
+    ...I18N_GOOD,
     "AGENTS.md": agents,
     "tooling/checks/layers.json": LAYERS,
     "packages/protocol/package.json": { name: "@runyard/protocol" },
@@ -46,7 +47,12 @@ describe("generated-fresh 检查", () => {
 
   describe("docs/reference/ 里的协议参考", () => {
     const AGENTS = `${BEGIN}\n${END}\n`;
-    const REFERENCE = ["docs/reference/protocol.md", "docs/reference/codes.md"];
+    const REFERENCE = [
+      "docs/reference/protocol.md",
+      "docs/reference/codes.md",
+      "docs/reference/strings.md",
+      "packages/i18n/generated/messages.d.ts",
+    ];
 
     function freshRepo(): string {
       const root = repo(AGENTS);
@@ -87,12 +93,31 @@ describe("generated-fresh 检查", () => {
       expect(generatedFresh.run(root).join()).toContain("docs/reference/codes.md");
     });
 
+    it("改了中文文案没重新生成：类型文件和文案对照表都过期", () => {
+      const root = freshRepo();
+      const file = join(root, "packages/i18n/locales/zh-CN/library.json");
+      writeFileSync(
+        file,
+        JSON.stringify({
+          ...JSON.parse(readFileSync(file, "utf8")),
+          "library.rename.title": "改名 {name}",
+        }),
+      );
+      const errors = generatedFresh.run(root).join("\n");
+      expect(errors).toContain("packages/i18n/generated/messages.d.ts");
+      expect(errors).toContain("docs/reference/strings.md");
+      expect(errors).toContain("packages/i18n/locales/");
+    });
+
     it("协议的定义变了而文档没重新生成：按新定义算，旧文档就是过期的", () => {
       const root = freshRepo();
       const { "run.stopAll": _removed, ...methods } = protocolDefs.methods;
       const changed: ProtocolDefs = { ...protocolDefs, methods };
       const stale = generate(root, changed).filter((file) => !file.fresh);
       expect(stale.map((file) => file.path)).toEqual(["docs/reference/protocol.md"]);
+      expect(readFileSync(join(root, "docs/reference/strings.md"), "utf8")).toContain(
+        "| library.empty.title | 还没有项目 | No playgrounds yet |",
+      );
     });
 
     it("重新生成之后恢复通过", () => {

@@ -1,12 +1,17 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
+import { buildMessagesTypes } from "../../packages/i18n/build/build.ts";
+import { renderStrings } from "../../packages/i18n/build/render-strings.ts";
 import * as protocol from "../../packages/protocol/src/index.ts";
+import { fallbackLocale, readCatalogs, sourceLocale } from "../checks/i18n-catalogs.ts";
 import { type ProtocolDefs, renderCodes, renderProtocol } from "./render-reference.ts";
 
 // pnpm generate：重新生成“由别的文件推导出来”的文档内容，保证只有一个出处。
-// 两类生成物：
+// 三类生成物：
 // 1. 根 AGENTS.md 里的包依赖表，来自 tooling/checks/layers.json（技术设计 §3.3），只替换两行标记之间。
 // 2. docs/reference/ 里的协议参考和登记表，来自 packages/protocol 的 zod 定义，整个文件都是生成的。
+// 3. 国际化：packages/i18n/generated/messages.d.ts（键和参数类型，来自中文文案）和 docs/reference/strings.md
+//    （一行一个键的文案对照表，来自 locales/）。pnpm i18n:build 只生成前者；pnpm generate 两个都生成。
 // generated-fresh 检查（tooling/checks/generated-fresh.ts）用同一份代码核对生成物是否最新。
 
 const LAYERS_FILE = "tooling/checks/layers.json";
@@ -94,6 +99,16 @@ export function generate(root: string, defs: ProtocolDefs = protocolDefs): Gener
     layersFile(root),
     wholeFile(root, "docs/reference/protocol.md", renderProtocol(defs)),
     wholeFile(root, "docs/reference/codes.md", renderCodes(defs)),
+    wholeFile(
+      root,
+      "packages/i18n/generated/messages.d.ts",
+      buildMessagesTypes(join(root, "packages/i18n")),
+    ),
+    wholeFile(
+      root,
+      "docs/reference/strings.md",
+      renderStrings(readCatalogs(root), sourceLocale, fallbackLocale),
+    ),
   ];
 }
 
