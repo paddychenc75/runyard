@@ -166,5 +166,5 @@ trashWin(dir, regenerable):
 ## 12. 证据
 
 - 合并的 PR：#3（`feat(spikes): K9 废纸篓与回收站技术验证`）。
-- GitHub Actions 运行（`spike/k9-trash-rename` 分支，均成功）：[38172395503](https://github.com/paddychenc75/runyard/actions/runs/38172395503)（最后一轮，含全部实验）；[38170982897](https://github.com/paddychenc75/runyard/actions/runs/38170982897)（进度回调中止永久删除）；[38167815266](https://github.com/paddychenc75/runyard/actions/runs/38167815266)（去掉超长路径干扰、加预检）。
+- GitHub Actions 运行（K9 实验分支，已删除，均成功）：[38172395503](https://github.com/paddychenc75/runyard/actions/runs/38172395503)（最后一轮，含全部实验）；[38170982897](https://github.com/paddychenc75/runyard/actions/runs/38170982897)（进度回调中止永久删除）；[38167815266](https://github.com/paddychenc75/runyard/actions/runs/38167815266)（去掉超长路径干扰、加预检）。
 - 依赖：实验用的 `vite@8.3.1`（发布 2026-09-24）在 Windows 运行器上于一次性的测试文件夹里按 14 天规则安装；对照用过 `trash@10.1.1`，因其传递依赖 `braces@3.0.3` 有高危公告（GHSA-vfj7-8cjw-p6xm）已从实验里移除。两者都不进产品。

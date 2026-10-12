@@ -6,12 +6,6 @@ import { join } from "node:path";
 
 // 不进仓库或不属于仓库内容的目录：依赖、构建物、本机归档的残留、渲染出的图片
 const SKIP_DIRS = new Set(["node_modules", ".git", ".tsbuild", ".turbo", "dist", "coverage"]);
-// 技术验证（spikes/）是一次性实验，M0a 结束时整个删除：它的文件不参与任何仓库检查，
-// 这是全部检查共用的唯一忽略点（只保留 spikes/README.md，让这份说明本身仍被文档检查覆盖）。
-// 依赖安全不在这里管：审计和依赖审查读根锁文件，spikes 有自己的锁文件和 14 天规则。
-export const SPIKES_DIR = "spikes";
-const SPIKES_KEPT = `${SPIKES_DIR}/README.md`;
-
 const SKIP_PATHS = new Set([
   "docs/discussions",
   "docs/prototype",
@@ -33,9 +27,8 @@ export function listFiles(root: string): string[] {
     for (const entry of readdirSync(join(root, dir), { withFileTypes: true })) {
       const path = dir === "" ? entry.name : `${dir}/${entry.name}`;
       if (entry.isDirectory()) {
-        if (path.startsWith(`${SPIKES_DIR}/`)) continue;
         if (!SKIP_DIRS.has(entry.name) && !SKIP_PATHS.has(path)) walk(path);
-      } else if (!path.startsWith(`${SPIKES_DIR}/`) || path === SPIKES_KEPT) {
+      } else {
         result.push(path);
       }
     }
@@ -112,7 +105,6 @@ const RESERVED_ROOTS = [
   "tooling",
   "security",
   "openspec",
-  "spikes",
   ".claude",
   ".github",
 ];

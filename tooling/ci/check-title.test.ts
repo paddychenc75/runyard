@@ -13,7 +13,6 @@ describe("checkTitle", () => {
     "ci(repo): 增加 PR 流水线",
     "docs: 补充贡献说明",
     "feat(cli)!: 删除旧参数",
-    "chore(spikes): 增加 K1 技术验证",
   ])("合格：%s", (title) => {
     expect(checkTitle(title)).toEqual([]);
   });
