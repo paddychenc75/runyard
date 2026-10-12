@@ -77,3 +77,35 @@ jobs:
 
       - name: 审计闸门（按 security/allowlist.toml 过滤）
         run: node tooling/ci/audit-gate.ts --file audit.json --lenient
+
+  # 只在手动触发时运行（发版分支）：把上面各任务的真实结果同步成同名的提交状态。
+  # 手动触发产生的“检查运行”不计入 PR 的合并条件，提交状态才计入（决策记录 0015，tooling/ci/report-statuses.ts）。
+  # 这个任务的名字不在必过检查里。
+  report:
+    name: 回报检查结果（仅发版分支）
+    needs: [dependency-review, audit-gate]
+    if: ${{ always() && github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+      statuses: write
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: 安装 Node（版本读自 .node-version）
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+
+      - name: 把任务结果记成提交状态
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+          SHA: ${{ github.sha }}
+        run: node tooling/ci/report-statuses.ts --repo "$REPO" --run-id "$RUN_ID" --sha "$SHA" --self "回报检查结果（仅发版分支）"
