@@ -26,6 +26,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `docs/architecture/` | `overview.md`（一页架构总览）、`decisions/`（决策记录）、`evidence/`（技术验证记录的实测数据、伪代码和证据链接）、`dependencies.md`（每个依赖的版本和理由），以及 M1 头三个包和命令行的实现细节：`protocol.md`、`protocol-methods.md`、`storage.md`、`run-state-machine.md`、`runner-format.md`、`platform-interface.md`、`cli-contract.md` |
 | `docs/reference/` | 协议参考（方法、事件、错误码、退出码、提示码、枚举）和文案对照表 `strings.md`，**由 `pnpm generate` 从 `packages/protocol`、`packages/i18n/locales/` 生成**，不要手改 |
 | `docs/guides/` | 操作手册和命令表。有手册的任务按手册做，不要临场发挥 |
+| `docs/releases/` | 每个版本给负责人看的白话说明（`<版本>.md`）。更新日志 `CHANGELOG.md` 在根目录，自动生成，不要手改 |
 | `docs/glossary.md` | 术语表：中文术语、唯一的英文标识符、禁用的同义词 |
 | `packages/platform/` | 平台层：`Platform` 接口、`getPlatform()`、路径与名称校验、`darwin` 和薄 `linux` 实现、契约测试（目前有接口、paths、ipc、spawnDetached、exec、proc、ports 的实现，其余是占位，随后续 issue 加入） |
 | `packages/protocol/` | 所有跨进程约定（目前有错误码、提示码、枚举、`RunyardError` / `Notice` / `LogEntry` / `Owner`、分帧、`Frame`、握手消息、版本比对、方法与事件的登记表、`Playground` / `RunSnapshot`、磁盘文件格式与升级链） |
@@ -105,6 +106,7 @@ Claude Code 的钩子：改完文件后对那一个文件跑 Biome；结束回�
 | 写测试，尤其是需要平台实现的测试 | `docs/guides/testing.md` |
 | 加或改一条给人看的文字（命令行） | `docs/guides/add-ui-string.md` |
 | 查某条命令跑什么 | `docs/guides/commands.md` |
+| 发版、写版本说明、看更新日志 | `docs/guides/release.md` |
 
 完成标准（一个 PR 合并前）：引用了 PRD 锚点；新行为有测试；`pnpm verify` 通过并贴了结果；改了包结构、依赖规则、磁盘格式、构建发布做法的附了决策记录；动了依赖的按手册十步做完；文字都是中文，两个 README 同步；没有新增未说明的跳过。
 
@@ -130,7 +132,8 @@ Claude Code 的钩子：改完文件后对那一个文件跑 Biome；结束回�
 - 不要在测试或开发运行中读写用户真实的 `~/Runyard` 和 `~/.runyard`，用临时目录。
 - 不要把过程产物（讨论、调研、评审、草稿）放进仓库；说明文件只引用仓库里存在的文件。
 - 不要改 `docs/product/` 里的产品文档，除非任务明确要求（改之前要负责人同意）。
-- 不要推送到 `main`，变更只经 PR 进入 `main`（六项必过检查通过后自动合并，决策记录 0012）；不要发版或发布到 npm，这些由负责人做。
+- 不要推送到 `main`，变更只经 PR 进入 `main`（六项必过检查通过后自动合并，决策记录 0012）；不要发版或发布到 npm，这些由负责人做；不要合并 release-please 开的发版 PR。
+- 不要手改 `CHANGELOG.md` 和 `.release-please-manifest.json`，它们只由发版 PR 写（CI 会拦）；要给负责人写版本说明，写 `docs/releases/<版本>.md`（`docs/guides/release.md`）。PR 标题的 type 就是更新日志的分类，要选对。
 
 ## 拿不准的时候
 
