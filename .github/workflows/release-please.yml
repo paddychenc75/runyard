@@ -1,0 +1,147 @@
+# 自动维护更新日志和发版 PR（决策记录 0015，技术设计 §8.4，手册 docs/guides/release.md）。
+# main 上每来一个提交，release-please 就创建或更新一个“待发布”PR（下一个版本号加更新后的 CHANGELOG.md）；
+# 合并那个 PR 就是发版：打标签、建 GitHub Release、把更新日志写进 main。不发 npm，不上传任何构建产物。
+#
+# 为什么要有第二个任务 ci-on-release-pr：release-please 用默认的 GITHUB_TOKEN 开 PR 和推分支，
+# GitHub 规定这样产生的事件不会触发 pull_request 工作流，六项必过检查就永远不出现，PR 永远合并不了。
+# 官方的办法是换成个人令牌（要负责人建密钥）；这里改成：开完 PR 后由本工作流用 actions: write 权限手动触发
+# （workflow_dispatch，GITHUB_TOKEN 触发它是允许的）ci.yml 和 security.yml，检查就记在发版分支的最新提交上，
+# 规则集按检查名称在这个提交上匹配，所以 PR 能满足必过检查。不需要任何密钥。
+name: 发版
+
+on:
+  push:
+    branches: [main]
+
+# 默认什么权限都没有；每个任务只拿自己需要的
+permissions: {}
+
+# 同一时间只跑一个：两次 main 提交紧挨着时，后一次排队等前一次，不并行抢着改同一个发版 PR
+concurrency:
+  group: release-please
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    name: 维护发版 PR 与打标签
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      # contents：推发版分支、打标签、建 GitHub Release；pull-requests：开和改发版 PR；
+      # issues：release-please 官方文档要求，它用 issues 接口建和改 PR 上的标签（autorelease: pending）
+      contents: write
+      pull-requests: write
+      issues: write
+    outputs:
+      release_created: ${{ steps.rp.outputs.release_created }}
+      tag_name: ${{ steps.rp.outputs.tag_name }}
+      version: ${{ steps.rp.outputs.version }}
+      sha: ${{ steps.rp.outputs.sha }}
+      body: ${{ steps.rp.outputs.body }}
+      prs_created: ${{ steps.rp.outputs.prs_created }}
+      pr_branch: ${{ fromJSON(steps.rp.outputs.pr || '{}').headBranchName }}
+    steps:
+      - name: 运行 release-please
+        id: rp
+        uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+        with:
+          # 不传 token：用默认的 GITHUB_TOKEN，不依赖任何密钥
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+      - name: 失败时的提示
+        if: failure()
+        run: |
+          echo "::error title=release-please 失败::最常见的原因：仓库设置 Settings > Actions > General > Workflow permissions 里没有勾选 Allow GitHub Actions to create and approve pull requests，工作流就不能开发版 PR。勾上之后重新运行本工作流。其他原因看上一步的日志；规则见 docs/guides/release.md。"
+
+  # 让必过检查出现在发版 PR 的最新提交上
+  ci-on-release-pr:
+    name: 在发版分支上运行必过检查
+    needs: release-please
+    if: needs.release-please.outputs.prs_created == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: write
+    steps:
+      - name: 触发 ci.yml 和 security.yml
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          BRANCH: ${{ needs.release-please.outputs.pr_branch }}
+        run: |
+          # 分支名来自上一个任务的输出，只接受 release-please 自己的命名，其他一律不动
+          case "$BRANCH" in
+            release-please--branches--main*) ;;
+            *)
+              echo "::error title=发版分支名不对::拿到的分支名是“$BRANCH”，不是 release-please--branches--main 开头，不触发检查。"
+              exit 1
+              ;;
+          esac
+          gh workflow run ci.yml --ref "$BRANCH"
+          gh workflow run security.yml --ref "$BRANCH"
+          echo "已在 $BRANCH 上触发 ci.yml 和 security.yml；检查结果会记在这个分支的最新提交上。" >> "$GITHUB_STEP_SUMMARY"
+
+  # 发版 PR 出现后，提醒这个版本还缺不缺给负责人看的白话说明（只提醒，不拦；手册规定写好才交给负责人）
+  summary-check:
+    name: 检查白话说明是否已写
+    needs: release-please
+    if: needs.release-please.outputs.prs_created == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: 检出发版分支
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.release-please.outputs.pr_branch }}
+          persist-credentials: false
+
+      - name: 安装 Node（版本读自 .node-version）
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+
+      - name: 核对 docs/releases/<版本>.md
+        run: |
+          if ! node tooling/ci/release-summary.ts check --manifest .release-please-manifest.json; then
+            echo "::warning title=缺白话说明::发版 PR 对应的版本还没有 docs/releases/<版本>.md。先在一个普通 PR 里写好并合并，再把发版 PR 交给负责人（docs/guides/release.md）。"
+          fi
+
+  # 发版 PR 被合并、标签和 GitHub Release 建好之后：把白话说明放到 GitHub Release 正文的最前面
+  release-notes:
+    name: 给 GitHub Release 加白话说明
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: 检出被发布的提交
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.release-please.outputs.sha }}
+          persist-credentials: false
+
+      - name: 安装 Node（版本读自 .node-version）
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+
+      - name: 把白话说明放到 Release 正文前面
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ needs.release-please.outputs.tag_name }}
+          VERSION: ${{ needs.release-please.outputs.version }}
+          # 更新日志正文来自 release-please 的输出（提交主题是外部输入，只经环境变量传入，不拼进脚本文本）
+          CHANGELOG_BODY: ${{ needs.release-please.outputs.body }}
+        run: |
+          printf '%s\n' "$CHANGELOG_BODY" > "$RUNNER_TEMP/changelog-body.md"
+          if ! node tooling/ci/release-summary.ts compose --version "$VERSION" --body-file "$RUNNER_TEMP/changelog-body.md" > "$RUNNER_TEMP/release-notes.md"; then
+            echo "::error title=缺白话说明::$VERSION 已经发布，但没有 docs/releases/$VERSION.md，GitHub Release 正文里只有更新日志。补写后在一个普通 PR 里合并，再手动运行 gh release edit $TAG。"
+            exit 1
+          fi
+          gh release edit "$TAG" --notes-file "$RUNNER_TEMP/release-notes.md"

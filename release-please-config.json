@@ -1,0 +1,31 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "node",
+  "include-component-in-tag": false,
+  "include-v-in-tag": true,
+  "bump-minor-pre-major": true,
+  "bump-patch-for-minor-pre-major": true,
+  "initial-version": "0.1.0",
+  "changelog-path": "CHANGELOG.md",
+  "pull-request-title-pattern": "chore(release): 发布 ${version}",
+  "pull-request-header": "## 待发布\n\n这是 release-please 自动维护的发版 PR。合并它就是发版（打标签、把下面的更新日志写进 `CHANGELOG.md`）。这个 PR 里的内容每次 `main` 有新提交都会被重写，不要手改；每个版本给负责人看的中文说明写在 `docs/releases/<版本>.md`，见 `docs/guides/release.md`。\n",
+  "pull-request-footer": "更新日志的章节和排列由 `release-please-config.json` 决定；规则见 `CONTRIBUTING.md` 的“更新日志和发版”。",
+  "packages": {
+    ".": {
+      "package-name": "runyard",
+      "changelog-sections": [
+        { "type": "feat", "section": "新功能" },
+        { "type": "fix", "section": "修复" },
+        { "type": "perf", "section": "性能" },
+        { "type": "revert", "section": "回退" },
+        { "type": "refactor", "section": "重构" },
+        { "type": "docs", "section": "文档" },
+        { "type": "test", "section": "测试" },
+        { "type": "build", "section": "构建与依赖" },
+        { "type": "ci", "section": "持续集成" },
+        { "type": "style", "section": "代码风格" },
+        { "type": "chore", "section": "杂项（仓库与工具）" }
+      ]
+    }
+  }
+}
