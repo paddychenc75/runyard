@@ -1,0 +1,23 @@
+{
+  "name": "@runyard/client",
+  "version": "0.0.0",
+  "private": true,
+  "description": "管理进程的客户端：发现、启动、握手、版本表、带类型调用与事件",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run --project unit",
+    "test:process": "vitest run --project process --passWithNoTests"
+  },
+  "dependencies": {
+    "@runyard/platform": "workspace:*",
+    "@runyard/protocol": "workspace:*"
+  },
+  "devDependencies": {
+    "@runyard/testing": "workspace:*",
+    "@types/node": "catalog:",
+    "vitest": "catalog:"
+  }
+}

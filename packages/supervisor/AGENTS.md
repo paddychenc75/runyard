@@ -9,7 +9,7 @@
 
 只从 `src/index.ts` 导出，其他包只从 `@runyard/supervisor` 导入。
 - `startSupervisor(options)`：启动并返回 `SupervisorHandle`（`endpoint`、`token`、`api`、`connectionCount()`、`closed`）。`options.platform` 由调用方显式创建（`getPlatform({ home })`），包内不读 `~`、不读环境变量。别的进程持锁时抛 `BUSY`（`PlatformError`）。
-- `supervisorEntryPath()`：入口文件 `src/main.ts` 的绝对路径，给启动者（`client`，#44）拼命令行。入口参数：`--home --version --build` 必填，`--started-by app|cli`（缺省 cli）、`--host electron|node`、`--profile dev` 可选；退出码：0 正常退出或“已有管理进程”（标准错误一行 `supervisor already running`）、1 启动失败、2 参数不对。
+- `supervisorEntryPath()`：入口文件 `src/main.ts` 的绝对路径，给启动者拼命令行（`client` 不能导入本包，入口位置由命令行、桌面应用传给 `connectSupervisor` 的 `launch.command`）。发现文件的路径 `discoveryFilePath` 定义在 `@runyard/platform`（client 也要读），这里再导出。入口参数：`--home --version --build` 必填，`--started-by app|cli`（缺省 cli）、`--host electron|node`、`--profile dev` 可选；退出码：0 正常退出或“已有管理进程”（标准错误一行 `supervisor already running`）、1 启动失败、2 参数不对。
 - 接缝（全部可省）：`options.extend(api)` 返回 `SupervisorExtensions`：`handlers`（方法处理函数，类型来自方法登记表，不许与会话组方法重名）、`runCount`（口径同 `run.state` 的 `runningCount`）、`recoverCrashedRuns`（拿到锁之后、写发现文件之前调用一次）、`onShutdown`（关会话之前等它）、`sessions`（`onReady` `onClosed` `onBye`）。`SupervisorApi`：`publish(event, data)`、`notifyRunsChanged()`（运行个数变了必须调，空闲计时靠它）、`readySessions()`、`shutdown(reason)`。
 - 处理函数用 `methodFailure(code, params, debug)` 返回协议错误；`HandlerOutcome` 带“响应写出之后”的动作。
 
