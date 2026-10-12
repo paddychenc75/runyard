@@ -1,14 +1,10 @@
-import type { Arch, Platform, PlatformId } from "../platform.ts";
+import type { Arch, Env, Platform, PlatformId } from "../platform.ts";
+import type { LoginShellSources } from "./env/login-shell.ts";
+import { createPosixToolchain } from "./env/posix-toolchain.ts";
 import { createPosixFs } from "./fs/posix-fs.ts";
 import { watchPosix } from "./fs/posix-watch.ts";
 import { createPosixIpc, type PosixIpcConfig } from "./ipc/create-posix-ipc.ts";
-import {
-  pendingCli,
-  pendingDesktop,
-  pendingEnv,
-  pendingShell,
-  pendingTools,
-} from "./pending-areas.ts";
+import { pendingCli, pendingDesktop } from "./pending-areas.ts";
 import { createPosixExec } from "./posix-exec.ts";
 import { createPosixPaths, type PosixPathsConfig } from "./posix-paths.ts";
 import { createPosixPorts } from "./posix-ports.ts";
@@ -29,29 +25,43 @@ export interface PosixConfig {
   /** 进程表和连接表怎么读：各系统不同，算法在 posix/ 里共用 */
   processes: ProcessSource;
   sockets: SocketTable;
+  /** 登录环境怎么解析：本进程的环境、可选的指定 shell、向目录服务要 shell 的办法（各系统不同） */
+  toolchain: { baseEnv: Env; loginShell?: string; directory: LoginShellSources["directory"] };
   /** 废纸篓是各系统自己的事：darwin 有实现，linux 抛 NOT_SUPPORTED */
   trash: Platform["fs"]["trash"];
 }
 
 export function composePosix(config: PosixConfig): Platform {
   const paths = createPosixPaths(config.paths);
+  const exec = createPosixExec(config.processes);
+  const proc = createPosixProc({ source: config.processes });
+  const { loginShell, directory, baseEnv } = config.toolchain;
+  const toolchain = createPosixToolchain({
+    home: paths.home,
+    baseEnv,
+    loginShell: {
+      ...(loginShell === undefined ? {} : { override: loginShell }),
+      ...(directory === undefined ? {} : { directory }),
+    },
+    deps: { exec, proc },
+  });
   return {
     id: config.id,
     arch: config.arch,
     caps: config.caps,
     paths,
-    env: pendingEnv,
+    env: toolchain.env,
     exec: {
-      ...createPosixExec(config.processes),
+      ...exec,
       spawnDetached: createSpawnDetached(paths.stateDir),
     },
-    proc: createPosixProc({ source: config.processes }),
+    proc,
     ports: createPosixPorts({ table: config.sockets }),
     fs: { ...createPosixFs(), trash: config.trash },
     watch: watchPosix,
     ipc: createPosixIpc({ stateDir: paths.stateDir, ...config.ipc }),
-    tools: pendingTools,
-    shell: pendingShell,
+    tools: toolchain.tools,
+    shell: toolchain.shell,
     desktop: pendingDesktop,
     cli: pendingCli,
   };

@@ -1,6 +1,7 @@
 import type { Platform } from "../platform.ts";
 import type { PlatformOptions } from "../platform-options.ts";
 import { composePosix } from "../posix/compose-posix.ts";
+import { directoryShellLookup, parseGetentShell } from "../posix/env/login-shell.ts";
 import { abstractSocketLock } from "../posix/ipc/abstract-socket-lock.ts";
 import { unsupported } from "../posix/pending-members.ts";
 import { createProcNetTable } from "./proc-net-table.ts";
@@ -14,6 +15,12 @@ const SYSTEM = "linux";
 
 // 薄实现（决策记录 0013）：只组合 posix/ 的共用部分，让接口至少被第二个系统检验。
 // Linux 不是第一版支持的系统：fs.trash、desktop、cli.installShim 抛 NOT_SUPPORTED。
+function stringEnv(env: NodeJS.ProcessEnv): Record<string, string> {
+  return Object.fromEntries(
+    Object.entries(env).filter((entry): entry is [string, string] => entry[1] !== undefined),
+  );
+}
+
 export function createLinuxPlatform(options: PlatformOptions): Platform {
   const base = composePosix({
     id: "linux",
@@ -29,6 +36,11 @@ export function createLinuxPlatform(options: PlatformOptions): Platform {
       caseInsensitive: false,
       cloudDirs: ["Dropbox", "Google Drive", "Box", "OneDrive*"],
       userFolders: ["Desktop", "Documents", "Downloads"],
+    },
+    toolchain: {
+      baseEnv: options.baseEnv ?? stringEnv(process.env),
+      ...(options.loginShell === undefined ? {} : { loginShell: options.loginShell }),
+      directory: directoryShellLookup("getent", (user) => ["passwd", user], parseGetentShell),
     },
     // Linux：抽象命名空间 socket 作锁，与锁文件无关
     ipc: {

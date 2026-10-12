@@ -6,6 +6,7 @@ export type {
   Arch,
   Disposable,
   Env,
+  EnvFailureReason,
   EnvLoadResult,
   ExitInfo,
   LengthVerdict,
