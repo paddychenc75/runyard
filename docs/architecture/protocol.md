@@ -10,7 +10,7 @@
 | --- | --- | --- |
 | 通道 | 一条本机连接：macOS、Linux 是 Unix socket；对调用方是不透明的地址，Windows 以后用命名管道。不用 HTTP 端口 | §2.3、§5.1 |
 | 编码 | UTF-8，一行一个 JSON 对象（NDJSON），以 `\n` 结尾 | §5.1 |
-| 单行上限 | 8 MB；超过则断开连接。二进制内容（请求面板的响应体）用 base64 | §5.1 |
+| 单行上限 | 8 MB（按 UTF-8 字节数，不含换行）；超过则断开连接。二进制内容（请求面板的响应体）用 base64。`protocol` 提供编码（`encodeLine`，超限抛错）和分块解码（`createLineDecoder`，半行一超限就报 `too-large`，之后不再产出）；字节到字符串的 UTF-8 解码由连接一侧做 | §5.1 |
 | 方向 | 全双工。客户端发请求，管理进程回响应并推送事件 | §5.1 |
 | 连接点 | macOS：`~/.runyard/run/supervisor.sock`（目录只有本人可访问）。Windows（以后）：命名管道 `\\.\pipe\runyard-<profile>-<用户标识>`，名字固定。socket 路径不超过 104 字节（macOS 实测上限，Linux 为 108），超了由平台层报明确的错误 | §5.1、0005 |
 | 单实例 | macOS、Linux 上先拿 `run/supervisor.lock` 的内核锁，拿到的才许删除残留 socket 文件并监听。算法见 [证据 0005](evidence/0005-supervisor-singleton-handshake.md) | 0005 |
@@ -22,11 +22,14 @@
 
 | 步 | 方向 | 消息 | 字段 |
 | --- | --- | --- | --- |
-| 1 | 管理进程到客户端 | `challenge` | `nonce`（恰好 32 字节随机数）、`protocol`、`minProtocol` |
-| 2 | 客户端到管理进程 | `hello` | `clientNonce`（恰好 32 字节）、`proof`、`protocol`、`minProtocol`；身份字段 `client { kind, build, pid }` 见未定 |
-| 3 | 管理进程到客户端 | `ready` | `proof`（服务端证明）、其余信息见未定 |
+| 1 | 管理进程到客户端 | `challenge` | `t`、`nonce`、`protocol`、`minProtocol` |
+| 2 | 客户端到管理进程 | `hello` | `t`、`clientNonce`、`proof`、`protocol`、`minProtocol`、`client { kind: 'app' \| 'cli', build, pid }` |
+| 3 | 管理进程到客户端 | `ready` | `t`、`proof`（服务端证明）、`build`（管理进程自己的构建标识） |
 
-- 客户端证明 = 以口令为密钥，对“固定前缀、`client`、两个 nonce”做 HMAC-SHA256；服务端证明同理，方向标记换成 `server`。两个方向前缀不同，两个 nonce 都必须恰好 32 字节，否则断开（0005）。
+字段格式：`nonce`、`clientNonce`、`proof` 都是小写十六进制字符串，`nonce` 和 `clientNonce` 是 32 字节即恰好 64 个字符，`proof`（HMAC-SHA256 的输出）也是 64 个字符；空的、长度不对、大写的一律被 schema 拒绝。`t` 是消息种类。
+
+- 客户端证明 = 以口令为密钥，对“固定前缀、`client`、两个 nonce”做 HMAC-SHA256；服务端证明同理，方向标记换成 `server`。两个方向前缀不同，两个 nonce 都必须恰好 32 字节，否则断开（0005）。摘要的输入由 `proofMessage(direction, nonce, clientNonce)` 给出，前缀是常量 `HANDSHAKE_PREFIX`（`runyard-handshake-1|`）。
+- HMAC 本身放在平台层的 `ipc`（issue #27，平台层这个包还没建）：`protocol` 不许用 Node 接口，`client` 又不能导入 `core`。`protocol` 只定义类型 `ComputeProof = (key: Uint8Array, message: string) => string`（返回小写十六进制），实现由 `platform/ipc` 提供，测试里用假的。
 - 任何一步不对：断开；客户端报 `SUPERVISOR_UNAVAILABLE`，且不再发送任何请求。
 - 没有发现文件（没有口令）：客户端根本不发握手消息，按“管理进程不存在”处理，去启动一个。
 - 握手通过之前，管理进程不处理任何其他帧。
@@ -126,9 +129,11 @@ type LogEntry =
 | 管理进程较旧，不满足 | 命令行报 `SUPERVISOR_OUTDATED`，提示 `runyard stop --all`；应用弹窗写明会停掉几个运行，用户确认才做 |
 | 管理进程较新，客户端低于它要求的最低版本 | `CLIENT_OUTDATED` |
 
+这张表由纯函数 `decideVersionAction`（`packages/protocol/src/version-decision.ts`）实现，输入是双方的 `protocol`、`minProtocol`、`build`，管理进程的运行个数，发现文件里的可执行文件是否还在；输出 `use`、`replace`、`use-outdated`（`reason` 为 `build-differs` 或 `protocol-older`，应用据此提示）或 `reject`（带 `SUPERVISOR_OUTDATED { runs }` 或 `CLIENT_OUTDATED`）。表里没有写的一种情况：管理进程较新、但客户端仍满足它的最低版本，按 `use` 处理。`CLIENT_OUTDATED` 的判断最先做，与有无运行无关。
+
 ## 未定（来源没有规定，实现前由规格或决策记录补）
 
-1. 握手三条消息里除 nonce、proof、`protocol`、`minProtocol` 以外的字段：客户端身份（种类 app 或 cli、构建、进程号）放哪条消息；`ready` 里是否返回 `clientId`、`capabilities`、构建标识。
+1. （已定）握手字段、HMAC 放哪个包，见 §2。`ready` 里暂不返回 `clientId`、`capabilities`；以后要加，作为可选字段加，不升协议版本。
 2. 事件订阅的方法名、`topics` 取值、取消订阅的方式（设计只有事件名清单）。
 3. 请求面板响应体上限等数值（最初方案为 5 MB 截断），设计未确认。
 4. 未知方法返回哪个错误码；单个请求的超时由谁定。
