@@ -56,7 +56,7 @@ export const runMethods = {
     summary: "停止整棵进程树；返回时进程树已空、端口已释放。runId 和 playground 恰好给一个",
     params: runTarget,
     result: runSnapshotSchema,
-    errors: ["PLAYGROUND_NOT_FOUND"],
+    errors: ["PLAYGROUND_NOT_FOUND", "RUN_NOT_FOUND"],
     status: "defined",
   },
   "run.stopAll": {
@@ -80,7 +80,7 @@ export const runMethods = {
     summary: "取一次运行",
     params: z.object({ runId: runIdSchema }),
     result: runSnapshotSchema,
-    errors: [],
+    errors: ["RUN_NOT_FOUND"],
     status: "defined",
   },
   "run.list": {
@@ -96,7 +96,7 @@ export const runMethods = {
     summary: "“改为由我管理”：持有者从命令行改为这个标签页",
     params: z.object({ runId: runIdSchema, owner: tabOwnerSchema }),
     result: runSnapshotSchema,
-    errors: [],
+    errors: ["RUN_NOT_FOUND"],
     status: "defined",
   },
   "run.attach": {
@@ -104,7 +104,7 @@ export const runMethods = {
     summary: "“查看”：不改持有者，不算空闲活动",
     params: clientAndRun,
     result: emptySchema,
-    errors: [],
+    errors: ["RUN_NOT_FOUND"],
     status: "defined",
   },
   "run.detach": {
@@ -112,7 +112,7 @@ export const runMethods = {
     summary: "结束“查看”",
     params: clientAndRun,
     result: emptySchema,
-    errors: [],
+    errors: ["RUN_NOT_FOUND"],
     status: "defined",
   },
 } as const satisfies Record<string, MethodDefinition>;

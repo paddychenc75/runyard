@@ -28,6 +28,15 @@ export const noticeRegistry = {
   PACKAGE_MANAGER_FALLBACK: {
     params: z.object({ wanted: z.string().min(1), used: z.string().min(1) }),
   },
+  // 资源库路径加名称接近系统路径长度上限，创建仍然进行（规格 LIBRARY-PLAYGROUNDS-05）。
+  // length 是项目路径的字符数，limit 是当前系统的上限，由平台层给出
+  PATH_NEAR_LIMIT: {
+    params: z.object({ length: z.number().int().positive(), limit: z.number().int().positive() }),
+  },
+  // 工具版本高于模板声明的上限，照常运行但未经测试（规格 TOOLCHAIN-DETECTION-09）
+  TOOL_VERSION_UNTESTED: {
+    params: z.object({ tool: z.string().min(1), found: z.string().min(1), required: z.string() }),
+  },
 } as const;
 
 export type NoticeCode = keyof typeof noticeRegistry;

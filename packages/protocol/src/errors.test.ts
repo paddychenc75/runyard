@@ -17,6 +17,7 @@ const cases: Record<ErrorCode, { ok: unknown; bad: unknown }> = {
   PLAYGROUND_NOT_FOUND: { ok: { name: "demo" }, bad: {} },
   TEMPLATE_NOT_FOUND: { ok: { template: "react19" }, bad: { name: "react19" } },
   FOLDER_MISSING: { ok: { name: "demo" }, bad: { name: null } },
+  RUN_NOT_FOUND: { ok: { runId: "r_9" }, bad: { runId: "" } },
   TOOL_MISSING: { ok: { tool: "go", required: ">=1.26" }, bad: { tool: "go" } },
   TOOL_TOO_OLD: {
     ok: { tool: "go", required: ">=1.26", found: "1.20" },
@@ -44,7 +45,7 @@ const cases: Record<ErrorCode, { ok: unknown; bad: unknown }> = {
 const exitTable: Record<number, ErrorCode[]> = {
   1: ["INTERNAL"],
   2: ["USAGE", "NAME_INVALID", "NAME_RESERVED", "VAR_INVALID"],
-  3: ["PLAYGROUND_NOT_FOUND", "TEMPLATE_NOT_FOUND", "FOLDER_MISSING"],
+  3: ["PLAYGROUND_NOT_FOUND", "TEMPLATE_NOT_FOUND", "FOLDER_MISSING", "RUN_NOT_FOUND"],
   4: ["TOOL_MISSING", "TOOL_TOO_OLD", "RUNTIME_MISSING"],
   5: ["SETUP_FAILED", "DEPS_OFFLINE"],
   6: ["RUN_FAILED", "SCRIPT_ERRORED"],
@@ -65,8 +66,8 @@ const released: Record<string, number> = Object.fromEntries(
 );
 
 describe("错误码登记表", () => {
-  it("共 26 个错误码，没有重复", () => {
-    expect(errorCodes).toHaveLength(26);
+  it("共 27 个错误码，没有重复", () => {
+    expect(errorCodes).toHaveLength(27);
     expect(new Set(errorCodes).size).toBe(errorCodes.length);
   });
 

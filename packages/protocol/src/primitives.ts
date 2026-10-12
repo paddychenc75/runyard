@@ -24,3 +24,20 @@ export type LogCursor = z.infer<typeof logCursorSchema>;
 
 // 订阅类方法的返回值；事件帧里的 sub 就是它（技术设计 §5.1 信封）
 export const subscriptionSchema = z.object({ sub: z.number().int().nonnegative() });
+
+// 文件里存的相对路径：用 / 分隔，不许反斜杠，也不许绝对路径、盘符、空段、. 和 .. 段
+// （技术设计 §4.2；这样同一个文件夹拷到另一个系统仍然读得通）。
+// 反斜杠这一条用正则写，生成 JSON Schema 时能保留；其余用 refine 检查
+export const relativePathSchema = z
+  .string()
+  .min(1)
+  .regex(/^[^\\]*$/, "路径用 / 分隔，不许反斜杠")
+  .refine(
+    (path) =>
+      !path.startsWith("/") &&
+      !/^[A-Za-z]:/.test(path) &&
+      !path.includes("\0") &&
+      path.split("/").every((part) => part !== "" && part !== "." && part !== ".."),
+    "必须是不含 . 和 .. 的相对路径",
+  )
+  .describe("用 / 分隔的相对路径");
