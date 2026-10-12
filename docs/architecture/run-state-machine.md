@@ -1,6 +1,6 @@
 # 运行：状态机、持有者、停止与释放
 
-一个项目的一次“运行”从开始到结束的全部规则。`runner.json` 各字段怎么变成行为见 [runner-format.md](runner-format.md)；消息见 [protocol-methods.md](protocol-methods.md)。实现位置（计划）：状态机在 `core` 的运行引擎，持有者和空闲停止在 `supervisor`。
+一个项目的一次“运行”从开始到结束的全部规则。`runner.json` 各字段怎么变成行为见 [runner-format.md](runner-format.md)；消息见 [protocol-methods.md](protocol-methods.md)。实现位置：状态机和进程生命周期在 `core` 的运行引擎（`packages/core/src/run/`，接缝与用法见 `packages/core/AGENTS.md`），持有者和空闲停止在 `supervisor`。
 
 出处：技术设计 §2.4、§4.1、§4.3、§4.5、§4.6、§4.8；决策记录 [0006](decisions/0006-stop-process-tree.md)（[证据](evidence/0006-stop-process-tree.md)）、[0005](decisions/0005-supervisor-singleton-handshake.md)、[0008](decisions/0008-log-capture-and-cleaning.md)；PRD #prd-run、#prd-run-ownership、#prd-idle-stop、#prd-status-and-ports、#prd-stop、#prd-failure-states、#prd-script-projects。
 

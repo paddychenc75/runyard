@@ -11,9 +11,11 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@runyard/platform": "workspace:*",
     "@runyard/protocol": "workspace:*"
   },
   "devDependencies": {
+    "@runyard/testing": "workspace:*",
     "@types/node": "catalog:",
     "vitest": "catalog:"
   }

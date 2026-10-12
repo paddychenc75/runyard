@@ -50,10 +50,16 @@ importers:
 
   packages/core:
     dependencies:
+      '@runyard/platform':
+        specifier: workspace:*
+        version: link:../platform
       '@runyard/protocol':
         specifier: workspace:*
         version: link:../protocol
     devDependencies:
+      '@runyard/testing':
+        specifier: workspace:*
+        version: link:../testing
       '@types/node':
         specifier: 'catalog:'
         version: 24.19.0
