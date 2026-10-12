@@ -13,15 +13,20 @@ const options = (home: string) => ({
 });
 
 // 契约测试需要平台实现，所以带 platform-dependent 标记（文件名后缀），Windows 任务不跑（docs/guides/testing.md）
+// native：本机会选的那个实现（见 ContractContext.native）。getPlatform 是读系统的唯一地方，这里只比较它给出的 id
+const hostId = getPlatform({ home: absPath(process.cwd()) }).id;
+
 const implementations: ContractContext[] = [
   {
     name: "darwin",
+    native: hostId === "darwin",
     create: (home) => createDarwinPlatform(options(home)),
     // macOS 没有标为不支持的成员；暂时还是占位，见 pending.contract.ts
     unsupported: new Set(),
   },
   {
     name: "linux",
+    native: hostId === "linux",
     create: (home) => createLinuxPlatform(options(home)),
     // 薄实现：这三组标为系统不支持（技术设计 §7.1）
     unsupported: new Set([
