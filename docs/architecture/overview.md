@@ -46,6 +46,6 @@
 
 每条结构规则至少有一个会让 `pnpm check` 或类型检查变红的机制：pnpm 的严格依赖、TypeScript 的 project references、各包不同的类型环境、Biome 的导入规则、`tooling/checks/` 里的检查脚本。清单见技术设计 §3.3 和 §9.4；现在已有哪些，看 `tooling/checks/run.ts`。
 
-## 还没写进这里的
+## 实现细节的参考文档
 
-数据模型、状态机、协议、存储布局、平台接口的细节，在实现对应的包之前转写进来（技术设计 §4、§5、§7）。技术验证（M0a）的结论已写成决策记录 0005 到 0011（实测数据和算法在 [evidence](evidence/)），上面的内容已按它们修订。
+M1 头三个包（protocol、platform、core）和命令行的对外约定，写在本目录下的参考文档里，实现前先读：[协议](protocol.md)（传输、握手、错误码、版本）和[方法与事件](protocol-methods.md)、[存储](storage.md)、[运行状态机](run-state-machine.md)、[运行器格式](runner-format.md)、[平台层](platform-interface.md)、[命令行约定](cli-contract.md)。每篇末尾的“未定”列出来源没有规定的地方，实现时先问负责人，不要自己补。supervisor、client、i18n 和模板的细节在各自开工前再转写。技术验证（M0a）的结论是决策记录 0005 到 0011（实测数据和算法在 [evidence](evidence/)），上面的内容已按它们修订。

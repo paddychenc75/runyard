@@ -23,7 +23,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | --- | --- |
 | `docs/product/` | 中文产品文档：PRD 和技术设计。产品行为的唯一出处，先读 `docs/product/README.md` |
 | `docs/design/` | 界面设计源文件、设计变量、最终图标。只读 |
-| `docs/architecture/` | `overview.md`（一页架构总览）、`decisions/`（决策记录）、`evidence/`（技术验证记录的实测数据、伪代码和证据链接）、`dependencies.md`（每个依赖的版本和理由） |
+| `docs/architecture/` | `overview.md`（一页架构总览）、`decisions/`（决策记录）、`evidence/`（技术验证记录的实测数据、伪代码和证据链接）、`dependencies.md`（每个依赖的版本和理由），以及 M1 头三个包和命令行的实现细节：`protocol.md`、`protocol-methods.md`、`storage.md`、`run-state-machine.md`、`runner-format.md`、`platform-interface.md`、`cli-contract.md` |
 | `docs/guides/` | 操作手册和命令表。有手册的任务按手册做，不要临场发挥 |
 | `docs/glossary.md` | 术语表：中文术语、唯一的英文标识符、禁用的同义词 |
 | `packages/protocol/` | 所有跨进程约定（目前只有一个占位导出） |
