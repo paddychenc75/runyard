@@ -1,6 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import {
+  chmodSync,
   existsSync,
   mkdirSync,
   readdirSync,
@@ -11,11 +12,16 @@ import {
 } from "node:fs";
 import { userInfo } from "node:os";
 import { join } from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { getPlatform } from "../../get-platform.ts";
 import { absPath } from "../../path-types.ts";
 import { isPlatformError } from "../../platform-error.ts";
-import { buildRichTree, makeSandbox, type Sandbox } from "../../test-support/trash-sandbox.ts";
+import {
+  buildRichTree,
+  makeSandbox,
+  makeTreeWritable,
+  type Sandbox,
+} from "../../test-support/trash-sandbox.ts";
 import { createDarwinPlatform } from "../index.ts";
 import { createDarwinTrash } from "./darwin-trash.ts";
 import { compareTrees } from "./verify-copy.ts";
@@ -76,37 +82,45 @@ if (isDarwin) {
     });
   });
 
-  describe("别的卷（磁盘映像）", () => {
+  describe("别的卷（磁盘映像）", { timeout: 120_000 }, () => {
+    // 磁盘映像在 CI 的运行器上建一次要十几秒：整个组共用一个卷，每个用例用自己的名字和自己的假主目录
     let box: Sandbox;
     let mount: string;
-    beforeEach(() => {
+    let counter = 0;
+    // 同步调用会卡住事件循环，Vitest 的超时管不到它，所以每次都给 hdiutil 一个上限，卡住就抛错
+    const hdiutil = (args: string[]) =>
+      execFileSync("hdiutil", args, { stdio: "ignore", timeout: 90_000, killSignal: "SIGKILL" });
+    let attached = false;
+    beforeAll(() => {
       box = makeSandbox();
       mount = box.at("mnt");
       mkdirSync(mount);
       const image = box.at("volume.dmg");
-      execFileSync(
-        "hdiutil",
-        ["create", "-size", "30m", "-fs", "APFS", "-volname", "rytest", image],
-        {
-          stdio: "ignore",
-        },
-      );
-      execFileSync("hdiutil", ["attach", "-nobrowse", "-mountpoint", mount, image], {
-        stdio: "ignore",
-      });
-    });
-    afterEach(() => {
+      hdiutil(["create", "-size", "30m", "-fs", "APFS", "-volname", "rytest", image]);
+      hdiutil(["attach", "-nobrowse", "-mountpoint", mount, image]);
+      attached = true;
+    }, 200_000);
+    afterAll(() => {
       try {
-        execFileSync("hdiutil", ["detach", "-force", mount], { stdio: "ignore" });
+        if (attached) hdiutil(["detach", "-force", mount]);
       } finally {
         box.remove();
       }
-    });
+    }, 200_000);
 
-    const trashOf = () =>
-      createDarwinTrash({ home: box.home, uid, now: () => NOW, systemTool: null });
+    // 每个用例自己的假主目录（里面的 .Trash 是本卷的废纸篓）
+    const fresh = () => {
+      const home = join(box.root, `home-${++counter}`);
+      mkdirSync(home);
+      return {
+        home,
+        trash: join(home, ".Trash"),
+        trashOf: () => createDarwinTrash({ home, uid, now: () => NOW, systemTool: null }),
+      };
+    };
 
     it("放进 <卷>/.Trashes/<uid>：.Trashes 模式 1333、<uid> 模式 0700；本卷的废纸篓里什么都没有", async () => {
+      const { trash, trashOf } = fresh();
       const dir = join(mount, "demo");
       mkdirSync(dir);
       writeFileSync(join(dir, "marker.txt"), "vol");
@@ -117,46 +131,37 @@ if (isDarwin) {
       expect(readFileSync(join(own, "demo", "marker.txt"), "utf8")).toBe("vol");
       expect(statSync(join(mount, ".Trashes")).mode & 0o7777).toBe(0o1333);
       expect(statSync(own).mode & 0o777).toBe(0o700);
-      expect(readdirSync(box.trash)).toEqual([]);
+      expect(readdirSync(trash)).toEqual([]);
     });
 
     it("[LIBRARY-PLAYGROUNDS-20] 卷上的废纸篓里已有同名项目：不覆盖", async () => {
+      const { trashOf } = fresh();
       for (const marker of ["first", "second"]) {
-        const dir = join(mount, "demo");
+        const dir = join(mount, "dup");
         mkdirSync(dir);
         writeFileSync(join(dir, "marker.txt"), marker);
         await trashOf()(absPath(dir));
       }
       const own = join(mount, ".Trashes", String(uid));
-      expect(readFileSync(join(own, "demo", "marker.txt"), "utf8")).toBe("first");
-      expect(readFileSync(join(own, "demo 14.05.09", "marker.txt"), "utf8")).toBe("second");
-    });
-
-    it("卷上建不出废纸篓目录（.Trashes 是个文件）：复制到本卷的废纸篓，核对完整后才删原件", async () => {
-      writeFileSync(join(mount, ".Trashes"), "not a directory");
-      const dir = join(mount, "demo");
-      const reference = box.at("reference");
-      buildRichTree(dir);
-      buildRichTree(reference);
-      const result = await trashOf()(absPath(dir));
-      expect(result.restorable).toBe(false);
-      expect(existsSync(dir)).toBe(false);
-      expect(await compareTrees(reference, join(box.trash, "demo"))).toBeUndefined();
+      expect(readFileSync(join(own, "dup", "marker.txt"), "utf8")).toBe("first");
+      expect(readFileSync(join(own, "dup 14.05.09", "marker.txt"), "utf8")).toBe("second");
     });
 
     it("卷的根目录本身不能移到废纸篓：TRASH_UNAVAILABLE，卷上的内容原样", async () => {
+      const { trashOf } = fresh();
       writeFileSync(join(mount, "keep.txt"), "k");
       expect(await codeOf(trashOf()(absPath(mount)))).toBe("TRASH_UNAVAILABLE");
       expect(readFileSync(join(mount, "keep.txt"), "utf8")).toBe("k");
     });
 
     it("改名不跨卷：把卷上的文件夹 moveDir 到本卷抛错，原目录原样，目标位置不留占位，也不退到复制", async () => {
+      const { home } = fresh();
       const platform = createDarwinPlatform({
-        home: absPath(box.home),
+        home: absPath(home),
         arch: "arm64",
         profile: undefined,
       });
-      const dir = join(mount, "demo");
+      const dir = join(mount, "mv");
       mkdirSync(dir);
       writeFileSync(join(dir, "marker.txt"), "stay");
       const target = box.at("moved");
@@ -164,5 +169,47 @@ if (isDarwin) {
       expect(readFileSync(join(dir, "marker.txt"), "utf8")).toBe("stay");
       expect(existsSync(target)).toBe(false);
     });
+
+    it("卷上建不出废纸篓目录（.Trashes 是个文件）：复制到本卷的废纸篓，核对完整后才删原件", async () => {
+      const { trash, trashOf } = fresh();
+      // 前面的用例已经在卷上建过 .Trashes 目录；这里换成一个同名的文件（沙盒内的卷，守卫照常）
+      // .Trashes 是 1333（本人读不了），先放开再删
+      chmodSync(box.guard(join(mount, ".Trashes")), 0o700);
+      rmSync(box.guard(join(mount, ".Trashes")), { recursive: true });
+      writeFileSync(join(mount, ".Trashes"), "not a directory");
+      const dir = join(mount, "no-trash-here");
+      const reference = box.at("reference");
+      buildRichTree(dir);
+      buildRichTree(reference);
+      const result = await trashOf()(absPath(dir));
+      expect(result.restorable).toBe(false);
+      expect(existsSync(dir)).toBe(false);
+      expect(await compareTrees(reference, join(trash, "no-trash-here"))).toBeUndefined();
+      makeTreeWritable(reference);
+    });
   });
 }
+
+// 在任何系统上都跑：平台的主目录不是账号真实主目录时不用系统命令。
+// 若误用了 /usr/bin/trash，东西会进用户真实的废纸篓而不是这个临时主目录里的 .Trash
+describe("系统命令只在真实主目录下用", () => {
+  let box: Sandbox;
+  beforeEach(() => {
+    box = makeSandbox();
+  });
+  afterEach(() => box.remove());
+
+  it("平台指向临时主目录时，fs.trash 进的是临时主目录的 .Trash，结果不是“能放回原处”", async () => {
+    const platform = createDarwinPlatform({
+      home: absPath(box.home),
+      arch: "arm64",
+      profile: undefined,
+    });
+    const dir = box.at("demo");
+    mkdirSync(dir);
+    writeFileSync(join(dir, "marker.txt"), "x");
+    const result = await platform.fs.trash(absPath(dir));
+    expect(result.restorable).toBe(false);
+    expect(readFileSync(join(box.trash, "demo", "marker.txt"), "utf8")).toBe("x");
+  });
+});
