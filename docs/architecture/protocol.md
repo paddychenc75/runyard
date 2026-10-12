@@ -72,30 +72,39 @@ type LogEntry =
 - 时间 `at` 是 UTC 毫秒数；协议和文件里不存时区。
 - `stdout`、`stderr` 的 `text` 是已解码、未清洗的整行（0008）。
 
-### 4.1 错误码（共 26 个，来源：§5.3 退出码表与表后说明）
+### 4.1 错误码（共 26 个，已登记在 `packages/protocol/src/errors.ts`）
 
 | 退出码 | 错误码 | 参数 |
 | --- | --- | --- |
 | 1 | `INTERNAL` | 无 |
-| 2 | `USAGE`、`NAME_INVALID`、`NAME_RESERVED`、`VAR_INVALID` | `NAME_INVALID`、`NAME_RESERVED`：`{ name }`；`VAR_INVALID`：`{ key }`（后两者设计未给，见未定） |
-| 3 | `PLAYGROUND_NOT_FOUND`、`TEMPLATE_NOT_FOUND`、`FOLDER_MISSING` | `{ name }` 或 `{ template }`（未定） |
-| 4 | `TOOL_MISSING` `{ tool, required }`、`TOOL_TOO_OLD` `{ tool, required, found }`、`RUNTIME_MISSING` | 前两个参数来自 §5.1 示例 |
-| 5 | `SETUP_FAILED`、`DEPS_OFFLINE` | 未定 |
-| 6 | `RUN_FAILED`、`SCRIPT_ERRORED` | 未定；原始现场放 `cause` |
-| 7 | `READY_TIMEOUT` `{ name, seconds }` | 来自 §5.1 示例 |
-| 9 | `NAME_EXISTS` `{ name }`、`BUSY`、`PATH_LOCKED`、`PATH_TOO_LONG`、`TRASH_UNAVAILABLE` | `NAME_EXISTS` 来自 §5.1 示例，其余未定 |
-| 10 | `APP_REQUIRED`、`SUPERVISOR_UNAVAILABLE`、`SUPERVISOR_OUTDATED`、`CLIENT_OUTDATED`、`NOT_SUPPORTED` | `SUPERVISOR_OUTDATED` 需要带“会停掉几个运行”，其余未定 |
+| 2 | `USAGE` | 无 |
+| 2 | `NAME_INVALID`、`NAME_RESERVED` | `{ name }` |
+| 2 | `VAR_INVALID` | `{ key }` |
+| 3 | `PLAYGROUND_NOT_FOUND`、`FOLDER_MISSING` | `{ name }` |
+| 3 | `TEMPLATE_NOT_FOUND` | `{ template }` |
+| 4 | `TOOL_MISSING` | `{ tool, required }` |
+| 4 | `TOOL_TOO_OLD` | `{ tool, required, found }` |
+| 4 | `RUNTIME_MISSING` | `{ tool }` |
+| 5 | `SETUP_FAILED`、`DEPS_OFFLINE` | `{ name }`；原始现场放 `cause` |
+| 6 | `RUN_FAILED`、`SCRIPT_ERRORED` | `{ name }`；原始现场放 `cause` |
+| 7 | `READY_TIMEOUT` | `{ name, seconds }` |
+| 9 | `NAME_EXISTS`、`BUSY`、`PATH_LOCKED`、`PATH_TOO_LONG`、`TRASH_UNAVAILABLE` | `{ name }` |
+| 10 | `APP_REQUIRED`、`SUPERVISOR_UNAVAILABLE`、`CLIENT_OUTDATED`、`NOT_SUPPORTED` | 无 |
+| 10 | `SUPERVISOR_OUTDATED` | `{ runs }`（升级会停掉的运行个数，非负整数） |
 
-退出码 8 留给以后的“需要信任”，不占用。`PORT_RESERVED` 不是错误码，只作为 `portFallback` 里的原因（§5.3）。`TRASH_UNAVAILABLE` 的名字是建议，登记时定（0010）。
+`name` 是项目名称（命令行传路径时为用户给的原文）；`tool` 是工具标识，由模板的工具定义决定，是开放集合。退出码 8 留给以后的“需要信任”，不占用。`PORT_RESERVED` 不是错误码，只作为端口回退的原因（§5.3）。`TRASH_UNAVAILABLE` 的名字在登记时定下（0010）。
 
 ### 4.2 提示码和枚举值
 
-| 类 | 已有的值 | 出处 |
+| 类 | 已登记的值 | 出处 |
 | --- | --- | --- |
-| 提示码 | `RELOADING`、`STOPPED_BY_USER`、`PROCESS_EXITED`、`DEPS_FROM_CACHE`、`PORT_FALLBACK`、`ENV_UNRESOLVED`（没能读取登录环境，带原因）、`ENV_DEGRADED`（只读到非交互登录环境） | §5.1、§4.8、0009 |
+| 提示码 | `RELOADING`、`STOPPED_BY_USER`、`DEPS_FROM_CACHE`、`ENV_DEGRADED`：无参数。`PROCESS_EXITED` `{ exitCode?, signal? }`。`PORT_FALLBACK` `{ wanted, actual, reason }`。`ENV_UNRESOLVED` `{ reason: 'timeout' \| 'failed' }`。`IDLE_STOPPED` `{ minutes }`（空闲自动停止）。`PACKAGE_MANAGER_FALLBACK` `{ wanted, used }`（没有首选的包管理器而改用另一个） | §5.1、§4.8、0009 |
 | 运行状态 | `checking` `installing` `starting` `ready` `reloading` `running` `stopping` `stopped` `finished` `errored` `crashed` `failed` | §4.3 |
 | 环境来源 | `login-shell`、`login-shell-degraded`、`path-only`、`fallback` | §7.1、0009 |
-| 失败原因 | 与错误码同一张表：`TOOL_MISSING` `TOOL_TOO_OLD` `SETUP_FAILED` `DEPS_OFFLINE` `RUN_FAILED` `RUNTIME_MISSING` | §4.3、§4.4 |
+| 失败原因 | 取自错误码：`TOOL_MISSING` `TOOL_TOO_OLD` `SETUP_FAILED` `DEPS_OFFLINE` `RUN_FAILED` `RUNTIME_MISSING` | §4.3、§4.4 |
+| 端口回退原因 | `PORT_OCCUPIED`、`PORT_RESERVED` | §5.3 |
+
+登记表可遍历：`errorRegistry`、`errorCodes`、`noticeRegistry`、`noticeCodes`、`runStates` 等供 `i18n-codes` 检查使用。
 
 ## 5. 版本规则
 
@@ -122,8 +131,6 @@ type LogEntry =
 1. 握手三条消息里除 nonce、proof、`protocol`、`minProtocol` 以外的字段：客户端身份（种类 app 或 cli、构建、进程号）放哪条消息；`ready` 里是否返回 `clientId`、`capabilities`、构建标识。
 2. 事件订阅的方法名、`topics` 取值、取消订阅的方式（设计只有事件名清单）。
 3. 请求面板响应体上限等数值（最初方案为 5 MB 截断），设计未确认。
-4. 第 4.1 表里标“未定”的参数，以及 `SUPERVISOR_OUTDATED` 的参数形状。
-5. 未知方法返回哪个错误码；单个请求的超时由谁定。
-6. 提示码缺少的名字：空闲自动停止的日志行（“空闲 30 分钟，已自动停止”）、“没有 pnpm 改用 npm”的说明行，设计给了文字但没有给代码。
-7. 启动步骤枚举（`setupStep.<值>`）的取值。
-8. Windows（以后）管道名里“用户标识”的取值方式。
+4. 未知方法返回哪个错误码；单个请求的超时由谁定。
+5. 启动步骤枚举（`setupStep.<值>`）的取值：设计只在文案键里提到，没有给出步骤清单，尚未登记。
+6. Windows（以后）管道名里“用户标识”的取值方式。
