@@ -1,20 +1,20 @@
 import { randomBytes } from "node:crypto";
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { createServer, type Server } from "node:net";
 import { join } from "node:path";
-import type { AbsPath, Platform } from "@runyard/platform";
+import { type AbsPath, absPath, type Platform } from "@runyard/platform";
 import { type SupervisorFile, supervisorFileFormat, supervisorFileSchema } from "@runyard/protocol";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { discoveryFilePath } from "./discovery-file.ts";
-import { EXIT_ALREADY_RUNNING_LINE } from "./run-main.ts";
-import { TestClient, tokenBytes } from "./test-client.ts";
 import {
   makeShortHome,
   ProcessLedger,
   platformAt,
   type RunningSupervisor,
   waitUntil,
-} from "./test-processes.ts";
+} from "./process-harness.test.ts";
+import { EXIT_ALREADY_RUNNING_LINE } from "./run-main.ts";
+import { TestClient, tokenBytes } from "./test-client.ts";
 
 // 把真正的入口当作单独的 Node 进程来跑，在临时主目录里（绝不碰 ~/.runyard）。
 // 每个起过的进程都按 pid 加启动时间记账，teardown 时核对没有漏网的（漏了就让测试失败，并强行收掉）。
@@ -57,7 +57,7 @@ async function waitReady(
   return waitUntil(() => {
     if (running.hasExited()) throw new Error(`supervisor exited early: ${running.stderr()}`);
     const file = readDiscovery(at);
-    return file?.pid === running.ref.pid ? file : undefined;
+    return file?.pid === running.pid ? file : undefined;
   }, "the discovery file");
 }
 
@@ -83,11 +83,11 @@ async function stop(running: RunningSupervisor, at: Platform = platform): Promis
 
 describe("真实进程：启动与发现文件", () => {
   it("[SUPERVISOR-LIFECYCLE-11] 监听完成后发现文件内容齐全，只有本人可读，目录 700，连接点 600，没有临时文件残留", async () => {
-    const running = await ledger.startSupervisor(home);
+    const running = ledger.startSupervisor(home);
     const file = await waitReady(running);
     expect(file).toMatchObject({
       formatVersion: 1,
-      pid: running.ref.pid,
+      pid: running.pid,
       endpoint: platform.ipc.endpoint(),
       protocol: 1,
       version: "0.0.0-it",
@@ -108,7 +108,7 @@ describe("真实进程：启动与发现文件", () => {
   });
 
   it("[SUPERVISOR-LIFECYCLE-01] 同时启动多个：只有一个存活，其余自己退出（退出码 0、说明已有管理进程），连上的是同一个", async () => {
-    const racers = await Promise.all(Array.from({ length: 5 }, () => ledger.startSupervisor(home)));
+    const racers = Array.from({ length: 5 }, () => ledger.startSupervisor(home));
     await waitUntil(
       () => (racers.filter((r) => r.hasExited()).length >= 4 ? true : undefined),
       "four losers",
@@ -127,22 +127,21 @@ describe("真实进程：启动与发现文件", () => {
     const infoA = (await a.request("supervisor.info")) as { result: { build: string } };
     expect(infoA.result.build).toBe("0.0.0-it+one");
     expect(await b.request("ping")).toMatchObject({ ok: true });
-    expect(readDiscovery()?.pid).toBe(winner.ref.pid);
+    expect(readDiscovery()?.pid).toBe(winner.pid);
     await stop(winner);
   });
 
   it("[SUPERVISOR-LIFECYCLE-03] 管理进程被强杀后，新的能拿到锁并正常监听，不需要人工清理", async () => {
-    const first = await ledger.startSupervisor(home);
+    const first = ledger.startSupervisor(home);
     const oldFile = await waitReady(first);
-    first.child.kill("SIGKILL");
-    await first.exited;
+    await ledger.kill(first);
     // 残留还在：连接点文件和发现文件
     expect(existsSync(platform.ipc.endpoint())).toBe(true);
     expect(readDiscovery()?.token).toBe(oldFile.token);
 
-    const second = await ledger.startSupervisor(home);
+    const second = ledger.startSupervisor(home);
     const newFile = await waitReady(second);
-    expect(newFile.pid).toBe(second.ref.pid);
+    expect(newFile.pid).toBe(second.pid);
     expect(newFile.token).not.toBe(oldFile.token);
     // 旧口令对新的管理进程已经没用
     const stale = await connect();
@@ -155,12 +154,11 @@ describe("真实进程：启动与发现文件", () => {
   });
 
   it("[SUPERVISOR-LIFECYCLE-02] 强杀留下残留，再并发启动：只有拿到锁的一个监听，不出现第二个监听者", async () => {
-    const first = await ledger.startSupervisor(home);
+    const first = ledger.startSupervisor(home);
     await waitReady(first);
-    first.child.kill("SIGKILL");
-    await first.exited;
+    await ledger.kill(first);
 
-    const racers = await Promise.all(Array.from({ length: 4 }, () => ledger.startSupervisor(home)));
+    const racers = Array.from({ length: 4 }, () => ledger.startSupervisor(home));
     await waitUntil(
       () => (racers.filter((r) => r.hasExited()).length >= 3 ? true : undefined),
       "three losers",
@@ -172,13 +170,13 @@ describe("真实进程：启动与发现文件", () => {
     const client = await openSession(file);
     expect(await client.request("ping")).toMatchObject({ ok: true });
     // 存活的管理进程只有赢家
-    expect((await ledger.alive()).map((ref) => ref.pid)).toEqual([winner.ref.pid]);
+    expect(await ledger.alive()).toEqual([winner.pid]);
     await stop(winner);
   });
 
   it("[SUPERVISOR-LIFECYCLE-05] 连接点被不持锁的进程先占住（残留文件或外来 socket）：被替换，管理进程照常起来，占位者拿不到任何字节", async () => {
     const run = join(platform.paths.stateDir, "run");
-    mkdirSync(run, { recursive: true, mode: 0o700 });
+    await platform.fs.makeDir(absPath(run));
     const received: Buffer[] = [];
     const squatter = createServer((socket) => {
       socket.on("data", (chunk) => received.push(chunk));
@@ -186,7 +184,7 @@ describe("真实进程：启动与发现文件", () => {
     servers.push(squatter);
     await new Promise<void>((resolve) => squatter.listen(platform.ipc.endpoint(), resolve));
 
-    const running = await ledger.startSupervisor(home);
+    const running = ledger.startSupervisor(home);
     const file = await waitReady(running);
     const client = await openSession(file);
     expect(await client.request("ping")).toMatchObject({ ok: true });
@@ -196,9 +194,9 @@ describe("真实进程：启动与发现文件", () => {
   });
 
   it("[SUPERVISOR-LIFECYCLE-05] 持锁的真管理进程在：另一个启动者起不来（退出码 0 加说明），口令不会发给任何人", async () => {
-    const first = await ledger.startSupervisor(home);
+    const first = ledger.startSupervisor(home);
     const file = await waitReady(first);
-    const second = await ledger.startSupervisor(home);
+    const second = ledger.startSupervisor(home);
     expect(await second.exited).toBe(0);
     expect(second.stderr()).toContain(EXIT_ALREADY_RUNNING_LINE);
     // 第一个没被打扰：发现文件还是它的
@@ -209,8 +207,8 @@ describe("真实进程：启动与发现文件", () => {
 
   it("[SUPERVISOR-LIFECYCLE-06] 开发版和正式版各有自己的连接点和发现文件，互不影响", async () => {
     const dev = platformAt(home, "dev");
-    const prod = await ledger.startSupervisor(home);
-    const devProc = await ledger.startSupervisor(home, ["--profile", "dev"]);
+    const prod = ledger.startSupervisor(home);
+    const devProc = ledger.startSupervisor(home, ["--profile", "dev"]);
     const prodFile = await waitReady(prod);
     const devFile = await waitReady(devProc, dev);
     expect(dev.ipc.endpoint()).not.toBe(platform.ipc.endpoint());
@@ -227,7 +225,7 @@ describe("真实进程：启动与发现文件", () => {
 
 describe("真实进程：握手与连接", () => {
   it("[PROTOCOL-HANDSHAKE-01] 真实 socket 上完整握手，之后能发请求；两个方向的字节里都没有口令", async () => {
-    const running = await ledger.startSupervisor(home);
+    const running = ledger.startSupervisor(home);
     const file = await waitReady(running);
     const client = await openSession(file);
     expect(await client.request("ping")).toMatchObject({ ok: true });
@@ -255,7 +253,7 @@ describe("真实进程：握手与连接", () => {
   });
 
   it("[PROTOCOL-HANDSHAKE-02] 错误口令、冒充者（不知道口令）都被断开，且口令没上线；管理进程不受影响", async () => {
-    const running = await ledger.startSupervisor(home);
+    const running = ledger.startSupervisor(home);
     const file = await waitReady(running);
 
     const wrongToken = await connect();
@@ -276,7 +274,7 @@ describe("真实进程：握手与连接", () => {
   });
 
   it("[PROTOCOL-HANDSHAKE-04] 长度不对的 clientNonce 被断开，不继续握手", async () => {
-    const running = await ledger.startSupervisor(home);
+    const running = ledger.startSupervisor(home);
     const file = await waitReady(running);
     for (const clientNonce of ["", "ab".repeat(31), "ab".repeat(33)]) {
       const client = await connect();
@@ -288,7 +286,7 @@ describe("真实进程：握手与连接", () => {
   });
 
   it("[PROTOCOL-HANDSHAKE-06] 握手之前到达的请求不被处理，连接被断开", async () => {
-    const running = await ledger.startSupervisor(home);
+    const running = ledger.startSupervisor(home);
     const file = await waitReady(running);
     const client = await connect();
     await client.readChallenge();
@@ -306,7 +304,7 @@ describe("真实进程：握手与连接", () => {
   });
 
   it("[PROTOCOL-HANDSHAKE-19] 超过 8 MB 的一行：只关这个连接，管理进程和其他连接不受影响", async () => {
-    const running = await ledger.startSupervisor(home);
+    const running = ledger.startSupervisor(home);
     const file = await waitReady(running);
     const good = await openSession(file);
     const bad = await openSession(file);
@@ -320,19 +318,19 @@ describe("真实进程：握手与连接", () => {
 
 describe("真实进程：关闭", () => {
   it("收到终止信号：清掉发现文件和连接点，释放锁（下一个启动者立刻能起来），退出码 0", async () => {
-    const first = await ledger.startSupervisor(home);
+    const first = ledger.startSupervisor(home);
     await waitReady(first);
-    first.child.kill("SIGTERM");
+    await ledger.terminate(first);
     expect(await first.exited).toBe(0);
     expect(readDiscovery()).toBeUndefined();
     expect(existsSync(platform.ipc.endpoint())).toBe(false);
-    const second = await ledger.startSupervisor(home);
+    const second = ledger.startSupervisor(home);
     await waitReady(second);
     await stop(second);
   });
 
   it("[SUPERVISOR-LIFECYCLE-15] 没有运行时 shutdown { ifIdle: true, reason: 'upgrade' } 会关闭并退出", async () => {
-    const running = await ledger.startSupervisor(home);
+    const running = ledger.startSupervisor(home);
     const file = await waitReady(running);
     const client = await openSession(file);
     expect(
@@ -345,7 +343,7 @@ describe("真实进程：关闭", () => {
   });
 
   it("参数不对：退出码 2，不监听、不写发现文件", async () => {
-    const child = await ledger.startSupervisor(home, ["--profile", "nonsense"]);
+    const child = ledger.startSupervisor(home, ["--profile", "nonsense"]);
     expect(await child.exited).toBe(2);
     expect(readDiscovery()).toBeUndefined();
   });

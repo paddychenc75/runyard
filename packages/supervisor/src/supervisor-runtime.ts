@@ -3,7 +3,7 @@ import type { Server, Socket } from "node:net";
 import type { EventData, EventName, ShutdownReason } from "@runyard/protocol";
 import { NONCE_BYTES } from "@runyard/protocol";
 import { createBuiltinHandlers } from "./builtin-methods.ts";
-import { createNodeDiscoveryStore, discoveryFilePath } from "./discovery-file.ts";
+import { createPlatformDiscoveryStore } from "./discovery-file.ts";
 import { createDispatcher, type HandlerMap } from "./dispatch.ts";
 import { ServerHandshake } from "./handshake-server.ts";
 import { createIdleMonitor } from "./idle-monitor.ts";
@@ -43,8 +43,7 @@ export function createSupervisorRuntime(options: StartSupervisorOptions) {
   const { platform, identity } = options;
   const clock = options.clock ?? createSystemClock();
   const log = options.log ?? (() => {});
-  const store =
-    options.discovery ?? createNodeDiscoveryStore(discoveryFilePath(platform.paths.stateDir));
+  const store = options.discovery ?? createPlatformDiscoveryStore(platform);
   const random = options.randomBytes ?? ((n: number) => cryptoRandomBytes(n));
   const tokenBytes = random(32);
   const token = hex(tokenBytes);

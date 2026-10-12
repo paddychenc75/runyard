@@ -2,7 +2,7 @@
 import { fileURLToPath } from "node:url";
 
 export {
-  createNodeDiscoveryStore,
+  createPlatformDiscoveryStore,
   type DiscoveryStore,
   discoveryFilePath,
 } from "./discovery-file.ts";
