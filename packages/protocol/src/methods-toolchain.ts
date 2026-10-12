@@ -41,7 +41,7 @@ export const toolchainMethods = {
     summary: "手动指定一个工具的路径，排在所有自动查找之前，并重新检测",
     params: z.object({ tool: z.string().min(1), path: z.string().min(1) }),
     result: toolchainReportSchema,
-    errors: [],
+    errors: ["DATA_FROM_NEWER_VERSION"],
     status: "defined",
   },
   "settings.get": {
@@ -57,7 +57,7 @@ export const toolchainMethods = {
     summary: "改设置：只传要改的字段，返回改后的全部设置",
     params: settingsPatchSchema,
     result: settingsSchema,
-    errors: [],
+    errors: ["DATA_FROM_NEWER_VERSION"],
     status: "defined",
   },
 } as const satisfies Record<string, MethodDefinition>;

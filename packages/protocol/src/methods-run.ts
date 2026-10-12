@@ -27,6 +27,8 @@ const startErrors = [
   "RUN_FAILED",
   "SCRIPT_ERRORED",
   "READY_TIMEOUT",
+  // run.start / run.restart 会写 library.json（记住的端口、lastUsedAt）
+  "DATA_FROM_NEWER_VERSION",
 ] as const;
 
 const clientAndRun = z.object({ runId: runIdSchema, clientId: z.string().min(1) });

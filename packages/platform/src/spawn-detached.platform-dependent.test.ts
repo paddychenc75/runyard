@@ -188,12 +188,9 @@ describe("spawnDetached", () => {
     expect(error).toMatchObject({ error: { code: "INTERNAL" } });
   });
 
-  it("空参数列表抛 INTERNAL；via 'wmi' 在这个系统上是 NOT_SUPPORTED", async () => {
+  it("空参数列表抛 INTERNAL", async () => {
     await expect(platform.exec.spawnDetached([], { env: {}, logFile })).rejects.toMatchObject({
       error: { code: "INTERNAL" },
     });
-    await expect(
-      platform.exec.spawnDetached([process.execPath], { env: {}, logFile, via: "wmi" }),
-    ).rejects.toMatchObject({ error: { code: "NOT_SUPPORTED" } });
   });
 });

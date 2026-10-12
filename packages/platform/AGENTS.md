@@ -20,7 +20,7 @@
 - 实现之间不互相引用；共用部分在 `posix/`，`darwin/` 和 `linux/` 只组合它并写自己的差别。不写 `win32/`，也不加任何只属于 Windows 的代码。
 - 给 `Platform` 加成员，必须同时在 `src/contract/` 加契约用例（`platform-contract` 检查）；`platform.ts` 的写法（分组用内联对象类型、每个成员单独声明）是那个检查的解析依据。
 - `ipc`：连接点是状态目录下 `run/supervisor.sock`（路径上限 darwin 104、linux 108 字节，超了 `PATH_TOO_LONG`）。`listen()` 先拿内核锁再删残留的 socket 文件并监听（darwin：`run/supervisor.lock` 上的 `O_EXLOCK`；linux：抽象 socket），别的进程持锁抛 `BUSY`；`connect()` 连不上一律 `SUPERVISOR_UNAVAILABLE`；`computeProof` / `verifyProof` 是握手的 HMAC（verify 常量时间）。算法与实测见决策记录 0005 和它的证据文件，不要改成“只靠监听失败”。
-- `exec.spawnDetached`：detached、不继承标准输入输出（输出追加到日志文件）、工作目录是状态目录、环境原样用调用方给的；`via: "wmi"` 是以后 Windows 的启动方式，这里抛 `NOT_SUPPORTED`。
+- `exec.spawnDetached`：detached、不继承标准输入输出（输出追加到日志文件）、工作目录是状态目录、环境原样用调用方给的；接口没有选择启动方式的选项（决策记录 0013：接口里不出现只属于某个系统的概念）；“调用者在关闭即杀的作业里也要活下来”就是 `spawnDetached` 本身的含义，以后的 Windows 实现自己决定怎样做到（Job Object 与 WMI 的证据见 0005 的证据文件和 0013 的清单）。
 - 契约测试通过 `@runyard/platform/contract` 导出给 `@runyard/testing`，假平台跑同一组用例；`ContractContext.complete` 为 true 的实现（假平台）不跑占位那一组。
 - 进程与端口（`posix/posix-proc.ts`、`posix-exec.ts`、`posix-ports.ts`，算法出自决策记录 0006）：`spawn` 参数数组不经 shell、`detached` 自成进程组、去掉 `ELECTRON_RUN_AS_NODE`；`terminate` 整组发信号、等 `graceMs`、再整组强制结束，**每次发信号前都重新核对身份**（根进程在则 pid 加启动时间必须一致且它是组长；根进程已死则组里不能有比它更早启动的成员）；pid 0、1、负数、本进程和本进程所在的组一律不碰。不要加“只凭 pid 或进程名”的路径。
 - 进程表和连接表怎么读是各系统的事（`ProcessSource`、`SocketTable`）：macOS 用 `ps`、`netstat -anv`（`darwin/`），Linux 读 `/proc`（`linux/`），算法共用。macOS 上 `127.0.0.1` 绑得上并不代表端口空闲（别的程序监听 `0.0.0.0` 时照样绑得上），所以 `ports.isFree` 绑完还要看连接表。

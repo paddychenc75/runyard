@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { dataFileKindSchema } from "./enums.ts";
 
 // 错误码登记表：一份定义同时给出类型、校验和退出码（技术设计 §5.1、§5.3）。
 // 代码发布后不改名、不复用；新增代码不升协议版本。参数里只放可序列化的简单值，没有句子。
@@ -50,6 +51,16 @@ export const errorRegistry = {
   SUPERVISOR_OUTDATED: { exit: 10, params: z.object({ runs: z.number().int().nonnegative() }) },
   CLIENT_OUTDATED: { exit: 10, params: none },
   NOT_SUPPORTED: { exit: 10, params: none },
+  // 要写的文件是更新版本的 Runyard 写的：读仍然允许（只读视图），写一律拒绝，不改写、不降级。
+  // 与 CLIENT_OUTDATED 同属“要用户去升级才能继续”，所以也是 10。found 是文件里的版本，supported 是本程序认识的最高版本
+  DATA_FROM_NEWER_VERSION: {
+    exit: 10,
+    params: z.object({
+      file: dataFileKindSchema,
+      found: z.number().int().positive(),
+      supported: z.number().int().positive(),
+    }),
+  },
 } as const;
 
 export type ErrorCode = keyof typeof errorRegistry;
