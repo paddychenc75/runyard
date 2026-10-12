@@ -25,6 +25,7 @@
 | 命令行 | `cli` | — | — | — | PRD #prd-cli；技术设计 §3.2 |
 | 智能体 | `agent` | — | — | — | PRD #prd-glossary；技术设计 §5.1 |
 | 移到废纸篓 | `trash` | — | 删除到废纸篓 | — | 技术设计 §6.8、§12 第 45 项 |
+| 访达 | `fileManager`（文案里写 `{term_fileManager}`） | Finder | — | — | 负责人 2026-10-12 决定；技术设计 §6.8 |
 
 ## 说明
 

@@ -35,7 +35,7 @@
   "errors.NAME_INVALID.hint": "Use a name that follows these rules.",
   "errors.NAME_INVALID.hintCli": "Run the command again with a name that follows these rules.",
   "errors.NAME_INVALID.title": "Invalid playground name \"{name}\"",
-  "errors.NAME_RESERVED.body": "Names such as con, nul and com1 are reserved by Windows. Runyard rejects them on every system so that the library can later move to Windows.",
+  "errors.NAME_RESERVED.body": "Names such as con, nul and com1 are reserved, and Runyard does not accept them as playground names.",
   "errors.NAME_RESERVED.hint": "Choose a name that is not reserved.",
   "errors.NAME_RESERVED.hintCli": "Run the command again with a name that is not reserved.",
   "errors.NAME_RESERVED.title": "\"{name}\" is a reserved name and cannot be used as a playground name",

@@ -11,7 +11,7 @@ errors.NAME_INVALID.body: A name can contain only lowercase letters, digits and 
 errors.NAME_INVALID.hint: Use a name that follows these rules.
 errors.NAME_INVALID.hintCli: Run the command again with a name that follows these rules.
 errors.NAME_RESERVED.title: "nul" is a reserved name and cannot be used as a playground name
-errors.NAME_RESERVED.body: Names such as con, nul and com1 are reserved by Windows. Runyard rejects them on every system so that the library can later move to Windows.
+errors.NAME_RESERVED.body: Names such as con, nul and com1 are reserved, and Runyard does not accept them as playground names.
 errors.NAME_RESERVED.hint: Choose a name that is not reserved.
 errors.NAME_RESERVED.hintCli: Run the command again with a name that is not reserved.
 errors.VAR_INVALID.title: Template variable title cannot be used
