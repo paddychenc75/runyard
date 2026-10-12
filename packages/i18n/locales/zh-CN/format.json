@@ -1,0 +1,10 @@
+{
+  "format.duration.days": "{count, plural, other {# 天}}",
+  "format.duration.hours": "{count, plural, other {# 小时}}",
+  "format.duration.minutes": "{count, plural, other {# 分钟}}",
+  "format.duration.seconds": "{count, plural, other {# 秒}}",
+  "format.relative.days": "{count, plural, other {# 天前}}",
+  "format.relative.hours": "{count, plural, other {# 小时前}}",
+  "format.relative.justNow": "刚刚",
+  "format.relative.minutes": "{count, plural, other {# 分钟前}}"
+}
