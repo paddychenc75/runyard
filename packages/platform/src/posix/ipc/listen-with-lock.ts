@@ -1,6 +1,7 @@
 import { promises as fs } from "node:fs";
 import { createServer, type Server } from "node:net";
 import { platformError } from "../../platform-error.ts";
+import { errnoOf } from "../fs/map-fs-error.ts";
 import type { IpcLocations } from "./endpoint.ts";
 import type { KernelLock, LockStrategy } from "./kernel-lock.ts";
 
@@ -45,8 +46,14 @@ function listenOn(path: string): Promise<Server> {
   });
 }
 
+// 先拿到内核锁才会走到这里，所以残留的 socket 文件一定是上一个已经死掉的管理进程留下的
 async function removeStaleSocket(path: string): Promise<void> {
-  await fs.rm(path, { force: true });
+  try {
+    // delete-allow: 管理进程自己的 run/supervisor.sock 残留（单个文件，不是用户的内容）
+    await fs.unlink(path);
+  } catch (error) {
+    if (errnoOf(error) !== "ENOENT") throw error;
+  }
 }
 
 export async function listenWithLock(

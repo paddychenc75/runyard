@@ -13,17 +13,14 @@ import { createTranslator } from "./create-translator.ts";
 import { type Locale, locales } from "./locale.ts";
 import type { ErrorMessageField } from "./messages.ts";
 
-// 登记表里的每个代码都要有中英文文案（临时断言，完整的 i18n-codes 检查是 issue #23）。
-// 键和参数名的对错在编译期由 messages.ts 守着（t() 的调用写错就是类型错误）；
-// 这里的运行时部分：文案是否真的存在、真实参数值下渲染出什么句子。
-// 参数名是否和登记表一致见 build/code-texts-params.test.ts（要用 ICU 解析器，只能在 build/ 里）。
+// 真实参数值下渲染出什么句子（语法、空格、标点、复数、可选参数）。
+// “每个代码都有中英文文案、参数和登记表一致”不在这里测：那是 i18n-codes 检查（pnpm check），
+// 实现在 build/code-texts-check.ts，包内由 build/code-texts-check.test.ts 对真实文案跑同一份。
 
 const fields: readonly ErrorMessageField[] = ["title", "body", "hint", "hintCli"];
 
 const make = (locale: Locale) =>
   createTranslator({ locale, platform: "darwin", catalogs: cliCatalogs });
-const merged = (locale: Locale) =>
-  Object.assign({}, ...cliCatalogs.map((catalog) => catalog[locale])) as Record<string, string>;
 
 // 每个错误码一组真实风格的参数；写成映射类型，登记表新增代码而这里漏写，tsc 直接报错
 const errorExamples: { [C in ErrorCode]: ErrorParams<C> } = {
@@ -61,7 +58,13 @@ const errorExamples: { [C in ErrorCode]: ErrorParams<C> } = {
 const noticeExamples: { [C in NoticeCode]: NoticeParams<C>[] } = {
   RELOADING: [{}],
   STOPPED_BY_USER: [{}],
-  PROCESS_EXITED: [{ exitCode: 1 }, { signal: "SIGKILL" }, {}],
+  PROCESS_EXITED: [
+    { exitCode: 1 },
+    { exitCode: 0 },
+    { signal: "SIGKILL" },
+    { exitCode: 137, signal: "SIGKILL" },
+    {},
+  ],
   DEPS_FROM_CACHE: [{}],
   PORT_FALLBACK: [
     { wanted: 7111, actual: 7112, reason: "PORT_OCCUPIED" },
@@ -80,32 +83,8 @@ const noticeExamples: { [C in NoticeCode]: NoticeParams<C>[] } = {
 
 type Anything = (key: string, values?: object) => string;
 
-describe("每个登记的代码在两种语言里都有文案", () => {
-  for (const locale of locales) {
-    const catalog = merged(locale);
-
-    it(`[${locale}] 错误码：四个字段齐全，没有多余的 errors 键`, () => {
-      const expected = errorCodes.flatMap((code) => fields.map((f) => `errors.${code}.${f}`));
-      const actual = Object.keys(catalog).filter((key) => key.startsWith("errors."));
-      expect(actual.sort()).toEqual(expected.sort());
-    });
-
-    it(`[${locale}] 提示码和运行状态：每个都有，没有多余的键`, () => {
-      const notices = Object.keys(catalog).filter((key) => key.startsWith("notice."));
-      expect(notices.sort()).toEqual(noticeCodes.map((code) => `notice.${code}`).sort());
-      const states = Object.keys(catalog).filter((key) => key.startsWith("runState."));
-      expect(states.sort()).toEqual(runStates.map((state) => `runState.${state}`).sort());
-    });
-
-    it(`[${locale}] 没有空文案，也没有首尾空白`, () => {
-      for (const [key, message] of Object.entries(catalog)) {
-        expect(message.trim(), key).not.toBe("");
-        expect(message, key).toBe(message.trim());
-      }
-    });
-  }
-
-  it("示例覆盖全部错误码和提示码", () => {
+describe("示例覆盖登记表", () => {
+  it("示例覆盖全部错误码和提示码（登记表新增代码而这里漏写，tsc 也会报）", () => {
     expect(Object.keys(errorExamples).sort()).toEqual([...errorCodes].sort());
     expect(Object.keys(noticeExamples).sort()).toEqual([...noticeCodes].sort());
   });

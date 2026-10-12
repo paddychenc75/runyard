@@ -23,7 +23,6 @@ export type CatalogMessages = {
   "format.relative.minutes": {
     count: number;
   };
-  "platform.dock": Record<never, never>;
   "platform.fileManager": Record<never, never>;
   "platform.trash": Record<never, never>;
 };

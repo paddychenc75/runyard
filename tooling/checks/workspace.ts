@@ -14,6 +14,7 @@ export interface Check {
 export interface PackageManifest {
   name?: string;
   packageManager?: string;
+  scripts?: Record<string, string>;
   dependencies?: Record<string, string>;
   devDependencies?: Record<string, string>;
   peerDependencies?: Record<string, string>;

@@ -6,7 +6,7 @@
   "notice.PACKAGE_MANAGER_FALLBACK": "{wanted} was not found, so {used} is used instead.",
   "notice.PATH_NEAR_LIMIT": "The playground path is {length, plural, one {# character} other {# characters}} long, close to the system limit of {limit, number}. Creation continues. A shorter name or a shorter library location avoids the problem.",
   "notice.PORT_FALLBACK": "Port {wanted} is {reason, select, PORT_RESERVED {reserved by the system} other {in use}}, so this run uses port {actual}. The next run tries {wanted} first.",
-  "notice.PROCESS_EXITED": "The process exited.",
+  "notice.PROCESS_EXITED": "The process exited{exitCode, select, none {} other { with code {exitCode}}}{signal, select, none {} other { (signal {signal})}}.",
   "notice.RELOADING": "Files changed, reloading.",
   "notice.STOPPED_BY_USER": "You stopped this playground.",
   "notice.TOOL_VERSION_UNTESTED": "{tool} {found} is newer than the range this template was tested with ({required}). It runs as usual but is untested."

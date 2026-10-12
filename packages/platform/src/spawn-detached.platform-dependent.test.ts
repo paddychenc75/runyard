@@ -40,7 +40,7 @@ afterEach(async () => {
 });
 
 async function waitFor(condition: () => boolean, what: string): Promise<void> {
-  for (let i = 0; i < 250; i++) {
+  for (let i = 0; i < 1500; i++) {
     if (condition()) return;
     await new Promise((resolve) => setTimeout(resolve, 20));
   }

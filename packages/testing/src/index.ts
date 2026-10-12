@@ -19,4 +19,5 @@ export type {
   SpawnRecord,
   SpawnSpec,
 } from "./process-behavior.ts";
+export { registerSpawned } from "./spawned-registry.ts";
 export { createTempHome, type TempHome } from "./temp-home.ts";

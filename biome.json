@@ -7,6 +7,7 @@
       "!**/.tsbuild",
       "!**/.turbo",
       "!pnpm-lock.yaml",
+      "!.release-please-manifest.json",
       "!docs/design",
       "!tooling/design-render/build",
       "!tooling/design-render/png",
@@ -33,6 +34,31 @@
     }
   },
   "overrides": [
+    {
+      "includes": ["apps/desktop/src/renderer/**", "packages/ui/src/**", "!**/*.test.tsx"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noJsxLiterals": {
+              "level": "error",
+              "options": {
+                "noStrings": false,
+                "ignoreProps": true,
+                "allowedStrings": ["·", "›", ":"]
+              }
+            }
+          }
+        }
+      },
+      "plugins": [
+        "./tooling/biome/native-attr-literal.grit",
+        "./tooling/biome/jsx-child-literal.grit"
+      ]
+    },
+    {
+      "includes": ["packages/cli/src/**", "!**/*.test.ts"],
+      "linter": { "rules": { "suspicious": { "noConsole": "error" } } }
+    },
     {
       "includes": ["packages/**"],
       "linter": {

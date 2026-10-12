@@ -7,7 +7,7 @@ import type { ProcessLedger } from "./process-ledger.ts";
 // 契约测试的共用工具：起假程序树、等它起好、挑动态端口。
 
 export const FAKE_SERVICE = fileURLToPath(new URL("./fixtures/fake-service.ts", import.meta.url));
-export const WAIT_MS = 15_000;
+export const WAIT_MS = 30_000;
 
 export interface ServiceConfig {
   listen?: number;

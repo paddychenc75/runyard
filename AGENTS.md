@@ -24,15 +24,17 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `docs/product/` | 中文产品文档：PRD 和技术设计。产品行为的唯一出处，先读 `docs/product/README.md` |
 | `docs/design/` | 界面设计源文件、设计变量、最终图标。只读 |
 | `docs/architecture/` | `overview.md`（一页架构总览）、`decisions/`（决策记录）、`evidence/`（技术验证记录的实测数据、伪代码和证据链接）、`dependencies.md`（每个依赖的版本和理由），以及 M1 头三个包和命令行的实现细节：`protocol.md`、`protocol-methods.md`、`storage.md`、`run-state-machine.md`、`runner-format.md`、`platform-interface.md`、`cli-contract.md` |
-| `docs/reference/` | 协议参考（方法、事件、错误码、退出码、提示码、枚举），**由 `pnpm generate` 从 `packages/protocol` 生成**，不要手改 |
+| `docs/reference/` | 协议参考（方法、事件、错误码、退出码、提示码、枚举）和文案对照表 `strings.md`，**由 `pnpm generate` 从 `packages/protocol`、`packages/i18n/locales/` 生成**，不要手改 |
 | `docs/guides/` | 操作手册和命令表。有手册的任务按手册做，不要临场发挥 |
+| `docs/releases/` | 每个版本给负责人看的白话说明（`<版本>.md`）。更新日志 `CHANGELOG.md` 在根目录，自动生成，不要手改 |
 | `docs/glossary.md` | 术语表：中文术语、唯一的英文标识符、禁用的同义词 |
-| `packages/platform/` | 平台层：`Platform` 接口、`getPlatform()`、路径与名称校验、`darwin` 和薄 `linux` 实现、契约测试（目前有接口、paths、ipc、spawnDetached、exec、proc、ports 的实现，其余是占位，随后续 issue 加入） |
+| `packages/platform/` | 平台层：`Platform` 接口、`getPlatform()`、路径与名称校验、`darwin` 和薄 `linux` 实现、契约测试（目前有接口、paths、ipc、spawnDetached、exec、proc、ports、fs（含 macOS 废纸篓）、watch 的实现，其余是占位，随后续 issue 加入） |
 | `packages/protocol/` | 所有跨进程约定（目前有错误码、提示码、枚举、`RunyardError` / `Notice` / `LogEntry` / `Owner`、分帧、`Frame`、握手消息、版本比对、方法与事件的登记表、`Playground` / `RunSnapshot`、磁盘文件格式与升级链） |
 | `packages/i18n/` | 文案、`createTranslator`、数字和时长格式、命令行语言解析（`resolveCliLocale`）、由中文文案生成的键和参数类型 |
-| `packages/core/` | 工具检测、运行引擎、资源库等业务逻辑（目前有日志的切行、解码和读取时清洗，以及运行状态机与进程生命周期） |
+| `packages/core/` | 工具检测、运行引擎、资源库等业务逻辑（目前有日志的切行、解码和读取时清洗，运行状态机与进程生命周期，以及资源库的项目创建、命名、索引和文件夹被动过的判断） |
 | `packages/testing/` | 测试替身：假时钟、假平台（含假进程、假端口、内存文件系统、假工具链）、临时主目录；只在 `*.test.ts` 里导入（决策记录 0014） |
 | `tooling/checks/` | 仓库检查脚本，`pnpm check` 的全部内容；`layers.json` 是包依赖规则的唯一出处 |
+| `tooling/biome/` | Biome 的 GritQL 规则（界面里不许写死文字，随 `biome.json` 在界面包和 renderer 出现时生效） |
 | `tooling/scripts/` | 脚本：`deps-lookup.ts`（查依赖版本和公告）、`generate.ts`（生成文档里的表和协议参考） |
 | `tooling/hooks/` | Claude Code 的钩子脚本，由 `.claude/settings.json` 调用 |
 | `tooling/design-render/` | 把设计源文件渲染成图片的脚本（图片不进仓库） |
@@ -61,11 +63,13 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 
 - `electron` 只许出现在桌面应用里；界面进程（renderer）里不许用 Node 接口。
 - `@runyard/protocol` 里不许用 Node、浏览器、Electron 的任何接口。
-- 系统分支（读 `process.platform`、直接启动进程、手写路径分隔符）只许写在 `@runyard/platform` 和桌面应用主进程的 integration 目录里，其他地方调用平台接口。
+- 系统分支（读 `process.platform`、直接启动进程、手写路径分隔符）只许写在 `@runyard/platform` 和桌面应用主进程的 integration 目录里，其他地方调用平台接口。`platform-branching` 查 `packages` 和 `apps` 两个目录（含测试）：读运行系统的写法、导入 `child_process`、传给 `node:fs`/`node:path` 函数的手写 `/` 或 `\\` 拼接和 `path.sep` 拼接；`tooling` 目录不查（脚本要启动 git、pnpm）。其余手写分隔符的写法靠评审。
 - 第一版只发 macOS（决策记录 0013）：平台层只有 `darwin` 和薄的 `linux` 两份实现，不许新增只属于 Windows 的代码（`win32` 实现、辅助程序、安装器）；接口按以后好加 Windows 来写（不假设信号和进程组，进程身份是 pid 加启动时间）。依赖平台实现的测试只在 macOS 和 Ubuntu 跑，在 Windows 上只通过测试手册里那一个机制跳过，不在测试里写 `if (process.platform …)`。
 - 包之间只从入口导入（如 `@runyard/core`），不伸进内部文件。
 - 管理进程一侧的包（protocol、platform、core、supervisor、client）不产生给人看的句子，只发“代码加参数”。
-- 界面分五层，只能从上往下导入，通用组件包不认识产品；给人看的文字一律走文案包。
+- 界面分五层，只能从上往下导入，通用组件包不认识产品。
+- 给人看的文字一律走文案包。现在 `pnpm check` 已拦：缺文案或参数不一致（`i18n-keys`、`i18n-codes`）、未使用的键（`i18n-unused`）、术语和措辞（`i18n-glossary`、`i18n-wording`）、源码字符串里的汉字和命令行输出口之外的 `process.stdout.write`（`ui-strings`）；
+- 永久删除：产品源码里的 `fs.rm`、`rmSync`、`rmdir`、`unlink`、经进程的 `rm` 一律被 `no-permanent-delete` 拦住。用户的项目只进废纸篓（`fs.trash`）；管理进程自己的临时文件、运行文件、日志轮转、刚建的占位要删，在同一行或上一行写 `// delete-allow: 理由`（理由必填）；平台层里可能递归删除的调用只许出现在 `remove-after-verified-copy.ts`；界面一侧（JSX 规则、`Localized` 属性、伪语言扫页面）随 M2 的界面包才生效。
 
 ## 命令
 
@@ -73,12 +77,13 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 
 ```sh
 pnpm install                 # 安装依赖
-pnpm verify                  # 交付前必跑：lint + typecheck + check + 受影响的包的测试
+pnpm verify                  # 交付前必跑：lint + typecheck + check + 受影响的包的测试（两个阶段）
 pnpm check                   # 全部仓库检查（依赖规则、文档、术语、PRD 锚点等）
 pnpm lint                    # Biome：格式和代码规则，只检查不修改
 pnpm format                  # Biome：按规则重排格式
 pnpm typecheck               # tsc -b，全仓库类型检查
-pnpm test                    # 全部包的单元测试
+pnpm test                    # 全部包的测试：先单元阶段，再进程阶段（起真进程的 *.platform-dependent.test.ts，一次一个包）
+pnpm test:unit               # 只跑单元阶段；pnpm test:process 只跑进程阶段
 pnpm test --filter <包名>     # 只跑一个包的测试，如 pnpm test --filter @runyard/protocol
 pnpm generate                # 重新生成文档里由脚本生成的部分
 pnpm deps:lookup <包名>       # 查一个依赖的候选版本、发布日期和安全公告
@@ -103,6 +108,7 @@ Claude Code 的钩子：改完文件后对那一个文件跑 Biome；结束回�
 | 写测试，尤其是需要平台实现的测试 | `docs/guides/testing.md` |
 | 加或改一条给人看的文字（命令行） | `docs/guides/add-ui-string.md` |
 | 查某条命令跑什么 | `docs/guides/commands.md` |
+| 发版、写版本说明、看更新日志 | `docs/guides/release.md` |
 
 完成标准（一个 PR 合并前）：引用了 PRD 锚点；新行为有测试；`pnpm verify` 通过并贴了结果；改了包结构、依赖规则、磁盘格式、构建发布做法的附了决策记录；动了依赖的按手册十步做完；文字都是中文，两个 README 同步；没有新增未说明的跳过。
 
@@ -118,6 +124,7 @@ Claude Code 的钩子：改完文件后对那一个文件跑 Biome；结束回�
 ## 禁止事项
 
 - 不要绕过检查：不放松规则、不加例外、不删测试、不跳过测试来让检查变绿。觉得检查错了，停下来问。
+- 必过检查失败了不要直接重跑：先开带 `flaky` 标签的 issue 并附运行链接（`docs/guides/testing.md`“偶发失败的规则”）。
 - 不要无说明地压掉报错（`biome-ignore`、`@ts-expect-error`、跳过测试）：旁边必须有带 issue 编号的注释。
 - 不要手改 `package.json` 里的版本号，不要写 `^`、`~`、`latest`。加或升级依赖之前按手册查公告（OSV、GitHub 公告库、项目公告页三处）、查年龄（满 15 天）、记进 `docs/architecture/dependencies.md`。
 - 不要设 `dangerouslyAllowAllBuilds`，不要不看脚本就批准依赖的安装脚本，不要用 `--force` 或 `--no-frozen-lockfile`。
@@ -128,7 +135,8 @@ Claude Code 的钩子：改完文件后对那一个文件跑 Biome；结束回�
 - 不要在测试或开发运行中读写用户真实的 `~/Runyard` 和 `~/.runyard`，用临时目录。
 - 不要把过程产物（讨论、调研、评审、草稿）放进仓库；说明文件只引用仓库里存在的文件。
 - 不要改 `docs/product/` 里的产品文档，除非任务明确要求（改之前要负责人同意）。
-- 不要推送到 `main`，变更只经 PR 进入 `main`（六项必过检查通过后自动合并，决策记录 0012）；不要发版或发布到 npm，这些由负责人做。
+- 不要推送到 `main`，变更只经 PR 进入 `main`（六项必过检查通过后自动合并，决策记录 0012）；不要发版或发布到 npm，这些由负责人做；不要合并 release-please 开的发版 PR。
+- 不要手改 `CHANGELOG.md` 和 `.release-please-manifest.json`，它们只由发版 PR 写（CI 会拦）；要给负责人写版本说明，写 `docs/releases/<版本>.md`（`docs/guides/release.md`）。PR 标题的 type 就是更新日志的分类，要选对。
 
 ## 拿不准的时候
 

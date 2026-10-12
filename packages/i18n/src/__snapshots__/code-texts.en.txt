@@ -112,8 +112,10 @@ errors.DATA_FROM_NEWER_VERSION.hint: Update Runyard, then try again.
 errors.DATA_FROM_NEWER_VERSION.hintCli: Update the Runyard desktop app, then run the command again.
 notice.RELOADING (): Files changed, reloading.
 notice.STOPPED_BY_USER (): You stopped this playground.
-notice.PROCESS_EXITED (exitCode=1): The process exited.
-notice.PROCESS_EXITED (signal=SIGKILL): The process exited.
+notice.PROCESS_EXITED (exitCode=1): The process exited with code 1.
+notice.PROCESS_EXITED (exitCode=0): The process exited with code 0.
+notice.PROCESS_EXITED (signal=SIGKILL): The process exited (signal SIGKILL).
+notice.PROCESS_EXITED (exitCode=137, signal=SIGKILL): The process exited with code 137 (signal SIGKILL).
 notice.PROCESS_EXITED (): The process exited.
 notice.DEPS_FROM_CACHE (): Dependencies came from the local cache.
 notice.PORT_FALLBACK (wanted=7111, actual=7112, reason=PORT_OCCUPIED): Port 7111 is in use, so this run uses port 7112. The next run tries 7111 first.

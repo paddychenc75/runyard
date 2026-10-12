@@ -10,6 +10,7 @@ catalog:
   "@biomejs/biome": 2.5.14
   "@formatjs/icu-messageformat-parser": 3.5.18
   "@types/node": 24.19.0
+  chokidar: 5.0.0
   intl-messageformat: 11.2.15
   turbo: 2.11.4
   typescript: 6.0.3

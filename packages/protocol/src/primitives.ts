@@ -31,13 +31,13 @@ export const subscriptionSchema = z.object({ sub: z.number().int().nonnegative()
 export const relativePathSchema = z
   .string()
   .min(1)
-  .regex(/^[^\\]*$/, "路径用 / 分隔，不许反斜杠")
+  .regex(/^[^\\]*$/, "paths use / separators, backslashes are not allowed")
   .refine(
     (path) =>
       !path.startsWith("/") &&
       !/^[A-Za-z]:/.test(path) &&
       !path.includes("\0") &&
       path.split("/").every((part) => part !== "" && part !== "." && part !== ".."),
-    "必须是不含 . 和 .. 的相对路径",
+    "must be a relative path without . or .. segments",
   )
   .describe("用 / 分隔的相对路径");

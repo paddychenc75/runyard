@@ -8,6 +8,9 @@ on:
     branches: [main]
   push:
     branches: [main]
+  # release-please 的发版 PR 是用默认令牌开的，GitHub 不会为它触发 pull_request；
+  # release-please.yml 开完 PR 后手动触发本工作流，检查记在发版分支的最新提交上（决策记录 0015）
+  workflow_dispatch:
 
 # 默认只读；个别任务需要更多权限时在任务里单独加
 permissions:
@@ -56,6 +59,15 @@ jobs:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: node tooling/ci/check-title.ts --range "$BASE_SHA..$HEAD_SHA"
+
+      - name: 检查更新日志没有被手改
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: node tooling/ci/check-changelog-edit.ts --range "$BASE_SHA...$HEAD_SHA" --head-ref "$HEAD_REF" --author "$AUTHOR"
 
       - name: Biome 检查（格式与规则）
         run: pnpm lint
@@ -113,5 +125,43 @@ jobs:
       - name: 类型检查
         run: pnpm typecheck
 
+      # 测试分两个阶段，放在同一个任务的两个步骤里（任务名是必过检查，不能改）：
+      # 先跑单元测试（各包并行），再跑起真实进程的测试（一次一个包，包内一个工作进程），
+      # 这样进程测试不再和别的测试抢 CPU（docs/guides/testing.md）。
       - name: 单元测试（不重试）
-        run: pnpm test
+        run: pnpm test:unit
+
+      - name: 进程测试（一次一个包，不重试）
+        run: pnpm test:process
+
+  # 只在手动触发时运行（发版分支）：把上面各任务的真实结果同步成同名的提交状态。
+  # 手动触发产生的“检查运行”不计入 PR 的合并条件，提交状态才计入（决策记录 0015，tooling/ci/report-statuses.ts）。
+  # 这个任务的名字不在必过检查里。
+  report:
+    name: 回报检查结果（仅发版分支）
+    needs: [lint, test]
+    if: ${{ always() && github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+      statuses: write
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: 安装 Node（版本读自 .node-version）
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+
+      - name: 把任务结果记成提交状态
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+          SHA: ${{ github.sha }}
+        run: node tooling/ci/report-statuses.ts --repo "$REPO" --run-id "$RUN_ID" --sha "$SHA" --self "回报检查结果（仅发版分支）"
