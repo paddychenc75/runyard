@@ -56,6 +56,22 @@ describe("terms 检查", () => {
     expect(errors[0]).toContain("packages/core/src/x.ts:1 用了禁用的词“demobox”");
   });
 
+  it("中文设计画板里出现中文禁用词，报文件和行号；好画板和英文画板不报", () => {
+    const bad = "<div>\n<button>演示件</button>\n</div>\n";
+    const root = makeRepo({
+      "docs/glossary.md": GLOSSARY,
+      "docs/design/Bad.dc.html": bad,
+      "docs/design/BadDark.dc.html": bad,
+      "docs/design/Good.dc.html": "<div>新建一个项目</div>\n",
+      "docs/design/BadEn.dc.html": bad,
+      "docs/design/BadDarkEn.dc.html": bad,
+    });
+    const errors = terms.run(root);
+    expect(errors.length).toBe(2);
+    expect(errors.join()).toContain("docs/design/Bad.dc.html:2 用了禁用的词“演示件”");
+    expect(errors.join()).toContain("docs/design/BadDark.dc.html:2");
+  });
+
   it("术语表缺列或不在", () => {
     expect(terms.run(makeRepo({ "docs/glossary.md": "# 空\n" })).join()).toContain("表头缺列");
     expect(terms.run(makeRepo({ "AGENTS.md": "x\n" })).join()).toContain("找不到");
