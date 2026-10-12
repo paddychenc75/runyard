@@ -29,7 +29,7 @@
    - 被应用和命令行在运行时导入的包写在 `dependencies`，只在开发时用的写在 `devDependencies`
    - pnpm 提示有未审核的安装脚本时：**不要直接批准。** 读这个包的脚本做什么，确认需要后在 `pnpm-workspace.yaml` 的 `allowBuilds` 里写 `包名: true`，并在 PR 里写理由；不确定就写 `false` 并停下来问
    - 安装报 `ERR_PNPM_NO_MATURE_MATCHING_VERSION`：选的版本（或它的某个间接依赖）不满 14 天。换一个版本或等几天，不要绕过
-7. **例外。** 只有用了安全修复例外才做：在 `pnpm-workspace.yaml` 的 `minimumReleaseAgeExclude` 里加一条**带版本号**的条目（如 `vite@7.3.7`），上面写注释说明公告编号；这个包的配套包（如各平台的二进制包）也要逐个加。改这个文件之前先问负责人。
+7. **例外。** 只有用了安全修复例外才做：在 `pnpm-workspace.yaml` 的 `minimumReleaseAgeExclude` 里加一条**带版本号**的条目（如 `vite@7.3.7`），上面写注释说明公告编号；这个包的配套包（如各平台的二进制包）也要逐个加。例外条目和锁文件必须在同一个 PR 里：锁文件里有不满 14 天的版本而没有对应的例外条目时，`pnpm install --frozen-lockfile` 会直接失败（决策记录 0011）。条目满 14 天后不会自动消失，`minimumReleaseAgeExcludePrune` 只清掉锁文件已经不再用的版本，所以满 14 天后要手动删。pnpm 11 不认 `onlyBuiltDependencies`，放行安装脚本只用 `allowBuilds`。改这个文件之前先问负责人。
 8. **记录。** 在 `docs/architecture/dependencies.md` 的表里加或改一行：包、选定版本、发布日期、查询日期、公告查询（A、B、C 各自的结果或公告编号）、为什么是这个版本。
 9. **验证。** 依次运行，三条命令的输出都贴进 PR：
    - `pnpm check`（其中 `deps-policy` 查设置没被改松、版本是精确的；`deps-record` 查记录和 `package.json` 一致）

@@ -2,7 +2,7 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "description": [
     "Runyard 的依赖更新配置（技术设计 §8.6.3，第 4 次提交）。Renovate 是需要负责人在 GitHub 上安装的应用，见 CONTRIBUTING.md。",
-    "年龄规则与 pnpm-workspace.yaml 的 minimumReleaseAge: 20160（14 天）一致；Renovate 的安全更新会绕过年龄规则，pnpm 的不会，两者的冲突没有实测过【未核实】。"
+    "年龄规则与 pnpm-workspace.yaml 的 minimumReleaseAge: 20160（14 天）一致；Renovate 的安全更新会绕过年龄规则，pnpm 的不会，pnpm 一侧已实测：锁文件里有不满 14 天的版本时冻结安装失败，要在同一个 PR 里加例外条目；Renovate 一侧待第一个安全 PR（决策记录 0011）。"
   ],
   "extends": ["config:recommended", "helpers:pinGitHubActionDigestsToSemver"],
   "timezone": "Asia/Shanghai",

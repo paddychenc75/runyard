@@ -29,8 +29,7 @@ jobs:
           persist-credentials: false
 
       # 需要仓库设置里打开“依赖图（Dependency graph）”，否则这一步报错。
-      # 能否读懂 pnpm 11 的 pnpm-lock.yaml：GitHub 文档把 pnpm-lock.yaml 列为依赖图支持的文件，
-      # 但没有写支持哪些锁文件版本【未核实，第一个改依赖的 PR 上实测】。
+      # 能读懂 pnpm 11 的 pnpm-lock.yaml：已在真实 PR 上核实（决策记录 0011）。
       - name: 依赖变更审查
         uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
         with:
