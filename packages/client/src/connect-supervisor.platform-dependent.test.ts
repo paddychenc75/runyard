@@ -1,5 +1,6 @@
 import { unlink } from "node:fs/promises";
 import { createServer, type Server } from "node:net";
+import { dirname } from "node:path";
 import {
   type AbsPath,
   absPath,
@@ -217,9 +218,7 @@ describe("真实管理进程：连不上、冒充与已知空白", () => {
   });
 
   it("[SUPERVISOR-LIFECYCLE-05] 连接点被不知道口令的进程先占住：握手失败报 SUPERVISOR_UNAVAILABLE，口令没发给占位者", async () => {
-    const runDir = absPath(
-      discoveryFilePath(tracked.platform.paths.stateDir).replace(/\/[^/]+$/, ""),
-    );
+    const runDir = absPath(dirname(discoveryFilePath(tracked.platform.paths.stateDir)));
     await tracked.platform.fs.makeDir(runDir);
     const received: Buffer[] = [];
     const squatter = createServer((socket) => {

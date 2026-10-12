@@ -1,4 +1,4 @@
-import { dirname } from "node:path/posix";
+import { dirname } from "node:path";
 import { absPath, type Platform } from "@runyard/platform";
 import { createFakePlatform, FakeClock, type FakePlatform } from "@runyard/testing";
 import { expect, it } from "vitest";

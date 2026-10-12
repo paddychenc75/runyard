@@ -1,4 +1,4 @@
-import { dirname } from "node:path/posix";
+import { dirname } from "node:path";
 import { absPath, discoveryFilePath, supervisorLogPath } from "@runyard/platform";
 import { settle } from "@runyard/testing";
 import { afterEach, describe, expect, it } from "vitest";

@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto";
 import type { Server, Socket } from "node:net";
-import { dirname } from "node:path/posix";
+import { dirname } from "node:path";
 import { StringDecoder } from "node:string_decoder";
 import { absPath, discoveryFilePath, type Platform } from "@runyard/platform";
 import {
