@@ -12,10 +12,10 @@ const options = (home: string) => ({
   profile: undefined,
 });
 
-// 当前运行的系统；整个代码库里读它的只有 getPlatform（platform-branching 检查守着）
+// 契约测试需要平台实现，所以带 platform-dependent 标记（文件名后缀），Windows 任务不跑（docs/guides/testing.md）
+// native：本机会选的那个实现（见 ContractContext.native）。getPlatform 是读系统的唯一地方，这里只比较它给出的 id
 const hostId = getPlatform({ home: absPath(process.cwd()) }).id;
 
-// 契约测试需要平台实现，所以带 platform-dependent 标记（文件名后缀），Windows 任务不跑（docs/guides/testing.md）
 const implementations: ContractContext[] = [
   {
     name: "darwin",

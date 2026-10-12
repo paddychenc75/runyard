@@ -146,3 +146,48 @@ describe("layers 检查：@runyard/i18n 的规则", () => {
     expect(layers.run(repoWhere("@runyard/i18n", "@runyard/protocol"))).toEqual([]);
   });
 });
+
+// 用仓库真实的 layers.json 核对 @runyard/testing 的位置（决策记录 0014）：
+// 只有会写测试的上层包能依赖它，而且只能写在 devDependencies；protocol、platform、i18n 不许（testing 自己导入前两个，会成环）
+describe("layers 检查：@runyard/testing 的规则", () => {
+  const real = JSON.parse(
+    readFileSync(join(import.meta.dirname, "layers.json"), "utf8"),
+  ) as typeof rules;
+  const pathOf = (name: string) => (real.packages as Record<string, { path: string }>)[name]?.path;
+
+  function repoWhere(from: string, field: "dependencies" | "devDependencies"): string {
+    const to = "@runyard/testing";
+    const fromPath = pathOf(from) as string;
+    const toPath = pathOf(to) as string;
+    return makeRepo({
+      "tooling/checks/layers.json": real,
+      "tsconfig.json": { references: [{ path: fromPath }, { path: toPath }] },
+      [`${fromPath}/package.json`]: { name: from, [field]: { [to]: "workspace:*" } },
+      [`${fromPath}/tsconfig.json`]: {
+        references: [{ path: posix.relative(fromPath, toPath) }],
+      },
+      [`${toPath}/package.json`]: { name: to },
+      [`${toPath}/tsconfig.json`]: { references: [] },
+    });
+  }
+
+  it.each(["@runyard/core", "@runyard/supervisor", "@runyard/client", "runyard"])(
+    "%s 可以把它写在 devDependencies 里",
+    (name) => {
+      expect(layers.run(repoWhere(name, "devDependencies"))).toEqual([]);
+    },
+  );
+
+  it.each(["@runyard/core", "@runyard/supervisor", "@runyard/client", "runyard"])(
+    "%s 把它写在 dependencies 里时报错（会进产品）",
+    (name) => {
+      const errors = layers.run(repoWhere(name, "dependencies"));
+      expect(errors.some((e) => e.includes("只能是 devDependencies"))).toBe(true);
+    },
+  );
+
+  it.each(["@runyard/protocol", "@runyard/platform", "@runyard/i18n"])("拒绝 %s 依赖它", (name) => {
+    const errors = layers.run(repoWhere(name, "devDependencies"));
+    expect(errors.some((e) => e.includes(`不允许 ${name} 依赖它`))).toBe(true);
+  });
+});

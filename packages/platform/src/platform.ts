@@ -1,6 +1,6 @@
 import type { Server, Socket } from "node:net";
 import type { Readable, Writable } from "node:stream";
-import type { EnvSource } from "@runyard/protocol";
+import type { ComputeProof, EnvSource } from "@runyard/protocol";
 import type { AbsPath, PosixRelPath } from "./path-types.ts";
 
 // 平台接口：系统差异的唯一出口（技术设计 §7.1，决策记录 0003、0013，docs/architecture/platform-interface.md）。
@@ -150,10 +150,19 @@ export interface Platform {
   };
   watch(root: AbsPath, opts: WatchOptions, cb: (events: WatchEvent[]) => void): Promise<Disposable>;
   readonly ipc: {
-    /** 不透明的地址：调用方只传递，不解析 */
+    /** 不透明的地址：调用方只传递，不解析。路径超过系统上限抛 PATH_TOO_LONG */
     endpoint(): string;
+    /**
+     * 拿到“只许一个监听者”的内核锁再监听；别的进程已持有锁抛 BUSY（说明已经有一个管理进程）。
+     * 返回的服务器 close 时锁一并释放；进程死亡时由系统释放
+     */
     listen(): Promise<Server>;
+    /** 连不上（没有监听者、权限不够、超时）一律抛 SUPERVISOR_UNAVAILABLE */
     connect(timeoutMs: number): Promise<Socket>;
+    /** 握手的证明函数：HMAC-SHA256(key, message)，小写十六进制（protocol 的 ComputeProof） */
+    computeProof: ComputeProof;
+    /** 常量时间比较证明；格式不对（不是 64 个小写十六进制字符）直接 false */
+    verifyProof(key: Uint8Array, message: string, proof: string): boolean;
   };
   readonly tools: {
     candidates(tool: ToolId, env: Env): Promise<ToolCandidate[]>;

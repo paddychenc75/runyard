@@ -18,6 +18,7 @@ import { prdRefs } from "./prd-refs.ts";
 import { readmeSync } from "./readme-sync.ts";
 import { skips } from "./skips.ts";
 import { terms } from "./terms.ts";
+import { testingImports } from "./testing-imports.ts";
 import type { Check } from "./workspace.ts";
 
 // pnpm check 的入口：依次运行全部仓库检查，任何一项失败就以非 0 退出。
@@ -44,6 +45,7 @@ const checks: Check[] = [
   skips,
   platformContract,
   platformBranching,
+  testingImports,
 ];
 
 const root = join(import.meta.dirname, "..", "..");

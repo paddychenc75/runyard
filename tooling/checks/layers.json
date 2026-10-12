@@ -1,21 +1,36 @@
 {
   "$comment": "包之间允许的依赖方向，规则的唯一来源（技术设计 §3.2）。没列出的依赖一律不行。改这个文件要负责人点头并附 ADR。",
   "packages": {
-    "@runyard/protocol": { "path": "packages/protocol", "allow": [] },
-    "@runyard/tokens": { "path": "packages/tokens", "allow": [] },
-    "@runyard/i18n": { "path": "packages/i18n", "allow": ["@runyard/protocol"] },
-    "@runyard/platform": { "path": "packages/platform", "allow": ["@runyard/protocol"] },
+    "@runyard/protocol": {
+      "path": "packages/protocol",
+      "allow": []
+    },
+    "@runyard/tokens": {
+      "path": "packages/tokens",
+      "allow": []
+    },
+    "@runyard/i18n": {
+      "path": "packages/i18n",
+      "allow": ["@runyard/protocol"]
+    },
+    "@runyard/platform": {
+      "path": "packages/platform",
+      "allow": ["@runyard/protocol"]
+    },
     "@runyard/core": {
       "path": "packages/core",
-      "allow": ["@runyard/protocol", "@runyard/platform"]
+      "allow": ["@runyard/protocol", "@runyard/platform", "@runyard/testing"],
+      "devOnly": ["@runyard/testing"]
     },
     "@runyard/supervisor": {
       "path": "packages/supervisor",
-      "allow": ["@runyard/protocol", "@runyard/platform", "@runyard/core"]
+      "allow": ["@runyard/protocol", "@runyard/platform", "@runyard/core", "@runyard/testing"],
+      "devOnly": ["@runyard/testing"]
     },
     "@runyard/client": {
       "path": "packages/client",
-      "allow": ["@runyard/protocol", "@runyard/platform"]
+      "allow": ["@runyard/protocol", "@runyard/platform", "@runyard/testing"],
+      "devOnly": ["@runyard/testing"]
     },
     "runyard": {
       "path": "packages/cli",
@@ -24,8 +39,10 @@
         "@runyard/platform",
         "@runyard/client",
         "@runyard/core",
-        "@runyard/i18n"
-      ]
+        "@runyard/i18n",
+        "@runyard/testing"
+      ],
+      "devOnly": ["@runyard/testing"]
     },
     "@runyard/testing": {
       "path": "packages/testing",

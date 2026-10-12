@@ -4,20 +4,16 @@ import { isPlatformError } from "../platform-error.ts";
 import type { ContractContext } from "./context.ts";
 
 // 尚未有真实现的成员，和实现明确标为“系统不支持”的成员。
-// 每一行是一个成员；谁实现了它（#26 到 #28），就把这一行换成真用例，不留在这里。
+// 每一行是一个成员；谁实现了它（#26、#28），就把这一行换成真用例，不留在这里。
 // 第二列是负责的 issue，只给读的人看。linux 在 ctx.unsupported 里列出的成员要求抛 NOT_SUPPORTED，
 // 其余的要求抛“尚未实现”的 INTERNAL（占位在 posix/pending-areas.ts）。
 const rows: readonly (readonly [member: string, owner: string])[] = [
   ["env.load", "#26"],
   ["env.runDefaults", "#26"],
-  ["exec.spawnDetached", "#27"],
   ["fs.moveDir", "#28"],
   ["fs.trash", "#28"],
   ["fs.writeAtomic", "#28"],
   ["watch", "#28"],
-  ["ipc.endpoint", "#27"],
-  ["ipc.listen", "#27"],
-  ["ipc.connect", "#27"],
   ["tools.candidates", "#26"],
   ["tools.packageManagers", "#26"],
   ["shell.interactive", "#26"],

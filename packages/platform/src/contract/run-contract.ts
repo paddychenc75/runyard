@@ -1,7 +1,9 @@
 import { describe } from "vitest";
 import type { ContractContext } from "./context.ts";
 import { execContract } from "./exec.contract.ts";
+import { execProcessContract } from "./exec-process.contract.ts";
 import { identityContract } from "./identity.contract.ts";
+import { ipcContract } from "./ipc.contract.ts";
 import { pathsContract } from "./paths.contract.ts";
 import { pendingContract } from "./pending.contract.ts";
 import { portsContract } from "./ports.contract.ts";
@@ -12,11 +14,14 @@ export function runContract(ctx: ContractContext): void {
   describe(`平台契约：${ctx.name}`, () => {
     identityContract(ctx);
     pathsContract(ctx);
+    ipcContract(ctx);
+    execContract(ctx);
+    // 起真进程、绑真端口：只对本机的实现注册（ContractContext.native）
     if (ctx.native) {
-      execContract(ctx);
+      execProcessContract(ctx);
       procContract(ctx);
       portsContract(ctx);
     }
-    pendingContract(ctx);
+    if (ctx.complete !== true) pendingContract(ctx);
   });
 }
