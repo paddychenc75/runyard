@@ -1,7 +1,8 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { generate } from "../scripts/generate.ts";
+import { generate, protocolDefs, writeGenerated } from "../scripts/generate.ts";
+import type { ProtocolDefs } from "../scripts/render-reference.ts";
 import { generatedFresh } from "./generated-fresh.ts";
 import { makeRepo } from "./test-helpers.ts";
 
@@ -26,7 +27,7 @@ describe("generated-fresh 检查", () => {
   it("生成一次之后通过，表里写明每个包建了没有", () => {
     const root = repo(`# x\n\n${BEGIN}\n${END}\n\n后文\n`);
     expect(generatedFresh.run(root).join()).toContain("生成内容过期了");
-    for (const file of generate(root)) writeFileSync(join(root, file.path), file.content);
+    writeGenerated(root, generate(root));
     expect(generatedFresh.run(root)).toEqual([]);
     const text = readFileSync(join(root, "AGENTS.md"), "utf8");
     expect(text).toContain("| `@runyard/protocol` | 无 | 已有 |");
@@ -41,5 +42,66 @@ describe("generated-fresh 检查", () => {
 
   it("生成标记被删掉", () => {
     expect(generatedFresh.run(repo("# 没有标记\n")).join()).toContain("找不到生成标记");
+  });
+
+  describe("docs/reference/ 里的协议参考", () => {
+    const AGENTS = `${BEGIN}\n${END}\n`;
+    const REFERENCE = ["docs/reference/protocol.md", "docs/reference/codes.md"];
+
+    function freshRepo(): string {
+      const root = repo(AGENTS);
+      writeGenerated(root, generate(root));
+      return root;
+    }
+
+    it("还没生成：两份参考文档都报缺失，指出要运行 pnpm generate", () => {
+      const errors = generatedFresh.run(repo(AGENTS));
+      for (const path of REFERENCE) expect(errors.join("\n")).toContain(path);
+      expect(errors.join("\n")).toContain("运行 pnpm generate");
+    });
+
+    it("生成之后通过，并且两份文档里有真实的协议内容", () => {
+      const root = freshRepo();
+      expect(generatedFresh.run(root)).toEqual([]);
+      expect(readFileSync(join(root, "docs/reference/protocol.md"), "utf8")).toContain(
+        "#### `run.start`",
+      );
+      expect(readFileSync(join(root, "docs/reference/codes.md"), "utf8")).toContain(
+        "`NAME_EXISTS`",
+      );
+    });
+
+    it("有人手改了生成的参考文档：报错并指出是哪个文件", () => {
+      const root = freshRepo();
+      const file = join(root, "docs/reference/protocol.md");
+      writeFileSync(file, `${readFileSync(file, "utf8")}\n手写的一行\n`);
+      const errors = generatedFresh.run(root);
+      expect(errors).toHaveLength(1);
+      expect(errors[0]).toContain("docs/reference/protocol.md");
+      expect(errors[0]).toContain("不要手改这个文件");
+    });
+
+    it("生成的文件被删了：报错", () => {
+      const root = freshRepo();
+      rmSync(join(root, "docs/reference/codes.md"));
+      expect(generatedFresh.run(root).join()).toContain("docs/reference/codes.md");
+    });
+
+    it("协议的定义变了而文档没重新生成：按新定义算，旧文档就是过期的", () => {
+      const root = freshRepo();
+      const { "run.stopAll": _removed, ...methods } = protocolDefs.methods;
+      const changed: ProtocolDefs = { ...protocolDefs, methods };
+      const stale = generate(root, changed).filter((file) => !file.fresh);
+      expect(stale.map((file) => file.path)).toEqual(["docs/reference/protocol.md"]);
+    });
+
+    it("重新生成之后恢复通过", () => {
+      const root = freshRepo();
+      const file = join(root, "docs/reference/codes.md");
+      writeFileSync(file, "过期了");
+      expect(generatedFresh.run(root)).not.toEqual([]);
+      expect(writeGenerated(root, generate(root))).toEqual(["docs/reference/codes.md"]);
+      expect(generatedFresh.run(root)).toEqual([]);
+    });
   });
 });

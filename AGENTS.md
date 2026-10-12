@@ -24,11 +24,12 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `docs/product/` | 中文产品文档：PRD 和技术设计。产品行为的唯一出处，先读 `docs/product/README.md` |
 | `docs/design/` | 界面设计源文件、设计变量、最终图标。只读 |
 | `docs/architecture/` | `overview.md`（一页架构总览）、`decisions/`（决策记录）、`evidence/`（技术验证记录的实测数据、伪代码和证据链接）、`dependencies.md`（每个依赖的版本和理由），以及 M1 头三个包和命令行的实现细节：`protocol.md`、`protocol-methods.md`、`storage.md`、`run-state-machine.md`、`runner-format.md`、`platform-interface.md`、`cli-contract.md` |
+| `docs/reference/` | 协议参考（方法、事件、错误码、退出码、提示码、枚举），**由 `pnpm generate` 从 `packages/protocol` 生成**，不要手改 |
 | `docs/guides/` | 操作手册和命令表。有手册的任务按手册做，不要临场发挥 |
 | `docs/glossary.md` | 术语表：中文术语、唯一的英文标识符、禁用的同义词 |
-| `packages/protocol/` | 所有跨进程约定（目前有错误码、提示码、枚举、`RunyardError` / `Notice` / `LogEntry` / `Owner`、分帧、`Frame`、握手消息、版本比对） |
+| `packages/protocol/` | 所有跨进程约定（目前有错误码、提示码、枚举、`RunyardError` / `Notice` / `LogEntry` / `Owner`、分帧、`Frame`、握手消息、版本比对、方法与事件的登记表、`Playground` / `RunSnapshot`） |
 | `tooling/checks/` | 仓库检查脚本，`pnpm check` 的全部内容；`layers.json` 是包依赖规则的唯一出处 |
-| `tooling/scripts/` | 脚本：`deps-lookup.ts`（查依赖版本和公告）、`generate.ts`（生成文档里的表） |
+| `tooling/scripts/` | 脚本：`deps-lookup.ts`（查依赖版本和公告）、`generate.ts`（生成文档里的表和协议参考） |
 | `tooling/hooks/` | Claude Code 的钩子脚本，由 `.claude/settings.json` 调用 |
 | `tooling/design-render/` | 把设计源文件渲染成图片的脚本（图片不进仓库） |
 | `security/allowlist.toml` | 依赖安全允许清单，改之前先问 |

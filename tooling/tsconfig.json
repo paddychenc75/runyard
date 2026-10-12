@@ -6,5 +6,10 @@
     "rootDir": "."
   },
   "include": ["**/*.ts"],
-  "exclude": ["tsconfig"]
+  "exclude": ["tsconfig"],
+  "references": [
+    {
+      "path": "../packages/protocol"
+    }
+  ]
 }
