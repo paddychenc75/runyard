@@ -24,7 +24,7 @@
 - `scripts/`：开发脚本（生成文档里的表、查依赖版本和公告）
 - `ci/`：只在 CI 里用的脚本（标题格式、依赖审计门）
 - `hooks/`：Claude Code 钩子，由 `.claude/settings.json` 调用
-- `tsconfig/`、`vitest/`：各包共用的基础配置
+- `tsconfig/`、`vitest/`：各包共用的基础配置；`vitest/base.ts` 里是唯一的“平台相关测试”跳过机制（`docs/guides/testing.md`），也是除 `packages/platform` 外唯一读运行系统的地方，`platform-branching` 不查 `tooling/`
 - `design-render/`：把设计源文件渲染成图片，产物不进仓库
 
 ## 测试

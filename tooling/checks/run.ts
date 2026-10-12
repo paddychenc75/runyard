@@ -11,6 +11,8 @@ import { docsStructure } from "./docs-structure.ts";
 import { generatedFresh } from "./generated-fresh.ts";
 import { layers } from "./layers.ts";
 import { noClaudeMd } from "./no-claude-md.ts";
+import { platformBranching } from "./platform-branching.ts";
+import { platformContract } from "./platform-contract.ts";
 import { prdAnchorsKept } from "./prd-anchors-kept.ts";
 import { prdRefs } from "./prd-refs.ts";
 import { readmeSync } from "./readme-sync.ts";
@@ -19,8 +21,8 @@ import { terms } from "./terms.ts";
 import type { Check } from "./workspace.ts";
 
 // pnpm check 的入口：依次运行全部仓库检查，任何一项失败就以非 0 退出。
-// 技术设计 §9.4 在第 3 次提交时列了十八项，这里有其中十六项，另加不计入那张表的 layers。
-// 还没有的两项要等检查对象出现：i18n-keys（M1 的文案包）、platform-contract（M1 的平台层）。
+// 技术设计 §9.4 在第 3 次提交时列了十八项；platform-contract 与 platform-branching 随平台包（#24）加入。
+// 还没有的一项要等检查对象出现：i18n-keys（M1 的文案包）。
 // spec-validate、spec-trace 随第 5 次提交；界面和国际化的十二项随 M1、M2、M4。
 const checks: Check[] = [
   layers,
@@ -40,6 +42,8 @@ const checks: Check[] = [
   readmeSync,
   adrIndex,
   skips,
+  platformContract,
+  platformBranching,
 ];
 
 const root = join(import.meta.dirname, "..", "..");
