@@ -145,7 +145,7 @@
 管理进程 MUST 在启动时和资源库根目录发生变化时扫描：同一个 `id` 出现在别处的，MUST 按 `id` 认回并更新路径，端口和设置 MUST 不变；索引里的路径不在、找不到同一个 `id` 的，MUST 标记 `missingSince` 并显示“找不到文件夹”；同 `id` 的文件夹被复制出另一份的，MUST 给多出来的那份换新 `id` 和新端口。对找不到文件夹的项目运行或移到废纸篓 MUST 报 `FOLDER_MISSING`。
 来源：PRD #prd-decision-table；PRD #prd-auto-clean
 
-#### Scenario: [LIBRARY-PLAYGROUNDS-26] 在 Finder 里改了名
+#### Scenario: [LIBRARY-PLAYGROUNDS-26] 在访达里改了名
 - 前提：项目 `demo` 登记端口 7104；用户在应用外把文件夹改名为 `demo-new`
 - **WHEN** 管理进程扫描
 - **THEN** 项目按 `id` 认回，名称显示 `demo-new`，端口仍是 7104，设置不变，发出 `playground.changed`

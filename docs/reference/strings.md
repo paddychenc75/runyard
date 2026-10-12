@@ -42,7 +42,7 @@
 | errors.NAME_INVALID.hint | 改用符合这些规则的名称。 | Use a name that follows these rules. | — |
 | errors.NAME_INVALID.hintCli | 用符合这些规则的名称重新运行这条命令。 | Run the command again with a name that follows these rules. | — |
 | errors.NAME_INVALID.title | 项目名称「{name}」不合法 | Invalid playground name "{name}" | name：项目名称（也是文件夹名）；命令行传路径时是用户给的原文 |
-| errors.NAME_RESERVED.body | con、nul、com1 这类名称是 Windows 的保留名。Runyard 在所有系统上都不接受它们，资源库因此可以直接搬到 Windows。 | Names such as con, nul and com1 are reserved by Windows. Runyard rejects them on every system so that the library can later move to Windows. | — |
+| errors.NAME_RESERVED.body | con、nul、com1 这类名称是保留名，Runyard 不接受它们作为项目名称。 | Names such as con, nul and com1 are reserved, and Runyard does not accept them as playground names. | — |
 | errors.NAME_RESERVED.hint | 换一个不是保留名的名称。 | Choose a name that is not reserved. | — |
 | errors.NAME_RESERVED.hintCli | 换一个不是保留名的名称，重新运行这条命令。 | Run the command again with a name that is not reserved. | — |
 | errors.NAME_RESERVED.title | 「{name}」是保留名，不能用作项目名称 | "{name}" is a reserved name and cannot be used as a playground name | name：项目名称（也是文件夹名）；命令行传路径时是用户给的原文 |
