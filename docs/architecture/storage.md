@@ -1,6 +1,6 @@
 # 存储：磁盘上的文件、谁写、怎么升级
 
-管理进程和命令行读写的每一个文件。各系统同一种布局（第一版只有 macOS；Windows 以后，`~` 将是 `%USERPROFILE%`）。形状的唯一出处是 `@runyard/protocol` 里每种文件的 zod 定义（计划）；本篇是写前说明。
+管理进程和命令行读写的每一个文件。各系统同一种布局（第一版只有 macOS；Windows 以后，`~` 将是 `%USERPROFILE%`）。形状的唯一出处是 `@runyard/protocol` 里每种文件的 zod 定义（`file-*.ts`、`log-line.ts`）；本篇说明字段的含义和规则。
 
 出处：技术设计 §4.2、§4.5、§5.4、§2.4；决策记录 [0005](decisions/0005-supervisor-singleton-handshake.md)、[0008](decisions/0008-log-capture-and-cleaning.md)、[0009](decisions/0009-toolchain-resolution-macos.md)、[0010](decisions/0010-trash-and-delete.md)；PRD #prd-agent-created、#prd-retention。字段级细节另参考了技术设计形成过程中的专家方案，已按设计修订；冲突处以设计为准。
 
@@ -108,10 +108,13 @@
 
 ## 3. 版本与升级（§4.2、决策记录 0005 以后的格式规则）
 
-- 每个文件有整数 `formatVersion`；每种文件一条升级链（`vN` 到 `vN+1`），读入时在内存里升到最新，下次写入时落盘。升级链放在 `protocol`。
-- 读到比程序认识的**更新**的版本：只读不写，提示需要更新版本的 Runyard。这样旧命令行不会把新应用写的文件改坏。
+- 每个文件有整数 `formatVersion`；每种文件一条升级链（`vN` 到 `vN+1`），读入时在内存里升到最新，下次写入时落盘。升级链放在 `protocol`（`file-format.ts`），现在每种文件都是 v1，链是空的。
+- 读到比程序认识的**更新**的版本：只读不写，提示需要更新版本的 Runyard。这样旧命令行不会把新应用写的文件改坏。`readVersioned` 对这种文件返回 `status: "newer"`（带 `readOnly: true`、文件版本、程序认识的版本，不解析内容）；`canWrite` 只对读入成功的返回真。这个状态没有错误码，由调用方决定怎样提示。
 - 写入一律先写临时文件再改名；改名覆盖遇到占用时的重试（Windows 以后）。
-- 解析失败：把坏文件改名留存，索引从磁盘重扫，设置回到默认并提示一次。
+- 解析失败（不是 JSON、不是对象、版本号不对、升级抛错、形状不合法）：把坏文件改名留存（`quarantineFileName`：`<文件名>.corrupt-<毫秒时间>`），再按文件种类处理，`readVersioned` 的返回里带 `recovery`：`library.json` 重扫（`rescan`）；`settings.json`、`cli.json` 回到默认并提示一次（`defaults`）；`toolchain.json`、`supervisor.json` 丢弃（`discard`，缓存重建；发现文件坏了按“没有发现文件”）；`playground.json`、运行记录跳过这一个、不重写（`skip`，身份只存在那个文件里；崩溃清理无法核对身份的进程不结束）。
+- 未知字段：`playground.json`、`library.json`（顶层和每一项）、`settings.json`、`cli.json` 原样保留，写回时不丢，因为旧程序可能读到新程序多写的字段；`supervisor.json`、运行记录、`toolchain.json` 每次整个重写，读入时丢弃未知字段。
+- 路径字段（`entry`、`open`）用 `/` 分隔的相对路径，不许反斜杠、绝对路径、盘符、`.` 和 `..` 段（`relativePathSchema`）。
+- 日志文件每行一个 JSON：`LogEntry` 加 `seq`（一次运行内按到达顺序递增，游标 `<runId>:<seq>` 指它；掐掉旧行后序号不重排）。日志是追加写的流，没有 `formatVersion`；崩溃留下的半行读到时跳过（`parseLogLine` 返回 `ok: false`）。
 - 改动磁盘格式属于破坏性改动，要写决策记录（AGENTS.md 完成标准）。
 
 ## 未定
@@ -119,6 +122,6 @@
 1. 轮转规则的数字：`supervisor.log`、`app.log` 单个文件大小和保留份数（设计写“建仓库时定”）。
 2. 每次运行日志文件的目录和文件命名（设计只说“每次运行一个文件”）。
 3. 测试里怎样把 `~/.runyard` 和 `~/Runyard` 换成临时目录（AGENTS.md 要求测试不碰真实目录；用环境变量覆盖还是显式传参，设计未定）。
-4. `toolchain.json` 的逐字段形状：缓存的键和 TTL 已定（0009：登录 shell 加启动文件 mtime 指纹，项目有版本文件时再加项目路径，TTL 1 小时），工具路径与版本的存法未定。
-5. 升级时是否保留 `.bak-vN` 备份（最初方案有，设计未确认）。
+4. ~~`toolchain.json` 的逐字段形状~~ 已定（#19）：`{ formatVersion, entries: { <键>: { checkedAt, tools: ToolCheck[] } } }`。键由 core 按 0009 拼成不透明字符串（登录 shell 加启动文件 mtime 指纹，有项目版本文件时加项目路径）；有效期 `TOOLCHAIN_CACHE_TTL_MS` 为 1 小时（`isToolchainCacheFresh`，时间由调用方给）；条目与 `toolchain.check` 的出参同形，不留检测用的 PATH。
+5. 升级时是否保留 `.bak-vN` 备份：`protocol` 只做内存里的纯升级，返回里带 `upgradedFrom`，不碰磁盘；要不要在第一次落盘前备份由 core 和 supervisor 的实现 issue 决定，设计仍未确认，需要负责人拍板。
 6. 发现文件被删而管理进程仍活着的恢复办法（0005 已列为空白）。

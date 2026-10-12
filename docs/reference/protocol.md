@@ -326,7 +326,7 @@
 
 类型 `RunSnapshot`
 
-可能返回的错误码：`PLAYGROUND_NOT_FOUND`
+可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`RUN_NOT_FOUND`
 
 #### `run.stopAll`
 
@@ -374,6 +374,8 @@
 
 类型 `RunSnapshot`
 
+可能返回的错误码：`RUN_NOT_FOUND`
+
 #### `run.list`
 
 列出运行
@@ -403,6 +405,8 @@
 
 类型 `RunSnapshot`
 
+可能返回的错误码：`RUN_NOT_FOUND`
+
 #### `run.attach`
 
 “查看”：不改持有者，不算空闲活动
@@ -418,6 +422,8 @@
 
 无字段（`{}`）
 
+可能返回的错误码：`RUN_NOT_FOUND`
+
 #### `run.detach`
 
 结束“查看”
@@ -432,6 +438,8 @@
 出参：
 
 无字段（`{}`）
+
+可能返回的错误码：`RUN_NOT_FOUND`
 
 #### `run.disown`
 
@@ -804,7 +812,7 @@
 | `template` | `{ id: string; source: 'builtin' \| 'user'; appVersion: string }` | 是 |  |
 | `runner` | `string` | 是 | 运行器 id；非空 |
 | `packageManager` | `'pnpm' \| 'npm'` | 否 |  |
-| `entry` | `string` | 否 | 入口文件，用 / 分隔的相对路径；非空 |
+| `entry` | `string` | 否 | 入口文件，用 / 分隔的相对路径；格式 `^[^\\]*$`；非空 |
 | `note` | `string` | 否 |  |
 | `createdAt` | `integer` | 是 | ≥ 0 |
 | `createdBy` | `{ kind: 'user' \| 'agent' \| 'cli'; agent?: string; command?: string }` | 是 |  |

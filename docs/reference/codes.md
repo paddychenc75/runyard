@@ -17,6 +17,7 @@
 | 3 | `PLAYGROUND_NOT_FOUND` | `{ name: string }` |
 | 3 | `TEMPLATE_NOT_FOUND` | `{ template: string }` |
 | 3 | `FOLDER_MISSING` | `{ name: string }` |
+| 3 | `RUN_NOT_FOUND` | `{ runId: string }` |
 | 4 | `TOOL_MISSING` | `{ tool: string; required: string }` |
 | 4 | `TOOL_TOO_OLD` | `{ tool: string; required: string; found: string }` |
 | 4 | `RUNTIME_MISSING` | `{ tool: string }` |
@@ -42,7 +43,7 @@
 | --- | --- |
 | 1 | `INTERNAL` |
 | 2 | `USAGE`、`NAME_INVALID`、`NAME_RESERVED`、`VAR_INVALID` |
-| 3 | `PLAYGROUND_NOT_FOUND`、`TEMPLATE_NOT_FOUND`、`FOLDER_MISSING` |
+| 3 | `PLAYGROUND_NOT_FOUND`、`TEMPLATE_NOT_FOUND`、`FOLDER_MISSING`、`RUN_NOT_FOUND` |
 | 4 | `TOOL_MISSING`、`TOOL_TOO_OLD`、`RUNTIME_MISSING` |
 | 5 | `SETUP_FAILED`、`DEPS_OFFLINE` |
 | 6 | `RUN_FAILED`、`SCRIPT_ERRORED` |
@@ -63,6 +64,8 @@
 | `ENV_DEGRADED` | 无 |
 | `IDLE_STOPPED` | `{ minutes: integer }` |
 | `PACKAGE_MANAGER_FALLBACK` | `{ wanted: string; used: string }` |
+| `PATH_NEAR_LIMIT` | `{ length: integer; limit: integer }` |
+| `TOOL_VERSION_UNTESTED` | `{ tool: string; found: string; required: string }` |
 
 ## 枚举
 

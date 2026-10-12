@@ -107,5 +107,5 @@
 3. 模板方法（`template.*`）和自动清理方法（`clean.*`）的入参出参：等对应规格批准。`LocalizedText` 随模板方法加。
 4. `run.stdin`：等脚本的规格批准。
 5. 设置里 `autoSave` `network` `theme` `language` 的取值，等设置的规格批准。
-6. 找不到 `runId`（`run.stop` `run.get` `run.adopt` 等）时返回哪个错误码：错误码登记表里没有对应的。
-7. 路径过长的警告（规格 LIBRARY-PLAYGROUNDS-05）和“版本高于上限，未经测试”的提醒（TOOLCHAIN-DETECTION-09）：提示码登记表里没有对应的代码；结果里放在哪个字段也没定。
+6. ~~找不到 `runId` 的错误码~~ 已定（#19）：`RUN_NOT_FOUND { runId }`，退出码 3，已加进 `run.stop` `run.get` `run.adopt` `run.attach` `run.detach` 的错误列表。
+7. 路径过长的警告（LIBRARY-PLAYGROUNDS-05）和“版本高于上限，未经测试”的提醒（TOOLCHAIN-DETECTION-09）：提示码已定（#19）：`PATH_NEAR_LIMIT { length, limit }`、`TOOL_VERSION_UNTESTED { tool, found, required }`；**结果里放在哪个字段仍未定**（`playground.create` 的出参尚无 notices 字段），文案归 #22。
