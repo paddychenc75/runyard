@@ -242,7 +242,7 @@
 - 验证：test
 
 ### Requirement: `run` 启动并等待，重复启动返回现有运行
-`runyard run <pg>` 的 `<pg>` MUST 接受项目名称或项目文件夹的绝对路径。服务 MUST 等到就绪才返回，脚本 MUST 等到退出才返回；`--timeout <秒>` 默认 60，到点未完成 MUST 报 `READY_TIMEOUT`（7），进程 MUST 继续运行；`--no-wait` MUST 在请求被接受后立即返回。对活动中的项目 MUST 返回现有运行并带 `alreadyRunning: true`；`--restart` MUST 先停止再启动，端口不变，`alreadyRunning` 为 `false`；`--port <n>` MUST 只用于这一次。项目不存在 MUST 报 `PLAYGROUND_NOT_FOUND`，文件夹找不到 MUST 报 `FOLDER_MISSING`。端口被占用改用别的端口时，结果 MUST 带 `portFallback`，这不是错误。服务的结果 MUST 含 `runId`、`name`、`state`、`kind`、`url`、`port`、`readyMs`、`alreadyRunning`、`owner`、`idleStopMinutes`、`logTail`、`cursor`；脚本的结果 MUST 含 `runId`、`name`、`state`、`kind`、`exitCode`、`durationMs`、`stale`、`alreadyRunning`、`output`、`truncated`、`cursor`。
+`runyard run <pg>` 的 `<pg>` MUST 接受项目名称或项目文件夹的绝对路径。服务 MUST 等到就绪才返回，脚本 MUST 等到退出才返回；`--timeout <秒>` 默认 60，到点未完成 MUST 报 `READY_TIMEOUT`（7），进程 MUST 继续运行；`--no-wait` MUST 在请求被接受后立即返回。对活动中的项目 MUST 返回现有运行并带 `alreadyRunning: true`；唯一的例外是正处于 `stopping` 的项目：这时 MUST 先等这次停止完成，再起一次新的运行（`alreadyRunning` 为 `false`，`runId` 是新的），而不是返回那次马上要结束的运行；停止在停止本身的时限内（见 run/lifecycle 的停止要求）仍没有完成时，MUST 报 `BUSY`（9）；`--restart` MUST 先停止再启动，端口不变，`alreadyRunning` 为 `false`；`--port <n>` MUST 只用于这一次。项目不存在 MUST 报 `PLAYGROUND_NOT_FOUND`，文件夹找不到 MUST 报 `FOLDER_MISSING`。端口被占用改用别的端口时，结果 MUST 带 `portFallback`，这不是错误。服务的结果 MUST 含 `runId`、`name`、`state`、`kind`、`url`、`port`、`readyMs`、`alreadyRunning`、`owner`、`idleStopMinutes`、`logTail`、`cursor`；脚本的结果 MUST 含 `runId`、`name`、`state`、`kind`、`exitCode`、`durationMs`、`stale`、`alreadyRunning`、`output`、`truncated`、`cursor`。
 来源：PRD #prd-cli-json；PRD #prd-run；PRD #prd-ports；PRD #prd-script-projects
 
 #### Scenario: [CLI-COMMANDS-38] 脚本等到退出
@@ -296,6 +296,18 @@
 - 前提：自动清理的项目
 - **WHEN** 执行 `runyard run demo`
 - **THEN** 它的上次使用时间更新（规则见 library/auto-clean）
+- 验证：test
+
+#### Scenario: [CLI-COMMANDS-78] 停止中的项目再次运行
+- 前提：服务正处于 `stopping`
+- **WHEN** 执行 `runyard run demo --json`
+- **THEN** 命令等这次停止完成后再起新的运行；结果的 `runId` 与正在停止的那次不同，`alreadyRunning: false`；任何时刻只有一个进程树存活
+- 验证：test
+
+#### Scenario: [CLI-COMMANDS-79] 停止超过时限仍未完成
+- 前提：假平台让停止一直不完成，超过停止的时限
+- **WHEN** 执行 `runyard run demo --json`
+- **THEN** 错误码 `BUSY`，退出码 9；没有起新的进程
 - 验证：test
 
 ### Requirement: `stop` 停止运行
