@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   createLineDecoder,
   encodeLine,
+  type LineResult,
   LineTooLargeError,
   MAX_LINE_BYTES,
   utf8ByteLength,
@@ -99,6 +100,19 @@ describe("createLineDecoder", () => {
   it("默认上限是 8 MB", () => {
     expect(MAX_LINE_BYTES).toBe(8 * 1024 * 1024);
   });
+
+  it("[PROTOCOL-HANDSHAKE-19] 恰好 8 MB 的一行分 64 KB 块喂入能解出来，再多一个字节就 too-large", () => {
+    // 单独的大输入用例，只跑一次，实测约 20 毫秒；属性测试不再生成大输入
+    const body = "x".repeat(MAX_LINE_BYTES - 2);
+    const feed = (text: string) => {
+      const d = createLineDecoder();
+      const out: LineResult[] = [];
+      for (let i = 0; i < text.length; i += 65536) out.push(...d.push(text.slice(i, i + 65536)));
+      return out;
+    };
+    expect(feed(`"${body}"\n`)).toEqual([{ ok: true, value: body }]);
+    expect(feed(`"${body}x"\n`)).toEqual([{ ok: false, reason: "too-large" }]);
+  });
 });
 
 // 随机输入不能让解码器抛出未处理的异常。没有引入属性测试库（不新增依赖），
@@ -136,6 +150,7 @@ describe("属性：任意输入不让解码器抛错", () => {
       " ",
       "\0",
     ];
+    let pushes = 0;
     for (let round = 0; round < 2000; round++) {
       const decoder = createLineDecoder(64);
       const length = Math.floor(rand() * 200);
@@ -146,12 +161,20 @@ describe("属性：任意输入不让解码器抛错", () => {
             ? (alphabet[Math.floor(rand() * alphabet.length)] ?? "")
             : String.fromCharCode(Math.floor(rand() * 0x10000));
       }
+      // 每个块不单独断言：两万次 expect 比解码本身慢十倍，是这个测试耗时的主要来源。
+      // 抛错会直接让测试失败，断言只留一处（对尾部的产出形状）
       let pos = 0;
       while (pos < text.length) {
         const size = 1 + Math.floor(rand() * 20);
-        expect(() => decoder.push(text.slice(pos, pos + size))).not.toThrow();
+        for (const result of decoder.push(text.slice(pos, pos + size))) {
+          if (!result.ok && result.reason !== "invalid-json" && result.reason !== "too-large") {
+            throw new Error(`unexpected result ${JSON.stringify(result)}`);
+          }
+        }
         pos += size;
+        pushes++;
       }
     }
+    expect(pushes).toBeGreaterThan(10000);
   });
 });

@@ -1,0 +1,268 @@
+import { mkdtempSync, realpathSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { afterAll, afterEach, beforeEach, describe, expect, it } from "vitest";
+import { absPath } from "../path-types.ts";
+import type { ProcRef } from "../platform.ts";
+import type { ContractContext } from "./context.ts";
+import { ProcessLedger } from "./process-ledger.ts";
+import { eventually, freePort, startTree, WAIT_MS } from "./service-harness.ts";
+
+// 重复起停的次数。技术验证 K2 每个系统做了 900 次；这里取一个放进 CI 时间的量：每次起三个 node 进程，
+// 同一个包里别的测试文件在并行跑，起得太多会把 CI 的小机器占满，让它们超时（第一次提交用 50 次就这样）
+const REPEAT_CYCLES = 20;
+// 停止之后端口必须在这个时间内能重新绑定（规格 RUN-LIFECYCLE-14，ADR 0006）
+const REBIND_LIMIT_MS = 3000;
+
+const sorted = (pids: number[]) => [...pids].sort((a, b) => a - b);
+
+// proc 的契约：用真进程树验证整棵停止、身份核对、已死的目标、组员查询。
+export function procContract(ctx: ContractContext): void {
+  const root = realpathSync(mkdtempSync(join(tmpdir(), "runyard-proc-")));
+  afterAll(() => rmSync(root, { recursive: true, force: true }));
+  const platform = ctx.create(root);
+  const cwd = absPath(root);
+
+  let ledger: ProcessLedger;
+  beforeEach(() => {
+    ledger = new ProcessLedger(platform);
+  });
+  afterEach(async () => {
+    expect(await ledger.cleanup(), "测试结束时不应有进程遗留").toEqual([]);
+  });
+
+  /** 停止返回后，整棵树里没有一个活着的进程，组员为空 */
+  async function expectGone(ref: ProcRef) {
+    expect(await platform.proc.members(ref)).toEqual([]);
+    expect(await ledger.survivors()).toEqual([]);
+  }
+
+  /** 端口在 limitMs 内能重新绑定；返回花了多久 */
+  const rebind = (port: number, limitMs = REBIND_LIMIT_MS) =>
+    eventually(
+      async () => (await platform.ports.isFree(port)) === "free",
+      limitMs,
+      `端口 ${port} 可重新绑定`,
+    );
+
+  describe("proc.identity", () => {
+    it("本进程有启动时间，两次查询一致", async () => {
+      const first = await platform.proc.identity(process.pid);
+      expect(first?.startTime).toBeGreaterThan(0);
+      expect(await platform.proc.identity(process.pid)).toEqual(first);
+    });
+
+    it("不存在的进程返回 null", async () => {
+      const tree = await startTree(platform, ledger, { exitAfterMs: 50 }, cwd);
+      await tree.proc.exited;
+      await eventually(
+        async () => (await platform.proc.identity(tree.proc.ref.pid)) === null,
+        WAIT_MS,
+        "进程消失",
+      );
+    });
+
+    it("新进程的启动时间不早于父进程", async () => {
+      const parent = await platform.proc.identity(process.pid);
+      const tree = await startTree(platform, ledger, {}, cwd);
+      expect(tree.proc.ref.startTime).toBeGreaterThanOrEqual(
+        parent?.startTime ?? Number.POSITIVE_INFINITY,
+      );
+      await platform.proc.terminate(tree.proc.ref, { mode: "kill", graceMs: 0 });
+    });
+  });
+
+  describe("proc.members", () => {
+    it("列出根进程和所有后代，其他进程（比如测试进程自己）不在其中", async () => {
+      const tree = await startTree(platform, ledger, { children: [{ children: [{}] }, {}] }, cwd);
+      const members = await platform.proc.members(tree.proc.ref);
+      expect(members).toEqual(sorted(tree.pids));
+      expect(members).not.toContain(process.pid);
+      await platform.proc.terminate(tree.proc.ref, { mode: "graceful", graceMs: 2000 });
+      await expectGone(tree.proc.ref);
+    });
+
+    it("启动时间对不上（pid 被别的进程用了）时什么也不返回", async () => {
+      const tree = await startTree(platform, ledger, { children: [{}] }, cwd);
+      const stale = { pid: tree.proc.ref.pid, startTime: tree.proc.ref.startTime + 60_000 };
+      expect(await platform.proc.members(stale)).toEqual([]);
+      await platform.proc.terminate(tree.proc.ref, { mode: "kill", graceMs: 0 });
+    });
+
+    it("根进程先退出、后代还活着时，后代仍算这一组的成员", async () => {
+      const tree = await startTree(platform, ledger, { exitAfterMs: 100, children: [{}] }, cwd);
+      await tree.proc.exited;
+      const [rootPid, childPid] = tree.pids;
+      const members = await platform.proc.members(tree.proc.ref);
+      expect(members).toEqual([childPid]);
+      expect(members).not.toContain(rootPid);
+      await platform.proc.terminate(tree.proc.ref, { mode: "kill", graceMs: 0 });
+    });
+
+    it("根进程已退出时，启动时间比后代还晚的 ref 不认", async () => {
+      const tree = await startTree(platform, ledger, { exitAfterMs: 100, children: [{}] }, cwd);
+      await tree.proc.exited;
+      const later = { pid: tree.proc.ref.pid, startTime: tree.proc.ref.startTime + 60_000 };
+      expect(await platform.proc.members(later)).toEqual([]);
+      await platform.proc.terminate(tree.proc.ref, { mode: "kill", graceMs: 0 });
+    });
+  });
+
+  describe("proc.terminate", () => {
+    it("[RUN-LIFECYCLE-14] 停止有子孙进程的服务：整棵树没有活着的，3 秒内端口可重新绑定", async () => {
+      const port = await freePort();
+      const tree = await startTree(
+        platform,
+        ledger,
+        { listen: port, children: [{ children: [{}] }, {}] },
+        cwd,
+      );
+      expect(await platform.ports.isFree(port)).toBe("in-use");
+      await platform.proc.terminate(tree.proc.ref, { mode: "graceful", graceMs: 2000 });
+      await expectGone(tree.proc.ref);
+      await rebind(port);
+    });
+
+    it("[RUN-LIFECYCLE-15] 进程忽略终止请求：等满 graceMs 后强制结束整棵树", async () => {
+      const graceMs = 2000;
+      const tree = await startTree(
+        platform,
+        ledger,
+        { ignoreTerm: true, children: [{ ignoreTerm: true, children: [{ ignoreTerm: true }] }] },
+        cwd,
+      );
+      const started = performance.now();
+      await platform.proc.terminate(tree.proc.ref, { mode: "graceful", graceMs });
+      const elapsed = performance.now() - started;
+      expect(elapsed).toBeGreaterThanOrEqual(graceMs - 5);
+      expect(elapsed).toBeLessThan(graceMs + 1500);
+      await expectGone(tree.proc.ref);
+      // 被强制结束，没有退出码
+      expect(await tree.proc.exited).toEqual({ exitCode: null });
+    });
+
+    it("[RUN-LIFECYCLE-16] 根进程已退出、后代拿着输出管道不放：stop 在树为空后返回，不等管道关闭", async () => {
+      const tree = await startTree(platform, ledger, { exitAfterMs: 100, children: [{}] }, cwd);
+      await tree.proc.exited;
+      expect(tree.proc.stdout.readableEnded).toBe(false);
+      const started = performance.now();
+      await platform.proc.terminate(tree.proc.ref, { mode: "graceful", graceMs: 2000 });
+      expect(performance.now() - started).toBeLessThan(1500);
+      await expectGone(tree.proc.ref);
+    });
+
+    it("Go 型进程只响应中断：interrupt 让它自己干净退出，不走强制结束", async () => {
+      const tree = await startTree(platform, ledger, { exitOnInterrupt: true }, cwd);
+      const started = performance.now();
+      await platform.proc.terminate(tree.proc.ref, { mode: "interrupt", graceMs: 5000 });
+      expect(performance.now() - started).toBeLessThan(2000);
+      expect(await tree.proc.exited).toEqual({ exitCode: 0 });
+      await expectGone(tree.proc.ref);
+    });
+
+    it("Go 型进程收到 graceful 请求会忽略，要等到 graceMs 后被强制结束（所以运行器要声明 interrupt）", async () => {
+      const tree = await startTree(platform, ledger, { exitOnInterrupt: true }, cwd);
+      await platform.proc.terminate(tree.proc.ref, { mode: "graceful", graceMs: 300 });
+      expect(await tree.proc.exited).toEqual({ exitCode: null });
+      await expectGone(tree.proc.ref);
+    });
+
+    it("kill 模式立刻强制结束整棵树，不等 graceMs", async () => {
+      const tree = await startTree(
+        platform,
+        ledger,
+        { ignoreTerm: true, ignoreInterrupt: true, children: [{ ignoreTerm: true }] },
+        cwd,
+      );
+      const started = performance.now();
+      await platform.proc.terminate(tree.proc.ref, { mode: "kill", graceMs: 10_000 });
+      expect(performance.now() - started).toBeLessThan(2000);
+      await expectGone(tree.proc.ref);
+    });
+
+    it("pid 被复用（启动时间对不上）：什么也不做，真正的进程树毫发无损", async () => {
+      const tree = await startTree(platform, ledger, { children: [{}] }, cwd);
+      const reused = { pid: tree.proc.ref.pid, startTime: tree.proc.ref.startTime + 60_000 };
+      await platform.proc.terminate(reused, { mode: "kill", graceMs: 0 });
+      await platform.proc.terminate(reused, { mode: "graceful", graceMs: 100 });
+      expect(await ledger.survivors()).toHaveLength(2);
+      expect(await platform.proc.members(tree.proc.ref)).toEqual(sorted(tree.pids));
+      await platform.proc.terminate(tree.proc.ref, { mode: "graceful", graceMs: 2000 });
+      await expectGone(tree.proc.ref);
+    });
+
+    it("根进程先退出、后代还活着：仍然整组停止", async () => {
+      const tree = await startTree(platform, ledger, { exitAfterMs: 100, children: [{}] }, cwd);
+      await tree.proc.exited;
+      await platform.proc.terminate(tree.proc.ref, { mode: "graceful", graceMs: 2000 });
+      await expectGone(tree.proc.ref);
+    });
+
+    it("目标已经死了：直接返回，不报错", async () => {
+      const tree = await startTree(platform, ledger, { exitAfterMs: 50 }, cwd);
+      await tree.proc.exited;
+      await eventually(
+        async () => (await platform.proc.identity(tree.proc.ref.pid)) === null,
+        WAIT_MS,
+        "进程消失",
+      );
+      await expect(
+        platform.proc.terminate(tree.proc.ref, { mode: "graceful", graceMs: 2000 }),
+      ).resolves.toBeUndefined();
+    });
+
+    it("停止途中进程自己退出：不报错，树为空", async () => {
+      const tree = await startTree(platform, ledger, { exitAfterMs: 20, children: [{}] }, cwd);
+      await platform.proc.terminate(tree.proc.ref, { mode: "graceful", graceMs: 2000 });
+      await expectGone(tree.proc.ref);
+    });
+
+    it("同一棵树同时被停两次：都正常返回", async () => {
+      const tree = await startTree(platform, ledger, { children: [{}] }, cwd);
+      await Promise.all([
+        platform.proc.terminate(tree.proc.ref, { mode: "graceful", graceMs: 2000 }),
+        platform.proc.terminate(tree.proc.ref, { mode: "graceful", graceMs: 2000 }),
+      ]);
+      await expectGone(tree.proc.ref);
+    });
+
+    it("绝不碰测试进程自己，即使拿到的是它真实的身份", async () => {
+      const self = await platform.proc.identity(process.pid);
+      const ref = { pid: process.pid, startTime: self?.startTime ?? 0 };
+      expect(await platform.proc.members(ref)).toEqual([]);
+      await platform.proc.terminate(ref, { mode: "graceful", graceMs: 50 });
+      expect(await platform.proc.identity(process.pid)).toEqual(self);
+    });
+
+    it(`重复起停 ${REPEAT_CYCLES} 次：每次整棵树停净，3 秒内端口可重新绑定`, {
+      timeout: 180_000,
+    }, async () => {
+      const rebinds: number[] = [];
+      const stops: number[] = [];
+      for (let cycle = 0; cycle < REPEAT_CYCLES; cycle += 1) {
+        const port = await freePort();
+        const tree = await startTree(
+          platform,
+          ledger,
+          { listen: port, children: [{ children: [{}] }] },
+          cwd,
+        );
+        const started = performance.now();
+        await platform.proc.terminate(tree.proc.ref, { mode: "graceful", graceMs: 2000 });
+        stops.push(performance.now() - started);
+        rebinds.push(await rebind(port));
+        expect(await platform.proc.members(tree.proc.ref)).toEqual([]);
+        expect(await ledger.survivors(), `第 ${cycle + 1} 次`).toEqual([]);
+      }
+      const pct = (values: number[], q: number) =>
+        [...values].sort((a, b) => a - b)[
+          Math.min(values.length - 1, Math.floor(values.length * q))
+        ] ?? 0;
+      console.info(
+        `[${ctx.name}] ${REPEAT_CYCLES} 次起停：停止耗时 中位 ${pct(stops, 0.5).toFixed(0)} / p95 ${pct(stops, 0.95).toFixed(0)} / 最大 ${Math.max(...stops).toFixed(0)} ms；` +
+          `停止返回后端口可重绑 中位 ${pct(rebinds, 0.5).toFixed(0)} / 最大 ${Math.max(...rebinds).toFixed(0)} ms`,
+      );
+      expect(Math.max(...rebinds)).toBeLessThan(REBIND_LIMIT_MS);
+    });
+  });
+}

@@ -13,7 +13,7 @@
 3. 这是仓库里**唯一**的“平台相关测试”跳过机制（决策记录 0013）。不要用别的办法：测试里不写系统判断（`process.platform`、`os.platform()` 等，`platform-branching` 检查会拦），不用 `.skipIf` 去按系统跳过，不在工作流里按系统挑文件。
 4. 一个包的测试若全部带这个后缀，Windows 上该包就没有测试可跑，这不算失败（共用配置在 Windows 上允许“没有测试”）。
 5. 用到真实文件系统、真实进程的测试只用临时目录和动态端口，不碰真实的 `~/Runyard` 和 `~/.runyard`，结束时清理自己起的东西；结束进程要同时核对 pid 和启动时间，不按名字找（决策记录 0006）。
-6. 平台接口加了成员，就在 `packages/platform/src/contract/` 里加契约用例（`describe("分组.成员", …)`）；`platform-contract` 检查会核对每个成员都出现过。暂时没有实现的成员，登记在 `pending.contract.ts` 的清单里，实现它的人把那一行换成真用例。
+6. 平台接口加了成员，就在 `packages/platform/src/contract/` 里加契约用例（`describe("分组.成员", …)`）；`platform-contract` 检查会核对每个成员都出现过。起真进程、绑真端口的契约只对“就是当前系统”的实现注册（`ContractContext.native`），起的进程要逐个记账并在 teardown 核对无遗留。暂时没有实现的成员，登记在 `pending.contract.ts` 的清单里，实现它的人把那一行换成真用例。
 7. 跳过一个测试（`.skip`、`.todo`）必须在同一行或上一行写 issue 编号（`skips` 检查）。按系统跳过不算在内，用第 2 步的后缀。
 
 ## 例：给一次运行写单元测试

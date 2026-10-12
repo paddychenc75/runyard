@@ -15,10 +15,6 @@ const OWNER_ONLY_DIR = 0o700;
 
 export function createSpawnDetached(stateDir: AbsPath): Platform["exec"]["spawnDetached"] {
   return async (argv, opts) => {
-    // via: "wmi" 是以后 Windows 上用的启动方式（0005 第 4 条），这里没有对应的东西
-    if (opts.via === "wmi") {
-      throw platformError("NOT_SUPPORTED", {}, 'spawnDetached via "wmi" is not available here');
-    }
     const [command, ...args] = argv;
     if (command === undefined) {
       throw platformError("INTERNAL", {}, "spawnDetached needs a non-empty argv");

@@ -24,7 +24,10 @@ export interface Disposable {
 /** 进程身份：pid 加启动时间。pid 会被系统复用，只凭 pid 认进程会杀错（决策记录 0006 的 K2 事故） */
 export interface ProcRef {
   readonly pid: number;
-  /** 启动时间，毫秒（Unix 纪元）。同一个系统上同一个进程总是同一个值；只比较是否相等，不做算术 */
+  /**
+   * 启动时间，毫秒。同一台机器上同一个进程总是同一个值；只比较是否相等或先后，不做别的算术。
+   * 起点由实现决定（macOS 是 Unix 纪元，精度到秒；Linux 是开机时刻，精度 10 毫秒），不要拿它当墙上时间
+   */
   readonly startTime: number;
 }
 
@@ -120,10 +123,13 @@ export interface Platform {
   readonly exec: {
     which(name: string, env: Env, cwd: AbsPath): Promise<AbsPath | null>;
     spawn(spec: { argv: string[]; cwd: AbsPath; env: Env; stdin: boolean }): ManagedProcess;
-    spawnDetached(
-      argv: string[],
-      opts: { env: Env; logFile: AbsPath; via?: "spawn" | "wmi" },
-    ): Promise<{ pid: number }>;
+    /**
+     * 启动一个与调用者脱钩的进程：调用者退出、被强杀、终端被关，它都继续活着。
+     * “脱钩”包含最强的情形——调用者在“关闭即杀”的作业里（Windows 的 Job Object）也要活下来；
+     * 怎样做到是各系统实现自己的事，接口没有选项，调用方不挑启动方式（决策记录 0005 第 4 条、0013）。
+     * 输出追加到 logFile，不继承标准输入输出，工作目录是状态目录，环境原样用 env
+     */
+    spawnDetached(argv: string[], opts: { env: Env; logFile: AbsPath }): Promise<{ pid: number }>;
   };
   readonly proc: {
     /** 停整棵进程树。先核对 pid 和启动时间，对不上就什么也不做（进程不是我们的了） */

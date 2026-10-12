@@ -1,0 +1,14 @@
+{
+  "runState.checking": "Checking tools",
+  "runState.crashed": "Crashed",
+  "runState.errored": "Failed",
+  "runState.failed": "Failed to start",
+  "runState.finished": "Finished",
+  "runState.installing": "Installing dependencies",
+  "runState.ready": "Ready",
+  "runState.reloading": "Reloading",
+  "runState.running": "Running",
+  "runState.starting": "Starting",
+  "runState.stopped": "Stopped",
+  "runState.stopping": "Stopping"
+}

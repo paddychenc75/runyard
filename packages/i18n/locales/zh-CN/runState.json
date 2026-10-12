@@ -1,0 +1,14 @@
+{
+  "runState.checking": "检查工具",
+  "runState.crashed": "已崩溃",
+  "runState.errored": "已出错",
+  "runState.failed": "启动失败",
+  "runState.finished": "已结束",
+  "runState.installing": "安装依赖",
+  "runState.ready": "就绪",
+  "runState.reloading": "重载中",
+  "runState.running": "运行中",
+  "runState.starting": "启动中",
+  "runState.stopped": "已停止",
+  "runState.stopping": "停止中"
+}

@@ -65,6 +65,18 @@ export const shutdownReasons = ["upgrade", "install", "user"] as const;
 export const shutdownReasonSchema = z.enum(shutdownReasons);
 export type ShutdownReason = z.infer<typeof shutdownReasonSchema>;
 
+// 因“数据来自更新版本”而拒绝写入的文件种类（DATA_FROM_NEWER_VERSION 的参数，storage.md 第 3 节）。
+// 值是文件名。toolchain.json 是缓存，读到更新版本时不写缓存、照常检测，所以不在这里；
+// supervisor.json 和运行记录由管理进程自己启动时重写，也不经方法
+export const dataFileKinds = [
+  "playground.json",
+  "library.json",
+  "settings.json",
+  "cli.json",
+] as const;
+export const dataFileKindSchema = z.enum(dataFileKinds);
+export type DataFileKind = z.infer<typeof dataFileKindSchema>;
+
 // 事件按“主题”订阅，主题是事件名第一个点之前的部分。run.log 不在 run 主题里：
 // 它量大且属于某个项目，只经 logs.follow 订阅（protocol-methods.md 第 3 节）
 export const eventTopics = ["playground", "run", "toolchain", "settings"] as const;

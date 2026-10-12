@@ -3,13 +3,14 @@
 ## 用途
 
 所有“给人看的文字”的唯一出处：文案、消息格式化、数字和时长格式、命令行语言解析（技术设计 §6.8）。命令行（以后还有桌面应用）通过它把“代码加参数”变成句子；其他包不产生句子。
-现状：M1 精简版。有 `createTranslator`、`createTestTranslator`、`createFormat`、`resolveCliLocale`、`Localized` 和键类型生成；只有 `format` 一组文案，命令行的文案、React 绑定、伪语言、检查脚本随后续 issue 加入。
+现状：M1 精简版。有 `createTranslator`、`createTestTranslator`、`createFormat`、`resolveCliLocale`、`Localized` 和键类型生成；命令行用的文案组已写好中英文：`errors`（登记表里每个错误码的 title、body、hint、hintCli）、`notice`、`runState`、`platform`、`format`；`cli` 组（命令说明、`--help`）、React 绑定、伪语言、完整的检查脚本随后续 issue 加入。
 
 ## 对外暴露什么
 
 只从 `src/index.ts` 导出（`exports` 只有 `.`）。其他包只从 `@runyard/i18n` 导入，不伸进 `src/`。
 - `createTranslator({ locale, platform, catalogs })` 得到 `{ locale, t }`；`t(key, values)` 返回 `Localized`。
 - `createTestTranslator()`：测试用，返回“键加参数”（`⟦键|参数=值⟧`），测试断言键，不断言句子。
+- `cliCatalogs`：命令行打包的文案组（两种语言），交给 `createTranslator({ catalogs })`；加 `cli` 组时加进这个列表（`src/cli-catalogs.ts`）。
 - `createFormat(translator)`：数字、文件大小、技术性时长、说给人听的时长、相对时间。
 - `resolveCliLocale({ flag, env, saved })`：`--lang` > `RUNYARD_LANG` > `cli.json` 的 `lang` > 英文；不认识的值给 `unsupported`，调用方要在标准错误输出一行提示。读环境变量和文件由 `cli` 做。
 - `Localized`：带标记的字符串，输出口只收它；包外拿不到“把任意字符串标成已翻译”的办法。
@@ -21,6 +22,8 @@
 - `src/` 不许用 Node、浏览器、Electron 的接口，只用语言自带的 `Intl`；读文件的代码只许在 `build/`。
 - 文案是一层 JSON，键是完整的点分名字，值是 ICU 文案；中文（`locales/zh-CN/`）是源语言，英文在同一个 PR 里补齐，运行时缺键回退英文。
 - 错误码、提示码、运行状态的键（`errors.<码>.title|body|hint|hintCli`、`notice.<码>`、`runState.<值>`）和参数类型由 `protocol` 的登记表在类型层推出（`src/messages.ts`），不在 JSON 生成物里重复；其余键的类型由 `pnpm i18n:build` 生成。
+- 协议登记表新增错误码、提示码、运行状态值而没写文案，`src/code-texts.test.ts` 和 `build/code-texts-params.test.ts` 会失败（临时断言，完整检查是 `i18n-codes`）；`src/__snapshots__/code-texts.*.txt` 是用真实参数渲染的句子，改了文案要读一遍再更新。
+- 错误码和提示码的可选参数（如 `PROCESS_EXITED` 的 `exitCode?`）ICU 没法判断“没传”，缺了会抛 MISSING_VALUE，所以文案里不要引用可选参数。
 - `platform.<名>` 文案自动变成参数 `term_<名>`，`platform` 本身也自动可用，调用的人不传。
 - 不拼句子，不在代码里判断单复数（复数写在文案里）；数字、大小、时长只走 `format.ts`。
 

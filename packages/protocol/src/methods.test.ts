@@ -265,6 +265,33 @@ describe("方法登记表", () => {
     }
   });
 
+  it("会写共享文件的方法声明 DATA_FROM_NEWER_VERSION，只读的方法不声明", () => {
+    const declared = methodNames.filter((name) =>
+      (methodRegistry[name].errors as readonly string[]).includes("DATA_FROM_NEWER_VERSION"),
+    );
+    expect(declared.sort()).toEqual([
+      "library.rescan",
+      "playground.create",
+      "playground.duplicate",
+      "playground.forget",
+      "playground.relocate",
+      "playground.rename",
+      "playground.trash",
+      "playground.update",
+      "run.restart",
+      "run.start",
+      "settings.set",
+      "toolchain.setPath",
+    ]);
+    for (const readOnly of [
+      "playground.list",
+      "playground.get",
+      "settings.get",
+      "run.get",
+    ] as const)
+      expect(methodRegistry[readOnly].errors).not.toContain("DATA_FROM_NEWER_VERSION");
+  });
+
   it("只占名字的方法是 run.disown 和请求面板两个，管理进程回 NOT_SUPPORTED", () => {
     const reserved = methodNames.filter((name) => methodRegistry[name].status === "reserved");
     expect(reserved.sort()).toEqual(["request.getLast", "request.send", "run.disown"]);

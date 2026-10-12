@@ -1,0 +1,141 @@
+errors.INTERNAL.title: Something went wrong inside Runyard
+errors.INTERNAL.body: The command did not finish because of an unexpected error in Runyard.
+errors.INTERNAL.hint: You can export diagnostics from Settings.
+errors.INTERNAL.hintCli: Run runyard doctor --bundle to export diagnostics.
+errors.USAGE.title: Invalid command usage
+errors.USAGE.body: The command is missing arguments or is not written correctly.
+errors.USAGE.hint: Check the arguments against the command help.
+errors.USAGE.hintCli: Add --help to the command to see how to use it.
+errors.NAME_INVALID.title: Invalid playground name "My App"
+errors.NAME_INVALID.body: A name can contain only lowercase letters, digits and hyphens. It can be up to 64 characters long and cannot start or end with a hyphen.
+errors.NAME_INVALID.hint: Use a name that follows these rules.
+errors.NAME_INVALID.hintCli: Run the command again with a name that follows these rules.
+errors.NAME_RESERVED.title: "nul" is a reserved name and cannot be used as a playground name
+errors.NAME_RESERVED.body: Names such as con, nul and com1 are reserved by Windows. Runyard rejects them on every system so that the library can later move to Windows.
+errors.NAME_RESERVED.hint: Choose a name that is not reserved.
+errors.NAME_RESERVED.hintCli: Run the command again with a name that is not reserved.
+errors.VAR_INVALID.title: Template variable title cannot be used
+errors.VAR_INVALID.body: The template does not accept a variable named title, or its value is not valid.
+errors.VAR_INVALID.hint: Check that the variable name and value match what the template expects.
+errors.VAR_INVALID.hintCli: Fix the --var option and run the command again.
+errors.PLAYGROUND_NOT_FOUND.title: Playground "react19-9" not found
+errors.PLAYGROUND_NOT_FOUND.body: The library has no playground with this name.
+errors.PLAYGROUND_NOT_FOUND.hint: Check that the name is spelled correctly.
+errors.PLAYGROUND_NOT_FOUND.hintCli: Run runyard status to list existing playgrounds.
+errors.TEMPLATE_NOT_FOUND.title: Template "react99" not found
+errors.TEMPLATE_NOT_FOUND.body: There is no template with this ID.
+errors.TEMPLATE_NOT_FOUND.hint: Check that the template ID is spelled correctly.
+errors.TEMPLATE_NOT_FOUND.hintCli: Run runyard template list to see the available templates.
+errors.FOLDER_MISSING.title: The folder of playground vue-drag-list is missing
+errors.FOLDER_MISSING.body: It is no longer where it was. It may have been moved, renamed or deleted.
+errors.FOLDER_MISSING.hint: Locate the folder again or remove the playground from the library. You can also look in the enclosing folder in Finder.
+errors.FOLDER_MISSING.hintCli: Put the folder back in the library, then run the command again.
+errors.RUN_NOT_FOUND.title: Run r_8f3a not found
+errors.RUN_NOT_FOUND.body: There is no run with ID r_8f3a.
+errors.RUN_NOT_FOUND.hint: Check that the run ID is correct.
+errors.RUN_NOT_FOUND.hintCli: Run runyard status to see the current runs.
+errors.TOOL_MISSING.title: Cannot find go
+errors.TOOL_MISSING.body: This playground needs go (>=1.22 <2), but it was not found on this computer. The playground is created and you can still edit the code.
+errors.TOOL_MISSING.hint: Install go, then click "Check again" and the playground will start.
+errors.TOOL_MISSING.hintCli: Install go (>=1.22 <2), then run the command again.
+errors.TOOL_TOO_OLD.title: The installed node is too old
+errors.TOOL_TOO_OLD.body: This playground needs node >=22.18, but 20.11.0 is installed. The playground is created and you can still edit the code.
+errors.TOOL_TOO_OLD.hint: Upgrade node to >=22.18, then click "Check again".
+errors.TOOL_TOO_OLD.hintCli: Upgrade node to >=22.18, then run the command again.
+errors.RUNTIME_MISSING.title: A component that python needs to run is missing
+errors.RUNTIME_MISSING.body: A system component that python needs to run was not found on this computer.
+errors.RUNTIME_MISSING.hint: Install the missing component, then run it again.
+errors.RUNTIME_MISSING.hintCli: Install the missing component, then run the command again.
+errors.SETUP_FAILED.title: Dependency install failed for playground react19-3
+errors.SETUP_FAILED.body: Something went wrong while installing dependencies, at the "Install dependencies" step. The playground files are untouched and you can still edit the code.
+errors.SETUP_FAILED.hint: Read the full output to find the cause, fix it, then click Retry.
+errors.SETUP_FAILED.hintCli: Read the install output with runyard logs react19-3, fix the cause, then run runyard run react19-3.
+errors.DEPS_OFFLINE.title: Dependencies for playground react19-3 were not installed: offline and not cached
+errors.DEPS_OFFLINE.body: You are offline and the dependencies this playground needs are not cached on this computer. Cached dependencies are not affected, and you can still edit the code.
+errors.DEPS_OFFLINE.hint: Reconnect, then click Retry. If you use a registry mirror or proxy, check it in Settings.
+errors.DEPS_OFFLINE.hintCli: Reconnect, then run runyard run react19-3.
+errors.RUN_FAILED.title: Playground next16-1 failed to start
+errors.RUN_FAILED.body: The process exited before it was ready. The playground files are untouched and you can still edit the code.
+errors.RUN_FAILED.hint: Read the full output to find the cause, fix it, then run it again.
+errors.RUN_FAILED.hintCli: Read the output with runyard logs next16-1, fix the cause, then run runyard run next16-1.
+errors.SCRIPT_ERRORED.title: Script python-2 failed
+errors.SCRIPT_ERRORED.body: The script ended with a non-zero exit code.
+errors.SCRIPT_ERRORED.hint: Read the output to find the cause, fix the code, then run it again.
+errors.SCRIPT_ERRORED.hintCli: Read the output with runyard logs python-2, fix the code, then run runyard run python-2.
+errors.READY_TIMEOUT.title: Playground next16-1 was not ready after 60 seconds
+errors.READY_TIMEOUT.body: The process is still running and was not stopped. The command just stopped waiting for it.
+errors.READY_TIMEOUT.hint: Check again in a moment whether it is ready, or read the output.
+errors.READY_TIMEOUT.hintCli: Run runyard status next16-1 to see whether it is ready, or runyard logs next16-1 to read the output.
+errors.NAME_EXISTS.title: A playground named pricing-table already exists
+errors.NAME_EXISTS.body: The library already has a playground with this name. The existing playground is unchanged.
+errors.NAME_EXISTS.hint: Choose a different name.
+errors.NAME_EXISTS.hintCli: Run the command again with a different name.
+errors.BUSY.title: Playground react19-3 is busy
+errors.BUSY.body: It is installing dependencies or starting, so it cannot be renamed right now. Nothing was changed.
+errors.BUSY.hint: Try again once it is ready or stopped.
+errors.BUSY.hintCli: Wait until it is ready, or stop it with runyard stop react19-3, then run the command again.
+errors.PATH_LOCKED.title: The folder of playground react19-3 is in use by another program
+errors.PATH_LOCKED.body: Another program is using the folder, or you do not have permission to change it. The operation did not complete and the folder is unchanged.
+errors.PATH_LOCKED.hint: Close any program that is using the folder, then try again.
+errors.PATH_LOCKED.hintCli: Close any program that is using the folder, then run the command again.
+errors.PATH_TOO_LONG.title: The path of playground react19-3 is too long
+errors.PATH_TOO_LONG.body: The path is longer than the system allows. The operation did not complete and the folder is unchanged.
+errors.PATH_TOO_LONG.hint: Shorten the playground name, or move the library to a shorter path.
+errors.PATH_TOO_LONG.hintCli: Shorten the playground name, or move the library to a shorter path, then run the command again.
+errors.TRASH_UNAVAILABLE.title: Could not move playground react19-3 to the Trash
+errors.TRASH_UNAVAILABLE.body: The Trash is not available right now. The playground folder was not moved and nothing was permanently deleted.
+errors.TRASH_UNAVAILABLE.hint: The playground is still in the library. You can try again later.
+errors.TRASH_UNAVAILABLE.hintCli: The playground is still in the library. You can run the command again later.
+errors.APP_REQUIRED.title: This command needs the Runyard desktop app
+errors.APP_REQUIRED.body: The open and screenshot commands are carried out by the desktop app. The command line cannot do them on its own.
+errors.APP_REQUIRED.hint: Open the Runyard app, then run it again.
+errors.APP_REQUIRED.hintCli: Open the Runyard app, then run the command again.
+errors.SUPERVISOR_UNAVAILABLE.title: Cannot connect to the Runyard background process
+errors.SUPERVISOR_UNAVAILABLE.body: A trusted connection to the background process could not be established.
+errors.SUPERVISOR_UNAVAILABLE.hint: No request was sent, so you can simply run it again.
+errors.SUPERVISOR_UNAVAILABLE.hintCli: No request was sent, so you can simply run the command again.
+errors.SUPERVISOR_OUTDATED.title: The Runyard background process is out of date
+errors.SUPERVISOR_OUTDATED.body: The running background process is older than the Runyard you are using. Replacing it would stop 3 runs. The command did not continue.
+errors.SUPERVISOR_OUTDATED.hint: The app tells you how many runs will stop and updates only after you confirm.
+errors.SUPERVISOR_OUTDATED.hintCli: Run runyard stop --all to stop every run. The background process then updates itself. After that, run the command again.
+errors.CLIENT_OUTDATED.title: The Runyard you are using is out of date
+errors.CLIENT_OUTDATED.body: The background process is newer and requires a newer version. No request was sent.
+errors.CLIENT_OUTDATED.hint: Update Runyard to the latest version.
+errors.CLIENT_OUTDATED.hintCli: Update the Runyard desktop app. The command line is installed with it.
+errors.NOT_SUPPORTED.title: This is not supported yet
+errors.NOT_SUPPORTED.body: This version of Runyard or this system does not implement it yet.
+errors.NOT_SUPPORTED.hint: This operation cannot be completed for now.
+errors.NOT_SUPPORTED.hintCli: This operation cannot be completed for now.
+errors.DATA_FROM_NEWER_VERSION.title: settings.json was written by a newer version of Runyard
+errors.DATA_FROM_NEWER_VERSION.body: settings.json has format version 3, and this version of Runyard understands up to 2. To avoid damaging it, the change was not written. Reading is not affected.
+errors.DATA_FROM_NEWER_VERSION.hint: Update Runyard, then try again.
+errors.DATA_FROM_NEWER_VERSION.hintCli: Update the Runyard desktop app, then run the command again.
+notice.RELOADING (): Files changed, reloading.
+notice.STOPPED_BY_USER (): You stopped this playground.
+notice.PROCESS_EXITED (exitCode=1): The process exited.
+notice.PROCESS_EXITED (signal=SIGKILL): The process exited.
+notice.PROCESS_EXITED (): The process exited.
+notice.DEPS_FROM_CACHE (): Dependencies came from the local cache.
+notice.PORT_FALLBACK (wanted=7111, actual=7112, reason=PORT_OCCUPIED): Port 7111 is in use, so this run uses port 7112. The next run tries 7111 first.
+notice.PORT_FALLBACK (wanted=7111, actual=7112, reason=PORT_RESERVED): Port 7111 is reserved by the system, so this run uses port 7112. The next run tries 7111 first.
+notice.ENV_UNRESOLVED (reason=timeout): Could not read your terminal environment (timed out), so tool detection may be inaccurate. Runyard is using a scan of common directories for now and will try again in the background.
+notice.ENV_UNRESOLVED (reason=failed): Could not read your terminal environment (failed), so tool detection may be inaccurate. Runyard is using a scan of common directories for now and will try again in the background.
+notice.ENV_DEGRADED (): Only the non-interactive terminal environment could be read, so tool detection may be inaccurate.
+notice.IDLE_STOPPED (minutes=1): Stopped automatically after being idle for 1 minute.
+notice.IDLE_STOPPED (minutes=30): Stopped automatically after being idle for 30 minutes.
+notice.PACKAGE_MANAGER_FALLBACK (wanted=pnpm, used=npm): pnpm was not found, so npm is used instead.
+notice.PATH_NEAR_LIMIT (length=1, limit=1024): The playground path is 1 character long, close to the system limit of 1,024. Creation continues. A shorter name or a shorter library location avoids the problem.
+notice.PATH_NEAR_LIMIT (length=1010, limit=1024): The playground path is 1,010 characters long, close to the system limit of 1,024. Creation continues. A shorter name or a shorter library location avoids the problem.
+notice.TOOL_VERSION_UNTESTED (tool=node, found=28.0.0, required=>=22.18 <26): node 28.0.0 is newer than the range this template was tested with (>=22.18 <26). It runs as usual but is untested.
+runState.checking: Checking tools
+runState.installing: Installing dependencies
+runState.starting: Starting
+runState.ready: Ready
+runState.reloading: Reloading
+runState.running: Running
+runState.stopping: Stopping
+runState.stopped: Stopped
+runState.finished: Finished
+runState.errored: Failed
+runState.crashed: Crashed
+runState.failed: Failed to start
