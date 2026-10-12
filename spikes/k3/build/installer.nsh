@@ -55,6 +55,8 @@
     Pop $1
     !insertmacro k3Log "path-remove exit=$0 out=$1"
     DeleteRegKey HKCU "Software\Classes\runyard-k3"
+    ; 安装器在 %LOCALAPPDATA% 下建的更新缓存目录，模板的卸载不会删（第一轮 CI 里留了下来）
+    RMDir /r "$LOCALAPPDATA\${APP_PACKAGE_NAME}-updater"
   ${else}
     !insertmacro k3Log "customUnInstall: updated, keep PATH and protocol"
   ${endif}

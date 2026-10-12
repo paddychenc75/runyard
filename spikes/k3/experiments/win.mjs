@@ -69,7 +69,7 @@ $cmd = (Get-ItemProperty 'HKCU:\\Software\\Classes\\runyard-k3\\shell\\open\\com
   userPathKind = if ($env_key.GetValueNames() -contains 'Path') { [string]$env_key.GetValueKind('Path') } else { '<absent>' }
   urlKey = Test-Path 'HKCU:\\Software\\Classes\\runyard-k3'
   urlCommand = [string]$cmd
-  uninstall = @($un | ForEach-Object { [ordered]@{ key = $_.PSChildName; version = $_.DisplayVersion; location = $_.InstallLocation; uninstallString = $_.UninstallString; publisher = $_.Publisher } })
+  uninstall = @($un | ForEach-Object { [ordered]@{ key = $_.PSChildName; name = $_.DisplayName; version = $_.DisplayVersion; location = $(if ($_.InstallLocation) { $_.InstallLocation } else { Split-Path -Parent ($_.UninstallString -replace '^"([^"]+)".*$', '$1') }); uninstallString = $_.UninstallString; publisher = $_.Publisher; props = @($_.PSObject.Properties.Name | Where-Object { $_ -notlike 'PS*' }) } })
   softwareGuidKeys = @(Get-ChildItem 'HKCU:\\Software' | Where-Object { $_.PSChildName -match '^[0-9a-f]{8}-[0-9a-f]{4}-' } | ForEach-Object { $_.PSChildName })
   programsDir = @(Get-ChildItem "$env:LOCALAPPDATA\\Programs" -ErrorAction SilentlyContinue | ForEach-Object { $_.Name })
   startMenu = @(Get-ChildItem "$env:APPDATA\\Microsoft\\Windows\\Start Menu\\Programs" -Recurse -Filter '*Runyard*' -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName })

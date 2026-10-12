@@ -267,60 +267,6 @@ await step("packages", async () => {
   return res;
 });
 
-// 隔离标记（只在 CI 上）：模拟“浏览器下载来的应用”
-await step("quarantine", async () => {
-  if (!CI) return { skipped: "只在 CI 上做：带隔离标记打开可能在屏幕上弹出系统对话框" };
-  const res = { gatekeeper: sh("spctl", ["--status"]).stdout.trim() };
-  const stamp = `0081;${Math.floor(Date.now() / 1000).toString(16)};Safari;${sh("uuidgen").stdout.trim()}`;
-  res.setExit = sh("xattr", ["-r", "-w", "com.apple.quarantine", stamp, INST]).code;
-  res.attrOnApp = sh("xattr", ["-p", "com.apple.quarantine", INST]).stdout.trim();
-  res.spctl = sh("spctl", ["-a", "-vv", "-t", "exec", INST]).stderr.trim().replaceAll(S.root, "<root>");
-  // 1) 命令行入口：不经过 LaunchServices，直接执行里面的可执行文件
-  const c = cli(INST, ["--version"], { timeoutMs: 60_000 });
-  res.cliWhileQuarantined = { code: c.code, signal: c.signal, ms: c.ms, stdout: c.stdout, stderr: c.stderr.slice(0, 300) };
-  // 2) 像双击一样打开
-  const before = S.events().length;
-  const o = sh("open", ["-g", INST], { timeoutMs: 60_000 });
-  openedPaths.add(INST);
-  const booted = await waitFor(() => S.events().slice(before).find((e) => e.event === "boot"), 25_000);
-  res.openWhileQuarantined = { exit: o.code, stderr: o.stderr.trim().replaceAll(S.root, "<root>"), ms: Math.round(o.ms), appStarted: Boolean(booted) };
-  res.attrAfterOpen = sh("xattr", ["-p", "com.apple.quarantine", INST]).stdout.trim();
-  res.dialogProcess = sh("pgrep", ["-lf", "CoreServicesUIAgent"]).stdout.trim().split("\n").slice(0, 3);
-  res.systemLog = sh("log", ["show", "--last", "90s", "--style", "compact", "--predicate", 'process == "syspolicyd" OR process == "CoreServicesUIAgent" OR sender == "Security"'], { timeoutMs: 60_000 })
-    .stdout.split("\n")
-    .filter((l) => /RunyardK3|runyard|Gatekeeper|quarantine|notariz|assess/i.test(l))
-    .slice(-25)
-    .map((l) => l.replaceAll(S.root, "<root>").slice(0, 400));
-  if (booted) {
-    S.track(booted.pid, "app(quarantined)");
-    await waitFor(() => S.events().find((e) => e.pid === booted.pid && e.event === "up"), 20_000);
-    res.quitQuarantined = await S.quitApp(booted.pid);
-    await stopSupervisor(INST);
-  }
-  // 3) 清掉隔离标记再打开（通过标准）
-  res.clearExit = sh("xattr", ["-dr", "com.apple.quarantine", INST]).code;
-  res.attrAfterClear = sh("xattr", ["-p", "com.apple.quarantine", INST]).stderr.trim().replaceAll(S.root, "<root>");
-  const a = await openApp(INST);
-  res.openAfterClear = { openExit: a.open.code, started: a.started, up: a.up };
-  if (a.started) {
-    res.quit = await S.quitApp(a.pid);
-    await stopSupervisor(INST);
-  }
-  // dmg 也带上隔离标记：挂载后里面的应用有没有标记
-  const dmgPath = path.join(builds.v1.out, fs.readdirSync(builds.v1.out).find((f) => f.endsWith(".dmg")));
-  sh("xattr", ["-w", "com.apple.quarantine", stamp, dmgPath]);
-  const mnt = path.join(S.root, "mnt-q");
-  fs.mkdirSync(mnt);
-  const att = sh("hdiutil", ["attach", "-nobrowse", "-readonly", "-mountpoint", mnt, dmgPath]);
-  if (att.code === 0) {
-    mounted.add(mnt);
-    res.dmgQuarantine = { attrOnMountedApp: sh("xattr", ["-p", "com.apple.quarantine", path.join(mnt, "RunyardK3.app")]).stdout.trim() || "(无)" };
-    if (sh("hdiutil", ["detach", mnt]).code === 0) mounted.delete(mnt);
-  } else res.dmgQuarantine = { attachError: att.stderr.trim().slice(0, 300) };
-  sh("xattr", ["-d", "com.apple.quarantine", dmgPath]);
-  return res;
-});
-
 // 打开应用；管理进程由打包后的应用用自己的运行时拉起；应用退出后它还在；单实例
 await step("launch", async () => {
   const res = {};
@@ -551,7 +497,7 @@ await step("notification", async () => {
   if (!CI) return { skipped: "只在 CI 上做：可能弹出通知权限请求" };
   const a = await openApp(INST);
   const reply = await S.control("notify", { pid: a.pid }, 15_000);
-  const res = { reply, signature: signInfo(INST).signature };
+  const res = { appUp: a.up, open: a.open, reply, signature: signInfo(INST).signature };
   res.systemLog = sh("log", ["show", "--last", "30s", "--style", "compact", "--predicate", 'process == "RunyardK3" OR process == "usernoted"'], { timeoutMs: 60_000 })
     .stdout.split("\n")
     .filter((l) => /notif|UNError|usernoted|RunyardK3/i.test(l))
@@ -680,6 +626,82 @@ await step("replace", async () => {
   return res;
 });
 
+// 隔离标记（只在 CI 上）：模拟“浏览器下载来的应用”。
+// 放在靠后的位置、用两份单独的副本做：第一轮 CI 里发现，带着隔离标记 open 之后系统的确认框一直挂着，
+// 同一个应用后面的 open 全部失败（-10673），会连累别的实验。
+await step("quarantine", async () => {
+  if (!CI) return { skipped: "只在 CI 上做：带隔离标记打开会在屏幕上弹出系统对话框" };
+  const res = { gatekeeper: sh("spctl", ["--status"]).stdout.trim() };
+  const stamp = `0081;${Math.floor(Date.now() / 1000).toString(16)};Safari;${sh("uuidgen").stdout.trim()}`;
+  const QA = path.join(S.root, "q-a", "RunyardK3.app"); // 带着标记直接打开
+  const QB = path.join(S.root, "q-b", "RunyardK3.app"); // 先清标记再打开（通过标准）
+  install(builds.v1.app, QA);
+  install(builds.v1.app, QB);
+  for (const q of [QA, QB]) sh("xattr", ["-r", "-w", "com.apple.quarantine", stamp, q]);
+  res.attrOnApp = sh("xattr", ["-p", "com.apple.quarantine", QB]).stdout.trim();
+  res.spctl = sh("spctl", ["-a", "-vv", "-t", "exec", QB]).stderr.trim().replaceAll(S.root, "<root>");
+
+  // B：清掉隔离标记再打开
+  res.clearExit = sh("xattr", ["-dr", "com.apple.quarantine", QB]).code;
+  res.attrAfterClear = sh("xattr", ["-p", "com.apple.quarantine", QB]).stderr.trim().replaceAll(S.root, "<root>");
+  const b = await openApp(QB);
+  res.openAfterClear = { openExit: b.open.code, stderr: b.open.stderr.replaceAll(S.root, "<root>"), started: b.started, up: b.up, execPath: b.boot?.execPath.replaceAll(S.root, "<root>") };
+  if (b.pid) await S.quitApp(b.pid);
+  await stopSupervisor(QB);
+
+  // A1：带着标记，走命令行入口（不经过 LaunchServices，直接执行里面的可执行文件）
+  const c = cli(QA, ["--version"], { timeoutMs: 60_000 });
+  res.cliWhileQuarantined = { code: c.code, signal: c.signal, ms: c.ms, stdout: c.stdout, stderr: c.stderr.slice(0, 300) };
+  const c2 = cli(QA, ["ensure"], { timeoutMs: 60_000 });
+  res.cliStartsSupervisorWhileQuarantined = { ok: c2.json?.ok === true, launcher: c2.json?.launcher };
+  await stopSupervisor(QA);
+  // A2：带着标记，像双击一样打开。没人能点对话框，所以只等 30 秒
+  const before = S.events().length;
+  const t0 = Date.now();
+  const opener = spawn("open", ["-g", QA], { stdio: ["ignore", "pipe", "pipe"] });
+  openedPaths.add(QA);
+  let openErr = "";
+  opener.stderr.on("data", (d) => (openErr += d));
+  const openExit = await Promise.race([new Promise((r) => opener.on("close", (code) => r(code))), sleep(30_000).then(() => "still-waiting-after-30s")]);
+  const booted = S.events().slice(before).find((e) => e.event === "boot");
+  res.openWhileQuarantined = { openResult: openExit, stderr: openErr.trim().replaceAll(S.root, "<root>"), ms: Date.now() - t0, appStarted: Boolean(booted), startedFrom: booted?.execPath.replaceAll(S.root, "<root>") ?? null };
+  res.attrAfterOpen = sh("xattr", ["-p", "com.apple.quarantine", QA]).stdout.trim();
+  res.dialogProcess = sh("pgrep", ["-lf", "CoreServicesUIAgent"]).stdout.trim().split("\n").slice(0, 2);
+  res.systemLog = sh("log", ["show", "--last", "60s", "--style", "compact", "--predicate", 'process == "syspolicyd" OR process == "CoreServicesUIAgent" OR process == "lsd" OR process == "open"'], { timeoutMs: 60_000 })
+    .stdout.split("\n")
+    .filter((l) => /RunyardK3|Gatekeeper|quarantine|translocat|GK |assess|10673/i.test(l))
+    .slice(-14)
+    .map((l) => l.replaceAll(S.root, "<root>").slice(0, 320));
+  if (openExit === "still-waiting-after-30s") opener.kill();
+  // 同一份副本再 open 一次（对话框还挂着时）
+  const again = sh("open", ["-g", QA], { timeoutMs: 20_000 });
+  res.secondOpenWhileDialogPending = { exit: again.code, signal: again.signal, stderr: again.stderr.trim().slice(0, 200) };
+  // dmg 也带上隔离标记：挂载后里面的应用有没有标记
+  const dmgPath = path.join(builds.v1.out, fs.readdirSync(builds.v1.out).find((f) => f.endsWith(".dmg")));
+  sh("xattr", ["-w", "com.apple.quarantine", stamp, dmgPath]);
+  const mnt = path.join(S.root, "mnt-q");
+  fs.mkdirSync(mnt);
+  const att = sh("hdiutil", ["attach", "-nobrowse", "-readonly", "-mountpoint", mnt, dmgPath]);
+  if (att.code === 0) {
+    mounted.add(mnt);
+    const x = sh("xattr", ["-p", "com.apple.quarantine", path.join(mnt, "RunyardK3.app")]);
+    res.dmgQuarantine = { attrOnDmg: sh("xattr", ["-p", "com.apple.quarantine", dmgPath]).stdout.trim(), attrOnMountedApp: x.stdout.trim() || `(无) ${x.stderr.trim().replaceAll(S.root, "<root>")}` };
+    if (sh("hdiutil", ["detach", mnt]).code === 0) mounted.delete(mnt);
+  } else res.dmgQuarantine = { attachError: att.stderr.trim().slice(0, 300) };
+  sh("xattr", ["-d", "com.apple.quarantine", dmgPath]);
+  // 挂着的对话框之后可能放行，应用会从一个随机的只读路径（AppTranslocation）启动：等一会儿，起来了就记下并退出
+  const late = await waitFor(() => S.events().slice(before).find((e) => e.event === "boot"), 20_000, 500);
+  if (late) {
+    S.track(late.pid, "app(quarantined)");
+    res.lateStart = { execPath: late.execPath.replaceAll(S.root, "<root>") };
+    await waitFor(() => S.events().find((e) => e.pid === late.pid && ["up", "failed"].includes(e.event)), 20_000);
+    await S.quitApp(late.pid);
+    S.killTracked(late.pid);
+  }
+  await stopSupervisor(QB);
+  return res;
+});
+
 // 对照：把 runAsNode 关掉会坏什么
 await step("runAsNodeOff", async () => {
   if (!CI) return { skipped: "只在 CI 上做：直接执行会把一个完整的应用带到前台约 20 秒" };
@@ -708,7 +730,12 @@ await step("runAsNodeOff", async () => {
 
 log("== cleanup");
 const cleanup = { stopSupervisor: fs.existsSync(INST) ? await stopSupervisor(INST) : null };
-for (const e of S.events().filter((x) => x.event === "boot")) if (alive(e.pid)) await S.quitApp(S.track(e.pid, "app"));
+await sleep(1500);
+for (const e of S.events().filter((x) => x.event === "boot")) {
+  if (!alive(e.pid)) continue;
+  await S.quitApp(S.track(e.pid, "app"));
+  S.killTracked(e.pid);
+}
 for (const m of mounted) sh("hdiutil", ["detach", "-force", m]);
 if (fs.existsSync(URL_INST)) sh(LSREGISTER, ["-u", URL_INST]);
 fs.rmSync(path.dirname(URL_INST), { recursive: true, force: true });
