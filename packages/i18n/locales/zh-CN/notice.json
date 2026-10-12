@@ -1,0 +1,13 @@
+{
+  "notice.DEPS_FROM_CACHE": "依赖来自本机缓存。",
+  "notice.ENV_DEGRADED": "只读到了非交互的终端环境，工具检测的结果可能不准。",
+  "notice.ENV_UNRESOLVED": "没能读取你终端的环境（{reason, select, timeout {读取超时} other {读取失败}}），工具检测的结果可能不准。先用常用目录的扫描结果，后台会再试一次。",
+  "notice.IDLE_STOPPED": "空闲 {minutes, plural, other {# 分钟}}，已自动停止。",
+  "notice.PACKAGE_MANAGER_FALLBACK": "没有找到 {wanted}，已改用 {used}。",
+  "notice.PATH_NEAR_LIMIT": "项目路径有 {length, plural, other {# 个字符}}，接近系统允许的上限（{limit, number} 个字符）。创建照常进行；缩短名称或换一个更短的资源库位置可以避开这个问题。",
+  "notice.PORT_FALLBACK": "{wanted} 端口{reason, select, PORT_RESERVED {被系统保留} other {被占用}}，本次改用 {actual} 端口。下次启动仍会先试 {wanted} 端口。",
+  "notice.PROCESS_EXITED": "进程已退出。",
+  "notice.RELOADING": "文件有改动，正在重载。",
+  "notice.STOPPED_BY_USER": "你停止了这个项目。",
+  "notice.TOOL_VERSION_UNTESTED": "{tool} {found} 高于这个模板测试过的范围（{required}）。照常运行，但没有经过测试。"
+}

@@ -1,0 +1,5 @@
+{
+  "platform.dock": "{platform, select, other {程序坞}}",
+  "platform.fileManager": "{platform, select, other {访达}}",
+  "platform.trash": "{platform, select, other {废纸篓}}"
+}

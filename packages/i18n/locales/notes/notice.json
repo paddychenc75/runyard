@@ -1,0 +1,24 @@
+{
+  "notice.ENV_UNRESOLVED": {
+    "reason": "读取失败的原因：timeout（超时）或 failed（失败）；用 select 选词"
+  },
+  "notice.IDLE_STOPPED": { "minutes": "空闲分钟数，正整数；文案里写复数" },
+  "notice.PACKAGE_MANAGER_FALLBACK": {
+    "wanted": "首选的包管理器名，例如 pnpm；原样显示",
+    "used": "实际改用的包管理器名，例如 npm；原样显示"
+  },
+  "notice.PATH_NEAR_LIMIT": {
+    "length": "项目路径的字符数，正整数；文案里写复数",
+    "limit": "当前系统的路径长度上限（字符数），由平台层给出；原样显示"
+  },
+  "notice.PORT_FALLBACK": {
+    "wanted": "项目登记的端口号，例如 7101；原样显示，不加千分位",
+    "reason": "回退原因：PORT_OCCUPIED（被占用）或 PORT_RESERVED（被系统保留）；用 select 选词",
+    "actual": "本次实际使用的端口号；原样显示，不加千分位"
+  },
+  "notice.TOOL_VERSION_UNTESTED": {
+    "tool": "工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译",
+    "found": "本机检测到的版本，例如 20.11.0；原样显示，不翻译",
+    "required": "模板要求的版本范围，例如 >=22.18；原样显示，不翻译"
+  }
+}
