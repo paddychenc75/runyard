@@ -1,13 +1,13 @@
 import { randomBytes } from "node:crypto";
-import { absPath, getPlatform } from "@runyard/platform";
 import { type Hello, proofMessage, readySchema } from "@runyard/protocol";
+import { createFakePlatform } from "@runyard/testing";
 import { beforeEach, describe, expect, it } from "vitest";
 import { ServerHandshake } from "./handshake-server.ts";
 
 // 握手服务端的状态机：每条拒绝路径都单独测，并断言口令从不出现在服务端发出的消息里。
-// 证明函数用平台层的真实现（纯函数，不碰系统）。
+// 证明函数是假平台沿用的真实现（纯函数，不碰系统，Windows 上也能跑）。
 
-const { ipc } = getPlatform({ home: absPath("/nonexistent-home"), profile: undefined });
+const { ipc } = createFakePlatform().platform;
 const token = randomBytes(32);
 const NONCE = "ab".repeat(32);
 
