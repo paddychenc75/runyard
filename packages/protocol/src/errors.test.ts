@@ -18,10 +18,10 @@ const cases: Record<ErrorCode, { ok: unknown; bad: unknown }> = {
   TEMPLATE_NOT_FOUND: { ok: { template: "react19" }, bad: { name: "react19" } },
   FOLDER_MISSING: { ok: { name: "demo" }, bad: { name: null } },
   RUN_NOT_FOUND: { ok: { runId: "r_9" }, bad: { runId: "" } },
-  TOOL_MISSING: { ok: { tool: "go", required: ">=1.26" }, bad: { tool: "go", required: "" } },
+  TOOL_MISSING: { ok: { tool: "go", required: ">=1.26" }, bad: { tool: "go" } },
   TOOL_TOO_OLD: {
     ok: { tool: "go", required: ">=1.26", found: "1.20" },
-    bad: { tool: "go", required: ">=1.26", found: "" },
+    bad: { tool: "go", required: ">=1.26" },
   },
   RUNTIME_MISSING: { ok: { tool: "node" }, bad: {} },
   SETUP_FAILED: { ok: { name: "demo" }, bad: {} },

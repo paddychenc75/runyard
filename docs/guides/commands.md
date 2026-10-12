@@ -6,12 +6,14 @@
 
 | 命令 | 跑什么 | 什么时候用 |
 | --- | --- | --- |
-| `pnpm verify` | 依次：`pnpm lint`、`pnpm typecheck`、`pnpm check`、受影响的包的单元测试（用 turbo 对比 `main` 分支算出受影响的包） | 说“做完了”之前必跑。目标：本地 2 分钟内 |
-| `pnpm test --filter <包名>` | 只跑一个包的单元测试，如 `pnpm test --filter @runyard/protocol` | 改某个包的过程中 |
-| `pnpm test` | 全部包的单元测试 | 改了共用的东西，或想确认全部通过 |
+| `pnpm verify` | 依次：`pnpm lint`、`pnpm typecheck`、`pnpm check`、受影响的包的测试（先单元阶段、再进程阶段；用 turbo 对比 `main` 分支算出受影响的包） | 说“做完了”之前必跑。目标：本地 2 分钟内 |
+| `pnpm test --filter <包名>` | 只跑一个包的测试（两个阶段），如 `pnpm test --filter @runyard/protocol` | 改某个包的过程中 |
+| `pnpm test` | 全部包的测试：先单元阶段（各包并行），通过后再进程阶段（带 `.platform-dependent.test.ts` 后缀的测试，一次一个包） | 改了共用的东西，或想确认全部通过 |
+| `pnpm test:unit` | 只跑单元阶段；可加 `--filter <包名>` | 没碰起进程的代码时，求快 |
+| `pnpm test:process` | 只跑进程阶段；可加 `--filter <包名>` | 改了平台层、起进程的代码，或复现进程测试的问题 |
 | 结束回复时的钩子 | 只跑 `tsc -b` 和 `pnpm check`，不跑测试。不通过就让智能体继续修；超过 90 秒放行并提示 | 自动运行（Claude Code），脚本是 `tooling/hooks/on-stop.ts` |
 
-`pnpm verify` 不含全量测试以外的慢测试；模板冒烟测试和端到端测试随对应的包加入时，在这里各加一行。
+`pnpm verify` 不含两个测试阶段以外的慢测试；两个阶段的划分和进程阶段的时间预算见 `docs/guides/testing.md`；模板冒烟测试和端到端测试随对应的包加入时，在这里各加一行。
 
 ## 单项
 

@@ -6,7 +6,6 @@
   "notice.PACKAGE_MANAGER_FALLBACK": "没有找到 {wanted}，已改用 {used}。",
   "notice.PATH_NEAR_LIMIT": "项目路径有 {length, plural, other {# 个字符}}，接近系统允许的上限（{limit, number} 个字符）。创建照常进行；缩短名称或换一个更短的资源库位置可以避开这个问题。",
   "notice.PORT_FALLBACK": "{wanted} 端口{reason, select, PORT_RESERVED {被系统保留} other {被占用}}，本次改用 {actual} 端口。下次启动仍会先试 {wanted} 端口。",
-  "notice.PORT_NOT_RELEASED": "停止后 {port} 端口等了 {waitedMs, plural, other {# 毫秒}}（上限 {limitMs, plural, other {# 毫秒}}）仍没有释放。下次启动时如果它还被占用，这个项目那一次会改用另一个端口，登记的端口不变。",
   "notice.PROCESS_EXITED": "进程已退出{exitCode, select, none {} other {，退出码 {exitCode}}}{signal, select, none {} other {，信号 {signal}}}。",
   "notice.RELOADING": "文件有改动，正在重载。",
   "notice.STOPPED_BY_USER": "你停止了这个项目。",

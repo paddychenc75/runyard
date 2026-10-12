@@ -248,13 +248,10 @@ describe("启动较慢", () => {
     const { run } = h.engine.start(h.request());
     await h.fake.clock.advance(29_999);
     expect(run.isSlow()).toBe(false);
-    expect(run.snapshot()).not.toHaveProperty("slow");
     await h.fake.clock.advance(1);
     expect(run.state).toBe("starting");
     expect(run.isSlow()).toBe(true);
-    expect(run.snapshot().slow).toBe(true);
     expect(h.slows).toHaveLength(1);
-    expect(h.slows[0]?.slow).toBe(true);
     expect(h.fake.processes.alive()).toHaveLength(1);
     await h.fake.clock.advance(15_000);
     expect(run.snapshot()).toMatchObject({ state: "failed", reason: "RUN_FAILED" });

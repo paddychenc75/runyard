@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { absPath, getPlatform } from "@runyard/platform";
 import type { LogEntry } from "@runyard/protocol";
+import { registerSpawned } from "@runyard/testing";
 import { afterAll, describe, expect, it } from "vitest";
 import type { RunClock } from "./run-clock.ts";
 import { RunEngine } from "./run-engine.ts";
@@ -99,12 +100,17 @@ describe("运行引擎：真实进程树", () => {
       await run.waitFor(["ready"]);
       expect(run.state).toBe("ready");
       // 孙进程的 pid 行可能比 listening 晚一点到
-      const deadline = Date.now() + 10_000;
+      const deadline = Date.now() + 30_000;
       while (lines.filter((l) => l.startsWith("pid:")).length < 3 && Date.now() < deadline) {
         await new Promise((resolve) => setTimeout(resolve, 50));
       }
       pids = lines.filter((l) => l.startsWith("pid:")).map((l) => Number(l.slice(4)));
       expect(pids).toHaveLength(3);
+      // 登记给进程测试阶段的兜底守卫：文件结束时还活着就让这个文件失败
+      for (const pid of pids) {
+        const identity = await platform.proc.identity(pid);
+        if (identity) registerSpawned(platform, { pid, startTime: identity.startTime });
+      }
       expect(pids.every(alive)).toBe(true);
 
       const stopped = await run.stop();
@@ -115,5 +121,5 @@ describe("运行引擎：真实进程树", () => {
       await run.stop();
       for (const pid of pids) if (alive(pid)) process.kill(pid, "SIGKILL"); // 只在测试失败时兜底，pid 是本测试自己起的
     }
-  }, 30_000);
+  });
 });

@@ -125,8 +125,14 @@ jobs:
       - name: 类型检查
         run: pnpm typecheck
 
+      # 测试分两个阶段，放在同一个任务的两个步骤里（任务名是必过检查，不能改）：
+      # 先跑单元测试（各包并行），再跑起真实进程的测试（一次一个包，包内一个工作进程），
+      # 这样进程测试不再和别的测试抢 CPU（docs/guides/testing.md）。
       - name: 单元测试（不重试）
-        run: pnpm test
+        run: pnpm test:unit
+
+      - name: 进程测试（一次一个包，不重试）
+        run: pnpm test:process
 
   # 只在手动触发时运行（发版分支）：把上面各任务的真实结果同步成同名的提交状态。
   # 手动触发产生的“检查运行”不计入 PR 的合并条件，提交状态才计入（决策记录 0015，tooling/ci/report-statuses.ts）。

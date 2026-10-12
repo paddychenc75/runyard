@@ -12,7 +12,7 @@
 - `decodeLogLine(字节)`：先严格 UTF-8，失败再 GB18030；不吞字节序标记。
 - `cleanLogText(文本)`：读取时的九条清洗规则，纯控制序列的行返回 `null`（丢弃）；幂等。
 - `cleanLogEntries(条目们)`：对 stdout、stderr 条目清洗并丢掉空结果，命令和系统条目原样保留。
-- `RunEngine`（`src/run/`）：`start(request)` 返回 `{ run, snapshot }`，对活动中的项目再启动返回同一个运行并在快照上带 `alreadyRunning`；`get`、`current`、`list`、`runningCount`、`restart(runId)`、`stopAll({ mine })`。`Run`：`snapshot`、`error`（failed 的错误码与现场，errored 的 `SCRIPT_ERRORED`）、`isSlow`（同时快照上带可选的 `slow: true`）、`waitFor(states)`、`stop`、`setOwner`、`beginReload`/`endReload`。
+- `RunEngine`（`src/run/`）：`start(request)` 返回 `{ run, snapshot }`，对活动中的项目再启动返回同一个运行并在快照上带 `alreadyRunning`；`get`、`current`、`list`、`runningCount`、`restart(runId)`、`stopAll({ mine })`。`Run`：`snapshot`、`error`（failed 的错误码与现场，errored 的 `SCRIPT_ERRORED`）、`isSlow`、`waitFor(states)`、`stop`、`setOwner`、`beginReload`/`endReload`。
 - `canTransition`、`allowedTransitions`、`activeStates`、`isActiveState`、`IllegalTransitionError`：转移表（按运行种类）和“N 个运行中”的活动状态集合。
 - `expandCommand`（运行器命令占位符，参数数组，不经 shell）、`childEnv`（去掉 `ELECTRON_RUN_AS_NODE`、放运行标记 `RUNYARD_RUN_ID`）、`stopProcessTree`。
 - `PlaygroundLibrary`（`src/library/`）：`open(deps)` 读 `state/library.json`，不存在或坏了（坏文件改名留存）就从磁盘重建；`list`、`find(id 或名称)`、`requireFolder`（找不到文件夹报 `FOLDER_MISSING`）、`create(seed, request)`（默认名“模板标识加序号”、`ifExists: reuse | fail`、`PATH_NEAR_LIMIT` 提示放在结果的 `notices`）、`rescan()`（返回 `ScanReport`：`added`、`changed`、`missing`、`copied` 和 `skipped`，由 supervisor 发 `playground.*` 事件）、`relocate`。错误是 `LibraryError`（`error` 里是协议的 `RunyardError`），更新版本写的 `library.json` 或 `playground.json` 只读不写（`DATA_FROM_NEWER_VERSION`）。
@@ -25,7 +25,7 @@
 - 类型环境只有 Node 类型，没有 DOM。
 - 内存环形缓冲、日志文件、游标和 `logs` 方法属于 `supervisor`，不在本包。引擎只数自己发出的日志条数来填快照的 `cursor`。
 - 运行引擎不读时钟和平台全局：平台、时钟（`RunClock`，结构类型，`FakeClock` 满足它）、事件出口都从 `RunEngineDeps` 注入。状态转移只经 `assertTransition`，非法转移是缺陷，抛 `IllegalTransitionError`。
-- 停止：把运行器的 `mode` 和 `graceMs`（缺省 2000）原样交给 `platform.proc.terminate`（它负责核对 pid 加启动时间、礼貌请求、等满 `graceMs`、整树强制结束）；返回后引擎再核对 `members` 为空（否则整棵 `kill`），再按运行标记（`RUNYARD_RUN_ID`）找脱离进程组的后代，等它们自己走掉（上限 2 秒，到时还在就核对身份后结束；规格 RUN-LIFECYCLE-20），最后等端口在 3 秒内可绑定；等满 3 秒端口仍不可绑定时 `stop` 照常返回，日志里留一条 `PORT_NOT_RELEASED` 提示（端口、实际等的毫秒数、上限）。只等进程退出，不等输出管道关闭，退出后主动销毁管道。进程自己退出后树里留下的后代也一起结束。
+- 停止：把运行器的 `mode` 和 `graceMs`（缺省 2000）原样交给 `platform.proc.terminate`（它负责核对 pid 加启动时间、礼貌请求、等满 `graceMs`、整树强制结束）；返回后引擎再核对 `members` 为空（否则整棵 `kill`），再等端口在 3 秒内可绑定。只等进程退出，不等输出管道关闭，退出后主动销毁管道。进程自己退出后树里留下的后代也一起结束。
 - 四个接缝，别的 issue 在这里接上，不改引擎的类型：`RunPreparer`（checking 与 installing：工具检查、安装、端口、环境，返回 `RunPlan` 或 `RunyardError<FailureReason>`；#36）、`ReadinessProbe`（就绪探测；#36）、`RunSinks`（`run.state`、日志、`run.exit`、较慢通知的出口；supervisor）、`Run.setOwner` 与 `StartRequest.owner`（持有者只是字段；#40）。`RunEngineDeps.removeDir` 用来删 Go 的单独临时目录。
 - 资源库的接缝（类型在 `src/library/library-types.ts`）：`LibraryStorage`（读目录、读写文件的出口，平台接口目前没有读文件和列目录，真实实现由 supervisor 装配；原子写入走 `platform.fs.writeAtomic`）、`PortSlotAllocator`（新端口槽位，返回 `null` 表示没有端口，#36）、`PlaygroundSeed`（模板那一侧交来的“相对路径加内容”和写进元数据的几项，模板各 issue 接上）。`pathLimit` 由装配方给（平台接口只给“是否接近”的结论，不给数字）。
 - 资源库不做永久删除，也没有任何 `rm` 一类的帮助函数；创建中途失败的半成品只经平台层 `fs.trash`。改名、移到废纸篓、自动清理不在这里（#38）。

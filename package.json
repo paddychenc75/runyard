@@ -12,9 +12,11 @@
     "lint": "biome check .",
     "format": "biome format --write .",
     "typecheck": "tsc -b",
-    "test": "turbo run test",
+    "test": "node tooling/scripts/run-tests.ts",
+    "test:unit": "turbo run test",
+    "test:process": "turbo run test:process --concurrency=1",
     "check": "node tooling/checks/run.ts",
-    "verify": "pnpm lint && pnpm typecheck && pnpm check && turbo run test --affected",
+    "verify": "pnpm lint && pnpm typecheck && pnpm check && node tooling/scripts/run-tests.ts --affected",
     "deps:lookup": "node tooling/scripts/deps-lookup.ts",
     "generate": "node tooling/scripts/generate.ts",
     "i18n:build": "node packages/i18n/build/build.ts"

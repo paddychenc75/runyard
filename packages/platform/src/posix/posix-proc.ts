@@ -108,14 +108,6 @@ export function createPosixProc(deps: PosixProcDeps): Platform["proc"] {
     async members(p) {
       return (await ownedMembers(p)).map((entry) => entry.pid).sort((a, b) => a - b);
     },
-    async findByMarker(marker) {
-      const found = await source.findByEnv(marker.name, marker.value);
-      // 0、1、负数和本进程不当结果返回：调用方会拿结果去 terminate
-      return found
-        .filter((entry) => entry.pid > 1 && entry.pid !== process.pid)
-        .map((entry) => ({ pid: entry.pid, startTime: entry.startTime }))
-        .sort((a, b) => a.pid - b.pid);
-    },
     async identity(pid) {
       const startTime = await source.startTime(pid);
       return startTime === null ? null : { startTime };
