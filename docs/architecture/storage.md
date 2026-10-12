@@ -1,0 +1,124 @@
+# 存储：磁盘上的文件、谁写、怎么升级
+
+管理进程和命令行读写的每一个文件。三个系统同一种布局，`~` 在 Windows 上是 `%USERPROFILE%`。形状的唯一出处是 `@runyard/protocol` 里每种文件的 zod 定义（计划）；本篇是写前说明。
+
+出处：技术设计 §4.2、§4.5、§5.4、§2.4；决策记录 [0005](decisions/0005-supervisor-singleton-handshake.md)、[0008](decisions/0008-log-capture-and-cleaning.md)、[0009](decisions/0009-toolchain-resolution-macos.md)、[0010](decisions/0010-trash-and-delete.md)；PRD #prd-agent-created、#prd-retention。字段级细节另参考了技术设计形成过程中的专家方案，已按设计修订；冲突处以设计为准。
+
+## 1. 布局与谁写
+
+核心规则：**所有共享文件只由管理进程写**（§2.3）；命令行只读它们，经协议请求修改。例外只有两个：命令行自己的 `cli.json`；桌面应用 main 写自己的 `app.log` 和用户数据目录。
+
+```
+~/Runyard/<name>/.runyard/playground.json   项目元数据，随文件夹走           写：管理进程
+~/.runyard/settings.json                    应用和命令行共用的设置            写：管理进程
+~/.runyard/cli.json                         命令行自己的设置（语言）          写：命令行（config set lang）
+~/.runyard/templates/<id>/                  用户模板                          写：管理进程
+~/.runyard/state/library.json               索引和本机状态                    写：管理进程
+~/.runyard/state/toolchain.json             工具检测结果缓存                  写：管理进程
+~/.runyard/run/supervisor.json              发现文件                          写：管理进程
+~/.runyard/run/supervisor.lock              内核锁文件（macOS、Linux）        管理进程持有
+~/.runyard/run/supervisor.sock              socket 文件（macOS、Linux）       管理进程
+~/.runyard/run/runs/<runId>.json            每次运行一个，只为崩溃后清理      写：管理进程
+~/.runyard/logs/                            管理进程日志、每次运行的日志      写：管理进程
+~/.runyard/logs/app.log                     桌面应用日志                      写：桌面应用 main
+<Electron 用户数据目录>/                    窗口、标签页、不再提示、预览 cookie  写：桌面应用
+```
+
+以上是设计已定的布局。路径里的 `<name>`、`<id>`、`<runId>` 是占位符。**计划**：这些文件在对应包实现之前都不存在。
+
+## 2. 各文件的字段
+
+### 2.1 `playground.json`（项目文件夹里）
+
+| 字段 | 内容 |
+| --- | --- |
+| `formatVersion` | 整数，现为 1 |
+| `id` | 创建时生成（ULID）、之后不变；文件夹改名或移动后靠它认回 |
+| `template` | 来自哪个模板（`{ id, source: 'builtin' \| 'user', appVersion }`） |
+| `runner` | 运行器 id |
+| `requires` | 创建时从模板复制的工具与版本范围，以后抬高模板下限不影响旧项目 |
+| `toolchainAtCreate` | 创建时各工具的实际版本 |
+| `packageManager` | `pnpm` 或 `npm`，创建时选定后固定 |
+| `entry`、`open` | 入口文件、创建时打开的文件（`/` 分隔的相对路径） |
+| `note` | 备注 |
+| `createdAt`、`createdBy` | 创建时间；`{ kind: 'user' \| 'agent' \| 'cli', agent?, command? }` |
+| `autoClean` | 开关和天数；计时不在这里，在 `library.json` |
+| `script.autoRun` | 脚本项目“保存后自动运行”（可无） |
+| `lastRequest` | 请求面板上一次请求（M3，可无） |
+| `trust` | 第一版恒为 `trusted` |
+
+名称不存，永远取文件夹名。放在文件夹里是为了文件夹被拷走、改名后仍认得自己，索引丢了能重建。
+
+### 2.2 `state/library.json`（本机索引）
+
+`{ formatVersion, root, playgrounds: Entry[] }`；`Entry` 的字段：
+
+| 字段 | 内容 |
+| --- | --- |
+| `id`、`path` | 项目 id、绝对路径 |
+| `port` | 记住的端口，**这就是端口登记表**，不另开文件；脚本没有端口 |
+| `lastUsedAt` | 打开标签页或命令行运行时更新；“打开但不运行”不更新 |
+| `lastOpenedAt` | 资源库“上次打开”一列 |
+| `clean` | 提醒何时显示过、顺延到何时 |
+| `missingSince` | 找不到文件夹的起始时间 |
+
+放在本机是因为端口和使用时间只对本机有意义，而且变得勤（放进文件夹会让 git 一直有改动）。索引丢失时从磁盘重扫重建：端口重新分配，`lastUsedAt` 取当前时间（清理只会变晚，不会变早）。
+
+文件夹被动过时的判断（§4.2，PRD #prd-decision-table 第 19 项）：被改名的按 `id` 认回，端口和设置不变；找不到的标 `missingSince`，行显示“找不到文件夹”，操作是“重新定位”“从资源库移除”；复制出来的同 `id` 文件夹换新 `id` 和新端口；没有 `.runyard/` 的文件夹忽略。
+
+### 2.3 `settings.json` 与 `cli.json`
+
+| 字段 | 默认 |
+| --- | --- |
+| `libraryRoot` | `~/Runyard` |
+| `externalEditor` | 自动探测 |
+| `packageManager` | `auto`（另有 `pnpm`、`npm`） |
+| `autoSave` | 停止输入 1 秒后保存（另两档：失去焦点时、关闭） |
+| `scriptAutoRun` | `true` |
+| `cliIdleStopMinutes` | 30 |
+| `network` | 镜像源、代理、本机不走代理 |
+| `toolPaths` | 工具名到绝对路径，用户“指定路径…”的结果 |
+| `ports` | 范围 7100 到 7999 |
+| `urlNewSkipConfirmForBuiltin` | `false` |
+| `updateCheck` | `true` |
+| `theme`、`language` | `language` 只管桌面应用界面语言 |
+
+`cli.json`：`formatVersion`、`lang`（`en` 或 `zh-CN`；没有这个字段就是英文）。只由 `runyard config set lang <locale>` 写入，`--lang` 和环境变量 `RUNYARD_LANG` 不写它。放单独文件是因为 `--help` 和 `config` 在管理进程没起来时也要能用。
+
+`libraryRoot` 的位置提醒（0009）：macOS 上选在“桌面”“文档”“下载”之内时给警告；Windows 上同类警告是网盘同步目录。判断在平台层 `paths`。
+
+### 2.4 发现文件与锁（`run/`）
+
+| 文件 | 内容 | 说明 |
+| --- | --- | --- |
+| `supervisor.json` | `pid`、`startedAt`、`endpoint`（连接点）、`token`（握手口令，32 字节随机数）、`protocol`、`minClientProtocol`、产品版本、构建标识、`host`（`electron` 或 `node`）、`execPath` | 只有本人可读（权限 600）；先写临时文件再改名；`doctor --bundle` 打包前去掉 `token` |
+| `supervisor.lock` | 空文件 | macOS 用 `O_EXLOCK` 持有，进程一死由内核释放；Linux 用抽象 socket，没有文件 |
+| `supervisor.sock` | socket 文件 | 持锁者才许删除残留并监听 |
+| `runs/<runId>.json` | `runId`、`playgroundId`、`owner`、`pid`、`processStart`（操作系统给出的进程启动时间）、`cwd`、`port`、`command`、`startedAt`、`state`，Windows 另需运行标记（0006） | 只为崩溃恢复：下次启动逐个核对 pid 加启动时间，仍活着的整棵结束，标 `crashed`；运行期间的真相在内存里 |
+
+### 2.5 日志（0008、§4.5）
+
+| 项 | 约定 |
+| --- | --- |
+| 格式 | 每个运行一个文件，一行一个 JSON，形状是 `LogEntry`（见 protocol.md）。`stdout`、`stderr` 的 `text` 是**未清洗**的整行：写入时只切行（按 0x0A）并解码（先严格 UTF-8，失败则 GB18030），颜色码、`\r`、BOM 原样保留 |
+| 读取时清洗 | 九条规则，全文在 [证据 0008](evidence/0008-log-capture-and-cleaning.md) 6.2；`--raw` 跳过 |
+| 容量 | 内存里每次运行最近 1 万行或 4 MB；磁盘单个文件上限 10 MB，每个项目留最近 5 次运行 |
+| 顺序 | 两路输出按到达顺序合并，每行带序号；不承诺 stdout 与 stderr 的严格先后 |
+| 程序日志 | `supervisor.log`（管理进程）、`app.log`（桌面应用 main，renderer 的日志经 main 转写），同一套轮转规则 |
+
+## 3. 版本与升级（§4.2、决策记录 0005 以后的格式规则）
+
+- 每个文件有整数 `formatVersion`；每种文件一条升级链（`vN` 到 `vN+1`），读入时在内存里升到最新，下次写入时落盘。升级链放在 `protocol`。
+- 读到比程序认识的**更新**的版本：只读不写，提示需要更新版本的 Runyard。这样旧命令行不会把新应用写的文件改坏。
+- 写入一律先写临时文件再改名；Windows 上改名覆盖遇到占用时重试。
+- 解析失败：把坏文件改名留存，索引从磁盘重扫，设置回到默认并提示一次。
+- 改动磁盘格式属于破坏性改动，要写决策记录（AGENTS.md 完成标准）。
+
+## 未定
+
+1. 轮转规则的数字：`supervisor.log`、`app.log` 单个文件大小和保留份数（设计写“建仓库时定”）。
+2. 每次运行日志文件的目录和文件命名（设计只说“每次运行一个文件”）。
+3. 测试里怎样把 `~/.runyard` 和 `~/Runyard` 换成临时目录（AGENTS.md 要求测试不碰真实目录；用环境变量覆盖还是显式传参，设计未定）。
+4. `toolchain.json` 的逐字段形状：缓存的键和 TTL 已定（0009：登录 shell 加启动文件 mtime 指纹，项目有版本文件时再加项目路径，TTL 1 小时），工具路径与版本的存法未定。
+5. 升级时是否保留 `.bak-vN` 备份（最初方案有，设计未确认）。
+6. 发现文件被删而管理进程仍活着的恢复办法（0005 已列为空白）。
