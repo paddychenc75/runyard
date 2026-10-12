@@ -2,6 +2,7 @@ import { userInfo } from "node:os";
 import type { Platform } from "../platform.ts";
 import type { PlatformOptions } from "../platform-options.ts";
 import { composePosix } from "../posix/compose-posix.ts";
+import { directoryShellLookup, parseDsclShell } from "../posix/env/login-shell.ts";
 import { fileLock } from "../posix/ipc/file-lock.ts";
 import { createNetstatTable } from "./netstat-table.ts";
 import { createPsSource } from "./ps-source.ts";
@@ -12,6 +13,12 @@ import { SYSTEM_TRASH_TOOL } from "./trash/system-trash-tool.ts";
 const MAX_PATH_BYTES = 1024;
 // socket 路径上限：sun_path 在 macOS 上是 104 字节（K1 实测 104 可以，107 起 EINVAL）
 const MAX_SOCKET_PATH_BYTES = 104;
+
+function stringEnv(env: NodeJS.ProcessEnv): Record<string, string> {
+  return Object.fromEntries(
+    Object.entries(env).filter((entry): entry is [string, string] => entry[1] !== undefined),
+  );
+}
 
 export function createDarwinPlatform(options: PlatformOptions): Platform {
   // 系统的 trash 命令只会进当前账号真实的废纸篓：平台指向别的主目录（测试的临时主目录）时不用它，
@@ -47,6 +54,16 @@ export function createDarwinPlatform(options: PlatformOptions): Platform {
         "OneDrive*",
       ],
       userFolders: ["Desktop", "Documents", "Downloads"],
+    },
+    // 登录 shell：先问系统（os.userInfo），再问目录服务 dscl；从 Finder 启动时 SHELL 可能不存在
+    toolchain: {
+      baseEnv: options.baseEnv ?? stringEnv(process.env),
+      ...(options.loginShell === undefined ? {} : { loginShell: options.loginShell }),
+      directory: directoryShellLookup(
+        "dscl",
+        (user) => [".", "-read", `/Users/${user}`, "UserShell"],
+        parseDsclShell,
+      ),
     },
     // macOS：run/supervisor.lock 上的内核文件锁
     ipc: {

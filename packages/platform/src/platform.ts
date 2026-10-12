@@ -88,10 +88,23 @@ export interface ShellInfo {
   readonly name: string;
 }
 
+/** 解析登录环境失败的原因：就是提示码 ENV_UNRESOLVED 的参数 reason */
+export type EnvFailureReason = "timeout" | "failed";
+
 export interface EnvLoadResult {
   readonly env: Record<string, string>;
   readonly source: EnvSource;
   readonly ms: number;
+  /**
+   * 只在 source 为 fallback（没能读到登录环境）时有：为什么。调用方据此发 ENV_UNRESOLVED（带 reason）；
+   * source 为 login-shell-degraded 时调用方发 ENV_DEGRADED。平台层只给代码，不产生句子
+   */
+  readonly reason?: EnvFailureReason;
+  /**
+   * 这个结果是旧值或回退值，后台正在刷新（过期的缓存；或第一次就失败后的那一次重试）。
+   * 刷新完成时它兑现为新结果，永不失败；core 靠它在刷新完成后发出 toolchain.changed，界面不必等待
+   */
+  readonly refreshing?: Promise<EnvLoadResult>;
 }
 
 export interface Platform {

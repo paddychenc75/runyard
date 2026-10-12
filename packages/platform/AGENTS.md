@@ -32,6 +32,10 @@
 - `paths.maxPathLength` 是整条路径的字节上限（macOS 1024、Linux 4096），`checkLength` 以它为界；要在提示里给用户看数字时用它，不要从装配方传。
 - 实现一块占位时：在 `posix/` 或 `darwin/` 写真实现，换掉 `posix/pending-areas.ts` 里对应的占位，再把 `contract/pending.contract.ts` 里对应的行换成真用例。
 
+- 登录环境（`posix/env/`，决策记录 0009 与证据文件，不要绕开其中任何一条陷阱的对策）：`env.load` 先学登录 shell（`os.userInfo`，再 `dscl` / `getent`，最后 `SHELL`，不依赖 `SHELL`），zsh、bash、fish 之外的 shell 不尝试直接回退；按“`-l -i -c` → 命令写 stdin → 只用内建打印 PATH → `-l -c`（降级）”依次试，整条链共用 10 秒硬期限（`ENV_RESOLVE_TIMEOUT_MS`），超时立刻结束整组（经 `proc.terminate`，核对身份）；标记在脚本里拆开写，文本里不含完整标记；只取第一对标记之间的字节。结果带 `source`，失败带 `reason`，只给代码不给句子。
+- 缓存归平台层（`env-cache.ts`）：键 = 登录 shell + 启动文件 mtime 指纹（有版本文件的项目再加项目路径和这些文件的 mtime，并以项目文件夹为工作目录捕获，否则用主目录共用全局项），成功 1 小时、失败 1 分钟；过期时返回旧值并在后台刷新，`refreshing` 是刷新完成的承诺；第一次就失败会自动在后台重试一次（`refresh: true` 不自动重试）。`toolchain.changed` 事件、工具检测结果的缓存、版本范围判定归 core（#34）。
+- `tools.candidates` 只找文件，不执行；版本命令由调用方经 `exec.spawn` 执行，命令（Go 是 `go version`）来自工具定义，平台层不放工具表。`shell.interactive` 现在只供以后的集成终端用。fish 的脚本只有单元测试，没有在真实 fish 上跑过。
+
 ## 子目录地图
 
 - `src/platform.ts`：`Platform` 接口和它的类型；`src/get-platform.ts`：`getPlatform()`
@@ -39,7 +43,7 @@
 - `src/paths/`：名称校验（各系统一致的纯函数）
 - `src/posix/`：darwin 与 linux 共用的部分：长度检查、`fs/`（文件操作、先占位再改名、原子写、`watch`）、网盘与用户文件夹的判断（POSIX 路径，用 `node:path/posix`，任何系统上结果一样）、`ipc/`（连接点、两种内核锁、监听、连接、握手证明）、`spawn-detached.ts`、`posix-exec.ts` / `posix-proc.ts` / `posix-ports.ts`（`ProcessSource`、`SocketTable` 是各系统读进程表和连接表的接口）、占位；`src/darwin/`（`ps`、`netstat`、`trash/`）、`src/linux/`（`/proc`）：各系统的组合
 - `src/contract/`：契约测试，同一组用例对每个实现各跑一遍；真 socket、内核锁、脱钩进程、起真进程树和绑真端口的用例（`exec-process`、`proc`、`ports`）只对“本机会选的实现”跑（`ContractContext.native`），其余实现跑与系统无关的用例；假程序在 `fixtures/fake-service.ts`，起的进程一律记账（`process-ledger.ts`），teardown 核对无遗留
-- `src/test-support/`：废纸篓与改名测试的沙盒（`trash-sandbox.ts`：每个测试自己的临时根目录，所有改名、移动、删除之前断言目标在根目录内）、测试用的小进程（抢锁的启动者、脱钩的启动者）、握手对话的最小替身、临时主目录、按 pid 加启动时间收尾的进程登记（并同时登记到进程测试阶段的遗留进程守卫，`spawned-registry.ts`）；不是产品代码，不从入口导出
+- `src/test-support/`：合成主目录和合成环境矩阵（`synthetic-home.ts`、`env-cases.ts`，假的版本管理器，全在临时目录）、`toolchain-harness.ts`（真 shell 加记账的 exec）、废纸篓与改名测试的沙盒（`trash-sandbox.ts`：每个测试自己的临时根目录，所有改名、移动、删除之前断言目标在根目录内）、测试用的小进程（抢锁的启动者、脱钩的启动者）、握手对话的最小替身、临时主目录、按 pid 加启动时间收尾的进程登记（并同时登记到进程测试阶段的遗留进程守卫，`spawned-registry.ts`）；不是产品代码，不从入口导出
 - `vitest.config.ts`：继承 `tooling/vitest/base.ts`，不要在这里改测试规则
 
 ## 测试
