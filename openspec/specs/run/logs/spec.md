@@ -71,12 +71,6 @@
 管理进程 MUST 在所有系统上给 Python 子进程设置使用 UTF-8 且不缓冲输出的环境变量，MUST 关闭 Next 等工具的遥测，MUST NOT 设置 `CI=1`。
 来源：ADR 0008；PRD #prd-failure-states
 
-#### Scenario: [RUN-LOGS-10] 非 UTF-8 的 Windows 上 Python 打印中文
-- 前提：Windows 上系统代码页不是 UTF-8，一个 Python 脚本打印中文
-- **WHEN** 运行该脚本
-- **THEN** 脚本不崩溃，日志里的中文可读
-- 验证：test
-
 #### Scenario: [RUN-LOGS-11] 强杀时已打印的行不丢
 - 前提：Python 脚本每秒打印一行，共打印 5 行后仍在运行
 - **WHEN** 强制停止它
@@ -144,4 +138,9 @@
 - 前提：一次运行已 `stopped`
 - **WHEN** 用 `logs` 读取该项目
 - **THEN** 仍能读到那次运行的日志，直到被第 6 次运行挤掉或被 `logs.clear` 清除
+- 验证：test
+
+#### Scenario: [RUN-LOGS-21] 子进程环境带 UTF-8 与不缓冲的开关
+- **WHEN** 检查任何运行的子进程环境
+- **THEN** 有 `PYTHONUTF8=1`、`PYTHONUNBUFFERED=1` 和 `NEXT_TELEMETRY_DISABLED=1`，与项目是否用到 Python 无关
 - 验证：test

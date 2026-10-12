@@ -7,7 +7,7 @@
 ## Requirements
 
 ### Requirement: 同一个配置档同时只有一个管理进程
-同一个 profile（正式版或开发版）下同时存活的管理进程 MUST 至多一个。macOS 和 Linux 上，只有拿到内核锁的进程 MUST 被允许删除残留的 socket 文件并监听；Windows 上，命名管道本身 MUST 作为锁。
+同一个 profile（正式版或开发版）下同时存活的管理进程 MUST 至多一个。只有拿到内核锁的进程 MUST 被允许删除残留的 socket 文件并监听（macOS 用文件锁，Linux 用抽象命名空间 socket）。
 来源：PRD #prd-decided-by-default；ADR 0005
 
 #### Scenario: [SUPERVISOR-LIFECYCLE-01] 两个启动者同时启动
@@ -28,14 +28,8 @@
 - **THEN** 新进程能拿到锁并正常监听，不需要任何人工清理
 - 验证：test
 
-#### Scenario: [SUPERVISOR-LIFECYCLE-04] Windows 上第二个监听失败
-- 前提：Windows 上已有管理进程占着命名管道
-- **WHEN** 第二个管理进程尝试监听同名管道
-- **THEN** 监听失败，第二个进程退出，原管理进程不受影响
-- 验证：test
-
 #### Scenario: [SUPERVISOR-LIFECYCLE-05] 连接点被不知道口令的进程抢先占住
-- 前提：别的进程先占住了连接点（管道名或 socket 路径）
+- 前提：别的进程先占住了连接点（socket 路径）
 - **WHEN** 管理进程尝试启动，或客户端尝试连接
 - **THEN** 管理进程起不来（功能不可用），客户端握手失败并报 `SUPERVISOR_UNAVAILABLE`；口令没有被发送给占位者
 - 验证：test
@@ -60,12 +54,6 @@
 - **WHEN** 启动者的整个进程组被强制结束
 - **THEN** 管理进程仍然存活，已有的运行不受影响
 - 验证：test
-
-#### Scenario: [SUPERVISOR-LIFECYCLE-09] 启动者在“关闭即杀”的作业里
-- 前提：Windows 上，启动者把子进程放进“关闭即杀”的作业对象
-- **WHEN** 普通方式启动的管理进程随启动者一起被结束，客户端发现后改经 WMI 创建，然后启动者退出
-- **THEN** 经 WMI 创建的管理进程仍然存活
-- 验证：manual（需要 Windows 真机逐个检查 Claude Code、VS Code 终端、Windows Terminal、Git Bash 四种启动者）
 
 #### Scenario: [SUPERVISOR-LIFECYCLE-10] 启动期间连接失败
 - 前提：管理进程正在启动，尚未开始监听
@@ -121,7 +109,7 @@
 - 验证：test
 
 #### Scenario: [SUPERVISOR-LIFECYCLE-17] 进程号被复用
-- 前提：运行记录里的进程号现在属于另一个无关进程，进程启动时间与记录不符（Windows 上进程号会很快被复用）
+- 前提：运行记录里的进程号现在属于另一个无关进程，进程启动时间与记录不符（进程号会被复用）
 - **WHEN** 新的管理进程启动并清理
 - **THEN** 这个无关进程没有被结束；该运行只被标为 `crashed`
 - 验证：test

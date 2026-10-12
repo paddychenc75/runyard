@@ -29,7 +29,7 @@
 - 验证：test
 
 ### Requirement: 只有执行版本命令并解析出版本号才算找到
-一个工具 MUST 只有在执行它的版本命令并解析出版本号后才算“已找到”；Go 的版本命令 MUST 是 `go version`，其余工具是 `--version`。Windows 上微软商店的占位 `python.exe` MUST 判为未安装。
+一个工具 MUST 只有在执行它的版本命令并解析出版本号后才算“已找到”；Go 的版本命令 MUST 是 `go version`，其余工具是 `--version`。
 来源：PRD #prd-runtime-requirements；PRD #prd-failure-states
 
 #### Scenario: [TOOLCHAIN-DETECTION-04] 能解析出版本号
@@ -48,12 +48,6 @@
 - 前提：Go 的 `go version` 输出 `go version go1.26.0 darwin/arm64`
 - **WHEN** 检测 Go
 - **THEN** 版本是 `1.26.0`，检测过程没有执行 `go --version`
-- 验证：test
-
-#### Scenario: [TOOLCHAIN-DETECTION-07] Windows 商店占位程序
-- 前提：Windows 上 PATH 里的 `python.exe` 是微软商店的占位程序
-- **WHEN** 检测 Python
-- **THEN** 判为未安装，不把占位程序当作解释器
 - 验证：test
 
 ### Requirement: 版本范围的判定
@@ -144,14 +138,4 @@ macOS 上，从 Finder 启动的应用拿不到终端里的环境，系统 MUST 
 - 前提：登录 shell 解析成功，其结果与常见目录扫描的结果不同
 - **WHEN** 检测工具
 - **THEN** 以解析结果为准；扫描只在解析失败时作为临时答案，并标明来源
-- 验证：test
-
-### Requirement: Windows 上重新检测不要求重启
-Windows 上进程本来就继承完整环境；用户新装工具后，“重新检测”MUST 从注册表重新读取环境，MUST NOT 要求重启应用。
-来源：PRD #prd-settings-toolchain；PRD #prd-runtime-requirements
-
-#### Scenario: [TOOLCHAIN-DETECTION-21] 运行期间新装了工具
-- 前提：Windows 上应用已运行，用户随后装了 Go
-- **WHEN** 执行重新检测
-- **THEN** 从注册表读到新的用户环境，找到 Go，不需要重启应用
 - 验证：test

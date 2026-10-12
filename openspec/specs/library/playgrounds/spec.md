@@ -2,7 +2,7 @@
 
 ## Purpose
 
-约定项目（playground）怎样创建、命名、改名、移到废纸篓，以及文件夹在应用外被动过时怎么办。名称既是显示名也是文件夹名，所以名称规则同时要保证资源库能搬到 Windows。用户的项目是资产：任何情形下都不做永久删除，放不进废纸篓或回收站就失败并说明原因。自动清理的计时和提醒在 library/auto-clean。
+约定项目（playground）怎样创建、命名、改名、移到废纸篓，以及文件夹在应用外被动过时怎么办。名称既是显示名也是文件夹名，所以名称规则同时要保证资源库能搬到 Windows。用户的项目是资产：任何情形下都不做永久删除，平台层的“移到废纸篓”放不进就失败并说明原因。自动清理的计时和提醒在 library/auto-clean。
 
 ## Requirements
 
@@ -87,7 +87,7 @@
 - 验证：test
 
 ### Requirement: 重命名
-重命名 MUST 先校验新名称；正在 `installing` 或 `starting` 的项目 MUST 拒绝（`BUSY`）。重命名一个正在运行的项目 MUST 先停止、改名，再用新名称启动，持有者不变。重命名 MUST NOT 改变端口和其他设置。改名前 MUST 先让所有已连接的客户端释放该项目的句柄，最多等 3 秒，超时的客户端 MUST 只记一行日志后继续。文件夹仍被占用 MUST 返回 `PATH_LOCKED`，且文件夹 MUST 保持原名。
+重命名 MUST 先校验新名称；正在 `installing` 或 `starting` 的项目 MUST 拒绝（`BUSY`）。重命名一个正在运行的项目 MUST 先停止、改名，再用新名称启动，持有者不变。重命名 MUST NOT 改变端口和其他设置。改名前 MUST 先让所有已连接的客户端释放该项目的句柄，最多等 3 秒，超时的客户端 MUST 只记一行日志后继续。平台层的改名因文件夹被占用或权限不足而失败（`EBUSY`、`EPERM`、`EACCES`）时 MUST 返回 `PATH_LOCKED`，且文件夹 MUST 保持原名。
 来源：PRD #prd-rename；PRD #prd-failure-states；ADR 0010
 
 #### Scenario: [LIBRARY-PLAYGROUNDS-13] 改名到保留名
@@ -120,14 +120,8 @@
 - **THEN** 不再等满 3 秒，立即继续
 - 验证：test
 
-#### Scenario: [LIBRARY-PLAYGROUNDS-18] 文件夹被其他程序占用
-- 前提：Windows 上另一个程序占着项目文件夹（当前目录在里面，或打开着里面的文件）
-- **WHEN** 重命名
-- **THEN** 报 `PATH_LOCKED`，退出码 9；文件夹仍叫原名，内容完好
-- 验证：test
-
 ### Requirement: 移到废纸篓
-`rm` 与自动清理 MUST 先停止运行并走与改名相同的释放顺序，再只通过平台层的“移到废纸篓”完成；MUST NOT 以任何方式永久删除用户的项目。macOS 上 MUST NOT 覆盖废纸篓里的同名项目。Windows 上依赖目录（`node_modules` 及模板声明的同类可重新生成的目录）MUST 直接删除，其余内容 MUST 进回收站。回收站放不进（路径过长、超过回收站容量、回收站被关闭）时 MUST 失败并返回明确的错误码，项目文件夹中不可重新生成的内容 MUST 原样保留，MUST NOT 退到永久删除。
+`rm` 与自动清理 MUST 先停止运行并走与改名相同的释放顺序，再只通过平台层的“移到废纸篓”完成；MUST NOT 以任何方式永久删除用户的项目。MUST NOT 覆盖废纸篓里的同名项目。平台层的“移到废纸篓”失败时 MUST 返回 `TRASH_UNAVAILABLE`，项目文件夹 MUST 原样保留，MUST NOT 退到永久删除。
 来源：PRD #prd-retention；PRD #prd-script-projects；ADR 0010
 
 #### Scenario: [LIBRARY-PLAYGROUNDS-19] 正常移到废纸篓
@@ -137,38 +131,14 @@
 - 验证：test
 
 #### Scenario: [LIBRARY-PLAYGROUNDS-20] 废纸篓里已有同名项目
-- 前提：macOS 上废纸篓里已有一个叫 `demo` 的文件夹
+- 前提：废纸篓里已有一个叫 `demo` 的文件夹
 - **WHEN** 把另一个 `demo` 移到废纸篓
 - **THEN** 两个都在废纸篓里，先前那个没有被覆盖
-- 验证：test
-
-#### Scenario: [LIBRARY-PLAYGROUNDS-21] 回收站放不进（路径过长）
-- 前提：Windows 上项目里有一条超过预检上限的长路径
-- **WHEN** 执行 `rm`
-- **THEN** 报 `PATH_TOO_LONG`，退出码 9；没有任何内容被永久删除，项目仍在资源库里
-- 验证：test
-
-#### Scenario: [LIBRARY-PLAYGROUNDS-22] 回收站放不进（容量不足或被关闭）
-- 前提：Windows 上项目总大小超过回收站容量，或用户关闭了回收站
-- **WHEN** 执行 `rm`
-- **THEN** 报 `TRASH_UNAVAILABLE`，退出码 9；项目文件夹里不可重新生成的内容原样保留，没有任何内容被永久删除
-- 验证：test
-
-#### Scenario: [LIBRARY-PLAYGROUNDS-23] Windows 上依赖目录直接删除，其余进回收站
-- 前提：Windows 上项目有 `node_modules` 和源文件，回收站可用
-- **WHEN** 执行 `rm`
-- **THEN** `node_modules` 被直接删除，其余内容在回收站里；结果里 `deletedRegenerable` 列出被直接删除的目录
 - 验证：test
 
 #### Scenario: [LIBRARY-PLAYGROUNDS-24] 没有任何途径做永久删除
 - **WHEN** 检查资源库代码和命令行代码
 - **THEN** 其中没有 `fs.rm`、`rmSync`、`rmdir` 一类的永久删除调用
-- 验证：test
-
-#### Scenario: [LIBRARY-PLAYGROUNDS-25] 文件夹被占用时不移走
-- 前提：Windows 上项目文件夹被其他程序占用
-- **WHEN** 执行 `rm`
-- **THEN** 报 `PATH_LOCKED`，项目原样保留
 - 验证：test
 
 ### Requirement: 文件夹在应用外被动过
@@ -203,4 +173,16 @@
 - 前提：`library.json` 被删除
 - **WHEN** 管理进程启动
 - **THEN** 资源库里每个带 `.runyard/playground.json` 的文件夹都被重新登记，端口重新分配，`lastUsedAt` 取当前时间
+- 验证：test
+
+#### Scenario: [LIBRARY-PLAYGROUNDS-31] 平台层移到废纸篓失败
+- 前提：测试用的假平台让 `fs.trash` 失败（不管原因）
+- **WHEN** 执行 `rm`
+- **THEN** 报 `TRASH_UNAVAILABLE`，退出码 9；没有任何内容被永久删除，项目仍在资源库里
+- 验证：test
+
+#### Scenario: [LIBRARY-PLAYGROUNDS-32] 平台层改名失败
+- 前提：测试用的假平台让 `fs.moveDir` 以 `EACCES` 失败
+- **WHEN** 重命名
+- **THEN** 报 `PATH_LOCKED`，退出码 9；文件夹仍叫原名，内容完好
 - 验证：test
