@@ -150,16 +150,17 @@ async function startRun() {
 }
 // 起一个“活着的管理进程 + 一个命令行持有的运行”。appRunning=false 时应用先正常退出，只留管理进程
 async function liveSupervisor({ appRunning }) {
+  const since = Date.now();
   const a = await startApp();
   if (!a.up) throw new Error(`app did not come up: ${JSON.stringify(a.events ?? a).slice(0, 600)}`);
   const sup = S.track(S.discovery().pid, "supervisor");
   const run = await startRun();
   if (!appRunning) await S.quitApp(a.pid);
   await sleep(500);
-  return { appPid: a.pid, sup, run, state: { supervisorAlive: alive(sup), runAlive: alive(run.pid), portOpen: await portOpen(run.port), appAlive: alive(a.pid), runOk: run.ok, runDetail: run.detail } };
+  return { since, appPid: a.pid, sup, run, state: { supervisorAlive: alive(sup), runAlive: alive(run.pid), portOpen: await portOpen(run.port), appAlive: alive(a.pid), runOk: run.ok, runDetail: run.detail } };
 }
 async function observe(live) {
-  const logOf = S.supervisorLog().filter((e) => e.pid === live.sup);
+  const logOf = S.supervisorLog().filter((e) => e.pid === live.sup && e.at >= live.since); // 进程号会重用，所以还要看时间
   return {
     supervisorAlive: alive(live.sup),
     appAlive: alive(live.appPid),

@@ -141,7 +141,11 @@ export class Session {
   }
 
   track(pid, what) {
-    if (pid && !this.tracked.has(pid)) this.tracked.set(pid, { start: procStart(pid), what });
+    if (!pid) return pid;
+    const start = procStart(pid);
+    const known = this.tracked.get(pid);
+    // 进程号被系统重用时（第三轮 CI 里真的遇到了）：旧记录的那个进程已经不在了，换成现在这个
+    if (!known || (start && known.start !== start)) this.tracked.set(pid, { start, what });
     return pid;
   }
 
