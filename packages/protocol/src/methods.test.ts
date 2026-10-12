@@ -259,6 +259,12 @@ describe("方法登记表", () => {
     }
   });
 
+  it("按 runId 找运行的方法都声明了 RUN_NOT_FOUND", () => {
+    for (const name of ["run.stop", "run.get", "run.adopt", "run.attach", "run.detach"] as const) {
+      expect(methodRegistry[name].errors).toContain("RUN_NOT_FOUND");
+    }
+  });
+
   it("只占名字的方法是 run.disown 和请求面板两个，管理进程回 NOT_SUPPORTED", () => {
     const reserved = methodNames.filter((name) => methodRegistry[name].status === "reserved");
     expect(reserved.sort()).toEqual(["request.getLast", "request.send", "run.disown"]);

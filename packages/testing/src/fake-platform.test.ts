@@ -42,7 +42,9 @@ describe("假平台的 ipc", () => {
     const client = await fake.platform.ipc.connect(1000);
     client.write("ping");
     expect(await received).toBe("ping");
-    expect(fake.platform.ipc.endpoint()).toContain("fake-ipc");
+    await expect(fake.platform.ipc.listen()).rejects.toMatchObject({ error: { code: "BUSY" } });
+    server.close();
+    await expect(fake.platform.ipc.listen()).resolves.toBeDefined();
   });
 });
 

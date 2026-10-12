@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { createdBySchema } from "./created-by.ts";
 import { runKindSchema } from "./enums.ts";
-import { portSchema, timestampSchema } from "./primitives.ts";
+import { portSchema, relativePathSchema, timestampSchema } from "./primitives.ts";
 
 // 项目记录在协议里的形状：合并项目文件夹里的 playground.json 和本机索引 library.json
 // 里客户端用得到的字段（docs/architecture/storage.md 第 2 节）。
@@ -30,7 +30,7 @@ export const playgroundSchema = z
     }),
     runner: z.string().min(1).describe("运行器 id"),
     packageManager: z.enum(packageManagers).optional(),
-    entry: z.string().min(1).optional().describe("入口文件，用 / 分隔的相对路径"),
+    entry: relativePathSchema.optional().describe("入口文件，用 / 分隔的相对路径"),
     note: z.string().optional(),
     createdAt: timestampSchema,
     createdBy: createdBySchema,

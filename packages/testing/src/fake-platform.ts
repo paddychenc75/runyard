@@ -52,7 +52,7 @@ const FAKE_HOME = absPath("/fake-home");
 
 // 假平台：与真实的 Platform 同一个接口，状态全在内存里，时间由假时钟推进。
 // paths 直接用真实实现的纯函数（名称校验等），所以不会与真实规则漂移。
-// 例外：ipc 用 127.0.0.1 上的临时 TCP 端口当传输（Server 和 Socket 是 Node 的真类型，没有内存版）。
+// 例外：ipc 的 listen / connect 用 127.0.0.1 上的临时 TCP 端口当传输（Server 和 Socket 是 Node 的真类型，没有内存版）。
 export function createFakePlatform(options: FakePlatformOptions = {}): FakePlatform {
   const home = options.home ?? FAKE_HOME;
   if (home === absPath(homedir())) {
@@ -86,7 +86,10 @@ export function createFakePlatform(options: FakePlatformOptions = {}): FakePlatf
     exec: {
       which: async (tool, e) => tools.which(tool, e),
       spawn: (spec) => processes.spawn(spec),
-      spawnDetached: (argv, opts) => processes.spawnDetached(argv, opts),
+      spawnDetached: async (argv, opts) => {
+        if (argv.length === 0) throw platformError("INTERNAL", {}, "empty argv");
+        return processes.spawnDetached(argv, opts);
+      },
     },
     proc: {
       terminate: (ref, o) => processes.terminate(ref, o),
@@ -106,9 +109,12 @@ export function createFakePlatform(options: FakePlatformOptions = {}): FakePlatf
     },
     watch: async (root, opts, callback) => fs.watch(root, opts, callback),
     ipc: {
-      endpoint: () => "fake-ipc://supervisor",
+      // 地址和握手证明沿用真实实现的纯函数，不重写
+      endpoint: () => reference.ipc.endpoint(),
       listen: () => net.listen(),
       connect: (timeoutMs) => net.connect(timeoutMs),
+      computeProof: reference.ipc.computeProof,
+      verifyProof: reference.ipc.verifyProof,
     },
     tools: {
       candidates: async (tool, e) => tools.candidates(tool, e),
@@ -143,7 +149,11 @@ class FakeIpc {
   readonly #servers = new Set<Server>();
   readonly #sockets = new Set<Socket>();
 
+  // 与真实实现一致：已经有监听者（持锁）时抛 BUSY，不会有两个管理进程
   async listen(): Promise<Server> {
+    if ([...this.#servers].some((live) => live.listening)) {
+      throw platformError("BUSY", { name: "fake-ipc" }, "a fake supervisor is already listening");
+    }
     const server = createServer();
     await new Promise<void>((resolve, reject) => {
       server.once("error", reject);

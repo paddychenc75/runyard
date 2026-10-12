@@ -19,6 +19,8 @@ export const errorRegistry = {
   PLAYGROUND_NOT_FOUND: { exit: 3, params: z.object({ name }) },
   TEMPLATE_NOT_FOUND: { exit: 3, params: z.object({ template: z.string().min(1) }) },
   FOLDER_MISSING: { exit: 3, params: z.object({ name }) },
+  // 按 runId 找不到运行（run.stop / get / adopt / attach / detach）。runId 是调用方给的原样字符串
+  RUN_NOT_FOUND: { exit: 3, params: z.object({ runId: z.string().min(1) }) },
 
   TOOL_MISSING: { exit: 4, params: z.object({ tool: toolId, required: z.string() }) },
   TOOL_TOO_OLD: {

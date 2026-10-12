@@ -7,6 +7,7 @@ import { createFakePlatform } from "./fake-platform.ts";
 // complete：假平台没有占位成员，所以不跑“占位抛 INTERNAL”那一组；真实现换掉占位、写成真用例后，这里自动跟着跑。
 runContract({
   name: "darwin",
+  native: false, // 假平台不是本机的实现：真 socket、内核锁的用例由真实实现各自验证
   create: (home) => createFakePlatform({ home: absPath(home) }).platform,
   unsupported: new Set(),
   complete: true,

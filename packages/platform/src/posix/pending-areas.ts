@@ -2,7 +2,7 @@ import type { Platform } from "../platform.ts";
 import { notImplemented } from "./pending-members.ts";
 
 // 各块占位：负责的 issue 写在这里，替换时一目了然（环境、工具、shell：#26；exec、proc、ports：#25；
-// ipc 与 spawnDetached：#27；fs 与 watch：#28；desktop 与 cli：随桌面应用，M1 不做）。
+// fs 与 watch：#28；desktop 与 cli：随桌面应用，M1 不做）。ipc 与 spawnDetached 已由 #27 实现，见 posix/ipc/ 和 posix/spawn-detached.ts。
 
 const APP = "desktop app, after M1";
 
@@ -11,10 +11,9 @@ export const pendingEnv: Platform["env"] = {
   runDefaults: () => notImplemented("env.runDefaults", "#26"),
 };
 
-export const pendingExec: Platform["exec"] = {
+export const pendingExec: Omit<Platform["exec"], "spawnDetached"> = {
   which: () => notImplemented("exec.which", "#25"),
   spawn: () => notImplemented("exec.spawn", "#25"),
-  spawnDetached: () => notImplemented("exec.spawnDetached", "#27"),
 };
 
 export const pendingProc: Platform["proc"] = {
@@ -37,12 +36,6 @@ export const pendingFs: Platform["fs"] = {
 };
 
 export const pendingWatch: Platform["watch"] = () => notImplemented("watch", "#28");
-
-export const pendingIpc: Platform["ipc"] = {
-  endpoint: () => notImplemented("ipc.endpoint", "#27"),
-  listen: () => notImplemented("ipc.listen", "#27"),
-  connect: () => notImplemented("ipc.connect", "#27"),
-};
 
 export const pendingTools: Platform["tools"] = {
   candidates: () => notImplemented("tools.candidates", "#26"),
