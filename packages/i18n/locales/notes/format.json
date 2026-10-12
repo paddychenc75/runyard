@@ -1,0 +1,9 @@
+{
+  "format.duration.days": { "count": "整数天数" },
+  "format.duration.hours": { "count": "整数小时数" },
+  "format.duration.minutes": { "count": "整数分钟数" },
+  "format.duration.seconds": { "count": "整数秒数" },
+  "format.relative.days": { "count": "距现在的整数天数，至少为 1" },
+  "format.relative.hours": { "count": "距现在的整数小时数，1 到 23" },
+  "format.relative.minutes": { "count": "距现在的整数分钟数，1 到 59" }
+}
