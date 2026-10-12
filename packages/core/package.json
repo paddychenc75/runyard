@@ -1,0 +1,20 @@
+{
+  "name": "@runyard/core",
+  "version": "0.0.0",
+  "private": true,
+  "description": "工具检测、运行引擎、资源库、模板、自动清理的判断",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@runyard/protocol": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "vitest": "catalog:"
+  }
+}

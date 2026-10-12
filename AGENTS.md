@@ -28,6 +28,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `docs/glossary.md` | 术语表：中文术语、唯一的英文标识符、禁用的同义词 |
 | `packages/protocol/` | 所有跨进程约定（目前有错误码、提示码、枚举、`RunyardError` / `Notice` / `LogEntry` / `Owner`、分帧、`Frame`、握手消息、版本比对） |
 | `packages/i18n/` | 文案、`createTranslator`、数字和时长格式、命令行语言解析（`resolveCliLocale`）、由中文文案生成的键和参数类型 |
+| `packages/core/` | 工具检测、运行引擎、资源库等业务逻辑（目前只有日志的切行、解码和读取时清洗） |
 | `tooling/checks/` | 仓库检查脚本，`pnpm check` 的全部内容；`layers.json` 是包依赖规则的唯一出处 |
 | `tooling/scripts/` | 脚本：`deps-lookup.ts`（查依赖版本和公告）、`generate.ts`（生成文档里的表） |
 | `tooling/hooks/` | Claude Code 的钩子脚本，由 `.claude/settings.json` 调用 |
@@ -46,7 +47,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `@runyard/tokens` | 无 | 还没建 |
 | `@runyard/i18n` | `@runyard/protocol` | 已有 |
 | `@runyard/platform` | `@runyard/protocol` | 还没建 |
-| `@runyard/core` | `@runyard/protocol`、`@runyard/platform` | 还没建 |
+| `@runyard/core` | `@runyard/protocol`、`@runyard/platform` | 已有 |
 | `@runyard/supervisor` | `@runyard/protocol`、`@runyard/platform`、`@runyard/core` | 还没建 |
 | `@runyard/client` | `@runyard/protocol`、`@runyard/platform` | 还没建 |
 | `runyard` | `@runyard/protocol`、`@runyard/platform`、`@runyard/client`、`@runyard/core`、`@runyard/i18n` | 还没建 |
