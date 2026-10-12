@@ -3,6 +3,9 @@
   "tasks": {
     "test": {
       "outputs": []
+    },
+    "test:process": {
+      "outputs": []
     }
   }
 }

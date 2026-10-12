@@ -4,7 +4,8 @@
   "description": "\u4ed3\u5e93\u68c0\u67e5\u811a\u672c\u548c\u6784\u5efa\u811a\u672c\uff08\u4e0d\u662f\u4e1a\u52a1\u5305\uff0c\u4e0d\u5728 layers.json \u7684\u7ba1\u8f96\u8303\u56f4\u5185\uff09",
   "type": "module",
   "scripts": {
-    "test": "vitest run"
+    "test": "vitest run --project unit",
+    "test:process": "vitest run --project process --passWithNoTests"
   },
   "dependencies": {
     "yaml": "catalog:"

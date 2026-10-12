@@ -1,4 +1,3 @@
-import { randomUUID } from "node:crypto";
 import { mkdtempSync, realpathSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -9,11 +8,14 @@ import type { ContractContext } from "./context.ts";
 import { ProcessLedger } from "./process-ledger.ts";
 import { eventually, freePort, startTree, WAIT_MS } from "./service-harness.ts";
 
-// 重复起停的次数。技术验证 K2 每个系统做了 900 次；这里取一个放进 CI 时间的量：每次起三个 node 进程，
-// 同一个包里别的测试文件在并行跑，起得太多会把 CI 的小机器占满，让它们超时（第一次提交用 50 次就这样）
-const REPEAT_CYCLES = 20;
+// 重复起停的次数。技术验证 K2 每个系统做了 900 次；这里取 50（issue #25 原来的数）。
+// 进程测试阶段里这个测试独占机器，实测 20 次在 CI 上约 4 到 6 秒，50 次约 10 到 16 秒（预算见 docs/guides/testing.md）
+const REPEAT_CYCLES = 50;
 // 停止之后端口必须在这个时间内能重新绑定（规格 RUN-LIFECYCLE-14，ADR 0006）
 const REBIND_LIMIT_MS = 3000;
+// “没有等 graceMs”类断言：graceMs 取得很长，用时上限取慢机器也够的值，两者之间仍然拉得开
+const LONG_GRACE_MS = 60_000;
+const SLOW_RUNNER_MS = 10_000;
 
 const sorted = (pids: number[]) => [...pids].sort((a, b) => a - b);
 
@@ -109,65 +111,6 @@ export function procContract(ctx: ContractContext): void {
     });
   });
 
-  describe("proc.findByMarker", () => {
-    const marker = () => ({ name: "RUNYARD_CONTRACT_MARKER", value: randomUUID() });
-    const environment = (m: { name: string; value: string }) => ({ [m.name]: m.value });
-    const byPid = (refs: ProcRef[]) => sorted(refs.map((ref) => ref.pid));
-
-    it("[RUN-LIFECYCLE-20] 找得到脱离进程组的后代；先停整棵树后它还活着，按身份结束它之后找不到了", async () => {
-      const m = marker();
-      const tree = await startTree(
-        platform,
-        ledger,
-        { children: [{ detached: true, children: [{}] }, {}] },
-        cwd,
-        environment(m),
-      );
-      // 根、同组的一个后代、脱离的后代、脱离后代的子进程
-      expect(tree.pids).toHaveLength(4);
-      const found = await platform.proc.findByMarker(m);
-      expect(byPid(found)).toEqual(sorted(tree.pids));
-      for (const ref of found) {
-        expect(await platform.proc.identity(ref.pid), `pid ${ref.pid} 的启动时间`).toEqual({
-          startTime: ref.startTime,
-        });
-      }
-
-      await platform.proc.terminate(tree.proc.ref, { mode: "graceful", graceMs: 2000 });
-      expect(await platform.proc.members(tree.proc.ref)).toEqual([]);
-      // 脱离的那一组（两个进程）不在原来的组里，停整棵树碰不到它们，只有按标记才找得到
-      const strays = await platform.proc.findByMarker(m);
-      expect(strays).toHaveLength(2);
-      for (const stray of strays) {
-        await platform.proc.terminate(stray, { mode: "kill", graceMs: 0 });
-      }
-      expect(await platform.proc.findByMarker(m)).toEqual([]);
-      await expectGone(tree.proc.ref);
-    });
-
-    it("标记的值不同就找不到；没有任何进程带它时返回空数组", async () => {
-      const m = marker();
-      const tree = await startTree(platform, ledger, { children: [{}] }, cwd, environment(m));
-      expect(await platform.proc.findByMarker({ ...m, value: `${m.value}x` })).toEqual([]);
-      expect(
-        await platform.proc.findByMarker({ name: m.name, value: m.value.slice(0, -1) }),
-      ).toEqual([]);
-      expect(await platform.proc.findByMarker({ ...m, name: `${m.name}_OTHER` })).toEqual([]);
-      expect(byPid(await platform.proc.findByMarker(m))).toEqual(sorted(tree.pids));
-      await platform.proc.terminate(tree.proc.ref, { mode: "graceful", graceMs: 2000 });
-      expect(await platform.proc.findByMarker(m)).toEqual([]);
-    });
-
-    it("不会返回本进程，也不会返回 pid 0 和 1", async () => {
-      const found = await platform.proc.findByMarker({
-        name: "PATH",
-        value: process.env.PATH ?? "",
-      });
-      expect(found.map((ref) => ref.pid)).not.toContain(process.pid);
-      expect(found.every((ref) => ref.pid > 1)).toBe(true);
-    });
-  });
-
   describe("proc.terminate", () => {
     it("[RUN-LIFECYCLE-14] 停止有子孙进程的服务：整棵树没有活着的，3 秒内端口可重新绑定", async () => {
       const port = await freePort();
@@ -195,7 +138,7 @@ export function procContract(ctx: ContractContext): void {
       await platform.proc.terminate(tree.proc.ref, { mode: "graceful", graceMs });
       const elapsed = performance.now() - started;
       expect(elapsed).toBeGreaterThanOrEqual(graceMs - 5);
-      expect(elapsed).toBeLessThan(graceMs + 1500);
+      expect(elapsed).toBeLessThan(graceMs + SLOW_RUNNER_MS);
       await expectGone(tree.proc.ref);
       // 被强制结束，没有退出码
       expect(await tree.proc.exited).toEqual({ exitCode: null });
@@ -206,16 +149,16 @@ export function procContract(ctx: ContractContext): void {
       await tree.proc.exited;
       expect(tree.proc.stdout.readableEnded).toBe(false);
       const started = performance.now();
-      await platform.proc.terminate(tree.proc.ref, { mode: "graceful", graceMs: 2000 });
-      expect(performance.now() - started).toBeLessThan(1500);
+      await platform.proc.terminate(tree.proc.ref, { mode: "graceful", graceMs: LONG_GRACE_MS });
+      expect(performance.now() - started).toBeLessThan(SLOW_RUNNER_MS);
       await expectGone(tree.proc.ref);
     });
 
     it("Go 型进程只响应中断：interrupt 让它自己干净退出，不走强制结束", async () => {
       const tree = await startTree(platform, ledger, { exitOnInterrupt: true }, cwd);
       const started = performance.now();
-      await platform.proc.terminate(tree.proc.ref, { mode: "interrupt", graceMs: 5000 });
-      expect(performance.now() - started).toBeLessThan(2000);
+      await platform.proc.terminate(tree.proc.ref, { mode: "interrupt", graceMs: LONG_GRACE_MS });
+      expect(performance.now() - started).toBeLessThan(SLOW_RUNNER_MS);
       expect(await tree.proc.exited).toEqual({ exitCode: 0 });
       await expectGone(tree.proc.ref);
     });
@@ -235,8 +178,8 @@ export function procContract(ctx: ContractContext): void {
         cwd,
       );
       const started = performance.now();
-      await platform.proc.terminate(tree.proc.ref, { mode: "kill", graceMs: 10_000 });
-      expect(performance.now() - started).toBeLessThan(2000);
+      await platform.proc.terminate(tree.proc.ref, { mode: "kill", graceMs: LONG_GRACE_MS });
+      expect(performance.now() - started).toBeLessThan(SLOW_RUNNER_MS);
       await expectGone(tree.proc.ref);
     });
 
@@ -294,9 +237,7 @@ export function procContract(ctx: ContractContext): void {
       expect(await platform.proc.identity(process.pid)).toEqual(self);
     });
 
-    it(`重复起停 ${REPEAT_CYCLES} 次：每次整棵树停净，3 秒内端口可重新绑定`, {
-      timeout: 180_000,
-    }, async () => {
+    it(`重复起停 ${REPEAT_CYCLES} 次：每次整棵树停净，3 秒内端口可重新绑定`, async () => {
       const rebinds: number[] = [];
       const stops: number[] = [];
       for (let cycle = 0; cycle < REPEAT_CYCLES; cycle += 1) {

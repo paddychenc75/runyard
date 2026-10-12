@@ -170,7 +170,7 @@ export function execProcessContract(ctx: ContractContext): void {
 
     it("ref 是 pid 加启动时间，与 proc.identity 查到的一致", async () => {
       const proc = platform.exec.spawn({
-        argv: [node, "-e", "setTimeout(() => {}, 5000)"],
+        argv: [node, "-e", "setTimeout(() => {}, 60000)"],
         cwd,
         env: baseEnv,
         stdin: false,

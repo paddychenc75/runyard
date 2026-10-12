@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
 import { absPath } from "../path-types.ts";
 import type { ContractContext } from "./context.ts";
+import { eventually } from "./service-harness.ts";
 
 // exec 的契约：spawnDetached（which 和 spawn 在 exec-process.contract.ts，它们要起真进程，只对本机的实现跑）。脱钩、标准输入输出、工作目录的完整测试在
 // src/spawn-detached.platform-dependent.test.ts。
@@ -29,9 +30,7 @@ export function execContract(ctx: ContractContext): void {
         logFile,
       });
       expect(pid).toBeGreaterThan(0);
-      for (let i = 0; i < 250 && !existsSync(marker); i++) {
-        await new Promise((resolve) => setTimeout(resolve, 20));
-      }
+      await eventually(() => existsSync(marker), 30_000, "状态目录里出现标记文件");
       expect(existsSync(marker)).toBe(true);
     });
   });

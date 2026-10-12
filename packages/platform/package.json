@@ -9,7 +9,8 @@
     "./contract": "./src/contract/run-contract.ts"
   },
   "scripts": {
-    "test": "vitest run"
+    "test": "vitest run --project unit",
+    "test:process": "vitest run --project process --passWithNoTests"
   },
   "dependencies": {
     "@runyard/protocol": "workspace:*"

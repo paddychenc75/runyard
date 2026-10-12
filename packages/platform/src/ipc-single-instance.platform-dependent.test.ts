@@ -2,6 +2,7 @@ import { chmodSync, existsSync, readdirSync, statSync, writeFileSync } from "nod
 import { createServer, type Server } from "node:net";
 import { dirname } from "node:path";
 import { afterAll, afterEach, beforeEach, describe, expect, it } from "vitest";
+import { eventually } from "./contract/service-harness.ts";
 import { getPlatform } from "./get-platform.ts";
 import type { Platform } from "./platform.ts";
 import { isPlatformError } from "./platform-error.ts";
@@ -12,10 +13,10 @@ import { TrackedProcesses } from "./test-support/tracked-processes.ts";
 // 单实例（决策记录 0005，规格 supervisor/lifecycle）。用真进程、真 socket、真内核锁；
 // 每个测试自己的临时主目录，每个起的进程都记 pid 加启动时间，收尾时核对后结束。
 //
-// 轮数：证据 0005 的实验 A 每个系列 20 轮（合计 440 轮，含 Electron 系列）。CI 里缩小为
-// 三个系列各 ROUNDS 轮：全新 8 个启动者、残留 8 个、残留 2 个，共 3 * ROUNDS 轮，每轮 count 个真进程同时开始。
+// 轮数：证据 0005 的实验 A 每个系列 20 轮。这里四个系列各 ROUNDS 轮（全新 2 个、全新 8 个、残留 2 个、残留 8 个），
+// 每轮 count 个真进程同时开始。进程测试阶段里它独占机器，实测整个文件在 CI 上约 60 到 65 秒，是这个阶段最大的一块；
+// 再加轮数就要超出阶段预算（docs/guides/testing.md），所以保持证据里的每系列 20 轮。
 const ROUNDS = 20;
-const TEST_TIMEOUT = 120_000;
 
 const tracker = new TrackedProcesses();
 let sandbox: ReturnType<typeof makeTempHome>;
@@ -57,55 +58,35 @@ async function runSeries(count: number, stale: boolean, label: string): Promise<
 }
 
 describe("单实例", () => {
-  it(
-    "[SUPERVISOR-LIFECYCLE-01] 两个启动者同时启动，最终只有一个监听者",
-    async () => {
-      await runSeries(2, false, "全新 2 个");
-    },
-    TEST_TIMEOUT,
-  );
+  it("[SUPERVISOR-LIFECYCLE-01] 两个启动者同时启动，最终只有一个监听者", async () => {
+    await runSeries(2, false, "全新 2 个");
+  });
 
-  it(
-    "[SUPERVISOR-LIFECYCLE-01] 八个启动者同时启动（全新），最终只有一个监听者",
-    async () => {
-      await runSeries(8, false, "全新 8 个");
-    },
-    TEST_TIMEOUT,
-  );
+  it("[SUPERVISOR-LIFECYCLE-01] 八个启动者同时启动（全新），最终只有一个监听者", async () => {
+    await runSeries(8, false, "全新 8 个");
+  });
 
-  it(
-    "[SUPERVISOR-LIFECYCLE-02] 残留 socket 文件加八个启动者并发，只有拿到锁的一个监听",
-    async () => {
-      await runSeries(8, true, "残留 8 个");
-    },
-    TEST_TIMEOUT,
-  );
+  it("[SUPERVISOR-LIFECYCLE-02] 残留 socket 文件加八个启动者并发，只有拿到锁的一个监听", async () => {
+    await runSeries(8, true, "残留 8 个");
+  });
 
-  it(
-    "[SUPERVISOR-LIFECYCLE-02] 残留 socket 文件加两个启动者并发，只有拿到锁的一个监听",
-    async () => {
-      await runSeries(2, true, "残留 2 个");
-    },
-    TEST_TIMEOUT,
-  );
+  it("[SUPERVISOR-LIFECYCLE-02] 残留 socket 文件加两个启动者并发，只有拿到锁的一个监听", async () => {
+    await runSeries(2, true, "残留 2 个");
+  });
 
-  it(
-    "[SUPERVISOR-LIFECYCLE-03] 进程被强杀后锁随之释放，新启动者无需清理就能监听，并能被连上",
-    async () => {
-      const first = await runRound(sandbox.home, 1, tracker);
-      expect(first.winners).toBe(1);
-      await first.killWinners();
-      // 残留：文件还在，但没有人在监听
-      await expect(platform.ipc.connect(500)).rejects.toMatchObject({
-        error: { code: "SUPERVISOR_UNAVAILABLE" },
-      });
-      const server = await platform.ipc.listen();
-      servers.push(server);
-      const socket = await platform.ipc.connect(1000);
-      socket.destroy();
-    },
-    TEST_TIMEOUT,
-  );
+  it("[SUPERVISOR-LIFECYCLE-03] 进程被强杀后锁随之释放，新启动者无需清理就能监听，并能被连上", async () => {
+    const first = await runRound(sandbox.home, 1, tracker);
+    expect(first.winners).toBe(1);
+    await first.killWinners();
+    // 残留：文件还在，但没有人在监听
+    await expect(platform.ipc.connect(500)).rejects.toMatchObject({
+      error: { code: "SUPERVISOR_UNAVAILABLE" },
+    });
+    const server = await platform.ipc.listen();
+    servers.push(server);
+    const socket = await platform.ipc.connect(1000);
+    socket.destroy();
+  });
 });
 
 describe("连接点被抢先占住", () => {
@@ -142,7 +123,8 @@ describe("连接点被抢先占住", () => {
       realGotConnection = true;
     });
     const socket = await platform.ipc.connect(1000);
-    await new Promise((r) => setTimeout(r, 50));
+    // 等“真监听者收到连接”这个可观察的结果，而不是睡一小会儿；上限给得宽，慢机器也够
+    await eventually(() => realGotConnection, 30_000, "真监听者收到连接");
     socket.destroy();
     expect(realGotConnection).toBe(true);
     expect(squatterGotConnection).toBe(false);

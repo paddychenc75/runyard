@@ -12,10 +12,7 @@ export const noticeRegistry = {
   STOPPED_BY_USER: { params: none },
   // 进程自己退出；两个字段都给出现场，signal 是名字，不是句子
   PROCESS_EXITED: {
-    params: z.object({
-      exitCode: z.number().int().optional(),
-      signal: z.string().min(1).optional(),
-    }),
+    params: z.object({ exitCode: z.number().int().optional(), signal: z.string().optional() }),
   },
   DEPS_FROM_CACHE: { params: none },
   PORT_FALLBACK: {
@@ -36,22 +33,9 @@ export const noticeRegistry = {
   PATH_NEAR_LIMIT: {
     params: z.object({ length: z.number().int().positive(), limit: z.number().int().positive() }),
   },
-  // 停止后端口在上限内仍不能重新绑定，stop 照常返回（规格 RUN-LIFECYCLE-14；技术设计 §5.3）。
-  // waitedMs 是实际等了多久，limitMs 是上限（3000）；下次启动若仍被占用，按端口回退规则换一个
-  PORT_NOT_RELEASED: {
-    params: z.object({
-      port,
-      waitedMs: z.number().int().nonnegative(),
-      limitMs: z.number().int().positive(),
-    }),
-  },
   // 工具版本高于模板声明的上限，照常运行但未经测试（规格 TOOLCHAIN-DETECTION-09）
   TOOL_VERSION_UNTESTED: {
-    params: z.object({
-      tool: z.string().min(1),
-      found: z.string().min(1),
-      required: z.string().min(1),
-    }),
+    params: z.object({ tool: z.string().min(1), found: z.string().min(1), required: z.string() }),
   },
 } as const;
 

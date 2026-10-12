@@ -24,7 +24,8 @@ pnpm install --frozen-lockfile
 | `pnpm format` | 用 Biome 自动格式化 |
 | `pnpm typecheck` | TypeScript 类型检查 |
 | `pnpm check` | 仓库自己的检查（目前有分层、依赖策略、依赖记录） |
-| `pnpm test` | 全部单元测试 |
+| `pnpm test` | 全部测试：先单元阶段，再进程阶段（起真进程的测试单独、一次一个包地跑） |
+| `pnpm test:unit`、`pnpm test:process` | 只跑其中一个阶段，可加 `--filter <包名>` |
 | `pnpm verify` | 提 PR 前跑一遍：lint、typecheck、check，再测试有改动影响的部分 |
 | `pnpm deps:lookup <包>` | 查某个包的版本、发布日期、已知公告 |
 
@@ -70,6 +71,10 @@ node tooling/ci/check-title.ts --range origin/main..HEAD
 - 六项检查通过后 PR 自动合并，负责人在合并之后再看。所以会改变行为的改动，要在规格阶段先得到负责人的同意，不能靠合并后的评审把关。
 - 检查没过就不会合并：修好再推送，不要想办法绕过。
 
+## 偶发失败的测试
+
+必过检查失败了，不许“直接重跑”：先开一个带 `flaky` 标签的 issue，附上失败的运行链接、测试名和系统，再重跑。同一个测试偶发失败两次，就修好它，或者写进有原因、issue 编号和到期日的隔离名单（`tooling/vitest/quarantine.json`，经 PR 评审；过了到期日 `pnpm check` 会失败）。细则见 `docs/guides/testing.md`。
+
 ## 依赖
 
 规则的完整说明在技术设计 §8.6（`docs/product/03-tech-design.md`）。日常要记住的：
@@ -85,7 +90,7 @@ node tooling/ci/check-title.ts --range origin/main..HEAD
 
 | 工作流 | 触发 | 内容 |
 | --- | --- | --- |
-| `.github/workflows/ci.yml` | 每个 PR、`main` | `lint`（Ubuntu）：PR 标题和提交信息格式、非发版 PR 不许改 `CHANGELOG.md`、Biome、`pnpm check`。`test`（Ubuntu、`macos-26`、`windows-2025`，三个都必须通过）：类型检查、单元测试；macOS 和 Windows 上另外重跑 Biome 和 `pnpm check`。第一版只支持 macOS：`windows-2025` 只跑与系统无关的代码（检查脚本、`protocol`、`i18n` 等不需要平台实现的包），依赖平台实现的测试在 macOS 和 Ubuntu 上跑，在 Windows 上通过唯一一套文档化的机制（标签 `platform-dependent`，暂定名，以测试手册为准）跳过，不在测试里写 `process.platform` 判断（决策记录 0013） |
+| `.github/workflows/ci.yml` | 每个 PR、`main` | `lint`（Ubuntu）：PR 标题和提交信息格式、非发版 PR 不许改 `CHANGELOG.md`、Biome、`pnpm check`。`test`（Ubuntu、`macos-26`、`windows-2025`，三个都必须通过）：类型检查、单元测试、进程测试（同一个任务里的两个步骤）；macOS 和 Windows 上另外重跑 Biome 和 `pnpm check`。第一版只支持 macOS：`windows-2025` 只跑与系统无关的代码（检查脚本、`protocol`、`i18n` 等不需要平台实现的包），依赖平台实现的测试在 macOS 和 Ubuntu 上跑，在 Windows 上通过唯一一套文档化的机制（标签 `platform-dependent`，暂定名，以测试手册为准）跳过，不在测试里写 `process.platform` 判断（决策记录 0013） |
 | `.github/workflows/security.yml` | 每个 PR、`main` | 依赖变更审查（`dependency-review-action`）；`pnpm audit` 审计闸门（`tooling/ci/audit-gate.ts`，只统计 high 和 critical 的正式依赖，按 `security/allowlist.toml` 过滤） |
 | `.github/workflows/release-please.yml` | 推送到 `main` | 维护发版 PR 和更新日志；合并发版 PR 后打标签、建 GitHub Release；开完发版 PR 后手动触发 `ci.yml` 和 `security.yml`（它们另有 `workflow_dispatch` 触发）。权限按任务最小化，不用任何密钥 |
 | `.github/workflows/nightly-security.yml` | 每晚（`main`） | 含开发依赖的全量审计、`pnpm audit signatures`、OSV-Scanner（只报告，结果在仓库的 Security 页）；失败时自动开 issue（标签 `security`） |
@@ -96,7 +101,7 @@ node tooling/ci/check-title.ts --range origin/main..HEAD
 
 ```sh
 pnpm install --frozen-lockfile
-pnpm lint && pnpm check && pnpm typecheck && pnpm test
+pnpm lint && pnpm check && pnpm typecheck && pnpm test:unit && pnpm test:process
 pnpm audit --prod --json > audit.json; node tooling/ci/audit-gate.ts --file audit.json
 ```
 

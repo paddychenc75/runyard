@@ -8,10 +8,7 @@ import type { ProcessEntry, ProcessSource } from "./process-source.ts";
 // 本进程（代码里“绝不碰自己”比较的是真实的 process.pid）
 const ME: ProcessEntry = { pid: process.pid, pgid: process.pid, startTime: 1 };
 
-function setup(
-  initial: ProcessEntry[],
-  opts: { dies?: "on-term" | "on-kill" | "never"; withEnv?: ProcessEntry[] } = {},
-) {
+function setup(initial: ProcessEntry[], opts: { dies?: "on-term" | "on-kill" | "never" } = {}) {
   let table = initial.some((e) => e.pid === ME.pid) ? initial : [ME, ...initial];
   let clock = 0;
   const calls: [number, string | number][] = [];
@@ -19,7 +16,6 @@ function setup(
     snapshot: async () => table,
     startTime: async (pid) => table.find((e) => e.pid === pid)?.startTime ?? null,
     startTimeSync: () => null,
-    findByEnv: async () => opts.withEnv ?? [],
   };
   const proc = createPosixProc({
     source,
@@ -133,34 +129,5 @@ describe("proc.terminate 的升级", () => {
     const { proc } = setup([child, root]);
     expect(await proc.members(ref)).toEqual([100, 101]);
     expect(await proc.members({ pid: 100, startTime: 1 })).toEqual([]);
-  });
-});
-
-describe("proc.findByMarker", () => {
-  it("[RUN-LIFECYCLE-20] 把进程表给出的命中原样换成 pid 加启动时间，按 pid 排序", async () => {
-    const { proc } = setup([], {
-      withEnv: [
-        { pid: 300, pgid: 300, startTime: 70_000 },
-        { pid: 200, pgid: 100, startTime: 60_000 },
-      ],
-    });
-    expect(await proc.findByMarker({ name: "RUNYARD_RUN_ID", value: "run-1" })).toEqual([
-      { pid: 200, startTime: 60_000 },
-      { pid: 300, startTime: 70_000 },
-    ]);
-  });
-
-  it("本进程、pid 0 和 1 不在结果里（结果会被拿去 terminate）", async () => {
-    const { proc } = setup([], {
-      withEnv: [
-        ME,
-        { pid: 1, pgid: 1, startTime: 0 },
-        { pid: 0, pgid: 0, startTime: 0 },
-        { pid: 400, pgid: 400, startTime: 80_000 },
-      ],
-    });
-    expect(await proc.findByMarker({ name: "A", value: "b" })).toEqual([
-      { pid: 400, startTime: 80_000 },
-    ]);
   });
 });

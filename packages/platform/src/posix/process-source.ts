@@ -14,11 +14,6 @@ export interface ProcessSource {
   snapshot(): Promise<ProcessEntry[]>;
   /** 单个进程的启动时间；进程不存在返回 null */
   startTime(pid: number): Promise<number | null>;
-  /**
-   * 环境里带 name=value 的进程（同一用户、读得到环境的）。进程表其余信息一并给出，
-   * 好让调用方核对身份。macOS 与 Linux 读环境的办法不同，精度也不同，见各自的实现
-   */
-  findByEnv(name: string, value: string): Promise<ProcessEntry[]>;
   /** 同步版本：只给 spawn 用，因为 ManagedProcess.ref 是同步返回的 */
   startTimeSync(pid: number): number | null;
 }

@@ -31,15 +31,6 @@ export interface ProcRef {
   readonly startTime: number;
 }
 
-/**
- * 运行标记：环境变量名加值。接口只说“带这个标记的进程”，不说标记放在哪里、怎么读
- * （决策记录 0006、0013；规格 RUN-LIFECYCLE-20）
- */
-export interface ProcMarker {
-  readonly name: string;
-  readonly value: string;
-}
-
 export interface ExitInfo {
   /** 退出码；进程被系统强行结束、没有退出码时为 null。接口不暴露信号名 */
   readonly exitCode: number | null;
@@ -144,12 +135,6 @@ export interface Platform {
     /** 停整棵进程树。先核对 pid 和启动时间，对不上就什么也不做（进程不是我们的了） */
     terminate(p: ProcRef, o: { mode: TerminateMode; graceMs: number }): Promise<void>;
     members(p: ProcRef): Promise<number[]>;
-    /**
-     * 本机上、同一用户名下、环境里带 name=value 的活进程（包括已脱离进程组的）。
-     * 读不到环境的进程（受系统保护的程序）不在结果里，所以“没找到”不等于“没有”；
-     * 结果不含本进程。用来在改名、删除之前等脱离进程组的后代走掉（规格 RUN-LIFECYCLE-20）
-     */
-    findByMarker(marker: ProcMarker): Promise<ProcRef[]>;
     /** 取一个 pid 现在的启动时间；进程不存在返回 null */
     identity(pid: number): Promise<{ startTime: number } | null>;
   };

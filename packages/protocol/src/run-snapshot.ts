@@ -50,10 +50,6 @@ export const runSnapshotSchema = z
     readyMs: z.number().nonnegative().optional(),
     durationMs: z.number().nonnegative().optional(),
     idleStopAt: timestampSchema.optional().describe("只有命令行持有的运行有"),
-    slow: z
-      .boolean()
-      .optional()
-      .describe("starting 超过 30 秒仍未就绪：状态不变，只标较慢（RUN-LIFECYCLE-10）"),
     cursor: logCursorSchema.describe("当前日志末尾的游标"),
     alreadyRunning: z.boolean().optional().describe("对活动中的项目再次启动时为 true"),
   })

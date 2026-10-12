@@ -7,7 +7,7 @@ import type { ProcessLedger } from "./process-ledger.ts";
 // 契约测试的共用工具：起假程序树、等它起好、挑动态端口。
 
 export const FAKE_SERVICE = fileURLToPath(new URL("./fixtures/fake-service.ts", import.meta.url));
-export const WAIT_MS = 15_000;
+export const WAIT_MS = 30_000;
 
 export interface ServiceConfig {
   listen?: number;
@@ -15,8 +15,6 @@ export interface ServiceConfig {
   ignoreInterrupt?: boolean;
   exitOnInterrupt?: boolean;
   exitAfterMs?: number;
-  /** 由父进程脱离进程组起的（自成一组） */
-  detached?: boolean;
   children?: ServiceConfig[];
 }
 
@@ -45,12 +43,11 @@ export async function startTree(
   ledger: ProcessLedger,
   config: ServiceConfig,
   cwd: AbsPath,
-  extraEnv: Record<string, string> = {},
 ): Promise<RunningTree> {
   const proc = platform.exec.spawn({
     argv: [process.execPath, FAKE_SERVICE, JSON.stringify(config)],
     cwd,
-    env: { PATH: process.env.PATH ?? "", ...extraEnv },
+    env: { PATH: process.env.PATH ?? "" },
     stdin: false,
   });
   ledger.add(proc.ref);
