@@ -8,6 +8,9 @@ on:
     branches: [main]
   push:
     branches: [main]
+  # release-please 的发版 PR 是用默认令牌开的，GitHub 不会为它触发 pull_request；
+  # release-please.yml 开完 PR 后手动触发本工作流，检查记在发版分支的最新提交上（决策记录 0015）
+  workflow_dispatch:
 
 # 默认只读；个别任务需要更多权限时在任务里单独加
 permissions:
@@ -56,6 +59,15 @@ jobs:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: node tooling/ci/check-title.ts --range "$BASE_SHA..$HEAD_SHA"
+
+      - name: 检查更新日志没有被手改
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: node tooling/ci/check-changelog-edit.ts --range "$BASE_SHA...$HEAD_SHA" --head-ref "$HEAD_REF" --author "$AUTHOR"
 
       - name: Biome 检查（格式与规则）
         run: pnpm lint

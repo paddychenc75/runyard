@@ -7,6 +7,8 @@ on:
     branches: [main]
   push:
     branches: [main]
+  # 发版 PR 用默认令牌开，不触发 pull_request；release-please.yml 会手动触发本工作流（决策记录 0015）
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -18,12 +20,13 @@ concurrency:
 jobs:
   dependency-review:
     name: 依赖变更审查
-    # 这个 Action 比较 PR 前后的依赖，只对 pull_request 有意义
-    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      # 这个 Action 比较 PR 前后的依赖，只对 pull_request 有意义。不在任务上写 if，
+      # 因为被跳过的任务在必过检查里的表现不如一个明确通过的任务稳妥；手动触发（发版分支）时下面一步给出明确的“通过”。
       - name: 检出代码
+        if: github.event_name == 'pull_request'
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
@@ -31,6 +34,7 @@ jobs:
       # 需要仓库设置里打开“依赖图（Dependency graph）”，否则这一步报错。
       # 能读懂 pnpm 11 的 pnpm-lock.yaml：已在真实 PR 上核实（决策记录 0011）。
       - name: 依赖变更审查
+        if: github.event_name == 'pull_request'
         uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
         with:
           fail-on-severity: high
@@ -41,6 +45,10 @@ jobs:
           # 所以先关闭，等负责人定下列表后再开（见 CONTRIBUTING.md 末尾的待办）
           license-check: false
           comment-summary-in-pr: never
+
+      - name: 发版分支无需依赖变更审查
+        if: github.event_name != 'pull_request'
+        run: echo "发版 PR 只改 CHANGELOG.md、版本清单和版本号，不改依赖；push 到 main 时这一项本来也不运行。"
 
   audit-gate:
     name: 审计闸门（pnpm audit，high 与 critical）
