@@ -2,6 +2,7 @@
   "files": [],
   "references": [
     { "path": "tooling" },
+    { "path": "packages/platform" },
     { "path": "packages/protocol" },
     { "path": "packages/i18n" },
     { "path": "packages/core" }
