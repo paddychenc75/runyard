@@ -42,3 +42,31 @@ export type FailureReason = z.infer<typeof failureReasonSchema>;
 export const portFallbackReasons = ["PORT_OCCUPIED", "PORT_RESERVED"] as const;
 export const portFallbackReasonSchema = z.enum(portFallbackReasons);
 export type PortFallbackReason = z.infer<typeof portFallbackReasonSchema>;
+
+// 运行的种类（技术设计 §4.3、§5.3 示例）：server 服务，static 页面，oneshot 脚本。
+// 脚本没有端口和地址（规格 RUN-PORTS-03）
+export const runKinds = ["server", "static", "oneshot"] as const;
+export const runKindSchema = z.enum(runKinds);
+export type RunKind = z.infer<typeof runKindSchema>;
+
+// 一个工具的检测结论（规格 TOOLCHAIN-DETECTION-02、04、05、08）：
+// unknown 表示只读缓存（cachedOnly）而缓存里没有，不是没找到
+export const toolStatuses = ["found", "missing", "too-old", "unknown"] as const;
+export const toolStatusSchema = z.enum(toolStatuses);
+export type ToolStatus = z.infer<typeof toolStatusSchema>;
+
+// run.start 的 wait：none 立即返回；ready 等就绪；exit 等退出
+export const waitModes = ["none", "ready", "exit"] as const;
+export const waitModeSchema = z.enum(waitModes);
+export type WaitMode = z.infer<typeof waitModeSchema>;
+
+// supervisor.shutdown 的原因（技术设计 §5.2）
+export const shutdownReasons = ["upgrade", "install", "user"] as const;
+export const shutdownReasonSchema = z.enum(shutdownReasons);
+export type ShutdownReason = z.infer<typeof shutdownReasonSchema>;
+
+// 事件按“主题”订阅，主题是事件名第一个点之前的部分。run.log 不在 run 主题里：
+// 它量大且属于某个项目，只经 logs.follow 订阅（protocol-methods.md 第 3 节）
+export const eventTopics = ["playground", "run", "toolchain", "settings"] as const;
+export const eventTopicSchema = z.enum(eventTopics);
+export type EventTopic = z.infer<typeof eventTopicSchema>;

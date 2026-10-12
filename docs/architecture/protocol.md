@@ -48,7 +48,7 @@ type Frame =
 | 规则 | 内容 |
 | --- | --- |
 | `id` | 客户端在本连接内自增的整数；响应原样带回。同一连接上可以并发多个请求 |
-| 订阅 | 事件靠订阅推送：订阅类方法返回 `sub`；同一 `sub` 内 `seq` 递增，用来发现丢失。订阅方法的名字和 `topics` 参数设计没有逐条规定，见未定 |
+| 订阅 | 事件靠订阅推送：订阅类方法返回 `sub`；同一 `sub` 内 `seq` 递增，用来发现丢失。订阅方法是 `events.subscribe` 和 `logs.follow`，取消用 `events.unsubscribe`（见 [protocol-methods.md](protocol-methods.md)） |
 | 入参校验 | 管理进程用 `protocol` 里的 zod 定义校验每个请求的 `params`，失败返回错误（建议用 `USAGE`，见未定）；开发构建里客户端也校验 `result` |
 | 未知字段 | 接收方忽略不认识的字段；未知方法怎么回应见未定 |
 | 持有者 | 请求里的 `owner` 由桌面应用主进程补上，界面进程不能自己填（§5.1“界面怎么调用”）；命令行的请求由命令行填 `cli` 持有者 |
@@ -134,7 +134,7 @@ type LogEntry =
 ## 未定（来源没有规定，实现前由规格或决策记录补）
 
 1. （已定）握手字段、HMAC 放哪个包，见 §2。`ready` 里暂不返回 `clientId`、`capabilities`；以后要加，作为可选字段加，不升协议版本。
-2. 事件订阅的方法名、`topics` 取值、取消订阅的方式（设计只有事件名清单）。
+2. （已定）事件订阅：`events.subscribe { topics }` 返回 `{ sub }`，`events.unsubscribe { sub }` 取消；主题是事件名第一个点之前的部分（`playground` `run` `toolchain` `settings`），`run.log` 只经 `logs.follow` 订阅。见 protocol-methods.md。
 3. 请求面板响应体上限等数值（最初方案为 5 MB 截断），设计未确认。
 4. 未知方法返回哪个错误码；单个请求的超时由谁定。
 5. 启动步骤枚举（`setupStep.<值>`）的取值：设计只在文案键里提到，没有给出步骤清单，尚未登记。
