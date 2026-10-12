@@ -14,6 +14,11 @@ const cases: Record<NoticeCode, { ok: unknown; bad: unknown }> = {
   ENV_DEGRADED: { ok: {}, bad: null },
   IDLE_STOPPED: { ok: { minutes: 30 }, bad: { minutes: 0 } },
   PACKAGE_MANAGER_FALLBACK: { ok: { wanted: "pnpm", used: "npm" }, bad: { wanted: "pnpm" } },
+  PATH_NEAR_LIMIT: { ok: { length: 250, limit: 260 }, bad: { length: 250 } },
+  TOOL_VERSION_UNTESTED: {
+    ok: { tool: "node", found: "28.0.0", required: ">=24 <28" },
+    bad: { tool: "node", found: "" },
+  },
 };
 
 // 已发布的提示码清单，只许新增（规格 PROTOCOL-HANDSHAKE-18）
@@ -25,6 +30,10 @@ const released = [
   "PORT_FALLBACK",
   "ENV_UNRESOLVED",
   "ENV_DEGRADED",
+  "IDLE_STOPPED",
+  "PACKAGE_MANAGER_FALLBACK",
+  "PATH_NEAR_LIMIT",
+  "TOOL_VERSION_UNTESTED",
 ];
 
 describe("提示码登记表", () => {

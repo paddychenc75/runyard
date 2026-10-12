@@ -84,6 +84,7 @@ type LogEntry =
 | 2 | `NAME_INVALID`、`NAME_RESERVED` | `{ name }` |
 | 2 | `VAR_INVALID` | `{ key }` |
 | 3 | `PLAYGROUND_NOT_FOUND`、`FOLDER_MISSING` | `{ name }` |
+| 3 | `RUN_NOT_FOUND` | `{ runId }`（按 `runId` 找不到运行：`run.stop` `run.get` `run.adopt` `run.attach` `run.detach`；#19 补） |
 | 3 | `TEMPLATE_NOT_FOUND` | `{ template }` |
 | 4 | `TOOL_MISSING` | `{ tool, required }` |
 | 4 | `TOOL_TOO_OLD` | `{ tool, required, found }` |
