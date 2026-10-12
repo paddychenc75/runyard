@@ -61,7 +61,7 @@
 | `run.adopt` | `runId`、`owner`（只收 `tab` 持有者） | `RunSnapshot` | “改为由我管理”：持有者从 `cli` 改 `tab` |
 | `run.disown` | `runId` | `RunSnapshot` | 以后的“在后台保持运行”，先留位置 |
 | `run.attach` / `run.detach` | `runId`、`clientId` | 空 | “查看”，不改持有者，不算空闲活动 |
-| `run.stdin` | `runId`、`data` | 空 | 脚本的标准输入。**还没有代码**：等脚本的规格（run/scripts）批准 |
+| `run.stdin` | `runId`、`data` | 空 | 脚本的标准输入，`data` 原样写入，不补换行。服务和声明 `run.stdin: false` 的运行器：`NOT_SUPPORTED`；没有这个 `runId` 或已结束：`RUN_NOT_FOUND`（规格 run/scripts） |
 
 ### 日志
 
@@ -73,16 +73,19 @@
 
 ### 模板、工具链、请求面板、设置、自动清理
 
-`template.*`、`clean.*` 要等各自的规格（模板、library/auto-clean）批准后再加，代码里还没有；`request.*` 和 `run.disown` 只在登记表里占名字（`status: reserved`），管理进程回 `NOT_SUPPORTED`。
+`request.*` 和 `run.disown` 只在登记表里占名字（`status: reserved`），管理进程回 `NOT_SUPPORTED`。
 
 | 方法 | 入参 | 出参 | 说明 |
 | --- | --- | --- | --- |
-| `template.list` / `.get` / `.save` | `-` / `id` / `playground`、`as` | 模板记录（名称、说明是 `LocalizedText`） | `template lint`、`template test` 在命令行进程里直接跑，不经管理进程 |
+| `template.list` | 无 | `TemplateRecord[]`：`id` `name` `description`（`LocalizedText`，原样转发）`category` `tags` `source`（`builtin` `user`）`runner` `kind`（运行器不可用时 `null`）`requires` `valid` | 无效的用户模板也在，`valid: false`（规格 templates/custom） |
+| `template.get` | `id` | `{ template: TemplateRecord, path, files }` | `TEMPLATE_NOT_FOUND` |
+| `template.save` | `playground`、`as`、`name?`、`description?`、`replaceName?`、`include?`、`exclude?`（后两个是相对路径数组） | `{ id, name, path, files, source: 'user' }` | `NAME_INVALID` `NAME_EXISTS` `PLAYGROUND_NOT_FOUND` `FOLDER_MISSING`；路径不合法由入参校验拒绝（`USAGE`）。`template lint`、`template test` 在命令行进程里直接跑，不经管理进程，所以没有方法 |
 | `toolchain.check` | `playground?` 或 `template?`、`cachedOnly?` | `{ tools }`，每项 `tool`、`status`（`found` `missing` `too-old` `unknown`）、`path?`、`version?`、`required?`、`untested?`、`source?` | `cachedOnly: true` 只读缓存，不触发检测 |
 | `toolchain.doctor` / `.recheck` / `.setPath` | `-` / `-` / `tool`、`path` | 同 `toolchain.check` 的 `{ tools }` | `recheck` 重新解析登录环境、清缓存 |
 | `request.send` / `.getLast` | `playground`、`method`、`path`、`headers?`、`body?` | 状态码、耗时、响应头、响应体 | 属于 M3 的请求面板，M1 不实现 |
 | `settings.get` / `.set` | `-` / 部分设置 | 设置 | 字段见 storage.md 2.3；协议里现在有 `libraryRoot` `externalEditor?` `packageManager` `scriptAutoRun` `cliIdleStopMinutes` `toolPaths` `ports { min, max }` `urlNewSkipConfirmForBuiltin` `updateCheck`，其余（`autoSave` `network` `theme` `language`）等设置的规格批准后再加 |
-| `clean.due` / `.ackReminder` / `.keep` | `-` / `playgroundId` / `playgroundId` | 到期清单 / 空 / 空 | 判断在 `core` 的纯函数，调度在桌面应用主进程（§4.7） |
+| `clean.due` | 无 | `{ remind, clean }`：项目 id 数组，待提醒清单和可清理清单 | 判断在 `core` 的纯函数，调度在桌面应用主进程（§4.7）。清理本身走 `playground.trash`，没有单独的方法 |
+| `clean.ackReminder` / `clean.keep` | `playgroundId` | 空 | 界面确认提醒已显示 / 提醒里的“改为保留”。会写共享文件，可能返回 `DATA_FROM_NEWER_VERSION` |
 
 ## 3. 事件
 
@@ -104,8 +107,8 @@
 
 1. `toolchain.check` 里工具定义的安装命令如何随出参返回。
 2. `request.result` `agent.activity` `supervisor.closing` 的数据形状；请求面板方法（M3）的入参出参。
-3. 模板方法（`template.*`）和自动清理方法（`clean.*`）的入参出参：等对应规格批准。`LocalizedText` 随模板方法加。
-4. `run.stdin`：等脚本的规格批准。
+3. ~~模板方法和自动清理方法的入参出参、`LocalizedText`~~ 已定（#20）：规格没固定字段名的地方（`template.save` 的 `replaceName` `include` `exclude`，`clean.due` 的 `remind` `clean`，`TemplateRecord` 对无效模板的缺省值）是 #20 选的，见 PR。`clean.due` 怎样知道“有标签页开着”（规格 LIBRARY-AUTO-CLEAN-26）规格没写：方法没有入参，需要负责人或后续 issue 定。
+4. ~~`run.stdin`~~ 已定（#20）。
 5. 设置里 `autoSave` `network` `theme` `language` 的取值，等设置的规格批准。
 6. ~~找不到 `runId` 的错误码~~ 已定（#19）：`RUN_NOT_FOUND { runId }`，退出码 3，已加进 `run.stop` `run.get` `run.adopt` `run.attach` `run.detach` 的错误列表。
 7. 路径过长的警告（LIBRARY-PLAYGROUNDS-05）和“版本高于上限，未经测试”的提醒（TOOLCHAIN-DETECTION-09）：提示码已定（#19）：`PATH_NEAR_LIMIT { length, limit }`、`TOOL_VERSION_UNTESTED { tool, found, required }`；**结果里放在哪个字段仍未定**（`playground.create` 的出参尚无 notices 字段），文案归 #22。

@@ -5,7 +5,7 @@ import { settingsPatchSchema, settingsSchema } from "./settings.ts";
 import { toolchainReportSchema } from "./tool-check.ts";
 
 // 工具链组和设置组（规格 toolchain/detection）。
-// 模板组（template.*）和自动清理组（clean.*）要等各自的规格批准后再登记。
+// 模板组在 methods-template.ts，自动清理组在 methods-clean.ts。
 
 export const toolchainMethods = {
   "toolchain.check": {

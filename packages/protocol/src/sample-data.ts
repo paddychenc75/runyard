@@ -1,6 +1,7 @@
 import type { Playground } from "./playground.ts";
 import type { RunSnapshot } from "./run-snapshot.ts";
 import type { Settings } from "./settings.ts";
+import type { TemplateRecord } from "./template-record.ts";
 
 // 测试用的样例数据：一份合法的项目记录、运行快照和设置。只被 *.test.ts 导入。
 
@@ -46,4 +47,20 @@ export const sampleSettings: Settings = {
   ports: { min: 7100, max: 7999 },
   urlNewSkipConfirmForBuiltin: false,
   updateCheck: true,
+};
+
+export const sampleTemplateRecord: TemplateRecord = {
+  id: "react19",
+  name: { en: "React 19", "zh-CN": "React 19" },
+  description: { en: "React 19 with Vite", "zh-CN": "React 19 with Vite" },
+  category: "frontend",
+  tags: [],
+  source: "builtin",
+  runner: "vite",
+  kind: "server",
+  requires: {
+    node: { version: ">=22.18 <27" },
+    pnpm: { version: ">=10.34.6 <12", fallback: "npm" },
+  },
+  valid: true,
 };

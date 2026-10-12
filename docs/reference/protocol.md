@@ -156,7 +156,7 @@
 | `playground` | `Playground` | 是 |  |
 | `created` | `boolean` | 是 |  |
 
-可能返回的错误码：`NAME_INVALID`、`NAME_RESERVED`、`NAME_EXISTS`、`TEMPLATE_NOT_FOUND`、`VAR_INVALID`、`DATA_FROM_NEWER_VERSION`
+可能返回的错误码：`NAME_INVALID`、`NAME_RESERVED`、`NAME_EXISTS`、`TEMPLATE_NOT_FOUND`、`TEMPLATE_INVALID`、`VAR_INVALID`、`DATA_FROM_NEWER_VERSION`
 
 #### `playground.rename`
 
@@ -443,6 +443,23 @@
 
 可能返回的错误码：`RUN_NOT_FOUND`
 
+#### `run.stdin`
+
+向 running 的脚本写标准输入，原样写入，不补换行；服务不接收
+
+入参：
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `runId` | `string` | 是 | 非空 |
+| `data` | `string` | 是 | 原样写入进程的标准输入，不自动补换行 |
+
+出参：
+
+无字段（`{}`）
+
+可能返回的错误码：`RUN_NOT_FOUND`、`NOT_SUPPORTED`
+
 #### `run.disown`
 
 以后的“在后台保持运行”，先留位置
@@ -580,6 +597,117 @@
 | `tools` | `({ tool: string; status: 'found' \| 'missing' \| 'too-old' \| 'unknown'; path?: string; version?: string; required?: string; untested?: boolean; source?: 'login-shell' \| 'login-shell-degraded' \| 'path-only' \| 'fallback' })[]` | 是 |  |
 
 可能返回的错误码：`DATA_FROM_NEWER_VERSION`
+
+### 模板
+
+#### `template.list`
+
+列出内置模板和用户模板；无效的用户模板也在，valid 为 false
+
+入参：
+
+无字段（`{}`）
+
+出参：
+
+类型 `TemplateRecord[]`
+
+#### `template.get`
+
+取一个模板的记录、位置和里面的文件
+
+入参：
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `id` | `string` | 是 | 非空 |
+
+出参：
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `template` | `TemplateRecord` | 是 |  |
+| `path` | `string` | 是 | 模板文件夹的绝对路径；非空 |
+| `files` | `string[]` | 是 | 模板里文件的相对路径，用 / 分隔 |
+
+可能返回的错误码：`TEMPLATE_NOT_FOUND`
+
+#### `template.save`
+
+把项目另存为用户模板；先写临时目录再改名，失败不留残片
+
+入参：
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `playground` | `string` | 是 | 项目的 id 或名称；非空 |
+| `as` | `string` | 是 | 新模板的标识；格式 `^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$` |
+| `name` | `string` | 否 | 缺省时取标识；非空 |
+| `description` | `string` | 否 | 缺省时为空 |
+| `replaceName` | `boolean` | 否 | 把进入模板的文本文件里的项目名换成 {{name}} |
+| `include` | `string[]` | 否 | 把默认不进模板的文件加进来 |
+| `exclude` | `string[]` | 否 | 去掉默认会进模板的文件 |
+
+出参：
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `id` | `string` | 是 | 非空 |
+| `name` | `string` | 是 | 非空 |
+| `path` | `string` | 是 | 模板文件夹的绝对路径；非空 |
+| `files` | `string[]` | 是 |  |
+| `source` | `'user'` | 是 |  |
+
+可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`FOLDER_MISSING`、`NAME_INVALID`、`NAME_EXISTS`
+
+### 自动清理
+
+#### `clean.due`
+
+按当前时间判断：待提醒的和可清理的项目 id。已保留、找不到文件夹的不在其中；资源库根目录不在时两份都是空的
+
+入参：
+
+无字段（`{}`）
+
+出参：
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `remind` | `string[]` | 是 | 待提醒清单：离到期不足 24 小时、提醒还没显示过 |
+| `clean` | `string[]` | 是 | 可清理清单：已到期且提醒已显示满 24 小时 |
+
+#### `clean.ackReminder`
+
+界面确认提醒真的显示了，记下显示时间；之后不再进入待提醒清单
+
+入参：
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `playgroundId` | `string` | 是 | 非空 |
+
+出参：
+
+无字段（`{}`）
+
+可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`DATA_FROM_NEWER_VERSION`
+
+#### `clean.keep`
+
+提醒里的“改为保留”：项目变为已保留，提醒状态清除
+
+入参：
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `playgroundId` | `string` | 是 | 非空 |
+
+出参：
+
+无字段（`{}`）
+
+可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`DATA_FROM_NEWER_VERSION`
 
 ### 设置
 
@@ -763,6 +891,10 @@
 
 ## 共用类型
 
+### `LocalizedText`
+
+类型 `string \| { en: string }`
+
 ### `LogEntry`
 
 以下几种之一：
@@ -866,3 +998,18 @@
 | `ports` | `{ min: integer; max: integer }` | 是 | 分配端口的范围，含两端 |
 | `urlNewSkipConfirmForBuiltin` | `boolean` | 是 |  |
 | `updateCheck` | `boolean` | 是 |  |
+
+### `TemplateRecord`
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `id` | `string` | 是 | 模板标识；无效模板读不出时取文件夹名；非空 |
+| `name` | `LocalizedText` | 是 |  |
+| `description` | `LocalizedText` | 是 |  |
+| `category` | `'page' \| 'frontend' \| 'fullstack' \| 'script' \| 'service' \| 'mine'` | 是 |  |
+| `tags` | `'unmaintained'[]` | 是 |  |
+| `source` | `'builtin' \| 'user'` | 是 |  |
+| `runner` | `string` | 是 | 运行器标识；读不出时为空串 |
+| `kind` | `'server' \| 'static' \| 'oneshot' \| null` | 是 | 运行器的类别；运行器不存在或无效时为 null |
+| `requires` | `Record<string, { version: string; fallback?: string; install?: { command?: string[]; url?: string } }>` | 是 |  |
+| `valid` | `boolean` | 是 |  |

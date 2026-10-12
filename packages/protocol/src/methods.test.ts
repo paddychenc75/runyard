@@ -3,7 +3,12 @@ import { z } from "zod";
 import { isErrorCode } from "./errors.ts";
 import { methodGroups } from "./method-definition.ts";
 import { isMethodName, type MethodName, methodNames, methodRegistry } from "./methods.ts";
-import { samplePlayground, sampleRun, sampleSettings } from "./sample-data.ts";
+import {
+  samplePlayground,
+  sampleRun,
+  sampleSettings,
+  sampleTemplateRecord,
+} from "./sample-data.ts";
 
 interface Example {
   /** 合法的入参 */
@@ -125,6 +130,12 @@ const examples: Record<MethodName, Example> = {
     result: sampleRun,
     badResult: { ...sampleRun, state: "paused" },
   },
+  "run.stdin": {
+    params: { runId: "r_1", data: "abc\n" },
+    badParams: { runId: "r_1" },
+    result: empty,
+    badResult: "written",
+  },
   "run.stop": {
     params: { runId: "r_1" },
     badParams: {},
@@ -206,6 +217,65 @@ const examples: Record<MethodName, Example> = {
     result: report,
     badResult: empty,
   },
+  "template.list": {
+    params: empty,
+    badParams: "all",
+    result: [sampleTemplateRecord],
+    badResult: [{ ...sampleTemplateRecord, source: "builtin-ish" }],
+  },
+  "template.get": {
+    params: { id: "react19" },
+    badParams: { id: "" },
+    result: {
+      template: sampleTemplateRecord,
+      path: "/Applications/Runyard.app/templates/react19",
+      files: ["package.json", "src/App.tsx"],
+    },
+    badResult: { template: sampleTemplateRecord, path: "/x", files: ["../escape"] },
+  },
+  "template.save": {
+    params: {
+      playground: "pricing-table",
+      as: "my-pricing",
+      name: "My pricing",
+      replaceName: true,
+      include: [".env"],
+      exclude: ["src/secret.ts"],
+    },
+    badParams: { playground: "pricing-table", as: "My_Template" },
+    result: {
+      id: "my-pricing",
+      name: "My pricing",
+      path: "/Users/someone/.runyard/templates/my-pricing",
+      files: ["src/App.tsx"],
+      source: "user",
+    },
+    badResult: {
+      id: "my-pricing",
+      name: "My pricing",
+      path: "/x",
+      files: [],
+      source: "builtin",
+    },
+  },
+  "clean.due": {
+    params: empty,
+    badParams: [],
+    result: { remind: ["p1"], clean: ["p2"] },
+    badResult: { remind: ["p1"] },
+  },
+  "clean.ackReminder": {
+    params: { playgroundId: "p1" },
+    badParams: { playgroundId: "" },
+    result: empty,
+    badResult: "ok",
+  },
+  "clean.keep": {
+    params: { playgroundId: "p1" },
+    badParams: {},
+    result: empty,
+    badResult: null,
+  },
   "settings.get": { params: empty, badParams: "x", result: sampleSettings, badResult: empty },
   "settings.set": {
     params: { cliIdleStopMinutes: 10 },
@@ -236,6 +306,8 @@ describe("方法登记表", () => {
       run: "run",
       logs: "logs",
       toolchain: "toolchain",
+      template: "template",
+      clean: "clean",
       settings: "settings",
       request: "request",
     };
@@ -244,6 +316,59 @@ describe("方法登记表", () => {
       expect(methodGroups).toContain(group);
       expect(group).toBe(groupOfPrefix[name.split(".")[0] as string]);
     }
+  });
+
+  it("run.stdin 可能返回 RUN_NOT_FOUND（没有或已结束的运行）和 NOT_SUPPORTED（服务不接收）", () => {
+    expect(methodRegistry["run.stdin"].errors).toEqual(["RUN_NOT_FOUND", "NOT_SUPPORTED"]);
+  });
+
+  it("run.stdin 的 data 原样传，可以不带换行，也可以是空串", () => {
+    const { params } = methodRegistry["run.stdin"];
+    expect(params.parse({ runId: "r_1", data: "abc" })).toEqual({ runId: "r_1", data: "abc" });
+    expect(params.safeParse({ runId: "r_1", data: "" }).success).toBe(true);
+    expect(params.safeParse({ runId: "r_1", data: 3 }).success).toBe(false);
+  });
+
+  it("clean.due 的结果是两份清单：待提醒和可清理", () => {
+    const { result } = methodRegistry["clean.due"];
+    expect(result.safeParse({ remind: [], clean: [] }).success).toBe(true);
+    expect(result.safeParse({ remind: [] }).success).toBe(false);
+  });
+
+  it("回报提醒显示和改为保留只带项目 id", () => {
+    for (const name of ["clean.ackReminder", "clean.keep"] as const) {
+      expect(methodRegistry[name].params.safeParse({ playgroundId: "p1" }).success).toBe(true);
+      expect(methodRegistry[name].params.safeParse({ playground: "demo" }).success).toBe(false);
+    }
+  });
+
+  it("template.save 的标识写法和 include、exclude 路径由 schema 把关", () => {
+    const { params } = methodRegistry["template.save"];
+    for (const as of ["My_Template", "-a", "a-"])
+      expect(params.safeParse({ playground: "demo", as }).success).toBe(false);
+    for (const path of ["../outside", "/etc/passwd"]) {
+      expect(params.safeParse({ playground: "demo", as: "ok", include: [path] }).success).toBe(
+        false,
+      );
+      expect(params.safeParse({ playground: "demo", as: "ok", exclude: [path] }).success).toBe(
+        false,
+      );
+    }
+    expect(
+      params.safeParse({ playground: "demo", as: "ok", include: [".env"], exclude: ["src/a.ts"] })
+        .success,
+    ).toBe(true);
+  });
+
+  it("用无效的模板创建项目会得到 TEMPLATE_INVALID", () => {
+    expect(methodRegistry["playground.create"].errors).toContain("TEMPLATE_INVALID");
+  });
+
+  it("template.list 的记录带 valid；无效模板读不出的字段取缺省值", () => {
+    const { result } = methodRegistry["template.list"];
+    const broken = { ...sampleTemplateRecord, valid: false, runner: "", kind: null };
+    expect(result.safeParse([sampleTemplateRecord, broken]).success).toBe(true);
+    expect(result.safeParse([{ ...sampleTemplateRecord, valid: undefined }]).success).toBe(false);
   });
 
   it("握手帧 challenge、hello 不是方法；未登记的名字不被认作方法", () => {
@@ -270,6 +395,8 @@ describe("方法登记表", () => {
       (methodRegistry[name].errors as readonly string[]).includes("DATA_FROM_NEWER_VERSION"),
     );
     expect(declared.sort()).toEqual([
+      "clean.ackReminder",
+      "clean.keep",
       "library.rescan",
       "playground.create",
       "playground.duplicate",

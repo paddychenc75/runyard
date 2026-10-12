@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "formatVersion": {
+      "type": "number",
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$",
+      "description": "命令行里的模板名"
+    },
+    "name": {
+      "$ref": "#/$defs/LocalizedText"
+    },
+    "description": {
+      "$ref": "#/$defs/LocalizedText"
+    },
+    "category": {
+      "type": "string",
+      "enum": ["page", "frontend", "fullstack", "script", "service", "mine"]
+    },
+    "runner": {
+      "type": "string",
+      "pattern": "^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$",
+      "description": "运行器标识"
+    },
+    "requires": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]*$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "minLength": 1,
+            "description": "版本范围：空格分隔的比较式，必须有下限，如 >=22.18 <27"
+          },
+          "fallback": {
+            "description": "缺少时改用的另一个工具，如 pnpm 缺则 npm",
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "install": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "url": {
+                "type": "string",
+                "pattern": "^https:\\/\\/\\S+$",
+                "description": "官网链接，安装提示里始终一起给出"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": ["version"],
+        "additionalProperties": false
+      }
+    },
+    "entry": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[^\\\\]*$",
+      "description": "入口文件，相对 files/，用 / 分隔"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["unmaintained"]
+      }
+    },
+    "variables": {
+      "description": "变量名到默认值",
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "substitute": {
+      "description": "做 {{变量}} 字面替换的文件",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[^\\\\]*$",
+        "description": "用 / 分隔的相对路径"
+      }
+    },
+    "maintainer": {
+      "description": "具名维护者；内置模板必须有",
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "formatVersion",
+    "id",
+    "name",
+    "description",
+    "category",
+    "runner",
+    "requires",
+    "entry"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "LocalizedText": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "en": {
+              "type": "string"
+            }
+          },
+          "required": ["en"],
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      ]
+    }
+  }
+}

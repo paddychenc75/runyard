@@ -58,7 +58,14 @@
   "errors.SUPERVISOR_OUTDATED.body": {
     "runs": "升级管理进程会停掉的运行个数，非负整数；英文写复数"
   },
+  "errors.TEMPLATE_INVALID.hintCli": { "template": "用户给的模板标识，原样显示" },
+  "errors.TEMPLATE_INVALID.title": { "template": "用户给的模板标识，原样显示" },
   "errors.TEMPLATE_NOT_FOUND.title": { "template": "用户给的模板标识，原样显示" },
+  "errors.TEMPLATE_TEST_FAILED.hintCli": { "template": "用户给的模板标识，原样显示" },
+  "errors.TEMPLATE_TEST_FAILED.title": {
+    "template": "用户给的模板标识，原样显示",
+    "step": "失败的冒烟测试步骤：create、install、start、ready、reload、stop、leftovers 之一；原样显示，不翻译"
+  },
   "errors.TOOL_MISSING.body": {
     "tool": "工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译",
     "required": "模板要求的版本范围，例如 >=22.18；原样显示，不翻译"

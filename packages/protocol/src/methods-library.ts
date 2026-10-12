@@ -52,6 +52,7 @@ export const libraryMethods = {
       "NAME_RESERVED",
       "NAME_EXISTS",
       "TEMPLATE_NOT_FOUND",
+      "TEMPLATE_INVALID",
       "VAR_INVALID",
       "DATA_FROM_NEWER_VERSION",
     ],

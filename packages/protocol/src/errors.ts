@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { dataFileKindSchema } from "./enums.ts";
+import { templateTestSteps } from "./template-test-steps.ts";
 
 // 错误码登记表：一份定义同时给出类型、校验和退出码（技术设计 §5.1、§5.3）。
 // 代码发布后不改名、不复用；新增代码不升协议版本。参数里只放可序列化的简单值，没有句子。
@@ -16,6 +17,8 @@ export const errorRegistry = {
   NAME_INVALID: { exit: 2, params: z.object({ name }) },
   NAME_RESERVED: { exit: 2, params: z.object({ name }) },
   VAR_INVALID: { exit: 2, params: z.object({ key: z.string().min(1) }) },
+  // 模板没通过格式校验（规格 TEMPLATES-FORMAT-11、TEMPLATES-CUSTOM-19）：不创建文件夹，不改模板
+  TEMPLATE_INVALID: { exit: 2, params: z.object({ template: z.string().min(1) }) },
 
   PLAYGROUND_NOT_FOUND: { exit: 3, params: z.object({ name }) },
   TEMPLATE_NOT_FOUND: { exit: 3, params: z.object({ template: z.string().min(1) }) },
@@ -36,6 +39,12 @@ export const errorRegistry = {
 
   RUN_FAILED: { exit: 6, params: z.object({ name }) },
   SCRIPT_ERRORED: { exit: 6, params: z.object({ name }) },
+  // 冒烟测试里“重新加载没有生效”或“有残留进程”（规格 TEMPLATES-FORMAT-45、46）；
+  // step 是失败的那一步，取 templateTestSteps 之一，原样显示
+  TEMPLATE_TEST_FAILED: {
+    exit: 6,
+    params: z.object({ template: z.string().min(1), step: z.enum(templateTestSteps) }),
+  },
 
   READY_TIMEOUT: { exit: 7, params: z.object({ name, seconds: z.number().nonnegative() }) },
 

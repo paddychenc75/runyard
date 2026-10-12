@@ -74,11 +74,11 @@
 | --- | --- | --- |
 | 0 | 成功 | |
 | 1 | 意外失败 | `INTERNAL` |
-| 2 | 用法错误 | `USAGE` `NAME_INVALID` `NAME_RESERVED` `VAR_INVALID` |
+| 2 | 用法错误 | `USAGE` `NAME_INVALID` `NAME_RESERVED` `VAR_INVALID` `TEMPLATE_INVALID` |
 | 3 | 未找到 | `PLAYGROUND_NOT_FOUND` `TEMPLATE_NOT_FOUND` `FOLDER_MISSING` `RUN_NOT_FOUND` |
 | 4 | 缺少运行环境 | `TOOL_MISSING` `TOOL_TOO_OLD` `RUNTIME_MISSING` |
 | 5 | 安装依赖失败 | `SETUP_FAILED` `DEPS_OFFLINE` |
-| 6 | 就绪前退出，或脚本退出码非 0 | `RUN_FAILED` `SCRIPT_ERRORED` |
+| 6 | 就绪前退出，或脚本退出码非 0 | `RUN_FAILED` `SCRIPT_ERRORED` `TEMPLATE_TEST_FAILED` |
 | 7 | 超时（进程仍在） | `READY_TIMEOUT` |
 | 8 | 留给以后的“需要信任” | 无 |
 | 9 | 冲突 | `NAME_EXISTS` `BUSY` `PATH_LOCKED` `PATH_TOO_LONG` `TRASH_UNAVAILABLE` |

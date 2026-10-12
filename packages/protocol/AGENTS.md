@@ -3,7 +3,7 @@
 ## 用途
 
 所有跨进程约定的唯一出处：消息、事件、错误码、文件格式的定义（技术设计 §3.2、§4）。桌面应用、管理进程、命令行都从这里导入同一份定义，不各写一份。
-现状：已有错误码、提示码、枚举的登记表，以及 `RunyardError`、`Notice`、`LogEntry`、`Owner`、协议版本号、分帧（NDJSON）、`Frame`、握手三条消息、版本比对、方法和事件的登记表（`methodRegistry`、`eventRegistry`）、`Playground`、`RunSnapshot`、`Settings`、磁盘文件的格式与升级链（`file-*.ts`）、日志行（`log-line.ts`）；模板、自动清理、脚本输入的方法和文件格式随后续 issue 加入。
+现状：已有错误码、提示码、枚举的登记表，以及 `RunyardError`、`Notice`、`LogEntry`、`Owner`、协议版本号、分帧（NDJSON）、`Frame`、握手三条消息、版本比对、方法和事件的登记表（`methodRegistry`、`eventRegistry`）、`Playground`、`RunSnapshot`、`Settings`、磁盘文件的格式与升级链（`file-*.ts`）、日志行（`log-line.ts`）；模板、运行器、工具定义的格式与校验（`template-file.ts`、`runner-file.ts`、`tool-definition.ts`、`validate-*.ts`）、模板与自动清理的方法（`methods-template.ts`、`methods-clean.ts`）、`run.stdin`。
 
 ## 对外暴露什么
 
@@ -50,6 +50,10 @@
 - `src/playground.ts`、`run-snapshot.ts`、`settings.ts`、`tool-check.ts`、`created-by.ts`、`primitives.ts`：方法和事件共用的数据形状
 - `src/file-format.ts`：磁盘文件的升级链框架（纯函数，不读写文件）：`defineFileFormat`、`readVersioned` / `readVersionedText`（返回 `ok` / `newer`（只读）/ `corrupt`）、`canWrite`、`serializeVersioned`、`quarantineFileName`。规则全文见 `docs/architecture/storage.md` 第 3 节
 - `src/file-playground.ts`、`file-library.ts`、`file-settings.ts`（含 `cli.json`）、`file-supervisor.ts`（发现文件和运行记录）、`file-toolchain.ts`：每种文件的 zod 定义和 `*FileFormat`。共用的形状取自 `Playground`、`Settings`、`ToolCheck` 等，不另写一份。新增迁移：把 `currentVersion` 加一，在 `migrations` 里补 `vN→vN+1`，在 `file-format` 之外加该文件的升级测试
+- `src/template-file.ts`、`runner-file.ts`、`tool-definition.ts`：`template.json`、`runner.json`、工具定义的 zod 定义和 `*FileFormat`；`localized-text.ts`（`LocalizedText`）、`version-range.ts`（版本范围的写法）、`install-hint.ts`（安装提示共用片段）。JSON Schema 由它们生成到 `templates/schema/`（`tooling/scripts/generate.ts`），**以 zod 为准**
+- `src/validate-template.ts`、`validate-runner.ts`、`validate-template-files.ts`：纯函数，一次报全所有问题，返回 `{ value?, errors, warnings }`，每项是 `LintIssue { rule, path, message }`（`lint-issue.ts`，规则标识的全表在 `lintRules`）。每条规则各自在原始数据上检查，不依赖 zod 是否通过；zod 只管结构，具体规则占住的路径上 zod 的问题不重复报。`template lint` 命令（#48）把这些结果和文件夹、运行器的检查合在一起
+- `src/template-record.ts`、`methods-template.ts`、`methods-clean.ts`、`template-test-steps.ts`：模板记录、模板与自动清理的方法、冒烟测试的步骤标识
+- `src/sample-templates.ts`：只给测试用，含 `runner-format.md` 里的两个完整运行器
 - `src/log-line.ts`：运行日志文件的一行（`LogEntry` 加 `seq`），坏行不是错误
 - `src/sample-data.ts`：只给测试用的样例数据
 - 每个文件旁边有同名的 `.test.ts`
