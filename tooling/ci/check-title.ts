@@ -57,9 +57,18 @@ export const MAX_LENGTH = 72;
 // type、可选的 (scope)、可选的 !、冒号加一个空格、主题
 const PATTERN = /^([a-z]+)(?:\(([a-z0-9-]+)\))?(!)?: (.*)$/u;
 
+// type(scope) 后面跟的是全角冒号“：”。release-please 会整条忽略这样的提交或 PR 标题（K15 实测，
+// 决策记录 0011），更新日志和版本号都不会算它，所以要在这里拦住，并说清楚怎么改。
+const FULL_WIDTH_COLON = /^[a-z]+(?:\([a-z0-9-]+\))?!?：/u;
+
 // 返回错误列表；空数组表示合格。
 export function checkTitle(title: string): string[] {
   const shown = JSON.stringify(title);
+  if (FULL_WIDTH_COLON.test(title)) {
+    return [
+      `${shown} 在 type(scope) 后面用了全角冒号“：”。改成半角冒号加一个空格“: ”：release-please 会整条忽略带全角冒号的标题，这次改动就不会进更新日志和版本号。例：feat(core): 增加运行状态机`,
+    ];
+  }
   const match = PATTERN.exec(title);
   if (match === null) {
     return [

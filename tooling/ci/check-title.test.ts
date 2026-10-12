@@ -24,6 +24,23 @@ describe("checkTitle", () => {
     expect(checkTitle("Feat(core): 大写 type")[0]).toContain("不符合");
   });
 
+  it("type(scope) 后面用全角冒号：给出明确的提示", () => {
+    for (const title of [
+      "feat(core)：增加运行状态机",
+      "docs：补充说明",
+      "feat(cli)!：删除旧参数",
+    ]) {
+      const errors = checkTitle(title);
+      expect(errors).toHaveLength(1);
+      expect(errors[0]).toContain("全角冒号");
+      expect(errors[0]).toContain("半角冒号");
+    }
+  });
+
+  it("主题里出现全角冒号不算错", () => {
+    expect(checkTitle("docs(repo): 说明：全角冒号写在主题里没问题")).toEqual([]);
+  });
+
   it("type 不在列表里", () => {
     expect(checkTitle("feature(core): 增加")[0]).toContain("type");
   });

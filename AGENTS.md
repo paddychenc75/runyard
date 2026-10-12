@@ -23,7 +23,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | --- | --- |
 | `docs/product/` | 中文产品文档：PRD 和技术设计。产品行为的唯一出处，先读 `docs/product/README.md` |
 | `docs/design/` | 界面设计源文件、设计变量、最终图标。只读 |
-| `docs/architecture/` | `overview.md`（一页架构总览）、`decisions/`（决策记录）、`dependencies.md`（每个依赖的版本和理由） |
+| `docs/architecture/` | `overview.md`（一页架构总览）、`decisions/`（决策记录）、`evidence/`（技术验证记录的实测数据、伪代码和证据链接）、`dependencies.md`（每个依赖的版本和理由） |
 | `docs/guides/` | 操作手册和命令表。有手册的任务按手册做，不要临场发挥 |
 | `docs/glossary.md` | 术语表：中文术语、唯一的英文标识符、禁用的同义词 |
 | `packages/protocol/` | 所有跨进程约定（目前只有一个占位导出） |
@@ -119,7 +119,7 @@ Claude Code 的钩子：改完文件后对那一个文件跑 Biome；结束回�
 - 不要在测试或开发运行中读写用户真实的 `~/Runyard` 和 `~/.runyard`，用临时目录。
 - 不要把过程产物（讨论、调研、评审、草稿）放进仓库；说明文件只引用仓库里存在的文件。
 - 不要改 `docs/product/` 里的产品文档，除非任务明确要求（改之前要负责人同意）。
-- 不要推送到 `main`、发版或发布到 npm。这些由负责人做。
+- 不要推送到 `main`，变更只经 PR 进入 `main`（六项必过检查通过后自动合并，决策记录 0012）；不要发版或发布到 npm，这些由负责人做。
 
 ## 技术验证
 

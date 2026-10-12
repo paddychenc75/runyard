@@ -41,8 +41,10 @@ ci(repo): 增加 PR 流水线
 - `type` 可选：`feat`、`fix`、`docs`、`style`、`refactor`、`perf`、`test`、`build`、`ci`、`chore`、`revert`。
 - `scope` 可以省略；写的话必须在列表里：`repo`、`deps`、`ci`、`docs`、`security`、`release`、`spec`、`tooling`、`desktop`、`site`、`protocol`、`platform`、`core`、`supervisor`、`client`、`cli`、`tokens`、`ui`、`i18n`、`testing`、`templates`。列表在 `tooling/ci/check-title.ts`，新增包时一起改。
 - 冒号后要有一个空格，主题不能为空，整条标题不超过 72 个字符（一个汉字算一个）。
+- **冒号必须是半角的“:”，不能是全角的“：”。** release-please 会整条忽略带全角冒号的提交或 PR 标题，这次改动就不会进更新日志和版本号（决策记录 0011）。`check-title` 会拒绝这样的标题。主题里可以出现全角冒号，只有 `type(scope)` 后面的那个不行。
 - 破坏性改动在冒号前加 `!`，或在提交正文里写一行 `BREAKING CHANGE: 说明`（`BREAKING CHANGE` 必须是英文原词）。
 - 合并方式只有 squash：一个 PR 压成一个提交，进入 `main` 的提交信息来自 PR 标题，所以**PR 标题**必须符合格式。
+- 提交信息末尾的 `Co-Authored-By:` 写实际使用的模型（不同的提交可以是不同的模型），不要照抄别处的名字。
 
 CI 会检查 PR 标题和 PR 里每个提交的第一行。本地检查：
 
@@ -50,6 +52,14 @@ CI 会检查 PR 标题和 PR 里每个提交的第一行。本地检查：
 node tooling/ci/check-title.ts --title "feat(core): 增加运行状态机"
 node tooling/ci/check-title.ts --range origin/main..HEAD
 ```
+
+## 怎么合并进 `main`
+
+变更只能经 pull request 进入 `main`，不直接推送（决策记录 0012）：
+
+- `main` 受规则集保护：必须通过六项检查才能合并——`lint` 一项、`test` 三项（Ubuntu、`macos-26`、`windows-2025`）、审计闸门（`audit-gate`）、依赖变更审查；不许强制推送；没有任何人可以绕过；只许 squash 合并。不要求别人批准，因为负责人是唯一的维护者。
+- 六项检查通过后 PR 自动合并，负责人在合并之后再看。所以会改变行为的改动，要在规格阶段先得到负责人的同意，不能靠合并后的评审把关。
+- 检查没过就不会合并：修好再推送，不要想办法绕过。
 
 ## 依赖
 

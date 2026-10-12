@@ -17,7 +17,7 @@ catalog:
 
 # 发布不满 14 天的版本不装（单位：分钟，20160 = 14 天）
 minimumReleaseAge: 20160
-# 例外条目满 14 天后自动清除
+# 清掉锁文件已不再使用的例外条目（与年龄无关；满 14 天后要手动删，决策记录 0011）
 minimumReleaseAgeExcludePrune: true
 # 写入 package.json 时不加 ^ 或 ~
 savePrefix: ""

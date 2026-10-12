@@ -8,7 +8,7 @@
 
 ## 背景
 
-这个仓库的代码主要由智能体写，规则要写在智能体每次都会读到的文件里。`AGENTS.md` 是开放格式，Claude Code（2.1.277 起）、Codex、Cursor、Copilot、Gemini CLI 都读。但 Claude Code 有两种情况会让它不声不响地失效：一是工作目录或任何上级目录里有 `CLAUDE.md`、`CLAUDE.local.md`，或 `.claude` 目录下的 `CLAUDE.md` 时，默认只读它们、不再读 `AGENTS.md`；二是设了“跳过项目说明”的子智能体不加载 `AGENTS.md`。
+这个仓库的代码主要由智能体写，规则要写在智能体每次都会读到的文件里。`AGENTS.md` 是开放格式，Claude Code（2.1.277 起）、Codex、Cursor、Copilot、Gemini CLI 都读。但 Claude Code 有三种情况会让它不声不响地失效：一是工作目录或任何上级目录里有 `CLAUDE.md`、`CLAUDE.local.md`，或 `.claude` 目录下的 `CLAUDE.md` 时，默认只读它们、不再读 `AGENTS.md`；二是设了“跳过项目说明”的子智能体不加载 `AGENTS.md`；三是读 `AGENTS.md` 的功能不可用（K15 核对官方文档时发现，决策记录 0011）：Claude Code 低于 2.1.277、用 `/plugin` 关掉了内置的读取插件、升级后的第一次会话、2.1.281 之前的 Bedrock 或关闭遥测的会话，这些会话只读 `CLAUDE.md`。
 
 ## 决定
 
@@ -20,6 +20,7 @@
 - 会话开始时的钩子做同样的检查，查到就在会话里打印警告。
 - 根 `AGENTS.md` 开头写明不要建 `CLAUDE.local.md`；个人偏好放主目录下 `.claude` 里的 `CLAUDE.md`，或把 Claude Code 的 Project instructions 设置改为 `claude-md-and-agents-md`。
 - 子智能体定义都不开“跳过项目说明”（字段名 `omitClaudeMd`），由 `agents-config` 检查拦住；把任务交给临时起的子智能体时，交代里写明先读根 `AGENTS.md` 和所改目录的 `AGENTS.md`。
+- 第三种情形没有可靠的机械检查：`no-claude-md` 看不出，钩子拿不到版本。唯一的尽力而为是会话开始的钩子读环境变量 `AI_AGENT`（只在 Claude Code 2.1.296 的一个会话里观察到带版本号），版本低于 2.1.277 就警告；读不出就不提醒，是已知缺口。
 - 不管说明有没有被读到，`pnpm check` 和 CI 照样拦着：能用检查表达的规则不靠智能体“记得”。
 - `.claude` 目录下的 rules 不受影响，照常加载；放在那里的短规则必须同时出现在对应目录的 `AGENTS.md` 里。
 

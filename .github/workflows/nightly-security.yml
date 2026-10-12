@@ -85,7 +85,7 @@ jobs:
     name: OSV-Scanner（全仓库，只报告不挡）
     # 官方可复用工作流，固定到 v2.6.0 的提交哈希。它要把结果上传到 Security 页，
     # 所以这个任务（只有这个）需要 security-events: write。
-    # 不用它做闸门：文档里没有按严重度过滤的选项【未核实】，开着会让每条低危都变红。
+    # 不用它做闸门：它没有按严重度过滤的选项（决策记录 0011 已核实），开着会让每条低危都变红。
     permissions:
       actions: read
       contents: read
