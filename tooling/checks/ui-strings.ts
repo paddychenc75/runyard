@@ -12,6 +12,7 @@ import type { Check } from "./workspace.ts";
 // 1. 字符串字面量、模板字符串、JSX 文字里含汉字、假名、谚文或全角标点；
 // 2. 命令行输出口之外直接写 process.stdout.write / process.stderr.write。
 //    只有 packages/cli/src/output/ 可以写标准输出，那里的函数只收 Localized。
+//    例外：管理进程的标准错误只进启动者指定的日志文件，从不显示给用户，写 i18n-allow 放行。
 //
 // 协议里的文档字符串（见 DOC_STRING_DIR）不算界面文字。
 // 放行：同一行或上一行写 `// i18n-allow: 理由`，理由必填。放行是给“永远不会显示给用户的开发者诊断”
@@ -114,7 +115,11 @@ export function checkUiStrings(path: string, text: string): string[] {
       literalPart(node, node.text);
     } else if (ts.isJsxText(node)) {
       literalPart(node, node.text);
-    } else if (isStdWrite(node) && !path.startsWith(OUTPUT_DIR)) {
+    } else if (
+      isStdWrite(node) &&
+      !path.startsWith(OUTPUT_DIR) &&
+      !allowed(lineOf(file, node.getStart(file)))
+    ) {
       report(
         lineOf(file, node.getStart(file)),
         `直接写了 ${node.expression.getText(file)}.write。命令行只许通过 ${OUTPUT_DIR} 里的输出函数打印（它们只收 Localized）：改成调用那里的 out.line() 或 out.data()。`,

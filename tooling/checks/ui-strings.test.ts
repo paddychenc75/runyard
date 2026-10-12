@@ -58,6 +58,11 @@ export const b = \`x\${1}\`;
     const code = `process.stdout.write("done\\n");\nprocess.stderr.write("x");`;
     expect(check("packages/cli/src/commands/run.ts", code)).toContain("process.stdout.write");
     expect(check("packages/cli/src/commands/run.ts", code)).toContain("process.stderr.write");
+    // 开发者诊断（管理进程的标准错误只进日志文件）可以用 i18n-allow 放行，理由必填
+    const diagnostic = `// i18n-allow: 只进日志文件，不显示给用户\nprocess.stderr.write("x");`;
+    expect(check("packages/supervisor/src/run-main.ts", diagnostic)).toBe("");
+    const noReason = `// i18n-allow:\nprocess.stderr.write("x");`;
+    expect(check("packages/supervisor/src/run-main.ts", noReason)).toContain("没有写理由");
     expect(check("packages/cli/src/output/out.ts", code)).toBe("");
   });
 

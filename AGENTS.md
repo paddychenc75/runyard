@@ -31,6 +31,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `packages/platform/` | 平台层：`Platform` 接口、`getPlatform()`、路径与名称校验、`darwin` 和薄 `linux` 实现、契约测试（目前有接口、paths、ipc、spawnDetached、exec、proc、ports、fs（含 macOS 废纸篓）、watch 的实现，其余是占位，随后续 issue 加入） |
 | `packages/protocol/` | 所有跨进程约定（目前有错误码、提示码、枚举、`RunyardError` / `Notice` / `LogEntry` / `Owner`、分帧、`Frame`、握手消息、版本比对、方法与事件的登记表、`Playground` / `RunSnapshot`、磁盘文件格式与升级链） |
 | `packages/i18n/` | 文案、`createTranslator`、数字和时长格式、命令行语言解析（`resolveCliLocale`）、由中文文案生成的键和参数类型 |
+| `packages/supervisor/` | 管理进程：单实例、发现文件、握手服务、会话与方法分发、事件订阅、空闲退出、关闭；运行编排、资源库、日志等由后续 issue 通过接缝接入（目前只有骨架和会话组方法） |
 | `packages/core/` | 工具检测、运行引擎、资源库等业务逻辑（目前有日志的切行、解码和读取时清洗，运行状态机与进程生命周期，以及资源库的项目创建、命名、索引和文件夹被动过的判断） |
 | `packages/testing/` | 测试替身：假时钟、假平台（含假进程、假端口、内存文件系统、假工具链）、临时主目录；只在 `*.test.ts` 里导入（决策记录 0014） |
 | `tooling/checks/` | 仓库检查脚本，`pnpm check` 的全部内容；`layers.json` 是包依赖规则的唯一出处 |
@@ -53,7 +54,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `@runyard/i18n` | `@runyard/protocol` | 已有 |
 | `@runyard/platform` | `@runyard/protocol` | 已有 |
 | `@runyard/core` | `@runyard/protocol`、`@runyard/platform`、`@runyard/testing`（只在测试里） | 已有 |
-| `@runyard/supervisor` | `@runyard/protocol`、`@runyard/platform`、`@runyard/core`、`@runyard/testing`（只在测试里） | 还没建 |
+| `@runyard/supervisor` | `@runyard/protocol`、`@runyard/platform`、`@runyard/core`、`@runyard/testing`（只在测试里） | 已有 |
 | `@runyard/client` | `@runyard/protocol`、`@runyard/platform`、`@runyard/testing`（只在测试里） | 还没建 |
 | `runyard` | `@runyard/protocol`、`@runyard/platform`、`@runyard/client`、`@runyard/core`、`@runyard/i18n`、`@runyard/testing`（只在测试里） | 还没建 |
 | `@runyard/testing` | `@runyard/protocol`、`@runyard/platform`、`@runyard/core`（只在测试里） | 已有 |
@@ -107,6 +108,7 @@ Claude Code 的钩子：改完文件后对那一个文件跑 Biome；结束回�
 | 记录一个决定 | `docs/guides/write-an-adr.md` |
 | 写测试，尤其是需要平台实现的测试 | `docs/guides/testing.md` |
 | 加或改一条给人看的文字（命令行） | `docs/guides/add-ui-string.md` |
+| 加一个跨进程命令（方法或事件） | `docs/guides/add-ipc-command.md` |
 | 查某条命令跑什么 | `docs/guides/commands.md` |
 | 发版、写版本说明、看更新日志 | `docs/guides/release.md` |
 
