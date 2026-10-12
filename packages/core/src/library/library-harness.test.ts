@@ -36,7 +36,8 @@ export function seedOf(
 export function createLibraryHarness(options: { root?: AbsPath; idPrefix?: string } = {}) {
   const fake = createFakePlatform();
   const { platform, fs, clock } = fake;
-  const root = options.root ?? platform.paths.defaultLibrary;
+  // 先过一遍 join 归一化分隔符：内存文件系统按字符串比较路径，Windows 任务上混着写会对不上
+  const root = absPath(join(options.root ?? platform.paths.defaultLibrary));
   const decoder = new TextDecoder();
 
   const isFile = (path: AbsPath): boolean => {

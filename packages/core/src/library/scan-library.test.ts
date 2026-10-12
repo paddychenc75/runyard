@@ -1,4 +1,5 @@
-import type { AbsPath } from "@runyard/platform";
+import { join } from "node:path";
+import { type AbsPath, absPath } from "@runyard/platform";
 import { describe, expect, it } from "vitest";
 import { isLibraryError } from "./library-error.ts";
 import { createLibraryHarness, type LibraryHarness, seedOf, user } from "./library-harness.test.ts";
@@ -20,7 +21,7 @@ function copyFolder(h: LibraryHarness, from: string, to: string) {
 
 function* walk(h: LibraryHarness, dir: AbsPath): Generator<AbsPath> {
   for (const name of h.fs.list(dir)) {
-    const child = `${dir}${dir.endsWith("/") || dir.endsWith("\\") ? "" : "/"}${name}` as AbsPath;
+    const child = absPath(join(dir, name));
     try {
       h.fs.readFile(child);
       yield child;
@@ -29,6 +30,8 @@ function* walk(h: LibraryHarness, dir: AbsPath): Generator<AbsPath> {
     }
   }
 }
+
+const stateFolder = (h: LibraryHarness) => absPath(join(h.fake.platform.paths.stateDir, "state"));
 
 async function setup(names: string[] = ["demo"]) {
   const h = createLibraryHarness();
@@ -75,7 +78,7 @@ describe("文件夹在应用外被动过", () => {
     const { h, library, created } = await setup();
     h.clock.advance(5000);
     const outside = h.fake.platform.paths.home;
-    h.fs.writeFile(`${outside}/elsewhere/keep.txt` as AbsPath, "x");
+    h.fs.writeFile(absPath(join(outside, "elsewhere", "keep.txt")), "x");
     h.fs.remove(h.at("demo"));
     const report = await library.rescan();
     expect(report.changes).toEqual([
@@ -100,7 +103,7 @@ describe("文件夹在应用外被动过", () => {
 
   it("[LIBRARY-PLAYGROUNDS-28] 重新定位：指到根目录之外、id 对得上的文件夹，恢复并清除 missingSince", async () => {
     const { h, library, created } = await setup();
-    const elsewhere = `${h.fake.platform.paths.home}/Desktop/moved-demo` as AbsPath;
+    const elsewhere = absPath(join(h.fake.platform.paths.home, "Desktop", "moved-demo"));
     moveFolder(h, "demo", "tmp-away");
     for (const file of [...walk(h, h.at("tmp-away"))]) {
       h.fs.writeFile(file.replace(h.at("tmp-away"), elsewhere) as AbsPath, h.fs.readFile(file));
@@ -184,13 +187,9 @@ describe("文件夹在应用外被动过", () => {
     h.fs.writeFile(h.indexPath, "{ not json");
     const rebuilt = await h.open();
     expect(rebuilt.list().map((item) => item.name)).toEqual(["one"]);
-    const kept = h.fs
-      .list((h.fake.platform.paths.stateDir + "/state") as AbsPath)
-      .filter((n) => n.includes(".corrupt-"));
+    const kept = h.fs.list(stateFolder(h)).filter((n) => n.includes(".corrupt-"));
     expect(kept).toHaveLength(1);
-    expect(h.fs.readFile(`${h.fake.platform.paths.stateDir}/state/${kept[0]}` as AbsPath)).toBe(
-      "{ not json",
-    );
+    expect(h.fs.readFile(absPath(join(stateFolder(h), kept[0] as string)))).toBe("{ not json");
   });
 
   it("判断表第 4 行：没有 .runyard/playground.json 的文件夹和普通文件被忽略", async () => {
