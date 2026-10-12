@@ -11,8 +11,8 @@
 ## 本包特有的规则
 
 - 脚本用 TypeScript 写，由 Node 24 直接运行，不加编译步骤。
-- 只许用 Node 标准库、`yaml` 和 `zod`（`zod` 只给 `scripts/` 里生成协议参考用，要和 `packages/protocol` 是同一份）；加依赖先问，走 `docs/guides/add-a-dependency.md`。
-- `scripts/generate.ts` 是业务代码以外唯一允许直接导入 `packages/protocol/src/index.ts` 的地方（只为读它的登记表生成 `docs/reference/`）；新增生成物在 `generate()` 里登记，`generated-fresh` 自动覆盖。
+- 只许用 Node 标准库、`yaml`、`zod`（`zod` 只给 `scripts/` 里生成协议参考用，要和 `packages/protocol` 是同一份）和 `typescript`（`ui-strings`、`i18n-keys` 用它的编译器接口读语法，不用正则猜注释和字符串；与根目录是同一个目录版本）；加依赖先问，走 `docs/guides/add-a-dependency.md`。
+- `scripts/generate.ts` 和 `checks/i18n-catalogs.ts` 是业务代码以外允许直接导入 `packages/protocol/src/index.ts` 的地方（读登记表）；国际化检查还直接导入 `packages/i18n/build/` 里的共用实现（和包内测试同一份）和 `packages/i18n/src/locale.ts`（语言列表的唯一来源）。新增生成物在 `generate()` 里登记，`generated-fresh` 自动覆盖。
 - 必须在 macOS、Windows、Linux 上都能跑：路径用 `node:path`，比较路径前先统一成 `/`，不依赖 shell 语法，不假设换行是 `\n` 以外的东西。
 - 每个检查都有测试，且测试里有一个“应该报错”的用例；检查不对就改检查并补测试，不要放宽或关掉它。
 - 检查的报错要用中文，说清哪个文件、哪里不对、怎么改。

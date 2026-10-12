@@ -1,0 +1,12 @@
+// 技术设计 §6.8 第 1 层的补充：noJsxLiterals（noStrings: false）查不到表达式里的字面量，这条补上：
+// {"文字"}、{`模板`}、{c ? "是" : t("x")}、{a || "默认"}。{t("key")} 和 {c ? t("a") : t("b")} 不拦。
+JsxExpressionChild(expression=$e) as $c where {
+  $e <: or {
+    JsStringLiteralExpression(),
+    JsTemplateExpression(),
+    JsConditionalExpression(consequent=JsStringLiteralExpression()),
+    JsConditionalExpression(alternate=JsStringLiteralExpression()),
+    JsLogicalExpression(right=JsStringLiteralExpression())
+  },
+  register_diagnostic(span=$c, message="JSX 里不许直接写字符串字面量，文字走 t()。", severity="error")
+}

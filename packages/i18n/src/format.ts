@@ -20,8 +20,11 @@ export interface Format {
 
 const SIZE_UNITS = ["B", "KB", "MB", "GB", "TB"] as const;
 
+// 这些 RangeError 是写给开发者的诊断（调用方传了坏数字），用英文，不显示给用户：
+// 字符串里写汉字会被 ui-strings 当成写死的界面文字（技术设计 §6.8 第 4 层）
 function assertFinite(value: number, what: string): void {
-  if (!Number.isFinite(value)) throw new RangeError(`${what} 必须是有限的数字，收到 ${value}`);
+  if (!Number.isFinite(value))
+    throw new RangeError(`${what} must be a finite number, got ${value}`);
 }
 
 export function createFormat(translator: Translator): Format {
@@ -35,8 +38,8 @@ export function createFormat(translator: Translator): Format {
     number: (value) => markLocalized(numbers(20).format(value)),
 
     fileSize(bytes) {
-      assertFinite(bytes, "文件大小");
-      if (bytes < 0) throw new RangeError(`文件大小不能是负数，收到 ${bytes}`);
+      assertFinite(bytes, "file size");
+      if (bytes < 0) throw new RangeError(`file size must not be negative, got ${bytes}`);
       let unit = 0;
       let value = bytes;
       // 进位按“四舍五入到一位小数之后”判断，避免出现 1,024 KB
@@ -49,15 +52,15 @@ export function createFormat(translator: Translator): Format {
     },
 
     technicalDuration(ms) {
-      assertFinite(ms, "时长");
-      if (ms < 0) throw new RangeError(`时长不能是负数，收到 ${ms}`);
+      assertFinite(ms, "duration");
+      if (ms < 0) throw new RangeError(`duration must not be negative, got ${ms}`);
       if (Math.round(ms) < 1000) return markLocalized(`${integer.format(ms)} ms`);
       return markLocalized(`${oneDecimal.format(ms / 1000)} s`);
     },
 
     humanDuration(ms) {
-      assertFinite(ms, "时长");
-      if (ms < 0) throw new RangeError(`时长不能是负数，收到 ${ms}`);
+      assertFinite(ms, "duration");
+      if (ms < 0) throw new RangeError(`duration must not be negative, got ${ms}`);
       const seconds = Math.round(ms / 1000);
       if (seconds < 60) return t("format.duration.seconds", { count: seconds });
       const minutes = Math.round(seconds / 60);
@@ -68,8 +71,8 @@ export function createFormat(translator: Translator): Format {
     },
 
     relativeTime(thenMs, nowMs) {
-      assertFinite(thenMs, "时间");
-      assertFinite(nowMs, "当前时间");
+      assertFinite(thenMs, "time");
+      assertFinite(nowMs, "current time");
       // 时钟偏差让“过去”出现在未来时，按“刚刚”处理，不显示负数
       const diff = Math.max(0, nowMs - thenMs);
       const minutes = Math.floor(diff / 60_000);

@@ -1,0 +1,21 @@
+// 技术设计 §6.8 第 2 层：原生元素上的 aria-label、title、placeholder、alt 不许写字符串字面量。
+// 组件上的同名属性由 Localized 类型管，不拦。出处：决策记录 0011 的证据文件（Biome 2.5.14 实测）。
+JsxAttribute(name=$n, initializer=JsxAttributeInitializerClause(value=$v)) as $attr where {
+  $n <: or {
+    "aria-label",
+    "title",
+    "placeholder",
+    "alt"
+  },
+  $v <: or {
+    JsxString(),
+    JsxExpressionAttributeValue(expression=JsStringLiteralExpression()),
+    JsxExpressionAttributeValue(expression=JsTemplateExpression())
+  },
+  $attr <: within or {
+    JsxSelfClosingElement(name=$tag),
+    JsxOpeningElement(name=$tag)
+  } ,
+  $tag <: r"[a-z].*",
+  register_diagnostic(span=$attr, message="原生元素上的 aria-label、title、placeholder、alt 不许写字符串字面量，文字走文案包的 t()（技术设计 §6.8 第 2 层）。", severity="error")
+}

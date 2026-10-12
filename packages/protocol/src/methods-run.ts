@@ -13,7 +13,7 @@ import { runIdSchema, runSnapshotSchema } from "./run-snapshot.ts";
 const runTarget = z
   .object({ runId: runIdSchema.optional(), playground: playgroundRefSchema.optional() })
   .refine((target) => (target.runId === undefined) !== (target.playground === undefined), {
-    message: "runId 和 playground 恰好给一个",
+    message: "give exactly one of runId and playground",
   });
 
 const startErrors = [

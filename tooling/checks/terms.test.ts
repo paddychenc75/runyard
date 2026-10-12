@@ -20,6 +20,7 @@ describe("terms 检查", () => {
       id: "playground",
       bannedZh: ["沙盒工程", "演示件"],
       bannedEn: ["sandboxy", "demobox"],
+      en: ["playground"],
     });
     expect(rows[1]?.bannedZh).toEqual([]);
   });
