@@ -36,6 +36,7 @@
 | 10 | `SUPERVISOR_OUTDATED` | `{ runs: integer }` |
 | 10 | `CLIENT_OUTDATED` | 无 |
 | 10 | `NOT_SUPPORTED` | 无 |
+| 10 | `DATA_FROM_NEWER_VERSION` | `{ file: 'playground.json' \| 'library.json' \| 'settings.json' \| 'cli.json'; found: integer; supported: integer }` |
 
 ## 退出码
 
@@ -49,7 +50,7 @@
 | 6 | `RUN_FAILED`、`SCRIPT_ERRORED` |
 | 7 | `READY_TIMEOUT` |
 | 9 | `NAME_EXISTS`、`BUSY`、`PATH_LOCKED`、`PATH_TOO_LONG`、`TRASH_UNAVAILABLE` |
-| 10 | `APP_REQUIRED`、`SUPERVISOR_UNAVAILABLE`、`SUPERVISOR_OUTDATED`、`CLIENT_OUTDATED`、`NOT_SUPPORTED` |
+| 10 | `APP_REQUIRED`、`SUPERVISOR_UNAVAILABLE`、`SUPERVISOR_OUTDATED`、`CLIENT_OUTDATED`、`NOT_SUPPORTED`、`DATA_FROM_NEWER_VERSION` |
 
 ## 提示码
 
@@ -81,4 +82,5 @@
 | `packageManagers` | `pnpm`、`npm` |
 | `waitModes` | `none`、`ready`、`exit` |
 | `shutdownReasons` | `upgrade`、`install`、`user` |
+| `dataFileKinds` | `playground.json`、`library.json`、`settings.json`、`cli.json` |
 | `eventTopics` | `playground`、`run`、`toolchain`、`settings` |

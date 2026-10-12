@@ -45,6 +45,7 @@ export const protocolDefs: ProtocolDefs = {
     packageManagers: protocol.packageManagers,
     waitModes: protocol.waitModes,
     shutdownReasons: protocol.shutdownReasons,
+    dataFileKinds: protocol.dataFileKinds,
     eventTopics: protocol.eventTopics,
   },
 };

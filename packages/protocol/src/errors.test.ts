@@ -39,6 +39,10 @@ const cases: Record<ErrorCode, { ok: unknown; bad: unknown }> = {
   SUPERVISOR_OUTDATED: { ok: { runs: 2 }, bad: { runs: -1 } },
   CLIENT_OUTDATED: { ok: {}, bad: null },
   NOT_SUPPORTED: { ok: {}, bad: null },
+  DATA_FROM_NEWER_VERSION: {
+    ok: { file: "library.json", found: 3, supported: 2 },
+    bad: { file: "library.json", found: 3 },
+  },
 };
 
 // 技术设计 §5.3 的退出码表，逐字抄在这里；登记表必须与它一致
@@ -57,6 +61,7 @@ const exitTable: Record<number, ErrorCode[]> = {
     "SUPERVISOR_OUTDATED",
     "CLIENT_OUTDATED",
     "NOT_SUPPORTED",
+    "DATA_FROM_NEWER_VERSION",
   ],
 };
 
@@ -66,8 +71,8 @@ const released: Record<string, number> = Object.fromEntries(
 );
 
 describe("错误码登记表", () => {
-  it("共 27 个错误码，没有重复", () => {
-    expect(errorCodes).toHaveLength(27);
+  it("共 28 个错误码，没有重复", () => {
+    expect(errorCodes).toHaveLength(28);
     expect(new Set(errorCodes).size).toBe(errorCodes.length);
   });
 
@@ -108,6 +113,16 @@ describe("错误码登记表", () => {
       expect(isErrorCode(code)).toBe(true);
       expect(errorRegistry[code as ErrorCode].exit).toBe(exit);
     }
+  });
+
+  it("DATA_FROM_NEWER_VERSION：文件种类必须是登记过的，版本号必须是正整数", () => {
+    const params = errorRegistry.DATA_FROM_NEWER_VERSION.params;
+    expect(params.safeParse({ file: "toolchain.json", found: 3, supported: 2 }).success).toBe(
+      false,
+    );
+    expect(params.safeParse({ file: "cli.json", found: 0, supported: 2 }).success).toBe(false);
+    expect(params.safeParse({ file: "cli.json", found: 2.5, supported: 2 }).success).toBe(false);
+    expect(errorRegistry.DATA_FROM_NEWER_VERSION.exit).toBe(errorRegistry.CLIENT_OUTDATED.exit);
   });
 
   it("isErrorCode 不认原型链上的名字和未登记的代码", () => {

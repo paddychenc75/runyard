@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  dataFileKindSchema,
+  dataFileKinds,
   envSourceSchema,
   envSources,
   failureReasonSchema,
@@ -13,6 +15,9 @@ import {
   toolStatusSchema,
 } from "./enums.ts";
 import { isErrorCode } from "./errors.ts";
+import { libraryFileFormat } from "./file-library.ts";
+import { playgroundFileFormat } from "./file-playground.ts";
+import { cliFileFormat, settingsFileFormat } from "./file-settings.ts";
 
 describe("枚举登记表", () => {
   it("运行状态是 §4.3 的 12 个名字，合法通过、非法被拒绝", () => {
@@ -31,6 +36,14 @@ describe("枚举登记表", () => {
   it("失败原因都是已登记的错误码", () => {
     for (const reason of failureReasons) expect(isErrorCode(reason)).toBe(true);
     expect(failureReasonSchema.safeParse("SCRIPT_ERRORED").success).toBe(false);
+  });
+
+  it("拒绝写入时用的文件种类，就是会被请求写的那四种文件的格式名", () => {
+    const names = [playgroundFileFormat, libraryFileFormat, settingsFileFormat, cliFileFormat].map(
+      (format) => format.name,
+    );
+    expect([...dataFileKinds].sort()).toEqual(names.sort());
+    expect(dataFileKindSchema.safeParse("toolchain.json").success).toBe(false);
   });
 
   it("PORT_RESERVED 只是端口回退的原因，不是错误码", () => {

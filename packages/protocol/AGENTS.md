@@ -22,6 +22,7 @@
 
 - 错误码、提示码、枚举值一旦发布，不改名、不复用、不改退出码；只许新增，新增不升协议版本。测试里有一份已发布清单守着（规格 PROTOCOL-HANDSHAKE-18），新增时把新代码加进清单。
 - 每个错误码在 `errors.ts` 的 `errorRegistry` 里各登记一次：退出码加 zod 参数定义；参数只放可序列化的简单值，不放句子。退出码表（技术设计 §5.3）里没有的数字不要用，8 留给以后。
+- 数据来自更新版本（`readVersioned` 返回 `newer`）：读仍允许（只读视图），任何会写那个文件的操作一律用 `DATA_FROM_NEWER_VERSION { file, found, supported }` 拒绝，退出码 10；不改写、不降级。新加一个会写共享文件的方法，要把这个码加进它的 `errors`（`methods.test.ts` 里有一份清单守着）。全文见 `docs/architecture/storage.md` 第 3 节。
 - 提示码在 `notices.ts`，枚举在 `enums.ts`。新增代码时同时在 `i18n` 里补两种语言的文案（`i18n-codes` 检查）。
 - 登记表是可遍历的（`errorCodes`、`noticeCodes`、`runStates` 等），`i18n` 的检查靠它。
 

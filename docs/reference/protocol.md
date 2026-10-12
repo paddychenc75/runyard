@@ -156,7 +156,7 @@
 | `playground` | `Playground` | 是 |  |
 | `created` | `boolean` | 是 |  |
 
-可能返回的错误码：`NAME_INVALID`、`NAME_RESERVED`、`NAME_EXISTS`、`TEMPLATE_NOT_FOUND`、`VAR_INVALID`
+可能返回的错误码：`NAME_INVALID`、`NAME_RESERVED`、`NAME_EXISTS`、`TEMPLATE_NOT_FOUND`、`VAR_INVALID`、`DATA_FROM_NEWER_VERSION`
 
 #### `playground.rename`
 
@@ -173,7 +173,7 @@
 
 类型 `Playground`
 
-可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`FOLDER_MISSING`、`NAME_INVALID`、`NAME_RESERVED`、`NAME_EXISTS`、`BUSY`、`PATH_LOCKED`
+可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`FOLDER_MISSING`、`NAME_INVALID`、`NAME_RESERVED`、`NAME_EXISTS`、`BUSY`、`PATH_LOCKED`、`DATA_FROM_NEWER_VERSION`
 
 #### `playground.update`
 
@@ -192,7 +192,7 @@
 
 类型 `Playground`
 
-可能返回的错误码：`PLAYGROUND_NOT_FOUND`
+可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`DATA_FROM_NEWER_VERSION`
 
 #### `playground.duplicate`
 
@@ -209,7 +209,7 @@
 
 类型 `Playground`
 
-可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`FOLDER_MISSING`、`NAME_INVALID`、`NAME_RESERVED`、`NAME_EXISTS`
+可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`FOLDER_MISSING`、`NAME_INVALID`、`NAME_RESERVED`、`NAME_EXISTS`、`DATA_FROM_NEWER_VERSION`
 
 #### `playground.trash`
 
@@ -228,7 +228,7 @@
 | `trashed` | `boolean` | 是 |  |
 | `deletedRegenerable` | `string[]` | 是 | 为省空间直接删掉的可再生目录（相对路径） |
 
-可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`FOLDER_MISSING`、`PATH_LOCKED`、`PATH_TOO_LONG`、`TRASH_UNAVAILABLE`
+可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`FOLDER_MISSING`、`PATH_LOCKED`、`PATH_TOO_LONG`、`TRASH_UNAVAILABLE`、`DATA_FROM_NEWER_VERSION`
 
 #### `playground.relocate`
 
@@ -245,7 +245,7 @@
 
 类型 `Playground`
 
-可能返回的错误码：`PLAYGROUND_NOT_FOUND`
+可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`DATA_FROM_NEWER_VERSION`
 
 #### `playground.forget`
 
@@ -261,7 +261,7 @@
 
 无字段（`{}`）
 
-可能返回的错误码：`PLAYGROUND_NOT_FOUND`
+可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`DATA_FROM_NEWER_VERSION`
 
 #### `playground.released`
 
@@ -289,6 +289,8 @@
 
 无字段（`{}`）
 
+可能返回的错误码：`DATA_FROM_NEWER_VERSION`
+
 ### 运行
 
 #### `run.start`
@@ -309,7 +311,7 @@
 
 类型 `RunSnapshot`
 
-可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`FOLDER_MISSING`、`TOOL_MISSING`、`TOOL_TOO_OLD`、`RUNTIME_MISSING`、`SETUP_FAILED`、`DEPS_OFFLINE`、`RUN_FAILED`、`SCRIPT_ERRORED`、`READY_TIMEOUT`
+可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`FOLDER_MISSING`、`TOOL_MISSING`、`TOOL_TOO_OLD`、`RUNTIME_MISSING`、`SETUP_FAILED`、`DEPS_OFFLINE`、`RUN_FAILED`、`SCRIPT_ERRORED`、`READY_TIMEOUT`、`DATA_FROM_NEWER_VERSION`
 
 #### `run.stop`
 
@@ -358,7 +360,7 @@
 
 类型 `RunSnapshot`
 
-可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`FOLDER_MISSING`、`TOOL_MISSING`、`TOOL_TOO_OLD`、`RUNTIME_MISSING`、`SETUP_FAILED`、`DEPS_OFFLINE`、`RUN_FAILED`、`SCRIPT_ERRORED`、`READY_TIMEOUT`
+可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`FOLDER_MISSING`、`TOOL_MISSING`、`TOOL_TOO_OLD`、`RUNTIME_MISSING`、`SETUP_FAILED`、`DEPS_OFFLINE`、`RUN_FAILED`、`SCRIPT_ERRORED`、`READY_TIMEOUT`、`DATA_FROM_NEWER_VERSION`
 
 #### `run.get`
 
@@ -577,6 +579,8 @@
 | --- | --- | --- | --- |
 | `tools` | `({ tool: string; status: 'found' \| 'missing' \| 'too-old' \| 'unknown'; path?: string; version?: string; required?: string; untested?: boolean; source?: 'login-shell' \| 'login-shell-degraded' \| 'path-only' \| 'fallback' })[]` | 是 |  |
 
+可能返回的错误码：`DATA_FROM_NEWER_VERSION`
+
 ### 设置
 
 #### `settings.get`
@@ -612,6 +616,8 @@
 出参：
 
 类型 `Settings`
+
+可能返回的错误码：`DATA_FROM_NEWER_VERSION`
 
 ### 请求面板
 
