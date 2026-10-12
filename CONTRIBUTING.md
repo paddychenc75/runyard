@@ -59,7 +59,7 @@ node tooling/ci/check-title.ts --range origin/main..HEAD
 
 - 每个 PR 合并后，工作流 `.github/workflows/release-please.yml` 创建或更新一个标题为“chore(release): 发布 X.Y.Z”的发版 PR（“待发布”），里面是下一个版本号和更新后的更新日志。**合并这个 PR 就是发版**：打标签 `vX.Y.Z`、建 GitHub Release、更新日志写进 `main`。现阶段不发 npm、不构建、不上传产物。发版由负责人决定，智能体不合并发版 PR。
 - 更新日志按提交的 type 分章节，章节名是中文，全部 type 都显示：新功能（`feat`）、修复（`fix`）、性能（`perf`）、回退（`revert`）、重构（`refactor`）、文档（`docs`）、测试（`test`）、构建与依赖（`build`）、持续集成（`ci`）、代码风格（`style`）、杂项（`chore`）。所以 PR 标题的 type 要选对，它就是更新日志里的分类；增删 type 时，`tooling/ci/check-title.ts` 和 `release-please-config.json` 要一起改（`tooling/ci/changelog-sections.test.ts` 会核对）。
-- 发版 PR 由默认令牌开出，GitHub 不为它自动跑检查；工作流开完后手动触发 `ci.yml`、`security.yml`，必过检查才会出现。仓库设置里必须打开 Settings → Actions → General → “Allow GitHub Actions to create and approve pull requests”。
+- 发版 PR 由默认令牌开出，GitHub 不为它自动跑检查；工作流开完后手动触发 `ci.yml`、`security.yml`，它们的最后一个任务 `report` 把真实结果同步成同名的提交状态，必过检查才算数（手动触发的检查运行本身不计入合并条件）。页面上两条“等待批准”的运行不用管。仓库设置里必须打开 Settings → Actions → General → “Allow GitHub Actions to create and approve pull requests”。
 - 每个版本另有一段给负责人看的白话说明，写在 `docs/releases/<版本>.md`（发版 PR 的内容每次都会被重写，所以不能写在它里面）。谁写、何时写见 `docs/guides/release.md`。
 
 ## 怎么合并进 `main`

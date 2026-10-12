@@ -23,7 +23,7 @@
 
 - `checks/`：`pnpm check` 的全部检查，入口 `run.ts`；`test-helpers.ts` 造临时仓库
 - `scripts/`：开发脚本（`generate.ts` 生成文档里的表和 `docs/reference/` 的协议参考，排版在 `render-reference.ts`、`schema-doc.ts`；查依赖版本和公告）
-- `ci/`：只在 CI 里用的脚本（标题格式、依赖审计门）
+- `ci/`：只在 CI 里用的脚本（标题格式、依赖审计门、更新日志防手改、发版白话说明、手动触发运行的状态回报）
 - `hooks/`：Claude Code 钩子，由 `.claude/settings.json` 调用
 - `tsconfig/`、`vitest/`：各包共用的基础配置；`vitest/base.ts` 里是唯一的“平台相关测试”跳过机制（`docs/guides/testing.md`），也是除 `packages/platform` 外唯一读运行系统的地方，`platform-branching` 不查 `tooling/`
 - `design-render/`：把设计源文件渲染成图片，产物不进仓库
