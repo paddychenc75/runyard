@@ -5,8 +5,7 @@ import { ownerSchema, tabOwnerSchema } from "./owner.ts";
 import { emptySchema, playgroundRefSchema, portSchema } from "./primitives.ts";
 import { runIdSchema, runSnapshotSchema } from "./run-snapshot.ts";
 
-// 运行组（规格 run/lifecycle、run/ownership、run/ports）。
-// run.stdin 属于脚本的规格（run/scripts，尚未批准），暂不登记。
+// 运行组（规格 run/lifecycle、run/ownership、run/ports、run/scripts）。
 // run.disown 只占名字，见 methods-reserved.ts。
 
 // 停止、重启等按“运行 id 或项目”指定：恰好给其中一个
@@ -115,6 +114,17 @@ export const runMethods = {
     params: clientAndRun,
     result: emptySchema,
     errors: ["RUN_NOT_FOUND"],
+    status: "defined",
+  },
+  "run.stdin": {
+    group: "run",
+    summary: "向 running 的脚本写标准输入，原样写入，不补换行；服务不接收",
+    params: z.object({
+      runId: runIdSchema,
+      data: z.string().describe("原样写入进程的标准输入，不自动补换行"),
+    }),
+    result: emptySchema,
+    errors: ["RUN_NOT_FOUND", "NOT_SUPPORTED"],
     status: "defined",
   },
 } as const satisfies Record<string, MethodDefinition>;

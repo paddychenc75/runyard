@@ -18,6 +18,10 @@ errors.VAR_INVALID.title: 模板变量 title 无法使用
 errors.VAR_INVALID.body: 变量 title 不是这个模板接受的变量，或者它的值不符合要求。
 errors.VAR_INVALID.hint: 检查变量名和值是否符合模板的要求。
 errors.VAR_INVALID.hintCli: 修改 --var 参数后重新运行这条命令。
+errors.TEMPLATE_INVALID.title: 模板「hello」无效
+errors.TEMPLATE_INVALID.body: 模板文件有错误，或者是更新版本的 Runyard 写的。没有创建文件夹，模板也没有被改动。
+errors.TEMPLATE_INVALID.hint: 修正模板，或换一个模板。
+errors.TEMPLATE_INVALID.hintCli: 运行 runyard template lint hello 查看问题所在。
 errors.PLAYGROUND_NOT_FOUND.title: 找不到项目「react19-9」
 errors.PLAYGROUND_NOT_FOUND.body: 资源库里没有叫这个名字的项目。
 errors.PLAYGROUND_NOT_FOUND.hint: 检查名称是否拼写正确。
@@ -62,6 +66,10 @@ errors.SCRIPT_ERRORED.title: 脚本 python-2 运行出错
 errors.SCRIPT_ERRORED.body: 脚本以非 0 的退出码结束。
 errors.SCRIPT_ERRORED.hint: 查看输出找出原因，改好代码后重新运行。
 errors.SCRIPT_ERRORED.hintCli: 用 runyard logs python-2 查看输出，改好后运行 runyard run python-2。
+errors.TEMPLATE_TEST_FAILED.title: 模板「react19」的冒烟测试在 reload 这一步失败
+errors.TEMPLATE_TEST_FAILED.body: 模板在这一步没有达到预期，例如修改文件后页面没有重新加载，或停止后仍有进程残留。除非加了 --keep-dir，临时目录会被删除。
+errors.TEMPLATE_TEST_FAILED.hint: 查看这一步的结果找出原因，修好模板后再测试。
+errors.TEMPLATE_TEST_FAILED.hintCli: 修好模板后重新运行 runyard template test react19；加 --keep-dir 可保留临时目录。
 errors.READY_TIMEOUT.title: 项目 next16-1 等了 60 秒还没有就绪
 errors.READY_TIMEOUT.body: 进程仍在运行，没有被停止，只是命令不再等待它。
 errors.READY_TIMEOUT.hint: 过一会儿再看它是否就绪，或者查看输出。

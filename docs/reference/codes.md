@@ -14,6 +14,7 @@
 | 2 | `NAME_INVALID` | `{ name: string }` |
 | 2 | `NAME_RESERVED` | `{ name: string }` |
 | 2 | `VAR_INVALID` | `{ key: string }` |
+| 2 | `TEMPLATE_INVALID` | `{ template: string }` |
 | 3 | `PLAYGROUND_NOT_FOUND` | `{ name: string }` |
 | 3 | `TEMPLATE_NOT_FOUND` | `{ template: string }` |
 | 3 | `FOLDER_MISSING` | `{ name: string }` |
@@ -25,6 +26,7 @@
 | 5 | `DEPS_OFFLINE` | `{ name: string }` |
 | 6 | `RUN_FAILED` | `{ name: string }` |
 | 6 | `SCRIPT_ERRORED` | `{ name: string }` |
+| 6 | `TEMPLATE_TEST_FAILED` | `{ template: string; step: 'create' \| 'install' \| 'start' \| 'ready' \| 'reload' \| 'stop' \| 'leftovers' }` |
 | 7 | `READY_TIMEOUT` | `{ name: string; seconds: number }` |
 | 9 | `NAME_EXISTS` | `{ name: string }` |
 | 9 | `BUSY` | `{ name: string }` |
@@ -43,11 +45,11 @@
 | 退出码 | 错误码 |
 | --- | --- |
 | 1 | `INTERNAL` |
-| 2 | `USAGE`、`NAME_INVALID`、`NAME_RESERVED`、`VAR_INVALID` |
+| 2 | `USAGE`、`NAME_INVALID`、`NAME_RESERVED`、`VAR_INVALID`、`TEMPLATE_INVALID` |
 | 3 | `PLAYGROUND_NOT_FOUND`、`TEMPLATE_NOT_FOUND`、`FOLDER_MISSING`、`RUN_NOT_FOUND` |
 | 4 | `TOOL_MISSING`、`TOOL_TOO_OLD`、`RUNTIME_MISSING` |
 | 5 | `SETUP_FAILED`、`DEPS_OFFLINE` |
-| 6 | `RUN_FAILED`、`SCRIPT_ERRORED` |
+| 6 | `RUN_FAILED`、`SCRIPT_ERRORED`、`TEMPLATE_TEST_FAILED` |
 | 7 | `READY_TIMEOUT` |
 | 9 | `NAME_EXISTS`、`BUSY`、`PATH_LOCKED`、`PATH_TOO_LONG`、`TRASH_UNAVAILABLE` |
 | 10 | `APP_REQUIRED`、`SUPERVISOR_UNAVAILABLE`、`SUPERVISOR_OUTDATED`、`CLIENT_OUTDATED`、`NOT_SUPPORTED`、`DATA_FROM_NEWER_VERSION` |

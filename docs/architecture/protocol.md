@@ -75,7 +75,7 @@ type LogEntry =
 - 时间 `at` 是 UTC 毫秒数；协议和文件里不存时区。
 - `stdout`、`stderr` 的 `text` 是已解码、未清洗的整行（0008）。
 
-### 4.1 错误码（共 28 个，已登记在 `packages/protocol/src/errors.ts`）
+### 4.1 错误码（共 30 个，已登记在 `packages/protocol/src/errors.ts`）
 
 | 退出码 | 错误码 | 参数 |
 | --- | --- | --- |
@@ -83,6 +83,7 @@ type LogEntry =
 | 2 | `USAGE` | 无 |
 | 2 | `NAME_INVALID`、`NAME_RESERVED` | `{ name }` |
 | 2 | `VAR_INVALID` | `{ key }` |
+| 2 | `TEMPLATE_INVALID` | `{ template }`（模板没通过格式校验，或格式版本比程序认识的新：不创建文件夹，不改模板；规格 TEMPLATES-FORMAT-11、TEMPLATES-CUSTOM-19） |
 | 3 | `PLAYGROUND_NOT_FOUND`、`FOLDER_MISSING` | `{ name }` |
 | 3 | `RUN_NOT_FOUND` | `{ runId }`（按 `runId` 找不到运行：`run.stop` `run.get` `run.adopt` `run.attach` `run.detach`；#19 补） |
 | 3 | `TEMPLATE_NOT_FOUND` | `{ template }` |
@@ -91,6 +92,7 @@ type LogEntry =
 | 4 | `RUNTIME_MISSING` | `{ tool }` |
 | 5 | `SETUP_FAILED`、`DEPS_OFFLINE` | `{ name }`；原始现场放 `cause` |
 | 6 | `RUN_FAILED`、`SCRIPT_ERRORED` | `{ name }`；原始现场放 `cause` |
+| 6 | `TEMPLATE_TEST_FAILED` | `{ template, step }`（冒烟测试在 `step` 这一步没达到预期：重新加载没生效、有残留进程；`step` 取 `create` `install` `start` `ready` `reload` `stop` `leftovers`） |
 | 7 | `READY_TIMEOUT` | `{ name, seconds }` |
 | 9 | `NAME_EXISTS`、`BUSY`、`PATH_LOCKED`、`PATH_TOO_LONG`、`TRASH_UNAVAILABLE` | `{ name }` |
 | 10 | `APP_REQUIRED`、`SUPERVISOR_UNAVAILABLE`、`CLIENT_OUTDATED`、`NOT_SUPPORTED` | 无 |

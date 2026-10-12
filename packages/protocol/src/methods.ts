@@ -1,9 +1,11 @@
 import type { z } from "zod";
+import { cleanMethods } from "./methods-clean.ts";
 import { libraryMethods } from "./methods-library.ts";
 import { logsMethods } from "./methods-logs.ts";
 import { reservedMethods } from "./methods-reserved.ts";
 import { runMethods } from "./methods-run.ts";
 import { sessionMethods } from "./methods-session.ts";
+import { templateMethods } from "./methods-template.ts";
 import { toolchainMethods } from "./methods-toolchain.ts";
 
 // 方法登记表：每个方法名只在这里（通过各组文件）定义一次。
@@ -16,6 +18,8 @@ export const methodRegistry = {
   ...runMethods,
   ...logsMethods,
   ...toolchainMethods,
+  ...templateMethods,
+  ...cleanMethods,
   ...reservedMethods,
 } as const;
 

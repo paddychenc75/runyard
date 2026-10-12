@@ -1,16 +1,20 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
+import { z } from "zod";
 import { buildMessagesTypes } from "../../packages/i18n/build/build.ts";
 import { renderStrings } from "../../packages/i18n/build/render-strings.ts";
 import * as protocol from "../../packages/protocol/src/index.ts";
 import { fallbackLocale, readCatalogs, sourceLocale } from "../checks/i18n-catalogs.ts";
+import { formatJson } from "./format-json.ts";
 import { type ProtocolDefs, renderCodes, renderProtocol } from "./render-reference.ts";
 
 // pnpm generate：重新生成“由别的文件推导出来”的文档内容，保证只有一个出处。
 // 三类生成物：
 // 1. 根 AGENTS.md 里的包依赖表，来自 tooling/checks/layers.json（技术设计 §3.3），只替换两行标记之间。
 // 2. docs/reference/ 里的协议参考和登记表，来自 packages/protocol 的 zod 定义，整个文件都是生成的。
-// 3. 国际化：packages/i18n/generated/messages.d.ts（键和参数类型，来自中文文案）和 docs/reference/strings.md
+// 3. templates/schema/ 下的 JSON Schema（模板、运行器、工具定义），来自 packages/protocol 的 zod 定义。
+//    写模板的人和编辑器用它；以 zod 为准，这里只是从它推出来。
+// 4. 国际化：packages/i18n/generated/messages.d.ts（键和参数类型，来自中文文案）和 docs/reference/strings.md
 //    （一行一个键的文案对照表，来自 locales/）。pnpm i18n:build 只生成前者；pnpm generate 两个都生成。
 // generated-fresh 检查（tooling/checks/generated-fresh.ts）用同一份代码核对生成物是否最新。
 
@@ -54,6 +58,18 @@ export const protocolDefs: ProtocolDefs = {
     eventTopics: protocol.eventTopics,
   },
 };
+
+// 手写模板、运行器、工具定义的人面对的是“写什么”，所以用 input 一侧：带默认值的字段可以省略
+export const jsonSchemas: Record<string, unknown> = {
+  "templates/schema/template.schema.json": protocol.templateSchema,
+  "templates/schema/runner.schema.json": protocol.runnerSchema,
+  "templates/schema/tool.schema.json": protocol.toolDefinitionSchema,
+};
+
+export function renderJsonSchema(schema: unknown): string {
+  const json = z.toJSONSchema(schema as z.ZodType, { io: "input", unrepresentable: "any" });
+  return formatJson(json);
+}
 
 // 依赖表：每个包一行，写明可以导入谁、这个包现在建了没有
 export function renderLayersTable(root: string): string {
@@ -99,6 +115,9 @@ export function generate(root: string, defs: ProtocolDefs = protocolDefs): Gener
     layersFile(root),
     wholeFile(root, "docs/reference/protocol.md", renderProtocol(defs)),
     wholeFile(root, "docs/reference/codes.md", renderCodes(defs)),
+    ...Object.entries(jsonSchemas).map(([path, schema]) =>
+      wholeFile(root, path, renderJsonSchema(schema)),
+    ),
     wholeFile(
       root,
       "packages/i18n/generated/messages.d.ts",

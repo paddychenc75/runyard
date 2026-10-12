@@ -1,0 +1,299 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "formatVersion": {
+      "type": "number",
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$"
+    },
+    "kind": {
+      "type": "string",
+      "enum": ["server", "static", "oneshot"]
+    },
+    "needs": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "anyOf": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]*$"
+                }
+              }
+            },
+            "required": ["anyOf"],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "setup": {
+      "type": "object",
+      "properties": {
+        "inputs": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[^\\\\]*$",
+            "description": "用 / 分隔的相对路径"
+          },
+          "description": "这些文件没变且 stamp 文件在就跳过安装"
+        },
+        "stamp": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[^\\\\]*$",
+          "description": "用 / 分隔的相对路径"
+        },
+        "variants": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "command": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "required": ["command"],
+            "additionalProperties": false
+          },
+          "description": "按包管理器区分的安装命令，键是包管理器的工具标识"
+        },
+        "errors": {
+          "default": [],
+          "description": "输出特征到原因；对启动阶段的输出同样生效",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "match": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reason": {
+                "type": "string",
+                "enum": ["DEPS_OFFLINE", "RUNTIME_MISSING", "SETUP_FAILED"]
+              }
+            },
+            "required": ["match", "reason"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["inputs", "stamp", "variants"],
+      "additionalProperties": false
+    },
+    "check": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "timeoutMs": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": ["command"],
+      "additionalProperties": false
+    },
+    "run": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "env": {
+          "description": "叠在全局环境之上",
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "minLength": 1
+          },
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "stdin": {
+          "description": "脚本是否接收标准输入，缺省为否",
+          "type": "boolean"
+        }
+      },
+      "required": ["command"],
+      "additionalProperties": false
+    },
+    "ready": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "http": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "default": "/",
+                  "type": "string",
+                  "format": "starts_with",
+                  "pattern": "^\\/.*"
+                }
+              },
+              "additionalProperties": false
+            },
+            "slowAfterMs": {
+              "default": 30000,
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": ["http"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "port": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false
+            },
+            "slowAfterMs": {
+              "default": 30000,
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": ["port"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "log": {
+              "type": "object",
+              "properties": {
+                "match": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": ["match"],
+              "additionalProperties": false
+            },
+            "slowAfterMs": {
+              "default": 30000,
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": ["log"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "preview": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["web", "request", "console"]
+        },
+        "path": {
+          "type": "string",
+          "format": "starts_with",
+          "pattern": "^\\/.*"
+        }
+      },
+      "required": ["type"],
+      "additionalProperties": false
+    },
+    "watch": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["none", "rerun", "restart"]
+        },
+        "paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "ignore": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "debounceMs": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": ["mode"],
+      "additionalProperties": false
+    },
+    "stop": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["graceful", "interrupt"]
+        },
+        "graceMs": {
+          "default": 2000,
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": ["mode"],
+      "additionalProperties": false
+    },
+    "detect": {},
+    "actions": {}
+  },
+  "required": ["formatVersion", "id", "kind", "needs", "preview", "watch", "stop"],
+  "additionalProperties": false
+}

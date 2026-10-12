@@ -37,6 +37,8 @@ const GROUP_TITLES: Record<MethodGroup, string> = {
   run: "运行",
   logs: "日志",
   toolchain: "工具链",
+  template: "模板",
+  clean: "自动清理",
   settings: "设置",
   request: "请求面板",
 };

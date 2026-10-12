@@ -18,6 +18,10 @@ errors.VAR_INVALID.title: Template variable title cannot be used
 errors.VAR_INVALID.body: The template does not accept a variable named title, or its value is not valid.
 errors.VAR_INVALID.hint: Check that the variable name and value match what the template expects.
 errors.VAR_INVALID.hintCli: Fix the --var option and run the command again.
+errors.TEMPLATE_INVALID.title: Template "hello" is not valid
+errors.TEMPLATE_INVALID.body: The template has a mistake, or it was written by a newer version of Runyard. No folder was created and the template was not changed.
+errors.TEMPLATE_INVALID.hint: Fix the template, or choose a different one.
+errors.TEMPLATE_INVALID.hintCli: Run runyard template lint hello to see what is wrong.
 errors.PLAYGROUND_NOT_FOUND.title: Playground "react19-9" not found
 errors.PLAYGROUND_NOT_FOUND.body: The library has no playground with this name.
 errors.PLAYGROUND_NOT_FOUND.hint: Check that the name is spelled correctly.
@@ -62,6 +66,10 @@ errors.SCRIPT_ERRORED.title: Script python-2 failed
 errors.SCRIPT_ERRORED.body: The script ended with a non-zero exit code.
 errors.SCRIPT_ERRORED.hint: Read the output to find the cause, fix the code, then run it again.
 errors.SCRIPT_ERRORED.hintCli: Read the output with runyard logs python-2, fix the code, then run runyard run python-2.
+errors.TEMPLATE_TEST_FAILED.title: Smoke test of template "react19" failed at step reload
+errors.TEMPLATE_TEST_FAILED.body: The template did not behave as expected in this step, for example the page did not reload after a file change, or a process was left running. The temporary folder is removed unless you passed --keep-dir.
+errors.TEMPLATE_TEST_FAILED.hint: Read the result of this step to find the cause, fix the template, then test it again.
+errors.TEMPLATE_TEST_FAILED.hintCli: Fix the template, then run runyard template test react19 again. Add --keep-dir to keep the temporary folder.
 errors.READY_TIMEOUT.title: Playground next16-1 was not ready after 60 seconds
 errors.READY_TIMEOUT.body: The process is still running and was not stopped. The command just stopped waiting for it.
 errors.READY_TIMEOUT.hint: Check again in a moment whether it is ready, or read the output.

@@ -94,10 +94,18 @@
 | errors.SUPERVISOR_UNAVAILABLE.hint | 没有发送过任何请求，可以直接重新运行。 | No request was sent, so you can simply run it again. | — |
 | errors.SUPERVISOR_UNAVAILABLE.hintCli | 没有发送过任何请求，可以直接重新运行这条命令。 | No request was sent, so you can simply run the command again. | — |
 | errors.SUPERVISOR_UNAVAILABLE.title | 连不上 Runyard 的管理进程 | Cannot connect to the Runyard background process | — |
+| errors.TEMPLATE_INVALID.body | 模板文件有错误，或者是更新版本的 Runyard 写的。没有创建文件夹，模板也没有被改动。 | The template has a mistake, or it was written by a newer version of Runyard. No folder was created and the template was not changed. | — |
+| errors.TEMPLATE_INVALID.hint | 修正模板，或换一个模板。 | Fix the template, or choose a different one. | — |
+| errors.TEMPLATE_INVALID.hintCli | 运行 runyard template lint {template} 查看问题所在。 | Run runyard template lint {template} to see what is wrong. | template：用户给的模板标识，原样显示 |
+| errors.TEMPLATE_INVALID.title | 模板「{template}」无效 | Template "{template}" is not valid | template：用户给的模板标识，原样显示 |
 | errors.TEMPLATE_NOT_FOUND.body | 没有标识为这个名字的模板。 | There is no template with this ID. | — |
 | errors.TEMPLATE_NOT_FOUND.hint | 检查模板标识是否拼写正确。 | Check that the template ID is spelled correctly. | — |
 | errors.TEMPLATE_NOT_FOUND.hintCli | 运行 runyard template list 查看可用的模板。 | Run runyard template list to see the available templates. | — |
 | errors.TEMPLATE_NOT_FOUND.title | 找不到模板「{template}」 | Template "{template}" not found | template：用户给的模板标识，原样显示 |
+| errors.TEMPLATE_TEST_FAILED.body | 模板在这一步没有达到预期，例如修改文件后页面没有重新加载，或停止后仍有进程残留。除非加了 --keep-dir，临时目录会被删除。 | The template did not behave as expected in this step, for example the page did not reload after a file change, or a process was left running. The temporary folder is removed unless you passed --keep-dir. | — |
+| errors.TEMPLATE_TEST_FAILED.hint | 查看这一步的结果找出原因，修好模板后再测试。 | Read the result of this step to find the cause, fix the template, then test it again. | — |
+| errors.TEMPLATE_TEST_FAILED.hintCli | 修好模板后重新运行 runyard template test {template}；加 --keep-dir 可保留临时目录。 | Fix the template, then run runyard template test {template} again. Add --keep-dir to keep the temporary folder. | template：用户给的模板标识，原样显示 |
+| errors.TEMPLATE_TEST_FAILED.title | 模板「{template}」的冒烟测试在 {step} 这一步失败 | Smoke test of template "{template}" failed at step {step} | template：用户给的模板标识，原样显示；step：失败的冒烟测试步骤：create、install、start、ready、reload、stop、leftovers 之一；原样显示，不翻译 |
 | errors.TOOL_MISSING.body | 运行这个项目需要 {tool}（版本 {required}），但没有在这台电脑上找到它。项目已经创建，代码可以照常编辑。 | This playground needs {tool} ({required}), but it was not found on this computer. The playground is created and you can still edit the code. | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译；required：模板要求的版本范围，例如 >=22.18；原样显示，不翻译 |
 | errors.TOOL_MISSING.hint | 安装 {tool} 后点“重新检测”，项目就会启动。 | Install {tool}, then click "Check again" and the playground will start. | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译 |
 | errors.TOOL_MISSING.hintCli | 安装 {tool}（{required}）后重新运行这条命令。 | Install {tool} ({required}), then run the command again. | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译；required：模板要求的版本范围，例如 >=22.18；原样显示，不翻译 |

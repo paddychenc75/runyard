@@ -14,6 +14,7 @@ const cases: Record<ErrorCode, { ok: unknown; bad: unknown }> = {
   NAME_INVALID: { ok: { name: "a b" }, bad: {} },
   NAME_RESERVED: { ok: { name: "con" }, bad: { name: 1 } },
   VAR_INVALID: { ok: { key: "port" }, bad: { key: "" } },
+  TEMPLATE_INVALID: { ok: { template: "hello" }, bad: { template: "" } },
   PLAYGROUND_NOT_FOUND: { ok: { name: "demo" }, bad: {} },
   TEMPLATE_NOT_FOUND: { ok: { template: "react19" }, bad: { name: "react19" } },
   FOLDER_MISSING: { ok: { name: "demo" }, bad: { name: null } },
@@ -28,6 +29,10 @@ const cases: Record<ErrorCode, { ok: unknown; bad: unknown }> = {
   DEPS_OFFLINE: { ok: { name: "demo" }, bad: {} },
   RUN_FAILED: { ok: { name: "demo" }, bad: {} },
   SCRIPT_ERRORED: { ok: { name: "demo" }, bad: {} },
+  TEMPLATE_TEST_FAILED: {
+    ok: { template: "react19", step: "reload" },
+    bad: { template: "react19", step: "install-all" },
+  },
   READY_TIMEOUT: { ok: { name: "demo", seconds: 60 }, bad: { name: "demo", seconds: "60" } },
   NAME_EXISTS: { ok: { name: "demo" }, bad: {} },
   BUSY: { ok: { name: "demo" }, bad: {} },
@@ -48,11 +53,11 @@ const cases: Record<ErrorCode, { ok: unknown; bad: unknown }> = {
 // 技术设计 §5.3 的退出码表，逐字抄在这里；登记表必须与它一致
 const exitTable: Record<number, ErrorCode[]> = {
   1: ["INTERNAL"],
-  2: ["USAGE", "NAME_INVALID", "NAME_RESERVED", "VAR_INVALID"],
+  2: ["USAGE", "NAME_INVALID", "NAME_RESERVED", "VAR_INVALID", "TEMPLATE_INVALID"],
   3: ["PLAYGROUND_NOT_FOUND", "TEMPLATE_NOT_FOUND", "FOLDER_MISSING", "RUN_NOT_FOUND"],
   4: ["TOOL_MISSING", "TOOL_TOO_OLD", "RUNTIME_MISSING"],
   5: ["SETUP_FAILED", "DEPS_OFFLINE"],
-  6: ["RUN_FAILED", "SCRIPT_ERRORED"],
+  6: ["RUN_FAILED", "SCRIPT_ERRORED", "TEMPLATE_TEST_FAILED"],
   7: ["READY_TIMEOUT"],
   9: ["NAME_EXISTS", "BUSY", "PATH_LOCKED", "PATH_TOO_LONG", "TRASH_UNAVAILABLE"],
   10: [
@@ -71,8 +76,8 @@ const released: Record<string, number> = Object.fromEntries(
 );
 
 describe("错误码登记表", () => {
-  it("共 28 个错误码，没有重复", () => {
-    expect(errorCodes).toHaveLength(28);
+  it("共 30 个错误码，没有重复", () => {
+    expect(errorCodes).toHaveLength(30);
     expect(new Set(errorCodes).size).toBe(errorCodes.length);
   });
 

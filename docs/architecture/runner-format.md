@@ -1,6 +1,6 @@
 # 运行器：`runner.json` 字段与行为
 
-运行器是随应用发布的数据文件，说明“怎么安装、启动、判断就绪、停止”；模板只指定用哪个运行器，自己不含命令。格式的唯一出处是 `@runyard/protocol` 里的 zod 定义（计划），本篇是写前说明。状态机见 [run-state-machine.md](run-state-machine.md)。
+运行器是随应用发布的数据文件，说明“怎么安装、启动、判断就绪、停止”；模板只指定用哪个运行器，自己不含命令。格式的唯一出处是 `@runyard/protocol` 里的 zod 定义（`runner-file.ts`），由它生成 `templates/schema/runner.schema.json`；本篇是写前说明，校验规则见 `validate-runner.ts`。状态机见 [run-state-machine.md](run-state-machine.md)。
 
 出处：技术设计 §4.4、§4.5、§4.8、§7.2 第 1 到 3 行、第 13 行；决策记录 [0006](decisions/0006-stop-process-tree.md)、[0008](decisions/0008-log-capture-and-cleaning.md)、[0011](decisions/0011-toolchain-facts-audit.md)；PRD #prd-template-engineering、#prd-first-templates、#prd-script-projects。
 
@@ -97,8 +97,6 @@
 
 ## 未定
 
-1. `ready` 的 `port`、`log` 两种写法的字段形状（设计只给了 `http` 的例子）。
-2. `watch` 的 `paths`、`ignore`、`debounceMs` 是最初方案里的字段，设计表里没列；是否保留。
-3. 十一个模板各自的运行器 json（M1 随模板逐个落地时定）；`next16` 加 `-H 127.0.0.1`、`nuxt` 加 `--host 127.0.0.1` 等已在设计 §7.2 之后点名。
-4. 工具定义（templates 目录下 tools 子目录里每个工具一个 json，计划）的字段：最初方案有 `candidates`（按系统）、`version`（参数与正则）、`supported`、`install`（按系统）、`managers`、`url`；设计只规定“检测脚本在这里、Go 用 `go version`”，其余待工具链检测的规格定。
-5. `template.json` 的完整字段（见 templates 领域的 format 能力，M1）。
+已定（#20）：`ready` 的三种写法是 `{ "http": { "path" } }`、`{ "port": {} }`、`{ "log": { "match" } }`，`slowAfterMs` 与它们同级；`watch` 的 `paths`、`ignore`、`debounceMs` 保留为可选字段；`needs` 里 `anyOf` 至少一项；`setup.variants` 的键是包管理器的工具标识；`setup.errors` 缺省为空；`run.stdin` 缺省为否；`static` 不写 `run`，`server` 和 `oneshot` 必须写。工具定义的字段见 `packages/protocol/src/tool-definition.ts`（`id`、`executables?`、`supported`、`detect { args, pattern }`、`install.darwin { url, versionManagers?, homebrew? }`），工具链检测需要别的字段时在那里加。`template.json` 的字段见 `template-file.ts`。
+
+1. 十一个模板各自的运行器 json（M1 随模板逐个落地时定）；`next16` 加 `-H 127.0.0.1`、`nuxt` 加 `--host 127.0.0.1` 等已在设计 §7.2 之后点名。

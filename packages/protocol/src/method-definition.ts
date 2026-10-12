@@ -11,6 +11,8 @@ export const methodGroups = [
   "run",
   "logs",
   "toolchain",
+  "template",
+  "clean",
   "settings",
   "request",
 ] as const;
