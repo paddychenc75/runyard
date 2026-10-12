@@ -3,7 +3,7 @@
 ## 用途
 
 所有跨进程约定的唯一出处：消息、事件、错误码、文件格式的定义（技术设计 §3.2、§4）。桌面应用、管理进程、命令行都从这里导入同一份定义，不各写一份。
-现状：已有错误码、提示码、枚举的登记表，以及 `RunyardError`、`Notice`、`LogEntry`、`Owner` 和协议版本号；握手、信封、方法、文件格式随后续 issue 加入。
+现状：已有错误码、提示码、枚举的登记表，以及 `RunyardError`、`Notice`、`LogEntry`、`Owner`、协议版本号、分帧（NDJSON）、`Frame`、握手三条消息、版本比对；方法、文件格式随后续 issue 加入。
 
 ## 对外暴露什么
 
@@ -33,6 +33,10 @@
 - `src/enums.ts`：运行状态、环境来源、失败原因、端口回退原因
 - `src/log-entry.ts`、`src/owner.ts`：`LogEntry`、`Owner`
 - `src/protocol-version.ts`：协议版本号
+- `src/ndjson.ts`：一行一个 JSON 的编码、分块解码、8 MB 上限（只处理字符串）
+- `src/frame.ts`：四种 `Frame`；线上错误 `WireError` 允许不认识的错误码，`toKnownError` 再收窄
+- `src/handshake.ts`：`challenge` / `hello` / `ready`、nonce 与 proof 的格式、固定前缀、摘要输入 `proofMessage`、注入用的类型 `ComputeProof`。HMAC 的实现不在这里，在 `platform/ipc`
+- `src/version-decision.ts`：握手之后的版本比对纯函数 `decideVersionAction`
 - 每个文件旁边有同名的 `.test.ts`
 - `vitest.config.ts`：继承 `tooling/vitest/base.ts`，不要在这里改测试规则
 
