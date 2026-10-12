@@ -25,6 +25,7 @@
 - 发版 PR 每次更新都触发一轮完整 CI（含 macOS 和 Windows 任务）；仓库是公开的，运行免费。
 - 发版 PR 的“PR 标题”“提交信息”两项检查不会对它运行（它们只在 `pull_request` 事件里跑），其余五项和 `lint` 里的 Biome、`pnpm check` 都跑。
 - 合并发版 PR 的是负责人，不是智能体；之后 `main` 上的 CI 正常运行（合并者是人，会触发）。
+- `.release-please-manifest.json` 由 release-please 写成单行，不符合 Biome 的格式，所以排除在 Biome 之外（第一次真实运行时发现，发版分支上的 `lint` 因此失败）。
 - 新增 type 必须同时改 `check-title.ts` 和 `release-please-config.json`，否则测试失败。
 - 历史提交的 type 写错无法改（例如 `feat(spikes)` 其实是技术验证），第一个版本里它们按原样出现。
 - 若这个办法在真实运行中不能让必过检查通过，退路是负责人建一个细粒度个人令牌密钥传给 Action（`token` 参数）；那时用新记录取代本条。
