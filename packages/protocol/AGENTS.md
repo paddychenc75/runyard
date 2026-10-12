@@ -3,7 +3,7 @@
 ## 用途
 
 所有跨进程约定的唯一出处：消息、事件、错误码、文件格式的定义（技术设计 §3.2、§4）。桌面应用、管理进程、命令行都从这里导入同一份定义，不各写一份。
-现状：已有错误码、提示码、枚举的登记表，以及 `RunyardError`、`Notice`、`LogEntry`、`Owner`、协议版本号、分帧（NDJSON）、`Frame`、握手三条消息、版本比对；方法、文件格式随后续 issue 加入。
+现状：已有错误码、提示码、枚举的登记表，以及 `RunyardError`、`Notice`、`LogEntry`、`Owner`、协议版本号、分帧（NDJSON）、`Frame`、握手三条消息、版本比对、方法和事件的登记表（`methodRegistry`、`eventRegistry`）、`Playground`、`RunSnapshot`、`Settings`；模板、自动清理、脚本输入的方法和文件格式随后续 issue 加入。
 
 ## 对外暴露什么
 
@@ -25,6 +25,13 @@
 - 提示码在 `notices.ts`，枚举在 `enums.ts`。新增代码时同时在 `i18n` 里补两种语言的文案（`i18n-codes` 检查）。
 - 登记表是可遍历的（`errorCodes`、`noticeCodes`、`runStates` 等），`i18n` 的检查靠它。
 
+## 方法与事件的规则
+
+- 方法名只在 `methods-*.ts` 的登记表里写一次，事件名只在 `events.ts`；别处用 `MethodName`、`EventName` 或登记表的键，不再写一遍字符串。握手帧 `challenge` / `hello` 不是方法。
+- 新方法放进对应分组文件（`methods-<组>.ts`），并在 `methods.test.ts` 的样例表里补合法与非法样例（类型检查会提醒）；事件同理（`events.test.ts`）。
+- 规格没批准的方法不要编形状：用 `methods-reserved.ts` 只占名字（`status: 'reserved'`）。
+- 改了定义要运行 `pnpm generate`：`docs/reference/` 里的协议参考是从登记表生成的，`generated-fresh` 检查会拦住过期的。
+
 ## 子目录地图
 
 - `src/index.ts`：唯一入口
@@ -37,6 +44,10 @@
 - `src/frame.ts`：四种 `Frame`；线上错误 `WireError` 允许不认识的错误码，`toKnownError` 再收窄
 - `src/handshake.ts`：`challenge` / `hello` / `ready`、nonce 与 proof 的格式、固定前缀、摘要输入 `proofMessage`、注入用的类型 `ComputeProof`。HMAC 的实现不在这里，在 `platform/ipc`
 - `src/version-decision.ts`：握手之后的版本比对纯函数 `decideVersionAction`
+- `src/methods.ts`：方法登记表，由 `methods-session|library|run|logs|toolchain|reserved.ts` 合成；`method-definition.ts` 是登记项的形状
+- `src/events.ts`：事件登记表。订阅：`events.subscribe` 按主题，`run.log` 只经 `logs.follow`
+- `src/playground.ts`、`run-snapshot.ts`、`settings.ts`、`tool-check.ts`、`created-by.ts`、`primitives.ts`：方法和事件共用的数据形状
+- `src/sample-data.ts`：只给测试用的样例数据
 - 每个文件旁边有同名的 `.test.ts`
 - `vitest.config.ts`：继承 `tooling/vitest/base.ts`，不要在这里改测试规则
 

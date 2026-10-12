@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@types/node": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "zod": "catalog:"
   }
 }

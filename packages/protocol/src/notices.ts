@@ -44,7 +44,9 @@ const variants = noticeCodes.map((code) =>
 );
 
 // 断言的原因同 errors.ts
-export const noticeSchema = z.discriminatedUnion(
-  "code",
-  variants as unknown as [(typeof variants)[number], ...(typeof variants)[number][]],
-) as unknown as z.ZodType<Notice>;
+export const noticeSchema = (
+  z.discriminatedUnion(
+    "code",
+    variants as unknown as [(typeof variants)[number], ...(typeof variants)[number][]],
+  ) as unknown as z.ZodType<Notice>
+).meta({ id: "Notice" });
