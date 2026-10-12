@@ -5,7 +5,9 @@ import type { Check } from "./workspace.ts";
 // 中文禁用词：查全部说明文件（Markdown）和源码、配置里的注释与字符串，按子串匹配。
 // 英文禁用词：查产品代码（packages/、apps/ 下的源码和 JSON），按“标识符里的一个词”匹配
 //（camelCase、连字符、下划线都拆开），不查文档正文，因为英文单词在正文里常有别的意思。
-// 不查：术语表自己、两份产品文档（它们记录了改名的历史）、设计源文件。
+// 中文设计画板（docs/design/*.dc.html）也按中文禁用词查：画板上的字是界面文案的原型，改错了没人会发现。
+// 英文画板（文件名以 En.dc.html 结尾）不查：中文禁用词在里面不会出现，英文禁用词只对产品代码里的标识符有意义。
+// 不查：术语表自己、两份产品文档（它们记录了改名的历史）。
 // 界面文案的加强版 i18n-glossary 随 M1 的文案包加入。
 
 export interface Term {
@@ -82,6 +84,10 @@ const isProductCode = (path: string) =>
 const isSource = (path: string) =>
   SOURCE.test(path) && /^(packages|apps|tooling|\.claude)\//.test(path);
 
+// 中文设计画板：*.dc.html，但不含英文画板（*En.dc.html，含 DarkEn）
+export const isChineseBoard = (path: string) =>
+  /^docs\/design\/[^/]+\.dc\.html$/.test(path) && !path.endsWith("En.dc.html");
+
 export const terms: Check = {
   name: "terms",
   run(root) {
@@ -92,7 +98,7 @@ export const terms: Check = {
     const { terms: glossary, errors } = parseGlossary(readText(root, GLOSSARY_FILE));
     for (const file of files) {
       if (file === GLOSSARY_FILE || file === "pnpm-lock.yaml") continue;
-      const checkZh = isAgentDoc(file) || isSource(file);
+      const checkZh = isAgentDoc(file) || isSource(file) || isChineseBoard(file);
       const checkEn = isProductCode(file);
       if (!checkZh && !checkEn) continue;
       readText(root, file)
