@@ -1,11 +1,14 @@
 import { listFiles, readText } from "./docs.ts";
+import { checkProcessAndSeparators } from "./platform-branching-syntax.ts";
 import type { Check } from "./workspace.ts";
 
 // platform-branching：系统分支只许写在 packages/platform 和桌面应用主进程的 integration 目录
 //（技术设计 §3.3、决策记录 0003、0013）。其他地方调用平台接口，不自己判断系统。
 // 查 packages/ 和 apps/ 下的源码，包括测试文件：测试也不许写 `if (process.platform …)`，
 // 需要平台实现的测试用文件名后缀 `.platform-dependent.test.ts` 标记（docs/guides/testing.md）。
-// tooling/ 不查：检查脚本自己要谈论这些写法，共用的 Vitest 配置里有那唯一一处合法的判断。
+// tooling/ 不查：检查脚本自己要谈论这些写法，共用的 Vitest 配置里有那唯一一处合法的判断，
+// 脚本和 CI 入口也本来就要启动 git、pnpm 等进程（见 platform-branching-syntax.ts）。
+// 直接启动进程（child_process）和手写路径分隔符两类写法用语法树查，规则和排除项写在 platform-branching-syntax.ts。
 
 const SCANNED_ROOTS = ["packages/", "apps/"];
 const ALLOWED_PREFIXES = ["packages/platform/", "apps/desktop/src/main/integration/"];
@@ -77,6 +80,9 @@ export const platformBranching: Check = {
           SOURCE_FILE.test(file) &&
           !isAllowed(file),
       )
-      .flatMap((file) => checkBranching(file, readText(root, file)));
+      .flatMap((file) => {
+        const text = readText(root, file);
+        return [...checkBranching(file, text), ...checkProcessAndSeparators(file, text)];
+      });
   },
 };
