@@ -9,7 +9,7 @@ Runyard is a desktop app for keeping and running code demos: pick a template, ge
 
 Early development. Nothing is usable yet. The product requirements, the technical design and the UI design are done; the code is being built in the open from here.
 
-- macOS first; Windows 11 follows as a preview.
+- The first version supports macOS only. Windows support is planned for later (no date).
 - Builds are not code-signed for now.
 
 <!-- sec: contents -->

@@ -56,6 +56,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 - `electron` 只许出现在桌面应用里；界面进程（renderer）里不许用 Node 接口。
 - `@runyard/protocol` 里不许用 Node、浏览器、Electron 的任何接口。
 - 系统分支（读 `process.platform`、直接启动进程、手写路径分隔符）只许写在 `@runyard/platform` 和桌面应用主进程的 integration 目录里，其他地方调用平台接口。
+- 第一版只发 macOS（决策记录 0013）：平台层只有 `darwin` 和薄的 `linux` 两份实现，不许新增只属于 Windows 的代码（`win32` 实现、辅助程序、安装器）；接口按以后好加 Windows 来写（不假设信号和进程组，进程身份是 pid 加启动时间）。依赖平台实现的测试只在 macOS 和 Ubuntu 跑，在 Windows 上只通过测试手册里那一个机制跳过，不在测试里写 `if (process.platform …)`。
 - 包之间只从入口导入（如 `@runyard/core`），不伸进内部文件。
 - 管理进程一侧的包（protocol、platform、core、supervisor、client）不产生给人看的句子，只发“代码加参数”。
 - 界面分五层，只能从上往下导入，通用组件包不认识产品；给人看的文字一律走文案包。
