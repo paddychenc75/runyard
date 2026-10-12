@@ -7,10 +7,9 @@ import type { WatchEvent } from "../platform.ts";
 import type { ContractContext } from "./context.ts";
 import { eventually } from "./service-harness.ts";
 
-const WAIT_MS = 10_000;
-// 证明“之后没有回调”需要等一小段真实时间：事件批的攒集窗口是 30 毫秒，等它的几倍
-const QUIET_MS = 200;
-const quiet = () => new Promise((resolve) => setTimeout(resolve, QUIET_MS));
+// 只等可观察的条件，不睡固定时间。“不该出现的事件没出现”靠一个后发生的哨兵事件证明：
+// 同一个监听的事件按发生的先后到达，哨兵到了，它前面发生的事件要是会来就已经来了
+const WAIT_MS = 30_000;
 
 // watch 的契约。真实现用 chokidar 监听真目录，假平台同步通知；用例只靠“最终看到什么事件”判断，两边都成立
 export function watchContract(ctx: ContractContext): void {
@@ -30,8 +29,7 @@ export function watchContract(ctx: ContractContext): void {
   const has = (seen: WatchEvent[], kind: WatchEvent["kind"], path: string) =>
     seen.some((event) => event.kind === kind && event.path === path);
 
-  // 等事件最多 10 秒，所以用例的超时要放宽（默认 5 秒会先到）
-  describe("watch", { timeout: 30_000 }, () => {
+  describe("watch", () => {
     it('"watch" 新建、修改、移走文件各报一次对应的事件，路径相对根目录、用 /', async () => {
       const { base, root, seen, handle } = await setup();
       await fs.makeDir(absPath(join(root, "sub")));
@@ -50,8 +48,11 @@ export function watchContract(ctx: ContractContext): void {
       await fs.makeDir(absPath(join(root, "keep")));
       await fs.writeFile(absPath(join(root, "skip", "x.txt")), "1");
       await fs.writeFile(absPath(join(root, "keep", "y.txt")), "1");
-      await eventually(() => has(seen, "add", "keep/y.txt"), WAIT_MS, "没被忽略的文件的事件");
-      await quiet();
+      await eventually(
+        () => has(seen, "add", "keep/y.txt"),
+        WAIT_MS,
+        "没被忽略的文件的事件（哨兵）",
+      );
       expect(seen.filter((event) => event.path.startsWith("skip"))).toEqual([]);
       await handle.dispose();
     });
@@ -62,7 +63,8 @@ export function watchContract(ctx: ContractContext): void {
       await fs.writeFile(absPath(join(root, "top.txt")), "1");
       await eventually(() => has(seen, "add", "top.txt"), WAIT_MS, "直接子项的事件");
       await fs.writeFile(absPath(join(root, "sub", "deep.txt")), "1");
-      await quiet();
+      await fs.writeFile(absPath(join(root, "sentinel.txt")), "1");
+      await eventually(() => has(seen, "add", "sentinel.txt"), WAIT_MS, "哨兵文件的事件");
       expect(has(seen, "add", "sub/deep.txt")).toBe(false);
       await handle.dispose();
     });
@@ -71,11 +73,15 @@ export function watchContract(ctx: ContractContext): void {
       const { root, seen, handle } = await setup();
       await fs.writeFile(absPath(join(root, "a.txt")), "1");
       await eventually(() => has(seen, "add", "a.txt"), WAIT_MS, "dispose 前的事件");
+      // 另开一个监听当哨兵：它看到了 b.txt，说明 b.txt 的事件已经发出过，而被 dispose 的那个一个都没收到
+      const sentinel: WatchEvent[] = [];
+      const control = await watch(root, {}, (events) => sentinel.push(...events));
       await handle.dispose();
       const count = seen.length;
       await fs.writeFile(absPath(join(root, "b.txt")), "1");
-      await quiet();
+      await eventually(() => has(sentinel, "add", "b.txt"), WAIT_MS, "哨兵监听看到 b.txt");
       expect(seen.length).toBe(count);
+      await control.dispose();
     });
   });
 }

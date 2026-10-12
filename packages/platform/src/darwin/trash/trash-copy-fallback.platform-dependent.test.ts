@@ -211,5 +211,5 @@ describe("废纸篓：三千个文件的耗时", () => {
     );
     expect(renameMs).toBeLessThan(2000);
     expect(copyMs).toBeLessThan(30_000);
-  }, 60_000);
+  });
 });

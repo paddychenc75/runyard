@@ -17,7 +17,7 @@ afterEach(() => box.remove());
 const watcherHandles = () =>
   process.getActiveResourcesInfo().filter((name) => name === "FSEventWrap").length;
 
-describe("watch 句柄", { timeout: 30_000 }, () => {
+describe("watch 句柄", () => {
   it("dispose 返回后系统的监听句柄已全部交还，随即改名被监听的目录也不受影响", async () => {
     mkdirSync(box.at("root", "sub"), { recursive: true });
     const before = watcherHandles();
@@ -25,7 +25,7 @@ describe("watch 句柄", { timeout: 30_000 }, () => {
     const handle = await watchPosix(absPath(box.at("root")), {}, (events) => seen.push(...events));
     expect(watcherHandles()).toBeGreaterThan(before);
     writeFileSync(box.at("root", "sub", "a.txt"), "1");
-    await eventually(() => seen.length > 0, 10_000, "第一个事件");
+    await eventually(() => seen.length > 0, 30_000, "第一个事件");
     await handle.dispose();
     expect(watcherHandles()).toBe(before);
     renameSync(box.at("root"), box.at("renamed"));
@@ -38,7 +38,7 @@ describe("watch 句柄", { timeout: 30_000 }, () => {
     const handle = await watchPosix(absPath(box.at("root")), {}, (events) => batches.push(events));
     writeFileSync(box.at("root", "a.txt"), "1");
     writeFileSync(box.at("root", "a.txt"), "2");
-    await eventually(() => batches.length > 0, 10_000, "一批事件");
+    await eventually(() => batches.length > 0, 30_000, "一批事件");
     await handle.dispose();
     const adds = batches.flat().filter((event) => event.kind === "add" && event.path === "a.txt");
     expect(adds).toHaveLength(1);

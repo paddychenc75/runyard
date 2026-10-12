@@ -82,8 +82,9 @@ if (isDarwin) {
     });
   });
 
-  describe("别的卷（磁盘映像）", { timeout: 120_000 }, () => {
-    // 磁盘映像在 CI 的运行器上建一次要十几秒：整个组共用一个卷，每个用例用自己的名字和自己的假主目录
+  describe("别的卷（磁盘映像）", () => {
+    // 磁盘映像在 CI 的运行器上建一次要十几秒：整个组共用一个卷，每个用例用自己的名字和自己的假主目录；
+    // 超时由共用配置统一给（进程测试阶段），这里不单写
     let box: Sandbox;
     let mount: string;
     let counter = 0;
@@ -99,14 +100,14 @@ if (isDarwin) {
       hdiutil(["create", "-size", "30m", "-fs", "APFS", "-volname", "rytest", image]);
       hdiutil(["attach", "-nobrowse", "-mountpoint", mount, image]);
       attached = true;
-    }, 200_000);
+    });
     afterAll(() => {
       try {
         if (attached) hdiutil(["detach", "-force", mount]);
       } finally {
         box.remove();
       }
-    }, 200_000);
+    });
 
     // 每个用例自己的假主目录（里面的 .Trash 是本卷的废纸篓）
     const fresh = () => {
