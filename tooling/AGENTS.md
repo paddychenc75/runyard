@@ -11,7 +11,8 @@
 ## 本包特有的规则
 
 - 脚本用 TypeScript 写，由 Node 24 直接运行，不加编译步骤。
-- 只许用 Node 标准库和 `yaml`；加依赖先问，走 `docs/guides/add-a-dependency.md`。
+- 只许用 Node 标准库、`yaml` 和 `zod`（`zod` 只给 `scripts/` 里生成协议参考用，要和 `packages/protocol` 是同一份）；加依赖先问，走 `docs/guides/add-a-dependency.md`。
+- `scripts/generate.ts` 是业务代码以外唯一允许直接导入 `packages/protocol/src/index.ts` 的地方（只为读它的登记表生成 `docs/reference/`）；新增生成物在 `generate()` 里登记，`generated-fresh` 自动覆盖。
 - 必须在 macOS、Windows、Linux 上都能跑：路径用 `node:path`，比较路径前先统一成 `/`，不依赖 shell 语法，不假设换行是 `\n` 以外的东西。
 - 每个检查都有测试，且测试里有一个“应该报错”的用例；检查不对就改检查并补测试，不要放宽或关掉它。
 - 检查的报错要用中文，说清哪个文件、哪里不对、怎么改。
@@ -21,7 +22,7 @@
 ## 子目录地图
 
 - `checks/`：`pnpm check` 的全部检查，入口 `run.ts`；`test-helpers.ts` 造临时仓库
-- `scripts/`：开发脚本（生成文档里的表、查依赖版本和公告）
+- `scripts/`：开发脚本（`generate.ts` 生成文档里的表和 `docs/reference/` 的协议参考，排版在 `render-reference.ts`、`schema-doc.ts`；查依赖版本和公告）
 - `ci/`：只在 CI 里用的脚本（标题格式、依赖审计门）
 - `hooks/`：Claude Code 钩子，由 `.claude/settings.json` 调用
 - `tsconfig/`、`vitest/`：各包共用的基础配置；`vitest/base.ts` 里是唯一的“平台相关测试”跳过机制（`docs/guides/testing.md`），也是除 `packages/platform` 外唯一读运行系统的地方，`platform-branching` 不查 `tooling/`

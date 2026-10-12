@@ -6,8 +6,10 @@ import { noticeSchema } from "./notices.ts";
 // at 是 UTC 毫秒数，协议和文件里不存时区。
 const at = z.number().int().nonnegative();
 
-export const logEntrySchema = z.discriminatedUnion("kind", [
-  z.object({ at, kind: z.enum(["stdout", "stderr", "command"]), text: z.string() }),
-  z.object({ at, kind: z.literal("system"), notice: noticeSchema }),
-]);
+export const logEntrySchema = z
+  .discriminatedUnion("kind", [
+    z.object({ at, kind: z.enum(["stdout", "stderr", "command"]), text: z.string() }),
+    z.object({ at, kind: z.literal("system"), notice: noticeSchema }),
+  ])
+  .meta({ id: "LogEntry" });
 export type LogEntry = z.infer<typeof logEntrySchema>;
