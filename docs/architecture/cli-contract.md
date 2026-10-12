@@ -22,7 +22,7 @@
 | `stop <pg>` / `stop --all` | `--mine`（只停命令行持有的） | #prd-stop |
 | `status [pg]` | `--running` | #prd-run-view |
 | `logs <pg>` | `--since <游标>`、`--tail <n>`（默认 200）、`--follow`、`--raw`（保留颜色码等控制序列；默认是清洗后的纯文本） | #prd-cli-json |
-| `rm <pg>` | 先停止，再移到废纸篓或回收站；任何情形不永久删除 | #prd-retention |
+| `rm <pg>` | 先停止，再移到废纸篓；任何情形不永久删除 | #prd-retention |
 | `doctor` | `--template <id>`、`--bundle`（导出诊断包 zip，打印路径；去掉口令和代理账号密码） | #prd-cli-commands |
 | `template list \| show \| save \| lint \| test` | `test` 另有 `--keep-dir`、`--tool-version`；`lint`、`test` 在命令行进程里直接跑，不经管理进程 | #prd-template-lint-test |
 | `skill install` | `--target claude\|agents\|all`；写 `~/.claude/skills/runyard/SKILL.md` 和 `~/.agents/skills/runyard/SKILL.md` | #prd-cli-commands |

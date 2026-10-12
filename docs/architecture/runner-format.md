@@ -18,10 +18,10 @@
 | `ready` | 收到 HTTP 响应（`http`）、端口能连上（`port`）、或日志出现某行（`log`）；`slowAfterMs` 默认 30000，只影响界面“较慢”字样 |
 | `preview` | `web`（页面）、`request`（请求面板）、`console`（输出） |
 | `watch` | `none`：框架自己热更新。`rerun`：脚本，文件变化后重跑。`restart`：服务，由管理进程停了再起，端口不变，期间状态 `reloading` |
-| `stop` | `{ mode: 'graceful' \| 'interrupt', graceMs }`，`graceMs` 默认 2000；**不写信号名**，Windows 没有信号，手段由平台层定 |
+| `stop` | `{ mode: 'graceful' \| 'interrupt', graceMs }`，`graceMs` 默认 2000；**不写信号名**，接口里没有信号，手段由平台层定（Windows 没有信号，这是接口不写信号名的原因） |
 | `detect`、`actions` | 第一版不使用，为以后留着 |
 
-写运行器时的硬规则（AGENTS.md 约定与设计一致）：地址一律 `127.0.0.1`；命令是数组；工具在 Windows 上多为 `.cmd` 垫片，由平台层解析，所以能直接用 `node` 跑入口文件就不经包管理器（K2：Windows 上 `pnpm exec vite` 是 4 层进程，直接跑是 1 层）；不传 `--no-color`（Vite、Next 会报错退出）；Vite 加 `--clearScreen false`。
+写运行器时的硬规则（AGENTS.md 约定与设计一致）：地址一律 `127.0.0.1`；命令是数组；能直接用 `node` 跑入口文件就不经包管理器（K2 实测：Windows 上 `pnpm exec vite` 是 4 层进程，直接跑是 1 层；Windows 以后，工具多为 `.cmd` 垫片，由平台层解析）；不传 `--no-color`（Vite、Next 会报错退出）；Vite 加 `--clearScreen false`。
 
 ## 2. 完整示例一：`react19`（运行器 `vite`，react18、vue3 共用）
 
@@ -84,14 +84,14 @@
 }
 ```
 
-要点：`python` 是工具名，实际执行的是检测到的解释器（macOS 上常是 `python3`，Windows 上可能是 `python` 或 `py -3`，Windows 商店的占位 `python.exe` 判为未安装）。输出走管道不走伪终端，所以保留 `-u`；`PYTHONUTF8=1` 和 `PYTHONUNBUFFERED=1` 已由管理进程给**所有**运行加上（0008），不再写在这个运行器里（Windows 上不加时 Python 写中文直接崩溃）。语法检查用 `ast.parse`，不写 `__pycache__`，语法错时退出码为 1。P0 的 Python 模板没有第三方依赖，不用 uv；运行时关闭 uv 的自动下载。
+要点：`python` 是工具名，实际执行的是检测到的解释器（macOS 上常是 `python3`；Windows 以后：可能是 `python` 或 `py -3`，商店的占位 `python.exe` 判为未安装）。输出走管道不走伪终端，所以保留 `-u`；`PYTHONUTF8=1` 和 `PYTHONUNBUFFERED=1` 已由管理进程给**所有**运行加上（0008），不再写在这个运行器里（Windows 上不加时 Python 写中文直接崩溃，所以所有系统统一加）。语法检查用 `ast.parse`，不写 `__pycache__`，语法错时退出码为 1。P0 的 Python 模板没有第三方依赖，不用 uv；运行时关闭 uv 的自动下载。
 
 ## 4. Go 的特别之处
 
 | 点 | 做法 |
 | --- | --- |
 | 停止 | `stop.mode` 用 `interrupt`：`go run` 收到中断才删自己的临时目录；用 SIGTERM、SIGKILL 或 `taskkill` 结束会每次留下一个 `go-build*` 目录 |
-| 临时目录 | 管理进程给每次运行单独设 `GOTMPDIR`，停止后删除；Windows 上强制结束留下的目录靠这个清（0006） |
+| 临时目录 | 管理进程给每次运行单独设 `GOTMPDIR`，停止后删除；强制结束留下的目录靠这个清（0006） |
 | 版本 | 检测命令是 `go version`（没有 `--version`）；运行时关闭 Go 的自动下载 |
 | 语法检查 | 脚本类 `check` 用 `gofmt -e -l`（语法错退出码 2） |
 
