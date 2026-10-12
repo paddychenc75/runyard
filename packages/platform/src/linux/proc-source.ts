@@ -30,24 +30,44 @@ export function parseProcStat(text: string): StatFields | null {
 
 const statPath = (pid: number) => `/proc/${pid}/stat`;
 
+async function snapshot(): Promise<ProcessEntry[]> {
+  const pids = (await readdir("/proc")).filter((name) => /^\d+$/.test(name)).map(Number);
+  // 并发读：几百个小文件，逐个等会拖慢每次核对身份
+  const entries = await Promise.all(
+    pids.map(async (pid): Promise<ProcessEntry | null> => {
+      try {
+        const fields = parseProcStat(await readFile(statPath(pid), "utf8"));
+        return fields ? { pid, ...fields } : null;
+      } catch {
+        // 读的时候进程刚好退出，当它不存在
+        return null;
+      }
+    }),
+  );
+  return entries.filter((entry): entry is ProcessEntry => entry !== null);
+}
+
+// /proc/<pid>/environ 是启动时的环境，以 NUL 分隔；只有同一用户（或有权限）的进程读得到，读不到的跳过。
+// 精确匹配整条 name=value，没有 macOS 上“环境接在命令后面”的歧义
+async function findByEnv(name: string, value: string): Promise<ProcessEntry[]> {
+  const wanted = `${name}=${value}`;
+  const hits = await Promise.all(
+    (await snapshot()).map(async (entry) => {
+      try {
+        const environ = await readFile(`/proc/${entry.pid}/environ`, "utf8");
+        return environ.split("\0").includes(wanted) ? entry : null;
+      } catch {
+        return null;
+      }
+    }),
+  );
+  return hits.filter((entry): entry is ProcessEntry => entry !== null);
+}
+
 export function createProcSource(): ProcessSource {
   return {
-    async snapshot() {
-      const pids = (await readdir("/proc")).filter((name) => /^\d+$/.test(name)).map(Number);
-      // 并发读：几百个小文件，逐个等会拖慢每次核对身份
-      const entries = await Promise.all(
-        pids.map(async (pid): Promise<ProcessEntry | null> => {
-          try {
-            const fields = parseProcStat(await readFile(statPath(pid), "utf8"));
-            return fields ? { pid, ...fields } : null;
-          } catch {
-            // 读的时候进程刚好退出，当它不存在
-            return null;
-          }
-        }),
-      );
-      return entries.filter((entry): entry is ProcessEntry => entry !== null);
-    },
+    snapshot,
+    findByEnv,
     async startTime(pid) {
       try {
         return parseProcStat(await readFile(statPath(pid), "utf8"))?.startTime ?? null;

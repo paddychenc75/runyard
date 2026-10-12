@@ -12,7 +12,7 @@
 - `decodeLogLine(字节)`：先严格 UTF-8，失败再 GB18030；不吞字节序标记。
 - `cleanLogText(文本)`：读取时的九条清洗规则，纯控制序列的行返回 `null`（丢弃）；幂等。
 - `cleanLogEntries(条目们)`：对 stdout、stderr 条目清洗并丢掉空结果，命令和系统条目原样保留。
-- `RunEngine`（`src/run/`）：`start(request)` 返回 `{ run, snapshot }`，对活动中的项目再启动返回同一个运行并在快照上带 `alreadyRunning`；`get`、`current`、`list`、`runningCount`、`restart(runId)`、`stopAll({ mine })`。`Run`：`snapshot`、`error`（failed 的错误码与现场，errored 的 `SCRIPT_ERRORED`）、`isSlow`、`waitFor(states)`、`stop`、`setOwner`、`beginReload`/`endReload`。
+- `RunEngine`（`src/run/`）：`start(request)` 返回 `{ run, snapshot }`，对活动中的项目再启动返回同一个运行并在快照上带 `alreadyRunning`；`get`、`current`、`list`、`runningCount`、`restart(runId)`、`stopAll({ mine })`。`Run`：`snapshot`、`error`（failed 的错误码与现场，errored 的 `SCRIPT_ERRORED`）、`isSlow`（同时快照上带可选的 `slow: true`）、`waitFor(states)`、`stop`、`setOwner`、`beginReload`/`endReload`。
 - `canTransition`、`allowedTransitions`、`activeStates`、`isActiveState`、`IllegalTransitionError`：转移表（按运行种类）和“N 个运行中”的活动状态集合。
 - `expandCommand`（运行器命令占位符，参数数组，不经 shell）、`childEnv`（去掉 `ELECTRON_RUN_AS_NODE`、放运行标记 `RUNYARD_RUN_ID`）、`stopProcessTree`。
 
@@ -23,7 +23,7 @@
 - 类型环境只有 Node 类型，没有 DOM。
 - 内存环形缓冲、日志文件、游标和 `logs` 方法属于 `supervisor`，不在本包。引擎只数自己发出的日志条数来填快照的 `cursor`。
 - 运行引擎不读时钟和平台全局：平台、时钟（`RunClock`，结构类型，`FakeClock` 满足它）、事件出口都从 `RunEngineDeps` 注入。状态转移只经 `assertTransition`，非法转移是缺陷，抛 `IllegalTransitionError`。
-- 停止：把运行器的 `mode` 和 `graceMs`（缺省 2000）原样交给 `platform.proc.terminate`（它负责核对 pid 加启动时间、礼貌请求、等满 `graceMs`、整树强制结束）；返回后引擎再核对 `members` 为空（否则整棵 `kill`），再等端口在 3 秒内可绑定。只等进程退出，不等输出管道关闭，退出后主动销毁管道。进程自己退出后树里留下的后代也一起结束。
+- 停止：把运行器的 `mode` 和 `graceMs`（缺省 2000）原样交给 `platform.proc.terminate`（它负责核对 pid 加启动时间、礼貌请求、等满 `graceMs`、整树强制结束）；返回后引擎再核对 `members` 为空（否则整棵 `kill`），再按运行标记（`RUNYARD_RUN_ID`）找脱离进程组的后代，等它们自己走掉（上限 2 秒，到时还在就核对身份后结束；规格 RUN-LIFECYCLE-20），最后等端口在 3 秒内可绑定；等满 3 秒端口仍不可绑定时 `stop` 照常返回，日志里留一条 `PORT_NOT_RELEASED` 提示（端口、实际等的毫秒数、上限）。只等进程退出，不等输出管道关闭，退出后主动销毁管道。进程自己退出后树里留下的后代也一起结束。
 - 四个接缝，别的 issue 在这里接上，不改引擎的类型：`RunPreparer`（checking 与 installing：工具检查、安装、端口、环境，返回 `RunPlan` 或 `RunyardError<FailureReason>`；#36）、`ReadinessProbe`（就绪探测；#36）、`RunSinks`（`run.state`、日志、`run.exit`、较慢通知的出口；supervisor）、`Run.setOwner` 与 `StartRequest.owner`（持有者只是字段；#40）。`RunEngineDeps.removeDir` 用来删 Go 的单独临时目录。
 
 ## 子目录地图

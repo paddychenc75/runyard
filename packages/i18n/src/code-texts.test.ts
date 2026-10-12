@@ -70,6 +70,10 @@ const noticeExamples: { [C in NoticeCode]: NoticeParams<C>[] } = {
     { wanted: 7111, actual: 7112, reason: "PORT_OCCUPIED" },
     { wanted: 7111, actual: 7112, reason: "PORT_RESERVED" },
   ],
+  PORT_NOT_RELEASED: [
+    { port: 7111, waitedMs: 3000, limitMs: 3000 },
+    { port: 7111, waitedMs: 1, limitMs: 1 },
+  ],
   ENV_UNRESOLVED: [{ reason: "timeout" }, { reason: "failed" }],
   ENV_DEGRADED: [{}],
   IDLE_STOPPED: [{ minutes: 1 }, { minutes: 30 }],

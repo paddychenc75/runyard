@@ -12,7 +12,7 @@
 
 ## 本包特有的规则
 
-- 可以导入：`@runyard/protocol`（只用它的错误码）。依赖规则的唯一出处是 `tooling/checks/layers.json`。不放原生模块，不导入 Electron。
+- 可以导入：`@runyard/protocol`（只用它的错误码）。依赖规则的唯一出处是 `tooling/checks/layers.json`；`layers` 检查只看 `package.json` 和 `tsconfig.json`，不扫源码，源码里导入了没声明的包由 `tsc -b` 拦住。不放原生模块，不导入 Electron。
 - 接口不假设 POSIX：不出现信号、进程组；进程身份是 pid 加启动时间（`ProcRef`）；`proc.terminate` 核对身份，对不上就什么也不做；`fs.trash` 可以失败，绝不退到永久删除；`ipc.endpoint()` 是不透明字符串；锁住的路径是 `PATH_LOCKED`。
 - 路径用 `AbsPath` / `PosixRelPath`，用 `node:path` 拼，不手写分隔符；相对路径永远用 `/`。
 - 错误是 `PlatformError`（携带协议的代码加参数加英文 `debug`），不产生给人看的句子。系统“不支持”用 `NOT_SUPPORTED`，“还没写”的占位用 `INTERNAL`。
@@ -23,6 +23,7 @@
 - `exec.spawnDetached`：detached、不继承标准输入输出（输出追加到日志文件）、工作目录是状态目录、环境原样用调用方给的；接口没有选择启动方式的选项（决策记录 0013：接口里不出现只属于某个系统的概念）；“调用者在关闭即杀的作业里也要活下来”就是 `spawnDetached` 本身的含义，以后的 Windows 实现自己决定怎样做到（Job Object 与 WMI 的证据见 0005 的证据文件和 0013 的清单）。
 - 契约测试通过 `@runyard/platform/contract` 导出给 `@runyard/testing`，假平台跑同一组用例；`ContractContext.complete` 为 true 的实现（假平台）不跑占位那一组。
 - 进程与端口（`posix/posix-proc.ts`、`posix-exec.ts`、`posix-ports.ts`，算法出自决策记录 0006）：`spawn` 参数数组不经 shell、`detached` 自成进程组、去掉 `ELECTRON_RUN_AS_NODE`；`terminate` 整组发信号、等 `graceMs`、再整组强制结束，**每次发信号前都重新核对身份**（根进程在则 pid 加启动时间必须一致且它是组长；根进程已死则组里不能有比它更早启动的成员）；pid 0、1、负数、本进程和本进程所在的组一律不碰。不要加“只凭 pid 或进程名”的路径。
+- `proc.findByMarker({ name, value })`（规格 RUN-LIFECYCLE-20）：找环境里带 `name=value` 的活进程（含脱离进程组的），返回 `ProcRef[]`，不含本进程和 pid 0、1。macOS 读 `ps eww -U <uid>` 的输出（环境接在命令后面，按整词匹配；整张表约 60 到 120 毫秒），Apple 自带的受保护程序读不到环境所以找不到；Linux 读 `/proc/<pid>/environ`（精确）。找不到不等于没有。`terminate` 的规则不变：只有组长才整组停，所以对结果逐个 `terminate` 时，非组长的杂散进程由它所在组的组长带走。
 - 进程表和连接表怎么读是各系统的事（`ProcessSource`、`SocketTable`）：macOS 用 `ps`、`netstat -anv`（`darwin/`），Linux 读 `/proc`（`linux/`），算法共用。macOS 上 `127.0.0.1` 绑得上并不代表端口空闲（别的程序监听 `0.0.0.0` 时照样绑得上），所以 `ports.isFree` 绑完还要看连接表。
 - 实现一块占位时：在 `posix/` 或 `darwin/` 写真实现，换掉 `posix/pending-areas.ts` 里对应的占位，再把 `contract/pending.contract.ts` 里对应的行换成真用例。
 
