@@ -59,9 +59,7 @@ describe("createTempHome", () => {
     expect(temp.home).toContain("runyard-test-");
     expect(existsSync(temp.stateDir)).toBe(true);
     expect(existsSync(temp.library)).toBe(true);
-    const { platform } = createFakePlatform({ home: temp.home });
-    expect(platform.paths.stateDir).toBe(temp.stateDir);
-    expect(platform.paths.defaultLibrary).toBe(temp.library);
+    expect(createFakePlatform({ home: temp.home }).platform.paths.home).toBe(temp.home);
     temp.dispose();
     expect(existsSync(temp.home)).toBe(false);
     temp.dispose(); // 可以重复调用

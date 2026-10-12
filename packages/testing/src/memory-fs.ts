@@ -1,4 +1,4 @@
-import { dirname, relative, sep } from "node:path";
+import { dirname, relative } from "node:path";
 import {
   type AbsPath,
   absPath,
@@ -21,8 +21,13 @@ interface Watcher {
   readonly callback: (events: WatchEvent[]) => void;
 }
 
+// 两种分隔符都认：测试里写的 "/lib/demo" 和 Windows 上 join 出来的路径都要能比较
+const SEPARATOR = /[\\/]/;
+
 function within(parent: string, child: string): boolean {
-  return child === parent || child.startsWith(parent.endsWith(sep) ? parent : parent + sep);
+  if (child === parent) return true;
+  const base = /[\\/]$/.test(parent) ? parent.slice(0, -1) : parent;
+  return child.startsWith(`${base}/`) || child.startsWith(`${base}\\`);
 }
 
 // 内存文件系统：只放 Runyard 自己要断言的东西（文件内容、目录是否存在、改名、废纸篓、监视）。
@@ -68,7 +73,7 @@ export class MemoryFs {
     const names = new Set<string>();
     for (const entry of [...this.#files.keys(), ...this.#dirs]) {
       if (entry === dir || !within(dir, entry)) continue;
-      names.add(relative(dir, entry).split(sep)[0] as string);
+      names.add(relative(dir, entry).split(SEPARATOR)[0] as string);
     }
     return [...names].sort();
   }
@@ -151,7 +156,7 @@ export class MemoryFs {
   #emit(path: AbsPath, kind: WatchEvent["kind"]): void {
     for (const watcher of this.#watchers) {
       if (!within(watcher.root, path) || path === watcher.root) continue;
-      const rel = posixRelPath(relative(watcher.root, path).split(sep).join("/"));
+      const rel = posixRelPath(relative(watcher.root, path).split(SEPARATOR).join("/"));
       if (watcher.ignore.some((ignored) => rel === ignored || rel.startsWith(`${ignored}/`)))
         continue;
       watcher.callback([{ kind, path: rel }]);
