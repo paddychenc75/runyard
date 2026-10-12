@@ -1,0 +1,23 @@
+{
+  "extends": "../../tooling/tsconfig/node.json",
+  "compilerOptions": {
+    "outDir": "../../.tsbuild/supervisor",
+    "tsBuildInfoFile": "../../.tsbuild/supervisor/tsconfig.tsbuildinfo",
+    "rootDir": "."
+  },
+  "include": ["src/**/*.ts"],
+  "references": [
+    {
+      "path": "../protocol"
+    },
+    {
+      "path": "../platform"
+    },
+    {
+      "path": "../core"
+    },
+    {
+      "path": "../testing"
+    }
+  ]
+}

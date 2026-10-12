@@ -1,0 +1,24 @@
+{
+  "name": "@runyard/supervisor",
+  "version": "0.0.0",
+  "private": true,
+  "description": "管理进程：单实例、发现文件、握手、会话与方法分发、空闲退出",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run --project unit",
+    "test:process": "vitest run --project process --passWithNoTests"
+  },
+  "dependencies": {
+    "@runyard/core": "workspace:*",
+    "@runyard/platform": "workspace:*",
+    "@runyard/protocol": "workspace:*"
+  },
+  "devDependencies": {
+    "@runyard/testing": "workspace:*",
+    "@types/node": "catalog:",
+    "vitest": "catalog:"
+  }
+}

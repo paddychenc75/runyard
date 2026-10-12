@@ -6,6 +6,7 @@
     { "path": "packages/protocol" },
     { "path": "packages/i18n" },
     { "path": "packages/core" },
+    { "path": "packages/supervisor" },
     { "path": "packages/testing" }
   ]
 }
