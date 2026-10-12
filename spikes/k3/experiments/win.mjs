@@ -176,6 +176,11 @@ function processesUnder(dir) {
   if (!dir) return [];
   return psJsonArr(`Get-CimInstance Win32_Process | Where-Object { $_.ExecutablePath -and $_.ExecutablePath.StartsWith('${dir.replaceAll("'", "''")}', 'CurrentCultureIgnoreCase') } | ForEach-Object { '{0}:{1}' -f $_.ProcessId, $_.Name }`);
 }
+// 打包工具的模板用来“找安装目录里还在跑的进程”的那句 PowerShell，原样拿来问一遍，看它找不找得到
+function templateFinds(dir) {
+  const q = (prop) => ps(`@(Get-CimInstance -ClassName Win32_Process | ? {$_.${prop} -and $_.${prop}.StartsWith('${dir}', 'CurrentCultureIgnoreCase')}).Count`).stdout.trim();
+  return { byPathAsInTemplate: q("Path"), byExecutablePath: q("ExecutablePath") };
+}
 // 对照实验留下的孤儿：只结束我们登记过的那几个
 async function reap(live) {
   const killed = [];
@@ -359,6 +364,19 @@ await step("cli", async () => {
   fs.writeFileSync(psScript2, `\ufeffrunyard echo-args "hello world" "中文 参数" '50%' 'x^y'\n"exit=$LASTEXITCODE"\n`);
   const r2 = sh("powershell.exe", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", psScript2], { env });
   res.powershell51WithoutAmpersand = { args: parseArgs(r2.stdout), exit: /exit=(-?\d+)/.exec(r2.stdout)?.[1] };
+  // 对照：如果另放一个 runyard.ps1（npm 的垫片就有这个），PowerShell 会优先用它，参数不再经过 cmd
+  const ps1Dir = path.join(S.root, "ps1shim");
+  fs.mkdirSync(ps1Dir, { recursive: true });
+  fs.writeFileSync(path.join(ps1Dir, "runyard.ps1"), `$old = $env:ELECTRON_RUN_AS_NODE\n$env:ELECTRON_RUN_AS_NODE = '1'\ntry { & '${exe()}' '${cliJs()}' @args; $code = $LASTEXITCODE } finally { $env:ELECTRON_RUN_AS_NODE = $old }\nexit $code\n`);
+  const psScript3 = path.join(S.root, "t3.ps1");
+  fs.writeFileSync(psScript3, `\ufeff$env:Path = '${ps1Dir};' + $env:Path\n"where=" + (Get-Command runyard).Source\nrunyard --version\nrunyard echo-args "hello world" "中文 参数" 'a&b' '50%' 'x^y' ''\nrunyard exit-with 7\n"exit=$LASTEXITCODE"\n"leak=[$env:ELECTRON_RUN_AS_NODE]"\n`);
+  const v3 = (r) => ({ ...verdict(r), where: /^where=(.*)$/m.exec(r.stdout)?.[1]?.trim().replace(S.root, "<root>"), envLeak: /leak=\[(.*)\]/.exec(r.stdout)?.[1] });
+  res.ps1Shim = {
+    executionPolicy: psJson("Get-ExecutionPolicy -List | ForEach-Object { '{0}={1}' -f $_.Scope, $_.ExecutionPolicy }"),
+    powershell51Bypass: v3(sh("powershell.exe", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", psScript3], { env })),
+    powershell51Restricted: v3(sh("powershell.exe", ["-NoProfile", "-ExecutionPolicy", "Restricted", "-Command", `$env:Path = '${ps1Dir};' + $env:Path; runyard --version; "exit=$LASTEXITCODE"`], { env })),
+    pwsh7: pwsh ? v3(sh(pwsh, ["-NoProfile", "-File", psScript3], { env })) : null,
+  };
   // Git Bash
   const bash = ["C:\\Program Files\\Git\\bin\\bash.exe", "C:\\Program Files\\Git\\usr\\bin\\bash.exe"].find((p) => fs.existsSync(p));
   if (bash) {
@@ -426,14 +444,9 @@ await step("url", async () => {
   res.whileNotRunning = { startExit: s1.code, appStarted: up.started, up: up.up, urlsInArgv: up.boot?.urlsInArgv, argv: up.boot?.argv.slice(1) };
   // 应用在运行：系统会再启动一个实例，它把命令行交给第一个实例后退出
   beforeN = S.events().length;
-  const s2 = sh("cmd.exe", ["/d", "/c", "start", "", "runyard-k3://open/demo-a?x=1&y=2"], { env: cleanEnv() });
+  const s2 = sh("cmd.exe", ["/d", "/s", "/c", '"start "" "runyard-k3://open/demo-a?x=1&y=2""'], { env: cleanEnv(), windowsVerbatimArguments: true });
   const second = await waitFor(() => S.events().slice(beforeN).find((e) => e.event === "second-instance"), 20_000);
   res.whileRunning = { startExit: s2.code, deliveredTo: second?.pid === up.pid ? "first-instance" : (second?.pid ?? null), urls: second?.urls ?? null, secondInstanceExited: Boolean(S.events().slice(beforeN).find((e) => e.event === "second-instance-exit")) };
-  // 链接里带空格和引号时命令行长什么样（参数注入的面）
-  beforeN = S.events().length;
-  sh("cmd.exe", ["/d", "/c", "start", "", 'runyard-k3://open/x%20y" --inspect=9229 "'], { env: cleanEnv() });
-  const inj = await waitFor(() => S.events().slice(beforeN).find((e) => e.event === "second-instance"), 15_000);
-  res.oddUrl = { argvTail: inj?.argv.slice(1) ?? null };
   if (up.pid) await S.quitApp(up.pid);
   res.stop = cli(["installer-stop", "--reason", "test"]).json;
   return res;
@@ -491,9 +504,18 @@ await step("liveBuilderDefault", async () => {
   const res = { firstInstall: runInstaller(B["default-0.3.0"].setup) };
   {
     const live = await liveSupervisor({ appRunning: false });
+    const probe = templateFinds(INSTALL_DIR);
     const inst = runInstaller(B["default-0.3.0"].setup);
-    res.reinstall = { before: live.state, installer: inst, after: await observe(live) };
+    res.reinstall = { before: live.state, templateProbe: probe, installer: inst, after: await observe(live), oldFilesParkedInTemp: ps("@(Get-ChildItem $env:TEMP -Directory -Filter 'ns*.tmp' -ErrorAction SilentlyContinue | Where-Object { Test-Path (Join-Path $_.FullName 'old-install') }).Count").stdout.trim() };
     res.reinstall.orphansReaped = await reap(live);
+  }
+  {
+    // 应用窗口也开着的时候
+    const live = await liveSupervisor({ appRunning: true });
+    const probe = templateFinds(INSTALL_DIR);
+    const inst = runInstaller(B["default-0.3.0"].setup);
+    res.reinstallAppRunning = { before: live.state, templateProbe: probe, installer: inst, after: await observe(live) };
+    res.reinstallAppRunning.orphansReaped = await reap(live);
   }
   {
     const live = await liveSupervisor({ appRunning: false });
@@ -581,8 +603,8 @@ const verdicts = {
   "链接生效（命令行 start；未运行 / 运行中）": s.url ? (s.url.whileNotRunning?.urlsInArgv?.length ?? 0) > 0 && (s.url.whileRunning?.urls?.length ?? 0) > 0 : null,
   "管理进程活着时覆盖安装成功（钩子）": s.liveHook?.upgradeSupervisorOnly?.installer?.exit === 0 && s.liveHook?.upgradeSupervisorOnly?.installer?.buildInfo === "0.3.1" && s.liveHook?.upgradeSupervisorOnly?.after?.supervisorAlive === false && s.liveHook?.upgradeSupervisorOnly?.after?.runAlive === false,
   "管理进程活着时卸载成功（钩子）": s.liveHook?.uninstall?.uninstaller?.uninstallKeyGone === true && s.liveHook?.residue?.installDirGone === true && s.liveHook?.uninstall?.after?.runAlive === false,
-  "卸载后用户 PATH 没有残留": s.liveHook?.residue?.userPathIdenticalToBefore === true,
-  "清理干净": Array.isArray(cleanup.processesLeft) && cleanup.processesLeft.length === 0 && cleanup.identicalToBefore.userPath && cleanup.identicalToBefore.urlKey && cleanup.identicalToBefore.uninstall,
+  "卸载后用户 PATH 没有残留（与安装前逐字相同）": s.liveHook?.residue?.userPathIdenticalToBefore === true,
+  "清理干净": Array.isArray(cleanup.processesLeft) && cleanup.processesLeft.length === 0 && Object.values(cleanup.identicalToBefore).every(Boolean),
 };
 console.log("\n===== K3 Windows 判定 =====");
 for (const [k, v] of Object.entries(verdicts)) console.log(`${v === true ? "通过  " : v === false ? "不通过" : "未知  "} ${k}`);

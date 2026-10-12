@@ -92,17 +92,17 @@ $had = $key.GetValueNames() -contains 'Path'
 $cur = if ($had) { [string]$key.GetValue('Path', '', 'DoNotExpandEnvironmentNames') } else { '' }
 $kind = if ($had) { $key.GetValueKind('Path') } else { [Microsoft.Win32.RegistryValueKind]::ExpandString }
 $bin = $env:K3_BIN_DIR.TrimEnd('\\')
-$parts = @($cur -split ';' | Where-Object { $_ -ne '' })
-$mine = @($parts | Where-Object { $_.TrimEnd('\\') -ieq $bin })
+# 只增删自己那一项，其余的字符一个不动（包括末尾有没有分号）：装了再卸之后要和原来逐字相同
+$parts = @($cur -split ';')
+$mine = @($parts | Where-Object { $_ -ne '' -and $_.TrimEnd('\\') -ieq $bin })
 $changed = $false
 if ($env:K3_PATH_MODE -eq 'add' -and $mine.Count -eq 0) {
-  $key.SetValue('Path', (($parts + $bin) -join ';'), $kind); $changed = $true
+  $next = if ($cur -eq '') { $bin } elseif ($cur.EndsWith(';')) { $cur + $bin + ';' } else { $cur + ';' + $bin }
+  $key.SetValue('Path', $next, $kind); $changed = $true
 } elseif ($env:K3_PATH_MODE -eq 'remove' -and $mine.Count -gt 0) {
-  $rest = @($parts | Where-Object { $_.TrimEnd('\\') -ine $bin })
-  # 原来的值如果以分号结尾，删完之后也保持，这样“装了再卸”之后和原来逐字相同
-  $tail = if ($cur.EndsWith(';') -and $rest.Count -gt 0) { ';' } else { '' }
-  # 删完一项都不剩：把这个值整个删掉（用户原来多半就没有它），不留一个空的 Path
-  if ($rest.Count -eq 0) { $key.DeleteValue('Path', $false) } else { $key.SetValue('Path', (($rest -join ';') + $tail), $kind) }
+  $next = (@($parts | Where-Object { $_ -eq '' -or $_.TrimEnd('\\') -ine $bin }) -join ';')
+  # 删完什么都不剩：把这个值整个删掉（用户原来多半就没有它），不留一个空的 Path
+  if ($next -eq '') { $key.DeleteValue('Path', $false) } else { $key.SetValue('Path', $next, $kind) }
   $changed = $true
 }
 $key.Close()

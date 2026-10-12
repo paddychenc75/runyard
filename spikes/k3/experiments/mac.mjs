@@ -780,6 +780,13 @@ cleanup.tccReset = sh("tccutil", ["reset", "All", BUNDLE_ID]).stdout.trim();
 for (const p of residuePaths.slice(0, -1)) fs.rmSync(p, { recursive: true, force: true });
 cleanup.residueAfter = residuePaths.slice(0, -1).filter((p) => fs.existsSync(p)).map((p) => p.replace(home, "~"));
 cleanup.processesLeft = sh("pgrep", ["-fl", tag]).stdout.trim().split("\n").filter(Boolean);
+if (CI) {
+  // 只在一次性的 CI 机器上：带隔离标记的那次 open 会让系统在一个随机路径（AppTranslocation）下起一个被拦住的进程，
+  // 它不运行我们的代码，也就没有登记过。按这条专属路径把它找出来结束掉
+  cleanup.translocatedLeft = sh("pgrep", ["-f", "AppTranslocation/.*/RunyardK3.app/Contents/MacOS/RunyardK3"]).stdout.trim().split("\n").filter(Boolean).map(Number);
+  for (const pid of cleanup.translocatedLeft) process.kill(pid, "SIGKILL");
+  await sleep(500);
+}
 // 按可执行文件的路径找，免得匹配到命令行里恰好带这个词的无关进程
 cleanup.processesNamedRunyardK3 = sh("pgrep", ["-fl", "Contents/MacOS/RunyardK3|RunyardK3 Helper"]).stdout.trim().split("\n").filter((l) => l && !/zsh -c|pgrep/.test(l));
 cleanup.rootExists = fs.existsSync(rootPath);
