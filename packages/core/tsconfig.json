@@ -6,5 +6,15 @@
     "rootDir": "."
   },
   "include": ["src/**/*.ts"],
-  "references": [{ "path": "../protocol" }]
+  "references": [
+    {
+      "path": "../protocol"
+    },
+    {
+      "path": "../platform"
+    },
+    {
+      "path": "../testing"
+    }
+  ]
 }
