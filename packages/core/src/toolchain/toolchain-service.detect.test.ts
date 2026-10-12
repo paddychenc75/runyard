@@ -1,4 +1,4 @@
-import { absPath } from "@runyard/platform";
+import { absPath, joinPath, posixRelPath } from "@runyard/platform";
 import { describe, expect, it } from "vitest";
 import {
   createToolchainHarness,
@@ -291,7 +291,8 @@ describe("缓存的结构", () => {
   it("项目里有版本文件时单独缓存，没有的共用全局", async () => {
     const h = createToolchainHarness();
     h.fake.tools.install("node", { version: "24.21.0" });
-    h.fake.fs.writeFile(absPath("/fake/project/.node-version"), "22\n");
+    // 与被测代码同一个拼法，免得在 Windows 任务上分隔符对不上
+    h.fake.fs.writeFile(joinPath(project, posixRelPath(".node-version")), "22\n");
 
     await resolveWith(h, h.service.check({ requires: nodeOnly(), cwd: project }));
     await resolveWith(h, h.service.check({ requires: nodeOnly(), cwd: absPath("/fake/other") }));
