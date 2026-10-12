@@ -1,4 +1,5 @@
 import { readdir, readFile, readlink } from "node:fs/promises";
+import { basename } from "node:path";
 import type { SocketRow, SocketTable } from "../posix/socket-table.ts";
 
 // Linux 读连接表：/proc/net/tcp 和 tcp6 给出套接字和 inode，/proc/<pid>/fd/ 里的
@@ -49,6 +50,16 @@ export function parseProcNetTcp(text: string): RawSocket[] {
   return rows;
 }
 
+/**
+ * 进程名：优先取可执行文件的名字。/proc/<pid>/comm 对 Node 给的是线程名 `MainThread`（CI 上实测），
+ * 对被 prctl 改过名的进程也不是程序名；exe 读不到（别的用户）才退回 comm
+ */
+async function processName(pid: number): Promise<string> {
+  const exe = await readlink(`/proc/${pid}/exe`).catch(() => "");
+  if (exe !== "") return basename(exe.replace(/ \(deleted\)$/, ""));
+  return (await readFile(`/proc/${pid}/comm`, "utf8").catch(() => "")).trim();
+}
+
 async function socketOwners(): Promise<Map<string, { pid: number; name: string }>> {
   const owners = new Map<string, { pid: number; name: string }>();
   for (const entry of await readdir("/proc")) {
@@ -60,8 +71,7 @@ async function socketOwners(): Promise<Map<string, { pid: number; name: string }
         const link = await readlink(`/proc/${pid}/fd/${fd}`).catch(() => "");
         const inode = /^socket:\[(\d+)\]$/.exec(link)?.[1];
         if (inode && !owners.has(inode)) {
-          const name = (await readFile(`/proc/${pid}/comm`, "utf8").catch(() => "")).trim();
-          owners.set(inode, { pid, name });
+          owners.set(inode, { pid, name: await processName(pid) });
         }
       }
     } catch {

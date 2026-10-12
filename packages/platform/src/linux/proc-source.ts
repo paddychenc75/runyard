@@ -33,17 +33,20 @@ const statPath = (pid: number) => `/proc/${pid}/stat`;
 export function createProcSource(): ProcessSource {
   return {
     async snapshot() {
-      const entries: ProcessEntry[] = [];
-      for (const name of await readdir("/proc")) {
-        if (!/^\d+$/.test(name)) continue;
-        try {
-          const fields = parseProcStat(await readFile(statPath(Number(name)), "utf8"));
-          if (fields) entries.push({ pid: Number(name), ...fields });
-        } catch {
-          // 读的时候进程刚好退出，当它不存在
-        }
-      }
-      return entries;
+      const pids = (await readdir("/proc")).filter((name) => /^\d+$/.test(name)).map(Number);
+      // 并发读：几百个小文件，逐个等会拖慢每次核对身份
+      const entries = await Promise.all(
+        pids.map(async (pid): Promise<ProcessEntry | null> => {
+          try {
+            const fields = parseProcStat(await readFile(statPath(pid), "utf8"));
+            return fields ? { pid, ...fields } : null;
+          } catch {
+            // 读的时候进程刚好退出，当它不存在
+            return null;
+          }
+        }),
+      );
+      return entries.filter((entry): entry is ProcessEntry => entry !== null);
     },
     async startTime(pid) {
       try {
