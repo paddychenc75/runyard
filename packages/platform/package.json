@@ -5,7 +5,8 @@
   "description": "系统差异的唯一出口：Platform 接口、各系统的实现、契约测试",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./contract": "./src/contract/run-contract.ts"
   },
   "scripts": {
     "test": "vitest run"

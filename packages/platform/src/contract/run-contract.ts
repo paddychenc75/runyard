@@ -9,6 +9,6 @@ export function runContract(ctx: ContractContext): void {
   describe(`平台契约：${ctx.name}`, () => {
     identityContract(ctx);
     pathsContract(ctx);
-    pendingContract(ctx);
+    if (ctx.complete !== true) pendingContract(ctx);
   });
 }

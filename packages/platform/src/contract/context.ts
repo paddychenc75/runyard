@@ -8,4 +8,6 @@ export interface ContractContext {
   create(home: string): Platform;
   /** 这个实现明确标为“系统不支持”的成员（抛 NOT_SUPPORTED）。其余成员必须能用 */
   readonly unsupported: ReadonlySet<string>;
+  /** 实现了接口的全部成员、没有占位（内存版的假平台）：不跑“占位成员抛 INTERNAL”那一组 */
+  readonly complete?: boolean;
 }

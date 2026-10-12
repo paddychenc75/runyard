@@ -1,0 +1,21 @@
+{
+  "name": "@runyard/testing",
+  "version": "0.0.0",
+  "private": true,
+  "description": "测试替身：假时钟、假平台、假进程、临时主目录",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@runyard/platform": "workspace:*",
+    "@runyard/protocol": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "vitest": "catalog:"
+  }
+}
