@@ -1,7 +1,7 @@
-import { sep } from "node:path";
+import { sep } from "node:path/posix";
 import type { LengthVerdict } from "../platform.ts";
 
-// 路径长度分三档。上限由系统给：macOS 的 PATH_MAX 是 1024（含结尾的 NUL），Linux 是 4096；
+// 路径长度分三档（POSIX 路径，用 node:path/posix，所以在任何系统上结果都一样）。上限由系统给：macOS 的 PATH_MAX 是 1024（含结尾的 NUL），Linux 是 4096；
 // 以后的 Windows 默认 260，保守取 248（决策记录 0010）。单个名字另有 255 字节的上限（NAME_MAX）。
 // “接近”取上限的八分之七：创建项目时给出警告，仍然继续（规格 LIBRARY-PLAYGROUNDS-05）。
 

@@ -25,8 +25,8 @@
 
 - `src/platform.ts`：`Platform` 接口和它的类型；`src/get-platform.ts`：`getPlatform()`
 - `src/path-types.ts`、`src/platform-error.ts`、`src/platform-options.ts`
-- `src/paths/`：名称校验、长度检查、网盘与用户文件夹的判断（纯函数，任何系统上都能测）
-- `src/posix/`：darwin 与 linux 共用的部分和占位；`src/darwin/`、`src/linux/`：各系统的组合
+- `src/paths/`：名称校验（各系统一致的纯函数）
+- `src/posix/`：darwin 与 linux 共用的部分：长度检查、网盘与用户文件夹的判断（POSIX 路径，用 `node:path/posix`，任何系统上结果一样）、占位；`src/darwin/`、`src/linux/`：各系统的组合
 - `src/contract/`：契约测试，同一组用例对每个实现各跑一遍
 - `vitest.config.ts`：继承 `tooling/vitest/base.ts`，不要在这里改测试规则
 

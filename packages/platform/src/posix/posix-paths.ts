@@ -1,9 +1,9 @@
-import { join } from "node:path";
+import { join } from "node:path/posix";
 import { type AbsPath, absPath } from "../path-types.ts";
-import { checkLength } from "../paths/check-length.ts";
-import { isCloudSynced, isInUserFolders, type LocationRules } from "../paths/locations.ts";
 import { validateName } from "../paths/validate-name.ts";
 import type { Platform } from "../platform.ts";
+import { checkLength } from "./check-length.ts";
+import { isCloudSynced, isInUserFolders, type LocationRules } from "./locations.ts";
 
 // darwin 与 linux 共用的 paths：各系统只给出自己的上限和位置规则，其余相同。
 

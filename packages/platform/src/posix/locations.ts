@@ -1,4 +1,4 @@
-import { isAbsolute, join, relative, sep } from "node:path";
+import { isAbsolute, join, relative, sep } from "node:path/posix";
 import type { AbsPath } from "../path-types.ts";
 
 // 判断一个路径落在哪类“位置”里：纯函数，不读磁盘，所以任何系统上都能测。
