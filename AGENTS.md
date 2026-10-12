@@ -26,6 +26,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `docs/architecture/` | `overview.md`（一页架构总览）、`decisions/`（决策记录）、`evidence/`（技术验证记录的实测数据、伪代码和证据链接）、`dependencies.md`（每个依赖的版本和理由），以及 M1 头三个包和命令行的实现细节：`protocol.md`、`protocol-methods.md`、`storage.md`、`run-state-machine.md`、`runner-format.md`、`platform-interface.md`、`cli-contract.md` |
 | `docs/guides/` | 操作手册和命令表。有手册的任务按手册做，不要临场发挥 |
 | `docs/glossary.md` | 术语表：中文术语、唯一的英文标识符、禁用的同义词 |
+| `packages/platform/` | 平台层：`Platform` 接口、`getPlatform()`、路径与名称校验、`darwin` 和薄 `linux` 实现、契约测试（目前只有接口、paths 和占位，各块实现随后续 issue 加入） |
 | `packages/protocol/` | 所有跨进程约定（目前有错误码、提示码、枚举、`RunyardError` / `Notice` / `LogEntry` / `Owner`） |
 | `tooling/checks/` | 仓库检查脚本，`pnpm check` 的全部内容；`layers.json` 是包依赖规则的唯一出处 |
 | `tooling/scripts/` | 脚本：`deps-lookup.ts`（查依赖版本和公告）、`generate.ts`（生成文档里的表） |
@@ -43,7 +44,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | --- | --- | --- |
 | `@runyard/protocol` | 无 | 已有 |
 | `@runyard/tokens` | 无 | 还没建 |
-| `@runyard/platform` | `@runyard/protocol` | 还没建 |
+| `@runyard/platform` | `@runyard/protocol` | 已有 |
 | `@runyard/core` | `@runyard/protocol`、`@runyard/platform` | 还没建 |
 | `@runyard/supervisor` | `@runyard/protocol`、`@runyard/platform`、`@runyard/core` | 还没建 |
 | `@runyard/client` | `@runyard/protocol`、`@runyard/platform` | 还没建 |
@@ -94,6 +95,7 @@ Claude Code 的钩子：改完文件后对那一个文件跑 Biome；结束回�
 | --- | --- |
 | 加依赖、升级依赖 | `docs/guides/add-a-dependency.md` |
 | 记录一个决定 | `docs/guides/write-an-adr.md` |
+| 写测试，尤其是需要平台实现的测试 | `docs/guides/testing.md` |
 | 查某条命令跑什么 | `docs/guides/commands.md` |
 
 完成标准（一个 PR 合并前）：引用了 PRD 锚点；新行为有测试；`pnpm verify` 通过并贴了结果；改了包结构、依赖规则、磁盘格式、构建发布做法的附了决策记录；动了依赖的按手册十步做完；文字都是中文，两个 README 同步；没有新增未说明的跳过。
