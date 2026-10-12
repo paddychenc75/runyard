@@ -1,5 +1,5 @@
 import { unlink } from "node:fs/promises";
-import { type AbsPath, joinPath, type Platform, posixRelPath } from "@runyard/platform";
+import { discoveryFilePath, type Platform } from "@runyard/platform";
 import { type SupervisorFile, supervisorFileSchema } from "@runyard/protocol";
 
 // 发现文件 ~/.runyard/run/supervisor.json（storage.md 2.4）：含口令，只有本人可读。
@@ -11,9 +11,8 @@ export interface DiscoveryStore {
   remove(): Promise<void>;
 }
 
-export function discoveryFilePath(stateDir: AbsPath): AbsPath {
-  return joinPath(stateDir, posixRelPath("run/supervisor.json"));
-}
+// 路径的定义在平台层（client 也要读同一个文件）；这里原样再导出，supervisor 的使用者不受影响
+export { discoveryFilePath };
 
 export function createPlatformDiscoveryStore(platform: Platform): DiscoveryStore {
   const path = discoveryFilePath(platform.paths.stateDir);

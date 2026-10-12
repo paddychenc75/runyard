@@ -32,6 +32,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `packages/protocol/` | 所有跨进程约定（目前有错误码、提示码、枚举、`RunyardError` / `Notice` / `LogEntry` / `Owner`、分帧、`Frame`、握手消息、版本比对、方法与事件的登记表、`Playground` / `RunSnapshot`、磁盘文件格式与升级链、`template.json` / `runner.json` / 工具定义的格式与校验） |
 | `packages/i18n/` | 文案、`createTranslator`、数字和时长格式、命令行语言解析（`resolveCliLocale`）、由中文文案生成的键和参数类型 |
 | `packages/supervisor/` | 管理进程：单实例、发现文件、握手服务、会话与方法分发、事件订阅、空闲退出、关闭；运行编排、资源库、日志等由后续 issue 通过接缝接入（目前只有骨架和会话组方法） |
+| `packages/client/` | 管理进程的客户端：读发现文件、握手、经平台层拉起并重连、版本表、带类型的 `call` 和事件订阅；错误是 `ClientError`（代码加参数），不打印 |
 | `packages/core/` | 工具检测、运行引擎、资源库等业务逻辑（目前有日志的切行、解码和读取时清洗，运行状态机与进程生命周期，以及资源库的项目创建、命名、索引和文件夹被动过的判断） |
 | `packages/testing/` | 测试替身：假时钟、假平台（含假进程、假端口、内存文件系统、假工具链）、临时主目录；只在 `*.test.ts` 里导入（决策记录 0014） |
 | `templates/` | 模板和运行器的数据文件。现在只有 `schema/`：由 `packages/protocol` 的 zod 定义生成的 JSON Schema（`pnpm generate`，不要手改）；内置模板、运行器、工具定义随后续 issue 放进来 |
@@ -56,7 +57,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `@runyard/platform` | `@runyard/protocol` | 已有 |
 | `@runyard/core` | `@runyard/protocol`、`@runyard/platform`、`@runyard/testing`（只在测试里） | 已有 |
 | `@runyard/supervisor` | `@runyard/protocol`、`@runyard/platform`、`@runyard/core`、`@runyard/testing`（只在测试里） | 已有 |
-| `@runyard/client` | `@runyard/protocol`、`@runyard/platform`、`@runyard/testing`（只在测试里） | 还没建 |
+| `@runyard/client` | `@runyard/protocol`、`@runyard/platform`、`@runyard/testing`（只在测试里） | 已有 |
 | `runyard` | `@runyard/protocol`、`@runyard/platform`、`@runyard/client`、`@runyard/core`、`@runyard/i18n`、`@runyard/testing`（只在测试里） | 还没建 |
 | `@runyard/testing` | `@runyard/protocol`、`@runyard/platform`、`@runyard/core`（只在测试里） | 已有 |
 <!-- generated:layers 结束 -->

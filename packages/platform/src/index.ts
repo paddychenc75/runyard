@@ -26,3 +26,4 @@ export type {
 } from "./platform.ts";
 export { isPlatformError, PlatformError, platformError } from "./platform-error.ts";
 export type { PlatformOptions } from "./platform-options.ts";
+export { discoveryFilePath, supervisorLogDir, supervisorLogPath } from "./state-files.ts";

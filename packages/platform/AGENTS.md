@@ -7,7 +7,7 @@
 
 ## 对外暴露什么
 
-只从 `src/index.ts` 导出：`getPlatform()`、`platformFor()`、`Platform` 及其类型、`AbsPath` / `PosixRelPath` 与 `absPath` / `posixRelPath` / `joinPath`、`PlatformError` / `platformError`。其他包只从 `@runyard/platform` 导入。
+只从 `src/index.ts` 导出：`getPlatform()`、`platformFor()`、`Platform` 及其类型、`AbsPath` / `PosixRelPath` 与 `absPath` / `posixRelPath` / `joinPath`、`PlatformError` / `platformError`、`discoveryFilePath` / `supervisorLogPath` / `supervisorLogDir`（状态目录里发现文件和管理进程日志的位置：supervisor 写、client 读，所以放在这里，`src/state-files.ts`）。其他包只从 `@runyard/platform` 导入。
 `getPlatform()` 是整个代码库唯一读取运行系统的地方；不支持的系统抛 `NOT_SUPPORTED`，不退到别的实现。测试用 `getPlatform({ home, arch, profile })` 或 `platformFor()` 指向临时目录。
 
 ## 本包特有的规则
