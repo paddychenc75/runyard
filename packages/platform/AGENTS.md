@@ -3,7 +3,7 @@
 ## 用途
 
 系统差异的唯一出口：`Platform` 接口、按系统分开的实现、路径与名称规则、契约测试（技术设计 §7.1，决策记录 0003、0013，`docs/architecture/platform-interface.md`）。
-现状：接口已定全；`paths`、`ipc`、`exec`（`which`、`spawn`、`spawnDetached`）、`proc`、`ports` 有真实现（`darwin`、`linux`）；其余各块是占位，抛 `INTERNAL`（“尚未实现”），随 #26、#28 逐块换成真实现。第一版只做 macOS，`win32` 不写。
+现状：接口已定全；`paths`、`ipc`、`exec`（`which`、`spawn`、`spawnDetached`）、`proc`、`ports`、`fs`、`watch` 有真实现（`darwin`、`linux`；`fs.trash` 只有 `darwin`，`linux` 抛 `NOT_SUPPORTED`）；其余各块是占位，抛 `INTERNAL`（“尚未实现”），随 #26 逐块换成真实现。第一版只做 macOS，`win32` 不写。
 
 ## 对外暴露什么
 
@@ -24,6 +24,12 @@
 - 契约测试通过 `@runyard/platform/contract` 导出给 `@runyard/testing`，假平台跑同一组用例；`ContractContext.complete` 为 true 的实现（假平台）不跑占位那一组。
 - 进程与端口（`posix/posix-proc.ts`、`posix-exec.ts`、`posix-ports.ts`，算法出自决策记录 0006）：`spawn` 参数数组不经 shell、`detached` 自成进程组、去掉 `ELECTRON_RUN_AS_NODE`；`terminate` 整组发信号、等 `graceMs`、再整组强制结束，**每次发信号前都重新核对身份**（根进程在则 pid 加启动时间必须一致且它是组长；根进程已死则组里不能有比它更早启动的成员）；pid 0、1、负数、本进程和本进程所在的组一律不碰。不要加“只凭 pid 或进程名”的路径。
 - 进程表和连接表怎么读是各系统的事（`ProcessSource`、`SocketTable`）：macOS 用 `ps`、`netstat -anv`（`darwin/`），Linux 读 `/proc`（`linux/`），算法共用。macOS 上 `127.0.0.1` 绑得上并不代表端口空闲（别的程序监听 `0.0.0.0` 时照样绑得上），所以 `ports.isFree` 绑完还要看连接表。
+- `fs`（`posix/fs/`，算法出自决策记录 0010）：除 `trash` 外 darwin 与 linux 共用。`readText`（不存在或不是文件返回 `null`）、`listDirs`（只列下一层子目录、排序、不存在返回 `[]`）、`exists`、`makeDir`（递归）、`writeFile`（父目录必须已在，覆盖）、`renameFile`、`moveDir`、`writeAtomic`。系统错误码统一经 `map-fs-error.ts`：`EBUSY`/`EPERM`/`EACCES` 是 `PATH_LOCKED`，`ENAMETOOLONG` 是 `PATH_TOO_LONG`，其余是 `INTERNAL`（系统码只进 `debug`）。
+- `moveDir` / `renameFile` 绝不覆盖已有的名字：POSIX 的 `rename` 会静默盖掉同名的空目录或文件，所以先占位（目录 `mkdir`、文件独占创建）再改名，目标已在抛 `NAME_EXISTS`；只改大小写（同一个条目）直接改名；只做同卷改名，跨卷（`EXDEV`）就是错误，**不退到复制再删除**；移进自己里面拒绝。
+- `writeAtomic(file, data, { private? })`：同目录临时文件（`.<名>.<随机>.tmp`，`wx` 创建时就带最终权限）、刷盘、改名盖掉目标；任何一步出错清掉临时文件，旧文件完好。`private: true` 是 0600（口令、私有状态）；缺省沿用已有文件的权限，新文件 0644 再受 umask 收窄。进程在改名前被杀会留下 `.tmp` 残片，清理不在这里。
+- `fs.trash`（`darwin/trash/`，只有 darwin）：条目不存在 `FOLDER_MISSING`；顺序是 ①`/usr/bin/trash`（参数数组、不经 shell；保留“放回原处”，结果 `restorable: true`；**只在平台的主目录就是账号真实主目录时用**，因为它只会进真实的废纸篓，测试用的临时主目录不会碰它）②卷上的废纸篓目录（同卷 `~/.Trash`，别的卷 `<挂载点>/.Trashes/<uid>`，模式 1333 和 0700）里先占位再改名，重名换 `名字 时.分.秒`、`名字 时.分.秒 2`……，**不列废纸篓目录**（会被隐私保护拒绝）、**不对已有名字直接改名**（K9 发现的数据丢失缺陷）③卷上没有废纸篓目录或改名跨了卷：复制到 `~/.Trash` 下的临时副本、逐项核对（种类、权限、大小、内容摘要、链接目标）、改成最终名字，之后才删原件（`remove-after-verified-copy.ts`，**整个平台层唯一删除原件的地方**，`no-permanent-delete` 检查只放行这一个文件里的递归删除）。任何一步失败：原件保留、半成品清掉、`TRASH_UNAVAILABLE`；只读目录（如 Go 的模块缓存）在确定要删之前才放开写权限。不用 `osascript`。后两条路径 `restorable: false`。外部依赖（复制、改名、系统命令）可注入（`trash-deps.ts`），测试靠它造故障。
+- `watch`（`posix/fs/posix-watch.ts`）：chokidar 5（纯 JS，间接依赖 `readdirp`），事件攒 30 毫秒成批；`ignore` 按相对路径，`depth: 1` 只看根的直接子项；`dispose` 返回时底层句柄已交还（chokidar 的 `close()` 返回后 libuv 还要约 1 毫秒才关完，所以多等 10 毫秒），之后不再回调。监听出错接口里没有出口，被吞掉，靠资源库扫描兜底。
+- `paths.maxPathLength` 是整条路径的字节上限（macOS 1024、Linux 4096），`checkLength` 以它为界；要在提示里给用户看数字时用它，不要从装配方传。
 - 实现一块占位时：在 `posix/` 或 `darwin/` 写真实现，换掉 `posix/pending-areas.ts` 里对应的占位，再把 `contract/pending.contract.ts` 里对应的行换成真用例。
 
 ## 子目录地图
@@ -31,9 +37,9 @@
 - `src/platform.ts`：`Platform` 接口和它的类型；`src/get-platform.ts`：`getPlatform()`
 - `src/path-types.ts`、`src/platform-error.ts`、`src/platform-options.ts`
 - `src/paths/`：名称校验（各系统一致的纯函数）
-- `src/posix/`：darwin 与 linux 共用的部分：长度检查、网盘与用户文件夹的判断（POSIX 路径，用 `node:path/posix`，任何系统上结果一样）、`ipc/`（连接点、两种内核锁、监听、连接、握手证明）、`spawn-detached.ts`、`posix-exec.ts` / `posix-proc.ts` / `posix-ports.ts`（`ProcessSource`、`SocketTable` 是各系统读进程表和连接表的接口）、占位；`src/darwin/`（`ps`、`netstat`）、`src/linux/`（`/proc`）：各系统的组合
+- `src/posix/`：darwin 与 linux 共用的部分：长度检查、`fs/`（文件操作、先占位再改名、原子写、`watch`）、网盘与用户文件夹的判断（POSIX 路径，用 `node:path/posix`，任何系统上结果一样）、`ipc/`（连接点、两种内核锁、监听、连接、握手证明）、`spawn-detached.ts`、`posix-exec.ts` / `posix-proc.ts` / `posix-ports.ts`（`ProcessSource`、`SocketTable` 是各系统读进程表和连接表的接口）、占位；`src/darwin/`（`ps`、`netstat`、`trash/`）、`src/linux/`（`/proc`）：各系统的组合
 - `src/contract/`：契约测试，同一组用例对每个实现各跑一遍；真 socket、内核锁、脱钩进程、起真进程树和绑真端口的用例（`exec-process`、`proc`、`ports`）只对“本机会选的实现”跑（`ContractContext.native`），其余实现跑与系统无关的用例；假程序在 `fixtures/fake-service.ts`，起的进程一律记账（`process-ledger.ts`），teardown 核对无遗留
-- `src/test-support/`：测试用的小进程（抢锁的启动者、脱钩的启动者）、握手对话的最小替身、临时主目录、按 pid 加启动时间收尾的进程登记（并同时登记到进程测试阶段的遗留进程守卫，`spawned-registry.ts`）；不是产品代码，不从入口导出
+- `src/test-support/`：废纸篓与改名测试的沙盒（`trash-sandbox.ts`：每个测试自己的临时根目录，所有改名、移动、删除之前断言目标在根目录内）、测试用的小进程（抢锁的启动者、脱钩的启动者）、握手对话的最小替身、临时主目录、按 pid 加启动时间收尾的进程登记（并同时登记到进程测试阶段的遗留进程守卫，`spawned-registry.ts`）；不是产品代码，不从入口导出
 - `vitest.config.ts`：继承 `tooling/vitest/base.ts`，不要在这里改测试规则
 
 ## 测试
@@ -43,4 +49,5 @@ pnpm test --filter @runyard/platform
 ```
 
 不需要平台实现的测试照常命名；需要的，文件名以 `.platform-dependent.test.ts` 结尾，Windows 任务不跑它（唯一的跳过机制，见 `docs/guides/testing.md`）。契约测试就是这一类。测试里不写系统判断。
+废纸篓测试只在 `trash-sandbox.ts` 的沙盒里做（假主目录下的 `.Trash`）。唯一往真实 `~/.Trash` 放东西的是 `trash-system-and-volume.platform-dependent.test.ts` 里验证 `/usr/bin/trash` 的那一条：名字带 `runyard-test-<随机>` 前缀，测完只按这个名字逐项清掉并用 `stat` 确认（废纸篓不能列目录），绝不清空废纸篓。别的卷用 `hdiutil` 造 30 MB 的 APFS 磁盘映像（macOS 才注册，约 1.5 秒一次）。Finder 里“放回原处”无法自动断言，由负责人在自己的 Mac 上看一次（证据文件 0010 第 10 节）。
 起进程、绑 socket 的测试用 `test-support/temp-home.ts` 的短前缀临时目录（socket 路径有 104 字节上限），每个进程登记 pid 加启动时间，收尾时核对后结束（`tracked-processes.ts`）。

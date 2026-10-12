@@ -27,14 +27,14 @@
 - 运行引擎不读时钟和平台全局：平台、时钟（`RunClock`，结构类型，`FakeClock` 满足它）、事件出口都从 `RunEngineDeps` 注入。状态转移只经 `assertTransition`，非法转移是缺陷，抛 `IllegalTransitionError`。
 - 停止：把运行器的 `mode` 和 `graceMs`（缺省 2000）原样交给 `platform.proc.terminate`（它负责核对 pid 加启动时间、礼貌请求、等满 `graceMs`、整树强制结束）；返回后引擎再核对 `members` 为空（否则整棵 `kill`），再等端口在 3 秒内可绑定。只等进程退出，不等输出管道关闭，退出后主动销毁管道。进程自己退出后树里留下的后代也一起结束。
 - 四个接缝，别的 issue 在这里接上，不改引擎的类型：`RunPreparer`（checking 与 installing：工具检查、安装、端口、环境，返回 `RunPlan` 或 `RunyardError<FailureReason>`；#36）、`ReadinessProbe`（就绪探测；#36）、`RunSinks`（`run.state`、日志、`run.exit`、较慢通知的出口；supervisor）、`Run.setOwner` 与 `StartRequest.owner`（持有者只是字段；#40）。`RunEngineDeps.removeDir` 用来删 Go 的单独临时目录。
-- 资源库的接缝（类型在 `src/library/library-types.ts`）：`LibraryStorage`（读目录、读写文件的出口，平台接口目前没有读文件和列目录，真实实现由 supervisor 装配；原子写入走 `platform.fs.writeAtomic`）、`PortSlotAllocator`（新端口槽位，返回 `null` 表示没有端口，#36）、`PlaygroundSeed`（模板那一侧交来的“相对路径加内容”和写进元数据的几项，模板各 issue 接上）。`pathLimit` 由装配方给（平台接口只给“是否接近”的结论，不给数字）。
+- 资源库的接缝（类型在 `src/library/library-types.ts`）：读目录、读写文件、改名、原子写直接用平台接口 `platform.fs`（`readText`、`listDirs`、`exists`、`makeDir`、`writeFile`、`renameFile`、`writeAtomic`），没有另设存储接缝；`PortSlotAllocator`（新端口槽位，返回 `null` 表示没有端口，#36）、`PlaygroundSeed`（模板那一侧交来的“相对路径加内容”和写进元数据的几项，模板各 issue 接上）。路径长度上限直接取 `platform.paths.maxPathLength`，不再由装配方传。
 - 资源库不做永久删除，也没有任何 `rm` 一类的帮助函数；创建中途失败的半成品只经平台层 `fs.trash`。改名、移到废纸篓、自动清理不在这里（#38）。
 - 创建的顺序是规格要求的：先校验名称（不碰任何东西），再查重名和路径长度，写文件，最后写 `.runyard/playground.json` 和索引；没有元数据文件的文件夹会被扫描忽略。默认名的序号只看资源库根目录里现存的文件夹。
 
 ## 子目录地图
 
 - `src/logs/`：日志的切行、解码和清洗；每个文件旁有同名 `.test.ts`
-- `src/library/`：名称（`playground-name.ts`）、创建（`create-playground.ts`）、索引（`library-index.ts`）、扫描判断（`scan-library.ts`，文件头有五行判断表）、门面（`playground-library.ts`）；`library-harness.test.ts` 是测试共用的现场（内存文件系统包成 `LibraryStorage`）
+- `src/library/`：名称（`playground-name.ts`）、创建（`create-playground.ts`）、索引（`library-index.ts`）、扫描判断（`scan-library.ts`，文件头有五行判断表）、门面（`playground-library.ts`）；`library-harness.test.ts` 是测试共用的现场（假平台的内存文件系统，经平台接口 `fs` 使用）
 - `src/run/`：转移表（`run-transitions.ts`）、一次运行的会话（`run-session.ts`）、引擎（`run-engine.ts`）、停止（`stop-process-tree.ts`）、输出收集（`run-output.ts`）、类型与接缝（`run-types.ts`）；`run-harness.test.ts` 是测试共用的现场（假平台、记录事件的出口），只有测试文件能导入 `@runyard/testing`
 
 ## 测试

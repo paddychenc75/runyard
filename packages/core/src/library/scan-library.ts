@@ -2,13 +2,7 @@ import { basename, join } from "node:path";
 import { type AbsPath, absPath, type Platform } from "@runyard/platform";
 import type { LibraryEntry, PlaygroundFile } from "@runyard/protocol";
 import type { LibraryIndex } from "./library-index.ts";
-import type {
-  LibraryStorage,
-  PortSlotAllocator,
-  ScanChange,
-  ScanReport,
-  ScanSkip,
-} from "./library-types.ts";
+import type { PortSlotAllocator, ScanChange, ScanReport, ScanSkip } from "./library-types.ts";
 import {
   playgroundFilePath,
   readPlaygroundFile,
@@ -27,7 +21,6 @@ import {
 export type ScanContext = {
   readonly root: AbsPath;
   readonly index: LibraryIndex;
-  readonly storage: LibraryStorage;
   readonly platform: Pick<Platform, "fs">;
   readonly ports: PortSlotAllocator;
   readonly now: () => number;
@@ -44,10 +37,10 @@ type Found = {
 async function discover(ctx: ScanContext): Promise<{ found: Found[]; skipped: ScanSkip[] }> {
   const found: Found[] = [];
   const skipped: ScanSkip[] = [];
-  const names = [...(await ctx.storage.listDirs(ctx.root))].sort();
+  const names = [...(await ctx.platform.fs.listDirs(ctx.root))].sort();
   for (const name of names) {
     const dir = absPath(join(ctx.root, name));
-    const read = await readPlaygroundFile(ctx.storage, dir);
+    const read = await readPlaygroundFile(ctx.platform.fs, dir);
     if (read.status === "absent") continue;
     if (read.status === "ok") found.push({ dir, id: read.value.id, file: read.value });
     else if (read.status === "newer" && read.id !== null)
@@ -151,7 +144,7 @@ async function markMissing(
 ): Promise<void> {
   for (const entry of [...ctx.index.entries()]) {
     if (seen.has(entry.id)) continue;
-    const read = await readPlaygroundFile(ctx.storage, entry.path as AbsPath);
+    const read = await readPlaygroundFile(ctx.platform.fs, entry.path as AbsPath);
     const stillThere =
       (read.status === "ok" && read.value.id === entry.id) ||
       (read.status === "newer" && read.id === entry.id);

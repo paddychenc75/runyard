@@ -6,7 +6,6 @@ import type { LibraryIndex } from "./library-index.ts";
 import type {
   CreatePlaygroundRequest,
   CreatePlaygroundResult,
-  LibraryStorage,
   PlaygroundSeed,
   PortSlotAllocator,
 } from "./library-types.ts";
@@ -25,13 +24,10 @@ import { assertValidName, nextDefaultName } from "./playground-name.ts";
 export type CreateContext = {
   readonly root: AbsPath;
   readonly index: LibraryIndex;
-  readonly storage: LibraryStorage;
   readonly platform: Pick<Platform, "paths" | "fs">;
   readonly ports: PortSlotAllocator;
   readonly now: () => number;
   readonly newId: () => string;
-  /** 当前系统的路径长度上限（字符数）。平台接口只给“是否接近”，数字由装配方从平台配置带进来，用于提示的参数 */
-  readonly pathLimit: number;
 };
 
 async function chooseName(
@@ -42,7 +38,7 @@ async function chooseName(
   const name =
     request.name ??
     // 只看资源库根目录里现存的文件夹：序号不记已删除的，也不被根目录之外的项目占用
-    nextDefaultName(seed.template.id, await ctx.storage.listDirs(ctx.root));
+    nextDefaultName(seed.template.id, await ctx.platform.fs.listDirs(ctx.root));
   assertValidName(ctx.platform.paths.validateName, name);
   return name;
 }
@@ -52,7 +48,12 @@ function lengthNotices(ctx: CreateContext, dir: AbsPath, name: string): Notice[]
   if (verdict === "too-long")
     throw libraryError("PATH_TOO_LONG", { name }, `path too long: ${dir.length} chars`);
   if (verdict === "ok") return [];
-  return [{ code: "PATH_NEAR_LIMIT", params: { length: [...dir].length, limit: ctx.pathLimit } }];
+  return [
+    {
+      code: "PATH_NEAR_LIMIT",
+      params: { length: [...dir].length, limit: ctx.platform.paths.maxPathLength },
+    },
+  ];
 }
 
 async function reuseExisting(
@@ -61,7 +62,7 @@ async function reuseExisting(
   dir: AbsPath,
 ): Promise<CreatePlaygroundResult> {
   const entry = ctx.index.byPath(dir);
-  const read = entry ? await readPlaygroundFile(ctx.storage, dir) : null;
+  const read = entry ? await readPlaygroundFile(ctx.platform.fs, dir) : null;
   if (!entry || read?.status !== "ok")
     throw libraryError("NAME_EXISTS", { name }, `folder exists but is not a registered playground`);
   return resultOf(name, dir, entry, read.value, false, []);
@@ -87,13 +88,13 @@ function resultOf(
 }
 
 async function copySeedFiles(ctx: CreateContext, dir: AbsPath, seed: PlaygroundSeed) {
-  await ctx.storage.makeDir(dir);
+  await ctx.platform.fs.makeDir(dir);
   for await (const file of seed.files) {
     if (file.path === ".runyard" || file.path.startsWith(".runyard/"))
       throw libraryError("INTERNAL", {}, `seed file inside .runyard: ${file.path}`);
     const target = absPath(join(dir, ...file.path.split("/")));
-    await ctx.storage.makeDir(absPath(join(target, "..")));
-    await ctx.storage.writeFile(target, file.contents);
+    await ctx.platform.fs.makeDir(absPath(join(target, "..")));
+    await ctx.platform.fs.writeFile(target, file.contents);
   }
 }
 
@@ -137,7 +138,7 @@ export async function createPlayground(
   const dir = absPath(join(ctx.root, name));
 
   // 2. 重名：同名文件夹已经存在（不论是不是项目）
-  if (await ctx.storage.exists(dir)) {
+  if (await ctx.platform.fs.exists(dir)) {
     if (request.ifExists === "reuse") return reuseExisting(ctx, name, dir);
     throw libraryError("NAME_EXISTS", { name }, `folder already exists: ${name}`);
   }
@@ -153,7 +154,7 @@ export async function createPlayground(
   const file = buildFile(seed, request, id, ctx.now());
   try {
     await copySeedFiles(ctx, dir, seed);
-    await ctx.storage.makeDir(absPath(join(dir, ".runyard")));
+    await ctx.platform.fs.makeDir(absPath(join(dir, ".runyard")));
     await ctx.platform.fs.writeAtomic(playgroundFilePath(dir), serializePlaygroundFile(file));
   } catch (error) {
     // 半成品只能进废纸篓（不做永久删除）；放不进就留着，下次重名时会明确报 NAME_EXISTS

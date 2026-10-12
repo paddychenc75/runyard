@@ -107,7 +107,7 @@ describe("创建项目", () => {
 
   it("[LIBRARY-PLAYGROUNDS-05] 路径接近上限时结果带 PATH_NEAR_LIMIT，创建照常进行", async () => {
     const h = createLibraryHarness();
-    const library = await h.open({ length: "near-limit", pathLimit: 1024 });
+    const library = await h.open({ length: "near-limit", maxPathLength: 1024 });
     const result = await library.create(seedOf("react19"), { name: "demo", createdBy: user });
     expect(result.created).toBe(true);
     expect(result.notices).toEqual([

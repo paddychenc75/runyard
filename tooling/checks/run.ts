@@ -16,6 +16,7 @@ import { i18nUnused } from "./i18n-unused.ts";
 import { i18nWording } from "./i18n-wording.ts";
 import { layers } from "./layers.ts";
 import { noClaudeMd } from "./no-claude-md.ts";
+import { noPermanentDelete } from "./no-permanent-delete.ts";
 import { platformBranching } from "./platform-branching.ts";
 import { platformContract } from "./platform-contract.ts";
 import { prdAnchorsKept } from "./prd-anchors-kept.ts";
@@ -32,6 +33,7 @@ import type { Check } from "./workspace.ts";
 // pnpm check 的入口：依次运行全部仓库检查，任何一项失败就以非 0 退出。
 // 技术设计 §9.4 在第 3 次提交时列了十八项；platform-contract 与 platform-branching 随平台包（#24）加入。
 // 国际化的六项（i18n-keys、i18n-codes、i18n-glossary、i18n-wording、i18n-unused、ui-strings）随 M1 的 #23 加入；
+// no-permanent-delete（永久删除调用）随 M1 的 #28 加入。
 // 界面一侧的检查和 site-i18n 随 M2、M4。spec-validate、spec-trace 随第 5 次提交。
 const checks: Check[] = [
   layers,
@@ -62,6 +64,7 @@ const checks: Check[] = [
   i18nWording,
   i18nUnused,
   uiStrings,
+  noPermanentDelete,
 ];
 
 const root = join(import.meta.dirname, "..", "..");

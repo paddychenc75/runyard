@@ -9,7 +9,6 @@ import type {
   CreatePlaygroundRequest,
   CreatePlaygroundResult,
   LibraryItem,
-  LibraryStorage,
   PlaygroundSeed,
   PortSlotAllocator,
   ScanReport,
@@ -21,13 +20,10 @@ export type PlaygroundLibraryDeps = {
   /** 资源库根目录（设置里的 libraryRoot） */
   readonly root: AbsPath;
   readonly platform: Pick<Platform, "paths" | "fs">;
-  readonly storage: LibraryStorage;
   readonly ports: PortSlotAllocator;
   readonly now: () => number;
   /** 缺省生成 ULID；测试给固定序列 */
   readonly newId?: () => string;
-  /** 当前系统的路径长度上限，见 CreateContext.pathLimit */
-  readonly pathLimit: number;
 };
 
 // 资源库：索引加上“文件夹被动过”的判断。改名、移到废纸篓、自动清理不在这里（#38），
@@ -45,7 +41,7 @@ export class PlaygroundLibrary {
   static async open(deps: PlaygroundLibraryDeps): Promise<PlaygroundLibrary> {
     const path = libraryIndexPath(deps.platform.paths.stateDir);
     const { index, state } = await LibraryIndex.load(
-      { storage: deps.storage, platform: deps.platform, now: deps.now },
+      { platform: deps.platform, now: deps.now },
       path,
       deps.root,
     );
@@ -95,7 +91,7 @@ export class PlaygroundLibrary {
     this.#index.assertWritable();
     const item = this.find(ref);
     if (!item) throw libraryError("PLAYGROUND_NOT_FOUND", { name: ref }, `no playground ${ref}`);
-    const read = await readPlaygroundFile(this.#deps.storage, absPath(join(path)));
+    const read = await readPlaygroundFile(this.#deps.platform.fs, absPath(join(path)));
     const same =
       (read.status === "ok" && read.value.id === item.entry.id) ||
       (read.status === "newer" && read.id === item.entry.id);
@@ -113,14 +109,12 @@ export class PlaygroundLibrary {
   }
 
   #context(): CreateContext {
-    const { root, platform, storage, ports, now, newId, pathLimit } = this.#deps;
+    const { root, platform, ports, now, newId } = this.#deps;
     return {
       root,
       platform,
-      storage,
       ports,
       now,
-      pathLimit,
       index: this.#index,
       newId: newId ?? (() => randomUlid(now())),
     };

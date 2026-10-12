@@ -8,21 +8,7 @@ import type {
 } from "@runyard/protocol";
 
 // 资源库的类型与接缝。下面标了“接缝”的几处由别的 issue 接上，不改这里的类型：
-// 存储（真实实现随平台层的文件操作，#28、#41）、端口槽位（#36）、模板来源（模板各 issue）。
-
-/** 接缝：资源库读目录、读写文件的出口。真实实现由 supervisor 装配；写入原子化与加锁不在本包 */
-export interface LibraryStorage {
-  /** 文件不存在返回 null */
-  readText(path: AbsPath): Promise<string | null>;
-  /** 目录下一层的子目录名；目录不存在返回空数组 */
-  listDirs(dir: AbsPath): Promise<string[]>;
-  exists(path: AbsPath): Promise<boolean>;
-  /** 连同缺的上级目录一起建 */
-  makeDir(path: AbsPath): Promise<void>;
-  writeFile(path: AbsPath, data: string | Uint8Array): Promise<void>;
-  /** 只给“坏文件改名留存”用 */
-  renameFile(from: AbsPath, to: AbsPath): Promise<void>;
-}
+// 端口槽位（#36）、模板来源（模板各 issue）。
 
 /** 接缝：端口槽位（#36）。返回 null 表示这种运行器没有端口（脚本） */
 export interface PortSlotAllocator {
