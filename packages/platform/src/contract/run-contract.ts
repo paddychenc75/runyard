@@ -1,6 +1,8 @@
 import { describe } from "vitest";
 import type { ContractContext } from "./context.ts";
+import { execContract } from "./exec.contract.ts";
 import { identityContract } from "./identity.contract.ts";
+import { ipcContract } from "./ipc.contract.ts";
 import { pathsContract } from "./paths.contract.ts";
 import { pendingContract } from "./pending.contract.ts";
 
@@ -9,6 +11,8 @@ export function runContract(ctx: ContractContext): void {
   describe(`平台契约：${ctx.name}`, () => {
     identityContract(ctx);
     pathsContract(ctx);
+    ipcContract(ctx);
+    execContract(ctx);
     pendingContract(ctx);
   });
 }

@@ -29,7 +29,7 @@ packages/platform/src/contract.test.ts   同一组契约测试，对每个已有
 | `ports` | `isFree(port)` 返回 `free` `in-use` `reserved`；`occupant(port)`；`connections(port)`；`loopbackOnly(port)` | 只试 `127.0.0.1` 和 `::1`；占用者靠 `lsof`（推） | 绑定报无权限返回 `reserved`；占用者靠 `netstat`（推） | 同 macOS |
 | `fs` | `moveDir(from, to)`；`trash(dir, { regenerable? })`；`writeAtomic(file, data)` | `trash` 优先 `/usr/bin/trash`，否则占位再改名，见 0010；不用 `osascript` | `trash` 用随包小工具加预检，依赖目录（`regenerable`）直接删、其余进回收站，放不进就失败、绝不永久删除；`moveDir` 失败码 `EBUSY` `EPERM` `EACCES` 归为 `PATH_LOCKED` | `trash` 抛 `NOT_SUPPORTED` |
 | `watch` | `watch(root, opts, cb)`，返回可释放的句柄 | 文件系统事件 | `dispose` 后句柄必须已释放，否则改名删除会被占用 | 同 macOS |
-| `ipc` | `endpoint()`；`listen()`；`connect(timeoutMs)` | `listen()` 先拿 `run/supervisor.lock` 内核锁再监听 | 命名管道，管道本身就是锁 | 抽象命名空间 socket 作锁 |
+| `ipc` | `endpoint()`；`listen()`（别的进程持锁抛 `BUSY`）；`connect(timeoutMs)`（连不上抛 `SUPERVISOR_UNAVAILABLE`）；`computeProof`、`verifyProof`（握手的 HMAC，两个系统共用，Node crypto，比较用常量时间） | `listen()` 先拿 `run/supervisor.lock` 内核锁再监听 | 命名管道，管道本身就是锁 | 抽象命名空间 socket 作锁 |
 | `tools` | `candidates(tool, env)`；`packageManagers()` | 常见安装目录作解析失败时的临时答案 | 除 `PATH` 外查固定位置和注册表；商店占位 `python.exe` 判未安装 | 同 macOS |
 | `shell` | `interactive(env)`，第一个是默认 | 登录 shell | PowerShell 等 | 同 macOS |
 | `desktop` | `reveal` `openTerminalAt` `openInEditor` | 实现 | 实现 | 抛 `NOT_SUPPORTED` |
