@@ -121,7 +121,7 @@
 
 1. 轮转规则的数字：`supervisor.log`、`app.log` 单个文件大小和保留份数（设计写“建仓库时定”）。
 2. 每次运行日志文件的目录和文件命名（设计只说“每次运行一个文件”）。
-3. 测试里怎样把 `~/.runyard` 和 `~/Runyard` 换成临时目录（AGENTS.md 要求测试不碰真实目录；用环境变量覆盖还是显式传参，设计未定）。
+3. ~~测试里怎样把 `~/.runyard` 和 `~/Runyard` 换成临时目录~~ 已定：显式传参，不读环境变量。平台层的 `home` 选项决定两个目录，`@runyard/testing` 的 `createTempHome()` 造临时主目录（决策记录 0014）。
 4. ~~`toolchain.json` 的逐字段形状~~ 已定（#19）：`{ formatVersion, entries: { <键>: { checkedAt, tools: ToolCheck[] } } }`。键由 core 按 0009 拼成不透明字符串（登录 shell 加启动文件 mtime 指纹，有项目版本文件时加项目路径）；有效期 `TOOLCHAIN_CACHE_TTL_MS` 为 1 小时（`isToolchainCacheFresh`，时间由调用方给）；条目与 `toolchain.check` 的出参同形，不留检测用的 PATH。
 5. 升级时是否保留 `.bak-vN` 备份：`protocol` 只做内存里的纯升级，返回里带 `upgradedFrom`，不碰磁盘；要不要在第一次落盘前备份由 core 和 supervisor 的实现 issue 决定，设计仍未确认，需要负责人拍板。
 6. 发现文件被删而管理进程仍活着的恢复办法（0005 已列为空白）。

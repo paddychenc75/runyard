@@ -13,6 +13,6 @@ export function runContract(ctx: ContractContext): void {
     pathsContract(ctx);
     ipcContract(ctx);
     execContract(ctx);
-    pendingContract(ctx);
+    if (ctx.complete !== true) pendingContract(ctx);
   });
 }

@@ -14,4 +14,6 @@ export interface ContractContext {
    * 不是跳过：这些用例对本机的实现总是跑，每个 CI 系统各验证自己的那一份
    */
   readonly native: boolean;
+  /** 实现了接口的全部成员、没有占位（内存版的假平台）：不跑“占位成员抛 INTERNAL”那一组 */
+  readonly complete?: boolean;
 }
