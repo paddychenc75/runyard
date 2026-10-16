@@ -33,14 +33,27 @@ jobs:
 
       # 需要仓库设置里打开“依赖图（Dependency graph）”，否则这一步报错。
       # 能读懂 pnpm 11 的 pnpm-lock.yaml：已在真实 PR 上核实（决策记录 0011）。
+      - name: 安装 Node（读允许清单用，版本读自 .node-version）
+        if: github.event_name == 'pull_request'
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+
+      # 放行统一走 security/allowlist.toml，这里不重复写一份（技术设计 §8.6.3）：
+      # 脚本核对清单后输出 root 范围的编号；清单有问题（过期、超限）时脚本失败，审查随之变红。
+      # 该 Action 读 pnpm 锁文件分不出开发依赖，所以已登记的例外要这样传进去。
+      - name: 读取允许清单里的公告编号
+        id: allowlist
+        if: github.event_name == 'pull_request'
+        run: echo "ids=$(node tooling/ci/allow-ghsas.ts)" >> "$GITHUB_OUTPUT"
+
       - name: 依赖变更审查
         if: github.event_name == 'pull_request'
         uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
         with:
           fail-on-severity: high
           fail-on-scopes: runtime
-          # 放行统一走 security/allowlist.toml，这里不重复写一份（技术设计 §8.6.3）
-          allow-ghsas: ""
+          allow-ghsas: ${{ steps.allowlist.outputs.ids }}
           # 许可证检查：技术设计只写了“许可证检查”，没有给出允许或禁止的许可证列表，
           # 所以先关闭，等负责人定下列表后再开（见 CONTRIBUTING.md 末尾的待办）
           license-check: false
