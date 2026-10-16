@@ -30,11 +30,13 @@ export class WorkspaceTabs {
     if (id === LIBRARY_TAB || this.#open.includes(id)) this.#active = id;
   }
 
-  /** 项目已不在资源库里（被删），它的标签随之去掉 */
-  retain(existing: ReadonlySet<string>): void {
+  /** 项目已不在资源库里（被删），它的标签随之去掉；返回被去掉的标签 */
+  retain(existing: ReadonlySet<string>): string[] {
+    const removed = this.#open.filter((id) => !existing.has(id));
     this.#open = this.#open.filter((id) => existing.has(id));
     if (this.#active !== LIBRARY_TAB && !this.#open.includes(this.#active)) {
       this.#active = LIBRARY_TAB;
     }
+    return removed;
   }
 }

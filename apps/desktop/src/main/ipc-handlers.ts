@@ -4,6 +4,7 @@ import {
   desktopChannels,
   desktopMethodNames,
 } from "../shared/desktop-bridge.ts";
+import type { Bounds } from "../shared/layout.ts";
 import type { LibraryState } from "../shared/library-state.ts";
 import { isAppUrl } from "./app-protocol.ts";
 import type { LibraryController } from "./library-controller.ts";
@@ -25,6 +26,16 @@ export interface IpcHost {
 
 function text(value: unknown): string | null {
   return typeof value === "string" && value !== "" ? value : null;
+}
+
+/** 占位区的矩形：四个有限的数，宽高不为负；其他形状一律不要（页面发来的数据不可信） */
+function parseBounds(value: unknown): Bounds | null {
+  if (typeof value !== "object" || value === null) return null;
+  const { x, y, width, height } = value as Record<string, unknown>;
+  const numbers = [x, y, width, height];
+  if (!numbers.every((n) => typeof n === "number" && Number.isFinite(n))) return null;
+  if ((width as number) < 0 || (height as number) < 0) return null;
+  return { x: x as number, y: y as number, width: width as number, height: height as number };
 }
 
 /** 注册全部通道，并把状态变化推给界面；返回停止推送的函数 */
@@ -51,6 +62,17 @@ export function registerBridgeHandlers(
     "tab.select": async (id) => {
       const tab = text(id);
       if (tab !== null) controller.selectTab(tab);
+    },
+    "preview.bounds": (value) => {
+      if (value === null) controller.setPreviewBounds(null);
+      else {
+        const bounds = parseBounds(value);
+        if (bounds !== null) controller.setPreviewBounds(bounds);
+      }
+    },
+    "preview.capture": () => controller.capturePreview(),
+    "preview.visible": (visible) => {
+      if (typeof visible === "boolean") controller.setPreviewVisible(visible);
     },
     "playground.create": async (id) => {
       const template = text(id);

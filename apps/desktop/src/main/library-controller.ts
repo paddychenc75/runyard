@@ -1,6 +1,7 @@
 import { isClientError, type RunyardClient } from "@runyard/client";
 import type { Locale } from "@runyard/i18n";
 import type { Playground, RunSnapshot, TemplateRecord } from "@runyard/protocol";
+import type { Bounds } from "../shared/layout.ts";
 import type { DesktopError, LibraryState } from "../shared/library-state.ts";
 import { buildLibraryState, previewUrlFor } from "./build-library-state.ts";
 import { LIBRARY_TAB, WorkspaceTabs } from "./workspace-tabs.ts";
@@ -11,7 +12,15 @@ import { LIBRARY_TAB, WorkspaceTabs } from "./workspace-tabs.ts";
 /** 预览视图的宿主。同一个项目、同一个地址再次 show 时应当什么都不做 */
 export interface PreviewHost {
   show(playgroundId: string, url: string): void;
+  /** 藏起当前预览但保留视图（切到资源库或别的标签） */
   hide(): void;
+  /** 销毁这个项目的预览视图（标签被去掉、或页面没了/不再就绪） */
+  release(playgroundId: string): void;
+  /** 占位区的位置；null 是占位区不在了 */
+  setBounds(bounds: Bounds | null): void;
+  /** 截当前预览的一帧；没有预览是 null */
+  capture(): Promise<string | null>;
+  setVisible(visible: boolean): void;
 }
 
 /** 控制器用到的客户端的那一小部分 */
@@ -168,7 +177,10 @@ export class LibraryController {
       this.#playgrounds = playgrounds;
       this.#runs = runs;
       this.#templates = templates;
-      this.#workspace.retain(new Set(playgrounds.map((playground) => playground.id)));
+      const removed = this.#workspace.retain(
+        new Set(playgrounds.map((playground) => playground.id)),
+      );
+      for (const id of removed) this.#preview.release(id);
     } catch (error) {
       this.#fail(error);
     }
@@ -176,12 +188,29 @@ export class LibraryController {
     this.#emit();
   }
 
+  setPreviewBounds(bounds: Bounds | null): void {
+    this.#preview.setBounds(bounds);
+  }
+
+  capturePreview(): Promise<string | null> {
+    return this.#preview.capture();
+  }
+
+  setPreviewVisible(visible: boolean): void {
+    this.#preview.setVisible(visible);
+  }
+
   #applyPreview(): void {
-    // 预览跟着当前标签走：资源库标签没有预览
+    // 预览跟着当前标签走：资源库标签不显示预览（视图留着，回来即见）。
+    // 项目标签页面没就绪（启动中、已停止、崩溃）就销毁视图：旧页面已经没了，界面显示占位区
     const active = this.#workspace.active;
-    const url = active === LIBRARY_TAB ? null : previewUrlFor(active, this.#runs);
+    if (active === LIBRARY_TAB) {
+      this.#preview.hide();
+      return;
+    }
+    const url = previewUrlFor(active, this.#runs);
     if (url !== null) this.#preview.show(active, url);
-    else this.#preview.hide();
+    else this.#preview.release(active);
   }
 
   #fail(error: unknown): void {

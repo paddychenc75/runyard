@@ -44,13 +44,19 @@ export async function runSmoke(
       return current?.startsWith("http://127.0.0.1:") ? current : undefined;
     });
     log(`preview loaded ${url}`);
-    const rows = await waitFor("rows in the window", async () => {
-      const count = (await window.webContents.executeJavaScript(
-        'document.querySelectorAll("[data-playground]").length',
-      )) as number;
-      return count > 0 ? count : undefined;
+    // 视图要摆在界面占位区的位置上（占位区实测后经 preview.bounds 报来）
+    const slot = await waitFor("the preview slot", async () => {
+      const rect = (await window.webContents.executeJavaScript(
+        `(() => { const r = document.querySelector("[data-preview-slot]")?.getBoundingClientRect(); return r ? { x: Math.round(r.x), y: Math.round(r.y), width: Math.round(r.width), height: Math.round(r.height) } : null; })()`,
+      )) as { x: number; y: number; width: number; height: number } | null;
+      const placed = preview.currentBounds();
+      return rect !== null &&
+        placed !== undefined &&
+        JSON.stringify(rect) === JSON.stringify(placed)
+        ? rect
+        : undefined;
     });
-    log(`window shows ${rows} playground row(s)`);
+    log(`preview view sits on the slot ${JSON.stringify(slot)}`);
     const text = (await window.webContents.executeJavaScript("document.body.innerText")) as string;
     log(`window text: ${text.replaceAll("\n", " | ")}`);
     await controller.stopRun(created.id);

@@ -8,6 +8,17 @@ import { AppFrame } from "./AppFrame.tsx";
 
 afterEach(cleanup);
 
+// jsdom 没有 ResizeObserver；预览占位区用它盯自己的大小。有了它，Base UI 的滚动区也会走带动画的分支，
+// 而 jsdom 没有 getAnimations，所以一并补上
+(Element.prototype as { getAnimations?: () => unknown[] }).getAnimations = () => [];
+vi.stubGlobal(
+  "ResizeObserver",
+  class {
+    observe() {}
+    disconnect() {}
+  },
+);
+
 // 这个文件只关心外壳，列表各列的内容由 LibraryPage.test.tsx 测
 function row(
   extra: Pick<PlaygroundRow, "id" | "name" | "kind" | "state" | "active">,
@@ -119,6 +130,7 @@ describe("主窗口外壳", () => {
       state: active ? ("ready" as const) : ("stopped" as const),
       active,
       busy: false,
+      previewUrl: null,
     });
     const make = (active: boolean): LibraryState => ({
       ...state,
@@ -163,6 +175,7 @@ describe("主窗口外壳", () => {
                 state: "ready",
                 active: true,
                 busy: false,
+                previewUrl: null,
               },
             ],
             activeTab: "a",

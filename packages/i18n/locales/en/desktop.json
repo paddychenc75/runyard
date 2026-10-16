@@ -1,6 +1,8 @@
 {
   "desktop.create.title": "New",
   "desktop.error.title.label": "Error: {title}",
+  "desktop.preview.frame.label": "Screenshot of the page preview",
+  "desktop.preview.waiting.label": "The page isn't ready yet. It shows up here once it is.",
   "desktop.run.action": "Run",
   "desktop.state.idle.label": "Not running",
   "desktop.stop.action": "Stop",

@@ -1,4 +1,5 @@
 import type { Locale } from "@runyard/i18n";
+import type { Bounds } from "./layout.ts";
 import type { LibraryState } from "./library-state.ts";
 
 // 预加载脚本交给界面的窄接口，只有三样：同步的启动信息 bootstrap、按名字调用的 call、订阅事件的 on。
@@ -21,6 +22,12 @@ export interface DesktopMethods {
   /** 切到资源库（"library"）或已打开的项目标签 */
   "tab.select": { param: string; result: undefined };
   "playground.create": { param: string; result: undefined };
+  /** 预览占位区在窗口里的位置和大小（CSS 像素）；占位区卸载时报 null */
+  "preview.bounds": { param: Bounds | null; result: undefined };
+  /** 截预览当前的一帧（PNG 的 data 地址）；没有预览是 null。浮层打开前先截帧再隐藏（技术设计 §6.1） */
+  "preview.capture": { param: undefined; result: string | null };
+  /** 显示或隐藏预览视图；浮层关闭后恢复 */
+  "preview.visible": { param: boolean; result: undefined };
 }
 export type DesktopMethod = keyof DesktopMethods;
 
@@ -31,6 +38,9 @@ export const desktopMethodNames: readonly DesktopMethod[] = [
   "tab.open",
   "tab.select",
   "playground.create",
+  "preview.bounds",
+  "preview.capture",
+  "preview.visible",
 ];
 
 /** 主进程推给界面的事件 */

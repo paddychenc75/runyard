@@ -11,7 +11,7 @@ export interface TabContentProps {
 
 // 项目标签页的内容区的最小版本：名字、状态，以及运行与停止。手动停止后标签页仍开着，
 // 这里出现“运行”按钮，点它再次启动、持有者仍是这个标签页（规格 DESKTOP-WORKSPACE-11、12）。
-// 右边的预览是主进程摆的原生视图；运行条、控制台、编辑器随 #175、#176 及之后。
+// 右边的预览区是 PreviewPane；运行条、控制台、编辑器随 #176 及之后。
 export function TabContent({ bridge, tab }: TabContentProps) {
   const t = useT();
   const state = tab.state === "idle" ? t("desktop.state.idle.label") : t(`runState.${tab.state}`);

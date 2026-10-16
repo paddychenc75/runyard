@@ -106,6 +106,7 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
       state: row.state,
       active: row.active,
       busy: row.busy,
+      previewUrl: previewUrlFor(row.id, inputs.runs),
     });
   }
   tabs.sort((a, b) => inputs.tabIds.indexOf(a.id) - inputs.tabIds.indexOf(b.id));

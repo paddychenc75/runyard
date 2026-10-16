@@ -239,6 +239,8 @@ export type CatalogMessages = {
   "desktop.error.title.label": {
     title: string | number;
   };
+  "desktop.preview.frame.label": Record<never, never>;
+  "desktop.preview.waiting.label": Record<never, never>;
   "desktop.run.action": Record<never, never>;
   "desktop.state.idle.label": Record<never, never>;
   "desktop.stop.action": Record<never, never>;
