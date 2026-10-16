@@ -2,6 +2,7 @@ import type { Platform } from "@runyard/platform";
 import type { ClientKind, ShutdownReason, SupervisorFile } from "@runyard/protocol";
 import type { DiscoveryStore } from "./discovery-file.ts";
 import type { HandlerMap } from "./dispatch.ts";
+import type { LibrarySeams } from "./library-seams.ts";
 import type { Session, SessionCloseReason } from "./session.ts";
 import type { SupervisorApi } from "./supervisor-api.ts";
 import type { SupervisorClock } from "./supervisor-clock.ts";
@@ -42,6 +43,11 @@ export interface SupervisorExtensions {
   onShutdown?: (reason: ShutdownReason) => Promise<void>;
   /** 会话的生命周期（#40：持有者、重连宽限期） */
   sessions?: SessionObserver;
+  /**
+   * 资源库方法依赖的、由别的 issue 实现的几处：运行（#40）、模板（模板各 issue）、端口（#36）。
+   * 资源库、设置、自动清理的方法本身由管理进程自己登记，不经 handlers
+   */
+  library?: LibrarySeams;
 }
 
 export interface SessionObserver {

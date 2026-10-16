@@ -155,6 +155,7 @@
 | --- | --- | --- | --- |
 | `playground` | `Playground` | 是 |  |
 | `created` | `boolean` | 是 |  |
+| `notices` | `Notice[]` | 否 |  |
 
 可能返回的错误码：`NAME_INVALID`、`NAME_RESERVED`、`NAME_EXISTS`、`TEMPLATE_NOT_FOUND`、`TEMPLATE_INVALID`、`VAR_INVALID`、`DATA_FROM_NEWER_VERSION`
 

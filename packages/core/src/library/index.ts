@@ -26,5 +26,7 @@ export type {
   ScanSkip,
   SeedFile,
 } from "./library-types.ts";
+export type { PlaygroundFileRead } from "./playground-file-io.ts";
 export { PlaygroundLibrary, type PlaygroundLibraryDeps } from "./playground-library.ts";
 export { nextDefaultName } from "./playground-name.ts";
+export type { PlaygroundEdits } from "./update-playground.ts";

@@ -24,8 +24,9 @@ import type {
   PortSlotAllocator,
   ScanReport,
 } from "./library-types.ts";
-import { readPlaygroundFile } from "./playground-file-io.ts";
+import { type PlaygroundFileRead, readPlaygroundFile } from "./playground-file-io.ts";
 import { scanLibrary } from "./scan-library.ts";
+import { type PlaygroundEdits, updatePlaygroundFile } from "./update-playground.ts";
 
 export type PlaygroundLibraryDeps = {
   /** 资源库根目录（设置里的 libraryRoot） */
@@ -95,6 +96,28 @@ export class PlaygroundLibrary {
     const report = await scanLibrary(this.#context());
     await this.#index.save(this.#deps.root);
     return report;
+  }
+
+  /** 读项目文件夹里的 playground.json（协议里的 Playground 要合并它和索引）；不报错，状态在返回值里 */
+  async readFile(item: LibraryItem): Promise<PlaygroundFileRead> {
+    return readPlaygroundFile(this.#deps.platform.fs, absPath(item.entry.path));
+  }
+
+  /** 改备注、脚本自动运行（playground.update）；自动清理走 setAutoClean */
+  async update(ref: string, edits: PlaygroundEdits): Promise<LibraryItem> {
+    this.#index.assertWritable();
+    const item = this.requireFolder(ref);
+    await updatePlaygroundFile(this.#operations(), item, edits);
+    return item;
+  }
+
+  /** 从资源库移除，不动磁盘（playground.forget）；文件夹下次扫描会作为新项目被重新登记 */
+  async forget(ref: string): Promise<LibraryItem> {
+    this.#index.assertWritable();
+    const item = this.#known(ref);
+    this.#index.remove(item.entry.id);
+    await this.#index.save(this.#deps.root);
+    return item;
   }
 
   /** 重新定位：指向任意位置的文件夹，里面的 id 必须对得上（规格 LIBRARY-PLAYGROUNDS-28） */

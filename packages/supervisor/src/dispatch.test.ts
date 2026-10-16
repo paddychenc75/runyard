@@ -38,7 +38,7 @@ describe("方法分发", () => {
       await world.start({
         extend: () => ({
           handlers: {
-            "playground.get": () => {
+            "run.get": () => {
               called++;
               return {} as never;
             },
@@ -46,7 +46,7 @@ describe("方法分发", () => {
         }),
       }),
     );
-    const response = await client.request("playground.get", { wrong: 1 });
+    const response = await client.request("run.get", { wrong: 1 });
     expect(response).toMatchObject({ ok: false, error: { code: "USAGE", params: {} } });
     expect(called).toBe(0);
     expect(
@@ -64,20 +64,20 @@ describe("方法分发", () => {
       await world.start({
         extend: () => ({
           handlers: {
-            "playground.get": (params) => {
+            "run.get": (params) => {
               seen.push(params);
-              throw methodFailure("PLAYGROUND_NOT_FOUND", { name: params.playground }, "test");
+              throw methodFailure("RUN_NOT_FOUND", { runId: params.runId }, "test");
             },
           },
         }),
       }),
     );
-    const response = await client.request("playground.get", {
-      playground: "demo",
+    const response = await client.request("run.get", {
+      runId: "r1",
       fromTheFuture: true,
     });
-    expect(seen).toEqual([{ playground: "demo" }]);
-    expect(response).toMatchObject({ ok: false, error: { code: "PLAYGROUND_NOT_FOUND" } });
+    expect(seen).toEqual([{ runId: "r1" }]);
+    expect(response).toMatchObject({ ok: false, error: { code: "RUN_NOT_FOUND" } });
     expect(await client.request("ping", { alsoNew: 1 })).toMatchObject({ ok: true, result: {} });
   });
 
@@ -87,17 +87,15 @@ describe("方法分发", () => {
       await world.start({
         extend: () => ({
           handlers: {
-            "playground.create": () => {
+            "run.get": () => {
               throw methodFailure("NAME_EXISTS", { name: "demo" }, "name already used");
             },
           },
         }),
       }),
     );
-    const response = (await client.request("playground.create", {
-      template: "node-http",
-      name: "demo",
-      createdBy: { kind: "cli" },
+    const response = (await client.request("run.get", {
+      runId: "r1",
     })) as { ok: boolean; error: Record<string, unknown> };
     expect(response.ok).toBe(false);
     expect(response.error.code).toBe("NAME_EXISTS");
@@ -124,14 +122,14 @@ describe("方法分发", () => {
       await world.start({
         extend: () => ({
           handlers: {
-            "library.rescan": () => {
+            "toolchain.doctor": () => {
               throw new Error("boom");
             },
           },
         }),
       }),
     );
-    expect(await client.request("library.rescan", {})).toMatchObject({
+    expect(await client.request("toolchain.doctor", {})).toMatchObject({
       ok: false,
       error: { code: "INTERNAL", params: {}, debug: "boom" },
     });
@@ -147,15 +145,15 @@ describe("方法分发", () => {
       await world.start({
         extend: () => ({
           handlers: {
-            "library.rescan": async () => {
+            "toolchain.doctor": async () => {
               await gate;
-              return {};
+              return { tools: [] };
             },
           },
         }),
       }),
     );
-    const slow = client.send("library.rescan", {});
+    const slow = client.send("toolchain.doctor", {});
     const fast = await client.request("ping");
     expect(fast).toMatchObject({ ok: true });
     release();

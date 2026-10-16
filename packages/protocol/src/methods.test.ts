@@ -78,7 +78,11 @@ const examples: Record<MethodName, Example> = {
       createdBy: { kind: "agent", agent: "Claude Code", command: "new react19" },
     },
     badParams: { template: "react19", ifExists: "overwrite", createdBy: { kind: "cli" } },
-    result: { playground: samplePlayground, created: true },
+    result: {
+      playground: samplePlayground,
+      created: true,
+      notices: [{ code: "PATH_NEAR_LIMIT", params: { length: 240, limit: 260 } }],
+    },
     badResult: { playground: samplePlayground },
   },
   "playground.rename": {
