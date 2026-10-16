@@ -4,7 +4,8 @@ import { describe, expect, it } from "vitest";
 import { cliOwner, RunWorld, tabOwner } from "./run-harness.test.ts";
 
 // 命令行持有的运行空闲后自动停止（规格 run/ownership 的空闲停止一节）。全部用假时钟：
-// 每个检查点之间按 30 秒一步推进，并在每一步之后让出真实的 I/O（到点时要读设置）。
+// 每个检查点之间按 60 秒一步推进，每一步之后让出几轮事件循环（到点时要读设置、数连接）。
+// 假时间走一个小时要上百步，Windows 上每个测试的真实耗时更长，所以这一组把超时放宽到 30 秒。
 
 const MIN = 60_000;
 
@@ -21,8 +22,8 @@ async function setup(options: { script?: boolean } = {}) {
 /** 假时间推进到起点之后的 offsetMs（起点是启动运行的那一刻） */
 async function advanceTo(w: RunWorld, origin: number, offsetMs: number): Promise<void> {
   while (w.clock.now() < origin + offsetMs) {
-    await w.clock.advance(Math.min(30_000, origin + offsetMs - w.clock.now()));
-    await new Promise((resolve) => setTimeout(resolve, 2));
+    await w.clock.advance(Math.min(60_000, origin + offsetMs - w.clock.now()));
+    for (let i = 0; i < 3; i++) await new Promise((resolve) => setImmediate(resolve));
   }
 }
 
@@ -42,7 +43,7 @@ async function startServer(
 const stateOf = (ctx: Awaited<ReturnType<typeof setup>>, runId: string) =>
   ctx.w.stateOf(ctx.app, runId);
 
-describe("命令行持有的运行空闲后自动停止", () => {
+describe("命令行持有的运行空闲后自动停止", { timeout: 30_000 }, () => {
   it("[RUN-OWNERSHIP-09] 30 分钟没有任何活动：按正常流程停止，日志加系统提示，run.exit 带 reason idle", async () => {
     const ctx = await setup();
     const { w, cli, app, id } = ctx;
