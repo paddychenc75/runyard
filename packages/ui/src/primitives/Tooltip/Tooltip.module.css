@@ -1,0 +1,27 @@
+.positioner {
+  z-index: var(--z-tooltip);
+}
+
+/* 提示条用菜单那一档玻璃（材质配方在 styles/materials.css），圆角比菜单小一档 */
+.popup {
+  max-inline-size: var(--size-dialog-width);
+  padding-block: var(--space-2);
+  padding-inline: var(--space-5);
+  border-radius: var(--radius-control);
+  font-size: var(--text-secondary-size);
+  line-height: var(--text-secondary-line-height);
+  color: var(--color-text-primary);
+  opacity: 1;
+  transition: opacity var(--motion-duration-fast) linear;
+}
+
+.popup[data-starting-style],
+.popup[data-ending-style] {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .popup {
+    transition: none;
+  }
+}

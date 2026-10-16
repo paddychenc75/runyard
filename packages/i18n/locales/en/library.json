@@ -1,0 +1,15 @@
+{
+  "library.filter.agent.label": "Agent-made",
+  "library.filter.all.label": "All",
+  "library.filter.autoClean.label": "Auto-clean",
+  "library.filter.kept.label": "Kept",
+  "library.nav.aria": "Library navigation",
+  "library.nav.library.title": "Library",
+  "library.nav.manage.title": "Manage",
+  "library.nav.settings.label": "Settings",
+  "library.nav.templates.label": "Templates",
+  "library.nav.unused.label": "Unused for a while",
+  "library.page.summary.label": "{total, plural, one {# playground} other {# playgrounds}} · {running, plural, one {# running} other {# running}}",
+  "library.sidebar.footer.label": "{count, plural, one {# playground} other {# playgrounds}}",
+  "library.tab.title": "Library"
+}

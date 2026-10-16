@@ -5,7 +5,7 @@ describe("parseDesktopArgs", () => {
   it("没有参数也没有环境变量时用真实主目录（root 为空）", () => {
     expect(parseDesktopArgs([], {})).toEqual({
       ok: true,
-      args: { root: undefined, lang: undefined, smoke: false },
+      args: { root: undefined, lang: undefined, theme: undefined, smoke: false },
     });
   });
 
@@ -28,6 +28,24 @@ describe("parseDesktopArgs", () => {
       ok: true,
       args: { lang: "en", smoke: true },
     });
+  });
+});
+
+describe("parseDesktopArgs 的 --theme", () => {
+  it("认识 system、light、dark，环境变量 RUNYARD_THEME 作后备，参数优先", () => {
+    expect(parseDesktopArgs(["--theme", "dark"], {})).toMatchObject({ args: { theme: "dark" } });
+    expect(parseDesktopArgs([], { RUNYARD_THEME: "light" })).toMatchObject({
+      args: { theme: "light" },
+    });
+    expect(parseDesktopArgs(["--theme", "dark"], { RUNYARD_THEME: "light" })).toMatchObject({
+      args: { theme: "dark" },
+    });
+  });
+
+  it("缺值或不认识的主题报问题", () => {
+    expect(parseDesktopArgs(["--theme"], {}).ok).toBe(false);
+    expect(parseDesktopArgs(["--theme", "--smoke"], {}).ok).toBe(false);
+    expect(parseDesktopArgs(["--theme", "blue"], {}).ok).toBe(false);
   });
 });
 

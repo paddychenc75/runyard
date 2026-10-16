@@ -1,0 +1,111 @@
+/* 胶囊本身的玻璃配方在 styles/materials.css（toolbar）；这里只排标签 */
+.root {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  box-sizing: border-box;
+  block-size: var(--size-toolbar);
+  max-inline-size: 100%;
+  padding: var(--space-2);
+  overflow: hidden;
+}
+
+.tab {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  min-inline-size: 0;
+  block-size: var(--size-tab);
+  border-radius: var(--radius-capsule);
+  color: var(--color-text-secondary-strong);
+  transition: background-color var(--motion-duration-fast) linear;
+}
+
+.tab[data-selected] {
+  background: var(--glass-tab-selected-bg);
+  box-shadow: var(--shadow-tab-selected);
+  color: var(--color-text-primary);
+}
+
+.tab:not([data-selected]):hover {
+  background: var(--color-fill-neutral);
+}
+
+.trigger {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: var(--space-4);
+  min-inline-size: 0;
+  block-size: 100%;
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--space-7);
+  border: 0;
+  border-radius: var(--radius-capsule);
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: var(--text-body-size);
+  font-weight: var(--text-body-weight);
+  line-height: var(--text-body-line-height);
+  cursor: default;
+  user-select: none;
+  outline: none;
+}
+
+/* 有关闭钮的标签，名字这一侧的内边距小一点，让关闭钮靠近名字 */
+.trigger[data-closable] {
+  padding-inline-end: var(--space-2);
+}
+
+.tab[data-selected] .trigger {
+  font-weight: var(--text-item-weight);
+}
+
+.trigger:focus-visible {
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.label {
+  min-inline-size: 0;
+  max-inline-size: var(--size-dialog-width);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.close {
+  margin-inline: var(--space-1) var(--space-5);
+}
+
+.status {
+  flex: none;
+  box-sizing: border-box;
+  inline-size: var(--space-4);
+  block-size: var(--space-4);
+  border-radius: var(--radius-capsule);
+}
+
+.status[data-status="running"] {
+  background: var(--color-status-running-mark);
+}
+
+.status[data-status="starting"] {
+  background: var(--color-status-warning-mark);
+}
+
+.status[data-status="crashed"] {
+  border-radius: var(--space-1);
+  background: var(--color-status-danger-mark);
+}
+
+.status[data-status="stopped"] {
+  border: 1px solid var(--color-text-tertiary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab {
+    transition: none;
+  }
+}

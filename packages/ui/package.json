@@ -5,7 +5,9 @@
   "description": "界面基础组件、图标和组件工作台；不认识产品（技术设计 §6.7）",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./styles/reset.css": "./src/styles/reset.css",
+    "./styles/base.css": "./src/styles/base.css"
   },
   "scripts": {
     "dev": "node workbench/serve.ts",

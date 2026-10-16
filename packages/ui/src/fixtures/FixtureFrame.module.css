@@ -1,0 +1,9 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  inline-size: var(--size-dialog-width);
+  max-inline-size: 100%;
+  block-size: calc(var(--size-row) * 4);
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-row);
+}

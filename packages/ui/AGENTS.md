@@ -3,11 +3,11 @@
 ## 用途
 
 界面的通用组件包：基础组件、图标、玻璃材质、组件工作台（技术设计 §6.7）。它不认识产品：不导入 `protocol`、`electron`、Node 接口（`src/` 里 Biome 的 `noNodejsModules` 拦），文件名、导出名、标识符里不出现产品词，不自己取数据。
-现状：骨架加三个组件 `Icon`、`Button`、`GlassSurface`、`UserText`；其余组件随第一个用到它的功能 PR 加（§6.7 规则 8），不提前做。截图比对（`ui-visual`）、`Localized` 属性的 React 绑定、六项组件化检查分别随 #166、#164、#165。
+现状：骨架加组件 `Icon`、`Button`、`GlassSurface`、`UserText`，以及主窗口外壳用到的 `IconButton`、`Tooltip`、`ScrollArea`（基础层）和 `NavList`、`TitleBar`、`TabStrip`（组合层，在 `src/patterns/`）；其余组件随第一个用到它的功能 PR 加（§6.7 规则 8），不提前做。截图比对（`ui-visual`）、`Localized` 属性的 React 绑定、六项组件化检查分别随 #166、#164、#165。
 
 ## 对外暴露什么
 
-只从 `src/index.ts` 导出：组件及其属性类型、`IconName`、样例文件的类型（`FixtureMeta` `FixtureSample` `SampleData`）。应用要引入样式：`@runyard/tokens/tokens.css`，再引入 `src/styles/reset.css`、`base.css`（`materials.css` 由 `GlassSurface` 自己引入）。
+只从 `src/index.ts` 导出：组件及其属性类型、`IconName`、样例文件的类型（`FixtureMeta` `FixtureSample` `SampleData`）。应用要引入样式：`@runyard/tokens/tokens.css`，再引入 `@runyard/ui/styles/reset.css`、`@runyard/ui/styles/base.css`（包的 `exports` 里登记的两个样式入口）（`materials.css` 由 `GlassSurface` 自己引入）。
 
 ## 本包特有的规则
 
@@ -27,7 +27,7 @@
 
 ## 子目录地图
 
-- `src/primitives/`：基础组件（`Icon`、`Button`、`GlassSurface`、`UserText`）；`src/patterns/` 等其余层随组件出现时建
+- `src/primitives/`：基础组件；`src/patterns/`：组合组件（用基础组件拼成，如标签条）
 - `src/icons/`：`svg/` 是图标源文件（只许 `<path>`，颜色只许 `currentColor`），`generated/` 是生成的图标表，不手改
 - `src/styles/`：`reset.css`、`base.css`、`materials.css`；`src/fixtures/`：样例文件的类型和布局小零件
 - `build/`：图标表生成和样式规则测试（Node 脚本）；`workbench/`：工作台（`build.ts` 打包，`serve.ts` 开服务，`registry.ts` 登记样例，`sample-data.*.ts` 是各语言的示例文字）
@@ -35,3 +35,9 @@
 ## 测试
 
 组件测试用 jsdom、Testing Library 和 user-event，`vitest.setup.ts` 负责每个测试后卸载。`build/style-rules.test.ts` 守住样式结构（`backdrop-filter` 只在一处、焦点环、减弱动态效果、降低透明度）；真实渲染的比对由 `ui-visual` 负责。
+
+## 外壳组件的约定（#168）
+
+- `TabStrip`：没有 `closeLabel` 的标签不能关闭（没有关闭按钮，⌘W 和 Delete 不起作用），资源库标签就这样用；键盘是手动激活的 Tabs（方向键只移动焦点）。关闭快捷键监听整个文档，按键盘上的 `modKey` 区分 ⌘ 和 Ctrl，主进程菜单接管应用级快捷键之前靠它。
+- `TitleBar`：`controls` 说明窗口按钮在哪一侧，那一头按设计变量 `size-window-controls` 留空；组件自己不判断系统。
+- 样例数据 `SampleData` 的 `label`、`items` 等是 `Localized`（工作台里标记），用户内容用 `userText` 加 `<UserText>`。

@@ -7,8 +7,14 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "lib": ["ES2023", "DOM"],
-    "types": []
+    "types": [],
+    "jsx": "react-jsx"
   },
-  "include": ["src/renderer/**/*.ts", "src/shared/**/*.ts"],
-  "references": [{ "path": "../../packages/protocol" }, { "path": "../../packages/i18n" }]
+  "include": ["src/renderer/**/*.ts", "src/renderer/**/*.tsx", "src/shared/**/*.ts"],
+  "references": [
+    { "path": "../../packages/protocol" },
+    { "path": "../../packages/i18n" },
+    { "path": "../../packages/tokens" },
+    { "path": "../../packages/ui" }
+  ]
 }

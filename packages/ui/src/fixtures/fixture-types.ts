@@ -8,9 +8,13 @@ import type { ReactNode } from "react";
 /** 样例用的文字，工作台按当前语言提供；测试自己造 */
 export interface SampleData {
   /** 一个词的短标签 */
-  label: string;
+  label: Localized;
   /** 长到会撑破容器的标签（“文字很长”的样例用） */
-  longLabel: string;
+  longLabel: Localized;
+  /** 四个互不相同的短标签（列表、导航、标签条的样例用） */
+  items: readonly [Localized, Localized, Localized, Localized];
+  /** 用户自己的内容（如项目名），不翻译，样例里用 <UserText> 显示 */
+  userText: string;
   /** 图标的无障碍名字（图标本身没有文字） */
   iconLabel: Localized;
 }

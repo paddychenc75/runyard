@@ -55,7 +55,8 @@
         "@runyard/platform",
         "@runyard/client",
         "@runyard/i18n",
-        "@runyard/tokens"
+        "@runyard/tokens",
+        "@runyard/ui"
       ]
     },
     "@runyard/testing": {
