@@ -25,7 +25,7 @@ describe("子进程环境", () => {
     expect(fromRunner).not.toHaveProperty("ELECTRON_RUN_AS_NODE");
   });
 
-  it("Python 在非 UTF-8 的环境下也输出 UTF-8 且不缓冲；统一关遥测、强制颜色", () => {
+  it("[RUN-LOGS-21] Python 在非 UTF-8 的环境下也输出 UTF-8 且不缓冲；统一关遥测、强制颜色", () => {
     const env = buildRunEnv({ base: { ...base, PYTHONUTF8: "0", LANG: "C" }, runDefaults: {} });
     expect(env.PYTHONUTF8).toBe("1");
     expect(env.PYTHONUNBUFFERED).toBe("1");
@@ -33,7 +33,7 @@ describe("子进程环境", () => {
     expect(env.FORCE_COLOR).toBe("1");
   });
 
-  it("不设 CI=1", () => {
+  it("[RUN-LOGS-12] 不设 CI=1", () => {
     expect(buildRunEnv({ base, runDefaults: {}, port: 7100 })).not.toHaveProperty("CI");
   });
 

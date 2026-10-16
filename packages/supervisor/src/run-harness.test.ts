@@ -5,6 +5,7 @@ import type { Owner, RunSnapshot } from "@runyard/protocol";
 import type { ProcessBehavior } from "@runyard/testing";
 import { expect, it } from "vitest";
 import { LibraryWorld, Pump } from "./library-harness.test.ts";
+import { createLogModule, type LogModule } from "./log-module.ts";
 import { createRunModule, type RunModule, type RunModuleOptions } from "./run-module.ts";
 import type { Session } from "./session.ts";
 import type { SupervisorHandle } from "./supervisor-options.ts";
@@ -23,6 +24,9 @@ const stop = { mode: "graceful", graceMs: 2000 } as const;
 
 export class RunWorld extends LibraryWorld {
   module!: RunModule;
+  /** 打开后装上日志模块（#43），与入口 run-main.ts 的装配一致 */
+  withLogs = false;
+  logModule!: LogModule;
   readonly mentions: string[] = [];
   readonly ports = new Map<string, number>();
   #nextPort = 7100;
@@ -111,6 +115,12 @@ export class RunWorld extends LibraryWorld {
     this.handle = await this.world.start({
       log: (line) => this.logs.push(line),
       extend: (api) => {
+        if (this.withLogs) {
+          this.logModule = createLogModule(api, {
+            playgroundOf: (runId) => this.module.engine.get(runId)?.request.playgroundId,
+            stateOf: (playgroundId) => this.module.engine.current(playgroundId)?.state,
+          });
+        }
         this.module = createRunModule(api, {
           templateData: {
             runnersDir: runners,
@@ -121,10 +131,17 @@ export class RunWorld extends LibraryWorld {
           observer: {
             mentioned: (run: { runId: string }, session: Session | undefined) =>
               void this.mentions.push(`${run.runId}:${session?.info?.kind ?? "-"}`),
+            ...(this.withLogs ? this.logModule.observer : {}),
           },
           ...this.moduleOptions,
         });
-        return { ...this.module, library: { ...this.seams(), ...seams, runs: this.module.runs } };
+        return {
+          ...this.module,
+          ...(this.withLogs
+            ? { handlers: { ...this.module.handlers, ...this.logModule.handlers } }
+            : {}),
+          library: { ...this.seams(), ...seams, runs: this.module.runs },
+        };
       },
     });
   }
