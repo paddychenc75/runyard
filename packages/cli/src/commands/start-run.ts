@@ -54,24 +54,17 @@ async function logsOf(
   snapshot: RunSnapshot,
 ): Promise<{ text: string; truncated: boolean; cursor: string }> {
   const client = await context.client();
-  try {
-    const read = await client.call("logs.read", {
-      playground: snapshot.playgroundId,
-      tail: RESULT_LOG_LINES,
-    });
-    const lines = read.entries.flatMap((entry) => (entry.kind === "system" ? [] : [entry.text]));
-    return {
-      text: lines.map((line) => `${line}\n`).join(""),
-      truncated: read.truncated,
-      cursor: read.cursor,
-    };
-  } catch (error) {
-    // 日志的读取（#43）还没接上时管理进程回 NOT_SUPPORTED：结果里的日志先留空，不让启动本身失败
-    if (isClientError(error) && error.code === "NOT_SUPPORTED") {
-      return { text: "", truncated: false, cursor: snapshot.cursor };
-    }
-    throw error;
-  }
+  const read = await client.call("logs.read", {
+    playground: snapshot.playgroundId,
+    tail: RESULT_LOG_LINES,
+  });
+  // 管理进程默认返回清洗过的整行（不带换行），系统提示不是进程的输出
+  const lines = read.entries.flatMap((entry) => (entry.kind === "system" ? [] : [entry.text]));
+  return {
+    text: lines.map((line) => `${line}\n`).join(""),
+    truncated: read.truncated,
+    cursor: read.cursor,
+  };
 }
 
 /** 启动（或重启）并按种类等待，返回 `run` 的结果对象；文字模式下顺手把日志和提示写出去 */

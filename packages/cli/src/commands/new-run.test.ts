@@ -650,19 +650,6 @@ describe("run", () => {
     expect(names(calls)).toEqual(["playground.get", "run.start", "logs.read", "settings.get"]);
   });
 
-  it("日志读取还没接上（NOT_SUPPORTED）时启动本身照样成功，日志留空", async () => {
-    const { h } = harness(
-      server({
-        "logs.read": () => {
-          throw clientError("NOT_SUPPORTED", {}, "logs not implemented");
-        },
-      }),
-    );
-    const result = await h.run(["run", "demo", "--json"]);
-    expect(result.code).toBe(0);
-    expect(h.json(result)).toMatchObject({ logTail: "", cursor: "run-1:12" });
-  });
-
   it("[CLI-COMMANDS-04] 路径和地址的写法：url 以 http://127.0.0.1: 开头，输出里没有 localhost", async () => {
     const { h } = harness(server());
     const result = await h.run(["run", "demo", "--json"]);
