@@ -2,6 +2,7 @@ import { fileURLToPath } from "node:url";
 import { absPath, getPlatform, isPlatformError } from "@runyard/platform";
 import { PROTOCOL_VERSION } from "@runyard/protocol";
 import { parseSupervisorArgs } from "./parse-args.ts";
+import { createRunModule } from "./run-module.ts";
 import { startSupervisor } from "./start-supervisor.ts";
 import type { TemplateDataDirs } from "./supervisor-options.ts";
 
@@ -45,6 +46,7 @@ export async function runSupervisorMain(argv: readonly string[]): Promise<number
   process.on("SIGINT", requestStop);
   try {
     const platform = getPlatform({ home: absPath(args.home), profile: args.profile });
+    const templateData = templateDataDirs();
     const handle = await startSupervisor({
       platform,
       identity: {
@@ -54,7 +56,8 @@ export async function runSupervisorMain(argv: readonly string[]): Promise<number
         build: args.build,
         startedBy: args.startedBy,
       },
-      templateData: templateDataDirs(),
+      templateData,
+      extend: (api) => createRunModule(api, { templateData }),
       host: args.host,
       execPath: process.execPath,
       log: diagnostic,

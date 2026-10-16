@@ -4,7 +4,7 @@ export * from "./readiness-probe.ts";
 export * from "./run-clock.ts";
 export * from "./run-engine.ts";
 export * from "./run-env.ts";
-export type { Run } from "./run-handle.ts";
+export type { Run, StdinOutcome } from "./run-handle.ts";
 export * from "./run-transitions.ts";
 export * from "./run-types.ts";
 export * from "./stop-process-tree.ts";

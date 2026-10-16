@@ -108,6 +108,8 @@ export function createSupervisorRuntime(options: StartSupervisorOptions) {
     publish: <E extends EventName>(event: E, data: EventData<E>) => manager.publish(event, data),
     notifyRunsChanged: () => idle.evaluate(),
     readySessions: () => manager.ready(),
+    openLibrary: async () => (await library.open()).library,
+    readSettings: () => library.settings.get(),
     shutdown(reason: ShutdownReason) {
       shutdownPromise ??= (async () => {
         idle.stop();

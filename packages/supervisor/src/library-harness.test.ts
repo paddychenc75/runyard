@@ -39,7 +39,8 @@ export class FakeCatalog implements TemplateCatalog {
   async seed(request: { template: string; name: string }): Promise<PlaygroundSeed> {
     return {
       template: { id: request.template, source: "builtin", appVersion: "0.0.0" },
-      runner: "node-server",
+      // 模板 script 用脚本的运行器（运行编排的测试用），其余都是服务
+      runner: request.template === "script" ? "node-script" : "node-server",
       requires: { node: ">=24" },
       toolchainAtCreate: { node: "24.21.0" },
       files: [{ path: posixRelPath("index.js"), contents: `// ${request.name}\n` }],
