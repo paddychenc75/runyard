@@ -123,6 +123,8 @@ pnpm audit --prod --json > audit.json; node tooling/ci/audit-gate.ts --file audi
 | `actions/dependency-review-action` | v5.0.0 | `a1d282b36b6f3519aa1f3fc636f609c47dddb294` | 2026-05-08 | 当前最新，运行时 node24；公共仓库免费 |
 | `google/osv-scanner-action`（可复用工作流） | v2.6.0 | `a345acffa64b0eaede81a3d9aae6141214d9c8fc` | 2026-09-14 | 当前最新，发布 28 天；它内部再引用的 Action 也是固定哈希 |
 | `googleapis/release-please-action` | v5.0.0 | `45996ed1f6d02564a971a2fa1b5860e934307cf7` | 2026-04-22 | 当前最新，发布 173 天，运行时 node24，仍在维护；打包的 release-please 库是 17.6.0。公告三处均 0 条 |
+| `actions/upload-artifact` | v7.0.1 | `043fb46d1a93c77aae656e7c1c64a875d1fc6a0a` | 2026-04-10 | 只在 `ui-visual.yml`、`ui-baseline.yml` 里存界面变更对照页和新基准图；7.0.2 发布于 2026-10-07 只有 9 天，不选，7.0.1 发布 189 天。公告三处均 0 条（2026-10-16 查） |
+| `actions/download-artifact` | v8.0.1 | `3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c` | 2026-03-11 | 只在 `ui-baseline.yml` 的提交任务里取新基准图；8.0.2 发布于 2026-10-07 只有 9 天，不选，8.0.1 发布 219 天。有一条公告 GHSA-cxww-7g56-2vh6（解压时任意写文件），影响 4.0.0 到 4.1.2，4.1.3 起修复，本版本不受影响；其余两处 0 条（2026-10-16 查） |
 
 ## 报告安全问题
 

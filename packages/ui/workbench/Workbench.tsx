@@ -1,8 +1,13 @@
-import type { Locale } from "@runyard/i18n";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "../src/index.ts";
 import { applyToDocument } from "./apply-params.ts";
-import { formatParams, parseParams, type ThemeChoice, type WorkbenchParams } from "./params.ts";
+import {
+  formatParams,
+  parseParams,
+  type ThemeChoice,
+  type WorkbenchLocale,
+  type WorkbenchParams,
+} from "./params.ts";
 import { fixtures } from "./registry.ts";
 import { workbenchData } from "./sample-data.ts";
 
@@ -22,7 +27,7 @@ export function Workbench() {
     ["light", data.chrome.themeLight],
     ["dark", data.chrome.themeDark],
   ];
-  const languages: [Locale, string][] = [
+  const languages: [WorkbenchLocale, string][] = [
     ["en", data.chrome.localeEn],
     ["zh-CN", data.chrome.localeZh],
   ];
@@ -70,14 +75,16 @@ export function Workbench() {
               update({ component: meta.name });
             }}
           >
-            {meta.name}
+            <span data-user-content="">{meta.name}</span>
           </a>
         ))}
       </nav>
       <main className="table">
         {fixture?.samples.map((sample) => (
           <section key={sample.name} className="sample" data-sample={sample.name}>
-            <h2 className="sample-name">{sample.name}</h2>
+            <h2 className="sample-name" data-user-content="">
+              {sample.name}
+            </h2>
             <div className="stage" data-backdrop={fixture.meta.backdrop}>
               {sample.render(data.sample)}
             </div>
