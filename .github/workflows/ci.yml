@@ -77,6 +77,20 @@ jobs:
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: node tooling/ci/check-rollback.ts --base "$BASE_SHA" --head "$HEAD_SHA" --title "$PR_TITLE"
 
+      # 规格流程的两项 PR 检查（技术设计 §9.6.9）；放在 lint 任务里，不新增必过检查的名字
+      - name: 检查没有未合并的规格改动文件夹（草稿 PR 不跑）
+        if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
+        run: node tooling/ci/spec-changes-closed.ts
+
+      - name: 检查 feat PR 动了规格或带 no-spec 标签
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_LABELS: ${{ toJSON(github.event.pull_request.labels.*.name) }}
+        run: node tooling/ci/spec-touch.ts --base "$BASE_SHA" --head "$HEAD_SHA" --title "$PR_TITLE" --labels "$PR_LABELS"
+
       - name: Biome 检查（格式与规则）
         run: pnpm lint
 

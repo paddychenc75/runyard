@@ -24,6 +24,8 @@ import { prdRefs } from "./prd-refs.ts";
 import { quarantine } from "./quarantine.ts";
 import { readmeSync } from "./readme-sync.ts";
 import { skips } from "./skips.ts";
+import { specTrace } from "./spec-trace.ts";
+import { specValidate } from "./spec-validate.ts";
 import { templateData } from "./template-data.ts";
 import { terms } from "./terms.ts";
 import { testPhases } from "./test-phases.ts";
@@ -67,6 +69,8 @@ const checks: Check[] = [
   uiStrings,
   noPermanentDelete,
   templateData,
+  specValidate,
+  specTrace,
 ];
 
 const root = join(import.meta.dirname, "..", "..");
