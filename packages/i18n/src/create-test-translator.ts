@@ -8,11 +8,16 @@ import type { MessageMap, Messages } from "./messages.ts";
 export function createTestTranslator<P extends MessageMap = Messages>(
   locale: Locale = "en",
 ): Translator<P> {
-  const t = ((key: string, values?: Record<string, unknown>) => {
+  const render = (key: string, values?: Record<string, unknown>) => {
+    // 标签函数（富文本）不是参数值，不写进“键加参数”
     const pairs = Object.entries(values ?? {})
+      .filter(([, value]) => typeof value !== "function")
       .sort(([a], [b]) => (a < b ? -1 : 1))
       .map(([name, value]) => `${name}=${String(value)}`);
-    return markLocalized(`⟦${[key, ...(pairs.length === 0 ? [] : [pairs.join(",")])].join("|")}⟧`);
-  }) as Translator<P>["t"];
-  return { locale, t };
+    return `⟦${[key, ...(pairs.length === 0 ? [] : [pairs.join(",")])].join("|")}⟧`;
+  };
+  const t = ((key: string, values?: Record<string, unknown>) =>
+    markLocalized(render(key, values))) as Translator<P>["t"];
+  const rich: Translator<P>["rich"] = (key, values) => [render(key, values)];
+  return { locale, t, rich };
 }

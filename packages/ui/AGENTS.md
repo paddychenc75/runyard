@@ -3,7 +3,7 @@
 ## 用途
 
 界面的通用组件包：基础组件、图标、玻璃材质、组件工作台（技术设计 §6.7）。它不认识产品：不导入 `protocol`、`electron`、Node 接口（`src/` 里 Biome 的 `noNodejsModules` 拦），文件名、导出名、标识符里不出现产品词，不自己取数据。
-现状：骨架加三个组件 `Icon`、`Button`、`GlassSurface`；其余组件随第一个用到它的功能 PR 加（§6.7 规则 8），不提前做。截图比对（`ui-visual`）、`Localized` 属性的 React 绑定、六项组件化检查分别随 #166、#164、#165。
+现状：骨架加三个组件 `Icon`、`Button`、`GlassSurface`、`UserText`；其余组件随第一个用到它的功能 PR 加（§6.7 规则 8），不提前做。截图比对（`ui-visual`）、`Localized` 属性的 React 绑定、六项组件化检查分别随 #166、#164、#165。
 
 ## 对外暴露什么
 
@@ -27,7 +27,7 @@
 
 ## 子目录地图
 
-- `src/primitives/`：基础组件（`Icon`、`Button`、`GlassSurface`）；`src/patterns/` 等其余层随组件出现时建
+- `src/primitives/`：基础组件（`Icon`、`Button`、`GlassSurface`、`UserText`）；`src/patterns/` 等其余层随组件出现时建
 - `src/icons/`：`svg/` 是图标源文件（只许 `<path>`，颜色只许 `currentColor`），`generated/` 是生成的图标表，不手改
 - `src/styles/`：`reset.css`、`base.css`、`materials.css`；`src/fixtures/`：样例文件的类型和布局小零件
 - `build/`：图标表生成和样式规则测试（Node 脚本）；`workbench/`：工作台（`build.ts` 打包，`serve.ts` 开服务，`registry.ts` 登记样例，`sample-data.*.ts` 是各语言的示例文字）

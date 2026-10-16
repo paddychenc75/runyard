@@ -19,3 +19,4 @@ export {
   type GlassSurfaceProps,
 } from "./primitives/GlassSurface/index.ts";
 export { Icon, type IconProps } from "./primitives/Icon/index.ts";
+export { UserText, type UserTextProps } from "./primitives/UserText/index.ts";

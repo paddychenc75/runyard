@@ -31,11 +31,11 @@
 | release-please（命令行，只在临时目录里本地试运行） | 17.6.0 | 2026-04-13（182 天；间接依赖由 pnpm 的年龄规则把关） | 2026-10-12 | 无（A、B、C） | 与 Action 打包的是同一版本，用来在合并前预览更新日志；不加进工作区。K15 量过 17.11.2（决策记录 0011），Action 现在打包的是 17.6.0，以 Action 为准 |
 | astro | 7.3.5 | 2026-09-24（18 天） | 2026-10-12 | A、B 无；C 的公告在 7.2.8 及以前已修复 | 7.3.8 才发布 4 天 |
 | @astrojs/starlight | 0.42.4 | 2026-09-24（18 天） | 2026-10-12 | 无（A、B、C） | peer 依赖 Astro ^7.2.10，与 7.3.5 相符 |
-| react | 19.3.0 | 2026-09-09（33 天） | 2026-10-12 | A、B 无；C 里的公告只涉及服务端组件，应用界面不用 | react 与 react-dom 同版本 |
-| react-dom | 19.3.0 | 2026-09-09（37 天） | 2026-10-16 | 无（A、B）；C（facebook/react）的公告都是 react-server-dom-*（服务端组件），19.3.1 修的也是它们，`@runyard/ui` 只用 react 和 react-dom | 与 react 同版本；19.3.1 才发布 2 天，不取 |
+| react | 19.3.0 | 2026-09-09（33 天） | 2026-10-12 | A、B 无；C 里的公告只涉及服务端组件，应用界面不用 | react 与 react-dom 同版本；2026-10-16 复查：19.3.1（2026-10-14）才发布 2 天不取；同日公布的 GHSA-xqc2-xf4c-x3h3、GHSA-h3gv-c5rc-p453 只涉及 react-server-dom-*，不影响 react；先给 `@runyard/i18n` 的 React 绑定用（#164） |
+| react-dom | 19.3.0 | 2026-09-09（37 天） | 2026-10-16 | 无（A、B）；C（facebook/react）2026-10-14 的两条公告只涉及 react-server-dom-*，不影响 react-dom | 与 react 同版本；`@runyard/i18n` 只在测试里用它的 `renderToString` 渲染 React 绑定（devDependency） |
+| @types/react | 19.3.0 | 2026-09-09（37 天） | 2026-10-16 | 无（A、B；C 的 DefinitelyTyped 公告页 0 条） | 与 react 19.3.0 同版本；`@runyard/i18n/react` 的类型 |
+| @types/react-dom | 19.3.0 | 2026-09-09（37 天） | 2026-10-16 | 无（A、B；C 的 DefinitelyTyped 公告页 0 条） | 与 react-dom 19.3.0 同版本；测试里用 |
 | @base-ui/react | 1.8.0 | 2026-09-04（42 天） | 2026-10-16 | 无（A、B）；C（mui/base-ui）公告页 0 条，1.8.0 和 1.9.0 的发布说明里没有安全字样 | 技术设计 §8.6 要求首次安装时重选版本；1.9.0 才发布 7 天，取 1.8.0；1.0 早已发布（大版本满 90 天）；peer 依赖 react ^17 \|\| ^18 \|\| ^19，与 19.3.0 相符；行为和无障碍库，只用于 `packages/ui` |
-| @types/react | 19.3.0 | 2026-09-09（37 天） | 2026-10-16 | 无（A、B） | 与 react 19.3.0 同版本，同 catalog 条目（`packages/ui` 用，react19 模板的同名包见下） |
-| @types/react-dom | 19.3.0 | 2026-09-09（37 天） | 2026-10-16 | 无（A、B） | 与 react-dom 19.3.0 同版本，同 catalog 条目 |
 | jsdom | 29.1.1 | 2026-04-30（169 天） | 2026-10-16 | 无（A、B）；C（jsdom/jsdom）公告页 0 条 | 组件测试需要 DOM；30.0.0 发布 81 天不满 90 天，退回 29 线的最新版（29.1.1，Node ^20.19 \|\| ^22.13 \|\| >=24）；只在 `packages/ui` 的测试里用 |
 | @testing-library/react | 16.3.3 | 2026-08-27（50 天） | 2026-10-16 | 无（A、B）；C 公告页 0 条 | 渲染组件、按角色找元素；peer 依赖 react 18 或 19、@testing-library/dom ^10；只在测试里用 |
 | @testing-library/dom | 10.4.2 | 2026-09-13（33 天） | 2026-10-16 | 无（A、B）；C 公告页 0 条 | @testing-library/react 的 peer 依赖，取 10 线满 15 天的最新版；只在测试里用 |

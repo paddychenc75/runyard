@@ -17,8 +17,10 @@ import type { Check } from "./workspace.ts";
 // 协议里的文档字符串（见 DOC_STRING_DIR）不算界面文字。
 // 放行：同一行或上一行写 `// i18n-allow: 理由`，理由必填。放行是给“永远不会显示给用户的开发者诊断”
 // 留的口子（技术设计 §6.8 第 4 层），不是给界面文字的。
-// 第 1、2 层（Biome 的 JSX 规则和 Localized 类型）和第 5 层（伪语言下扫真实页面）见 biome.json
-// 与 packages/i18n/AGENTS.md；第 5 层在 M2 随界面加入，现在没有。
+// JSX 里的三种写法都查：标签之间的文字、{"文字"} 和 {`模板`} 这类表达式里的字面量、属性里的字符串
+// （label="保存" 这种组件属性也在内）。JSX 文字里的 &#x4e2d; 这类字符引用先还原再查。
+// 第 1、2 层（Biome 的 JSX 规则和 Localized 类型）见 biome.json 与 tooling/biome/；
+// 第 5 层（伪语言下扫真实页面）的扫描函数在 packages/i18n/src/pseudo-scan.ts，由 ui-visual 和 e2e 调用。
 
 const OUTPUT_DIR = "packages/cli/src/output/";
 // 协议里的文档字符串：登记表的 summary 和 zod 的 .describe(…) 只用来生成 docs/reference/，
@@ -64,6 +66,15 @@ function isDocString(node: ts.Node): boolean {
     );
   }
   return ts.isPropertyAssignment(parent) && parent.name.getText() === "summary";
+}
+
+// JSX 文字里的数字字符引用（&#x4e2d; 或 &#20013;）：用它可以绕过“字符串里没有汉字”的检查
+function decodeEntities(text: string): string {
+  return text.replace(/&#(x[0-9a-f]+|\d+);/gi, (whole, code: string) => {
+    const point =
+      code.startsWith("x") || code.startsWith("X") ? parseInt(code.slice(1), 16) : Number(code);
+    return Number.isInteger(point) && point <= 0x10ffff ? String.fromCodePoint(point) : whole;
+  });
 }
 
 function isStdWrite(node: ts.Node): node is ts.PropertyAccessExpression {
@@ -114,7 +125,7 @@ export function checkUiStrings(path: string, text: string): string[] {
     ) {
       literalPart(node, node.text);
     } else if (ts.isJsxText(node)) {
-      literalPart(node, node.text);
+      literalPart(node, decodeEntities(node.text));
     } else if (
       isStdWrite(node) &&
       !path.startsWith(OUTPUT_DIR) &&

@@ -36,7 +36,12 @@
   },
   "overrides": [
     {
-      "includes": ["apps/desktop/src/renderer/**", "packages/ui/src/**", "!**/*.test.tsx"],
+      "includes": [
+        "apps/desktop/src/renderer/**",
+        "packages/ui/src/**",
+        "packages/i18n/src/react/**",
+        "!**/*.test.tsx"
+      ],
       "linter": {
         "rules": {
           "style": {
