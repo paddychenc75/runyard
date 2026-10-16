@@ -284,3 +284,28 @@ describe("空闲停止的原因", () => {
     expect(h.exits.at(-1)?.reason).toBeUndefined();
   });
 });
+
+describe("进程自己退出与 stop 交错（议题 #137）", () => {
+  it("进程退出后清理后代的 await 期间调用了 stop：不抛 IllegalTransitionError，运行以 stopped 结束", async () => {
+    const h = createHarness();
+    h.script({ exit: { afterMs: 1000, code: 0 } }, scriptArgv);
+    const { run } = h.engine.start(h.request({ kind: "oneshot", owner: cliOwner }));
+    await h.fake.clock.advance(100);
+    expect(run.state).toBe("running");
+
+    const original = h.fake.platform.proc.members.bind(h.fake.platform.proc);
+    let stopped: Promise<unknown> | undefined;
+    // 退出的处理第一次问“还有后代吗”时，用户恰好点了停止
+    vi.spyOn(h.fake.platform.proc, "members").mockImplementationOnce(async (ref) => {
+      stopped = run.stop();
+      return original(ref);
+    });
+    await h.fake.clock.advance(1000);
+    await h.fake.clock.advance(3000);
+    await stopped;
+
+    expect(run.state).toBe("stopped");
+    expect(h.states.map((s) => s.run.state).slice(-2)).toEqual(["stopping", "stopped"]);
+    expect(h.exits.filter((e) => e.runId === run.runId)).toHaveLength(1);
+  });
+});

@@ -304,6 +304,8 @@ export class RunSession implements Run {
       params: exitCode === null ? {} : { exitCode },
     });
     await this.#sweepTree();
+    // 清理后代期间可能有人调用了 stop()：状态已是 stopping，收尾归停止流程（议题 #137）
+    if (this.#rec.state === "stopping" || !isActiveState(this.#rec.state)) return;
     const cause: ErrorCause = {
       ...(exitCode === null ? {} : { exitCode }),
       outputTail: this.#output?.tail() ?? "",
