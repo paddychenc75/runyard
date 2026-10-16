@@ -21,7 +21,7 @@ describe("组件样式规则", () => {
   it("backdrop-filter 只出现在 styles/materials.css", () => {
     const offenders = cssFiles
       .filter((file) => /backdrop-filter/.test(read(file)))
-      .map((file) => relative(srcDir, file));
+      .map((file) => relative(srcDir, file).replaceAll("\\", "/"));
     expect(offenders).toEqual(["styles/materials.css"]);
   });
 

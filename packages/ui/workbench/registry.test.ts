@@ -20,7 +20,7 @@ describe("工作台的样例登记", () => {
   it("每个 *.fixture.tsx 都登记在 registry.ts 里，组件名和文件夹名一致", () => {
     const registered = new Set(fixtures.map((fixture) => fixture.meta.name));
     const onDisk = fixtureFiles(srcDir).map((file) => {
-      const name = /([^/]+)\.fixture\.tsx$/.exec(relative(srcDir, file))?.[1];
+      const name = /([^/\\]+)\.fixture\.tsx$/.exec(relative(srcDir, file))?.[1];
       return name ?? "";
     });
     expect([...registered].sort()).toEqual(onDisk.sort());
