@@ -31,7 +31,7 @@
 #### Scenario: [SUPERVISOR-LIFECYCLE-05] 连接点被不知道口令的进程抢先占住
 - 前提：别的进程先占住了连接点（socket 路径）
 - **WHEN** 管理进程尝试启动，或客户端尝试连接
-- **THEN** 管理进程起不来（功能不可用），客户端握手失败并报 `SUPERVISOR_UNAVAILABLE`；口令没有被发送给占位者
+- **THEN** 占位者持有内核锁（它是一个真正的管理进程）时，新的管理进程启动失败；占位者没有持有锁（别的程序，或上次异常退出留下的残留文件）时，管理进程换掉它的 socket 文件并正常启动；客户端连上不知道口令的占位者时握手失败并报 `SUPERVISOR_UNAVAILABLE`；两种情形下口令都没有被发送给占位者
 - 验证：test
 
 #### Scenario: [SUPERVISOR-LIFECYCLE-06] 开发版和正式版互不干扰

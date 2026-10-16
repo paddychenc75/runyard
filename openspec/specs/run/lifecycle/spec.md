@@ -76,13 +76,13 @@
 - 验证：test
 
 ### Requirement: 一个项目同时只有一次运行
-对正处于活动状态的项目再次启动，MUST 返回现有的那次运行并带 `alreadyRunning: true`，MUST NOT 再起一个进程。
+对正处于 `checking` `installing` `starting` `ready` `reloading` `running` 之一的项目再次启动，MUST 返回现有的那次运行并带 `alreadyRunning: true`，MUST NOT 再起一个进程。对正处于 `stopping` 的项目再次启动，MUST 等这次停止完成后启动一次新的运行（新的 `runId`，`alreadyRunning: false`），任何时刻 MUST 只有一个进程树存活。
 来源：PRD #prd-cli-json
 
 #### Scenario: [RUN-LIFECYCLE-12] 重复启动
 - 前提：项目已是 `ready`
 - **WHEN** 再次对它执行 `run`
-- **THEN** 返回同一个 `runId`，`alreadyRunning` 为 `true`，进程数不变
+- **THEN** 返回同一个 `runId`，`alreadyRunning` 为 `true`，进程数不变；若项目是 `stopping`，则等停止完成后起新的运行，`runId` 与正在停止的那次不同，`alreadyRunning` 为 `false`
 - 验证：test
 
 #### Scenario: [RUN-LIFECYCLE-13] 并发启动
