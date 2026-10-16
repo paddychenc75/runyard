@@ -6,6 +6,7 @@
       "!**/node_modules",
       "!**/.tsbuild",
       "!**/.turbo",
+      "!packages/ui/visual/.output",
       "!**/dist",
       "!pnpm-lock.yaml",
       "!.release-please-manifest.json",

@@ -27,6 +27,7 @@
     "tokens:build": "node packages/tokens/build/build.ts",
     "icons:build": "node packages/ui/build/icons.ts",
     "ui:dev": "pnpm --filter @runyard/ui dev",
+    "ui:visual": "pnpm --filter @runyard/ui visual",
     "spec": "node tooling/scripts/spec.mjs"
   },
   "devDependencies": {

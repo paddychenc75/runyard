@@ -11,6 +11,7 @@ catalog:
   "@biomejs/biome": 2.5.14
   "@fission-ai/openspec": 1.14.0
   "@formatjs/icu-messageformat-parser": 3.5.18
+  "@playwright/test": 1.63.0
   "@testing-library/dom": 10.4.2
   "@testing-library/react": 16.3.3
   "@testing-library/user-event": 14.6.7
