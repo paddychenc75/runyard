@@ -114,13 +114,17 @@ describe("组合根", () => {
     expect(await platform.fs.exists(absPath(config.supervisorCommand[1] ?? ""))).toBe(true);
 
     const client = await createDeps(config).connect(platform);
+    let supervisor: { pid: number; startTime: number } | undefined;
     try {
       expect(client.launched).toBe(true);
       expect(client.supervisor.startedBy).toBe("cli");
       const file = await platform.fs.readText(discoveryFilePath(platform.paths.stateDir));
       const pid = (JSON.parse(file ?? "{}") as { pid: number }).pid;
       const identity = await platform.proc.identity(pid);
-      if (identity !== null) registerSpawned(platform, { pid, startTime: identity.startTime });
+      if (identity !== null) {
+        supervisor = { pid, startTime: identity.startTime };
+        registerSpawned(platform, supervisor);
+      }
     } finally {
       await client.call("supervisor.shutdown", { ifIdle: false, reason: "user" });
       client.close();
@@ -137,6 +141,13 @@ describe("组合根", () => {
       );
       if (gone) break;
       if (Date.now() > deadline) throw new Error("supervisor did not exit");
+      await new Promise((resolve) => setTimeout(resolve, 25));
+    }
+    // 连接点没了不等于进程已退出：等到进程本身消失，守卫才不会把它当遗留
+    while (supervisor !== undefined) {
+      const now = await platform.proc.identity(supervisor.pid);
+      if (now === null || now.startTime !== supervisor.startTime) break;
+      if (Date.now() > deadline) throw new Error("supervisor process did not exit");
       await new Promise((resolve) => setTimeout(resolve, 25));
     }
   });

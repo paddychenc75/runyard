@@ -1,4 +1,5 @@
-import { type AbsPath, joinPath, type Platform, posixRelPath } from "@runyard/platform";
+import { dirname } from "node:path";
+import { type AbsPath, absPath, joinPath, type Platform, posixRelPath } from "@runyard/platform";
 import {
   CLI_FILE_VERSION,
   type CliFile,
@@ -72,7 +73,7 @@ export class CliSettings {
       await this.#platform.fs.renameFile(this.#path, kept);
     }
     const base = state.status === "ok" ? state.file : { formatVersion: CLI_FILE_VERSION as 1 };
-    await this.#platform.fs.makeDir(this.#platform.paths.stateDir);
+    await this.#platform.fs.makeDir(absPath(dirname(this.#path)));
     await this.#platform.fs.writeAtomic(
       this.#path,
       serializeVersioned(cliFileFormat, { ...base, lang }),

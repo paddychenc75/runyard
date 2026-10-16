@@ -52,8 +52,8 @@ export class Harness {
   }
 
   async writeCliJson(text: string): Promise<void> {
-    await this.platform.fs.makeDir(this.platform.paths.stateDir);
-    await this.platform.fs.writeAtomic(this.cliJson, text);
+    // 直接布置内存文件系统（缺的上级目录自动建）：假平台在不同系统上对路径分隔符的处理不同
+    this.fake.fs.writeFile(this.cliJson, text);
   }
 
   deps(): CliDeps {
