@@ -1,4 +1,5 @@
 import { ClientError, clientError } from "@runyard/client";
+import { joinPath, posixRelPath } from "@runyard/platform";
 import { type ErrorCode, type ErrorParams, errorCodes, errorRegistry } from "@runyard/protocol";
 import { afterEach, describe, expect, it } from "vitest";
 import { cliError } from "./cli-error.ts";
@@ -428,9 +429,10 @@ describe("语言", () => {
 
   it("--root 换掉主目录：设置读写发生在那个目录下，默认目录不受影响", async () => {
     const h = harness();
-    await h.run(["config", "set", "lang", "zh-CN", "--root", "/other-root"]);
+    const root = joinPath(h.platform.paths.home, posixRelPath("other-root"));
+    await h.run(["config", "set", "lang", "zh-CN", "--root", root]);
     expect(await h.platform.fs.exists(h.cliJson)).toBe(false);
-    const other = h.roots.get("/other-root");
-    expect(other?.fs.exists("/other-root/.runyard/cli.json" as never)).toBe(true);
+    const other = h.roots.get(root);
+    expect(other?.fs.exists(joinPath(root, posixRelPath(".runyard/cli.json")))).toBe(true);
   });
 });

@@ -1,3 +1,4 @@
+import { joinPath, posixRelPath } from "@runyard/platform";
 import { afterEach, describe, expect, it } from "vitest";
 import { Harness } from "../cli-harness.test.ts";
 
@@ -87,8 +88,11 @@ describe("config", () => {
     });
     await h.run(["config", "set", "lang", "zh-CN"]);
     expect(await h.platform.fs.readText(h.cliJson)).toContain('"zh-CN"');
-    const kept = `${h.cliJson}.corrupt-1760000000000`;
-    expect(h.fake.fs.exists(kept as never)).toBe(true);
+    const kept = joinPath(
+      h.platform.paths.stateDir,
+      posixRelPath("cli.json.corrupt-1760000000000"),
+    );
+    expect(h.fake.fs.exists(kept)).toBe(true);
   });
 
   it("config 在文本模式下也能用，且不连管理进程", async () => {

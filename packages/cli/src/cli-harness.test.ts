@@ -1,5 +1,5 @@
 import type { RunyardClient } from "@runyard/client";
-import { type AbsPath, absPath, type Platform } from "@runyard/platform";
+import { type AbsPath, joinPath, type Platform, posixRelPath } from "@runyard/platform";
 import { createFakePlatform, type FakePlatform } from "@runyard/testing";
 import { expect, it } from "vitest";
 import type { CliDeps } from "./cli-deps.ts";
@@ -48,7 +48,7 @@ export class Harness {
   }
 
   get cliJson(): AbsPath {
-    return absPath(`${this.platform.paths.stateDir}/cli.json`);
+    return joinPath(this.platform.paths.stateDir, posixRelPath("cli.json"));
   }
 
   async writeCliJson(text: string): Promise<void> {
