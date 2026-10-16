@@ -1,4 +1,4 @@
-import { basename, isAbsolute, join, resolve } from "node:path";
+import { basename, join } from "node:path";
 import { type AbsPath, absPath, type Platform } from "@runyard/platform";
 import type { LibraryEntry } from "@runyard/protocol";
 import { type AutoCleanCandidate, type AutoCleanVerdict, judgeAutoClean } from "./auto-clean.ts";
@@ -71,7 +71,9 @@ export class PlaygroundLibrary {
    * 名称里不会有路径分隔符，所以绝对路径和名称不会混淆
    */
   find(ref: string): LibraryItem | undefined {
-    const folder = isAbsolute(ref) ? resolve(ref) : undefined;
+    // 与索引里的写法一致（join 归一化分隔符），去掉结尾的分隔符；不用 isAbsolute/resolve：它们随运行系统变，
+    // 而测试里的假路径在 Windows 上没有盘符
+    const folder = /^(?:[A-Za-z]:)?[\\/]/.test(ref) ? join(ref).replace(/[\\/]+$/, "") : undefined;
     return this.list().find(
       (item) => item.entry.id === ref || item.name === ref || item.entry.path === folder,
     );
