@@ -25,7 +25,8 @@ function setup(props: { onSelect?: (id: string) => void; onOpenChange?: (o: bool
   );
 }
 
-describe("Menu", () => {
+// 浮层挂载和关闭动画在 Windows 的 CI 机器上很慢，第一条测试曾超过默认的 5 秒（PR #224）
+describe("Menu", { timeout: 20_000 }, () => {
   it("点触发按钮打开菜单，选中一项回调它的 id 并关闭", async () => {
     const user = userEvent.setup();
     const onSelect = vi.fn();
