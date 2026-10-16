@@ -125,6 +125,12 @@ describe("format.date / dateTime", () => {
     expect(zh.dateTime(noon)).toMatch(/^2026年10月1[23]日 \d{2}:\d{2}$/);
   });
 
+  it("时刻是 24 小时制的时分秒，中英文都一样宽", () => {
+    expect(en.time(noon)).toMatch(/^\d{2}:\d{2}:\d{2}$/);
+    expect(zh.time(noon)).toMatch(/^\d{2}:\d{2}:\d{2}$/);
+    expect(() => en.time(Number.NaN)).toThrow(RangeError);
+  });
+
   it("不是有限数字抛错（开发者诊断）", () => {
     expect(() => en.date(Number.NaN)).toThrow(RangeError);
     expect(() => en.dateTime(Number.POSITIVE_INFINITY)).toThrow(RangeError);

@@ -99,6 +99,7 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
   const tabs: TabRow[] = [];
   for (const row of rows) {
     if (!inputs.tabIds.includes(row.id)) continue;
+    const run = latest.get(row.id);
     tabs.push({
       id: row.id,
       name: row.name,
@@ -106,6 +107,13 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
       state: row.state,
       active: row.active,
       busy: row.busy,
+      kind: row.kind,
+      ownedByTab: run?.owner.kind === "tab",
+      templateName: row.templateName,
+      port: row.port,
+      startedAt: run?.startedAt ?? null,
+      exitCode: run?.exitCode ?? null,
+      durationMs: run?.durationMs ?? null,
       previewUrl: previewUrlFor(row.id, inputs.runs),
     });
   }

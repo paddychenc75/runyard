@@ -1,4 +1,5 @@
 import type { Locale } from "@runyard/i18n";
+import type { ConsoleAppend, ConsoleLine } from "./console-state.ts";
 import type { Bounds } from "./layout.ts";
 import type { LibraryState } from "./library-state.ts";
 
@@ -28,6 +29,8 @@ export interface DesktopMethods {
   "preview.capture": { param: undefined; result: string | null };
   /** 显示或隐藏预览视图；浮层关闭后恢复 */
   "preview.visible": { param: boolean; result: undefined };
+  /** 项目标签页控制台已有的全部输出；界面挂载时取一份，后面的新输出走 console.appended */
+  "console.get": { param: string; result: ConsoleLine[] };
 }
 export type DesktopMethod = keyof DesktopMethods;
 
@@ -41,15 +44,20 @@ export const desktopMethodNames: readonly DesktopMethod[] = [
   "preview.bounds",
   "preview.capture",
   "preview.visible",
+  "console.get",
 ];
 
 /** 主进程推给界面的事件 */
 export interface DesktopEvents {
   "library.changed": LibraryState;
+  "console.appended": ConsoleAppend;
 }
 export type DesktopEventName = keyof DesktopEvents;
 
-export const desktopEventNames: readonly DesktopEventName[] = ["library.changed"];
+export const desktopEventNames: readonly DesktopEventName[] = [
+  "library.changed",
+  "console.appended",
+];
 
 /** 启动信息：主进程建窗口时算好，预加载脚本同步交给界面（技术设计 §6.7；协议包建好该类型后移过去） */
 export interface BootstrapInfo {

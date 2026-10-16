@@ -1,0 +1,52 @@
+/* 设计稿 Service 的输出区：等宽小字，行首是淡色的时间，命令行蓝色、提示橙色、错误红色 */
+.root {
+  position: relative;
+  block-size: 100%;
+  box-sizing: border-box;
+  overflow: auto;
+  padding-inline: var(--space-5);
+  font-family: var(--font-mono);
+  font-size: var(--text-code-small-size);
+  line-height: var(--text-code-line-height);
+  color: var(--color-text-primary);
+}
+
+.probe {
+  position: absolute;
+  visibility: hidden;
+  block-size: var(--text-code-line-height);
+}
+
+.line {
+  display: flex;
+  gap: var(--space-3);
+  block-size: var(--text-code-line-height);
+  white-space: pre;
+}
+
+.time {
+  flex: none;
+  color: var(--color-text-secondary);
+}
+
+.text {
+  overflow-wrap: normal;
+}
+
+.line[data-tone="command"] .text {
+  color: var(--color-code-function);
+}
+
+.line[data-tone="notice"] .text {
+  color: var(--color-status-warning-text);
+}
+
+.line[data-tone="error"] .text {
+  color: var(--color-status-danger-text);
+}
+
+.empty {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+}

@@ -8,10 +8,11 @@ type Handler = (sender: IpcSender, ...args: unknown[]) => unknown;
 
 function setup() {
   const handlers = new Map<string, Handler>();
-  const sent: { channel: string; event: string; state: LibraryState }[] = [];
+  const sent: { channel: string; event: string; state: unknown }[] = [];
   const syncHandlers = new Map<string, (sender: IpcSender) => unknown>();
   const calls: unknown[][] = [];
   let push: ((state: LibraryState) => void) | undefined;
+  let pushConsole: ((append: unknown) => void) | undefined;
   const state = {
     locale: "en",
     playgrounds: [],
@@ -27,6 +28,11 @@ function setup() {
     openProject: async (id: string) => void calls.push(["open", id]),
     selectTab: (id: string) => void calls.push(["select", id]),
     create: async (id: string) => void calls.push(["create", id]),
+    consoleLines: (id: string) => [{ seq: 1, entry: { at: 1, kind: "stdout", text: id } }],
+    onConsole: (listener: (append: unknown) => void) => {
+      pushConsole = listener;
+      return () => {};
+    },
     setPreviewBounds: (bounds: unknown) => void calls.push(["bounds", bounds]),
     capturePreview: async () => "data:image/png;base64,AAAA",
     setPreviewVisible: (visible: boolean) => void calls.push(["visible", visible]),
@@ -51,6 +57,7 @@ function setup() {
     sent,
     calls,
     push: (next: LibraryState) => push?.(next),
+    pushConsole: (append: unknown) => pushConsole?.(append),
     state,
   };
 }
@@ -135,6 +142,19 @@ describe("registerBridgeHandlers", () => {
       ["bounds", area],
       ["bounds", null],
       ["visible", false],
+    ]);
+  });
+
+  it("控制台通道：console.get 取已有的行，新输出作为 console.appended 推给界面", async () => {
+    const { call, sent, pushConsole } = setup();
+    expect(await call(app, "console.get", "a")).toEqual([
+      { seq: 1, entry: { at: 1, kind: "stdout", text: "a" } },
+    ]);
+    expect(await call(app, "console.get", 5)).toEqual([]);
+    const append = { playground: "a", lines: [], reset: false };
+    pushConsole(append);
+    expect(sent).toEqual([
+      { channel: desktopChannels.event, event: "console.appended", state: append },
     ]);
   });
 });

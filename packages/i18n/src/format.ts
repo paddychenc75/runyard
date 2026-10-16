@@ -18,6 +18,8 @@ export interface Format {
   date(ms: number, style?: DateStyle): Localized;
   /** 日期加时间（时间到分钟）：同上 */
   dateTime(ms: number, style?: DateStyle): Localized;
+  /** 一天里的时刻（时分秒，24 小时制）：日志行首用，等宽对齐；系统本地时区 */
+  time(ms: number): Localized;
   /** 相对时间：刚刚 / N 分钟前 / N 小时前 / N 天前。now 由调用方传入，函数本身不读时钟 */
   relativeTime(thenMs: number, nowMs: number): Localized;
 }
@@ -85,6 +87,18 @@ export function createFormat(translator: Translator): Format {
       assertFinite(ms, "time");
       return markLocalized(
         new Intl.DateTimeFormat(locale, { dateStyle: style, timeStyle: "short" }).format(ms),
+      );
+    },
+
+    time(ms) {
+      assertFinite(ms, "time");
+      return markLocalized(
+        new Intl.DateTimeFormat(locale, {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hourCycle: "h23",
+        }).format(ms),
       );
     },
 
