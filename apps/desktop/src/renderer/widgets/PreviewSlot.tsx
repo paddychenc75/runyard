@@ -61,7 +61,11 @@ export function PreviewSlot({ bridge, placeholder, frame, overlay, onBounds }: P
           data-preview-frame=""
         />
       )}
-      {overlay === undefined ? null : <div className={styles.overlay}>{overlay}</div>}
+      {overlay === undefined ? null : (
+        <div className={styles.overlay} data-framed={frame !== null ? "" : undefined}>
+          {overlay}
+        </div>
+      )}
     </div>
   );
 }

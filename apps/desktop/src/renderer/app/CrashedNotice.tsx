@@ -20,7 +20,7 @@ export function CrashedNotice({ bridge, tab }: CrashedNoticeProps) {
   const fmt = useFormat();
   return (
     <div
-      className={styles.root}
+      className={`${styles.root} ${styles.centered}`}
       role="alert"
       aria-label={t("desktop.crashed.overlay.aria")}
       data-failure-screen="crashed"

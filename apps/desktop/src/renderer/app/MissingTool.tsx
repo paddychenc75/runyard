@@ -1,5 +1,5 @@
 import { useT } from "@runyard/i18n/react";
-import { Button, CopyableCommand, Icon } from "@runyard/ui";
+import { Button, CopyableCommand, GlassSurface, Icon } from "@runyard/ui";
 import { useEffect, useState } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { DesktopError, TabRow } from "../../shared/library-state.ts";
@@ -32,7 +32,11 @@ export function MissingTool({ bridge, tab, failure }: MissingToolProps) {
     setCopied(true);
   };
   return (
-    <div className={styles.root} data-failure-screen="missing">
+    <GlassSurface
+      material="dialog"
+      className={`${styles.root} ${styles.card}`}
+      data-failure-screen="missing"
+    >
       <div className={styles.head}>
         <span aria-hidden="true" className={styles.tile}>
           <Icon name="warning" size={20} />
@@ -77,12 +81,13 @@ export function MissingTool({ bridge, tab, failure }: MissingToolProps) {
       </dl>
       <div className={styles.actions}>
         {fields.installCommand === null ? null : (
-          <Button onClick={() => copy(fields.installCommand ?? "")}>
+          <Button size="lg" onClick={() => copy(fields.installCommand ?? "")}>
             {copied ? t("desktop.missing.copied.label") : t("desktop.missing.copy.action")}
           </Button>
         )}
         <Button
           variant="primary"
+          size="lg"
           icon="refresh"
           disabled={tab.busy}
           onClick={() => void bridge.call("run.start", tab.id)}
@@ -91,6 +96,6 @@ export function MissingTool({ bridge, tab, failure }: MissingToolProps) {
         </Button>
       </div>
       <p className={styles.note}>{t("desktop.missing.promise.label")}</p>
-    </div>
+    </GlassSurface>
   );
 }
