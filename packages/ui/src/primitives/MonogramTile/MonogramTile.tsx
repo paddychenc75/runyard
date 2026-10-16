@@ -15,6 +15,7 @@ export function MonogramTile({ letters, size = "sm", className, ...rest }: Monog
     <span
       {...rest}
       aria-hidden="true"
+      data-user-content=""
       className={className === undefined ? styles.root : `${styles.root} ${className}`}
       data-size={size}
     >

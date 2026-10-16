@@ -8,6 +8,7 @@ export function Truncate({ className, ...rest }: TruncateProps) {
   return (
     <span
       {...rest}
+      data-truncate=""
       className={className === undefined ? styles.root : `${styles.root} ${className}`}
     />
   );

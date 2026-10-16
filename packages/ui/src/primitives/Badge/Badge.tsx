@@ -22,7 +22,9 @@ export function Badge({ variant = "solid", icon, className, children, ...rest }:
       data-variant={variant}
     >
       {icon === undefined ? null : <Icon name={icon} size={12} />}
-      <span className={styles.text}>{children}</span>
+      <span className={styles.text} data-truncate="">
+        {children}
+      </span>
     </span>
   );
 }

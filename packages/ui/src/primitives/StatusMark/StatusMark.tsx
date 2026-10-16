@@ -27,7 +27,11 @@ export function StatusMark({ status, children, markLabel, className, ...rest }: 
       ) : (
         <span aria-hidden="true" className={styles.mark} />
       )}
-      {children === undefined ? null : <span className={styles.text}>{children}</span>}
+      {children === undefined ? null : (
+        <span className={styles.text} data-truncate="">
+          {children}
+        </span>
+      )}
     </span>
   );
 }

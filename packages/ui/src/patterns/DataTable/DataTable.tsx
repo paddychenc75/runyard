@@ -100,7 +100,11 @@ export function DataTable<Row>({
           <tr className={styles.row}>
             {columns.map((column) => (
               <th key={column.id} scope="col" className={styles.headerCell} data-pin={column.pin}>
-                {column.header ?? <span className={styles.hidden}>{column.hiddenHeader}</span>}
+                {column.header ?? (
+                  <span className={styles.hidden} data-truncate="">
+                    {column.hiddenHeader}
+                  </span>
+                )}
               </th>
             ))}
           </tr>
