@@ -1,0 +1,44 @@
+{
+  "formatVersion": 1,
+  "id": "vite",
+  "kind": "server",
+  "needs": ["node", { "anyOf": ["pnpm", "npm"] }],
+  "setup": {
+    "inputs": ["package.json", "pnpm-lock.yaml", "package-lock.json"],
+    "stamp": "node_modules/.runyard-setup.json",
+    "variants": {
+      "pnpm": { "command": ["pnpm", "install", "--prefer-offline"] },
+      "npm": { "command": ["npm", "install", "--prefer-offline", "--no-audit", "--no-fund"] }
+    },
+    "errors": [
+      { "match": "ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY", "reason": "SETUP_FAILED" },
+      { "match": "ERR_PNPM_IGNORED_BUILDS", "reason": "SETUP_FAILED" },
+      { "match": "ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION", "reason": "SETUP_FAILED" },
+      {
+        "match": "ERR_PNPM_NO_OFFLINE_TARBALL|ERR_PNPM_NO_OFFLINE_META|ERR_PNPM_META_FETCH_FAIL|ENOTCACHED|ENOTFOUND|EAI_AGAIN|ECONNREFUSED|ECONNRESET",
+        "reason": "DEPS_OFFLINE"
+      },
+      {
+        "match": "VCRUNTIME140|The specified module could not be found",
+        "reason": "RUNTIME_MISSING"
+      }
+    ]
+  },
+  "run": {
+    "command": [
+      "node",
+      "node_modules/vite/bin/vite.js",
+      "--port",
+      "{port}",
+      "--strictPort",
+      "--host",
+      "127.0.0.1",
+      "--clearScreen",
+      "false"
+    ]
+  },
+  "ready": { "http": { "path": "/" }, "slowAfterMs": 30000 },
+  "preview": { "type": "web", "path": "/" },
+  "watch": { "mode": "none" },
+  "stop": { "mode": "graceful", "graceMs": 2000 }
+}

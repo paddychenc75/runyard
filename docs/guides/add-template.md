@@ -12,6 +12,18 @@
 4. Node 类模板（`files/` 里有 `package.json`）还要有：精确版本的依赖（不写 `^`、`~`、`latest`，取值见技术设计 §8.6.5）、只放 `allowBuilds` 的 `pnpm-workspace.yaml`、锁文件。
 5. `requires` 里用到的工具必须有 `templates/tools/<tool>.json`，或在该项里自己写 `install`。
 
+## 重新生成锁文件
+
+在系统临时目录里操作，不在仓库里装依赖。把 `files/` 复制过去，然后：
+
+1. pnpm 的锁文件：`pnpm install --lockfile-only --config.minimumReleaseAge=20160`（间接依赖也要满 14 天；有安全修复例外的直接依赖再加 `--config.minimumReleaseAgeExclude=<包>@<版本>`，并写进 PR）。
+2. npm 的锁文件：先把例外的包暂时改回上一个版本，`npm install --package-lock-only --before=<14 天前的日期>`，再改回来，用 `--before=<明天>` 再解析一次，间接依赖就仍然是满 14 天的。
+3. 对两个锁文件跑 `pnpm audit`、`npm audit`，再逐个查间接依赖的发布日期和 OSV，结果记在 PR 里。
+
+## 冒烟（服务类模板）
+
+`pnpm template:smoke <模板标识>`（需要网络，不在 `pnpm test` 里）：真的安装、类型检查、构建、启动、热更新、停止。声明范围的下限和上限各跑一次：`--node <那个版本的 node 绝对路径>`，并让对应版本的 pnpm 排在 `PATH` 前面；用 npm 的回退路径加 `--pm npm`。
+
 ## 验证
 
 运行 `pnpm template:lint`：每个内置模板输出一行 `LintResult` JSON，有问题时退出码 2。同一项也在 `pnpm check` 里。
