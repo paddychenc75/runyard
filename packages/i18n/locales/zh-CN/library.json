@@ -1,0 +1,15 @@
+{
+  "library.filter.agent.label": "智能体创建",
+  "library.filter.all.label": "全部",
+  "library.filter.autoClean.label": "自动清理",
+  "library.filter.kept.label": "已保留",
+  "library.nav.aria": "资源库导航",
+  "library.nav.library.title": "资源库",
+  "library.nav.manage.title": "管理",
+  "library.nav.settings.label": "设置",
+  "library.nav.templates.label": "模板",
+  "library.nav.unused.label": "长期未使用",
+  "library.page.summary.label": "{total, plural, other {# 个项目}} · {running, plural, other {# 个正在运行}}",
+  "library.sidebar.footer.label": "{count, plural, other {# 个项目}}",
+  "library.tab.title": "资源库"
+}

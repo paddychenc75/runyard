@@ -162,6 +162,9 @@ disagree, `tokens.json` wins.
 | `--size-tree-row` | 28px | File tree row height |
 | `--size-menu-item` | 32px | Menu item height |
 | `--size-window-inset` | 8px | Window inset for floating panels |
+| `--size-nav-item` | 36px | Sidebar navigation item height |
+| `--size-tab` | 36px | Tab height inside the toolbar capsule |
+| `--size-window-controls` | 72px | Space reserved for the native window buttons in a title bar |
 | `--size-card-gap` | 8px | Gap between cards |
 | `--size-dialog-width` | 580px | Dialog width |
 

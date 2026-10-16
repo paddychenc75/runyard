@@ -144,6 +144,9 @@
   --size-tree-row: 28px;
   --size-menu-item: 32px;
   --size-window-inset: 8px;
+  --size-nav-item: 36px;
+  --size-tab: 36px;
+  --size-window-controls: 72px;
   --size-card-gap: 8px;
   --size-dialog-width: 580px;
   --space-1: 2px;

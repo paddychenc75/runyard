@@ -1,0 +1,9 @@
+{
+  "library.page.summary.label": {
+    "total": "资源库里项目的总数",
+    "running": "正在运行的项目数"
+  },
+  "library.sidebar.footer.label": {
+    "count": "资源库里项目的总数"
+  }
+}

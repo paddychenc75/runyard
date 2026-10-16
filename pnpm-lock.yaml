@@ -110,16 +110,43 @@ importers:
       '@runyard/tokens':
         specifier: workspace:*
         version: link:../../packages/tokens
+      '@runyard/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      react:
+        specifier: 'catalog:'
+        version: 19.3.0
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.3.0(react@19.3.0)
     devDependencies:
+      '@testing-library/dom':
+        specifier: 'catalog:'
+        version: 10.4.2
+      '@testing-library/react':
+        specifier: 'catalog:'
+        version: 16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@testing-library/user-event':
+        specifier: 'catalog:'
+        version: 14.6.7(@testing-library/dom@10.4.2)
       '@types/node':
         specifier: 'catalog:'
         version: 24.19.0
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: 'catalog:'
+        version: 19.3.0(@types/react@19.3.0)
       electron:
         specifier: 'catalog:'
         version: 44.5.1
       esbuild:
         specifier: 'catalog:'
         version: 0.28.2
+      jsdom:
+        specifier: 'catalog:'
+        version: 29.1.1
       vitest:
         specifier: 'catalog:'
         version: 4.1.11(@types/node@24.19.0)(jsdom@29.1.1)(vite@8.3.1(@types/node@24.19.0)(esbuild@0.28.2)(yaml@2.9.1))

@@ -259,6 +259,19 @@
 | format.relative.hours | {count, plural, other {# 小时前}} | {count, plural, one {# hr ago} other {# hr ago}} | count：距现在的整数小时数，1 到 23 |
 | format.relative.justNow | 刚刚 | just now | — |
 | format.relative.minutes | {count, plural, other {# 分钟前}} | {count, plural, one {# min ago} other {# min ago}} | count：距现在的整数分钟数，1 到 59 |
+| library.filter.agent.label | 智能体创建 | Agent-made | — |
+| library.filter.all.label | 全部 | All | — |
+| library.filter.autoClean.label | 自动清理 | Auto-clean | — |
+| library.filter.kept.label | 已保留 | Kept | — |
+| library.nav.aria | 资源库导航 | Library navigation | — |
+| library.nav.library.title | 资源库 | Library | — |
+| library.nav.manage.title | 管理 | Manage | — |
+| library.nav.settings.label | 设置 | Settings | — |
+| library.nav.templates.label | 模板 | Templates | — |
+| library.nav.unused.label | 长期未使用 | Unused for a while | — |
+| library.page.summary.label | {total, plural, other {# 个项目}} · {running, plural, other {# 个正在运行}} | {total, plural, one {# playground} other {# playgrounds}} · {running, plural, one {# running} other {# running}} | total：资源库里项目的总数；running：正在运行的项目数 |
+| library.sidebar.footer.label | {count, plural, other {# 个项目}} | {count, plural, one {# playground} other {# playgrounds}} | count：资源库里项目的总数 |
+| library.tab.title | 资源库 | Library | — |
 | notice.DEPS_FROM_CACHE | 依赖来自本机缓存。 | Dependencies came from the local cache. | — |
 | notice.ENV_DEGRADED | 只读到了非交互的终端环境，工具检测的结果可能不准。 | Only the non-interactive terminal environment could be read, so tool detection may be inaccurate. | — |
 | notice.ENV_UNRESOLVED | 没能读取你终端的环境（{reason, select, timeout {读取超时} other {读取失败}}），工具检测的结果可能不准。先用常用目录的扫描结果，后台会再试一次。 | Could not read your terminal environment ({reason, select, timeout {timed out} other {failed}}), so tool detection may be inaccurate. Runyard is using a scan of common directories for now and will try again in the background. | reason：读取失败的原因：timeout（超时）或 failed（失败）；用 select 选词 |
@@ -285,3 +298,4 @@
 | runState.starting | 启动中 | Starting | — |
 | runState.stopped | 已停止 | Stopped | — |
 | runState.stopping | 停止中 | Stopping | — |
+| workspace.tabs.aria | 标签页 | Tabs | — |

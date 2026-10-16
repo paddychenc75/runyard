@@ -1,0 +1,58 @@
+.root {
+  position: relative;
+  min-block-size: 0;
+  min-inline-size: 0;
+  overflow: hidden;
+}
+
+.viewport {
+  inline-size: 100%;
+  block-size: 100%;
+  overscroll-behavior: contain;
+  outline: none;
+}
+
+.viewport:focus-visible {
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.content {
+  min-inline-size: 100%;
+}
+
+.root[data-orientation="vertical"] .content {
+  inline-size: 100%;
+}
+
+.scrollbar {
+  display: flex;
+  padding: var(--space-1);
+  opacity: 0;
+  transition: opacity var(--motion-duration-base) linear;
+}
+
+.scrollbar[data-orientation="vertical"] {
+  inline-size: var(--space-4);
+}
+
+.scrollbar[data-orientation="horizontal"] {
+  block-size: var(--space-4);
+  flex-direction: column;
+}
+
+.scrollbar[data-hovering],
+.scrollbar[data-scrolling] {
+  opacity: 1;
+}
+
+.thumb {
+  flex: 1;
+  border-radius: var(--radius-capsule);
+  background: var(--color-text-tertiary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scrollbar {
+    transition: none;
+  }
+}

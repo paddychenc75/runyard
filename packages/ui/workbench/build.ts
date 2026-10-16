@@ -35,7 +35,8 @@ function copyIndex(outDir: string): void {
 /** 一次性构建到 outDir（测试和截图流水线用） */
 export async function buildWorkbench(outDir: string): Promise<void> {
   copyIndex(outDir);
-  await build(workbenchBuildOptions(outDir));
+  // 一次性构建只给测试和截图用，不需要 sourcemap；少写两个大文件，慢机器（CI 的 Windows）上省下可观的时间
+  await build({ ...workbenchBuildOptions(outDir), sourcemap: false });
 }
 
 /** 监听并在本机端口上提供 outDir；返回地址和停止函数 */

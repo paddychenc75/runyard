@@ -268,6 +268,25 @@ export type CatalogMessages = {
   "format.relative.minutes": {
     count: number;
   };
+  "library.filter.agent.label": Record<never, never>;
+  "library.filter.all.label": Record<never, never>;
+  "library.filter.autoClean.label": Record<never, never>;
+  "library.filter.kept.label": Record<never, never>;
+  "library.nav.aria": Record<never, never>;
+  "library.nav.library.title": Record<never, never>;
+  "library.nav.manage.title": Record<never, never>;
+  "library.nav.settings.label": Record<never, never>;
+  "library.nav.templates.label": Record<never, never>;
+  "library.nav.unused.label": Record<never, never>;
+  "library.page.summary.label": {
+    running: number;
+    total: number;
+  };
+  "library.sidebar.footer.label": {
+    count: number;
+  };
+  "library.tab.title": Record<never, never>;
   "platform.fileManager": Record<never, never>;
   "platform.trash": Record<never, never>;
+  "workspace.tabs.aria": Record<never, never>;
 };

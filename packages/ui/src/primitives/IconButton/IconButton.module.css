@@ -1,0 +1,74 @@
+/*
+ * 纯图标按钮：圆形。悬停多一层填充，按下再多一层；聚焦是焦点环；禁用降到 40%。
+ * 图标颜色用次要文字色（设计稿里“更多”“关闭”都是灰色图标）。
+ */
+.root {
+  --icon-button-bg: transparent;
+  --icon-button-bg-hover: var(--color-fill-neutral);
+  --icon-button-bg-pressed: var(--color-fill-neutral-hover);
+
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-capsule);
+  background: var(--icon-button-bg);
+  color: var(--color-text-secondary);
+  cursor: default;
+  user-select: none;
+  outline: none;
+  transition: background-color var(--motion-duration-fast) linear;
+}
+
+.root[data-size="xs"] {
+  inline-size: var(--space-8);
+  block-size: var(--space-8);
+}
+
+.root[data-size="sm"] {
+  inline-size: var(--size-control-sm);
+  block-size: var(--size-control-sm);
+}
+
+.root[data-size="md"] {
+  inline-size: var(--size-control-md);
+  block-size: var(--size-control-md);
+}
+
+.root[data-variant="neutral"] {
+  --icon-button-bg: var(--color-fill-neutral);
+  --icon-button-bg-hover: var(--color-fill-neutral-hover);
+  --icon-button-bg-pressed: var(--color-fill-neutral-pressed);
+}
+
+.root:hover:not([data-force-state]),
+.root[data-force-state="hover"] {
+  background: var(--icon-button-bg-hover);
+  color: var(--color-text-primary);
+}
+
+.root:active:not([data-force-state]),
+.root[data-force-state="pressed"] {
+  background: var(--icon-button-bg-pressed);
+  color: var(--color-text-primary);
+}
+
+.root:focus-visible:not([data-force-state]),
+.root[data-force-state="focus"] {
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.root:disabled,
+.root[aria-disabled="true"] {
+  opacity: 0.4;
+  background: var(--icon-button-bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition: none;
+  }
+}

@@ -41,6 +41,10 @@ let mainWindow: BrowserWindow | null = null;
 
 async function main(args: DesktopArgs): Promise<void> {
   const locale = resolveDesktopLocale(args.lang, app.getPreferredSystemLanguages());
+  const theme = args.theme ?? "system";
+  // 让系统画的菜单、窗口外框和所有网页（含界面的 prefers-color-scheme）跟着选择走；
+  // system 就是跟随系统（技术设计 §6.7“切换主题”第 3 步）
+  nativeTheme.themeSource = theme;
 
   protocol.handle(APP_SCHEME, (request) => {
     const file = resolveAppFile(join(distDir, "renderer"), request.url);
@@ -57,6 +61,7 @@ async function main(args: DesktopArgs): Promise<void> {
       ? windowBackground.dark
       : windowBackground.light
     ).library,
+    platform: currentPlatform(),
   });
   mainWindow = window;
   keepAliveAfterClose(app, window, closeKeepsAppAlive(currentPlatform()));
@@ -109,7 +114,7 @@ async function main(args: DesktopArgs): Promise<void> {
     controller,
     buildBootstrapInfo(currentPlatform(), {
       locale,
-      systemDark: nativeTheme.shouldUseDarkColors,
+      theme,
       reducedTransparency: nativeTheme.prefersReducedTransparency,
       highContrast: nativeTheme.shouldUseHighContrastColors,
     }),

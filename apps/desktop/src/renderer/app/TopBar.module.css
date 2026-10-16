@@ -1,0 +1,14 @@
+/* 顶栏的空白处能拖动窗口；标签条自己不被拖动吞掉点击 */
+.root {
+  position: absolute;
+  inset-block-start: calc(var(--size-window-inset) + var(--space-3));
+  inset-inline: calc(var(--layout-content-left) + var(--space-6)) var(--space-7);
+  display: flex;
+  align-items: center;
+  block-size: var(--size-toolbar);
+  -webkit-app-region: drag;
+}
+
+.root > * {
+  -webkit-app-region: no-drag;
+}

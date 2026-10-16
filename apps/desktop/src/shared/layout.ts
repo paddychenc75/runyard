@@ -1,5 +1,19 @@
-// 窗口的版面常量。左侧列表是界面进程画的，右侧预览是主进程摆的原生视图，
-// 两边必须对得上，所以宽度只在这里写一次：主进程用它算预览视图的位置，界面把它写成 CSS 变量。
+import { numbers } from "@runyard/tokens";
+
+// 窗口的版面常量。侧栏、顶栏、列表是界面进程画的，右侧预览是主进程摆的原生视图，
+// 两边必须对得上，所以尺寸只在这里写一次：主进程用它算预览视图的位置，界面把它写成 CSS 变量（--layout-*）。
+// 浮在窗口四周的留白和顶栏胶囊的高度来自设计变量，不在这里另写一份。
+
+/** 悬浮侧栏的宽度（设计稿 Main：240） */
+export const SIDEBAR_WIDTH_PX = 240;
+/** 内容区左边到窗口左边：侧栏两侧各一份留白 */
+export const CONTENT_LEFT_PX = numbers["size-window-inset"] * 2 + SIDEBAR_WIDTH_PX;
+/** 顶栏占的高度：胶囊上方留 14、胶囊自己 44、下方留 10（设计稿 Main） */
+export const TOPBAR_HEIGHT_PX = 14 + numbers["size-toolbar"] + 10;
+/**
+ * 内容区左边的列表宽度。现在是开发期的朴素列表（等资源库列表替换它），
+ * 预览紧挨在它右边。
+ */
 export const LIST_WIDTH_PX = 360;
 
 export interface Size {
@@ -12,12 +26,21 @@ export interface Bounds extends Size {
   y: number;
 }
 
-/** 预览视图在窗口内容区里的位置：列表右边的整块 */
+/** 界面要写进 <html> 的版面 CSS 变量，名字与值 */
+export const layoutCssVariables: Readonly<Record<string, string>> = {
+  "--layout-sidebar-width": `${SIDEBAR_WIDTH_PX}px`,
+  "--layout-content-left": `${CONTENT_LEFT_PX}px`,
+  "--layout-topbar-height": `${TOPBAR_HEIGHT_PX}px`,
+  "--layout-list-width": `${LIST_WIDTH_PX}px`,
+};
+
+/** 预览视图在窗口内容区里的位置：顶栏下面、列表右边的整块 */
 export function previewBounds(content: Size): Bounds {
+  const x = CONTENT_LEFT_PX + LIST_WIDTH_PX;
   return {
-    x: LIST_WIDTH_PX,
-    y: 0,
-    width: Math.max(0, content.width - LIST_WIDTH_PX),
-    height: content.height,
+    x,
+    y: TOPBAR_HEIGHT_PX,
+    width: Math.max(0, content.width - x),
+    height: Math.max(0, content.height - TOPBAR_HEIGHT_PX),
   };
 }

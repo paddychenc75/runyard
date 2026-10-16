@@ -5,7 +5,9 @@ import { workbenchData } from "./sample-data.ts";
 describe("工作台的示例文字", () => {
   it("伪语言下每一段文字（样例和工作台自己的界面）都包在 ⟦ ⟧ 里，漏网扫描找不到字母", () => {
     const data = workbenchData("en-XA");
-    const texts = [...Object.values(data.sample), ...Object.values(data.chrome)];
+    // 用户内容（userText）本来就不翻译，不在检查范围；items 是一组短标签，逐个检查
+    const { userText: _userText, items, ...rest } = data.sample;
+    const texts: string[] = [...Object.values(rest), ...items, ...Object.values(data.chrome)];
     for (const text of texts) {
       expect(text.startsWith(PSEUDO_OPEN) && text.endsWith(PSEUDO_CLOSE), text).toBe(true);
     }

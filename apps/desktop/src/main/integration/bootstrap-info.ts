@@ -6,8 +6,8 @@ import type { BootstrapInfo } from "../../shared/desktop-bridge.ts";
 
 export interface BootstrapInputs {
   locale: Locale;
-  /** 系统当前是否深色；窗口主题跟随系统 */
-  systemDark: boolean;
+  /** 窗口的明暗选择；预加载脚本据此在页面脚本运行前写 <html data-theme>（system 时不写色，由 CSS 跟随系统） */
+  theme: BootstrapInfo["theme"];
   reducedTransparency: boolean;
   highContrast: boolean;
 }
@@ -24,11 +24,12 @@ export function buildBootstrapInfo(
   const mac = platform === "darwin";
   return {
     platform,
-    // 现在用系统自带的标题栏，所以顶栏不用为窗口按钮让位；做自绘标题栏时在这里改
-    windowControls: { side: mac ? "left" : "right", inset: 0 },
+    // 标题栏是自绘的（macOS 用 hiddenInset，红黄绿画在侧栏顶上）：这一侧要给窗口按钮让出 inset，
+    // 与设计变量 size-window-controls 同值，TitleBar 用后者留空
+    windowControls: { side: mac ? "left" : "right", inset: mac ? 72 : 0 },
     modKey: mac ? "meta" : "ctrl",
     locale: inputs.locale,
-    theme: "system",
+    theme: inputs.theme,
     reducedTransparency: inputs.reducedTransparency,
     highContrast: inputs.highContrast,
   };

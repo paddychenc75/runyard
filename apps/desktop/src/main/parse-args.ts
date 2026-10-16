@@ -1,14 +1,22 @@
 import { isLocale, type Locale } from "@runyard/i18n";
 
-// 开发时的启动参数和环境变量。用法：pnpm dev [--root <目录>] [--lang en|zh-CN]
+// 开发时的启动参数和环境变量。用法：pnpm dev [--root <目录>] [--lang en|zh-CN] [--theme system|light|dark]
 // 不认识的参数原样忽略（Chromium 自己也会收到一些）。
 
 export interface DesktopArgs {
   /** 代替主目录：状态目录是 <root>/.runyard，资源库是 <root>/Runyard（与命令行的 --root 一致）；缺省用真实主目录 */
   root: string | undefined;
   lang: Locale | undefined;
+  /** 窗口的明暗：跟随系统、浅色、深色；缺省跟随系统。设置页的主题选项随后续 PR，现在只能这样指定 */
+  theme: ThemeChoice | undefined;
   /** 冒烟自检：窗口不显示，走一遍“运行再预览”后自己退出 */
   smoke: boolean;
+}
+
+export type ThemeChoice = "system" | "light" | "dark";
+
+export function isThemeChoice(value: string): value is ThemeChoice {
+  return value === "system" || value === "light" || value === "dark";
 }
 
 export type ParsedArgs = { ok: true; args: DesktopArgs } | { ok: false; problem: string };
@@ -31,11 +39,17 @@ export function parseDesktopArgs(
   if (lang !== undefined && !isLocale(lang)) {
     return { ok: false, problem: `unsupported language ${lang}` };
   }
+  const theme = takeValue(argv, "--theme") ?? env.RUNYARD_THEME;
+  if (theme === "missing") return { ok: false, problem: "--theme needs system, light or dark" };
+  if (theme !== undefined && !isThemeChoice(theme)) {
+    return { ok: false, problem: `unsupported theme ${theme}` };
+  }
   return {
     ok: true,
     args: {
       root: root === undefined || root === "" ? undefined : root,
       lang: lang === undefined ? undefined : lang,
+      theme,
       smoke: argv.includes("--smoke"),
     },
   };

@@ -1,7 +1,9 @@
-import type { SampleData } from "../src/index.ts";
+import type { RawSampleText } from "./raw-sample-text.ts";
 import type { chromeText as zhChromeText } from "./sample-data.zh-CN.ts";
 
-export const sampleText: Omit<SampleData, "iconLabel"> = {
+export const sampleText: RawSampleText = {
+  items: ["All", "Kept", "Auto-clean", "Agent-made"],
+  userText: "react-counter",
   label: "Create and run",
   longLabel: "Copy this practice project into another folder and start running it right away",
 };

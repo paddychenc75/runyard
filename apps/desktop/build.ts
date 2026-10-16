@@ -34,8 +34,12 @@ await Promise.all([
   }),
   build({
     ...common,
-    entryPoints: ["src/renderer/main.ts"],
+    entryPoints: ["src/renderer/main.tsx"],
     outfile: "dist/renderer/main.js",
+    // React 界面：样式（设计变量、组件的 CSS Modules）随脚本打成同名的 main.css；
+    // .module.css 默认是带散列类名的局部样式
+    jsx: "automatic",
+    define: { "process.env.NODE_ENV": '"production"' },
     // platform 为 browser：界面里误用 Node 的东西会在这里直接报错
     platform: "browser",
     format: "iife",
@@ -44,4 +48,3 @@ await Promise.all([
 ]);
 
 cpSync("src/renderer/index.html", "dist/renderer/index.html");
-cpSync("src/renderer/styles.css", "dist/renderer/styles.css");

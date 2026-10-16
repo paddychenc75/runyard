@@ -17,12 +17,21 @@
     "@runyard/i18n": "workspace:*",
     "@runyard/platform": "workspace:*",
     "@runyard/protocol": "workspace:*",
-    "@runyard/tokens": "workspace:*"
+    "@runyard/tokens": "workspace:*",
+    "@runyard/ui": "workspace:*",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
+    "@testing-library/dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@testing-library/user-event": "catalog:",
     "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
     "electron": "catalog:",
     "esbuild": "catalog:",
+    "jsdom": "catalog:",
     "vitest": "catalog:"
   }
 }
