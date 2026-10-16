@@ -1,0 +1,20 @@
+schema: runyard
+
+# 项目背景：只写智能体读代码看不出来的约束（技术设计 §9.6.2）
+context: |
+  所有产物用中文写；只有 Requirement、Scenario、WHEN、THEN、MUST、ADDED/MODIFIED/REMOVED Requirements 这几个结构词保持英文，校验器只认它们。
+  规格只写外部看得见的行为：界面上的行为、命令行的输出和退出码、文件格式、时间上的保证、错误提示。不写类名、函数名、库的选择。
+  规格里的产品名词必须是 docs/glossary.md 里的词。
+  PRD（docs/product/02-prd.md）为准，规格不能与它矛盾；发现矛盾就停下来报告，不自己挑一个。
+  能力路径是两级 <领域>/<能力>，全小写加连字符；场景编号由路径得出，如 run/ownership 的第 3 个场景是 [RUN-OWNERSHIP-03]，起了就不改、不复用。
+
+rules:
+  proposal:
+    - 提案不超过一页；“为什么”不少于 50 个字
+    - 写明不做什么
+  specs:
+    - 每条要求末尾单独一行“来源：PRD #prd-…”；没有 PRD 出处的写“来源：ADR NNNN”或“来源：实现细节”
+    - 每个场景标题以编号开头，如 “#### Scenario: [RUN-OWNERSHIP-01] 关掉正在运行的标签页”
+    - 每个场景最后一行写“验证：test”或“验证：manual（原因）”
+  tasks:
+    - 每条任务写明改哪个包，并对应哪个场景编号
