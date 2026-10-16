@@ -1,5 +1,25 @@
 {
+  "desktop.duration.seconds.label": {
+    "seconds": "秒数，已按语言格式化的数字"
+  },
   "desktop.error.title.label": {
     "title": "错误的标题，来自 errors.<代码>.title，已是翻译好的句子"
+  },
+  "desktop.runbar.state.label": {
+    "state": "运行状态的名字，来自 runState.<状态>",
+    "port": "端口号，纯数字字符串（不加千分位）"
+  },
+  "desktop.script.ended.label": {
+    "state": "运行状态的名字，来自 runState.<状态>",
+    "exitCode": "进程的退出码",
+    "duration": "这次运行的总耗时"
+  },
+  "desktop.script.endedNoCode.label": {
+    "state": "运行状态的名字，来自 runState.<状态>",
+    "duration": "这次运行的总耗时"
+  },
+  "desktop.script.running.label": {
+    "state": "运行状态的名字，来自 runState.<状态>",
+    "duration": "已经运行的时长，如 3.2 秒"
   }
 }

@@ -14,6 +14,12 @@ export {
   type DataTableProps,
 } from "./patterns/DataTable/index.ts";
 export {
+  LogView,
+  type LogViewLine,
+  type LogViewProps,
+  type LogViewTone,
+} from "./patterns/LogView/index.ts";
+export {
   NavList,
   type NavListItem,
   type NavListProps,

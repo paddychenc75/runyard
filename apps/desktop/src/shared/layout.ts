@@ -16,6 +16,9 @@ export const TOPBAR_HEIGHT_PX = 14 + numbers["size-toolbar"] + 10;
  */
 export const LIST_WIDTH_PX = 360;
 
+/** 标签页底部控制台的高度（设计稿 Service：约 220） */
+export const CONSOLE_HEIGHT_PX = 220;
+
 export interface Size {
   width: number;
   height: number;
@@ -32,4 +35,5 @@ export const layoutCssVariables: Readonly<Record<string, string>> = {
   "--layout-content-left": `${CONTENT_LEFT_PX}px`,
   "--layout-topbar-height": `${TOPBAR_HEIGHT_PX}px`,
   "--layout-list-width": `${LIST_WIDTH_PX}px`,
+  "--layout-console-height": `${CONSOLE_HEIGHT_PX}px`,
 };

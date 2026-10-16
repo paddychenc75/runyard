@@ -48,5 +48,5 @@ export function unavailableClient(cause: unknown): LibraryClient {
   const fail = async (): Promise<never> => {
     throw clientError("SUPERVISOR_UNAVAILABLE", {}, `not connected: ${String(cause)}`);
   };
-  return { call: fail, subscribe: fail };
+  return { call: fail, subscribe: fail, followLogs: fail };
 }

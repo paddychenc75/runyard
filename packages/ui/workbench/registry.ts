@@ -1,5 +1,6 @@
 import type { FixtureModule } from "../src/index.ts";
 import * as dataTable from "../src/patterns/DataTable/DataTable.fixture.tsx";
+import * as logView from "../src/patterns/LogView/LogView.fixture.tsx";
 import * as navList from "../src/patterns/NavList/NavList.fixture.tsx";
 import * as tabStrip from "../src/patterns/TabStrip/TabStrip.fixture.tsx";
 import * as titleBar from "../src/patterns/TitleBar/TitleBar.fixture.tsx";
@@ -26,6 +27,7 @@ export const fixtures: readonly FixtureModule[] = [
   icon,
   iconButton,
   monogramTile,
+  logView,
   navList,
   scrollArea,
   statusMark,

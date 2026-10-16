@@ -1,11 +1,12 @@
 import { useT } from "@runyard/i18n/react";
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { Bounds } from "../../shared/layout.ts";
 import type { TabRow } from "../../shared/library-state.ts";
 import type { OverlayCounter } from "../shared/overlay-counter.ts";
 import { PreviewSlot } from "../widgets/PreviewSlot.tsx";
 import styles from "./PreviewPane.module.css";
+import { PreviewStopped } from "./PreviewStopped.tsx";
 import { usePreviewSuspension } from "./use-preview-suspension.ts";
 
 export interface PreviewPaneProps {
@@ -26,6 +27,16 @@ export function PreviewPane({ bridge, tab, overlays }: PreviewPaneProps) {
   const t = useT();
   const [slot, setSlot] = useState<Bounds | null>(null);
   const frame = usePreviewSuspension(bridge, overlays, slot);
+  // 没在运行（手动停止、从没运行过、崩溃）显示“已停止”和“运行”按钮；启动中显示等待说明。
+  // 失败的几种画面（缺运行环境、安装失败、崩溃）是 #178，到时在这里按 tab 的状态换内容
+  let placeholder: ReactNode = null;
+  if (tab.previewUrl === null) {
+    placeholder = tab.active ? (
+      t("desktop.preview.waiting.label")
+    ) : (
+      <PreviewStopped bridge={bridge} tab={tab} />
+    );
+  }
   return (
     <section
       className={styles.root}
@@ -35,12 +46,7 @@ export function PreviewPane({ bridge, tab, overlays }: PreviewPaneProps) {
       <div className={styles.address}>
         <span className={styles.url}>{addressLabel(tab.previewUrl)}</span>
       </div>
-      <PreviewSlot
-        bridge={bridge}
-        frame={frame}
-        onBounds={setSlot}
-        placeholder={tab.previewUrl === null ? t("desktop.preview.waiting.label") : null}
-      />
+      <PreviewSlot bridge={bridge} frame={frame} onBounds={setSlot} placeholder={placeholder} />
     </section>
   );
 }
