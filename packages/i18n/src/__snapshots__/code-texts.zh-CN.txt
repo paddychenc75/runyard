@@ -94,6 +94,10 @@ errors.TRASH_UNAVAILABLE.title: 无法把项目 react19-3 移到废纸篓
 errors.TRASH_UNAVAILABLE.body: 废纸篓现在不能用。项目文件夹没有动，也没有被永久删除。
 errors.TRASH_UNAVAILABLE.hint: 项目仍在资源库里，可以稍后再试。
 errors.TRASH_UNAVAILABLE.hintCli: 项目仍在资源库里，可以稍后重新运行这条命令。
+errors.PORT_IN_USE.title: 7500 端口已被占用
+errors.PORT_IN_USE.body: 你指定了这个端口，所以没有启动项目，也没有改用别的端口。
+errors.PORT_IN_USE.hint: 关掉正在使用这个端口的程序，或者不指定端口再启动。
+errors.PORT_IN_USE.hintCli: 找到正在使用 7500 端口的程序并关掉它，或者去掉 --port 重新运行，使用登记的端口。
 errors.APP_REQUIRED.title: 这条命令需要 Runyard 桌面应用
 errors.APP_REQUIRED.body: open 和 screenshot 要由桌面应用来完成，命令行自己做不到。
 errors.APP_REQUIRED.hint: 打开 Runyard 应用后重新运行。

@@ -33,6 +33,7 @@
 | 9 | `PATH_LOCKED` | `{ name: string }` |
 | 9 | `PATH_TOO_LONG` | `{ name: string }` |
 | 9 | `TRASH_UNAVAILABLE` | `{ name: string }` |
+| 9 | `PORT_IN_USE` | `{ port: integer }` |
 | 10 | `APP_REQUIRED` | 无 |
 | 10 | `SUPERVISOR_UNAVAILABLE` | 无 |
 | 10 | `SUPERVISOR_OUTDATED` | `{ runs: integer }` |
@@ -51,7 +52,7 @@
 | 5 | `SETUP_FAILED`、`DEPS_OFFLINE` |
 | 6 | `RUN_FAILED`、`SCRIPT_ERRORED`、`TEMPLATE_TEST_FAILED` |
 | 7 | `READY_TIMEOUT` |
-| 9 | `NAME_EXISTS`、`BUSY`、`PATH_LOCKED`、`PATH_TOO_LONG`、`TRASH_UNAVAILABLE` |
+| 9 | `NAME_EXISTS`、`BUSY`、`PATH_LOCKED`、`PATH_TOO_LONG`、`TRASH_UNAVAILABLE`、`PORT_IN_USE` |
 | 10 | `APP_REQUIRED`、`SUPERVISOR_UNAVAILABLE`、`SUPERVISOR_OUTDATED`、`CLIENT_OUTDATED`、`NOT_SUPPORTED`、`DATA_FROM_NEWER_VERSION` |
 
 ## 提示码
@@ -77,7 +78,7 @@
 | --- | --- |
 | `runStates` | `checking`、`installing`、`starting`、`ready`、`reloading`、`running`、`stopping`、`stopped`、`finished`、`errored`、`crashed`、`failed` |
 | `envSources` | `login-shell`、`login-shell-degraded`、`path-only`、`fallback` |
-| `failureReasons` | `TOOL_MISSING`、`TOOL_TOO_OLD`、`SETUP_FAILED`、`DEPS_OFFLINE`、`RUN_FAILED`、`RUNTIME_MISSING` |
+| `failureReasons` | `TOOL_MISSING`、`TOOL_TOO_OLD`、`SETUP_FAILED`、`DEPS_OFFLINE`、`RUN_FAILED`、`RUNTIME_MISSING`、`PORT_IN_USE` |
 | `portFallbackReasons` | `PORT_OCCUPIED`、`PORT_RESERVED` |
 | `runKinds` | `server`、`static`、`oneshot` |
 | `toolStatuses` | `found`、`missing`、`too-old`、`unknown` |

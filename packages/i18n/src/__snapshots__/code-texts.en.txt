@@ -94,6 +94,10 @@ errors.TRASH_UNAVAILABLE.title: Could not move playground react19-3 to the Trash
 errors.TRASH_UNAVAILABLE.body: The Trash is not available right now. The playground folder was not moved and nothing was permanently deleted.
 errors.TRASH_UNAVAILABLE.hint: The playground is still in the library. You can try again later.
 errors.TRASH_UNAVAILABLE.hintCli: The playground is still in the library. You can run the command again later.
+errors.PORT_IN_USE.title: Port 7500 is already in use
+errors.PORT_IN_USE.body: You asked for this exact port, so the playground was not started and Runyard did not switch to another port.
+errors.PORT_IN_USE.hint: Stop the program that is using the port, or start without choosing a port.
+errors.PORT_IN_USE.hintCli: Find the program that is using port 7500 and stop it, or run the command again without --port to use the registered port.
 errors.APP_REQUIRED.title: This command needs the Runyard desktop app
 errors.APP_REQUIRED.body: The open and screenshot commands are carried out by the desktop app. The command line cannot do them on its own.
 errors.APP_REQUIRED.hint: Open the Runyard app, then run it again.

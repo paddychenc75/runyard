@@ -99,6 +99,34 @@ describe("端口", () => {
     expect(second.run.snapshot().port).toBe(7104);
   });
 
+  it("[RUN-PORTS-15] 显式指定的端口被占用：failed 加 PORT_IN_USE（带 port），不换端口，不启动任何进程", async () => {
+    const h = createPrepareHarness({ registeredPort: 7104 });
+    h.fake.processes.when(installArgv, installOk);
+    h.fake.ports.occupy(7500, { pid: 4242, name: "python3" });
+    serveOn(h, 7501);
+    serveOn(h, 7104);
+    const { run } = h.engine.start(h.request({ port: 7500 }));
+    await h.advance(500);
+    expect(run.state).toBe("failed");
+    expect(run.error()).toMatchObject({ code: "PORT_IN_USE", params: { port: 7500 } });
+    expect(run.snapshot().reason).toBe("PORT_IN_USE");
+    expect(run.snapshot().portFallback).toBeUndefined();
+    expect(run.snapshot().port).toBeUndefined();
+    expect(h.portEvents).toEqual([]);
+    expect(h.fake.processes.spawned.some((s) => s.argv[1] === "server.js")).toBe(false);
+  });
+
+  it("[RUN-PORTS-15] 没有显式端口、登记的端口被占用：回退不变（RUN-PORTS-06）", async () => {
+    const h = createPrepareHarness({ registeredPort: 7104 });
+    h.fake.processes.when(installArgv, installOk);
+    h.fake.ports.occupy(7104, { pid: 1, name: "x" });
+    serveOn(h, 7105);
+    const { run } = h.engine.start(h.request());
+    await h.advance(500);
+    expect(run.error()).toBeUndefined();
+    expect(run.snapshot()).toMatchObject({ state: "ready", port: 7105 });
+  });
+
   it("[RUN-PORTS-03] 脚本没有端口：快照里没有 port 和 url，环境里没有 PORT", async () => {
     const { scriptRunner } = await import("./prepare-harness.test.ts");
     const h = createPrepareHarness({ runner: scriptRunner });

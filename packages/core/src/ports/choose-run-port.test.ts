@@ -86,4 +86,35 @@ describe("一次运行用哪个端口", () => {
     fake.ports.occupy(9000, { pid: 1, name: "x" });
     expect((await choose(9000))?.port).toBe(7100);
   });
+
+  it("[RUN-PORTS-15] 显式指定的端口被占用：拒绝并带上占用者，不往后找", async () => {
+    const { fake } = setup();
+    fake.ports.occupy(7500, { pid: 4242, name: "python3" });
+    const chosen = await chooseRunPort({
+      platform: fake.platform,
+      wanted: 7500,
+      explicit: true,
+      range: DEFAULT_PORT_RANGE,
+      registeredByOthers: new Set<number>(),
+    });
+    expect(chosen).toEqual({
+      refused: {
+        port: 7500,
+        reason: "PORT_OCCUPIED",
+        occupant: { pid: 4242, name: "python3" },
+      },
+    });
+  });
+
+  it("[RUN-PORTS-15] 显式指定的端口空闲：照常使用，没有 portFallback", async () => {
+    const { fake } = setup();
+    const chosen = await chooseRunPort({
+      platform: fake.platform,
+      wanted: 7500,
+      explicit: true,
+      range: DEFAULT_PORT_RANGE,
+      registeredByOthers: new Set<number>(),
+    });
+    expect(chosen).toEqual({ port: 7500 });
+  });
 });

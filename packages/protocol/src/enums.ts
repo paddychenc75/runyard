@@ -34,6 +34,7 @@ export const failureReasons = [
   "DEPS_OFFLINE",
   "RUN_FAILED",
   "RUNTIME_MISSING",
+  "PORT_IN_USE",
 ] as const;
 export const failureReasonSchema = z.enum(failureReasons);
 export type FailureReason = z.infer<typeof failureReasonSchema>;

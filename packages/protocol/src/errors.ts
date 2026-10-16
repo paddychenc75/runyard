@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { dataFileKindSchema } from "./enums.ts";
+import { portSchema } from "./primitives.ts";
 import { templateTestSteps } from "./template-test-steps.ts";
 
 // 错误码登记表：一份定义同时给出类型、校验和退出码（技术设计 §5.1、§5.3）。
@@ -59,6 +60,9 @@ export const errorRegistry = {
   PATH_LOCKED: { exit: 9, params: z.object({ name }) },
   PATH_TOO_LONG: { exit: 9, params: z.object({ name }) },
   TRASH_UNAVAILABLE: { exit: 9, params: z.object({ name }) },
+  // 用户显式指定的端口（--port 或请求参数）被占用或被系统保留（规格 RUN-PORTS-15）：不启动、不换端口。
+  // 与 NAME_EXISTS、BUSY 同属“与现状冲突”，所以是 9
+  PORT_IN_USE: { exit: 9, params: z.object({ port: portSchema }) },
 
   APP_REQUIRED: { exit: 10, params: none },
   SUPERVISOR_UNAVAILABLE: { exit: 10, params: none },

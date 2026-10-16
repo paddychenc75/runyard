@@ -312,7 +312,7 @@
 
 类型 `RunSnapshot`
 
-可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`FOLDER_MISSING`、`TOOL_MISSING`、`TOOL_TOO_OLD`、`RUNTIME_MISSING`、`SETUP_FAILED`、`DEPS_OFFLINE`、`RUN_FAILED`、`SCRIPT_ERRORED`、`READY_TIMEOUT`、`DATA_FROM_NEWER_VERSION`
+可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`FOLDER_MISSING`、`TOOL_MISSING`、`TOOL_TOO_OLD`、`RUNTIME_MISSING`、`SETUP_FAILED`、`DEPS_OFFLINE`、`RUN_FAILED`、`SCRIPT_ERRORED`、`READY_TIMEOUT`、`PORT_IN_USE`、`DATA_FROM_NEWER_VERSION`
 
 #### `run.stop`
 
@@ -361,7 +361,7 @@
 
 类型 `RunSnapshot`
 
-可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`FOLDER_MISSING`、`TOOL_MISSING`、`TOOL_TOO_OLD`、`RUNTIME_MISSING`、`SETUP_FAILED`、`DEPS_OFFLINE`、`RUN_FAILED`、`SCRIPT_ERRORED`、`READY_TIMEOUT`、`DATA_FROM_NEWER_VERSION`
+可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`FOLDER_MISSING`、`TOOL_MISSING`、`TOOL_TOO_OLD`、`RUNTIME_MISSING`、`SETUP_FAILED`、`DEPS_OFFLINE`、`RUN_FAILED`、`SCRIPT_ERRORED`、`READY_TIMEOUT`、`PORT_IN_USE`、`DATA_FROM_NEWER_VERSION`
 
 #### `run.get`
 
@@ -840,7 +840,7 @@
 | --- | --- | --- | --- |
 | `runId` | `string` | 是 | 非空 |
 | `exitCode` | `integer` | 否 |  |
-| `reason` | `'TOOL_MISSING' \| 'TOOL_TOO_OLD' \| 'SETUP_FAILED' \| 'DEPS_OFFLINE' \| 'RUN_FAILED' \| 'RUNTIME_MISSING' \| 'idle'` | 否 |  |
+| `reason` | `'TOOL_MISSING' \| 'TOOL_TOO_OLD' \| 'SETUP_FAILED' \| 'DEPS_OFFLINE' \| 'RUN_FAILED' \| 'RUNTIME_MISSING' \| 'PORT_IN_USE' \| 'idle'` | 否 |  |
 
 #### `run.port`
 
@@ -971,7 +971,7 @@
 | `name` | `string` | 是 | 非空 |
 | `kind` | `'server' \| 'static' \| 'oneshot'` | 是 |  |
 | `state` | `'checking' \| 'installing' \| 'starting' \| 'ready' \| 'reloading' \| 'running' \| 'stopping' \| 'stopped' \| 'finished' \| 'errored' \| 'crashed' \| 'failed'` | 是 |  |
-| `reason` | `'TOOL_MISSING' \| 'TOOL_TOO_OLD' \| 'SETUP_FAILED' \| 'DEPS_OFFLINE' \| 'RUN_FAILED' \| 'RUNTIME_MISSING'` | 否 |  |
+| `reason` | `'TOOL_MISSING' \| 'TOOL_TOO_OLD' \| 'SETUP_FAILED' \| 'DEPS_OFFLINE' \| 'RUN_FAILED' \| 'RUNTIME_MISSING' \| 'PORT_IN_USE'` | 否 |  |
 | `stale` | `boolean` | 否 | 脚本：语法错误，保留上次输出 |
 | `owner` | `Owner` | 是 |  |
 | `port` | `integer` | 否 | ≥ 1；≤ 65535 |

@@ -47,6 +47,7 @@ const sampleParams: { [C in ErrorCode]: ErrorParams<C> } = {
   PATH_LOCKED: { name: "demo" },
   PATH_TOO_LONG: { name: "demo" },
   TRASH_UNAVAILABLE: { name: "demo" },
+  PORT_IN_USE: { port: 7500 },
   APP_REQUIRED: {},
   SUPERVISOR_UNAVAILABLE: {},
   SUPERVISOR_OUTDATED: { runs: 2 },
