@@ -1,0 +1,80 @@
+.positioner {
+  z-index: var(--z-popover);
+}
+
+/* 菜单面板：玻璃材质（圆角、阴影、模糊在 materials.css），内边距让高亮条与边缘留一圈空 */
+.popup {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-inline-size: var(--size-column-xl);
+  padding: var(--space-3);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line-height);
+  color: var(--color-text-primary);
+  outline: none;
+  opacity: 1;
+  transition: opacity var(--motion-duration-fast) linear;
+}
+
+.popup[data-starting-style],
+.popup[data-ending-style] {
+  opacity: 0;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  box-sizing: border-box;
+  inline-size: 100%;
+  block-size: var(--size-menu-item);
+  padding-inline: var(--space-5);
+  border-radius: var(--radius-row);
+  color: var(--color-text-primary);
+  cursor: default;
+  user-select: none;
+  outline: none;
+  white-space: nowrap;
+}
+
+.item[data-tone="danger"] {
+  color: var(--color-status-danger-text);
+}
+
+/* 高亮（鼠标悬停和键盘移动都是它）：强调色底、白字、半粗 */
+.item[data-highlighted] {
+  background: var(--color-fill-accent);
+  color: var(--color-text-on-accent);
+  font-weight: var(--text-control-weight);
+}
+
+.item[data-disabled] {
+  opacity: 0.4;
+}
+
+.label {
+  flex: 1;
+}
+
+.hint {
+  font-size: var(--text-caption-size);
+  color: var(--color-text-secondary);
+}
+
+.item[data-highlighted] .hint {
+  color: var(--color-text-on-accent);
+}
+
+.separator {
+  block-size: 1px;
+  margin-block: var(--space-2);
+  margin-inline: var(--space-5);
+  background: var(--color-line-hairline);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .popup {
+    transition: none;
+  }
+}

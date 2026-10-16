@@ -299,6 +299,12 @@
 | library.retention.autoClean.label | 剩 {days, plural, other {# 天}} | {days, plural, one {# day} other {# days}} left | days：距离自动清理还剩的天数 |
 | library.retention.autoClean.tooltip | {days, plural, other {# 天}}没打开就移到{term_trash}，每次打开重新计时 | Moved to the {term_trash} after {days, plural, one {# day} other {# days}} unopened; the count restarts on every open | days：自动清理设定的天数 |
 | library.retention.kept.label | 已保留 | Kept | — |
+| library.row.copyPath.action | 复制路径 | Copy path | — |
+| library.row.more.aria | {name} 的更多操作 | More actions for {name} | name：项目名（用户自己起的，不翻译） |
+| library.row.open.action | 打开 | Open | — |
+| library.row.openHint.label | 回车 | Enter | — |
+| library.row.reveal.action | 在{term_fileManager}中显示 | Show in {term_fileManager} | — |
+| library.row.stop.action | 停止运行 | Stop | — |
 | library.sidebar.footer.label | {count, plural, other {# 个项目}} | {count, plural, one {# playground} other {# playgrounds}} | count：资源库里项目的总数 |
 | library.tab.title | 资源库 | Library | — |
 | library.table.aria | 项目列表 | Playgrounds | — |

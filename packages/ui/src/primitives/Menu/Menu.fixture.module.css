@@ -1,0 +1,7 @@
+/* 菜单是浮层，不占版面：留出高度，打开的菜单才不会盖到下一个样例；触发按钮靠右，菜单右对齐它 */
+.stage {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  min-block-size: calc(var(--size-menu-item) * 8);
+}

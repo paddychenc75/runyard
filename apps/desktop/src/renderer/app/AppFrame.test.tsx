@@ -25,6 +25,7 @@ function row(
   extra: Pick<PlaygroundRow, "id" | "name" | "kind" | "state" | "active">,
 ): PlaygroundRow {
   return {
+    path: `/lib/${extra.name}`,
     previewing: false,
     busy: false,
     note: "",
@@ -112,13 +113,13 @@ describe("主窗口外壳", () => {
     expect((screen.getByRole("button", { name: "模板" }) as HTMLButtonElement).disabled).toBe(true);
   });
 
-  it("开发期的运行、停止按钮和用模板新建仍在", async () => {
+  it("资源库行的打开、停止运行、双击行和用模板新建都发给主进程", async () => {
     const user = userEvent.setup();
     const { bridge, call } = fakeBridge();
     render(<AppFrame bridge={bridge} locale="zh-CN" theme="system" />);
     await screen.findByText("react-counter");
-    await user.click(screen.getByRole("button", { name: "停止" }));
-    await user.click(screen.getByRole("button", { name: "运行" }));
+    await user.click(screen.getByRole("button", { name: "停止运行" }));
+    await user.click(screen.getByRole("button", { name: "打开" }));
     await user.dblClick(screen.getByText("react-counter"));
     await user.click(screen.getByRole("button", { name: /纯 HTML/ }));
     expect(call).toHaveBeenCalledWith("run.stop", "a");
