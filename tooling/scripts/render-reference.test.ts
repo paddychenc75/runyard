@@ -32,7 +32,7 @@ describe("协议参考文档", () => {
       expect(codes).toContain(`| ${def.exit} | \`${name}\` |`);
     }
     expect(codes).toContain(
-      "| 9 | `NAME_EXISTS`、`BUSY`、`PATH_LOCKED`、`PATH_TOO_LONG`、`TRASH_UNAVAILABLE` |",
+      "| 9 | `NAME_EXISTS`、`BUSY`、`PATH_LOCKED`、`PATH_TOO_LONG`、`TRASH_UNAVAILABLE`、`PORT_IN_USE` |",
     );
   });
 
