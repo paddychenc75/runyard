@@ -40,6 +40,8 @@ export interface RunControlDeps {
   readonly refreshSettings: () => Promise<void>;
   /** 命令提到了这次运行（#42 据此给空闲计时归零） */
   readonly mentioned: (run: Run, session: Session | undefined) => void;
+  /** 有人明确要求停止这个项目的运行（`runyard stop`）：脚本的自动重跑监听据此结束（#138） */
+  readonly stopRequested: (playgroundId: string) => void;
   readonly stopWaitLimitMs?: number;
 }
 
@@ -175,6 +177,7 @@ export class RunControl {
   ): Promise<RunSnapshot> {
     const run = await this.find(target);
     this.#d.mentioned(run, session);
+    this.#d.stopRequested(run.request.playgroundId);
     return run.stop();
   }
 

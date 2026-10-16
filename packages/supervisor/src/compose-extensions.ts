@@ -38,7 +38,10 @@ export function composeExtensions(api: SupervisorApi, options: ComposeOptions): 
   const logs = createLogModule(api, {
     playgroundOf: (runId) => run.engine.get(runId)?.request.playgroundId,
     stateOf: (playgroundId) => run.engine.current(playgroundId)?.state,
-    onMention: (playgroundId, session) => idle.mentionPlayground(playgroundId, session),
+    onMention: (playgroundId, session) => {
+      idle.mentionPlayground(playgroundId, session);
+      run.scriptWatch.mention(playgroundId, session);
+    },
   });
   const recovery = createCrashRecovery(api, {
     restore: (input) => void run.engine.restoreCrashed(input),

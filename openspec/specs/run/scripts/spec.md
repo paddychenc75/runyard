@@ -183,7 +183,7 @@
 - 验证：test
 
 ### Requirement: 自动重新运行的文件监听何时开始、何时结束
-脚本项目的文件监听 MUST 从命令行 `runyard run <脚本项目>` 之后开始，到以下任何一件事发生时结束：`runyard stop` 停止了这个项目；项目被移到废纸篓；命令行持有的运行被空闲停止（run/ownership）。在桌面应用里，监听 MUST 跟随这个项目的标签页：标签页打开期间监听，关闭标签页就结束（桌面应用在 M2 落地）。没有被运行过、也没有在应用里打开的脚本项目 MUST NOT 被监听。监听期间保存文件触发的重新运行，按“重新运行时上一次还没结束，先停旧的再起新的”处理（RUN-SCRIPTS-20）。`script.autoRun` 或 `scriptAutoRun` 任何一个为关，该项目 MUST NOT 被监听。
+脚本项目的文件监听 MUST 从命令行 `runyard run <脚本项目>` 之后开始，到以下任何一件事发生时结束：`runyard stop` 停止了这个项目；项目被移到废纸篓；命令行启动的监听空闲满 `cliIdleStopMinutes`（默认 30 分钟）。空闲是指这段时间里项目文件夹没有文件变化，也没有命令行的命令提到这个项目（口径同 run/ownership 的空闲停止）；脚本不参与运行的空闲停止（RUN-OWNERSHIP-16），空闲结束的只是监听，不会停止任何运行。在桌面应用里，监听 MUST 跟随这个项目的标签页：标签页打开期间监听，关闭标签页就结束（桌面应用在 M2 落地）。没有被运行过、也没有在应用里打开的脚本项目 MUST NOT 被监听。监听期间保存文件触发的重新运行，按“重新运行时上一次还没结束，先停旧的再起新的”处理（RUN-SCRIPTS-20）。`script.autoRun` 或 `scriptAutoRun` 任何一个为关，该项目 MUST NOT 被监听。
 来源：PRD #prd-script-projects；PRD #prd-run-ownership；PRD #prd-run
 
 #### Scenario: [RUN-SCRIPTS-27] 命令行运行之后开始监听
@@ -211,8 +211,8 @@
 - 验证：test
 
 #### Scenario: [RUN-SCRIPTS-31] 命令行持有的运行被空闲停止之后不再监听
-- 前提：脚本项目已经被命令行 `run` 过，正在被监听，命令行持有的运行因空闲被停止
-- **WHEN** 空闲停止发生后保存脚本文件
+- 前提：脚本项目已经被命令行 `run` 过，正在被监听，`cliIdleStopMinutes` 为默认的 30
+- **WHEN** 此后 30 分钟里没有文件变化，也没有命令行的命令提到它，之后再保存脚本文件
 - **THEN** 保存后不产生新的运行
 - 验证：test
 
