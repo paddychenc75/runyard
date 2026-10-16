@@ -12,10 +12,19 @@ export {
   type MethodHandler,
   type RequestContext,
 } from "./dispatch.ts";
+export type { LibrarySeams, TemplateCatalog } from "./library-seams.ts";
 export { MethodFailure, methodFailure } from "./method-failure.ts";
 export { parseSupervisorArgs, type SupervisorArgs } from "./parse-args.ts";
+export { RELEASE_TIMEOUT_MS } from "./release-coordinator.ts";
 export { EXIT_ALREADY_RUNNING_LINE, runSupervisorMain } from "./run-main.ts";
+export { noRuns, type RunsView } from "./runs-view.ts";
 export type { Session, SessionCloseReason, SessionInfo } from "./session.ts";
+export {
+  createSettingsStore,
+  defaultSettings,
+  type SettingsStore,
+  settingsFilePath,
+} from "./settings-store.ts";
 export { startSupervisor } from "./start-supervisor.ts";
 export type { SupervisorApi } from "./supervisor-api.ts";
 export { createSystemClock, type SupervisorClock } from "./supervisor-clock.ts";
@@ -30,6 +39,7 @@ export {
   type SupervisorHandle,
   type SupervisorIdentity,
 } from "./supervisor-options.ts";
+export { createToolchainStore, type ToolchainStore, toolchainFilePath } from "./toolchain-store.ts";
 
 /** 入口文件的绝对路径，供启动者（client，#44）拼命令行；打包后的位置由打包步骤另行决定 */
 export function supervisorEntryPath(): string {

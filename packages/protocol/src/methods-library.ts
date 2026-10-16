@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { createdByKinds, createdBySchema } from "./created-by.ts";
 import type { MethodDefinition } from "./method-definition.ts";
+import { noticeSchema } from "./notices.ts";
 import { playgroundSchema } from "./playground.ts";
 import { emptySchema, playgroundRefSchema } from "./primitives.ts";
 
@@ -46,7 +47,12 @@ export const libraryMethods = {
       ifExists: z.enum(["reuse", "fail"]).optional(),
       createdBy: createdBySchema,
     }),
-    result: z.object({ playground: playgroundSchema, created: z.boolean() }),
+    result: z.object({
+      playground: playgroundSchema,
+      created: z.boolean(),
+      // 创建成功时的提示，如 PATH_NEAR_LIMIT（规格 LIBRARY-PLAYGROUNDS-05）；没有提示时省略
+      notices: z.array(noticeSchema).optional(),
+    }),
     errors: [
       "NAME_INVALID",
       "NAME_RESERVED",

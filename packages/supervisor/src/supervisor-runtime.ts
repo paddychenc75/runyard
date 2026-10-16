@@ -7,6 +7,9 @@ import { createPlatformDiscoveryStore } from "./discovery-file.ts";
 import { createDispatcher, type HandlerMap } from "./dispatch.ts";
 import { ServerHandshake } from "./handshake-server.ts";
 import { createIdleMonitor } from "./idle-monitor.ts";
+import { createLibraryContext } from "./library-context.ts";
+import { createLibraryHandlers } from "./library-handlers.ts";
+import { createLibraryService } from "./library-service.ts";
 import { createSessionManager } from "./session-manager.ts";
 import type { SupervisorApi } from "./supervisor-api.ts";
 import { createSystemClock } from "./supervisor-clock.ts";
@@ -64,6 +67,7 @@ export function createSupervisorRuntime(options: StartSupervisorOptions) {
   });
 
   let dispatch: ReturnType<typeof createDispatcher> | undefined;
+  let library!: ReturnType<typeof createLibraryContext>;
   const manager = createSessionManager({
     clock,
     handshakeTimeoutMs: options.handshakeTimeoutMs ?? HANDSHAKE_TIMEOUT_MS,
@@ -87,7 +91,11 @@ export function createSupervisorRuntime(options: StartSupervisorOptions) {
       return dispatch(session, request);
     },
     onReady: (session) => extensions.sessions?.onReady?.(session),
-    onClosed: (session, reason) => extensions.sessions?.onClosed?.(session, reason),
+    onClosed: (session, reason) => {
+      // 断开的连接不会再回报释放，别让改名白等
+      library.release.sessionClosed(session.id);
+      extensions.sessions?.onClosed?.(session, reason);
+    },
     onCountChanged: () => idle.evaluate(),
   });
 
@@ -119,6 +127,9 @@ export function createSupervisorRuntime(options: StartSupervisorOptions) {
     },
   };
 
+  library = createLibraryContext(api, () => extensions.library ?? {}, log);
+  const libraryService = createLibraryService(library);
+
   // 顺序见 start-supervisor.ts 开头的说明
   async function bootstrap(listening: Server): Promise<void> {
     server = listening;
@@ -134,7 +145,8 @@ export function createSupervisorRuntime(options: StartSupervisorOptions) {
         if (session !== undefined) await extensions.sessions?.onBye?.(session);
       },
     });
-    dispatch = createDispatcher(mergeHandlers(builtin, extensions.handlers), api);
+    const own = { ...builtin, ...createLibraryHandlers(library, libraryService) };
+    dispatch = createDispatcher(mergeHandlers(own, extensions.handlers), api);
     await store.remove();
     try {
       await extensions.recoverCrashedRuns?.();
@@ -156,6 +168,8 @@ export function createSupervisorRuntime(options: StartSupervisorOptions) {
       execPath: options.execPath,
     });
     idle.evaluate();
+    // 启动时扫描资源库（规格 LIBRARY-PLAYGROUNDS-26 到 30）；不挡着接受连接，失败只记日志
+    void libraryService.start();
   }
 
   return {

@@ -87,16 +87,16 @@ describe("会话握手", () => {
     await world.start({
       extend: () => ({
         handlers: {
-          "playground.list": () => {
+          "toolchain.doctor": () => {
             called++;
-            return [];
+            return { tools: [] };
           },
         },
       }),
     });
     const client = await world.connect();
     await client.readChallenge();
-    client.write({ t: "req", id: 1, method: "playground.list", params: {} });
+    client.write({ t: "req", id: 1, method: "toolchain.doctor", params: {} });
     expect(await client.next()).toBeUndefined();
     expect(called).toBe(0);
   });

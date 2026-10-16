@@ -136,6 +136,15 @@ export class Session {
     return this.#subscriptions.delete(sub);
   }
 
+  /** 这条连接现在会不会收到这个事件（订阅了所属主题）；释放顺序据此决定等谁回报 */
+  wouldReceive(event: EventName): boolean {
+    if (this.#closed || !this.ready) return false;
+    for (const subscription of this.#subscriptions.values()) {
+      if (subscription.accepts(event)) return true;
+    }
+    return false;
+  }
+
   // 同一个订阅内 seq 递增，客户端靠它发现丢失。写不出去的积压超限就断开慢消费者：
   // 事件都可以由客户端重新读取快照补回，不能为了一个慢客户端让管理进程的内存无限增长
   deliver(event: EventName, data: unknown): void {

@@ -1,3 +1,4 @@
+import { isLibraryError } from "@runyard/core";
 import { isPlatformError } from "@runyard/platform";
 import type { ErrorCode, ErrorParams, RunyardError } from "@runyard/protocol";
 
@@ -25,6 +26,7 @@ export function methodFailure<C extends ErrorCode>(
 export function toRunyardError(thrown: unknown): RunyardError {
   if (thrown instanceof MethodFailure) return thrown.error;
   if (isPlatformError(thrown)) return thrown.error;
+  if (isLibraryError(thrown)) return thrown.error;
   const debug = thrown instanceof Error ? thrown.message : "non-error value thrown";
   return { code: "INTERNAL", params: {}, debug };
 }
