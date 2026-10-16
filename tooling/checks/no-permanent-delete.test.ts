@@ -64,17 +64,22 @@ export const command = { name: "rm" };`;
     expect(check(CORE, `const commands = ["add", "rm", "ls"];\nprogram.command("rm");`)).toBe("");
   });
 
-  it("[LIBRARY-PLAYGROUNDS-24] 以 rm 开头的名字列表不是删除；真正拿来当命令的数组照样报", () => {
-    // 命令声明里的名字列表（issue #108 的误报）
-    expect(check(CORE, `export const names = ["rm"];`)).toBe("");
-    expect(check(CORE, `defineCommand({ name: "rm", aliases: ["rm", "remove"] });`)).toBe("");
-    expect(check(CORE, `const commands = ["rm", "run", "stop"];`)).toBe("");
-    // 真正的删除：带选项、拼进路径、写在 argv 上或直接交给 spawn
+  it("[LIBRARY-PLAYGROUNDS-24] 第一项是 rm 的字符串数组一律报；命令名列表要用 delete-allow 声明", () => {
+    // 缺口样例（issue #130）：数组先放进变量，再拆开交给 spawn
+    const gap = `const rmFile = ["rm", "a.txt"];\nspawn(rmFile[0], rmFile.slice(1));`;
+    expect(check(CORE, gap)).toContain('参数数组以 "rm" 开头');
+    expect(check(CORE, `export const names = ["rm"];`)).toContain('参数数组以 "rm" 开头');
+    expect(check(CORE, `const x = ["rm", "remove"];`)).toContain('参数数组以 "rm" 开头');
     expect(check(CORE, `const x = ["rm", "-rf", dir];`)).toContain('参数数组以 "rm" 开头');
-    expect(check(CORE, `const x = ["rm", dir];`)).toContain('参数数组以 "rm" 开头');
-    expect(check(CORE, `run({ argv: ["rm"], cwd });`)).toContain('参数数组以 "rm" 开头');
     expect(check(CORE, `spawn(["rm"]);`)).toContain('参数数组以 "rm" 开头');
     expect(check(CORE, `platform.exec.spawn({ argv: ["/bin/rm", "x"] });`)).toContain("/bin/rm");
+    // 命令名列表：同一行或上一行声明，理由必填
+    const allowed = `// delete-allow: 命令名列表，不是删除\nexport const names = ["rm"];`;
+    expect(check(CORE, allowed)).toBe("");
+    expect(check(CORE, `const n = ["rm", "remove"]; // delete-allow: 命令名列表，不是删除`)).toBe(
+      "",
+    );
+    expect(check(CORE, `// delete-allow:\nconst n = ["rm"];`)).toContain("没有写理由");
   });
 
   it("delete-allow 放行同一行或上一行，理由必填", () => {
