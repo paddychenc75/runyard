@@ -1,0 +1,227 @@
+/* 由 pnpm tokens:build 生成，不要手改。要改就改 packages/tokens/src/tokens.json（技术设计 §6.7）。 */
+
+:root {
+  color-scheme: light dark;
+  --white: #ffffff;
+  --gray-50: #f5f5f7;
+  --gray-100: #f0f0f3;
+  --gray-300: #d1d1d6;
+  --gray-400: #a1a1a6;
+  --gray-500: #8e8e93;
+  --gray-600: #6e6e73;
+  --gray-800: #3a3a3c;
+  --ink-900: #1d1d1f;
+  --night-700: #1e1e21;
+  --night-800: #1c1c1e;
+  --night-900: #161618;
+  --blue-700: #0058b0;
+  --blue-600: #0071e3;
+  --blue-500: #0a84ff;
+  --blue-400: #4da3ff;
+  --green-800: #1b7a34;
+  --green-600: #28a745;
+  --green-500: #30d158;
+  --amber-900: #8a4b00;
+  --amber-700: #c27400;
+  --yellow-500: #ffd60a;
+  --gold-600: #b8860b;
+  --olive-700: #8a6d00;
+  --orange-700: #b3470b;
+  --orange-400: #ffa14a;
+  --red-700: #c4001a;
+  --red-600: #d70015;
+  --red-500: #ff453a;
+  --red-300: #ff9f99;
+  --crimson-700: #b3261e;
+  --coral-400: #ff8170;
+  --purple-700: #7a2e9e;
+  --purple-300: #d0a8ff;
+  --magenta-600: #ad3da4;
+  --pink-400: #ff7ab2;
+  --cyan-700: #0f68a0;
+  --cyan-300: #6bdfff;
+  --teal-500: #4eb0cc;
+  --indigo-800: #1c00cf;
+  --sand-300: #d9c97c;
+  --color-bg-window: light-dark(var(--white), var(--night-800));
+  --color-bg-workspace: light-dark(var(--gray-50), var(--night-900));
+  --color-bg-card: light-dark(var(--white), var(--night-700));
+  --color-bg-inset: light-dark(var(--gray-50), rgba(0, 0, 0, 0.35));
+  --color-bg-chip: light-dark(var(--gray-100), rgba(255, 255, 255, 0.1));
+  --color-bg-raised: light-dark(var(--white), rgba(255, 255, 255, 0.18));
+  --color-fill-neutral: light-dark(rgba(118, 118, 128, 0.14), rgba(118, 118, 128, 0.24));
+  --color-scrim: light-dark(rgba(20, 22, 30, 0.22), rgba(0, 0, 0, 0.45));
+  --glass-toolbar-bg: light-dark(rgba(255, 255, 255, 0.66), rgba(72, 72, 78, 0.55));
+  --glass-sidebar-bg: light-dark(rgba(242, 243, 247, 0.78), rgba(58, 58, 62, 0.55));
+  --glass-filetree-bg: light-dark(rgba(255, 255, 255, 0.62), rgba(58, 58, 62, 0.55));
+  --glass-dialog-bg: light-dark(rgba(250, 250, 252, 0.84), rgba(44, 44, 48, 0.78));
+  --glass-border-color: light-dark(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.14));
+  --glass-tab-selected-bg: light-dark(var(--white), rgba(255, 255, 255, 0.16));
+  --color-text-primary: light-dark(var(--ink-900), var(--gray-50));
+  --color-text-secondary-strong: light-dark(var(--gray-800), var(--gray-300));
+  --color-text-secondary: light-dark(var(--gray-600), var(--gray-400));
+  --color-text-tertiary: light-dark(var(--gray-500), var(--gray-500));
+  --color-text-placeholder: light-dark(var(--gray-600), var(--gray-400));
+  --color-text-on-accent: light-dark(var(--white), var(--white));
+  --color-line-hairline: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.08));
+  --color-line-strong: light-dark(rgba(0, 0, 0, 0.14), rgba(255, 255, 255, 0.14));
+  --color-fill-accent: light-dark(var(--blue-600), var(--blue-600));
+  --color-line-accent: light-dark(var(--blue-600), var(--blue-500));
+  --color-text-accent: light-dark(var(--blue-700), var(--blue-400));
+  --color-text-link: light-dark(var(--blue-600), var(--blue-400));
+  --color-fill-accent-tint: light-dark(rgba(0, 113, 227, 0.12), rgba(10, 132, 255, 0.2));
+  --color-status-running-mark: light-dark(var(--green-600), var(--green-500));
+  --color-status-running-text: light-dark(var(--green-800), var(--green-500));
+  --color-status-warning-mark: light-dark(var(--amber-700), var(--yellow-500));
+  --color-status-warning-text: light-dark(var(--amber-900), var(--yellow-500));
+  --color-fill-warning-tint: light-dark(rgba(194, 116, 0, 0.08), rgba(255, 214, 10, 0.14));
+  --color-status-danger-mark: light-dark(var(--red-600), var(--red-500));
+  --color-status-danger-text: light-dark(var(--red-700), var(--red-300));
+  --color-fill-danger-tint: light-dark(rgba(215, 0, 21, 0.1), rgba(255, 69, 58, 0.18));
+  --color-agent-text: light-dark(var(--purple-700), var(--purple-300));
+  --color-fill-agent-tint: light-dark(rgba(175, 82, 222, 0.12), rgba(191, 90, 242, 0.24));
+  --color-fill-switch-on: light-dark(var(--green-600), var(--green-500));
+  --color-code-plain: light-dark(var(--ink-900), var(--gray-50));
+  --color-code-keyword: light-dark(var(--magenta-600), var(--pink-400));
+  --color-code-string: light-dark(var(--crimson-700), var(--coral-400));
+  --color-code-function: light-dark(var(--cyan-700), var(--cyan-300));
+  --color-code-number: light-dark(var(--indigo-800), var(--sand-300));
+  --color-code-tag: light-dark(var(--green-800), var(--teal-500));
+  --color-code-punctuation: light-dark(var(--gray-600), var(--gray-400));
+  --color-code-line-number: light-dark(var(--gray-600), var(--gray-500));
+  --color-code-current-line: light-dark(rgba(0, 113, 227, 0.07), rgba(255, 255, 255, 0.06));
+  --color-tree-folder: light-dark(var(--gold-600), var(--yellow-500));
+  --color-tree-typescript: light-dark(var(--cyan-700), var(--cyan-300));
+  --color-tree-css: light-dark(var(--purple-700), var(--purple-300));
+  --color-tree-html: light-dark(var(--orange-700), var(--orange-400));
+  --color-tree-data: light-dark(var(--olive-700), var(--yellow-500));
+  --color-tree-other: light-dark(var(--gray-600), var(--gray-400));
+  --color-tree-chevron: light-dark(var(--gray-600), var(--gray-400));
+  --color-tree-selected-icon: light-dark(var(--white), var(--white));
+  --shadow-1:
+    0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(15, 23, 42, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --shadow-2:
+    0 0 0 0.5px rgba(0, 0, 0, 0.1), 0 12px 36px rgba(15, 23, 42, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+  --shadow-3:
+    0 0 0 0.5px rgba(0, 0, 0, 0.14), 0 40px 90px rgba(15, 23, 42, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+  --shadow-menu:
+    0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 16px 40px rgba(15, 23, 42, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+  --shadow-tab-selected: 0 1px 3px rgba(0, 0, 0, 0.12);
+  --glass-border-width: 1px;
+  --glass-blur-toolbar: blur(28px) saturate(180%);
+  --glass-blur-sidebar: blur(40px);
+  --glass-blur-dialog: blur(50px) saturate(190%);
+  --radius-sidebar: 20px;
+  --radius-card: 16px;
+  --radius-dialog: 28px;
+  --radius-menu: 16px;
+  --radius-row: 12px;
+  --radius-control: 9px;
+  --radius-capsule: 9999px;
+  --size-toolbar: 44px;
+  --size-control-lg: 40px;
+  --size-control-md: 32px;
+  --size-control-sm: 28px;
+  --size-row: 48px;
+  --size-tree-row: 28px;
+  --size-menu-item: 32px;
+  --size-window-inset: 8px;
+  --size-card-gap: 8px;
+  --size-dialog-width: 580px;
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 6px;
+  --space-4: 8px;
+  --space-5: 10px;
+  --space-6: 12px;
+  --space-7: 16px;
+  --space-8: 20px;
+  --space-9: 24px;
+  --space-10: 28px;
+  --font-sans: -apple-system, "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
+  --font-mono: "SF Mono", Menlo, monospace;
+  --text-page-title-size: 28px;
+  --text-dialog-title-size: 20px;
+  --text-section-title-size: 16px;
+  --text-item-size: 14px;
+  --text-body-size: 13px;
+  --text-secondary-size: 12px;
+  --text-caption-size: 11px;
+  --text-micro-size: 10px;
+  --text-code-size: 13px;
+  --text-code-small-size: 12px;
+  --text-page-title-weight: 700;
+  --text-dialog-title-weight: 700;
+  --text-section-title-weight: 600;
+  --text-item-weight: 600;
+  --text-body-weight: 400;
+  --text-secondary-weight: 400;
+  --text-caption-weight: 400;
+  --text-micro-weight: 600;
+  --text-code-weight: 400;
+  --text-page-title-line-height: 34px;
+  --text-dialog-title-line-height: 26px;
+  --text-section-title-line-height: 22px;
+  --text-item-line-height: 20px;
+  --text-body-line-height: 18px;
+  --text-secondary-line-height: 16px;
+  --text-caption-line-height: 14px;
+  --text-micro-line-height: 12px;
+  --text-code-line-height: 20px;
+  --motion-duration-fast: 120ms;
+  --motion-duration-base: 200ms;
+  --motion-duration-popover: 250ms;
+  --motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --motion-easing-popover: cubic-bezier(0.34, 1.3, 0.64, 1);
+  --z-base: 0;
+  --z-sticky: 10;
+  --z-popover: 100;
+  --z-scrim: 200;
+  --z-dialog: 300;
+  --z-toast: 400;
+  --z-tooltip: 500;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --shadow-1: 0 10px 28px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  --shadow-2: 0 12px 36px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  --shadow-3:
+    0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 40px 90px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  --shadow-menu:
+    0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 16px 40px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  --shadow-tab-selected: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --shadow-1: 0 10px 28px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    --shadow-2: 0 12px 36px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    --shadow-3:
+      0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 40px 90px rgba(0, 0, 0, 0.6),
+      inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    --shadow-menu:
+      0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 16px 40px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    --shadow-tab-selected: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --glass-toolbar-bg: light-dark(#ededf0, #48484e);
+    --glass-sidebar-bg: light-dark(#f2f3f7, #3a3a3e);
+    --glass-filetree-bg: light-dark(#f5f5f7, #3a3a3e);
+    --glass-dialog-bg: light-dark(#fafafc, #2c2c30);
+  }
+}

@@ -19,7 +19,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | 路径 | 是什么 |
 | --- | --- |
 | `docs/product/` | 中文产品文档：PRD 和技术设计。产品行为的唯一出处，先读 `docs/product/README.md` |
-| `docs/design/` | 界面设计源文件、设计变量、最终图标。只读 |
+| `docs/design/` | 界面设计源文件、最终图标。只读；`tokens.md` 是由 `packages/tokens` 生成的表，不手改 |
 | `docs/architecture/` | `overview.md`（一页架构总览）、`decisions/`（决策记录）、`evidence/`（技术验证记录的实测数据、伪代码和证据链接）、`dependencies.md`（每个依赖的版本和理由），以及 M1 头三个包和命令行的实现细节：`protocol.md`、`protocol-methods.md`、`storage.md`、`run-state-machine.md`、`runner-format.md`、`platform-interface.md`、`cli-contract.md` |
 | `docs/reference/` | 协议参考（方法、事件、错误码、退出码、提示码、枚举）和文案对照表 `strings.md`，**由 `pnpm generate` 从 `packages/protocol`、`packages/i18n/locales/` 生成**，不要手改 |
 | `docs/guides/` | 操作手册和命令表。有手册的任务按手册做，不要临场发挥 |
@@ -28,6 +28,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `apps/desktop/` | 桌面应用（Electron）：主进程、预加载脚本、界面三部分。目前是最早的开发外壳：一个窗口，列出项目、运行和停止、就绪后预览，用现成的内置模板新建；从源码 `pnpm dev` 打开。设计系统、标签页、编辑器、终端等随 M2 后续 PR |
 | `packages/platform/` | 平台层：`Platform` 接口、`getPlatform()`、路径与名称校验、`darwin` 和薄 `linux` 实现、契约测试（目前有接口、paths、ipc、spawnDetached、exec、proc、ports、fs（含 macOS 废纸篓、`readBytes` / `listFiles` / `appendFile` / `removeFile`）、system（版本串）、watch、env（登录 shell 解析）、tools、shell 的实现，其余是占位，随后续 issue 加入） |
 | `packages/protocol/` | 所有跨进程约定（目前有错误码、提示码、枚举、`RunyardError` / `Notice` / `LogEntry` / `Owner`、分帧、`Frame`、握手消息、版本比对、方法与事件的登记表、`Playground` / `RunSnapshot`、磁盘文件格式与升级链、`template.json` / `runner.json` / 工具定义的格式与校验） |
+| `packages/tokens/` | 设计变量：`src/tokens.json` 是唯一来源，`pnpm tokens:build` 生成 `generated/` 下的 CSS 变量、TS 常量、编辑器配色，并重写 `docs/design/tokens.md` 的表；不导入任何包 |
 | `packages/i18n/` | 文案、`createTranslator`、数字和时长格式、命令行语言解析（`resolveCliLocale`）、由中文文案生成的键和参数类型 |
 | `packages/supervisor/` | 管理进程：单实例、发现文件、握手服务、会话与方法分发、事件订阅、空闲退出、关闭；空闲停止、崩溃后清理（目前有骨架、会话组方法，资源库、设置、自动清理、模板的方法，运行编排与持有者，静态页面服务，模板展开成项目，以及运行日志文件与 `logs.read|follow|clear`、`supervisor.log` 轮转） |
 | `packages/client/` | 管理进程的客户端：读发现文件、握手、经平台层拉起并重连、版本表、带类型的 `call` 和事件订阅；错误是 `ClientError`（代码加参数），不打印 |
@@ -38,8 +39,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `tooling/checks/` | 仓库检查脚本，`pnpm check` 的全部内容；`layers.json` 是包依赖规则的唯一出处 |
 | `tooling/biome/` | Biome 的 GritQL 规则（界面里不许写死文字，随 `biome.json` 在界面包和 renderer 出现时生效） |
 | `tooling/scripts/` | 脚本（CI 用的在 `tooling/ci/`，含模板 CI 的矩阵 `template-matrix.ts`）：`deps-lookup.ts`（查依赖版本和公告）、`generate.ts`（生成文档里的表和协议参考）、`spec.mjs`（`pnpm spec` 的包装，关掉 OpenSpec 的联网） |
-| `tooling/hooks/` | Claude Code 的钩子脚本，由 `.claude/settings.json` 调用 |
-| `tooling/design-render/` | 把设计源文件渲染成图片的脚本（图片不进仓库） |
+| `tooling/hooks/`、`tooling/design-render/` | Claude Code 的钩子脚本（由 `.claude/settings.json` 调用）；把设计源文件渲染成图片的脚本（图片不进仓库） |
 | `openspec/` | 规格驱动：`specs/` 是批准的行为规格（唯一出处），`config.yaml` 和 `schemas/runyard/` 是流程；进行中的改动在 `changes/`（只在开发分支） |
 | `security/allowlist.toml` | 依赖安全允许清单，改之前先问 |
 | `.claude/` | Claude Code 的设置、skills、子智能体 |
@@ -52,7 +52,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | 包 | 可以导入 | 现状 |
 | --- | --- | --- |
 | `@runyard/protocol` | 无 | 已有 |
-| `@runyard/tokens` | 无 | 还没建 |
+| `@runyard/tokens` | 无 | 已有 |
 | `@runyard/i18n` | `@runyard/protocol` | 已有 |
 | `@runyard/platform` | `@runyard/protocol` | 已有 |
 | `@runyard/core` | `@runyard/protocol`、`@runyard/platform`、`@runyard/testing`（只在测试里） | 已有 |
