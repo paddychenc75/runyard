@@ -1,5 +1,6 @@
 import { spawnSync } from "node:child_process";
-import { join } from "node:path";
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 // pnpm spec <参数…> —— 带着关闭联网的环境变量调用 OpenSpec（技术设计 §9.6.2、§9.6.3）。
@@ -19,12 +20,20 @@ export function specEnv(base = process.env) {
   };
 }
 
+// 直接用 node 运行包里声明的命令行入口，不经 node_modules/.bin 的壳脚本（Windows 上那是 .cmd，不能直接启动）
 export function openspecBin(root = ROOT) {
-  return join(root, "node_modules", ".bin", "openspec");
+  // 根目录的直接依赖，pnpm 在 node_modules 下放了链接；包没有导出 package.json，所以不用 require.resolve
+  const manifest = join(root, "node_modules", "@fission-ai", "openspec", "package.json");
+  const { bin } = JSON.parse(readFileSync(manifest, "utf8"));
+  return join(dirname(manifest), typeof bin === "string" ? bin : bin.openspec);
 }
 
 export function runSpec(args, { cwd = ROOT, env = process.env } = {}) {
-  return spawnSync(openspecBin(), args, { cwd, env: specEnv(env), stdio: "inherit" });
+  return spawnSync(process.execPath, [openspecBin(), ...args], {
+    cwd,
+    env: specEnv(env),
+    stdio: "inherit",
+  });
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
