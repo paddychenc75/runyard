@@ -88,7 +88,7 @@ const rows: Row[] = [
     expected: "remind",
   },
   {
-    title: "[LIBRARY-AUTO-CLEAN-26] 顺延期内（snoozedUntil 在将来）不可清理",
+    title: "[LIBRARY-AUTO-CLEAN-27] 顺延期内（snoozedUntil 在将来）不可清理",
     candidate: {
       lastUsedAt: NOW - 31 * DAY_MS,
       remindedAt: NOW - 2 * DAY_MS,

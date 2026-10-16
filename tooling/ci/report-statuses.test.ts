@@ -1,7 +1,10 @@
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { type JobInfo, jobsToStatuses } from "./report-statuses.ts";
+
+// 每个用例要起子进程（跑脚本或 git）；Windows 机器上子进程慢，默认 5 秒不够
+vi.setConfig({ testTimeout: 60_000 });
 
 const script = join(import.meta.dirname, "report-statuses.ts");
 const job = (name: string, status: string, conclusion: string | null): JobInfo => ({

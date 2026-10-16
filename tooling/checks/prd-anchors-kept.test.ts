@@ -1,9 +1,12 @@
 import { execFileSync } from "node:child_process";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { checkAnchorsKept, prdAnchorsKept } from "./prd-anchors-kept.ts";
 import { makeRepo } from "./test-helpers.ts";
+
+// 每个用例要起子进程（跑脚本或 git）；Windows 机器上子进程慢，默认 5 秒不够
+vi.setConfig({ testTimeout: 60_000 });
 
 const anchor = (id: string) => `<a id="${id}"></a>\n## 一节\n\n`;
 const BASE = anchor("prd-run") + anchor("prd-ports");

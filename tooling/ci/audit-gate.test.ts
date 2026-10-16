@@ -2,8 +2,11 @@ import { spawnSync } from "node:child_process";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { evaluate, renderReport } from "./audit-gate.ts";
+
+// 每个用例要起子进程（跑脚本或 git）；Windows 机器上子进程慢，默认 5 秒不够
+vi.setConfig({ testTimeout: 60_000 });
 
 const TODAY = new Date("2026-10-12T08:00:00Z");
 const script = join(import.meta.dirname, "audit-gate.ts");
