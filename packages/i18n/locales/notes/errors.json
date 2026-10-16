@@ -16,11 +16,33 @@
   "errors.FOLDER_MISSING.title": {
     "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文"
   },
-  "errors.NAME_EXISTS.hintCli": {
-    "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文"
+  "errors.NAME_EXISTS.body": {
+    "kind": "对象种类：template 是模板标识，缺省或 playground 是项目名称"
   },
-  "errors.NAME_EXISTS.title": { "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文" },
-  "errors.NAME_INVALID.title": { "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文" },
+  "errors.NAME_EXISTS.hint": {
+    "kind": "对象种类：template 是模板标识，缺省或 playground 是项目名称"
+  },
+  "errors.NAME_EXISTS.hintCli": {
+    "name": "项目名称（也是文件夹名）或模板标识；命令行传路径时是用户给的原文",
+    "kind": "对象种类：template 是模板标识，缺省或 playground 是项目名称"
+  },
+  "errors.NAME_EXISTS.title": {
+    "name": "项目名称（也是文件夹名）或模板标识；命令行传路径时是用户给的原文",
+    "kind": "对象种类：template 是模板标识，缺省或 playground 是项目名称"
+  },
+  "errors.NAME_INVALID.body": {
+    "kind": "对象种类：template 是模板标识，缺省或 playground 是项目名称"
+  },
+  "errors.NAME_INVALID.hint": {
+    "kind": "对象种类：template 是模板标识，缺省或 playground 是项目名称"
+  },
+  "errors.NAME_INVALID.hintCli": {
+    "kind": "对象种类：template 是模板标识，缺省或 playground 是项目名称"
+  },
+  "errors.NAME_INVALID.title": {
+    "name": "项目名称（也是文件夹名）或模板标识；命令行传路径时是用户给的原文",
+    "kind": "对象种类：template 是模板标识，缺省或 playground 是项目名称"
+  },
   "errors.NAME_RESERVED.title": {
     "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文"
   },

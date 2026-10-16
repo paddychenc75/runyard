@@ -10,11 +10,17 @@ const toolId = z.string().min(1);
 const name = z.string().min(1);
 const none = z.object({});
 
+// 名称出问题的对象种类：缺省是项目（playground）；另存为模板的标识不合法或被占用时是 template，
+// 文案据此写“模板标识”而不是“项目名称”
+export const nameKinds = ["playground", "template"] as const;
+export type NameKind = (typeof nameKinds)[number];
+const namedObject = z.object({ name, kind: z.enum(nameKinds).optional() });
+
 export const errorRegistry = {
   INTERNAL: { exit: 1, params: none },
 
   USAGE: { exit: 2, params: none },
-  NAME_INVALID: { exit: 2, params: z.object({ name }) },
+  NAME_INVALID: { exit: 2, params: namedObject },
   NAME_RESERVED: { exit: 2, params: z.object({ name }) },
   VAR_INVALID: { exit: 2, params: z.object({ key: z.string().min(1) }) },
   // 模板没通过格式校验（规格 TEMPLATES-FORMAT-11、TEMPLATES-CUSTOM-19）：不创建文件夹，不改模板
@@ -48,7 +54,7 @@ export const errorRegistry = {
 
   READY_TIMEOUT: { exit: 7, params: z.object({ name, seconds: z.number().nonnegative() }) },
 
-  NAME_EXISTS: { exit: 9, params: z.object({ name }) },
+  NAME_EXISTS: { exit: 9, params: namedObject },
   BUSY: { exit: 9, params: z.object({ name }) },
   PATH_LOCKED: { exit: 9, params: z.object({ name }) },
   PATH_TOO_LONG: { exit: 9, params: z.object({ name }) },

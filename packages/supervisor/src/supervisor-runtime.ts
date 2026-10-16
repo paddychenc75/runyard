@@ -1,5 +1,6 @@
 import { randomBytes as cryptoRandomBytes } from "node:crypto";
 import type { Server, Socket } from "node:net";
+import { joinPath, posixRelPath } from "@runyard/platform";
 import type { EventData, EventName, ShutdownReason } from "@runyard/protocol";
 import { NONCE_BYTES, SUPERVISOR_FILE_VERSION } from "@runyard/protocol";
 import { createBuiltinHandlers } from "./builtin-methods.ts";
@@ -21,6 +22,8 @@ import {
   type StartSupervisorOptions,
   type SupervisorExtensions,
 } from "./supervisor-options.ts";
+import { createTemplateHandlers } from "./template-handlers.ts";
+import { createTemplateLibrary } from "./template-library.ts";
 
 const hex = (bytes: Uint8Array) => Buffer.from(bytes).toString("hex");
 
@@ -129,6 +132,11 @@ export function createSupervisorRuntime(options: StartSupervisorOptions) {
 
   library = createLibraryContext(api, () => extensions.library ?? {}, log);
   const libraryService = createLibraryService(library);
+  // 用户模板在状态目录下的 templates/（storage.md 第 1 节）
+  const templates = createTemplateLibrary(platform, {
+    ...options.templateData,
+    userDir: joinPath(platform.paths.stateDir, posixRelPath("templates")),
+  });
 
   // 顺序见 start-supervisor.ts 开头的说明
   async function bootstrap(listening: Server): Promise<void> {
@@ -145,7 +153,11 @@ export function createSupervisorRuntime(options: StartSupervisorOptions) {
         if (session !== undefined) await extensions.sessions?.onBye?.(session);
       },
     });
-    const own = { ...builtin, ...createLibraryHandlers(library, libraryService) };
+    const own = {
+      ...builtin,
+      ...createLibraryHandlers(library, libraryService),
+      ...createTemplateHandlers(library, templates),
+    };
     dispatch = createDispatcher(mergeHandlers(own, extensions.handlers), api);
     await store.remove();
     try {

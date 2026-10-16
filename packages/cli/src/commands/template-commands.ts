@@ -61,7 +61,7 @@ export const templateSave: CommandHandler = async (context) => {
   if (as === undefined) {
     throw usageError((t) => t("cli.usage.missingArgument.body", { argument: "--as" }));
   }
-  if (!templateIdPattern.test(as)) throw cliError("NAME_INVALID", { name: as });
+  if (!templateIdPattern.test(as)) throw cliError("NAME_INVALID", { name: as, kind: "template" });
   const include = relativePaths(context, "include");
   const exclude = relativePaths(context, "exclude");
   const name = context.value("name");

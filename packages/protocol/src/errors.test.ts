@@ -11,7 +11,7 @@ import {
 const cases: Record<ErrorCode, { ok: unknown; bad: unknown }> = {
   INTERNAL: { ok: {}, bad: undefined },
   USAGE: { ok: {}, bad: "x" },
-  NAME_INVALID: { ok: { name: "a b" }, bad: {} },
+  NAME_INVALID: { ok: { name: "a b", kind: "template" }, bad: { name: "a", kind: "other" } },
   NAME_RESERVED: { ok: { name: "con" }, bad: { name: 1 } },
   VAR_INVALID: { ok: { key: "port" }, bad: { key: "" } },
   TEMPLATE_INVALID: { ok: { template: "hello" }, bad: { template: "" } },
@@ -34,7 +34,7 @@ const cases: Record<ErrorCode, { ok: unknown; bad: unknown }> = {
     bad: { template: "react19", step: "install-all" },
   },
   READY_TIMEOUT: { ok: { name: "demo", seconds: 60 }, bad: { name: "demo", seconds: "60" } },
-  NAME_EXISTS: { ok: { name: "demo" }, bad: {} },
+  NAME_EXISTS: { ok: { name: "demo", kind: "playground" }, bad: {} },
   BUSY: { ok: { name: "demo" }, bad: {} },
   PATH_LOCKED: { ok: { name: "demo" }, bad: {} },
   PATH_TOO_LONG: { ok: { name: "demo" }, bad: {} },

@@ -246,7 +246,7 @@ const examples: Record<MethodName, Example> = {
       include: [".env"],
       exclude: ["src/secret.ts"],
     },
-    badParams: { playground: "pricing-table", as: "My_Template" },
+    badParams: { playground: "pricing-table", as: "" },
     result: {
       id: "my-pricing",
       name: "My pricing",
@@ -346,10 +346,11 @@ describe("方法登记表", () => {
     }
   });
 
-  it("template.save 的标识写法和 include、exclude 路径由 schema 把关", () => {
+  it("[TEMPLATES-CUSTOM-03] template.save 的标识写法由管理进程校验并回 NAME_INVALID，schema 只要求非空；include、exclude 路径由 schema 把关", () => {
     const { params } = methodRegistry["template.save"];
     for (const as of ["My_Template", "-a", "a-"])
-      expect(params.safeParse({ playground: "demo", as }).success).toBe(false);
+      expect(params.safeParse({ playground: "demo", as }).success).toBe(true);
+    expect(params.safeParse({ playground: "demo", as: "" }).success).toBe(false);
     for (const path of ["../outside", "/etc/passwd"]) {
       expect(params.safeParse({ playground: "demo", as: "ok", include: [path] }).success).toBe(
         false,

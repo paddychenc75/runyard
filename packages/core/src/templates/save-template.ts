@@ -102,11 +102,19 @@ export async function saveTemplate(
 ): Promise<SavedTemplate> {
   const { id } = input;
   if (!templateIdPattern.test(id)) {
-    throw libraryError("NAME_INVALID", { name: id }, `invalid template id: ${id}`);
+    throw libraryError(
+      "NAME_INVALID",
+      { name: id, kind: "template" },
+      `invalid template id: ${id}`,
+    );
   }
   const finalDir = joinPath(input.userDir, posixRelPath(id));
   if (input.reservedIds.has(id) || (await platform.fs.exists(finalDir))) {
-    throw libraryError("NAME_EXISTS", { name: id }, `template id is taken: ${id}`);
+    throw libraryError(
+      "NAME_EXISTS",
+      { name: id, kind: "template" },
+      `template id is taken: ${id}`,
+    );
   }
 
   // 先把内容全读进内存，再动磁盘：能在写之前发现的问题都不留残片

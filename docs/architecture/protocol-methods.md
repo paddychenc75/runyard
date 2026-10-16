@@ -79,7 +79,7 @@
 | --- | --- | --- | --- |
 | `template.list` | 无 | `TemplateRecord[]`：`id` `name` `description`（`LocalizedText`，原样转发）`category` `tags` `source`（`builtin` `user`）`runner` `kind`（运行器不可用时 `null`）`requires` `valid` | 无效的用户模板也在，`valid: false`（规格 templates/custom） |
 | `template.get` | `id` | `{ template: TemplateRecord, path, files }` | `TEMPLATE_NOT_FOUND` |
-| `template.save` | `playground`、`as`、`name?`、`description?`、`replaceName?`、`include?`、`exclude?`（后两个是相对路径数组） | `{ id, name, path, files, source: 'user' }` | `NAME_INVALID` `NAME_EXISTS` `PLAYGROUND_NOT_FOUND` `FOLDER_MISSING`；路径不合法由入参校验拒绝（`USAGE`）。`template lint`、`template test` 在命令行进程里直接跑，不经管理进程，所以没有方法 |
+| `template.save` | `playground`、`as`、`name?`、`description?`、`replaceName?`、`include?`、`exclude?`（后两个是相对路径数组） | `{ id, name, path, files, source: 'user' }` | `NAME_INVALID` `NAME_EXISTS` `PLAYGROUND_NOT_FOUND` `FOLDER_MISSING`；路径不合法由入参校验拒绝（`USAGE`）。`as` 的入参校验只要求非空，写法由处理函数校验并回 `NAME_INVALID`（参数 `kind: "template"`，缺省是项目），不会先被入参校验变成 `USAGE`。`template lint`、`template test` 在命令行进程里直接跑，不经管理进程，所以没有方法 |
 | `toolchain.check` | `playground?` 或 `template?`、`cachedOnly?` | `{ tools }`，每项 `tool`、`status`（`found` `missing` `too-old` `unknown`）、`path?`、`version?`、`required?`、`untested?`、`source?` | `cachedOnly: true` 只读缓存，不触发检测 |
 | `toolchain.doctor` / `.recheck` / `.setPath` | `-` / `-` / `tool`、`path` | 同 `toolchain.check` 的 `{ tools }` | `recheck` 重新解析登录环境、清缓存 |
 | `request.send` / `.getLast` | `playground`、`method`、`path`、`headers?`、`body?` | 状态码、耗时、响应头、响应体 | 属于 M3 的请求面板，M1 不实现 |

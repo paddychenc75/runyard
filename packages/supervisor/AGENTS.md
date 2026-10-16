@@ -3,7 +3,7 @@
 ## 用途
 
 管理进程（`runyardd`）：单实例、发现文件、握手服务、会话与方法分发、事件订阅、空闲自己退出、关闭（技术设计 §2.1 到 §2.4、§5.1；决策记录 0002、0005）。纯 JS，不导入 Electron，不含原生模块，普通 Node 24 直接运行。
-现状：骨架、会话组方法，以及资源库、设置、自动清理、模板（读）的方法（#41）。运行编排与持有者（#40）、崩溃后清理与命令行运行的空闲停止（#42）、日志（#43）由各自的 issue 通过下面的接缝接上，不改这里的类型。
+现状：骨架、会话组方法，以及资源库、设置、自动清理、模板的方法（#41、#119）。运行编排与持有者（#40）、崩溃后清理与命令行运行的空闲停止（#42）、日志（#43）由各自的 issue 通过下面的接缝接上，不改这里的类型。
 
 ## 对外暴露什么
 
@@ -11,7 +11,8 @@
 - `startSupervisor(options)`：启动并返回 `SupervisorHandle`（`endpoint`、`token`、`api`、`connectionCount()`、`closed`）。`options.platform` 由调用方显式创建（`getPlatform({ home })`），包内不读 `~`、不读环境变量。别的进程持锁时抛 `BUSY`（`PlatformError`）。
 - `supervisorEntryPath()`：入口文件 `src/main.ts` 的绝对路径，给启动者拼命令行（`client` 不能导入本包，入口位置由命令行、桌面应用传给 `connectSupervisor` 的 `launch.command`）。发现文件的路径 `discoveryFilePath` 定义在 `@runyard/platform`（client 也要读），这里再导出。入口参数：`--home --version --build` 必填，`--started-by app|cli`（缺省 cli）、`--host electron|node`、`--profile dev` 可选；退出码：0 正常退出或“已有管理进程”（标准错误一行 `supervisor already running`）、1 启动失败、2 参数不对。
 - 接缝（全部可省）：`options.extend(api)` 返回 `SupervisorExtensions`：`handlers`（方法处理函数，类型来自方法登记表，不许与会话组方法重名）、`runCount`（口径同 `run.state` 的 `runningCount`）、`recoverCrashedRuns`（拿到锁之后、写发现文件之前调用一次）、`onShutdown`（关会话之前等它）、`sessions`（`onReady` `onClosed` `onBye`）。`SupervisorApi`：`publish(event, data)`、`notifyRunsChanged()`（运行个数变了必须调，空闲计时靠它）、`readySessions()`、`shutdown(reason)`。
-- 资源库一组（`src/library-*.ts`，#41）由管理进程自己登记，不经 `handlers`：`playground.list|get|create|rename|update|trash|relocate|forget|released`、`library.rescan`、`clean.due|ackReminder|keep`、`settings.get|set`、`template.list|get`。`playground.duplicate` 和 `template.save` 没有实现（回 `NOT_SUPPORTED`）。依赖别的 issue 的三处经 `SupervisorExtensions.library`（`LibrarySeams`，全部可省）：`runs: RunsView`（#40 实现：`activePlaygrounds`、`isBusy`、`ownerOf`、`stop`、`start`；缺省 `noRuns`）、`templates: TemplateCatalog`（模板各 issue：`list`、`get`、`seed`、`runnerKind`；缺省没有模板）、`ports: PortSlotAllocator`（#36；缺省新项目没有端口）。
+- 资源库一组（`src/library-*.ts`，#41）由管理进程自己登记，不经 `handlers`：`playground.list|get|create|rename|update|trash|relocate|forget|released`、`library.rescan`、`clean.due|ackReminder|keep`、`settings.get|set`。`playground.duplicate` 没有实现（回 `NOT_SUPPORTED`）。依赖别的 issue 的三处经 `SupervisorExtensions.library`（`LibrarySeams`，全部可省）：`runs: RunsView`（#40 实现：`activePlaygrounds`、`isBusy`、`ownerOf`、`stop`、`start`；缺省 `noRuns`）、`templates: TemplateCatalog`（模板各 issue：`seed`、`runnerKind`；缺省创建任何模板都是 `TEMPLATE_NOT_FOUND`）、`ports: PortSlotAllocator`（#36；缺省新项目没有端口）。
+- 模板一组（`template-library.ts` 读、`template-handlers.ts` 方法，#119）也由管理进程自己登记：`template.list|get|save`。模板数据的位置由 `options.templateData`（内置模板、运行器、工具定义；入口里开发时指向仓库的 `templates/`）和状态目录下的 `templates/`（用户模板）决定。内置的标识优先：同标识的用户模板在列表里 `valid` 为 `false`，`get` 取内置的，另存同标识报 `NAME_EXISTS`。`template.get` 只认标识，不接受路径。`template.save` 的入参 `as` 在登记表里只要求非空，写法由处理函数按 `templateIdSchema` 校验，不合法回 `NAME_INVALID`（`kind: "template"`），而不是校验先失败的 `USAGE`；别的入参照常校验。另存排队（一个互斥量），同一标识并发另存只有一次成功。
 - 改名与移到废纸篓的顺序（技术设计 §4.3）：名称校验、`BUSY`、重名都过了才开始；`RunsView.stop`（要等到进程树连同运行标记的后代都走了）→ `playground.releaseRequested` 广播 → 等回报最多 3 秒（`release-coordinator.ts`，只等订阅了 `playground` 主题的连接，断开的不等，超时记一行 `release timeout`）→ core 的改名或 `fs.trash` → 改名前在运行的用同一持有者 `RunsView.start`。停止在广播之前；改名失败时不替用户把运行再启动起来。
 - 写共享文件的方法排队（`async-mutex.ts`，资源库一个、设置一个），读-改-写不交错。`settings.json`、`toolchain.json` 的读写在 `settings-store.ts`、`toolchain-store.ts`（`state-file.ts` 是共用的读法）：经 `writeAtomic`，更新版本写的只读不写（`DATA_FROM_NEWER_VERSION`；`toolchain.json` 例外，不读不写也不报错），坏文件改名留存。`core` 抛的 `LibraryError` 在 `toRunyardError` 里原样转成协议错误。
 - 协议没有为找不到文件夹的项目保存模板和运行器：`playground-view.ts` 用最近读到的 `playground.json`，从没读到过时给占位值。
