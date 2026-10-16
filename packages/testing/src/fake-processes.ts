@@ -1,6 +1,14 @@
 import { basename } from "node:path";
 import { PassThrough, Writable } from "node:stream";
-import type { AbsPath, ExitInfo, ManagedProcess, ProcRef, TerminateMode } from "@runyard/platform";
+import type {
+  AbsPath,
+  Env,
+  ExitInfo,
+  ManagedProcess,
+  ProcMarker,
+  ProcRef,
+  TerminateMode,
+} from "@runyard/platform";
 import type { FakeClock, TimerId } from "./fake-clock.ts";
 import type { FakePorts } from "./fake-ports.ts";
 import type { MemoryFs } from "./memory-fs.ts";
@@ -20,6 +28,8 @@ interface Sink {
 interface Proc {
   readonly ref: ProcRef;
   readonly name: string;
+  /** 环境：后代继承父进程的（脱离进程组的也一样），按标记找进程靠它 */
+  readonly env: Env;
   readonly behavior: ProcessBehavior;
   readonly parent: Proc | null;
   readonly detached: boolean;
@@ -118,7 +128,7 @@ export class FakeProcesses {
    * 就是“进程号被复用”：旧的 ProcRef 再也对不上它，terminate 必须什么也不做。
    */
   addForeign(
-    options: { pid?: number; startTime?: number; behavior?: ProcessBehavior } = {},
+    options: { pid?: number; startTime?: number; behavior?: ProcessBehavior; env?: Env } = {},
   ): ProcRef {
     const pid = options.pid ?? this.#allocatePid();
     if (this.#aliveByPid(pid) !== undefined) throw new Error(`pid ${pid} 现在被活着的进程占着`);
@@ -126,6 +136,7 @@ export class FakeProcesses {
       pid,
       startTime: options.startTime,
       name: "foreign",
+      env: options.env ?? {},
       behavior: options.behavior ?? {},
       parent: null,
     });
@@ -166,6 +177,13 @@ export class FakeProcesses {
     return root === undefined ? [] : this.#tree(root).map((proc) => proc.ref.pid);
   }
 
+  /** 环境里带 name=value 的活进程，包括脱离进程组的后代（和真实现一样：读得到环境的才算） */
+  findByMarker(marker: ProcMarker): ProcRef[] {
+    return this.#all
+      .filter((proc) => proc.alive && proc.env[marker.name] === marker.value)
+      .map((proc) => proc.ref);
+  }
+
   identity(pid: number): { startTime: number } | null {
     const found = this.#aliveByPid(pid);
     return found === undefined ? null : { startTime: found.ref.startTime };
@@ -201,6 +219,7 @@ export class FakeProcesses {
     const behavior = typeof source === "function" ? source(spec) : source;
     const proc = this.#create({
       name: basename(spec.argv[0] ?? "fake"),
+      env: spec.env,
       behavior,
       parent: null,
     });
@@ -213,6 +232,7 @@ export class FakeProcesses {
     pid?: number;
     startTime?: number;
     name: string;
+    env: Env;
     behavior: ProcessBehavior;
     parent: Proc | null;
     detached?: boolean;
@@ -227,6 +247,7 @@ export class FakeProcesses {
     const proc: Proc = {
       ref,
       name: init.name,
+      env: init.env,
       behavior: init.behavior,
       parent: init.parent,
       detached: init.detached ?? false,
@@ -282,6 +303,7 @@ export class FakeProcesses {
       at(child.atMs, () => {
         const made = this.#create({
           name: "child",
+          env: proc.env,
           behavior: child.behavior ?? {},
           parent: proc,
           detached: child.detached,

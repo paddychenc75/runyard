@@ -94,6 +94,7 @@ export function createFakePlatform(options: FakePlatformOptions = {}): FakePlatf
     proc: {
       terminate: (ref, o) => processes.terminate(ref, o),
       members: async (ref) => processes.members(ref),
+      findByMarker: async (marker) => processes.findByMarker(marker),
       identity: async (pid) => processes.identity(pid),
     },
     ports: {

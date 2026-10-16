@@ -9,7 +9,7 @@ import type {
   RunState,
   RunyardError,
 } from "@runyard/protocol";
-import { childEnv } from "./child-env.ts";
+import { childEnv, RUN_MARKER_VAR } from "./child-env.ts";
 import { pumpOutput, type RunOutput } from "./run-output.ts";
 import {
   assertTransition,
@@ -24,7 +24,7 @@ import {
   type RunPlan,
   type StartRequest,
 } from "./run-types.ts";
-import { stopProcessTree } from "./stop-process-tree.ts";
+import { PORT_RELEASE_LIMIT_MS, stopProcessTree } from "./stop-process-tree.ts";
 
 /** 对外的一次运行。查询、等待、停止；持有者只是一个可以改的字段，引擎不解释它 */
 export type Run = {
@@ -116,6 +116,7 @@ export class RunSession implements Run {
       state: this.#state,
       ...(this.#reason === undefined ? {} : { reason: this.#reason }),
       owner: this.#owner,
+      ...(this.#slow ? { slow: true } : {}),
       ...(plan?.port === undefined ? {} : { port: plan.port }),
       ...(plan?.url === undefined ? {} : { url: plan.url }),
       ...(plan?.portFallback === undefined ? {} : { portFallback: plan.portFallback }),
@@ -351,13 +352,25 @@ export class RunSession implements Run {
     await this.#preparing;
     const proc = this.#proc;
     if (proc !== undefined && this.#plan !== undefined) {
-      await stopProcessTree(
+      const outcome = await stopProcessTree(
         this.#host.deps.platform,
         this.#host.deps.clock,
         proc.ref,
         this.#plan.stop,
         this.#plan.port,
+        { name: RUN_MARKER_VAR, value: this.runId },
       );
+      // stop 照常返回，但要让客户端知道端口还没空出来（下次启动若仍被占用会按回退规则换端口）
+      if (!outcome.portReleased && this.#plan.port !== undefined) {
+        this.#log({
+          code: "PORT_NOT_RELEASED",
+          params: {
+            port: this.#plan.port,
+            waitedMs: Math.round(outcome.portWaitedMs),
+            limitMs: PORT_RELEASE_LIMIT_MS,
+          },
+        });
+      }
       const info = await proc.exited;
       if (info.exitCode !== null) this.#exitCode = info.exitCode;
       await this.#output?.finish();

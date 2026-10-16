@@ -69,6 +69,14 @@ jobs:
           AUTHOR: ${{ github.event.pull_request.user.login }}
         run: node tooling/ci/check-changelog-edit.ts --range "$BASE_SHA...$HEAD_SHA" --head-ref "$HEAD_REF" --author "$AUTHOR"
 
+      - name: 检查没有悄悄回滚别人刚合并的改动
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: node tooling/ci/check-rollback.ts --base "$BASE_SHA" --head "$HEAD_SHA" --title "$PR_TITLE"
+
       - name: Biome 检查（格式与规则）
         run: pnpm lint
 

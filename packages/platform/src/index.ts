@@ -15,6 +15,7 @@ export type {
   Platform,
   PlatformId,
   PortStatus,
+  ProcMarker,
   ProcRef,
   ShellInfo,
   TerminateMode,

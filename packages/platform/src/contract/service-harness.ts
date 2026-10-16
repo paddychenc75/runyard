@@ -15,6 +15,8 @@ export interface ServiceConfig {
   ignoreInterrupt?: boolean;
   exitOnInterrupt?: boolean;
   exitAfterMs?: number;
+  /** 由父进程脱离进程组起的（自成一组） */
+  detached?: boolean;
   children?: ServiceConfig[];
 }
 
@@ -43,11 +45,12 @@ export async function startTree(
   ledger: ProcessLedger,
   config: ServiceConfig,
   cwd: AbsPath,
+  extraEnv: Record<string, string> = {},
 ): Promise<RunningTree> {
   const proc = platform.exec.spawn({
     argv: [process.execPath, FAKE_SERVICE, JSON.stringify(config)],
     cwd,
-    env: { PATH: process.env.PATH ?? "" },
+    env: { PATH: process.env.PATH ?? "", ...extraEnv },
     stdin: false,
   });
   ledger.add(proc.ref);
