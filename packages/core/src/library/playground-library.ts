@@ -66,9 +66,17 @@ export class PlaygroundLibrary {
     return this.#index.entries().map((entry) => ({ name: basename(entry.path), entry }));
   }
 
-  /** 按 id 或名称找；找不到返回 undefined */
+  /**
+   * 按 id、名称或文件夹的绝对路径找（规格 CLI-COMMANDS-43）；找不到返回 undefined。
+   * 名称里不会有路径分隔符，所以绝对路径和名称不会混淆
+   */
   find(ref: string): LibraryItem | undefined {
-    return this.list().find((item) => item.entry.id === ref || item.name === ref);
+    // 与索引里的写法一致（join 归一化分隔符），去掉结尾的分隔符；不用 isAbsolute/resolve：它们随运行系统变，
+    // 而测试里的假路径在 Windows 上没有盘符
+    const folder = /^(?:[A-Za-z]:)?[\\/]/.test(ref) ? join(ref).replace(/[\\/]+$/, "") : undefined;
+    return this.list().find(
+      (item) => item.entry.id === ref || item.name === ref || item.entry.path === folder,
+    );
   }
 
   /** 要对项目的文件夹做事（运行、移到废纸篓）之前的关卡：找不到文件夹报 FOLDER_MISSING */

@@ -24,7 +24,8 @@ describe("工具检查与安装", () => {
     expect(run.state).toBe("failed");
     expect(run.error()).toMatchObject({
       code: "TOOL_MISSING",
-      params: { tool: "go", required: ">=1.24" },
+      // 带项目名：命令行的提示要写出 runyard run <名称>（规格 CLI-COMMANDS-03）
+      params: { tool: "go", required: ">=1.24", name: h.request().name },
     });
     expect(spawnedArgvs(h).some((line) => line.includes("install"))).toBe(false);
     expect(h.fake.fs.exists(at("package.json"))).toBe(true);
@@ -55,7 +56,7 @@ describe("工具检查与安装", () => {
     await h.advance(100);
     expect(run.error()).toMatchObject({
       code: "TOOL_TOO_OLD",
-      params: { tool: "node", required: ">=24", found: "22.20.0" },
+      params: { tool: "node", required: ">=24", found: "22.20.0", name: h.request().name },
     });
     expect(run.state).toBe("failed");
   });

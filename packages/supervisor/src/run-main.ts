@@ -64,7 +64,11 @@ export async function runSupervisorMain(argv: readonly string[]): Promise<number
           playgroundOf: (runId) => run.engine.get(runId)?.request.playgroundId,
           stateOf: (playgroundId) => run.engine.current(playgroundId)?.state,
         });
-        const run = createRunModule(api, { templateData, observer: logs.observer });
+        const run = createRunModule(api, {
+          templateData,
+          appVersion: args.version,
+          observer: logs.observer,
+        });
         return {
           ...run,
           handlers: { ...run.handlers, ...logs.handlers },

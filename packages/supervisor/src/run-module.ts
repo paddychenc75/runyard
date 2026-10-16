@@ -1,5 +1,6 @@
 import { rm } from "node:fs/promises";
 import {
+  createPortSlotAllocator,
   createReadinessProbe,
   createRunPreparer,
   DEFAULT_PORT_RANGE,
@@ -17,6 +18,7 @@ import {
   type StaticServer,
   ToolchainService,
 } from "@runyard/core";
+import { joinPath, posixRelPath } from "@runyard/platform";
 import type { FailureReason, LogEntry, Owner, RunyardError, Settings } from "@runyard/protocol";
 import { TOOLCHAIN_FILE_VERSION } from "@runyard/protocol";
 import { RunControl, STOP_WAIT_LIMIT_MS } from "./run-control.ts";
@@ -28,6 +30,7 @@ import type { Session } from "./session.ts";
 import { createStaticServer } from "./static-server.ts";
 import type { SupervisorApi } from "./supervisor-api.ts";
 import type { SupervisorExtensions, TemplateDataDirs } from "./supervisor-options.ts";
+import { createTemplateCatalog } from "./template-catalog.ts";
 import { createToolchainStore } from "./toolchain-store.ts";
 
 // 运行编排的装配（#40）：把 core 的运行引擎、脚本重跑、准备阶段接到管理进程上，
@@ -49,7 +52,14 @@ export interface RunObserver {
 }
 
 export interface RunModuleOptions {
-  readonly templateData: Pick<TemplateDataDirs, "runnersDir" | "toolsDir">;
+  /**
+   * 给了内置模板的位置（builtinDir）才接上模板展开和端口槽位（创建项目用）；
+   * 缺省时创建任何模板都是 TEMPLATE_NOT_FOUND，由调用方自己用 `library` 接缝补
+   */
+  readonly templateData: Pick<TemplateDataDirs, "runnersDir" | "toolsDir"> &
+    Partial<Pick<TemplateDataDirs, "builtinDir">>;
+  /** 写进新项目的 template.appVersion */
+  readonly appVersion?: string;
   readonly observer?: RunObserver;
   /** 以下几项缺省是真实实现；测试换成替身 */
   readonly preparer?: RunPreparer;
@@ -183,6 +193,43 @@ export function createRunModule(api: SupervisorApi, options: RunModuleOptions): 
     return run !== undefined && isActiveState(run.state) ? run : undefined;
   };
 
+  // 模板展开与端口槽位（创建项目）。创建时的版本检测尽力而为：检测不到不挡创建
+  const { builtinDir } = options.templateData;
+  const templates =
+    builtinDir === undefined
+      ? undefined
+      : createTemplateCatalog({
+          platform,
+          locations: {
+            builtinDir,
+            userDir: joinPath(platform.paths.stateDir, posixRelPath("templates")),
+            runnersDir: options.templateData.runnersDir,
+            toolsDir: options.templateData.toolsDir,
+          },
+          appVersion: options.appVersion ?? "0.0.0",
+          detectVersions: async (requires) => {
+            try {
+              const { toolchain } = await tools();
+              const checked = await toolchain.check({ requires });
+              return Object.fromEntries(
+                checked.tools.flatMap((tool) =>
+                  tool.version === undefined ? [] : [[tool.tool, tool.version]],
+                ),
+              );
+            } catch {
+              return {};
+            }
+          },
+        });
+  const catalog = templates && {
+    ...templates,
+    // 端口范围是设置里的，每次创建前现读（规格 RUN-PORTS-04）
+    seed: async (request: Parameters<typeof templates.seed>[0]) => {
+      await refreshSettings();
+      return templates.seed(request);
+    },
+  };
+
   const runs: RunsView = {
     activePlaygrounds: () =>
       new Set(
@@ -217,7 +264,18 @@ export function createRunModule(api: SupervisorApi, options: RunModuleOptions): 
       (await tools()).preparer.installHintFor(request, failure),
     handlers: createRunHandlers({ api, control, owners, viewers, mentioned }),
     runCount: () => engine.runningCount(),
-    library: { runs },
+    library: {
+      runs,
+      ...(catalog === undefined
+        ? {}
+        : {
+            templates: catalog,
+            ports: createPortSlotAllocator({
+              range: () => settings?.ports ?? DEFAULT_PORT_RANGE,
+              runnerKind: catalog.runnerKind,
+            }),
+          }),
+    },
     onShutdown: async () => {
       owners.dispose();
       await engine.stopAll();

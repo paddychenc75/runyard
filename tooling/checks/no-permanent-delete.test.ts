@@ -64,6 +64,19 @@ export const command = { name: "rm" };`;
     expect(check(CORE, `const commands = ["add", "rm", "ls"];\nprogram.command("rm");`)).toBe("");
   });
 
+  it("[LIBRARY-PLAYGROUNDS-24] 以 rm 开头的名字列表不是删除；真正拿来当命令的数组照样报", () => {
+    // 命令声明里的名字列表（issue #108 的误报）
+    expect(check(CORE, `export const names = ["rm"];`)).toBe("");
+    expect(check(CORE, `defineCommand({ name: "rm", aliases: ["rm", "remove"] });`)).toBe("");
+    expect(check(CORE, `const commands = ["rm", "run", "stop"];`)).toBe("");
+    // 真正的删除：带选项、拼进路径、写在 argv 上或直接交给 spawn
+    expect(check(CORE, `const x = ["rm", "-rf", dir];`)).toContain('参数数组以 "rm" 开头');
+    expect(check(CORE, `const x = ["rm", dir];`)).toContain('参数数组以 "rm" 开头');
+    expect(check(CORE, `run({ argv: ["rm"], cwd });`)).toContain('参数数组以 "rm" 开头');
+    expect(check(CORE, `spawn(["rm"]);`)).toContain('参数数组以 "rm" 开头');
+    expect(check(CORE, `platform.exec.spawn({ argv: ["/bin/rm", "x"] });`)).toContain("/bin/rm");
+  });
+
   it("delete-allow 放行同一行或上一行，理由必填", () => {
     expect(check(CORE, `// delete-allow: 管理进程自己的 pid 文件\nunlinkSync(p);`)).toBe("");
     expect(
