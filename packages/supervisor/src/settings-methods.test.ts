@@ -1,5 +1,5 @@
-import { dirname, join } from "node:path";
-import { absPath, absPath } from "@runyard/platform";
+import { dirname } from "node:path";
+import { absPath } from "@runyard/platform";
 import { afterEach, describe, expect, it } from "vitest";
 import { LibraryWorld } from "./library-harness.test.ts";
 
