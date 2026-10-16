@@ -77,6 +77,9 @@ importers:
       '@runyard/protocol':
         specifier: workspace:*
         version: link:../../packages/protocol
+      '@runyard/tokens':
+        specifier: workspace:*
+        version: link:../../packages/tokens
     devDependencies:
       '@types/node':
         specifier: 'catalog:'

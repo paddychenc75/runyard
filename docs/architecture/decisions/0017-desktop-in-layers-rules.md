@@ -12,7 +12,7 @@
 
 ## 决定
 
-1. `layers.json` 登记 `@runyard/desktop`（路径 `apps/desktop`），允许导入 `@runyard/protocol`、`@runyard/platform`、`@runyard/client`、`@runyard/i18n`，即 §3.2 表中 desktop：main 一行去掉尚未存在的 `tokens`；`tokens` 包建好后再加，同样需要改 `layers.json`。
+1. `layers.json` 登记 `@runyard/desktop`（路径 `apps/desktop`），允许导入 `@runyard/protocol`、`@runyard/platform`、`@runyard/client`、`@runyard/i18n`，即 §3.2 表中 desktop：main 一行。`@runyard/tokens` 随 `tokens` 包合并（#162）一并加入，只为窗口底色。
 2. `layers` 检查的范围从 `packages/` 扩到 `apps/`：应用的 `package.json` 依赖必须与 `layers.json` 一致，类型引用同理。
 3. 应用内部的细分（main、preload、renderer 各自能导入什么）不进 `layers.json`，由 Biome 的 `noRestrictedImports`、`noNodejsModules` 和界面单独的 tsconfig 约束（§3.3）。这样 `layers.json` 仍然只描述包与包之间的方向。
 
@@ -20,7 +20,7 @@
 
 - `electron` 仍只许出现在 `apps/desktop`（§3.2 规则 1）；`core`、`supervisor` 不在 desktop 的允许名单里，桌面应用只经 `client` 与管理进程通话。
 - 新增 `apps/` 下的应用（如网站）也要先登记 `layers.json`，否则 `layers` 检查报错。
-- desktop 的允许名单与 §3.2 表有一处暂时的差异（缺 `tokens`）；`tokens` 合并后补上。
+- desktop 的界面一侧（renderer）按 §3.2 还能导入 `tokens`、`ui`，现在 `layers.json` 以整个应用包为单位，等 `ui` 出现时再随它的决策记录扩。
 
 ## 被否的方案
 

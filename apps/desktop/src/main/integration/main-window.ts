@@ -10,10 +10,6 @@ export interface MainWindowOptions {
   backgroundColor: string;
 }
 
-// 暂时的占位：技术设计 §3.2 规定窗口底色取自 @runyard/tokens，而该包（#162）还没合并。
-// 合并后改成从 tokens 读，并随系统的深浅色选值。
-export const PLACEHOLDER_BACKGROUND = { light: "#ffffff", dark: "#1e1e1e" } as const;
-
 export function createMainWindow(options: MainWindowOptions): BrowserWindow {
   const window = new BrowserWindow({
     width: 1200,

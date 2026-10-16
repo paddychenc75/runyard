@@ -1,5 +1,6 @@
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { windowBackground } from "@runyard/tokens";
 import { app, type BrowserWindow, ipcMain, nativeTheme, net, protocol } from "electron";
 import { APP_ORIGIN, APP_SCHEME, resolveAppFile } from "./app-protocol.ts";
 import { connectToSupervisor, unavailableClient } from "./composition-root.ts";
@@ -8,7 +9,7 @@ import {
   closeKeepsAppAlive,
   currentPlatform,
 } from "./integration/bootstrap-info.ts";
-import { createMainWindow, PLACEHOLDER_BACKGROUND } from "./integration/main-window.ts";
+import { createMainWindow } from "./integration/main-window.ts";
 import { claimSingleInstance, focusWindow } from "./integration/single-instance.ts";
 import { resolveUserDataDir } from "./integration/user-data.ts";
 import { keepAliveAfterClose } from "./integration/window-lifecycle.ts";
@@ -52,9 +53,10 @@ async function main(args: DesktopArgs): Promise<void> {
   const window = createMainWindow({
     preloadPath: join(distDir, "preload", "index.cjs"),
     show: !args.smoke,
-    backgroundColor: nativeTheme.shouldUseDarkColors
-      ? PLACEHOLDER_BACKGROUND.dark
-      : PLACEHOLDER_BACKGROUND.light,
+    backgroundColor: (nativeTheme.shouldUseDarkColors
+      ? windowBackground.dark
+      : windowBackground.light
+    ).library,
   });
   mainWindow = window;
   keepAliveAfterClose(app, window, closeKeepsAppAlive(currentPlatform()));

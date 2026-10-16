@@ -59,7 +59,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `@runyard/supervisor` | `@runyard/protocol`、`@runyard/platform`、`@runyard/core`、`@runyard/testing`（只在测试里） | 已有 |
 | `@runyard/client` | `@runyard/protocol`、`@runyard/platform`、`@runyard/testing`（只在测试里） | 已有 |
 | `runyard` | `@runyard/protocol`、`@runyard/platform`、`@runyard/client`、`@runyard/core`、`@runyard/i18n`、`@runyard/testing`（只在测试里） | 已有 |
-| `@runyard/desktop` | `@runyard/protocol`、`@runyard/platform`、`@runyard/client`、`@runyard/i18n` | 已有 |
+| `@runyard/desktop` | `@runyard/protocol`、`@runyard/platform`、`@runyard/client`、`@runyard/i18n`、`@runyard/tokens` | 已有 |
 | `@runyard/testing` | `@runyard/protocol`、`@runyard/platform`、`@runyard/core`（只在测试里） | 已有 |
 <!-- generated:layers 结束 -->
 

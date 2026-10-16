@@ -31,7 +31,7 @@ pnpm --filter @runyard/desktop smoke             # 冒烟自检：窗口不显�
 - 运行的持有者是标签页：`{ kind: "tab", clientId: <每次启动随机生成>, tabId: "tab-<项目 id>" }`，`wait: "none"`，进度靠 `run.state` 等事件。
 - 所有给人看的文字走文案包（`desktop` 组加 `errors.<码>.title`）；代码里不写句子。主进程的 `process.stderr.write` 只写开发者诊断，要有 `// i18n-allow: 理由`。
 - 应用拉起的管理进程是脱离的后台进程（从源码运行时用 Electron 自己当 Node 跑 `packages/supervisor/src/main.ts`）。退出时先 `session.bye`；管理进程空闲后自己退出，试验后要立刻清理时，按进程号加启动时间确认后再结束它。
-- 窗口底色现在是占位常量（`integration/main-window.ts`），等 `@runyard/tokens`（#162）合并后改取设计变量。
+- 窗口底色取自 `@runyard/tokens` 的 `windowBackground`（随系统深浅色），界面画出来之前显示，避免启动白闪；`tokens` 只为这一件事导入（技术设计 §3.2）。
 - 还没有：`runyard://` 链接、标签页恢复、预览截图替换浮层、设置里的语言、关窗口时的提示、打包（asar、fuse、签名）。
 
 ## 子目录地图
