@@ -3,10 +3,30 @@ import { act, cleanup, fireEvent, render, screen, within } from "@testing-librar
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { BootstrapInfo, DesktopBridge } from "../../shared/desktop-bridge.ts";
-import type { LibraryState } from "../../shared/library-state.ts";
+import type { LibraryState, PlaygroundRow } from "../../shared/library-state.ts";
 import { AppFrame } from "./AppFrame.tsx";
 
 afterEach(cleanup);
+
+// 这个文件只关心外壳，列表各列的内容由 LibraryPage.test.tsx 测
+function row(
+  extra: Pick<PlaygroundRow, "id" | "name" | "kind" | "state" | "active">,
+): PlaygroundRow {
+  return {
+    previewing: false,
+    busy: false,
+    note: "",
+    templateId: "html",
+    templateName: null,
+    port: null,
+    autoClean: { enabled: false, days: null },
+    lastUsedAt: 1,
+    lastOpenedAt: null,
+    createdBy: { kind: "user" },
+    createdAt: 1,
+    ...extra,
+  };
+}
 
 const state: LibraryState = {
   locale: "zh-CN",
@@ -15,24 +35,8 @@ const state: LibraryState = {
   tabs: [],
   activeTab: "library",
   playgrounds: [
-    {
-      id: "a",
-      name: "react-counter",
-      kind: "server",
-      state: "ready",
-      active: true,
-      previewing: false,
-      busy: false,
-    },
-    {
-      id: "b",
-      name: "landing-hero",
-      kind: "static",
-      state: "idle",
-      active: false,
-      previewing: false,
-      busy: false,
-    },
+    row({ id: "a", name: "react-counter", kind: "server", state: "ready", active: true }),
+    row({ id: "b", name: "landing-hero", kind: "static", state: "idle", active: false }),
   ],
 };
 
@@ -91,14 +95,14 @@ describe("主窗口外壳", () => {
     expect((screen.getByRole("button", { name: "模板" }) as HTMLButtonElement).disabled).toBe(true);
   });
 
-  it("开发期列表仍能运行、停止、选中预览和新建", async () => {
+  it("开发期的运行、停止按钮和用模板新建仍在", async () => {
     const user = userEvent.setup();
     const { bridge, call } = fakeBridge();
     render(<AppFrame bridge={bridge} locale="zh-CN" theme="system" />);
     await screen.findByText("react-counter");
     await user.click(screen.getByRole("button", { name: "停止" }));
     await user.click(screen.getByRole("button", { name: "运行" }));
-    await user.click(screen.getByRole("button", { name: "react-counter" }));
+    await user.dblClick(screen.getByText("react-counter"));
     await user.click(screen.getByRole("button", { name: /纯 HTML/ }));
     expect(call).toHaveBeenCalledWith("run.stop", "a");
     expect(call).toHaveBeenCalledWith("tab.open", "b");

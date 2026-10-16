@@ -12,3 +12,19 @@
 .root > * {
   -webkit-app-region: no-drag;
 }
+
+.spacer {
+  flex: 1;
+}
+
+.running {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-4);
+  box-sizing: border-box;
+  block-size: var(--size-toolbar);
+  padding-inline: var(--space-7);
+  font-weight: var(--text-control-weight);
+  white-space: nowrap;
+}

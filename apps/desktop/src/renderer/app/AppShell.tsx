@@ -2,8 +2,9 @@ import { useT } from "@runyard/i18n/react";
 import { useEffect } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { LibraryState } from "../../shared/library-state.ts";
+import { runningCount } from "../library-view.ts";
 import styles from "./AppShell.module.css";
-import { DevLibraryPanel } from "./DevLibraryPanel.tsx";
+import { LibraryPage } from "./LibraryPage.tsx";
 import { Sidebar } from "./Sidebar.tsx";
 import { TabContent } from "./TabContent.tsx";
 import { TopBar } from "./TopBar.tsx";
@@ -15,7 +16,7 @@ export interface AppShellProps {
 }
 
 // 主窗口的外壳（设计稿 Main）：悬浮的玻璃侧栏、顶部的标签条，右下是内容区。
-// 内容区现在只放开发期的朴素列表（DevLibraryPanel）和预览的位置；资源库列表、标签页内容替换它们。
+// 资源库标签的内容区是资源库页（整宽的项目表）；项目标签是 TabContent 加右边的预览（原生视图）。
 export function AppShell({ bridge, library }: AppShellProps) {
   const t = useT();
   const title = t("desktop.window.title");
@@ -34,15 +35,18 @@ export function AppShell({ bridge, library }: AppShellProps) {
         modKey={modKey}
         tabs={tabs}
         activeTab={activeTab}
+        running={runningCount(library?.playgrounds ?? [])}
         onSelect={(id) => void bridge.call("tab.select", id)}
       />
       <main className={styles.content}>
         {activeTabRow === undefined ? (
-          <DevLibraryPanel bridge={bridge} library={library} />
+          <LibraryPage bridge={bridge} library={library} />
         ) : (
-          <TabContent bridge={bridge} tab={activeTabRow} />
+          <>
+            <TabContent bridge={bridge} tab={activeTabRow} />
+            <div className={styles.preview} data-preview-region="" />
+          </>
         )}
-        <div className={styles.preview} data-preview-region="" />
       </main>
     </div>
   );

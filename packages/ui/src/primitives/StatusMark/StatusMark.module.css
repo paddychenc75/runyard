@@ -1,0 +1,49 @@
+.root {
+  --mark-color: var(--color-text-tertiary);
+  --mark-fill: transparent;
+  --mark-radius: var(--radius-capsule);
+  --mark-text: var(--color-text-secondary);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-inline-size: 0;
+  font-weight: var(--text-control-weight);
+}
+
+.root[data-status="running"] {
+  --mark-color: var(--color-status-running-mark);
+  --mark-fill: var(--color-status-running-mark);
+  --mark-text: var(--color-status-running-text);
+}
+
+.root[data-status="starting"] {
+  --mark-color: var(--color-status-warning-mark);
+  --mark-fill: var(--color-status-warning-mark);
+  --mark-text: var(--color-status-warning-text);
+}
+
+.root[data-status="crashed"] {
+  --mark-color: var(--color-status-danger-mark);
+  --mark-fill: var(--color-status-danger-mark);
+  --mark-radius: var(--space-1);
+  --mark-text: var(--color-status-danger-text);
+}
+
+.mark {
+  flex: none;
+  box-sizing: border-box;
+  inline-size: var(--size-status-mark);
+  block-size: var(--size-status-mark);
+  border: calc(var(--space-1) * 0.75) solid var(--mark-color);
+  border-radius: var(--mark-radius);
+  background: var(--mark-fill);
+}
+
+.text {
+  min-inline-size: 0;
+  overflow: hidden;
+  color: var(--mark-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -35,11 +35,11 @@ function render(
 }
 
 describe("I18nProvider 和钩子", () => {
-  const Title = () => createElement("h1", null, useT()("desktop.library.title"));
+  const Title = () => createElement("h1", null, useT()("library.tab.title"));
 
   it("useT 按 Provider 的语言取文案；语言一换就是另一句", () => {
-    expect(render("zh-CN", createElement(Title))).toBe("<h1>项目</h1>");
-    expect(render("en", createElement(Title))).toBe("<h1>Playgrounds</h1>");
+    expect(render("zh-CN", createElement(Title))).toBe("<h1>资源库</h1>");
+    expect(render("en", createElement(Title))).toBe("<h1>Library</h1>");
   });
 
   it("没包 Provider 就用钩子，抛开发者诊断", () => {

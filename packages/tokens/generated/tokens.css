@@ -149,6 +149,17 @@
   --size-window-controls: 72px;
   --size-card-gap: 8px;
   --size-dialog-width: 580px;
+  --size-status-mark: 9px;
+  --size-badge: 22px;
+  --size-tile: 22px;
+  --size-tile-lg: 24px;
+  --size-column-icon: 36px;
+  --size-column-sm: 84px;
+  --size-column-md: 96px;
+  --size-column-lg: 110px;
+  --size-column-xl: 132px;
+  --size-column-flex-min: 140px;
+  --size-column-fill-min: 220px;
   --space-1: 2px;
   --space-2: 4px;
   --space-3: 6px;
@@ -163,6 +174,7 @@
   --font-mono: "SF Mono", Menlo, monospace;
   --text-page-title-size: 28px;
   --text-dialog-title-size: 20px;
+  --text-empty-title-size: 24px;
   --text-section-title-size: 16px;
   --text-item-size: 14px;
   --text-body-size: 13px;
@@ -183,6 +195,7 @@
   --text-code-weight: 400;
   --text-page-title-line-height: 34px;
   --text-dialog-title-line-height: 26px;
+  --text-empty-title-line-height: 30px;
   --text-section-title-line-height: 22px;
   --text-item-line-height: 20px;
   --text-body-line-height: 18px;

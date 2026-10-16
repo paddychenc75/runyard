@@ -1,0 +1,23 @@
+.root {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  inline-size: var(--size-tile);
+  block-size: var(--size-tile);
+  border: 1px solid var(--color-line-hairline);
+  border-radius: var(--radius-control);
+  background: var(--color-bg-chip);
+  color: var(--color-text-secondary-strong);
+  font-family: var(--font-mono);
+  font-size: var(--text-micro-size);
+  font-weight: var(--text-micro-weight);
+  line-height: var(--text-micro-line-height);
+}
+
+.root[data-size="lg"] {
+  inline-size: var(--size-tile-lg);
+  block-size: var(--size-tile-lg);
+  background: var(--color-bg-raised);
+}
