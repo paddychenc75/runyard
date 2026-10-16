@@ -3,7 +3,7 @@
 ## 用途
 
 随应用发布的数据文件：模板、运行器、工具定义。它们是数据，不是代码，格式的唯一出处是 `packages/protocol` 里的 zod 定义（规格 `openspec/specs/templates/format`）。
-现状：目录骨架、六份工具定义，内置模板 `html`（运行器 `static`，#50）、`react19`、`react18`、`vue3`（共用运行器 `vite`，#51）和 `hono`（运行器 `hono`，#53）已有；其余内置模板和运行器随后续 issue 放进来。`next16`、`nuxt4`、`nuxt3`（#53 的另三个）暂缺，原因见 #53。
+现状：目录骨架、六份工具定义，内置模板 `html`（运行器 `static`，#50）、`react19`、`react18`、`vue3`（共用运行器 `vite`，#51）和脚本类的 `node-ts`、`python`、`go`（运行器 `node-ts`、`python-file`、`go`，#52）和 `hono`（运行器 `hono`，#53）已有；其余内置模板和运行器随后续 issue 放进来。`next16`、`nuxt4`、`nuxt3`（#53 的另三个）暂缺，原因见 #53。
 
 ## 对外暴露什么
 
@@ -17,8 +17,8 @@
 
 ## 子目录地图
 
-- `builtin/<id>/`：内置模板，`template.json` 加 `files/`（现在有 `html`、`react19`、`react18`、`vue3`、`hono`）。文件夹名必须等于模板 `id`。步骤见 `docs/guides/add-template.md`。
-- `runners/<id>/runner.json`：运行器（现在有 `static`：不起进程，页面由管理进程托管，见 `packages/supervisor/AGENTS.md`；`vite`：`node` 直接运行 Vite 的入口文件，不经包管理器；`hono`：`node` 直接运行模板入口 `{entry}`（Node 22.18 起可直接运行 `.ts`），端口走环境变量 `PORT`，`watch.mode` 是 `restart`，预览是请求面板）。文件夹名必须等于运行器 `id`。步骤见 `docs/guides/add-runner.md`。
+- `builtin/<id>/`：内置模板，`template.json` 加 `files/`（现在有 `html`、`react19`、`react18`、`vue3`、`node-ts`、`python`、`go`、`hono`）。文件夹名必须等于模板 `id`。步骤见 `docs/guides/add-template.md`。
+- `runners/<id>/runner.json`：运行器（现在有 `static`：不起进程，页面由管理进程托管，见 `packages/supervisor/AGENTS.md`；`vite`：`node` 直接运行 Vite 的入口文件，不经包管理器；`node-ts`、`python-file`、`go`：脚本，`oneshot`，见下面“脚本类模板”；`hono`：`node` 直接运行模板入口 `{entry}`（Node 22.18 起可直接运行 `.ts`），端口走环境变量 `PORT`，`watch.mode` 是 `restart`，预览是请求面板）。文件夹名必须等于运行器 `id`。步骤见 `docs/guides/add-runner.md`。
 - `tools/<tool>.json`：工具定义，node、npm、pnpm、python、uv、go。文件名必须等于 `id`；`core` 的 `parseToolDefinitions` 读成工具链检测的 `definitions`。安装命令和官网链接只展示，应用从不执行；各系统分开放在 `install.<系统>` 下，第一版只有 `darwin`。
 - `schema/template.schema.json`、`runner.schema.json`、`tool.schema.json`：**由 `pnpm generate` 从 zod 生成，不要手改**；`generated-fresh` 检查会拦住过期的。
 
@@ -33,6 +33,14 @@
 - `setup.errors` 的特征串对着真实输出校对过（pnpm 11.28.0、npm 11.20.0，2026-10-16）。不可达注册表和离线时 pnpm 的真实输出是 `ERR_PNPM_META_FETCH_FAIL`、`ERR_PNPM_NO_OFFLINE_META`（没有出现 `ENOTFOUND`），所以它们和 `ECONNREFUSED`、`ECONNRESET` 一起归 `DEPS_OFFLINE`；`VCRUNTIME140` 一条是 Windows 上的字样，macOS 上无法核对，留给做 Windows 时。
 - 这些模板自带的依赖不进仓库工作区，仓库里不安装它们。真实安装加启动的冒烟要联网，用 `pnpm template:smoke`，不在 `pnpm test` 里（模板 CI 接入是 #54）。
 
+## 脚本类模板（node-ts、python、go）
+
+- 三个运行器都是 `oneshot`，带 `check`（保存后先检查，不通过就不运行、标 `stale`，见规格 run/scripts）、`run.stdin: true`、`watch.mode: rerun`。模板没有第三方依赖，所以没有 `package.json`、锁文件，也不调用 uv（`dependencies.md` 里没有它们的行）。
+- 检查命令：`node-ts` 用 `stripTypeScriptTypes`（含 `enum` 报 `ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX`，语法错报 `ERR_INVALID_TYPESCRIPT_SYNTAX`），不用 `node --check`；`python-file` 用 `ast.parse`；`go` 用 `gofmt -e -l`（语法错退出码 2，写法不规范但语法正确的文件退出 0 并列出文件名，算通过）。`gofmt` 不是工具定义里的工具，由 `resolveExecutable` 按登录环境的 `PATH` 找（它和 `go` 同在一个 `bin/`）。
+- Go：`stop.mode` 是 `interrupt`；`GOTMPDIR` 由 `core` 的准备阶段为每次运行单独设置并在停止后删除，`GOTOOLCHAIN=local` 由平台层的运行环境默认值给。模板带 `go.mod`（`go 1.26`，与 `requires` 下限一致）。
+- Python：`PYTHONUTF8=1`、`PYTHONUNBUFFERED=1` 由管理进程给所有运行加，运行器里只写 `PYTHONDONTWRITEBYTECODE=1`；Node 的 `.ts` 在 22.18 以下不能直接运行，所以模板的 `requires` 下限是 22.18，`TOOL_TOO_OLD` 在运行前报。
+- 真实工具的冒烟：`pnpm template:smoke node-ts|python|go`（不联网，用本机的 node、python3、go；不在 `pnpm test` 里，因为 CI 机器不保证有够新的 python 和 go，接入是 #54）。它用真实的平台层、`core` 的运行引擎和 `ScriptRuns` 走：运行、语法错误（不运行、旧输出还在、`stale`）、改正后恢复、标准输入（不补换行）、运行中停止；Python 另验中文输出和没有 `__pycache__`，Go 另验不规范格式、`go.mod` 要求更新的 Go 时不下载工具链、停止后系统临时目录和 `GOTMPDIR` 里没有 `go-build*`。
+
 ## Hono 模板（hono）
 
 - 监听地址写在模板自己的代码里（`hostname: "127.0.0.1"`，技术设计 §7.2 之后的模板说明）；运行器命令里没有地址参数，端口由管理进程放进环境变量 `PORT`。冒烟会用 `lsof` 核对监听地址，改成 `0.0.0.0` 就会失败。
@@ -42,4 +50,4 @@
 
 ## 测试
 
-往返测试在 `tooling/scripts/json-schema.test.ts`：JSON Schema 与 zod 对同一批样例的结论必须一致。运行 `pnpm test --filter @runyard/tooling`。工具定义和仓库数据的测试在 `tooling/scripts/template-data.test.ts`，lint 规则的测试在 `packages/core/src/templates/`。`vite` 运行器用真实的 `runner.json` 和 `react19` 的 `template.json` 跑准备阶段的测试在 `packages/core/src/prepare/vite-runner.test.ts`，`hono` 的在同目录的 `hono-runner.test.ts`。
+往返测试在 `tooling/scripts/json-schema.test.ts`：JSON Schema 与 zod 对同一批样例的结论必须一致。运行 `pnpm test --filter @runyard/tooling`。工具定义和仓库数据的测试在 `tooling/scripts/template-data.test.ts`，lint 规则的测试在 `packages/core/src/templates/`。`vite` 运行器用真实的 `runner.json` 和 `react19` 的 `template.json` 跑准备阶段的测试在 `packages/core/src/prepare/vite-runner.test.ts`，`hono` 的在同目录的 `hono-runner.test.ts`。三个脚本运行器同样用真实数据在假平台上跑准备、检查和重跑：`packages/core/src/scripts/script-templates.test.ts`；`node-ts` 的检查命令对着真实的 Node 跑：`tooling/scripts/script-runners.test.ts`。

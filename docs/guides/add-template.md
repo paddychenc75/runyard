@@ -24,6 +24,10 @@
 
 `pnpm template:smoke <模板标识>`（需要网络，不在 `pnpm test` 里）：真的安装、类型检查、构建（Vite 类）、启动、核对只监听 `127.0.0.1`、热更新或重启（`watch` 为 `restart` 的运行器）、停止、核对没有残留进程。服务端口走环境变量 `PORT` 的模板（`hono`），脚本也用 `PORT` 起它。声明范围的下限和上限各跑一次：`--node <那个版本的 node 绝对路径>`，并让对应版本的 pnpm 排在 `PATH` 前面；用 npm 的回退路径加 `--pm npm`。
 
+## 冒烟（脚本类模板）
+
+`pnpm template:smoke <模板标识>`（`node-ts`、`python`、`go`，不联网）：用本机真实的工具走一遍运行、语法错误、改正、标准输入和停止。新的脚本类模板在 `tooling/scripts/template-smoke-script.ts` 的 `programs` 里加它自己的几份源码。
+
 ## 验证
 
 运行 `pnpm template:lint`：每个内置模板输出一行 `LintResult` JSON，有问题时退出码 2。同一项也在 `pnpm check` 里。

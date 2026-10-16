@@ -5,6 +5,7 @@ import { createServer, request } from "node:http";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { validateRunner, validateTemplate } from "../../packages/protocol/src/index.ts";
+import { smokeScript } from "./template-smoke-script.ts";
 
 // 内置模板的冒烟：把模板复制到系统临时目录，按运行器 json 真的安装依赖、启动、等 HTTP 响应、
 // 确认只监听 127.0.0.1、改一个源文件（框架自己热更新的看进程不重启；watch 为 restart 的服务
@@ -13,6 +14,7 @@ import { validateRunner, validateTemplate } from "../../packages/protocol/src/in
 // 手动运行：pnpm template:smoke <模板标识> [--node <node 的绝对路径>] [--pm pnpm|npm]
 // 在声明范围的下限和上限版本各跑一次时，用 --node 指向那个版本的 node，并让对应的 pnpm 排在 PATH 前面
 // （docs/guides/add-template.md）。CI 里的接入是模板 CI 的事（issue #54）。
+// 脚本类模板（运行器 oneshot）走 template-smoke-script.ts，不需要网络。
 // 这里只服务本仓库自己的模板冒烟，不是应用里的运行流程：应用的运行走 core 的运行引擎。
 
 const repoRoot = join(import.meta.dirname, "..", "..");
@@ -169,6 +171,7 @@ async function main(): Promise<void> {
       ),
     ),
   );
+  if (runner.value?.kind === "oneshot") return smokeScript(options.id);
   if (
     runner.value?.kind !== "server" ||
     runner.value.setup === undefined ||
