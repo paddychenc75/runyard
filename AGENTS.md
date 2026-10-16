@@ -46,7 +46,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 
 ## 包依赖规则
 
-“可以导入”之外的一律不行。这张表由 `pnpm generate` 从 `tooling/checks/layers.json` 生成，不要手改；要改规则，改 `layers.json` 并写决策记录（先问）。
+“可以导入”之外的一律不行。这张表由 `pnpm generate` 从 `tooling/checks/layers.json` 生成，不要手改；要改规则，改 `layers.json` 并写决策记录（先问）。`layers` 检查只读各包的 `package.json` 和 `tsconfig.json`（依赖声明和 project references），不扫描源码里的 `import`。源码里导入了没有声明的包，由 `tsc -b` 拦住（类型检查报错）；所以别单凭 `layers` 通过就认为导入方向没问题，两个都要绿（`pnpm verify` 两个都跑）。
 
 <!-- generated:layers 开始（由 pnpm generate 生成，不要手改） -->
 | 包 | 可以导入 | 现状 |

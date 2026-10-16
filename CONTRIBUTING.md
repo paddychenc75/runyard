@@ -54,6 +54,8 @@ node tooling/ci/check-title.ts --title "feat(core): 增加运行状态机"
 node tooling/ci/check-title.ts --range origin/main..HEAD
 ```
 
+CI 还会查 PR 有没有把别人最近合并的改动整个文件改回去（`tooling/ci/check-rollback.ts`：同一个提交被撤销至少 3 个文件才报；标题 type 是 `revert` 的 PR 不查）。本地：`node tooling/ci/check-rollback.ts --base origin/main --head HEAD --title "<标题>"`。被报时说明分支里有过期的文件，用 `git merge origin/main` 或 `git rebase origin/main` 逐处解决冲突，不要整个文件取一边。
+
 ## 更新日志和发版
 
 `CHANGELOG.md` 由 release-please 根据 `main` 上的提交自动生成，**不要手改**（CI 会拒绝除发版 PR 以外改它的 PR）。全仓库一个版本号，1.0 之前从 0.1.0 起；`feat` 升修订号，破坏性改动升次版本号。完整手册在 `docs/guides/release.md`，决定的理由在决策记录 0015。

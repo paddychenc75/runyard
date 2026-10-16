@@ -25,7 +25,7 @@ packages/platform/src/contract.test.ts   同一组契约测试，对每个已有
 | `paths` | `home` `stateDir` `defaultLibrary`；`validateName(name)`；`checkLength(p)`（`ok` `near-limit` `too-long`）；`maxPathLength`（上限，字节）；是否在网盘同步目录下；是否在桌面、文档、下载里（macOS，选资源库位置时警告） | 路径很宽；socket 路径超 104 字节报错 | 默认 260 字符上限，保守取 248 判断；保留设备名。名称校验**所有系统一致**：保留名和末尾的点、空格都拒绝 | 同 macOS，socket 上限 108 |
 | `env` | `load({ refresh?, cwd? })` 返回 `{ env, source, ms }`，失败时多 `reason`（`timeout` 或 `failed`，就是 `ENV_UNRESOLVED` 的参数），旧值或回退值多 `refreshing`（后台刷新完成时兑现的承诺，core 靠它发 `toolchain.changed`）；`runDefaults()`（关闭 uv 和 Go 的自动下载） | 向登录 shell 要环境，登录加交互，`env -0`，10 秒硬超时，缓存与后台刷新，见 0009 | 进程本来就继承完整环境；“重新检测”时从注册表重读，不要求重启 | 同 macOS |
 | `exec` | `which(name, env, cwd)`；`spawn({ argv, cwd, env, stdin })` 返回 `ManagedProcess`；`spawnDetached(argv, opts)` | 直接启动；子进程环境去掉 `ELECTRON_RUN_AS_NODE` | `.cmd` 垫片包一层 `cmd.exe` 并按两层规则转义；一律 `windowsHide`；`spawnDetached` 默认普通方式，发现启动者在“关闭即杀”的 Job 里时自己改经 WMI（0005）；这是实现内部的选择，接口没有选项 | 同 macOS |
-| `proc` | `terminate(p, { mode, graceMs })`；`members(p)`（测试断言无残留）；`identity(pid)` 返回启动时间 | 进程组整组发信号，见 0006 | 核对 pid 和创建时间，再 `taskkill /T /F`，见 0006；**结束任何进程之前必须核对两者** | 同 macOS |
+| `proc` | `terminate(p, { mode, graceMs })`；`members(p)`（测试断言无残留）；`findByMarker({ name, value })` 找环境里带该标记的进程（含脱离进程组的）；`identity(pid)` 返回启动时间 | 进程组整组发信号，见 0006；`findByMarker` 读 `ps eww` 的输出，Apple 自带的受保护程序读不到环境 | 核对 pid 和创建时间，再 `taskkill /T /F`，见 0006；**结束任何进程之前必须核对两者**；Windows 读不到别的进程的环境，`findByMarker` 要另想办法（0006 证据） | 同 macOS，`findByMarker` 读 `/proc/<pid>/environ`，精确 |
 | `ports` | `isFree(port)` 返回 `free` `in-use` `reserved`；`occupant(port)`；`connections(port)`；`loopbackOnly(port)` | 只试 `127.0.0.1` 和 `::1`，再看连接表（macOS 上别的程序监听 `0.0.0.0` 时 `127.0.0.1` 仍绑得上，实测）；连接表和占用者靠 `netstat -anv -p tcp`（不用 lsof），查不到占用者返回 `null` | 绑定报无权限返回 `reserved`；占用者靠 `netstat`（推） | 同 macOS |
 | `fs` | `readText`、`listDirs`、`exists`、`makeDir`、`writeFile`、`renameFile`（资源库读写文件的出口，#37 的存储接缝并入这里）；`moveDir(from, to)`；`trash(dir, { regenerable? })`；`writeAtomic(file, data, { private? })` | `trash` 优先 `/usr/bin/trash`，否则占位再改名，见 0010；不用 `osascript` | `trash` 用随包小工具加预检，依赖目录（`regenerable`）直接删、其余进回收站，放不进就失败、绝不永久删除；`moveDir` 失败码 `EBUSY` `EPERM` `EACCES` 归为 `PATH_LOCKED` | `trash` 抛 `NOT_SUPPORTED` |
 | `watch` | `watch(root, opts, cb)`，返回可释放的句柄；`opts` 有 `ignore`、`depth` | chokidar 5（纯 JS） | `dispose` 后句柄必须已释放，否则改名删除会被占用 | 同 macOS |
@@ -60,7 +60,7 @@ M1 必须实现的成员：除 `desktop`、`cli.installShim` 以外的全部（�
 - 启动时间怎么读（不用原生模块）：macOS 用 `ps -o lstart=`（`TZ=UTC`、`LC_ALL=C`），单个进程约 3 毫秒，整张进程表 `ps -A` 约 20 毫秒（约一千个进程），精度是秒；Linux 读 `/proc/<pid>/stat` 第 22 项，不起子进程，精度 10 毫秒，起点是开机时刻。所以 `ProcRef.startTime` 只能比较相等或先后，不是墙上时间。
 - `exec.spawn` 同步返回 `ref`，所以起进程后同步读一次启动时间（macOS 约 3 毫秒的阻塞）。读不到说明进程已经退出，用 0 占位。
 - `proc.terminate`：整组发信号，每 10 毫秒看一次组空了没有，`graceMs` 用完再整组强制结束（发之前重新核对身份），强制结束后最多再等 5 秒，组还不空就抛 `INTERNAL`。根进程先退出、后代还在时仍然整组停止（组号不会在组还有成员时被复用；另要求组员的启动时间不早于根进程）。
-- 不在平台层的：端口重绑复查（要知道端口，属于运行引擎）；脱离进程组的后代（Next 的遥测进程、`setsid` 的孙进程）靠运行标记全机查找；`GOTMPDIR` 的设置与删除。接口里还没有“按运行标记找进程”这一项，做的时候再加。
+- 不在平台层的：端口重绑复查（要知道端口，属于运行引擎）；`GOTMPDIR` 的设置与删除。脱离进程组的后代（Next 的遥测进程、`setsid` 的孙进程）靠运行标记全机查找：接口是 `proc.findByMarker`，运行引擎在停止路径上用它（规格 RUN-LIFECYCLE-20）；怎么读别的进程的环境、准确度和代价见决策记录 0006 的证据文件“按运行标记找进程”一节。
 
 ## 未定
 

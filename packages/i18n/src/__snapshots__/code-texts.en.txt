@@ -136,6 +136,8 @@ notice.IDLE_STOPPED (minutes=30): Stopped automatically after being idle for 30 
 notice.PACKAGE_MANAGER_FALLBACK (wanted=pnpm, used=npm): pnpm was not found, so npm is used instead.
 notice.PATH_NEAR_LIMIT (length=1, limit=1024): The playground path is 1 character long, close to the system limit of 1,024. Creation continues. A shorter name or a shorter library location avoids the problem.
 notice.PATH_NEAR_LIMIT (length=1010, limit=1024): The playground path is 1,010 characters long, close to the system limit of 1,024. Creation continues. A shorter name or a shorter library location avoids the problem.
+notice.PORT_NOT_RELEASED (port=7111, waitedMs=3000, limitMs=3000): Port 7111 was not released within 3,000 milliseconds of the stop (waited 3,000 milliseconds). If it is still in use at the next start, the playground uses another port for that run; its registered port does not change.
+notice.PORT_NOT_RELEASED (port=7111, waitedMs=1, limitMs=1): Port 7111 was not released within 1 millisecond of the stop (waited 1 millisecond). If it is still in use at the next start, the playground uses another port for that run; its registered port does not change.
 notice.TOOL_VERSION_UNTESTED (tool=node, found=28.0.0, required=>=22.18 <26): node 28.0.0 is newer than the range this template was tested with (>=22.18 <26). It runs as usual but is untested.
 runState.checking: Checking tools
 runState.installing: Installing dependencies

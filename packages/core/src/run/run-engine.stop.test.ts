@@ -102,11 +102,25 @@ describe("停止整棵进程树", () => {
     expect(h.fake.processes.alive()).toEqual([]);
   });
 
-  it("端口 3 秒内仍没空出来：stop 照样返回（不无限等）", async () => {
+  it("端口 3 秒内仍没空出来：stop 照样返回（不无限等），并留下 PORT_NOT_RELEASED 提示", async () => {
     const { h, run } = await readyServer({}, { portReleaseDelayMs: 10_000 });
     const stopped = run.stop();
     await h.fake.clock.advance(3000);
     expect((await stopped).state).toBe("stopped");
+    const notices = h.logs.flatMap((l) => (l.entry.kind === "system" ? [l.entry.notice] : []));
+    expect(notices).toContainEqual({
+      code: "PORT_NOT_RELEASED",
+      params: { port: 7100, waitedMs: 3000, limitMs: 3000 },
+    });
+  });
+
+  it("端口按时空出来：没有 PORT_NOT_RELEASED 提示", async () => {
+    const { h, run } = await readyServer({}, { portReleaseDelayMs: 1000 });
+    const stopped = run.stop();
+    await h.fake.clock.advance(1000);
+    await stopped;
+    const codes = h.logs.flatMap((l) => (l.entry.kind === "system" ? [l.entry.notice.code] : []));
+    expect(codes).not.toContain("PORT_NOT_RELEASED");
   });
 
   it("停止中再停止返回同一个结果；对已结束的运行停止原样返回", async () => {
@@ -160,6 +174,62 @@ describe("停止整棵进程树", () => {
     await run.stop();
     const codes = h.logs.flatMap((l) => (l.entry.kind === "system" ? [l.entry.notice.code] : []));
     expect(codes).toEqual(["STOPPED_BY_USER"]);
+  });
+});
+
+describe("脱离进程组的后代", () => {
+  // Next 退出时另起的遥测进程：脱离进程组、继承运行标记、最长活 0.95 秒（决策记录 0006）
+  const telemetry = (lifeMs?: number) => ({
+    children: [
+      {
+        atMs: 0,
+        detached: true,
+        ...(lifeMs === undefined ? {} : { behavior: { exit: { afterMs: lifeMs, code: 0 } } }),
+      },
+    ],
+  });
+
+  it("[RUN-LIFECYCLE-20] 停止后带标记的遥测进程还活 0.95 秒：stop 等它自己走掉才返回，没有强制结束它", async () => {
+    // readyServer 已推进 300 毫秒，所以从启动算起 1250 毫秒退出，就是停止之后 950 毫秒
+    const { h, run } = await readyServer({}, telemetry(1250));
+    const terminate = vi.spyOn(h.fake.platform.proc, "terminate");
+    let returned = false;
+    const stopped = run.stop().then((snapshot) => {
+      returned = true;
+      return snapshot;
+    });
+    await h.fake.clock.advance(900);
+    expect(returned).toBe(false);
+    expect(h.fake.processes.alive()).toHaveLength(1);
+    await h.fake.clock.advance(100);
+    expect((await stopped).state).toBe("stopped");
+    expect(h.fake.processes.alive()).toEqual([]);
+    expect(terminate).toHaveBeenCalledTimes(1); // 只有对整棵树的那一次
+  });
+
+  it("[RUN-LIFECYCLE-20] 带标记的进程 2 秒后还在：核对身份后结束，stop 在 2 秒时返回", async () => {
+    const { h, run } = await readyServer({}, telemetry());
+    const [stray] = h.fake.processes.alive().filter((ref) => ref.pid !== run.snapshot().pid);
+    expect(stray).toBeDefined();
+    const terminate = vi.spyOn(h.fake.platform.proc, "terminate");
+    let returned = false;
+    const stopped = run.stop().then((snapshot) => {
+      returned = true;
+      return snapshot;
+    });
+    await h.fake.clock.advance(1900);
+    expect(returned).toBe(false);
+    await h.fake.clock.advance(100);
+    expect((await stopped).state).toBe("stopped");
+    expect(h.fake.processes.alive()).toEqual([]);
+    expect(terminate).toHaveBeenCalledWith(stray, { mode: "kill", graceMs: 0 });
+  });
+
+  it("[RUN-LIFECYCLE-20] 别的运行的标记不碰：只等本次运行的", async () => {
+    const { h, run } = await readyServer();
+    const other = h.fake.processes.addForeign({ env: { RUNYARD_RUN_ID: "run-99" } });
+    await run.stop();
+    expect(h.fake.processes.isAlive(other)).toBe(true);
   });
 });
 

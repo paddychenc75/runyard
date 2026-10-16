@@ -19,6 +19,8 @@ interface Config {
   exitAfterMs?: number;
   /** 后代，和本进程同一个进程组，共用标准输出 */
   children?: Config[];
+  /** 为 true 时，这个进程是由父进程“脱离进程组”起的（自成一组），模拟 Next 退出时另起的遥测进程 */
+  detached?: boolean;
 }
 
 const config: Config = JSON.parse(process.argv[2] ?? "{}");
@@ -30,7 +32,10 @@ if (config.ignoreInterrupt) process.on("SIGINT", ignore);
 if (config.exitOnInterrupt) process.on("SIGINT", () => process.exit(0));
 
 for (const child of config.children ?? []) {
-  spawn(process.execPath, [self, JSON.stringify(child)], { stdio: "inherit" });
+  spawn(process.execPath, [self, JSON.stringify(child)], {
+    stdio: "inherit",
+    detached: child.detached === true,
+  });
 }
 
 console.log(`up ${process.pid}`);

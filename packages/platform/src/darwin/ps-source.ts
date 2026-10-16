@@ -2,7 +2,7 @@ import { execFile, execFileSync } from "node:child_process";
 import { promisify } from "node:util";
 import { platformError } from "../platform-error.ts";
 import type { ProcessSource } from "../posix/process-source.ts";
-import { parseLstart, parsePsList } from "../posix/ps-parse.ts";
+import { parseLstart, parsePsList, parsePsWithEnv } from "../posix/ps-parse.ts";
 
 // macOS 没有 /proc，不用原生模块就读不到别的进程的启动时间，只能问 ps。
 // 代价（负责人的 Mac 上量的）：单个进程 `ps -o lstart= -p` 约 3 毫秒；整张表 `ps -A` 约 20 毫秒（一千个进程）。
@@ -24,6 +24,22 @@ export function createPsSource(): ProcessSource {
         return parsePsList(stdout);
       } catch (error) {
         throw platformError("INTERNAL", {}, `ps -A failed: ${String(error)}`);
+      }
+    },
+    // 读别的进程的环境不用原生模块：`ps eww` 把环境接在命令后面（内核的 KERN_PROCARGS2，同一用户可读）。
+    // 实测（macOS 27，一千个进程）：整张表 60 到 120 毫秒，输出 1 到 3 MB；环境里有 900 KB 的大变量时
+    // 标记在前在后都不被截断。限制：Apple 自带的受保护程序（/bin/sleep、/usr/bin/env、/usr/bin/perl 等）
+    // 的环境读不到，ps 只给命令；node、Go 编译的程序、Homebrew 的程序等都读得到
+    async findByEnv(name, value) {
+      try {
+        const { stdout } = await execFileAsync(
+          PS,
+          ["eww", "-U", String(process.getuid?.() ?? 0), "-o", "pid=,pgid=,lstart=,command="],
+          { env: psEnv(), maxBuffer: 256 * 1024 * 1024 },
+        );
+        return parsePsWithEnv(stdout, name, value);
+      } catch (error) {
+        throw platformError("INTERNAL", {}, `ps eww failed: ${String(error)}`);
       }
     },
     async startTime(pid) {
