@@ -41,11 +41,11 @@ errors.RUN_NOT_FOUND.hintCli: 运行 runyard status 查看现有的运行。
 errors.TOOL_MISSING.title: 没有找到 go
 errors.TOOL_MISSING.body: 运行这个项目需要 go（版本 >=1.22 <2），但没有在这台电脑上找到它。项目已经创建，代码可以照常编辑。
 errors.TOOL_MISSING.hint: 安装 go 后点“重新检测”，项目就会启动。
-errors.TOOL_MISSING.hintCli: 安装 go（>=1.22 <2）后重新运行这条命令。
+errors.TOOL_MISSING.hintCli: 安装 go（>=1.22 <2），用 runyard doctor 确认后重新运行这条命令。
 errors.TOOL_TOO_OLD.title: node 的版本过低
 errors.TOOL_TOO_OLD.body: 这个项目需要 node >=22.18，当前是 20.11.0。项目已经创建，代码可以照常编辑。
 errors.TOOL_TOO_OLD.hint: 把 node 升级到 >=22.18 后点“重新检测”。
-errors.TOOL_TOO_OLD.hintCli: 把 node 升级到 >=22.18 后重新运行这条命令。
+errors.TOOL_TOO_OLD.hintCli: 把 node 升级到 >=22.18，用 runyard doctor 确认后重新运行这条命令。
 errors.RUNTIME_MISSING.title: python 缺少运行所需的系统组件
 errors.RUNTIME_MISSING.body: python 运行时需要的系统组件在这台电脑上找不到。
 errors.RUNTIME_MISSING.hint: 补上缺少的组件后重新运行。
@@ -77,7 +77,7 @@ errors.READY_TIMEOUT.hintCli: 运行 runyard status next16-1 看它是否就绪�
 errors.NAME_EXISTS.title: 项目名称 pricing-table 已被占用
 errors.NAME_EXISTS.body: 资源库里已经有同名的项目，现有项目没有改动。
 errors.NAME_EXISTS.hint: 换一个名称。
-errors.NAME_EXISTS.hintCli: 换一个名称，重新运行这条命令。
+errors.NAME_EXISTS.hintCli: 用 runyard run pricing-table 运行已有的项目，或换一个名称重新运行这条命令。
 errors.BUSY.title: 项目 react19-3 正忙
 errors.BUSY.body: 它正在安装依赖或启动，现在不能改名，没有做任何改动。
 errors.BUSY.hint: 等它就绪或停止后再试。
@@ -101,7 +101,7 @@ errors.APP_REQUIRED.hintCli: 打开 Runyard 应用后重新运行这条命令。
 errors.SUPERVISOR_UNAVAILABLE.title: 连不上 Runyard 的管理进程
 errors.SUPERVISOR_UNAVAILABLE.body: 没能和后台的管理进程建立可信的连接。
 errors.SUPERVISOR_UNAVAILABLE.hint: 没有发送过任何请求，可以直接重新运行。
-errors.SUPERVISOR_UNAVAILABLE.hintCli: 没有发送过任何请求，可以直接重新运行这条命令。
+errors.SUPERVISOR_UNAVAILABLE.hintCli: 没有发送过任何请求。运行 runyard doctor 查看原因，再重新运行这条命令。
 errors.SUPERVISOR_OUTDATED.title: 后台的管理进程版本较旧
 errors.SUPERVISOR_OUTDATED.body: 正在运行的管理进程比当前使用的 Runyard 旧，换成新版本会停掉 3 个运行。命令没有继续执行。
 errors.SUPERVISOR_OUTDATED.hint: 应用会先告诉你会停掉几个运行，你确认后才会更新。

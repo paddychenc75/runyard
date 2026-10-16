@@ -1,0 +1,44 @@
+{
+  "cli.config.getLang.body": {
+    "lang": "生效的语言，en 或 zh-CN，原样显示",
+    "source": "来源：flag、env、saved 或 default；用 select 选词"
+  },
+  "cli.config.setLang.body": {
+    "lang": "写入的语言，en 或 zh-CN，原样显示"
+  },
+  "cli.error.title.label": {
+    "title": "错误的标题，来自错误码的文案，原样显示"
+  },
+  "cli.help.moreInfo.hint": {
+    "example": "示例命令，原样显示，如 runyard <command> --help"
+  },
+  "cli.lang.unsupported.hint": {
+    "value": "用户给的语言值，原样显示",
+    "source": "值来自哪里：flag、env 或 saved；用 select 选词"
+  },
+  "cli.usage.invalidValue.body": {
+    "option": "选项或设置名",
+    "value": "用户输入的值，原样显示"
+  },
+  "cli.usage.missingArgument.body": {
+    "argument": "缺少的参数名，如 <pg>"
+  },
+  "cli.usage.optionNeedsValue.body": {
+    "option": "选项名，如 --timeout"
+  },
+  "cli.usage.optionTakesNoValue.body": {
+    "option": "选项名，如 --json"
+  },
+  "cli.usage.tooManyArguments.body": {
+    "argument": "多出来的参数，原样显示"
+  },
+  "cli.usage.unknownCommand.body": {
+    "command": "用户输入的命令，原样显示"
+  },
+  "cli.usage.unknownOption.body": {
+    "option": "用户输入的选项，原样显示"
+  },
+  "cli.usage.unknownSetting.body": {
+    "name": "用户输入的设置项，原样显示"
+  }
+}

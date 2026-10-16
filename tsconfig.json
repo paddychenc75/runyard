@@ -8,6 +8,7 @@
     { "path": "packages/core" },
     { "path": "packages/supervisor" },
     { "path": "packages/client" },
+    { "path": "packages/cli" },
     { "path": "packages/testing" }
   ]
 }

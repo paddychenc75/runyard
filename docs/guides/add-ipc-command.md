@@ -16,7 +16,7 @@
 3. **补协议测试。** 在 `methods.test.ts`（或 `events.test.ts`）的样例表里加合法与非法样例，运行 `pnpm generate` 更新 `docs/reference/`。
 4. **写处理函数。** 在 `packages/supervisor` 的 `extend(api)` 返回的 `handlers` 里按方法名登记；参数和返回值的类型由登记表推出，不手写。失败用 `methodFailure(code, params, debug)` 抛出；`debug` 是一句英文，只进日志。参数已经按登记表校验过，不再重复校验；返回值也会被校验，不合就是缺陷。会改共享文件的方法，把 `DATA_FROM_NEWER_VERSION` 放进它的 `errors`。状态变化用 `api.publish(event, data)` 推送；运行个数变了调 `api.notifyRunsChanged()`。
 5. **写测试。** 管理进程一侧用 `supervisor-harness.test.ts` 的假平台和 `TestClient` 走真的连接：断言成功的出参、每个错误码的 `code` 和 `params`、非法入参得 `USAGE`、多出的未知字段被忽略。每个 `验证：test` 场景的测试标题带编号，如 `[RUN-OWNERSHIP-01]`。
-6. **接客户端。** 在客户端包（`client`）加带类型的调用，类型取自登记表；命令行的命令和文案在命令行包（`cli`）。这两个包建立后，把它们的路径补进这一步。桌面应用的界面进程只能调白名单内的方法，`supervisor.shutdown` 一类不在白名单。
+6. **接客户端。** 在客户端包（`client`）加带类型的调用，类型取自登记表；命令行的命令在 `packages/cli`，做法见 `docs/guides/add-cli-command.md`。桌面应用的界面进程只能调白名单内的方法，`supervisor.shutdown` 一类不在白名单。
 
 ## 验证
 

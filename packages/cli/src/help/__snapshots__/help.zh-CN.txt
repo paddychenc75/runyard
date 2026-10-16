@@ -1,0 +1,357 @@
+$ runyard --help
+runyard - 用本地模板新建、运行和管理项目，每个项目是一个小的代码示例。
+
+用法：
+  runyard <command> [options]
+
+命令：
+  new <template> [name]  用模板新建项目，可以接着运行
+  run <pg>               运行项目，等到就绪或退出
+  stop [pg]              停止项目的运行
+  status [pg]            列出项目和运行状态
+  logs <pg>              读取项目的日志
+  rm <pg>                停止项目并移到废纸篓
+  doctor                 检查运行环境并输出诊断信息
+  template <command>     查看、保存、检查和测试模板
+  skill <command>        安装给智能体用的说明
+  config <command>       查看和修改命令行的设置
+
+全局选项：
+  --json           输出一个 JSON 对象，不受语言影响
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明
+
+运行 runyard <command> --help 查看某个命令的说明。
+
+$ runyard template --help
+runyard template - 查看、保存、检查和测试模板
+
+用法：
+  runyard template <command> [options]
+
+命令：
+  list             列出模板
+  show <template>  查看一个模板
+  save <pg>        把项目存为模板
+  lint <template>  检查模板的格式
+  test <template>  对模板做冒烟测试
+
+全局选项：
+  --json           输出一个 JSON 对象，不受语言影响
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明
+
+运行 runyard template <command> --help 查看某个命令的说明。
+
+$ runyard skill --help
+runyard skill - 安装给智能体用的说明
+
+用法：
+  runyard skill <command> [options]
+
+命令：
+  install  把说明写到智能体的目录
+
+全局选项：
+  --json           输出一个 JSON 对象，不受语言影响
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明
+
+运行 runyard skill <command> --help 查看某个命令的说明。
+
+$ runyard config --help
+runyard config - 查看和修改命令行的设置
+
+用法：
+  runyard config <command> [options]
+
+命令：
+  get <key>          显示设置的当前值和来源
+  set <key> <value>  修改设置
+
+全局选项：
+  --json           输出一个 JSON 对象，不受语言影响
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明
+
+运行 runyard config <command> --help 查看某个命令的说明。
+
+$ runyard new --help
+runyard new - 用模板新建项目，可以接着运行
+
+用法：
+  runyard new <template> [name] [options]
+
+参数：
+  template  模板标识
+  name      项目名称，不写则按模板标识加序号命名
+
+选项：
+  --run                     创建后立即运行
+  --note <text>             项目的备注
+  --clean-after <Nd>        指定天数后自动清理，如 30d
+  --var <k=v>               替换模板里的变量，可以重复
+  --if-exists <reuse|fail>  名称已存在时的做法，reuse 或 fail
+  --timeout <seconds>       最多等待的秒数
+  --no-wait                 请求被接受后立即返回
+
+全局选项：
+  --json           输出一个 JSON 对象，不受语言影响
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明
+
+$ runyard run --help
+runyard run - 运行项目，等到就绪或退出
+
+用法：
+  runyard run <pg> [options]
+
+参数：
+  pg  项目名称或路径
+
+选项：
+  --timeout <seconds>  最多等待的秒数
+  --no-wait            请求被接受后立即返回
+  --restart            已在运行时先重启
+  --port <n>           只用于这一次的端口
+
+全局选项：
+  --json           输出一个 JSON 对象，不受语言影响
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明
+
+$ runyard stop --help
+runyard stop - 停止项目的运行
+
+用法：
+  runyard stop [pg] [options]
+
+参数：
+  pg  项目名称或路径，不写则列出全部
+
+选项：
+  --all   停止全部运行
+  --mine  只停命令行持有的运行
+
+全局选项：
+  --json           输出一个 JSON 对象，不受语言影响
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明
+
+$ runyard status --help
+runyard status - 列出项目和运行状态
+
+用法：
+  runyard status [pg] [options]
+
+参数：
+  pg  项目名称或路径，不写则列出全部
+
+选项：
+  --running  只列出运行中的项目
+
+全局选项：
+  --json           输出一个 JSON 对象，不受语言影响
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明
+
+$ runyard logs --help
+runyard logs - 读取项目的日志
+
+用法：
+  runyard logs <pg> [options]
+
+参数：
+  pg  项目名称或路径
+
+选项：
+  --since <cursor>  只读这个游标之后的内容
+  --tail <n>        只读最后几行
+  --follow          持续输出新内容直到运行结束
+  --raw             保留颜色码等控制序列
+
+全局选项：
+  --json           输出一个 JSON 对象，不受语言影响
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明
+
+$ runyard rm --help
+runyard rm - 停止项目并移到废纸篓
+
+用法：
+  runyard rm <pg>
+
+参数：
+  pg  项目名称或路径
+
+全局选项：
+  --json           输出一个 JSON 对象，不受语言影响
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明
+
+$ runyard doctor --help
+runyard doctor - 检查运行环境并输出诊断信息
+
+用法：
+  runyard doctor [options]
+
+选项：
+  --template <id>  只检查这个模板所需的环境
+  --bundle         导出诊断包并打印路径
+
+全局选项：
+  --json           输出一个 JSON 对象，不受语言影响
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明
+
+$ runyard template list --help
+runyard template list - 列出模板
+
+用法：
+  runyard template list
+
+全局选项：
+  --json           输出一个 JSON 对象，不受语言影响
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明
+
+$ runyard template show --help
+runyard template show - 查看一个模板
+
+用法：
+  runyard template show <template>
+
+参数：
+  template  模板标识
+
+全局选项：
+  --json           输出一个 JSON 对象，不受语言影响
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明
+
+$ runyard template save --help
+runyard template save - 把项目存为模板
+
+用法：
+  runyard template save <pg>
+
+参数：
+  pg  项目名称或路径
+
+全局选项：
+  --json           输出一个 JSON 对象，不受语言影响
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明
+
+$ runyard template lint --help
+runyard template lint - 检查模板的格式
+
+用法：
+  runyard template lint <template>
+
+参数：
+  template  模板标识或模板文件夹
+
+全局选项：
+  --json           输出一个 JSON 对象，不受语言影响
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明
+
+$ runyard template test --help
+runyard template test - 对模板做冒烟测试
+
+用法：
+  runyard template test <template> [options]
+
+参数：
+  template  模板标识或模板文件夹
+
+选项：
+  --keep-dir                测试后保留临时文件夹
+  --tool-version <version>  用指定的工具版本测试
+
+全局选项：
+  --json           输出一个 JSON 对象，不受语言影响
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明
+
+$ runyard skill install --help
+runyard skill install - 把说明写到智能体的目录
+
+用法：
+  runyard skill install [options]
+
+选项：
+  --target <claude|agents|all>  写到哪里：claude、agents 或 all
+
+全局选项：
+  --json           输出一个 JSON 对象，不受语言影响
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明
+
+$ runyard config get --help
+runyard config get - 显示设置的当前值和来源
+
+用法：
+  runyard config get <key>
+
+参数：
+  key  设置项的名字，目前只有 lang
+
+全局选项：
+  --json           输出一个 JSON 对象，不受语言影响
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明
+
+$ runyard config set --help
+runyard config set - 修改设置
+
+用法：
+  runyard config set <key> <value>
+
+参数：
+  key    设置项的名字，目前只有 lang
+  value  新的值
+
+全局选项：
+  --json           输出一个 JSON 对象，不受语言影响
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明

@@ -1,0 +1,17 @@
+{
+  "extends": "../../tooling/tsconfig/node.json",
+  "compilerOptions": {
+    "outDir": "../../.tsbuild/cli",
+    "tsBuildInfoFile": "../../.tsbuild/cli/tsconfig.tsbuildinfo",
+    "rootDir": ".",
+    "resolveJsonModule": true
+  },
+  "include": ["src/**/*.ts", "package.json"],
+  "references": [
+    { "path": "../protocol" },
+    { "path": "../platform" },
+    { "path": "../i18n" },
+    { "path": "../client" },
+    { "path": "../testing" }
+  ]
+}

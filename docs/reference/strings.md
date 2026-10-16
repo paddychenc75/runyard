@@ -6,6 +6,77 @@
 
 | 键 | 中文 | 英文 | 备注 |
 | --- | --- | --- | --- |
+| cli.arg.key.hint | 设置项的名字，目前只有 lang | Name of the setting; the only one is lang | — |
+| cli.arg.name.hint | 项目名称，不写则按模板标识加序号命名 | Playground name; if omitted, the template id plus a number is used | — |
+| cli.arg.pg.hint | 项目名称或路径 | Playground name or path | — |
+| cli.arg.pgOptional.hint | 项目名称或路径，不写则列出全部 | Playground name or path; if omitted, all are listed | — |
+| cli.arg.template.hint | 模板标识 | Template id | — |
+| cli.arg.templateRef.hint | 模板标识或模板文件夹 | Template id or template folder | — |
+| cli.arg.value.hint | 新的值 | The new value | — |
+| cli.command.config.title | 查看和修改命令行的设置 | Show and change command line settings | — |
+| cli.command.configGet.title | 显示设置的当前值和来源 | Show the current value of a setting and where it comes from | — |
+| cli.command.configSet.title | 修改设置 | Change a setting | — |
+| cli.command.doctor.title | 检查运行环境并输出诊断信息 | Check the environment and print diagnostics | — |
+| cli.command.logs.title | 读取项目的日志 | Read the log of a playground | — |
+| cli.command.new.title | 用模板新建项目，可以接着运行 | Create a playground from a template, optionally run it | — |
+| cli.command.rm.title | 停止项目并移到{term_trash} | Stop a playground and move it to the {term_trash} | — |
+| cli.command.run.title | 运行项目，等到就绪或退出 | Run a playground and wait until it is ready or exits | — |
+| cli.command.skill.title | 安装给智能体用的说明 | Install the instructions for agents | — |
+| cli.command.skillInstall.title | 把说明写到智能体的目录 | Write the instructions to the agent folders | — |
+| cli.command.status.title | 列出项目和运行状态 | List playgrounds and their run state | — |
+| cli.command.stop.title | 停止项目的运行 | Stop the run of a playground | — |
+| cli.command.template.title | 查看、保存、检查和测试模板 | Show, save, lint and test templates | — |
+| cli.command.templateLint.title | 检查模板的格式 | Check the format of a template | — |
+| cli.command.templateList.title | 列出模板 | List templates | — |
+| cli.command.templateSave.title | 把项目存为模板 | Save a playground as a template | — |
+| cli.command.templateShow.title | 查看一个模板 | Show one template | — |
+| cli.command.templateTest.title | 对模板做冒烟测试 | Smoke-test a template | — |
+| cli.config.getLang.body | {lang}（来源：{source, select, flag {--lang} env {RUNYARD_LANG} saved {已保存的设置} other {默认值}}） | {lang} (source: {source, select, flag {--lang} env {RUNYARD_LANG} saved {saved setting} other {default}}) | lang：生效的语言，en 或 zh-CN，原样显示；source：来源：flag、env、saved 或 default；用 select 选词 |
+| cli.config.setLang.body | 语言已设为 {lang}。 | Language set to {lang}. | lang：写入的语言，en 或 zh-CN，原样显示 |
+| cli.error.title.label | 错误：{title} | Error: {title} | title：错误的标题，来自错误码的文案，原样显示 |
+| cli.help.arguments.label | 参数： | Arguments: | — |
+| cli.help.commands.label | 命令： | Commands: | — |
+| cli.help.globalOptions.label | 全局选项： | Global options: | — |
+| cli.help.moreInfo.hint | 运行 {example} 查看某个命令的说明。 | Run {example} for details of one command. | example：示例命令，原样显示，如 runyard <command> --help |
+| cli.help.options.label | 选项： | Options: | — |
+| cli.help.summary.title | 用本地模板新建、运行和管理项目，每个项目是一个小的代码示例。 | Create, run and manage playgrounds, which are small code examples, from local templates. | — |
+| cli.help.usage.label | 用法： | Usage: | — |
+| cli.lang.unsupported.hint | 不支持的语言 {value}（{source, select, flag {来自 --lang} env {来自 RUNYARD_LANG} other {来自已保存的设置}}），改用英文。支持的值：en、zh-CN。 | Unsupported language {value} (from {source, select, flag {--lang} env {RUNYARD_LANG} other {the saved setting}}), using English. Supported values: en, zh-CN. | value：用户给的语言值，原样显示；source：值来自哪里：flag、env 或 saved；用 select 选词 |
+| cli.option.all.hint | 停止全部运行 | Stop all runs | — |
+| cli.option.bundle.hint | 导出诊断包并打印路径 | Export a diagnostics bundle and print its path | — |
+| cli.option.cleanAfter.hint | 指定天数后自动清理，如 30d | Clean up automatically after this many days, such as 30d | — |
+| cli.option.follow.hint | 持续输出新内容直到运行结束 | Keep printing new output until the run ends | — |
+| cli.option.help.hint | 显示说明 | Show help | — |
+| cli.option.ifExists.hint | 名称已存在时的做法，reuse 或 fail | What to do if the name exists: reuse or fail | — |
+| cli.option.json.hint | 输出一个 JSON 对象，不受语言影响 | Print one JSON object; not affected by language | — |
+| cli.option.keepDir.hint | 测试后保留临时文件夹 | Keep the temporary folder after the test | — |
+| cli.option.lang.hint | 只对这一条命令使用的语言，en 或 zh-CN | Language for this command only: en or zh-CN | — |
+| cli.option.mine.hint | 只停命令行持有的运行 | Stop only the runs held by the command line | — |
+| cli.option.noWait.hint | 请求被接受后立即返回 | Return as soon as the request is accepted | — |
+| cli.option.note.hint | 项目的备注 | A note for the playground | — |
+| cli.option.port.hint | 只用于这一次的端口 | Port to use for this run only | — |
+| cli.option.quiet.hint | 不输出进度和提示，结果和错误照常输出 | Do not print progress or notices; results and errors are still printed | — |
+| cli.option.raw.hint | 保留颜色码等控制序列 | Keep control sequences such as color codes | — |
+| cli.option.restart.hint | 已在运行时先重启 | Restart first if it is already running | — |
+| cli.option.root.hint | 用这个目录代替主目录 | Use this folder in place of the home folder | — |
+| cli.option.run.hint | 创建后立即运行 | Run it right after creating | — |
+| cli.option.running.hint | 只列出运行中的项目 | List only playgrounds that are running | — |
+| cli.option.since.hint | 只读这个游标之后的内容 | Read only what comes after this cursor | — |
+| cli.option.tail.hint | 只读最后几行 | Read only the last lines | — |
+| cli.option.target.hint | 写到哪里：claude、agents 或 all | Where to write: claude, agents or all | — |
+| cli.option.template.hint | 只检查这个模板所需的环境 | Check only what this template needs | — |
+| cli.option.timeout.hint | 最多等待的秒数 | Longest time to wait, in seconds | — |
+| cli.option.toolVersion.hint | 用指定的工具版本测试 | Test with the given tool version | — |
+| cli.option.var.hint | 替换模板里的变量，可以重复 | Replace a variable in the template; can be repeated | — |
+| cli.usage.invalidValue.body | {option} 的值 {value} 不合法。 | The value {value} is not valid for {option}. | option：选项或设置名；value：用户输入的值，原样显示 |
+| cli.usage.missingArgument.body | 缺少参数：{argument}。 | Missing argument: {argument}. | argument：缺少的参数名，如 <pg> |
+| cli.usage.missingCommand.body | 没有给出命令。 | No command was given. | — |
+| cli.usage.optionNeedsValue.body | 选项 {option} 需要一个值。 | Option {option} needs a value. | option：选项名，如 --timeout |
+| cli.usage.optionTakesNoValue.body | 选项 {option} 不接受值。 | Option {option} does not take a value. | option：选项名，如 --json |
+| cli.usage.tooManyArguments.body | 多出来的参数：{argument}。 | Unexpected argument: {argument}. | argument：多出来的参数，原样显示 |
+| cli.usage.unknownCommand.body | 不认识的命令：{command}。 | Unknown command: {command}. | command：用户输入的命令，原样显示 |
+| cli.usage.unknownOption.body | 不认识的选项：{option}。 | Unknown option: {option}. | option：用户输入的选项，原样显示 |
+| cli.usage.unknownSetting.body | 不认识的设置项：{name}。目前只有 lang。 | Unknown setting: {name}. The only setting is lang. | name：用户输入的设置项，原样显示 |
 | errors.APP_REQUIRED.body | open 和 screenshot 要由桌面应用来完成，命令行自己做不到。 | The open and screenshot commands are carried out by the desktop app. The command line cannot do them on its own. | — |
 | errors.APP_REQUIRED.hint | 打开 Runyard 应用后重新运行。 | Open the Runyard app, then run it again. | — |
 | errors.APP_REQUIRED.hintCli | 打开 Runyard 应用后重新运行这条命令。 | Open the Runyard app, then run the command again. | — |
@@ -36,7 +107,7 @@
 | errors.INTERNAL.title | Runyard 内部出了意外错误 | Something went wrong inside Runyard | — |
 | errors.NAME_EXISTS.body | 资源库里已经有同名的项目，现有项目没有改动。 | The library already has a playground with this name. The existing playground is unchanged. | — |
 | errors.NAME_EXISTS.hint | 换一个名称。 | Choose a different name. | — |
-| errors.NAME_EXISTS.hintCli | 换一个名称，重新运行这条命令。 | Run the command again with a different name. | — |
+| errors.NAME_EXISTS.hintCli | 用 runyard run {name} 运行已有的项目，或换一个名称重新运行这条命令。 | Run runyard run {name} to use the existing playground, or run the command again with a different name. | name：项目名称（也是文件夹名）；命令行传路径时是用户给的原文 |
 | errors.NAME_EXISTS.title | 项目名称 {name} 已被占用 | A playground named {name} already exists | name：项目名称（也是文件夹名）；命令行传路径时是用户给的原文 |
 | errors.NAME_INVALID.body | 名称只能包含小写字母、数字和连字符，最长 64 个字符，开头和结尾不能是连字符。 | A name can contain only lowercase letters, digits and hyphens. It can be up to 64 characters long and cannot start or end with a hyphen. | — |
 | errors.NAME_INVALID.hint | 改用符合这些规则的名称。 | Use a name that follows these rules. | — |
@@ -92,7 +163,7 @@
 | errors.SUPERVISOR_OUTDATED.title | 后台的管理进程版本较旧 | The Runyard background process is out of date | — |
 | errors.SUPERVISOR_UNAVAILABLE.body | 没能和后台的管理进程建立可信的连接。 | A trusted connection to the background process could not be established. | — |
 | errors.SUPERVISOR_UNAVAILABLE.hint | 没有发送过任何请求，可以直接重新运行。 | No request was sent, so you can simply run it again. | — |
-| errors.SUPERVISOR_UNAVAILABLE.hintCli | 没有发送过任何请求，可以直接重新运行这条命令。 | No request was sent, so you can simply run the command again. | — |
+| errors.SUPERVISOR_UNAVAILABLE.hintCli | 没有发送过任何请求。运行 runyard doctor 查看原因，再重新运行这条命令。 | No request was sent. Run runyard doctor to find out why, then run the command again. | — |
 | errors.SUPERVISOR_UNAVAILABLE.title | 连不上 Runyard 的管理进程 | Cannot connect to the Runyard background process | — |
 | errors.TEMPLATE_INVALID.body | 模板文件有错误，或者是更新版本的 Runyard 写的。没有创建文件夹，模板也没有被改动。 | The template has a mistake, or it was written by a newer version of Runyard. No folder was created and the template was not changed. | — |
 | errors.TEMPLATE_INVALID.hint | 修正模板，或换一个模板。 | Fix the template, or choose a different one. | — |
@@ -108,11 +179,11 @@
 | errors.TEMPLATE_TEST_FAILED.title | 模板「{template}」的冒烟测试在 {step} 这一步失败 | Smoke test of template "{template}" failed at step {step} | template：用户给的模板标识，原样显示；step：失败的冒烟测试步骤：create、install、start、ready、reload、stop、leftovers 之一；原样显示，不翻译 |
 | errors.TOOL_MISSING.body | 运行这个项目需要 {tool}（版本 {required}），但没有在这台电脑上找到它。项目已经创建，代码可以照常编辑。 | This playground needs {tool} ({required}), but it was not found on this computer. The playground is created and you can still edit the code. | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译；required：模板要求的版本范围，例如 >=22.18；原样显示，不翻译 |
 | errors.TOOL_MISSING.hint | 安装 {tool} 后点“重新检测”，项目就会启动。 | Install {tool}, then click "Check again" and the playground will start. | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译 |
-| errors.TOOL_MISSING.hintCli | 安装 {tool}（{required}）后重新运行这条命令。 | Install {tool} ({required}), then run the command again. | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译；required：模板要求的版本范围，例如 >=22.18；原样显示，不翻译 |
+| errors.TOOL_MISSING.hintCli | 安装 {tool}（{required}），用 runyard doctor 确认后重新运行这条命令。 | Install {tool} ({required}), check it with runyard doctor, then run the command again. | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译；required：模板要求的版本范围，例如 >=22.18；原样显示，不翻译 |
 | errors.TOOL_MISSING.title | 没有找到 {tool} | Cannot find {tool} | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译 |
 | errors.TOOL_TOO_OLD.body | 这个项目需要 {tool} {required}，当前是 {found}。项目已经创建，代码可以照常编辑。 | This playground needs {tool} {required}, but {found} is installed. The playground is created and you can still edit the code. | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译；required：模板要求的版本范围，例如 >=22.18；原样显示，不翻译；found：本机检测到的版本，例如 20.11.0；原样显示，不翻译 |
 | errors.TOOL_TOO_OLD.hint | 把 {tool} 升级到 {required} 后点“重新检测”。 | Upgrade {tool} to {required}, then click "Check again". | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译；required：模板要求的版本范围，例如 >=22.18；原样显示，不翻译 |
-| errors.TOOL_TOO_OLD.hintCli | 把 {tool} 升级到 {required} 后重新运行这条命令。 | Upgrade {tool} to {required}, then run the command again. | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译；required：模板要求的版本范围，例如 >=22.18；原样显示，不翻译 |
+| errors.TOOL_TOO_OLD.hintCli | 把 {tool} 升级到 {required}，用 runyard doctor 确认后重新运行这条命令。 | Upgrade {tool} to {required}, check it with runyard doctor, then run the command again. | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译；required：模板要求的版本范围，例如 >=22.18；原样显示，不翻译 |
 | errors.TOOL_TOO_OLD.title | {tool} 的版本过低 | The installed {tool} is too old | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译 |
 | errors.TRASH_UNAVAILABLE.body | {term_trash}现在不能用。项目文件夹没有动，也没有被永久删除。 | The {term_trash} is not available right now. The playground folder was not moved and nothing was permanently deleted. | — |
 | errors.TRASH_UNAVAILABLE.hint | 项目仍在资源库里，可以稍后再试。 | The playground is still in the library. You can try again later. | — |

@@ -51,6 +51,31 @@ importers:
         specifier: 'catalog:'
         version: 6.0.3
 
+  packages/cli:
+    dependencies:
+      '@runyard/client':
+        specifier: workspace:*
+        version: link:../client
+      '@runyard/i18n':
+        specifier: workspace:*
+        version: link:../i18n
+      '@runyard/platform':
+        specifier: workspace:*
+        version: link:../platform
+      '@runyard/protocol':
+        specifier: workspace:*
+        version: link:../protocol
+    devDependencies:
+      '@runyard/testing':
+        specifier: workspace:*
+        version: link:../testing
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.19.0
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.11(@types/node@24.19.0)(vite@8.3.1(@types/node@24.19.0)(yaml@2.9.1))
+
   packages/client:
     dependencies:
       '@runyard/platform':

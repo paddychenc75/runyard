@@ -1,0 +1,23 @@
+{
+  "name": "runyard",
+  "version": "0.0.0",
+  "private": true,
+  "description": "runyard 命令行：参数解析、输出模块、--json、退出码、语言、--help",
+  "type": "module",
+  "scripts": {
+    "start": "node src/main.ts",
+    "test": "vitest run --project unit",
+    "test:process": "vitest run --project process --passWithNoTests"
+  },
+  "dependencies": {
+    "@runyard/client": "workspace:*",
+    "@runyard/i18n": "workspace:*",
+    "@runyard/platform": "workspace:*",
+    "@runyard/protocol": "workspace:*"
+  },
+  "devDependencies": {
+    "@runyard/testing": "workspace:*",
+    "@types/node": "catalog:",
+    "vitest": "catalog:"
+  }
+}

@@ -24,7 +24,8 @@
 ## 验证
 
 - `pnpm check` 里的国际化检查会指出问题，每条报错写明哪里错、怎么改：`i18n-keys`（两种语言的键和参数、复数类别、备注、字数上限、键名）、`i18n-codes`（登记表里的代码都有文案）、`i18n-unused`（没人用的键）、`i18n-glossary` 和 `i18n-wording`（术语、系统用词、中英文间距、标点）、`ui-strings`（源码字符串里的汉字）、`generated-fresh`（改了文案要运行 `pnpm generate`）。
-- 现在没有、随 M2 的界面包才有的：JSX 里写死文字的 Biome 规则（`biome.json` 已配好，对应目录出现时生效）、组件属性的 `Localized` 类型、伪语言下扫页面；命令行的输出函数（只收 `Localized`）随命令行的 issue。别把这些当成已经拦住了。
+- 现在没有、随 M2 的界面包才有的：JSX 里写死文字的 Biome 规则（`biome.json` 已配好，对应目录出现时生效）、组件属性的 `Localized` 类型、伪语言下扫页面。别把这些当成已经拦住了。
+- 命令行的输出口在 `packages/cli/src/output/`，只收 `Localized`；`ui-strings` 检查保证只有那个目录能写标准输出和标准错误。
 - 可选参数（登记表里 `exitCode?`）写成 `{exitCode, select, none {} other {…{exitCode}…}}`；术语不成对的例外和字数上限写在 `locales/notes/`（`glossarySkip` 加必填的 `glossarySkipReason`、`max`）。
 - 开发者诊断（抛出的异常消息）用英文，不要在源码字符串里写汉字；确实需要时同一行或上一行写 `// i18n-allow: 理由`。
 - `pnpm i18n:build` 之后 `git diff` 里 `generated/messages.d.ts` 只有预期的键；`pnpm test --filter @runyard/i18n` 里的 `build/build.test.ts` 通过（它核对生成物是最新的）。
