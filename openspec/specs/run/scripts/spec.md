@@ -181,3 +181,55 @@
 - **WHEN** 重新运行，脚本读标准输入
 - **THEN** 脚本读不到上一次写入的内容，要等新的输入
 - 验证：test
+
+### Requirement: 自动重新运行的文件监听何时开始、何时结束
+脚本项目的文件监听 MUST 从命令行 `runyard run <脚本项目>` 之后开始，到以下任何一件事发生时结束：`runyard stop` 停止了这个项目；项目被移到废纸篓；命令行持有的运行被空闲停止（run/ownership）。在桌面应用里，监听 MUST 跟随这个项目的标签页：标签页打开期间监听，关闭标签页就结束（桌面应用在 M2 落地）。没有被运行过、也没有在应用里打开的脚本项目 MUST NOT 被监听。监听期间保存文件触发的重新运行，按“重新运行时上一次还没结束，先停旧的再起新的”处理（RUN-SCRIPTS-20）。`script.autoRun` 或 `scriptAutoRun` 任何一个为关，该项目 MUST NOT 被监听。
+来源：PRD #prd-script-projects；PRD #prd-run-ownership；PRD #prd-run
+
+#### Scenario: [RUN-SCRIPTS-27] 命令行运行之后开始监听
+- 前提：脚本项目开关和全局设置都是默认值，管理进程里没有人打开它的标签页
+- **WHEN** 执行 `runyard run <名称>`，脚本跑完后再保存脚本文件
+- **THEN** 产生新的运行，输出是新内容
+- 验证：test
+
+#### Scenario: [RUN-SCRIPTS-28] 没有运行过的项目不被监听
+- 前提：脚本项目开关和全局设置都是默认值，从未被 `run`，也没有打开过标签页
+- **WHEN** 脚本文件被保存
+- **THEN** 不产生运行
+- 验证：test
+
+#### Scenario: [RUN-SCRIPTS-29] `runyard stop` 之后不再监听
+- 前提：脚本项目已经被命令行 `run` 过，正在被监听
+- **WHEN** 执行 `runyard stop <名称>`，随后保存脚本文件
+- **THEN** 保存后不产生新的运行
+- 验证：test
+
+#### Scenario: [RUN-SCRIPTS-30] 移到废纸篓之后不再监听
+- 前提：脚本项目已经被命令行 `run` 过，正在被监听
+- **WHEN** 执行 `runyard rm <名称>` 把它移到废纸篓
+- **THEN** 对该项目的监听结束，之后不产生新的运行
+- 验证：test
+
+#### Scenario: [RUN-SCRIPTS-31] 命令行持有的运行被空闲停止之后不再监听
+- 前提：脚本项目已经被命令行 `run` 过，正在被监听，命令行持有的运行因空闲被停止
+- **WHEN** 空闲停止发生后保存脚本文件
+- **THEN** 保存后不产生新的运行
+- 验证：test
+
+#### Scenario: [RUN-SCRIPTS-32] 桌面应用里随标签页监听
+- 前提：在桌面应用里打开脚本项目的标签页，项目没有被命令行 `run` 过
+- **WHEN** 标签页打开期间保存脚本文件，随后关闭标签页再保存一次
+- **THEN** 第一次保存产生新的运行，第二次保存不产生新的运行
+- 验证：test
+
+#### Scenario: [RUN-SCRIPTS-33] 项目的开关关闭时不监听
+- 前提：这个项目的 `script.autoRun` 为 `false`，全局 `scriptAutoRun` 为 `true`
+- **WHEN** 执行 `runyard run <名称>`，脚本跑完后保存脚本文件
+- **THEN** 这一次 `run` 正常运行，保存后不产生新的运行
+- 验证：test
+
+#### Scenario: [RUN-SCRIPTS-34] 全局设置关闭时不监听
+- 前提：全局 `scriptAutoRun` 为 `false`，这个项目的开关没有单独设置
+- **WHEN** 执行 `runyard run <名称>`，脚本跑完后保存脚本文件
+- **THEN** 这一次 `run` 正常运行，保存后不产生新的运行
+- 验证：test

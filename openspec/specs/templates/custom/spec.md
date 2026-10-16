@@ -2,7 +2,7 @@
 
 ## Purpose
 
-约定用户自己的模板：把一个项目另存为模板（`runyard template save`），或者在 `~/.runyard/templates/` 里手写模板。两者都立即出现在模板列表的“我的”分组里，用法和内置模板一样。本规格约定另存时哪些文件进模板、哪些默认不进，怎样把项目名换成变量，手写的模板怎样被发现和校验，以及用户模板和内置模板重名时怎么办。模板和运行器的格式规则、`template lint`、冒烟测试在 templates/format；八个运行器在 templates/runners。第一版不做：编辑、删除、复制为自己的模板，从 git 安装模板仓库。界面入口（资源库行和工作区“更多”菜单里的“另存为模板”、模板页）属于桌面应用，不在这里。
+约定用户自己的模板：把一个项目另存为模板（`runyard template save`），或者在 `~/.runyard/templates/` 里手写模板。两者都立即出现在模板列表的“我的”分组里，用法和内置模板一样。本规格约定另存时哪些文件进模板、哪些默认不进，怎样把项目名换成变量，手写的模板怎样被发现和校验，以及用户模板和内置模板重名时怎么办。模板和运行器的格式规则、`template lint`、冒烟测试在 templates/format；七个运行器在 templates/runners。第一版不做：编辑、删除、复制为自己的模板，从 git 安装模板仓库。界面入口（资源库行和工作区“更多”菜单里的“另存为模板”、模板页）属于桌面应用，不在这里。
 
 ## Requirements
 
@@ -108,7 +108,7 @@
 - 验证：test
 
 ### Requirement: 手写模板放进约定位置就可用，并经过校验
-放在 `~/.runyard/templates/<标识>/` 下的模板 MUST 无需重启就被发现；其 `template.json` 的 `id` MUST 等于文件夹名，否则 MUST 视为无效。用户模板的 `runner` MUST 是内置的八个运行器之一，MUST NOT 自带运行器文件；不是则 `template lint` 报告 `runner-not-found`。用户模板 MUST 同样经过 `template lint` 的全部规则。无效的用户模板 MUST 仍出现在 `template list` 里并带 `valid: false`，MUST 不能用来创建项目：`runyard new` MUST 报 `TEMPLATE_INVALID`（2）。用户模板里自己写的安装方式 MUST 只展示，MUST NOT 被执行。
+放在 `~/.runyard/templates/<标识>/` 下的模板 MUST 无需重启就被发现；其 `template.json` 的 `id` MUST 等于文件夹名，否则 MUST 视为无效。用户模板的 `runner` MUST 是内置的七个运行器（第一版，Nuxt 运行器暂缓）之一，MUST NOT 自带运行器文件；不是则 `template lint` 报告 `runner-not-found`。用户模板 MUST 同样经过 `template lint` 的全部规则。无效的用户模板 MUST 仍出现在 `template list` 里并带 `valid: false`，MUST 不能用来创建项目：`runyard new` MUST 报 `TEMPLATE_INVALID`（2）。用户模板里自己写的安装方式 MUST 只展示，MUST NOT 被执行。
 来源：PRD #prd-custom-templates；PRD #prd-runtime-requirements；PRD #prd-template-lint-test
 
 #### Scenario: [TEMPLATES-CUSTOM-17] 手写一个模板
