@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { generate, protocolDefs, writeGenerated } from "../scripts/generate.ts";
 import type { ProtocolDefs } from "../scripts/render-reference.ts";
 import { generatedFresh } from "./generated-fresh.ts";
-import { I18N_GOOD, makeRepo } from "./test-helpers.ts";
+import { I18N_GOOD, makeRepo, TOKENS_GOOD } from "./test-helpers.ts";
 
 const BEGIN = "<!-- generated:layers 开始（由 pnpm generate 生成，不要手改） -->";
 const END = "<!-- generated:layers 结束 -->";
@@ -18,6 +18,7 @@ const LAYERS = {
 function repo(agents: string): string {
   return makeRepo({
     ...I18N_GOOD,
+    ...TOKENS_GOOD,
     "AGENTS.md": agents,
     "tooling/checks/layers.json": LAYERS,
     "packages/protocol/package.json": { name: "@runyard/protocol" },
@@ -52,6 +53,9 @@ describe("generated-fresh 检查", () => {
       "docs/reference/codes.md",
       "docs/reference/strings.md",
       "packages/i18n/generated/messages.d.ts",
+      "packages/tokens/generated/tokens.css",
+      "packages/tokens/generated/tokens.ts",
+      "packages/tokens/generated/editor-themes.ts",
     ];
 
     function freshRepo(): string {
@@ -118,6 +122,27 @@ describe("generated-fresh 检查", () => {
       expect(readFileSync(join(root, "docs/reference/strings.md"), "utf8")).toContain(
         "| library.empty.title | 还没有项目 | No playgrounds yet |",
       );
+    });
+
+    it("改了 tokens.json 没重新生成：三个生成文件和 tokens.md 的表都过期，并指向 tokens.json", () => {
+      const root = freshRepo();
+      const file = join(root, "packages/tokens/src/tokens.json");
+      writeFileSync(
+        file,
+        readFileSync(file, "utf8").replace('"name": "radius-card",', '"name": "radius-card-x",'),
+      );
+      const errors = generatedFresh.run(root).join("\n");
+      expect(errors).toContain("packages/tokens/generated/tokens.css");
+      expect(errors).toContain("packages/tokens/generated/tokens.ts");
+      expect(errors).toContain("docs/design/tokens.md");
+      expect(errors).toContain("packages/tokens/src/tokens.json");
+    });
+
+    it("有人手改了 tokens.md 的生成段：报错", () => {
+      const root = freshRepo();
+      const file = join(root, "docs/design/tokens.md");
+      writeFileSync(file, readFileSync(file, "utf8").replace("| Primary (", "| 手改 ("));
+      expect(generatedFresh.run(root).join()).toContain("docs/design/tokens.md");
     });
 
     it("重新生成之后恢复通过", () => {

@@ -18,6 +18,9 @@
       "path": "../packages/i18n"
     },
     {
+      "path": "../packages/tokens"
+    },
+    {
       "path": "../packages/supervisor"
     }
   ]

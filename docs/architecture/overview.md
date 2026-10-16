@@ -31,7 +31,8 @@
 | `runyard`（命令行） | 命令解析和输出 | M1 |
 | `@runyard/i18n` | 给人看的文字、格式化、语言解析 | M1（精简版），M2 补界面一侧 |
 | `@runyard/testing` | 测试用的假进程、假时钟、假平台 | M1 |
-| `@runyard/tokens`、`@runyard/ui` | 设计变量；通用界面组件（不认识产品） | M2 |
+| `@runyard/tokens` | 设计变量：`tokens.json` 生成 CSS 变量、TS 常量、编辑器配色 | 已有（M2 开头） |
+| `@runyard/ui` | 通用界面组件（不认识产品） | M2 |
 | 桌面应用、网站 | Electron 应用；介绍和下载站 | M2；M4 |
 
 出处：技术设计 §3.1、§3.2、§11.2。

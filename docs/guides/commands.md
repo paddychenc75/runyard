@@ -25,7 +25,8 @@
 | `pnpm format` | Biome 按规则重排格式（会改文件） |
 | `pnpm typecheck` | `tsc -b`，按 project references 检查全仓库的类型 |
 | `pnpm check` | 全部仓库检查，脚本在 `tooling/checks/`，清单见 `tooling/checks/run.ts`。每条报错都写明哪里错、怎么改 |
-| `pnpm generate` | 重新生成由脚本生成的内容（根 `AGENTS.md` 里的包依赖表，`docs/reference/` 里的协议参考和文案对照表 `strings.md`，`packages/i18n/generated/messages.d.ts`）。改了 `tooling/checks/layers.json`、新建了包，改了 `packages/protocol` 里的方法、事件、错误码，或改了 `packages/i18n/locales/` 里的文案之后运行 |
+| `pnpm generate` | 重新生成由脚本生成的内容（根 `AGENTS.md` 里的包依赖表，`docs/reference/` 里的协议参考和文案对照表 `strings.md`，`packages/i18n/generated/messages.d.ts`，`packages/tokens/generated/` 和 `docs/design/tokens.md` 的表）。改了 `tooling/checks/layers.json`、新建了包，改了 `packages/protocol` 里的方法、事件、错误码，或改了 `packages/i18n/locales/` 里的文案之后运行 |
+| `pnpm tokens:build` | 从 `packages/tokens/src/tokens.json` 生成 `packages/tokens/generated/` 下的 `tokens.css`、`tokens.ts`、`editor-themes.ts`，并重写 `docs/design/tokens.md` 里两个标记之间的表；`pnpm generate` 也会生成它们。改了 `tokens.json` 之后运行其一 |
 | `pnpm i18n:build` | 只从 `packages/i18n/locales/zh-CN/*.json` 生成 `packages/i18n/generated/messages.d.ts`（文案的键和参数类型）；`pnpm generate` 也会生成它，另外还生成文案对照表。改了中文文案之后运行其一 |
 | `pnpm template:lint` | 检查 `templates/` 里的工具定义、运行器和全部内置模板（每个模板一行 JSON 结果；有问题时退出码 2）。模板和运行器的写法见 `docs/guides/add-template.md`、`docs/guides/add-runner.md` |
 | `pnpm template:smoke <模板标识> [--node <node 路径>] [--pm pnpm\|npm]`（别名 `pnpm test:template <模板标识>`） | 内置模板的冒烟（静态页面模板 `html` 走自带的页面服务，脚本类模板走真实的 node、python3、go，都不联网）。服务类模板：复制到系统临时目录，按运行器真的安装依赖、类型检查、（Vite 类）构建、启动、等 HTTP 响应、核对监听地址只有 127.0.0.1、改源文件（框架热更新的看进程不重启；`watch` 为 `restart` 的服务停了再起，端口不变、内容更新）、停止并确认端口释放、没有带运行标记的进程残留（2 秒内）。**需要网络**，不在 `pnpm test` 和 `pnpm verify` 里；声明范围的下限和上限版本各跑一次，见 `docs/guides/add-template.md`；CI 的接入见下面的“模板 CI”一节 |

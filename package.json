@@ -24,6 +24,7 @@
     "template:smoke": "node tooling/scripts/template-smoke.ts",
     "test:template": "node tooling/scripts/template-smoke.ts",
     "i18n:build": "node packages/i18n/build/build.ts",
+    "tokens:build": "node packages/tokens/build/build.ts",
     "spec": "node tooling/scripts/spec.mjs"
   },
   "devDependencies": {

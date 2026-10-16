@@ -1,4 +1,4 @@
-import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 
@@ -12,6 +12,22 @@ export function makeRepo(files: Record<string, string | object>): string {
   }
   return root;
 }
+
+// 设计变量的好仓库片段：直接用真实的 tokens.json（编辑器配色要用到其中几十个变量名，手写一份会很快漂移），
+// 加上带两个生成标记的 tokens.md。generate() 会用到它们。
+export const TOKENS_GOOD: Record<string, string> = {
+  "packages/tokens/src/tokens.json": readFileSync(
+    join(import.meta.dirname, "../../packages/tokens/src/tokens.json"),
+    "utf8",
+  ),
+  "docs/design/tokens.md": `# tokens
+
+<!-- generated:tokens 开始（由 pnpm tokens:build 生成，不要手改） -->
+<!-- generated:tokens 结束 -->
+
+后文
+`,
+};
 
 export const GOOD_WORKSPACE = `packages: [packages/*, tooling]
 catalog:
