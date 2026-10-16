@@ -8,7 +8,7 @@
 ## 对外暴露什么
 
 只从 `src/index.ts` 导出：`getPlatform()`、`platformFor()`、`Platform` 及其类型、`AbsPath` / `PosixRelPath` 与 `absPath` / `posixRelPath` / `joinPath`、`PlatformError` / `platformError`、`discoveryFilePath` / `supervisorLogPath` / `supervisorLogDir`（状态目录里发现文件和管理进程日志的位置：supervisor 写、client 读，所以放在这里，`src/state-files.ts`）。其他包只从 `@runyard/platform` 导入。
-`getPlatform()` 是整个代码库唯一读取运行系统的地方；不支持的系统抛 `NOT_SUPPORTED`，不退到别的实现。测试用 `getPlatform({ home, arch, profile })` 或 `platformFor()` 指向临时目录。
+`getPlatform()` 是整个代码库唯一读取运行系统的地方；不支持的系统抛 `NOT_SUPPORTED`，不退到别的实现。测试用 `getPlatform({ home, arch, profile })` 或 `platformFor()` 指向临时目录。`home` 被换成数据根目录（命令行的 `--root`、管理进程的 `--home`）时，生产代码必须同时传 `shellHome` 为用户真实的主目录：登录 shell 以它为 HOME，才读得到真正的启动文件（nvm、gvm 等）；测试不传，登录 shell 就用 `home` 里合成的启动文件。
 
 ## 本包特有的规则
 

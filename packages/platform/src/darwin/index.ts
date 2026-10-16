@@ -58,6 +58,7 @@ export function createDarwinPlatform(options: PlatformOptions): Platform {
     // 登录 shell：先问系统（os.userInfo），再问目录服务 dscl；从 Finder 启动时 SHELL 可能不存在
     toolchain: {
       baseEnv: options.baseEnv ?? stringEnv(process.env),
+      ...(options.shellHome === undefined ? {} : { shellHome: options.shellHome }),
       ...(options.loginShell === undefined ? {} : { loginShell: options.loginShell }),
       directory: directoryShellLookup(
         "dscl",

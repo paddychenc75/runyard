@@ -1,4 +1,4 @@
-import { tmpdir } from "node:os";
+import { homedir, tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { connectSupervisor } from "@runyard/client";
 import { absPath, getPlatform } from "@runyard/platform";
@@ -30,13 +30,16 @@ export function developmentConfig(): CliConfig {
 
 export function createDeps(config: CliConfig): CliDeps {
   return {
-    // root 代替主目录：状态目录是 <root>/.runyard，资源库是 <root>/Runyard（cli-contract 未定第 5 项，暂按此实现）
-    createPlatform: (root) => getPlatform(root === undefined ? {} : { home: root }),
+    // root 代替主目录：状态目录是 <root>/.runyard，资源库是 <root>/Runyard（cli-contract 未定第 5 项，暂按此实现）；
+    // 登录 shell 仍用真实主目录，否则读不到用户的启动文件（issue #152）
+    createPlatform: (root) =>
+      getPlatform(root === undefined ? {} : { home: root, shellHome: absPath(homedir()) }),
     connect: (platform) =>
       connectSupervisor({
         platform,
         client: { kind: "cli", version: config.version, build: config.build },
-        launch: { command: config.supervisorCommand },
+        // 管理进程的环境本来是空的；把命令行看到的真实主目录交给它，它的登录 shell 才找得到启动文件
+        launch: { command: config.supervisorCommand, env: { HOME: homedir() } },
       }),
     now: () => Date.now(),
     host: createHost(config),
