@@ -1,4 +1,4 @@
-import { mkdtempSync, realpathSync, rmSync } from "node:fs";
+import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -151,4 +151,105 @@ describe("组合根", () => {
       await new Promise((resolve) => setTimeout(resolve, 25));
     }
   });
+});
+
+// 等管理进程真的退出：先看连接点没有监听者，再看进程本身消失（守卫不会把它当遗留）
+async function stopSupervisor(
+  platform: Platform,
+  client: Awaited<ReturnType<ReturnType<typeof createDeps>["connect"]>>,
+): Promise<void> {
+  const file = await platform.fs.readText(discoveryFilePath(platform.paths.stateDir));
+  const pid = (JSON.parse(file ?? "{}") as { pid: number }).pid;
+  const identity = await platform.proc.identity(pid);
+  if (identity !== null) registerSpawned(platform, { pid, startTime: identity.startTime });
+  await client.call("supervisor.shutdown", { ifIdle: false, reason: "user" });
+  client.close();
+  const deadline = Date.now() + 15_000;
+  for (;;) {
+    const now = await platform.proc.identity(pid);
+    if (now === null || now.startTime !== identity?.startTime) return;
+    if (Date.now() > deadline) throw new Error("supervisor process did not exit");
+    await new Promise((resolve) => setTimeout(resolve, 25));
+  }
+}
+
+describe("模板命令连着真的管理进程", () => {
+  it("[TEMPLATES-CUSTOM-23] template save 另存两个模板，template list 立即都列出来（临时主目录里的真进程）", async () => {
+    const home = tempHome();
+    // 资源库里放一个已有的项目：管理进程启动时的扫描会登记它
+    const project = join(home, "Runyard", "pricing-table");
+    mkdirSync(join(project, ".runyard"), { recursive: true });
+    mkdirSync(join(project, "src"), { recursive: true });
+    writeFileSync(join(project, "src", "App.tsx"), "export const edited = 1;\n");
+    writeFileSync(
+      join(project, ".runyard", "playground.json"),
+      JSON.stringify({
+        formatVersion: 1,
+        id: "01PRICING",
+        template: { id: "react19", source: "builtin", appVersion: "0.0.0" },
+        runner: "vite",
+        requires: { node: ">=22.18 <27" },
+        toolchainAtCreate: {},
+        createdAt: 1,
+        createdBy: { kind: "user" },
+        autoClean: { enabled: false },
+        trust: "trusted",
+      }),
+    );
+    const platform: Platform = getPlatform({ home, profile: undefined });
+    // 先拉起管理进程并等它扫描完，命令行的第一条命令才不会赶在登记之前
+    const client = await createDeps(developmentConfig()).connect(platform);
+    try {
+      await client.call("library.rescan", {});
+      const saved = await runEntry(home, [
+        "template",
+        "save",
+        "pricing-table",
+        "--as",
+        "my-pricing",
+        "--name",
+        "My pricing",
+        "--json",
+      ]);
+      expect(saved.code).toBe(0);
+      expect(JSON.parse(saved.stdout)).toMatchObject({
+        id: "my-pricing",
+        name: "My pricing",
+        source: "user",
+        path: join(home, ".runyard", "templates", "my-pricing"),
+        files: ["src/App.tsx"],
+      });
+      const second = await runEntry(home, [
+        "template",
+        "save",
+        "pricing-table",
+        "--as",
+        "other",
+        "--json",
+      ]);
+      expect(second.code).toBe(0);
+      const listed = await runEntry(home, ["template", "list", "--json"]);
+      const { templates } = JSON.parse(listed.stdout) as {
+        templates: { id: string; source: string; name: string }[];
+      };
+      expect(templates.filter((record) => record.source === "user")).toEqual([
+        expect.objectContaining({ id: "my-pricing", name: "My pricing" }),
+        expect.objectContaining({ id: "other", name: "other" }),
+      ]);
+      // 标识已被占用：NAME_EXISTS，退出码 9，文案读“模板标识”而不是“项目名称”
+      const clash = await runEntry(home, [
+        "template",
+        "save",
+        "pricing-table",
+        "--as",
+        "other",
+        "--lang",
+        "en",
+      ]);
+      expect(clash.code).toBe(9);
+      expect(clash.stderr).toContain("template with the ID other already exists");
+    } finally {
+      await stopSupervisor(platform, client);
+    }
+  }, 30_000);
 });

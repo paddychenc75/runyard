@@ -1,7 +1,7 @@
 import { join } from "node:path";
 import type { PlaygroundSeed } from "@runyard/core";
 import { type AbsPath, absPath, posixRelPath } from "@runyard/platform";
-import type { Owner, TemplateRecord } from "@runyard/protocol";
+import type { Owner } from "@runyard/protocol";
 import { expect, it } from "vitest";
 import type { LibrarySeams, TemplateCatalog } from "./library-seams.ts";
 import type { RunsView } from "./runs-view.ts";
@@ -36,12 +36,6 @@ export class FakeRuns implements RunsView {
 }
 
 export class FakeCatalog implements TemplateCatalog {
-  async list(): Promise<readonly TemplateRecord[]> {
-    return [];
-  }
-  async get() {
-    return undefined;
-  }
   async seed(request: { template: string; name: string }): Promise<PlaygroundSeed> {
     return {
       template: { id: request.template, source: "builtin", appVersion: "0.0.0" },

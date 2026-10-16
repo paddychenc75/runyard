@@ -1,7 +1,9 @@
+import { fileURLToPath } from "node:url";
 import { absPath, getPlatform, isPlatformError } from "@runyard/platform";
 import { PROTOCOL_VERSION } from "@runyard/protocol";
 import { parseSupervisorArgs } from "./parse-args.ts";
 import { startSupervisor } from "./start-supervisor.ts";
+import type { TemplateDataDirs } from "./supervisor-options.ts";
 
 // 入口的逻辑。结果用退出码表示（真实启动时由 client 的启动者解读，#44）：
 //  0  正常退出（空闲、收到关闭请求、收到终止信号），或者已经有另一个管理进程持有锁（BUSY，安静退出，不是错误）
@@ -13,6 +15,13 @@ export const EXIT_ALREADY_RUNNING_LINE = "supervisor already running";
 function diagnostic(line: string): void {
   // i18n-allow: 管理进程的标准错误只进日志文件，从不显示给用户
   process.stderr.write(`${line}\n`);
+}
+
+// 开发时模板数据就在仓库的 templates/ 下（与命令行的组合根一致）；打包后的位置等桌面应用的打包 issue 定
+function templateDataDirs(): TemplateDataDirs {
+  const at = (name: string) =>
+    absPath(fileURLToPath(new URL(`../../../templates/${name}`, import.meta.url)));
+  return { builtinDir: at("builtin"), runnersDir: at("runners"), toolsDir: at("tools") };
 }
 
 export async function runSupervisorMain(argv: readonly string[]): Promise<number> {
@@ -45,6 +54,7 @@ export async function runSupervisorMain(argv: readonly string[]): Promise<number
         build: args.build,
         startedBy: args.startedBy,
       },
+      templateData: templateDataDirs(),
       host: args.host,
       execPath: process.execPath,
       log: diagnostic,

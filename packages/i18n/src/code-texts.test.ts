@@ -173,6 +173,26 @@ describe("用真实参数渲染（读一遍句子：语法、空格、标点）"
     expect(make("en").t("errors.FOLDER_MISSING.hint", { name: "x" })).toContain("in Finder");
   });
 
+  it("名称类错误按对象种类写：模板读“标识”，缺省仍是项目名称", () => {
+    const zh = make("zh-CN").t;
+    const en = make("en").t;
+    const template = { name: "My_Template", kind: "template" } as const;
+    expect(zh("errors.NAME_INVALID.title", template)).toBe("模板标识「My_Template」不合法");
+    expect(zh("errors.NAME_INVALID.body", template)).toContain("标识只能包含");
+    expect(en("errors.NAME_INVALID.title", template)).toBe('Invalid template ID "My_Template"');
+    expect(en("errors.NAME_INVALID.hintCli", template)).toContain("with an ID");
+    expect(zh("errors.NAME_EXISTS.title", { name: "react19", kind: "template" })).toBe(
+      "模板标识 react19 已被占用",
+    );
+    expect(en("errors.NAME_EXISTS.hintCli", { name: "react19", kind: "template" })).toBe(
+      "Run the command again with a different ID.",
+    );
+    expect(zh("errors.NAME_INVALID.title", { name: "My App" })).toBe("项目名称「My App」不合法");
+    expect(en("errors.NAME_EXISTS.title", { name: "demo", kind: "playground" })).toBe(
+      "A playground named demo already exists",
+    );
+  });
+
   it("所有渲染结果里没有残留的占位符", () => {
     for (const locale of locales)
       for (const line of render(locale)) expect(line).not.toMatch(/[{}]/);

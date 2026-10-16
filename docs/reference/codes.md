@@ -11,7 +11,7 @@
 | --- | --- | --- |
 | 1 | `INTERNAL` | 无 |
 | 2 | `USAGE` | 无 |
-| 2 | `NAME_INVALID` | `{ name: string }` |
+| 2 | `NAME_INVALID` | `{ name: string; kind?: 'playground' \| 'template' }` |
 | 2 | `NAME_RESERVED` | `{ name: string }` |
 | 2 | `VAR_INVALID` | `{ key: string }` |
 | 2 | `TEMPLATE_INVALID` | `{ template: string }` |
@@ -28,7 +28,7 @@
 | 6 | `SCRIPT_ERRORED` | `{ name: string }` |
 | 6 | `TEMPLATE_TEST_FAILED` | `{ template: string; step: 'create' \| 'install' \| 'start' \| 'ready' \| 'reload' \| 'stop' \| 'leftovers' }` |
 | 7 | `READY_TIMEOUT` | `{ name: string; seconds: number }` |
-| 9 | `NAME_EXISTS` | `{ name: string }` |
+| 9 | `NAME_EXISTS` | `{ name: string; kind?: 'playground' \| 'template' }` |
 | 9 | `BUSY` | `{ name: string }` |
 | 9 | `PATH_LOCKED` | `{ name: string }` |
 | 9 | `PATH_TOO_LONG` | `{ name: string }` |

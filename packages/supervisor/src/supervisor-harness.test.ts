@@ -1,3 +1,4 @@
+import { absPath } from "@runyard/platform";
 import type { SupervisorFile } from "@runyard/protocol";
 import { createFakePlatform, FakeClock, type FakePlatform } from "@runyard/testing";
 import { expect, it } from "vitest";
@@ -55,6 +56,11 @@ export class World {
     const handle = await startSupervisor({
       platform: this.fake.platform,
       identity,
+      templateData: {
+        builtinDir: absPath("/app/templates/builtin"),
+        runnersDir: absPath("/app/templates/runners"),
+        toolsDir: absPath("/app/templates/tools"),
+      },
       host: "node",
       execPath: process.execPath,
       clock: this.clock,

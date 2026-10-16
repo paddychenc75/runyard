@@ -38,6 +38,7 @@ export {
   type SupervisorExtensions,
   type SupervisorHandle,
   type SupervisorIdentity,
+  type TemplateDataDirs,
 } from "./supervisor-options.ts";
 export { createToolchainStore, type ToolchainStore, toolchainFilePath } from "./toolchain-store.ts";
 

@@ -1,3 +1,4 @@
+import type { TemplateLocations } from "@runyard/core";
 import type { Platform } from "@runyard/platform";
 import type { ClientKind, ShutdownReason, SupervisorFile } from "@runyard/protocol";
 import type { DiscoveryStore } from "./discovery-file.ts";
@@ -14,6 +15,9 @@ export const HANDSHAKE_TIMEOUT_MS = 5000;
 export const SHUTDOWN_GRACE_MS = 2000;
 // 一个连接上排队待发的事件字节数上限；超过说明客户端读得太慢，断开它
 export const MAX_PENDING_EVENT_BYTES = 16 * 1024 * 1024;
+
+/** 应用自带的模板数据的位置（内置模板、运行器、工具定义）；用户模板在状态目录下的 templates/，不在这里 */
+export type TemplateDataDirs = Omit<TemplateLocations, "userDir">;
 
 export interface SupervisorIdentity {
   /** 协议版本（整数）；发现文件、质询、supervisor.info 里是同一个值 */
@@ -61,6 +65,8 @@ export interface StartSupervisorOptions {
   /** 状态目录、连接点都来自它；主目录由调用方显式给（getPlatform({ home })），这里不读 `~` */
   platform: Platform;
   identity: SupervisorIdentity;
+  /** 模板数据的位置：开发时是仓库的 templates/，打包后的位置由打包的 issue 决定 */
+  templateData: TemplateDataDirs;
   /** 写进发现文件：启动者是 Electron 还是 Node，以及它的可执行文件路径 */
   host: SupervisorFile["host"];
   execPath: string;

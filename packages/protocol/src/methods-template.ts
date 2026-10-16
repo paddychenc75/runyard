@@ -1,7 +1,6 @@
 import { z } from "zod";
 import type { MethodDefinition } from "./method-definition.ts";
 import { emptySchema, playgroundRefSchema, relativePathSchema } from "./primitives.ts";
-import { templateIdSchema } from "./template-file.ts";
 import { templateDetailSchema, templateRecordSchema } from "./template-record.ts";
 
 // 模板组（规格 templates/format、templates/custom；docs/architecture/protocol-methods.md 第 2 节）。
@@ -30,7 +29,9 @@ export const templateMethods = {
     summary: "把项目另存为用户模板；先写临时目录再改名，失败不留残片",
     params: z.object({
       playground: playgroundRefSchema,
-      as: templateIdSchema.describe("新模板的标识"),
+      // 入参只要求非空：标识写法不对要回规格要求的 NAME_INVALID，不是 schema 先拒绝的 USAGE
+      // （同 methods-library.ts 里的名称）；写法由处理函数按 templateIdSchema 校验
+      as: z.string().min(1).describe("新模板的标识；小写字母、数字、连字符，首尾不是连字符"),
       name: z.string().min(1).optional().describe("缺省时取标识"),
       description: z.string().optional().describe("缺省时为空"),
       replaceName: z.boolean().optional().describe("把进入模板的文本文件里的项目名换成 {{name}}"),
