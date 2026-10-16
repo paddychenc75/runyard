@@ -118,6 +118,15 @@
 | cli.usage.unknownCommand.body | 不认识的命令：{command}。 | Unknown command: {command}. | command：用户输入的命令，原样显示 |
 | cli.usage.unknownOption.body | 不认识的选项：{option}。 | Unknown option: {option}. | option：用户输入的选项，原样显示 |
 | cli.usage.unknownSetting.body | 不认识的设置项：{name}。目前只有 lang。 | Unknown setting: {name}. The only setting is lang. | name：用户输入的设置项，原样显示 |
+| desktop.create.title | 新建 | New | — |
+| desktop.error.title.label | 出错了：{title} | Error: {title} | title：错误的标题，来自 errors.<代码>.title，已是翻译好的句子 |
+| desktop.library.empty.hint | 还没有项目。从下面的模板新建一个。 | No playgrounds yet. Create one from a template below. | — |
+| desktop.library.title | 项目 | Playgrounds | — |
+| desktop.preview.placeholder | 运行一个项目，页面会显示在这里。 | Run a playground and its page shows up here. | — |
+| desktop.run.action | 运行 | Run | — |
+| desktop.state.idle.label | 未运行 | Not running | — |
+| desktop.stop.action | 停止 | Stop | — |
+| desktop.window.title | Runyard | Runyard | — |
 | errors.APP_REQUIRED.body | open 和 screenshot 要由桌面应用来完成，命令行自己做不到。 | The open and screenshot commands are carried out by the desktop app. The command line cannot do them on its own. | — |
 | errors.APP_REQUIRED.hint | 打开 Runyard 应用后重新运行。 | Open the Runyard app, then run it again. | — |
 | errors.APP_REQUIRED.hintCli | 打开 Runyard 应用后重新运行这条命令。 | Open the Runyard app, then run the command again. | — |

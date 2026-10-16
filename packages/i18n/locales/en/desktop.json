@@ -1,0 +1,11 @@
+{
+  "desktop.create.title": "New",
+  "desktop.error.title.label": "Error: {title}",
+  "desktop.library.empty.hint": "No playgrounds yet. Create one from a template below.",
+  "desktop.library.title": "Playgrounds",
+  "desktop.preview.placeholder": "Run a playground and its page shows up here.",
+  "desktop.run.action": "Run",
+  "desktop.state.idle.label": "Not running",
+  "desktop.stop.action": "Stop",
+  "desktop.window.title": "Runyard"
+}

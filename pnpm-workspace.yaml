@@ -12,6 +12,8 @@ catalog:
   "@formatjs/icu-messageformat-parser": 3.5.18
   "@types/node": 24.19.0
   chokidar: 5.0.0
+  electron: 44.5.1
+  esbuild: 0.28.2
   intl-messageformat: 11.2.15
   turbo: 2.11.4
   typescript: 6.0.3

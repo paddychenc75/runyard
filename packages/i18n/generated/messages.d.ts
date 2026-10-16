@@ -235,6 +235,17 @@ export type CatalogMessages = {
   "cli.usage.unknownSetting.body": {
     name: string | number;
   };
+  "desktop.create.title": Record<never, never>;
+  "desktop.error.title.label": {
+    title: string | number;
+  };
+  "desktop.library.empty.hint": Record<never, never>;
+  "desktop.library.title": Record<never, never>;
+  "desktop.preview.placeholder": Record<never, never>;
+  "desktop.run.action": Record<never, never>;
+  "desktop.state.idle.label": Record<never, never>;
+  "desktop.stop.action": Record<never, never>;
+  "desktop.window.title": Record<never, never>;
   "format.duration.days": {
     count: number;
   };
