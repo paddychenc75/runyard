@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@runyard/client": "workspace:*",
+    "@runyard/core": "workspace:*",
     "@runyard/i18n": "workspace:*",
     "@runyard/platform": "workspace:*",
     "@runyard/protocol": "workspace:*"

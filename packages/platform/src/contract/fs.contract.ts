@@ -76,6 +76,30 @@ export function fsContract(ctx: ContractContext): void {
     });
   });
 
+  describe("fs.readBytes", () => {
+    it('"fs.readBytes" 读回原样的字节（含不是合法文本的）；不存在或是目录返回 null', async () => {
+      const at = await fresh();
+      const bytes = new Uint8Array([0, 255, 128, 10, 13, 0xc3]);
+      await fs.writeFile(at("a.bin"), bytes);
+      await fs.makeDir(at("dir"));
+      expect([...((await fs.readBytes(at("a.bin"))) ?? [])]).toEqual([...bytes]);
+      expect(await fs.readBytes(at("nope.bin"))).toBeNull();
+      expect(await fs.readBytes(at("dir"))).toBeNull();
+    });
+  });
+
+  describe("fs.listFiles", () => {
+    it('"fs.listFiles" 只列下一层的文件，排好序；目录不存在返回空数组', async () => {
+      const at = await fresh();
+      await fs.makeDir(at("sub"));
+      await fs.writeFile(at("sub", "deep.txt"), "x");
+      await fs.writeFile(at("b.txt"), "x");
+      await fs.writeFile(at("a.txt"), "x");
+      expect(await fs.listFiles(at())).toEqual(["a.txt", "b.txt"]);
+      expect(await fs.listFiles(at("nope"))).toEqual([]);
+    });
+  });
+
   describe("fs.listDirs", () => {
     it('"fs.listDirs" 只列下一层的子目录，排好序；目录不存在返回空数组', async () => {
       const at = await fresh();

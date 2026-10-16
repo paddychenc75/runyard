@@ -1,8 +1,9 @@
+import { join } from "node:path";
 import type { RunyardClient } from "@runyard/client";
-import { type AbsPath, joinPath, type Platform, posixRelPath } from "@runyard/platform";
+import { type AbsPath, absPath, joinPath, type Platform, posixRelPath } from "@runyard/platform";
 import { createFakePlatform, type FakePlatform } from "@runyard/testing";
 import { expect, it } from "vitest";
-import type { CliDeps } from "./cli-deps.ts";
+import type { CliDeps, CliHost } from "./cli-deps.ts";
 import type { CommandHandler, CommandRegistry } from "./commands/command-spec.ts";
 import { builtinRegistry } from "./commands/declarations.ts";
 import { runCli } from "./run-cli.ts";
@@ -22,6 +23,8 @@ export interface HarnessOptions {
   handlers?: Readonly<Record<string, CommandHandler>>;
   /** 连管理进程；默认调用即失败，用来证明“没有连” */
   connect?: CliDeps["connect"];
+  /** 覆盖假的运行环境（安装来源、另一份安装的探测等） */
+  host?: Partial<CliHost>;
 }
 
 export class Harness {
@@ -30,10 +33,12 @@ export class Harness {
   readonly connectCalls: Platform[] = [];
   readonly registry: CommandRegistry;
   readonly #connect: CliDeps["connect"] | undefined;
+  readonly #host: Partial<CliHost>;
 
   constructor(options: HarnessOptions = {}) {
     const handlers = options.handlers ?? {};
     this.#connect = options.connect;
+    this.#host = options.host ?? {};
     this.registry = {
       groups: builtinRegistry.groups,
       commands: builtinRegistry.commands.map((command) => {
@@ -56,6 +61,16 @@ export class Harness {
     this.fake.fs.writeFile(this.cliJson, text);
   }
 
+  /** 随应用发布的数据（内置模板、运行器、工具定义）在假文件系统里的位置 */
+  get appData(): { builtinDir: AbsPath; runnersDir: AbsPath; toolsDir: AbsPath } {
+    const at = (name: string) => absPath(join(this.platform.paths.home, "app-data", name));
+    return { builtinDir: at("builtin"), runnersDir: at("runners"), toolsDir: at("tools") };
+  }
+
+  get tempDir(): AbsPath {
+    return absPath(join(this.platform.paths.home, "tmp"));
+  }
+
   deps(): CliDeps {
     return {
       createPlatform: (root) => {
@@ -73,6 +88,14 @@ export class Harness {
         return this.#connect(platform);
       },
       now: () => 1_760_000_000_000,
+      host: {
+        install: { kind: "source", version: "0.0.0", path: "/fake/runyard/main.ts" },
+        templates: this.appData,
+        tempDir: this.tempDir,
+        clock: this.fake.clock,
+        probeInstall: async () => ({ kind: "app", version: null }),
+        ...this.#host,
+      },
       registry: this.registry,
     };
   }

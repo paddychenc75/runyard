@@ -32,6 +32,31 @@ export function createPosixFs(options: PosixFsOptions = {}): Omit<Platform["fs"]
       }
     },
 
+    async readBytes(file) {
+      try {
+        return new Uint8Array(await readFile(file));
+      } catch (error) {
+        const code = errnoOf(error);
+        if (code === "ENOENT" || code === "ENOTDIR" || code === "EISDIR") return null;
+        throw fsError(error, file, "read");
+      }
+    },
+
+    async listFiles(dir) {
+      let entries: Dirent[];
+      try {
+        entries = await readdir(dir, { withFileTypes: true });
+      } catch (error) {
+        const code = errnoOf(error);
+        if (code === "ENOENT" || code === "ENOTDIR") return [];
+        throw fsError(error, dir, "list");
+      }
+      return entries
+        .filter((entry) => entry.isFile())
+        .map((entry) => entry.name)
+        .sort();
+    },
+
     async listDirs(dir) {
       let entries: Dirent[];
       try {

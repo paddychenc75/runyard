@@ -179,8 +179,12 @@ export interface Platform {
   readonly fs: {
     /** 文件不存在或不是文件返回 null。UTF-8 解码 */
     readText(file: AbsPath): Promise<string | null>;
+    /** 文件不存在或不是文件返回 null。原样的字节，不做解码 */
+    readBytes(file: AbsPath): Promise<Uint8Array | null>;
     /** 目录下一层的子目录名，排好序；目录不存在返回空数组 */
     listDirs(dir: AbsPath): Promise<string[]>;
+    /** 目录下一层的普通文件名，排好序；不含子目录和符号链接；目录不存在返回空数组 */
+    listFiles(dir: AbsPath): Promise<string[]>;
     exists(path: AbsPath): Promise<boolean>;
     /** 连同缺的上级目录一起建；已存在不报错 */
     makeDir(dir: AbsPath): Promise<void>;
@@ -221,6 +225,10 @@ export interface Platform {
   readonly tools: {
     candidates(tool: ToolId, env: Env): Promise<ToolCandidate[]>;
     packageManagers(): Promise<string[]>;
+  };
+  readonly system: {
+    /** 操作系统的版本串（内核版本，如 25.0.0）：只给诊断信息用，不要拿它做功能判断 */
+    release(): string;
   };
   readonly shell: {
     /** 第一个是默认值 */

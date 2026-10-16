@@ -6,6 +6,57 @@
   "cli.config.setLang.body": {
     "lang": "写入的语言，en 或 zh-CN，原样显示"
   },
+  "cli.doctor.bundle.body": {
+    "path": "诊断包的绝对路径，原样显示"
+  },
+  "cli.doctor.cli.body": {
+    "version": "命令行版本，原样显示",
+    "kind": "app 或 source；用 select 选词",
+    "path": "命令行位置，原样显示"
+  },
+  "cli.doctor.installCommand.body": {
+    "command": "安装命令，原样显示"
+  },
+  "cli.doctor.installUrl.body": {
+    "url": "官网链接，原样显示"
+  },
+  "cli.doctor.library.body": {
+    "root": "资源库文件夹的绝对路径，原样显示"
+  },
+  "cli.doctor.other.body": {
+    "kind": "app 或 source；用 select 选词",
+    "version": "版本，认不出时是问号",
+    "path": "位置，原样显示"
+  },
+  "cli.doctor.supervisorDown.body": {
+    "reason": "错误码，原样显示"
+  },
+  "cli.doctor.supervisorRunning.body": {
+    "version": "管理进程版本，原样显示",
+    "runs": "运行个数",
+    "startedBy": "app 或 cli；用 select 选词"
+  },
+  "cli.doctor.system.body": {
+    "os": "系统标识，原样显示",
+    "version": "系统版本，原样显示",
+    "arch": "芯片架构，原样显示"
+  },
+  "cli.doctor.toolFound.body": {
+    "tool": "工具名，原样显示",
+    "version": "版本号，原样显示",
+    "path": "可执行文件路径，原样显示"
+  },
+  "cli.doctor.toolMissing.body": {
+    "tool": "工具名，原样显示"
+  },
+  "cli.doctor.toolTooOld.body": {
+    "tool": "工具名，原样显示",
+    "version": "已安装的版本号，原样显示",
+    "required": "要求的版本范围，原样显示"
+  },
+  "cli.doctor.toolUnknown.body": {
+    "tool": "工具名，原样显示"
+  },
   "cli.error.title.label": {
     "title": "错误的标题，来自错误码的文案，原样显示"
   },
@@ -15,6 +66,37 @@
   "cli.lang.unsupported.hint": {
     "value": "用户给的语言值，原样显示",
     "source": "值来自哪里：flag、env 或 saved；用 select 选词"
+  },
+  "cli.skillInstall.installed.body": {
+    "target": "claude 或 agents；用 select 选词",
+    "path": "写入的 SKILL.md 绝对路径，原样显示"
+  },
+  "cli.templateLint.failed.body": {
+    "template": "模板标识，原样显示"
+  },
+  "cli.templateLint.issue.body": {
+    "rule": "检查规则名，原样显示",
+    "path": "出问题的字段或文件，原样显示",
+    "message": "英文说明，原样显示"
+  },
+  "cli.templateLint.ok.body": {
+    "template": "模板标识，原样显示"
+  },
+  "cli.templateList.item.body": {
+    "id": "模板标识，原样显示",
+    "name": "模板名称（已按当前语言挑选），原样显示",
+    "source": "builtin 或 user；用 select 选词",
+    "valid": "yes 或 no；no 时加“无效”标记"
+  },
+  "cli.templateSave.saved.body": {
+    "id": "新模板的标识，原样显示",
+    "path": "新模板文件夹的绝对路径，原样显示"
+  },
+  "cli.templateShow.file.body": {
+    "file": "模板里文件的相对路径，原样显示"
+  },
+  "cli.templateShow.path.body": {
+    "path": "模板文件夹的绝对路径，原样显示"
   },
   "cli.usage.invalidValue.body": {
     "option": "选项或设置名",

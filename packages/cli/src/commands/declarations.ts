@@ -6,11 +6,13 @@ import {
   type PositionalSpec,
 } from "./command-spec.ts";
 import { configGet, configSet } from "./config-commands.ts";
+import { doctor } from "./doctor.ts";
+import { skillInstall as skillInstallRun } from "./skill-install.ts";
+import { templateLint, templateList, templateSave, templateShow } from "./template-commands.ts";
 
-// 命令表（docs/architecture/cli-contract.md 第 2 节）。除 config get / set 外都只有声明，没有 run：
-// 实现分别在 #46（new、run、stop、status、logs、rm）、#47（doctor）、#48 和 #49（template、skill）。
-// template、skill 子命令的位置参数契约没写，按“show / lint / test 收一个模板，save 收一个项目”声明，
-// 实现它们的 issue 以规格为准改这里。
+// 命令表（docs/architecture/cli-contract.md 第 2 节）。new run stop status logs rm 只有声明，没有 run（#46、#47）；
+// template test 也没有 run，等 #54 的冒烟测试。
+// template、skill 子命令的位置参数契约没写，按“show / lint / test 收一个模板，save 收一个项目”声明。
 
 const pg = (required = true): PositionalSpec => ({
   name: "pg",
@@ -138,7 +140,9 @@ const doctorCommand = defineCommand({
     },
     { name: "bundle", type: "boolean", hint: (t) => t("cli.option.bundle.hint") },
   ],
+  // 管理进程连不上时 doctor 照常输出，所以它自己捕获连接失败
   needsSupervisor: true,
+  run: doctor,
 });
 
 const templateCommands = [
@@ -148,6 +152,7 @@ const templateCommands = [
     positionals: [],
     options: [],
     needsSupervisor: true,
+    run: templateList,
   }),
   defineCommand({
     name: "template show",
@@ -155,13 +160,49 @@ const templateCommands = [
     positionals: [template],
     options: [],
     needsSupervisor: true,
+    run: templateShow,
   }),
   defineCommand({
     name: "template save",
     title: (t) => t("cli.command.templateSave.title"),
     positionals: [pg()],
-    options: [],
+    options: [
+      {
+        name: "as",
+        type: "string",
+        valueName: "id",
+        hint: (t) => t("cli.option.as.hint"),
+      },
+      {
+        name: "name",
+        type: "string",
+        valueName: "text",
+        hint: (t) => t("cli.option.templateName.hint"),
+      },
+      {
+        name: "description",
+        type: "string",
+        valueName: "text",
+        hint: (t) => t("cli.option.description.hint"),
+      },
+      { name: "replace-name", type: "boolean", hint: (t) => t("cli.option.replaceName.hint") },
+      {
+        name: "include",
+        type: "string",
+        multiple: true,
+        valueName: "path",
+        hint: (t) => t("cli.option.include.hint"),
+      },
+      {
+        name: "exclude",
+        type: "string",
+        multiple: true,
+        valueName: "path",
+        hint: (t) => t("cli.option.exclude.hint"),
+      },
+    ],
     needsSupervisor: true,
+    run: templateSave,
   }),
   // lint 和 test 在命令行进程里直接跑，不经管理进程（规格 CLI-COMMANDS-72）
   defineCommand({
@@ -170,6 +211,7 @@ const templateCommands = [
     positionals: [templateRef],
     options: [],
     needsSupervisor: false,
+    run: templateLint,
   }),
   defineCommand({
     name: "template test",
@@ -201,6 +243,7 @@ const skillInstall = defineCommand({
     },
   ],
   needsSupervisor: false,
+  run: skillInstallRun,
 });
 
 const configCommands: CommandSpec[] = [

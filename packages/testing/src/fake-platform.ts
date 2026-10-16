@@ -105,7 +105,9 @@ export function createFakePlatform(options: FakePlatformOptions = {}): FakePlatf
     },
     fs: {
       readText: async (file) => fs.readText(file),
+      readBytes: async (file) => fs.readBytes(file),
       listDirs: async (dir) => fs.listDirs(dir),
+      listFiles: async (dir) => fs.listFiles(dir),
       exists: async (path) => fs.exists(path),
       makeDir: async (dir) => fs.mkdir(dir),
       writeFile: async (file, data) => fs.writeFileChecked(file, data),
@@ -115,6 +117,7 @@ export function createFakePlatform(options: FakePlatformOptions = {}): FakePlatf
       writeAtomic: async (file, data) => fs.writeAtomic(file, data),
     },
     watch: async (root, opts, callback) => fs.watch(root, opts, callback),
+    system: { release: () => "25.0.0" },
     ipc: {
       // 地址和握手证明沿用真实实现的纯函数，不重写
       endpoint: () => reference.ipc.endpoint(),

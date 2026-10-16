@@ -1,3 +1,4 @@
+import { release } from "node:os";
 import type { Arch, Env, Platform, PlatformId } from "../platform.ts";
 import type { LoginShellSources } from "./env/login-shell.ts";
 import { createPosixToolchain } from "./env/posix-toolchain.ts";
@@ -61,6 +62,7 @@ export function composePosix(config: PosixConfig): Platform {
     watch: watchPosix,
     ipc: createPosixIpc({ stateDir: paths.stateDir, ...config.ipc }),
     tools: toolchain.tools,
+    system: { release },
     shell: toolchain.shell,
     desktop: pendingDesktop,
     cli: pendingCli,

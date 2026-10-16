@@ -1,8 +1,11 @@
+import { tmpdir } from "node:os";
+import { fileURLToPath } from "node:url";
 import { connectSupervisor } from "@runyard/client";
-import { getPlatform } from "@runyard/platform";
+import { absPath, getPlatform } from "@runyard/platform";
 import pkg from "../package.json" with { type: "json" };
 import type { CliDeps } from "./cli-deps.ts";
 import { builtinRegistry } from "./commands/declarations.ts";
+import { createRealClock } from "./real-clock.ts";
 
 // 组合根：把真的东西接到命令行上。管理进程入口文件的位置是这里唯一一个注入的配置值
 // （packaged 之后的位置还没定，由桌面应用的打包 issue 决定；现在只有开发时从仓库源码运行的路径）。
@@ -36,6 +39,32 @@ export function createDeps(config: CliConfig): CliDeps {
         launch: { command: config.supervisorCommand },
       }),
     now: () => Date.now(),
+    host: createHost(config),
     registry: builtinRegistry,
+  };
+}
+
+// 开发时模板数据就在仓库的 templates/ 下；打包后的位置和 supervisorCommand 一样，等桌面应用的打包 issue 定
+function createHost(config: CliConfig): CliDeps["host"] {
+  const data = (name: string) =>
+    absPath(fileURLToPath(new URL(`../../../templates/${name}`, import.meta.url)));
+  return {
+    install: {
+      kind: "source",
+      version: config.version,
+      path: fileURLToPath(new URL("./main.ts", import.meta.url)),
+    },
+    templates: {
+      builtinDir: data("builtin"),
+      runnersDir: data("runners"),
+      toolsDir: data("tools"),
+    },
+    tempDir: absPath(tmpdir()),
+    clock: createRealClock(),
+    // 另一份安装怎样自报版本要等桌面应用的安装方式定下来；现在只能按位置猜种类，版本未知
+    probeInstall: async (path) => ({
+      kind: path.includes(".app") ? "app" : "source",
+      version: null,
+    }),
   };
 }

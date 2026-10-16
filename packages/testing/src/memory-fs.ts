@@ -34,7 +34,8 @@ function within(parent: string, child: string): boolean {
 // 内存文件系统：只放 Runyard 自己要断言的东西（文件内容、目录是否存在、改名、废纸篓、监视）。
 // 路径是 AbsPath，按本机路径工具比较，不手写分隔符。
 export class MemoryFs {
-  readonly #files = new Map<string, string>();
+  // 文本存字符串，二进制存字节：模板另存要逐字节保留图片
+  readonly #files = new Map<string, string | Uint8Array>();
   readonly #dirs = new Set<string>();
   readonly #locked = new Set<string>();
   readonly #watchers = new Set<Watcher>();
@@ -52,7 +53,7 @@ export class MemoryFs {
   }
 
   /** 写文件，缺的父目录一并建好（测试布置现场用；平台接口的 writeAtomic 要求父目录已存在） */
-  writeFile(path: AbsPath, data: string): void {
+  writeFile(path: AbsPath, data: string | Uint8Array): void {
     this.mkdir(absPath(dirname(path)));
     const existed = this.#files.has(path);
     this.#files.set(path, data);
@@ -62,7 +63,7 @@ export class MemoryFs {
   readFile(path: AbsPath): string {
     const data = this.#files.get(path);
     if (data === undefined) throw platformError("INTERNAL", {}, `ENOENT: ${path}`);
-    return data;
+    return typeof data === "string" ? data : new TextDecoder().decode(data);
   }
 
   exists(path: AbsPath): boolean {
@@ -71,7 +72,21 @@ export class MemoryFs {
 
   /** 平台接口 readText：文件的内容；不存在或不是文件返回 null */
   readText(path: AbsPath): string | null {
-    return this.#files.get(path) ?? null;
+    const data = this.#files.get(path);
+    if (data === undefined) return null;
+    return typeof data === "string" ? data : new TextDecoder().decode(data);
+  }
+
+  /** 平台接口 readBytes：文件的原样字节；不存在或不是文件返回 null */
+  readBytes(path: AbsPath): Uint8Array | null {
+    const data = this.#files.get(path);
+    if (data === undefined) return null;
+    return typeof data === "string" ? new TextEncoder().encode(data) : data;
+  }
+
+  /** 平台接口 listFiles：目录下一层的文件名，排好序；目录不存在返回空数组 */
+  listFiles(dir: AbsPath): string[] {
+    return this.list(dir).filter((name) => this.#files.has(join(dir, name)));
   }
 
   /** 平台接口 listDirs：目录下一层的子目录名，排好序；目录不存在返回空数组 */
@@ -84,7 +99,7 @@ export class MemoryFs {
     if (!this.#dirs.has(dirname(path))) {
       throw platformError("INTERNAL", {}, `ENOENT: ${dirname(path)}`);
     }
-    this.writeFile(path, typeof data === "string" ? data : new TextDecoder().decode(data));
+    this.writeFile(path, data);
   }
 
   /** 平台接口 renameFile：目标已存在抛 NAME_EXISTS，不覆盖 */
@@ -93,7 +108,7 @@ export class MemoryFs {
     if (this.exists(to)) {
       throw platformError("NAME_EXISTS", { name: basename(to) }, `EEXIST: ${to}`);
     }
-    const data = this.readFile(from);
+    const data = this.#files.get(from) as string | Uint8Array;
     this.#files.delete(from);
     this.#emit(from, "remove");
     this.writeFile(to, data);
@@ -141,7 +156,7 @@ export class MemoryFs {
     const { files, dirs } = this.#under(from);
     for (const file of files) {
       const target = to + file.slice(from.length);
-      this.#files.set(target, this.#files.get(file) as string);
+      this.#files.set(target, this.#files.get(file) as string | Uint8Array);
       this.#files.delete(file);
       this.#emit(file as AbsPath, "remove");
       this.#emit(target as AbsPath, "add");

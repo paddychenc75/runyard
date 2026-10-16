@@ -56,7 +56,7 @@ async function runCommand(
   globals: GlobalFlags,
 ): Promise<void> {
   checkPositionals(command, line.positionals);
-  const { out, translator } = runtime;
+  const { out, translator, deps } = runtime;
   const context: CommandContext = {
     positionals: line.positionals,
     global: globals,
@@ -74,6 +74,7 @@ async function runCommand(
     platform: runtime.platform,
     env: definedEnv(runtime.io.env),
     settings: runtime.settings,
+    host: deps.host,
     client: () => {
       if (!command.needsSupervisor) {
         // 声明了不需要管理进程的命令连了它：这是代码错误，不是用户的错

@@ -259,10 +259,18 @@ $ runyard template save --help
 runyard template save - Save a playground as a template
 
 Usage:
-  runyard template save <pg>
+  runyard template save <pg> [options]
 
 Arguments:
   pg  Playground name or path
+
+Options:
+  --as <id>             Id of the new template: lowercase letters, digits and hyphens
+  --name <text>         Name of the new template; defaults to the id
+  --description <text>  Description of the new template; empty by default
+  --replace-name        Replace the playground name in files with the {{name}} variable
+  --include <path>      Add a file that is left out by default; repeatable
+  --exclude <path>      Leave out a file that is included by default; repeatable
 
 Global options:
   --json           Print one JSON object; not affected by language

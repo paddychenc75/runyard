@@ -33,6 +33,57 @@ export type CatalogMessages = {
   "cli.config.setLang.body": {
     lang: string | number;
   };
+  "cli.doctor.bundle.body": {
+    path: string | number;
+  };
+  "cli.doctor.cli.body": {
+    kind: string;
+    path: string | number;
+    version: string | number;
+  };
+  "cli.doctor.installCommand.body": {
+    command: string | number;
+  };
+  "cli.doctor.installUrl.body": {
+    url: string | number;
+  };
+  "cli.doctor.library.body": {
+    root: string | number;
+  };
+  "cli.doctor.other.body": {
+    kind: string;
+    path: string | number;
+    version: string | number;
+  };
+  "cli.doctor.supervisorDown.body": {
+    reason: string | number;
+  };
+  "cli.doctor.supervisorRunning.body": {
+    runs: number;
+    startedBy: string;
+    version: string | number;
+  };
+  "cli.doctor.system.body": {
+    arch: string | number;
+    os: string | number;
+    version: string | number;
+  };
+  "cli.doctor.toolFound.body": {
+    path: string | number;
+    tool: string | number;
+    version: string | number;
+  };
+  "cli.doctor.toolMissing.body": {
+    tool: string | number;
+  };
+  "cli.doctor.toolTooOld.body": {
+    required: string | number;
+    tool: string | number;
+    version: string | number;
+  };
+  "cli.doctor.toolUnknown.body": {
+    tool: string | number;
+  };
   "cli.error.title.label": {
     title: string | number;
   };
@@ -50,11 +101,15 @@ export type CatalogMessages = {
     value: string | number;
   };
   "cli.option.all.hint": Record<never, never>;
+  "cli.option.as.hint": Record<never, never>;
   "cli.option.bundle.hint": Record<never, never>;
   "cli.option.cleanAfter.hint": Record<never, never>;
+  "cli.option.description.hint": Record<never, never>;
+  "cli.option.exclude.hint": Record<never, never>;
   "cli.option.follow.hint": Record<never, never>;
   "cli.option.help.hint": Record<never, never>;
   "cli.option.ifExists.hint": Record<never, never>;
+  "cli.option.include.hint": Record<never, never>;
   "cli.option.json.hint": Record<never, never>;
   "cli.option.keepDir.hint": Record<never, never>;
   "cli.option.lang.hint": Record<never, never>;
@@ -64,6 +119,7 @@ export type CatalogMessages = {
   "cli.option.port.hint": Record<never, never>;
   "cli.option.quiet.hint": Record<never, never>;
   "cli.option.raw.hint": Record<never, never>;
+  "cli.option.replaceName.hint": Record<never, never>;
   "cli.option.restart.hint": Record<never, never>;
   "cli.option.root.hint": Record<never, never>;
   "cli.option.run.hint": Record<never, never>;
@@ -72,9 +128,41 @@ export type CatalogMessages = {
   "cli.option.tail.hint": Record<never, never>;
   "cli.option.target.hint": Record<never, never>;
   "cli.option.template.hint": Record<never, never>;
+  "cli.option.templateName.hint": Record<never, never>;
   "cli.option.timeout.hint": Record<never, never>;
   "cli.option.toolVersion.hint": Record<never, never>;
   "cli.option.var.hint": Record<never, never>;
+  "cli.skillInstall.installed.body": {
+    path: string | number;
+    target: string;
+  };
+  "cli.templateLint.failed.body": {
+    template: string | number;
+  };
+  "cli.templateLint.issue.body": {
+    message: string | number;
+    path: string | number;
+    rule: string | number;
+  };
+  "cli.templateLint.ok.body": {
+    template: string | number;
+  };
+  "cli.templateList.item.body": {
+    id: string | number;
+    name: string | number;
+    source: string;
+    valid: string;
+  };
+  "cli.templateSave.saved.body": {
+    id: string | number;
+    path: string | number;
+  };
+  "cli.templateShow.file.body": {
+    file: string | number;
+  };
+  "cli.templateShow.path.body": {
+    path: string | number;
+  };
   "cli.usage.invalidValue.body": {
     option: string | number;
     value: string | number;

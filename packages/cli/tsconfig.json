@@ -12,6 +12,7 @@
     { "path": "../platform" },
     { "path": "../i18n" },
     { "path": "../client" },
+    { "path": "../core" },
     { "path": "../testing" }
   ]
 }
