@@ -105,30 +105,6 @@ function calleeName(call: ts.CallExpression): string | undefined {
   return undefined;
 }
 
-// 数组是不是在当命令用：
-// 1. 写在名为 argv、args、command、cmd 的属性或变量上，或直接作为 spawn、exec 一类调用的实参；
-// 2. 或者长得就是命令：第二项以 - 开头（选项），或不是字符串字面量（拼进来的路径）。
-// 只有 "rm" 一个元素或后面全是普通单词（["rm", "remove"]）的数组是名字列表，不是删除。
-const COMMAND_SLOTS = new Set(["argv", "args", "command", "cmd"]);
-function isCommandArray(array: ts.ArrayLiteralExpression): boolean {
-  const parent = array.parent;
-  if (
-    (ts.isPropertyAssignment(parent) || ts.isVariableDeclaration(parent)) &&
-    ts.isIdentifier(parent.name) &&
-    COMMAND_SLOTS.has(parent.name.text)
-  ) {
-    return true;
-  }
-  if (ts.isCallExpression(parent) && parent.arguments.includes(array)) {
-    const callee = calleeName(parent);
-    if (callee !== undefined && (SPAWNERS.has(callee) || callee === "spawn")) return true;
-  }
-  const second = array.elements[1];
-  if (second === undefined) return false;
-  if (!ts.isStringLiteral(second)) return true;
-  return second.text.startsWith("-");
-}
-
 interface Finding {
   line: number;
   what: string;
@@ -173,16 +149,11 @@ function findRemovals(file: ts.SourceFile): Finding[] {
         add(node, `${spawner}("${text.trim()}…")`, true);
       }
     }
-    // 参数数组 ["rm", "-rf", …]：只认“拿来当命令用”的数组（见 isCommandArray），
-    // 名字列表（命令声明里的 ["rm"]、["rm", "remove"]）不算
+    // 参数数组 ["rm", "-rf", …]：第一项是 rm 的字符串数组一律报；
+    // 命令名列表之类的误报用 delete-allow 声明，不靠放宽判断（放宽会放过 const a = ["rm", f]; spawn(a[0], a.slice(1))）
     if (ts.isArrayLiteralExpression(node)) {
       const first = node.elements[0];
-      if (
-        first !== undefined &&
-        ts.isStringLiteral(first) &&
-        RM_BINARY.test(first.text) &&
-        isCommandArray(node)
-      ) {
+      if (first !== undefined && ts.isStringLiteral(first) && RM_BINARY.test(first.text)) {
         add(node, `参数数组以 "${first.text}" 开头`, true);
       }
     }
