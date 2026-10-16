@@ -1,4 +1,3 @@
-import { absPath } from "@runyard/platform";
 import type { RunSnapshot } from "@runyard/protocol";
 import { describe, expect, it } from "vitest";
 import { cliOwner, RunWorld, tabOwner } from "./run-harness.test.ts";
@@ -27,7 +26,7 @@ describe("run.start", () => {
     expect(
       (await errorOf(cli, "run.start", { playground: "nope", owner: cliOwner, wait: "none" })).code,
     ).toBe("PLAYGROUND_NOT_FOUND");
-    await w.world.fake.platform.fs.moveDir(absPath(`${w.root}/demo`), absPath(`${w.root}/moved`));
+    await w.world.fake.platform.fs.moveDir(w.at("demo"), w.at("moved"));
     expect(
       (await errorOf(cli, "run.start", { playground: id, owner: cliOwner, wait: "none" })).code,
     ).toBe("FOLDER_MISSING");
