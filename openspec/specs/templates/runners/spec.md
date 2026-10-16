@@ -2,17 +2,17 @@
 
 ## Purpose
 
-约定八个运行器各自必须保证什么，写成可以测的行为：启动到就绪（脚本是跑到退出）、停止后端口释放和没有残留进程、语法错误时的行为、只监听 `127.0.0.1`。八个运行器是：静态页面（给 `html`）、Vite（给 `react19`、`react18`、`vue3`）、Next（给 `next16`）、Nuxt（给 `nuxt4`、`nuxt3`）、`node-ts`（给 `node-ts`）、Python（给 `python`）、Go（给 `go`）、Hono（给 `hono`）。运行器格式的规则、`template lint` 的判定、模板固定的版本在 templates/format；状态、停止、失败的通用规则在 run/lifecycle，脚本的共性在 run/scripts，端口在 run/ports。这里不写十一个模板各自的内容。
+约定七个运行器（第一版；Nuxt 运行器随 Nuxt 模板暂缓）各自必须保证什么，写成可以测的行为：启动到就绪（脚本是跑到退出）、停止后端口释放和没有残留进程、语法错误时的行为、只监听 `127.0.0.1`。七个运行器是：静态页面（给 `html`）、Vite（给 `react19`、`react18`、`vue3`）、Next（给 `next16`）、`node-ts`（给 `node-ts`）、Python（给 `python`）、Go（给 `go`）、Hono（给 `hono`）。运行器格式的规则、`template lint` 的判定、模板固定的版本在 templates/format；状态、停止、失败的通用规则在 run/lifecycle，脚本的共性在 run/scripts，端口在 run/ports。这里不写九个模板各自的内容。
 
 ## Requirements
 
 ### Requirement: 所有运行器共同保证
-服务类运行器（静态页面、Vite、Next、Nuxt、Hono）MUST 从启动走到 `ready`，其预览地址 MUST 是 `http://127.0.0.1:<端口>/`；脚本类运行器（`node-ts`、Python、Go）MUST 跑到退出。所有服务 MUST 只监听 `127.0.0.1`，MUST NOT 监听所有网卡。停止后 MUST 确认没有带本次运行标记的进程存活，端口 MUST 在 3 秒内可以重新绑定。强制结束后的下一次启动、启动中途停止后的下一次启动、安装中途停止后的重装和下一次启动，MUST 都不因残留的锁文件或半成品缓存而失败。运行器 MUST NOT 让工具联网下载运行环境或开启遥测。
+服务类运行器（静态页面、Vite、Next、Hono）MUST 从启动走到 `ready`，其预览地址 MUST 是 `http://127.0.0.1:<端口>/`；脚本类运行器（`node-ts`、Python、Go）MUST 跑到退出。所有服务 MUST 只监听 `127.0.0.1`，MUST NOT 监听所有网卡。停止后 MUST 确认没有带本次运行标记的进程存活，端口 MUST 在 3 秒内可以重新绑定。强制结束后的下一次启动、启动中途停止后的下一次启动、安装中途停止后的重装和下一次启动，MUST 都不因残留的锁文件或半成品缓存而失败。运行器 MUST NOT 让工具联网下载运行环境或开启遥测。
 来源：PRD #prd-first-templates；PRD #prd-stop；PRD #prd-template-engineering；ADR 0006
 
 #### Scenario: [TEMPLATES-RUNNERS-01] 每个服务类运行器都能到达就绪
 - 前提：真实环境，依赖已安装
-- **WHEN** 分别启动 `html`、`react19`、`vue3`、`next16`、`nuxt4`、`nuxt3`、`hono`
+- **WHEN** 分别启动 `html`、`react19`、`vue3`、`next16`、`hono`
 - **THEN** 每个都到达 `ready`，`url` 以 `http://127.0.0.1:` 开头，对该地址的 `GET /` 得到 HTTP 响应
 - 验证：test
 
@@ -116,7 +116,7 @@ Vite 运行器（`react19`、`react18`、`vue3`）MUST 以 `node` 直接运行 V
 - 验证：test
 
 ### Requirement: Next 和 Nuxt 运行器看 HTTP 响应判断就绪，并只监听本机
-Next 运行器（`next16`）MUST 传 `-H 127.0.0.1` 和 `-p {port}`；Nuxt 运行器（`nuxt4`、`nuxt3`）MUST 传 `--host 127.0.0.1` 和端口。两者的就绪 MUST 以收到 HTTP 响应为准，MUST NOT 以端口能连上为准（端口先开、页面后编译好）。Next 在退出时另起的、脱离进程组的遥测进程 MUST 在停止后、改名或移到废纸篓之前被等走（上限 2 秒，还在就结束）。Nuxt 的四个进程 MUST 在停止时整棵结束。
+Next 运行器（`next16`）MUST 传 `-H 127.0.0.1` 和 `-p {port}`。Nuxt 运行器随 Nuxt 模板暂缓，第一版没有；它加回来时 MUST 传 `--host 127.0.0.1` 和端口。Next（以及 Nuxt 回来之后的 Nuxt）的就绪 MUST 以收到 HTTP 响应为准，MUST NOT 以端口能连上为准（端口先开、页面后编译好）。Next 在退出时另起的、脱离进程组的遥测进程 MUST 在停止后、改名或移到废纸篓之前被等走（上限 2 秒，还在就结束）。Nuxt 回来之后，它的四个进程 MUST 在停止时整棵结束。
 来源：PRD #prd-first-templates；PRD #prd-status-and-ports；ADR 0006
 
 #### Scenario: [TEMPLATES-RUNNERS-18] 端口开了但页面没好
@@ -126,8 +126,8 @@ Next 运行器（`next16`）MUST 传 `-H 127.0.0.1` 和 `-p {port}`；Nuxt 运�
 - 验证：test
 
 #### Scenario: [TEMPLATES-RUNNERS-19] 监听地址参数
-- **WHEN** 分别启动 `next16`、`nuxt4`、`nuxt3` 并检查实际命令
-- **THEN** Next 的命令含 `-H` 和 `127.0.0.1`；Nuxt 的含 `--host` 和 `127.0.0.1`；监听地址只有 `127.0.0.1`
+- **WHEN** 启动 `next16` 并检查实际命令
+- **THEN** 命令含 `-H` 和 `127.0.0.1`；监听地址只有 `127.0.0.1`
 - 验证：test
 
 #### Scenario: [TEMPLATES-RUNNERS-20] Next 退出时的遥测进程
@@ -137,14 +137,14 @@ Next 运行器（`next16`）MUST 传 `-H 127.0.0.1` 和 `-p {port}`；Nuxt 运�
 - 验证：test
 
 #### Scenario: [TEMPLATES-RUNNERS-21] Nuxt 整棵进程树被结束
-- 前提：`nuxt4` 项目 `ready`，进程树有四个进程
+- 前提：Nuxt 已加回内置目录（第一版没有 Nuxt 运行器，本场景暂缓）；`nuxt4` 项目 `ready`，进程树有四个进程
 - **WHEN** 停止
 - **THEN** 四个进程全部结束，端口 3 秒内可重新绑定；`nuxt3` 同样
-- 验证：test
+- 验证：manual（第一版不含 Nuxt 运行器，暂缓；Nuxt 加回内置目录时改回 test 并补测试）
 
 #### Scenario: [TEMPLATES-RUNNERS-22] 全栈框架的启动时间目标
 - 前提：依赖已缓存，在一台 Apple 芯片的 Mac 上
-- **WHEN** 启动 `next16` 或 `nuxt4`
+- **WHEN** 启动 `next16`
 - **THEN** 从启动到页面可访问不超过 5 秒
 - 验证：manual（这是性能目标不是逻辑判断，依赖机器和缓存状态；在发布前的实机上量一次并记录）
 

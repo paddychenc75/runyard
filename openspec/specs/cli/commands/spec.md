@@ -458,7 +458,7 @@
 
 #### Scenario: [CLI-COMMANDS-68] 列出模板
 - **WHEN** 执行 `runyard template list --json`
-- **THEN** 内置的十一个模板都在，每项含上面列出的键，`source` 是 `"builtin"`
+- **THEN** 内置的九个模板都在，每项含上面列出的键，`source` 是 `"builtin"`
 - 验证：test
 
 #### Scenario: [CLI-COMMANDS-69] 名称不随语言变
