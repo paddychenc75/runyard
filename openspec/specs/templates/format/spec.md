@@ -2,7 +2,7 @@
 
 ## Purpose
 
-约定模板（`template.json` 加 `files/`）和运行器（`runner.json`）这两种数据文件的格式规则、版本号、工具要求的写法，`runyard template lint` 怎样判定一个模板合格，`runyard template test` 的冒烟测试查什么，以及十一个内置模板用哪些固定版本、对用户机器上的工具提什么下限。文件字段的形状最终以协议包里的数据校验定义为准，本规格只约定行为和必须拒绝的写法。八个运行器各自保证什么在 templates/runners，另存为模板和手写模板在 templates/custom，工具检测本身在 toolchain/detection。
+约定模板（`template.json` 加 `files/`）和运行器（`runner.json`）这两种数据文件的格式规则、版本号、工具要求的写法，`runyard template lint` 怎样判定一个模板合格，`runyard template test` 的冒烟测试查什么，以及第一版九个内置模板（Nuxt 两个暂缓）用哪些固定版本、对用户机器上的工具提什么下限。文件字段的形状最终以协议包里的数据校验定义为准，本规格只约定行为和必须拒绝的写法。七个运行器各自保证什么在 templates/runners，另存为模板和手写模板在 templates/custom，工具检测本身在 toolchain/detection。
 
 ## Requirements
 
@@ -251,7 +251,7 @@
 
 #### Scenario: [TEMPLATES-FORMAT-37] 合格的模板
 - **WHEN** 对每个内置模板执行 `runyard template lint <id> --json`
-- **THEN** 十一个都是 `ok: true`，`errors` 为空，退出码 0
+- **THEN** 九个都是 `ok: true`，`errors` 为空，退出码 0
 - 验证：test
 
 #### Scenario: [TEMPLATES-FORMAT-38] 一次报全
@@ -332,18 +332,18 @@
 - **THEN** 临时目录在系统临时目录下，仓库目录里没有任何新文件
 - 验证：test
 
-### Requirement: 十一个内置模板和它们固定的版本
-内置模板 MUST 恰好是这十一个：`html`、`react19`、`react18`、`vue3`、`next16`、`nuxt4`、`nuxt3`、`node-ts`、`python`、`go`、`hono`。不同版本 MUST 是不同的模板；同一框架 MUST 最多保留两个版本的模板。模板自带的依赖 MUST 是精确版本，取值以技术设计 §8.6.5 为准：React 19.3.0、React 18.3.1、Vite 8.3.3、`@vitejs/plugin-react` 6.1.1、TypeScript 6.0.3、Vue 3.5.43、`@vitejs/plugin-vue` 6.0.9、Next.js 16.3.8、Nuxt 4.5.2、Nuxt 3.21.11、Hono 4.13.11、`@hono/node-server` 2.1.3。用户机器上的工具下限 MUST 是：`node-ts` 的 Node `>=22.18`，`python` 的 Python `>=3.12`，`go` 的 Go `>=1.26`，用 pnpm 的模板的 pnpm `>=10.34.6`；使用 Node 的其他模板的 Node 下限 MUST NOT 低于 22 这条版本线。`nuxt3` MUST 带“已停止维护”的标签（固定标签标识 `unmaintained`）；出现 Nuxt 3 自身代码上的、没有修复版本的高危公告时 MUST 自动从内置目录移除。已移除或退役的模板 MUST NOT 影响此前创建的项目：项目创建时已把 `runner` 和 `requires` 复制进自己的 `playground.json`，MUST 继续可用。
-来源：PRD #prd-first-templates；PRD #prd-template-versions；PRD #prd-runtime-requirements；技术设计 §8.6.5；技术设计 §12 第 28 项
+### Requirement: 九个内置模板和它们固定的版本
+第一版内置模板 MUST 恰好是这九个：`html`、`react19`、`react18`、`vue3`、`next16`、`node-ts`、`python`、`go`、`hono`。`nuxt4`、`nuxt3` 暂缓，第一版 MUST NOT 内置（它们的依赖树里有没有合规修复版本的公告），修复版出来后再加回内置目录。不同版本 MUST 是不同的模板；同一框架 MUST 最多保留两个版本的模板。模板自带的依赖 MUST 是精确版本，取值以技术设计 §8.6.5 为准：React 19.3.0、React 18.3.1、Vite 8.3.3、`@vitejs/plugin-react` 6.1.1、TypeScript 6.0.3、Vue 3.5.43、`@vitejs/plugin-vue` 6.0.9、Next.js 16.4.1（安全修复版，取代 16.3.8）、Hono 4.13.11、`@hono/node-server` 2.1.3。用户机器上的工具下限 MUST 是：`node-ts` 的 Node `>=22.18`，`python` 的 Python `>=3.12`，`go` 的 Go `>=1.26`，用 pnpm 的模板的 pnpm `>=10.34.6`；使用 Node 的其他模板的 Node 下限 MUST NOT 低于 22 这条版本线。Nuxt 加回内置目录之后：`nuxt3` MUST 带“已停止维护”的标签（固定标签标识 `unmaintained`）；出现 Nuxt 3 自身代码上的、没有修复版本的高危公告时 MUST 自动从内置目录移除。这两条规则在第一版没有可作用的模板，保留给 Nuxt 回来的时候。已移除或退役的模板 MUST NOT 影响此前创建的项目：项目创建时已把 `runner` 和 `requires` 复制进自己的 `playground.json`，MUST 继续可用。
+来源：PRD #prd-first-templates；PRD #prd-template-versions；PRD #prd-runtime-requirements；技术设计 §8.6.5；技术设计 §12 第 28 项（2026-10-16 改定：Nuxt 暂缓）
 
-#### Scenario: [TEMPLATES-FORMAT-51] 目录恰好十一个
+#### Scenario: [TEMPLATES-FORMAT-51] 目录恰好九个
 - **WHEN** 读取内置模板目录
-- **THEN** 标识恰好是上面十一个，没有多余的
+- **THEN** 标识恰好是上面九个，没有多余的，其中没有 `nuxt4`、`nuxt3`
 - 验证：test
 
 #### Scenario: [TEMPLATES-FORMAT-52] 依赖是技术设计里的精确版本
 - **WHEN** 读取每个内置模板的 `package.json`
-- **THEN** 其中的 React、Vite、Vue、Next.js、Nuxt、Hono 等的版本与上面列出的完全一致，没有 `^`、`~`、`latest`
+- **THEN** 其中的 React、Vite、Vue、Next.js、Hono 等的版本与上面列出的完全一致，没有 `^`、`~`、`latest`
 - 验证：test
 
 #### Scenario: [TEMPLATES-FORMAT-53] 工具下限
@@ -352,15 +352,16 @@
 - 验证：test
 
 #### Scenario: [TEMPLATES-FORMAT-54] Nuxt 3 带停止维护标签
+- 前提：Nuxt 已加回内置目录（第一版没有 Nuxt 模板，本场景暂缓）
 - **WHEN** 执行 `runyard template list --json`
 - **THEN** `nuxt3` 的 `tags` 含 `unmaintained`，其他模板没有；`nuxt4` 没有
-- 验证：test
+- 验证：manual（第一版不含 Nuxt 模板，暂缓；Nuxt 加回内置目录时改回 test 并补测试）
 
 #### Scenario: [TEMPLATES-FORMAT-55] Nuxt 3 出现无法修复的高危公告
-- 前提：每晚的依赖审计发现 Nuxt 3 自身代码有高危公告且没有修复版本
+- 前提：Nuxt 已加回内置目录；每晚的依赖审计发现 Nuxt 3 自身代码有高危公告且没有修复版本
 - **WHEN** 审计任务运行
 - **THEN** `nuxt3` 自动从内置目录移除，并开出一个 issue 记录原因
-- 验证：manual（由每晚的依赖审计任务触发，需要真实出现这样的公告才能验证；移除逻辑本身由目录检查的测试覆盖）
+- 验证：manual（第一版不含 Nuxt 模板，暂缓；由每晚的依赖审计任务触发，需要真实出现这样的公告才能验证；移除逻辑本身由目录检查的测试覆盖）
 
 #### Scenario: [TEMPLATES-FORMAT-56] 模板退役不影响旧项目
 - 前提：用 `react18` 创建过项目，之后该模板从内置目录移除
