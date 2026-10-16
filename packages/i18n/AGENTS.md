@@ -3,14 +3,14 @@
 ## 用途
 
 所有“给人看的文字”的唯一出处：文案、消息格式化、数字和时长格式、命令行语言解析（技术设计 §6.8）。命令行（以后还有桌面应用）通过它把“代码加参数”变成句子；其他包不产生句子。
-现状：M1 精简版。有 `createTranslator`、`createTestTranslator`、`createFormat`、`resolveCliLocale`、`Localized` 和键类型生成，以及六项仓库检查（见下）；命令行用的文案组已写好中英文：`errors`（登记表里每个错误码的 title、body、hint、hintCli）、`notice`、`runState`、`platform`、`format`；`cli` 组（命令说明、`--help`）、React 绑定、伪语言随后续 issue 加入。
+现状：M1 精简版。有 `createTranslator`、`createTestTranslator`、`createFormat`、`resolveCliLocale`、`Localized` 和键类型生成，以及六项仓库检查（见下）；命令行用的文案组已写好中英文：`cli`（命令说明、`--help`、用法错误、`config` 的输出）、`errors`（登记表里每个错误码的 title、body、hint、hintCli）、`notice`、`runState`、`platform`、`format`；React 绑定、伪语言随后续 issue 加入。
 
 ## 对外暴露什么
 
 只从 `src/index.ts` 导出（`exports` 只有 `.`）。其他包只从 `@runyard/i18n` 导入，不伸进 `src/`。
 - `createTranslator({ locale, platform, catalogs })` 得到 `{ locale, t }`；`t(key, values)` 返回 `Localized`。
 - `createTestTranslator()`：测试用，返回“键加参数”（`⟦键|参数=值⟧`），测试断言键，不断言句子。
-- `cliCatalogs`：命令行打包的文案组（两种语言），交给 `createTranslator({ catalogs })`；加 `cli` 组时加进这个列表（`src/cli-catalogs.ts`）。
+- `cliCatalogs`：命令行打包的文案组（两种语言），交给 `createTranslator({ catalogs })`；新增文案组时加进这个列表（`src/cli-catalogs.ts`）。
 - `createFormat(translator)`：数字、文件大小、技术性时长、说给人听的时长、相对时间。
 - `resolveCliLocale({ flag, env, saved })`：`--lang` > `RUNYARD_LANG` > `cli.json` 的 `lang` > 英文；不认识的值给 `unsupported`，调用方要在标准错误输出一行提示。读环境变量和文件由 `cli` 做。
 - `Localized`：带标记的字符串，输出口只收它；包外拿不到“把任意字符串标成已翻译”的办法。
@@ -39,7 +39,7 @@
 | `ui-strings` | 产品源码字符串里的汉字；命令行输出函数所在目录之外的 `process.stdout.write` |
 | `generated-fresh` | `generated/messages.d.ts` 和 `docs/reference/strings.md` 过期 |
 
-还没有：功能模块只许用自己的文案组（`i18n-unused` 的后半条）、`site-i18n`、模板 `template.json` 的术语检查、伪语言扫页面、`Localized` 属性类型和命令行输出函数（命令行包还没建）。这些随 M2 和命令行的 issue 加入。
+还没有：功能模块只许用自己的文案组（`i18n-unused` 的后半条）、`site-i18n`、模板 `template.json` 的术语检查、伪语言扫页面、`Localized` 属性类型。这些随 M2 加入。命令行的输出函数已有（`packages/cli/src/output/`）。
 
 ## 子目录地图
 

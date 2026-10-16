@@ -41,11 +41,11 @@ errors.RUN_NOT_FOUND.hintCli: Run runyard status to see the current runs.
 errors.TOOL_MISSING.title: Cannot find go
 errors.TOOL_MISSING.body: This playground needs go (>=1.22 <2), but it was not found on this computer. The playground is created and you can still edit the code.
 errors.TOOL_MISSING.hint: Install go, then click "Check again" and the playground will start.
-errors.TOOL_MISSING.hintCli: Install go (>=1.22 <2), then run the command again.
+errors.TOOL_MISSING.hintCli: Install go (>=1.22 <2), check it with runyard doctor, then run the command again.
 errors.TOOL_TOO_OLD.title: The installed node is too old
 errors.TOOL_TOO_OLD.body: This playground needs node >=22.18, but 20.11.0 is installed. The playground is created and you can still edit the code.
 errors.TOOL_TOO_OLD.hint: Upgrade node to >=22.18, then click "Check again".
-errors.TOOL_TOO_OLD.hintCli: Upgrade node to >=22.18, then run the command again.
+errors.TOOL_TOO_OLD.hintCli: Upgrade node to >=22.18, check it with runyard doctor, then run the command again.
 errors.RUNTIME_MISSING.title: A component that python needs to run is missing
 errors.RUNTIME_MISSING.body: A system component that python needs to run was not found on this computer.
 errors.RUNTIME_MISSING.hint: Install the missing component, then run it again.
@@ -77,7 +77,7 @@ errors.READY_TIMEOUT.hintCli: Run runyard status next16-1 to see whether it is r
 errors.NAME_EXISTS.title: A playground named pricing-table already exists
 errors.NAME_EXISTS.body: The library already has a playground with this name. The existing playground is unchanged.
 errors.NAME_EXISTS.hint: Choose a different name.
-errors.NAME_EXISTS.hintCli: Run the command again with a different name.
+errors.NAME_EXISTS.hintCli: Run runyard run pricing-table to use the existing playground, or run the command again with a different name.
 errors.BUSY.title: Playground react19-3 is busy
 errors.BUSY.body: It is installing dependencies or starting, so it cannot be renamed right now. Nothing was changed.
 errors.BUSY.hint: Try again once it is ready or stopped.
@@ -101,7 +101,7 @@ errors.APP_REQUIRED.hintCli: Open the Runyard app, then run the command again.
 errors.SUPERVISOR_UNAVAILABLE.title: Cannot connect to the Runyard background process
 errors.SUPERVISOR_UNAVAILABLE.body: A trusted connection to the background process could not be established.
 errors.SUPERVISOR_UNAVAILABLE.hint: No request was sent, so you can simply run it again.
-errors.SUPERVISOR_UNAVAILABLE.hintCli: No request was sent, so you can simply run the command again.
+errors.SUPERVISOR_UNAVAILABLE.hintCli: No request was sent. Run runyard doctor to find out why, then run the command again.
 errors.SUPERVISOR_OUTDATED.title: The Runyard background process is out of date
 errors.SUPERVISOR_OUTDATED.body: The running background process is older than the Runyard you are using. Replacing it would stop 3 runs. The command did not continue.
 errors.SUPERVISOR_OUTDATED.hint: The app tells you how many runs will stop and updates only after you confirm.

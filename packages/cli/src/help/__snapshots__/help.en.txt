@@ -1,0 +1,357 @@
+$ runyard --help
+runyard - Create, run and manage playgrounds, which are small code examples, from local templates.
+
+Usage:
+  runyard <command> [options]
+
+Commands:
+  new <template> [name]  Create a playground from a template, optionally run it
+  run <pg>               Run a playground and wait until it is ready or exits
+  stop [pg]              Stop the run of a playground
+  status [pg]            List playgrounds and their run state
+  logs <pg>              Read the log of a playground
+  rm <pg>                Stop a playground and move it to the Trash
+  doctor                 Check the environment and print diagnostics
+  template <command>     Show, save, lint and test templates
+  skill <command>        Install the instructions for agents
+  config <command>       Show and change command line settings
+
+Global options:
+  --json           Print one JSON object; not affected by language
+  --quiet          Do not print progress or notices; results and errors are still printed
+  --root <dir>     Use this folder in place of the home folder
+  --lang <locale>  Language for this command only: en or zh-CN
+  --help           Show help
+
+Run runyard <command> --help for details of one command.
+
+$ runyard template --help
+runyard template - Show, save, lint and test templates
+
+Usage:
+  runyard template <command> [options]
+
+Commands:
+  list             List templates
+  show <template>  Show one template
+  save <pg>        Save a playground as a template
+  lint <template>  Check the format of a template
+  test <template>  Smoke-test a template
+
+Global options:
+  --json           Print one JSON object; not affected by language
+  --quiet          Do not print progress or notices; results and errors are still printed
+  --root <dir>     Use this folder in place of the home folder
+  --lang <locale>  Language for this command only: en or zh-CN
+  --help           Show help
+
+Run runyard template <command> --help for details of one command.
+
+$ runyard skill --help
+runyard skill - Install the instructions for agents
+
+Usage:
+  runyard skill <command> [options]
+
+Commands:
+  install  Write the instructions to the agent folders
+
+Global options:
+  --json           Print one JSON object; not affected by language
+  --quiet          Do not print progress or notices; results and errors are still printed
+  --root <dir>     Use this folder in place of the home folder
+  --lang <locale>  Language for this command only: en or zh-CN
+  --help           Show help
+
+Run runyard skill <command> --help for details of one command.
+
+$ runyard config --help
+runyard config - Show and change command line settings
+
+Usage:
+  runyard config <command> [options]
+
+Commands:
+  get <key>          Show the current value of a setting and where it comes from
+  set <key> <value>  Change a setting
+
+Global options:
+  --json           Print one JSON object; not affected by language
+  --quiet          Do not print progress or notices; results and errors are still printed
+  --root <dir>     Use this folder in place of the home folder
+  --lang <locale>  Language for this command only: en or zh-CN
+  --help           Show help
+
+Run runyard config <command> --help for details of one command.
+
+$ runyard new --help
+runyard new - Create a playground from a template, optionally run it
+
+Usage:
+  runyard new <template> [name] [options]
+
+Arguments:
+  template  Template id
+  name      Playground name; if omitted, the template id plus a number is used
+
+Options:
+  --run                     Run it right after creating
+  --note <text>             A note for the playground
+  --clean-after <Nd>        Clean up automatically after this many days, such as 30d
+  --var <k=v>               Replace a variable in the template; can be repeated
+  --if-exists <reuse|fail>  What to do if the name exists: reuse or fail
+  --timeout <seconds>       Longest time to wait, in seconds
+  --no-wait                 Return as soon as the request is accepted
+
+Global options:
+  --json           Print one JSON object; not affected by language
+  --quiet          Do not print progress or notices; results and errors are still printed
+  --root <dir>     Use this folder in place of the home folder
+  --lang <locale>  Language for this command only: en or zh-CN
+  --help           Show help
+
+$ runyard run --help
+runyard run - Run a playground and wait until it is ready or exits
+
+Usage:
+  runyard run <pg> [options]
+
+Arguments:
+  pg  Playground name or path
+
+Options:
+  --timeout <seconds>  Longest time to wait, in seconds
+  --no-wait            Return as soon as the request is accepted
+  --restart            Restart first if it is already running
+  --port <n>           Port to use for this run only
+
+Global options:
+  --json           Print one JSON object; not affected by language
+  --quiet          Do not print progress or notices; results and errors are still printed
+  --root <dir>     Use this folder in place of the home folder
+  --lang <locale>  Language for this command only: en or zh-CN
+  --help           Show help
+
+$ runyard stop --help
+runyard stop - Stop the run of a playground
+
+Usage:
+  runyard stop [pg] [options]
+
+Arguments:
+  pg  Playground name or path; if omitted, all are listed
+
+Options:
+  --all   Stop all runs
+  --mine  Stop only the runs held by the command line
+
+Global options:
+  --json           Print one JSON object; not affected by language
+  --quiet          Do not print progress or notices; results and errors are still printed
+  --root <dir>     Use this folder in place of the home folder
+  --lang <locale>  Language for this command only: en or zh-CN
+  --help           Show help
+
+$ runyard status --help
+runyard status - List playgrounds and their run state
+
+Usage:
+  runyard status [pg] [options]
+
+Arguments:
+  pg  Playground name or path; if omitted, all are listed
+
+Options:
+  --running  List only playgrounds that are running
+
+Global options:
+  --json           Print one JSON object; not affected by language
+  --quiet          Do not print progress or notices; results and errors are still printed
+  --root <dir>     Use this folder in place of the home folder
+  --lang <locale>  Language for this command only: en or zh-CN
+  --help           Show help
+
+$ runyard logs --help
+runyard logs - Read the log of a playground
+
+Usage:
+  runyard logs <pg> [options]
+
+Arguments:
+  pg  Playground name or path
+
+Options:
+  --since <cursor>  Read only what comes after this cursor
+  --tail <n>        Read only the last lines
+  --follow          Keep printing new output until the run ends
+  --raw             Keep control sequences such as color codes
+
+Global options:
+  --json           Print one JSON object; not affected by language
+  --quiet          Do not print progress or notices; results and errors are still printed
+  --root <dir>     Use this folder in place of the home folder
+  --lang <locale>  Language for this command only: en or zh-CN
+  --help           Show help
+
+$ runyard rm --help
+runyard rm - Stop a playground and move it to the Trash
+
+Usage:
+  runyard rm <pg>
+
+Arguments:
+  pg  Playground name or path
+
+Global options:
+  --json           Print one JSON object; not affected by language
+  --quiet          Do not print progress or notices; results and errors are still printed
+  --root <dir>     Use this folder in place of the home folder
+  --lang <locale>  Language for this command only: en or zh-CN
+  --help           Show help
+
+$ runyard doctor --help
+runyard doctor - Check the environment and print diagnostics
+
+Usage:
+  runyard doctor [options]
+
+Options:
+  --template <id>  Check only what this template needs
+  --bundle         Export a diagnostics bundle and print its path
+
+Global options:
+  --json           Print one JSON object; not affected by language
+  --quiet          Do not print progress or notices; results and errors are still printed
+  --root <dir>     Use this folder in place of the home folder
+  --lang <locale>  Language for this command only: en or zh-CN
+  --help           Show help
+
+$ runyard template list --help
+runyard template list - List templates
+
+Usage:
+  runyard template list
+
+Global options:
+  --json           Print one JSON object; not affected by language
+  --quiet          Do not print progress or notices; results and errors are still printed
+  --root <dir>     Use this folder in place of the home folder
+  --lang <locale>  Language for this command only: en or zh-CN
+  --help           Show help
+
+$ runyard template show --help
+runyard template show - Show one template
+
+Usage:
+  runyard template show <template>
+
+Arguments:
+  template  Template id
+
+Global options:
+  --json           Print one JSON object; not affected by language
+  --quiet          Do not print progress or notices; results and errors are still printed
+  --root <dir>     Use this folder in place of the home folder
+  --lang <locale>  Language for this command only: en or zh-CN
+  --help           Show help
+
+$ runyard template save --help
+runyard template save - Save a playground as a template
+
+Usage:
+  runyard template save <pg>
+
+Arguments:
+  pg  Playground name or path
+
+Global options:
+  --json           Print one JSON object; not affected by language
+  --quiet          Do not print progress or notices; results and errors are still printed
+  --root <dir>     Use this folder in place of the home folder
+  --lang <locale>  Language for this command only: en or zh-CN
+  --help           Show help
+
+$ runyard template lint --help
+runyard template lint - Check the format of a template
+
+Usage:
+  runyard template lint <template>
+
+Arguments:
+  template  Template id or template folder
+
+Global options:
+  --json           Print one JSON object; not affected by language
+  --quiet          Do not print progress or notices; results and errors are still printed
+  --root <dir>     Use this folder in place of the home folder
+  --lang <locale>  Language for this command only: en or zh-CN
+  --help           Show help
+
+$ runyard template test --help
+runyard template test - Smoke-test a template
+
+Usage:
+  runyard template test <template> [options]
+
+Arguments:
+  template  Template id or template folder
+
+Options:
+  --keep-dir                Keep the temporary folder after the test
+  --tool-version <version>  Test with the given tool version
+
+Global options:
+  --json           Print one JSON object; not affected by language
+  --quiet          Do not print progress or notices; results and errors are still printed
+  --root <dir>     Use this folder in place of the home folder
+  --lang <locale>  Language for this command only: en or zh-CN
+  --help           Show help
+
+$ runyard skill install --help
+runyard skill install - Write the instructions to the agent folders
+
+Usage:
+  runyard skill install [options]
+
+Options:
+  --target <claude|agents|all>  Where to write: claude, agents or all
+
+Global options:
+  --json           Print one JSON object; not affected by language
+  --quiet          Do not print progress or notices; results and errors are still printed
+  --root <dir>     Use this folder in place of the home folder
+  --lang <locale>  Language for this command only: en or zh-CN
+  --help           Show help
+
+$ runyard config get --help
+runyard config get - Show the current value of a setting and where it comes from
+
+Usage:
+  runyard config get <key>
+
+Arguments:
+  key  Name of the setting; the only one is lang
+
+Global options:
+  --json           Print one JSON object; not affected by language
+  --quiet          Do not print progress or notices; results and errors are still printed
+  --root <dir>     Use this folder in place of the home folder
+  --lang <locale>  Language for this command only: en or zh-CN
+  --help           Show help
+
+$ runyard config set --help
+runyard config set - Change a setting
+
+Usage:
+  runyard config set <key> <value>
+
+Arguments:
+  key    Name of the setting; the only one is lang
+  value  The new value
+
+Global options:
+  --json           Print one JSON object; not affected by language
+  --quiet          Do not print progress or notices; results and errors are still printed
+  --root <dir>     Use this folder in place of the home folder
+  --lang <locale>  Language for this command only: en or zh-CN
+  --help           Show help
