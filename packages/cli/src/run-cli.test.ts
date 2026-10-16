@@ -432,7 +432,11 @@ describe("语言", () => {
     const root = joinPath(h.platform.paths.home, posixRelPath("other-root"));
     await h.run(["config", "set", "lang", "zh-CN", "--root", root]);
     expect(await h.platform.fs.exists(h.cliJson)).toBe(false);
-    const other = h.roots.get(root);
-    expect(other?.fs.exists(joinPath(root, posixRelPath(".runyard/cli.json")))).toBe(true);
+    // 路径经 resolve 规范化（Windows 上会补盘符），所以按“只建了一个别的平台”取，不按字符串查
+    expect(h.roots.size).toBe(1);
+    const other = [...h.roots.values()][0];
+    const stateDir = other?.platform.paths.stateDir;
+    expect(stateDir).toBeDefined();
+    expect(other?.fs.exists(joinPath(stateDir as never, posixRelPath("cli.json")))).toBe(true);
   });
 });
