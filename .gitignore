@@ -22,3 +22,6 @@ coverage/
 
 # 系统和编辑器产生的文件
 .DS_Store
+
+# ui-visual 的本地输出（对照页、失败截图）
+/packages/ui/visual/.output/

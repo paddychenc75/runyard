@@ -30,7 +30,7 @@
 
 ## 界面变了之后
 
-基准图只在 CI 的 `macos-26` 机器上生成，本地不写基准图。`ui-visual` 随 #166 就位；就位之后界面有变化的 PR 给它加标签 `update-ui-baseline`，由 CI 重新生成基准图，PR 描述写一句“界面变了什么、为什么”并贴对照页的链接。
+基准图只在 CI 的 `macos-26` 机器上生成，本地不写基准图。新组件的样例文件登记进 `workbench/registry.ts` 后，`ui-visual` 会要求它的五张基准图；界面有变化的 PR 给它加标签 `update-ui-baseline`，由 CI 重新生成基准图，PR 描述写一句“界面变了什么、为什么”并贴对照页的链接。完整流程见 `docs/guides/ui-visual.md`。
 
 ## 验证
 
