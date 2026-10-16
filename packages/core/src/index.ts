@@ -8,5 +8,6 @@ export * from "./ports/index.ts";
 export * from "./prepare/index.ts";
 export * from "./run/index.ts";
 export * from "./scripts/index.ts";
+export * from "./static/static-server.ts";
 export * from "./templates/index.ts";
 export * from "./toolchain/index.ts";

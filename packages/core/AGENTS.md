@@ -3,7 +3,7 @@
 ## 用途
 
 工具检测、运行引擎、资源库、模板、自动清理的判断（技术设计 §3.2）。运行引擎不知道“标签页”和“命令行”是什么，持有者只是 `supervisor` 里的概念。
-现状：日志的切行、解码和读取时清洗（`src/logs/`），一次运行的状态机和进程生命周期（`src/run/`），资源库里的项目创建、命名、索引和“文件夹被动过”的判断（`src/library/`），工具链检测（`src/toolchain/`），以及模板的 lint、工具定义的读取、经平台层读模板文件夹、另存为模板（`src/templates/`），端口的分配与回退（`src/ports/`），启动前的准备：依赖安装、环境、启动计划（`src/prepare/`），脚本的语法检查与监听重跑（`src/scripts/`）。其他模块由后续 issue 各自加入。
+现状：日志的切行、解码和读取时清洗（`src/logs/`），一次运行的状态机和进程生命周期（`src/run/`），资源库里的项目创建、命名、索引和“文件夹被动过”的判断（`src/library/`），工具链检测（`src/toolchain/`），以及模板的 lint、工具定义的读取、经平台层读模板文件夹、另存为模板（`src/templates/`），端口的分配与回退（`src/ports/`），启动前的准备：依赖安装、环境、启动计划（`src/prepare/`），脚本的语法检查与监听重跑（`src/scripts/`），静态页面服务（`src/static/`）。其他模块由后续 issue 各自加入。
 
 ## 对外暴露什么
 
@@ -26,6 +26,8 @@
 - 模板的磁盘读写（`src/templates/`，只经 `platform.fs`，不用 `node:fs`）：`TemplateLocations`（内置模板、运行器、工具定义、用户模板四个目录，由调用方给）；`locateTemplate(platform, locations, ref)`（标识先找内置再找用户，绝对路径就是那个文件夹）；`lintTemplateRef`（定位、读运行器和工具定义、跑 `lintTemplate`，再补放在模板目录里才有的规则：文件夹名等于 id、用户模板不许占用内置标识 `template-id-reserved`；模板自带的 `runner.json` 不读）；`readTemplateFolder`、`listFolderFiles`、`decodeText`、`readToolDefinitions`；`saveTemplate(platform, input)`：把项目另存为用户模板（规格 TEMPLATES-CUSTOM-01 到 16），先把内容全读进内存、写临时目录 `.saving-<id>-<随机>` 再 `moveDir`（不覆盖已有名字），失败时临时目录进废纸篓、不留在模板目录下。`include` / `exclude` 路径由调用方用协议的 `relativePathSchema` 校验过。默认排除：`.runyard/`（只在根，include 也加不进来）、`node_modules` `.venv` `.git` `__pycache__`（任何深度）、`dist` `build` `.next` `.nuxt` `.output`（只看项目根）、`.env` 和 `.env.*`。管理进程的 `template.list|get|save` 用的就是这套读取和 `saveTemplate`（#119）。标识不合法、被占用的错误带 `kind: "template"`（`NAME_INVALID`、`NAME_EXISTS` 的可选参数，缺省是项目），文案据此写“模板标识”。
 - 工具链的纯函数：`detectTool`、`extractVersion`、`evaluateRequirements`（对照 `requires` 出错误与提示，可单独用）、`toolsToDetect`、`judgeVersion` / `parseVersionNumbers`（范围比较只比范围里写了的几段）。
 - 改名、移到废纸篓、自动清理（`src/library/`，#38）：`library.rename(ref, newName, { isBusy, beforeMove })` 与 `library.trash(ref, { beforeMove, regenerable? })` 只做技术设计 §4.3 固定顺序的第 5 步；停止、请客户端释放句柄、改名前在运行的项目改名后重新启动（持有者不变）由 supervisor 编排，经 `beforeMove` 接入。顺序是名称校验、`BUSY`、重名、`beforeMove`、平台层动作、改索引；平台层的错误码（`PATH_LOCKED`、`TRASH_UNAVAILABLE`、`NAME_EXISTS`、`FOLDER_MISSING`）原样抛出，失败时文件夹和索引都不动。`judgeAutoClean`（纯函数）与 `library.checkAutoClean(inUse)`（读设置、判断、把顺延记成 `snoozedUntil`）给出 `{ remind, clean, postponed, skipped? }`；`inUse` 是现在有运行的项目 id（开标签页即有运行，判断不认识标签页，规格措辞见 issue #73）。`readFile(item)`（读项目文件夹里的 `playground.json`，状态在返回值里）、`update(ref, { note, scriptAutoRun })`、`forget(ref)`（只从索引移除，下次扫描会重新登记那个文件夹），`setAutoClean(ref, days | null)`（从已保留打开时计时从现在起算）、`keep`、`ackReminder`、`markUsed`（记一次使用并清除提醒与顺延；只读命令和“打开但不运行”不调用）。
+- 静态页面服务（`src/static/`，#146 从 supervisor 搬来，行为不变）：`createStaticServer({ platform })` 返回准备阶段用的 `StaticServer`，供管理进程和命令行的 `template test` 共用；规则（只绑 `127.0.0.1`、路径防穿越、`.runyard/` 一律 404、HTML 注入刷新脚本、`dispose` 等端口关闭）见原 supervisor 说明，这里直接用 `node:fs` 的 `realpath`。
+- 模板展开（`src/templates/template-catalog.ts`）：`createTemplateCatalog({ platform, locations, appVersion, detectVersions? })` 返回 `TemplateCatalog`（`seed`、`runnerKind`），错误是 `LibraryError`（`TEMPLATE_NOT_FOUND`、`TEMPLATE_INVALID`、`VAR_INVALID`）。
 - `nextDefaultName`、`createUlid` / `randomUlid`（项目 id）。
 
 ## 本包特有的规则

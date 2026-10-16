@@ -12,7 +12,7 @@ export {
   type MethodHandler,
   type RequestContext,
 } from "./dispatch.ts";
-export type { LibrarySeams, TemplateCatalog } from "./library-seams.ts";
+export type { LibrarySeams } from "./library-seams.ts";
 export { MethodFailure, methodFailure } from "./method-failure.ts";
 export { parseSupervisorArgs, type SupervisorArgs } from "./parse-args.ts";
 export { RELEASE_TIMEOUT_MS } from "./release-coordinator.ts";

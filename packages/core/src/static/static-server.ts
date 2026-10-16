@@ -1,7 +1,7 @@
 import { readFile, realpath } from "node:fs/promises";
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
-import type { StaticServer } from "@runyard/core";
 import { type Disposable, type Platform, posixRelPath } from "@runyard/platform";
+import type { StaticServer } from "../prepare/prepare-types.ts";
 import { contentTypeOf } from "./static-mime.ts";
 import { resolveStaticFile } from "./static-path.ts";
 import { injectReloadScript, RELOAD_EVENTS_PATH } from "./static-reload.ts";

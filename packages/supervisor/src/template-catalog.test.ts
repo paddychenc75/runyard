@@ -1,9 +1,9 @@
 import { join } from "node:path";
+import { createTemplateCatalog } from "@runyard/core";
 import { type AbsPath, absPath } from "@runyard/platform";
 import type { TemplateRecord } from "@runyard/protocol";
 import { afterEach, describe, expect, it } from "vitest";
 import { LibraryWorld, type Pump } from "./library-harness.test.ts";
-import { createTemplateCatalog } from "./template-catalog.ts";
 
 // 模板展开成项目（seed）：用小的夹具模板（假文件系统里），不依赖真正的内置模板。
 // 内置模板放在 /app/templates/builtin，用户模板在状态目录下的 templates/。

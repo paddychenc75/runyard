@@ -3,6 +3,8 @@ import {
   createPortSlotAllocator,
   createReadinessProbe,
   createRunPreparer,
+  createStaticServer,
+  createTemplateCatalog,
   DEFAULT_PORT_RANGE,
   type InstallHint,
   isActiveState,
@@ -29,10 +31,8 @@ import { createRunSubjects } from "./run-subjects.ts";
 import type { RunsView } from "./runs-view.ts";
 import { createScriptWatch, type ScriptWatch } from "./script-watch.ts";
 import type { Session } from "./session.ts";
-import { createStaticServer } from "./static-server.ts";
 import type { SupervisorApi } from "./supervisor-api.ts";
 import type { SupervisorExtensions, TemplateDataDirs } from "./supervisor-options.ts";
-import { createTemplateCatalog } from "./template-catalog.ts";
 import { createToolchainStore } from "./toolchain-store.ts";
 
 // 运行编排的装配（#40）：把 core 的运行引擎、脚本重跑、准备阶段接到管理进程上，
