@@ -13,6 +13,10 @@
       "path": "packages/i18n",
       "allow": ["@runyard/protocol"]
     },
+    "@runyard/ui": {
+      "path": "packages/ui",
+      "allow": ["@runyard/tokens", "@runyard/i18n"]
+    },
     "@runyard/platform": {
       "path": "packages/platform",
       "allow": ["@runyard/protocol"]

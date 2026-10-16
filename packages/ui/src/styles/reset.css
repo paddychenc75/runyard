@@ -1,0 +1,18 @@
+/* 最小的重置：盒模型、表单元素继承字体。不写任何颜色和像素，视觉全部来自设计变量。 */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  margin: 0;
+}

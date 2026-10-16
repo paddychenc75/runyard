@@ -1,0 +1,25 @@
+{
+  "extends": "../../tooling/tsconfig/base.json",
+  "compilerOptions": {
+    "outDir": "../../.tsbuild/ui",
+    "tsBuildInfoFile": "../../.tsbuild/ui/tsconfig.tsbuildinfo",
+    "rootDir": ".",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "types": ["node"],
+    "jsx": "react-jsx"
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "workbench/**/*.ts", "workbench/**/*.tsx"],
+  "references": [
+    {
+      "path": "../tokens"
+    },
+    {
+      "path": "../i18n"
+    },
+    {
+      "path": "./tsconfig.build.json"
+    }
+  ]
+}

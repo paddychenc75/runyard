@@ -25,6 +25,8 @@
     "test:template": "node tooling/scripts/template-smoke.ts",
     "i18n:build": "node packages/i18n/build/build.ts",
     "tokens:build": "node packages/tokens/build/build.ts",
+    "icons:build": "node packages/ui/build/icons.ts",
+    "ui:dev": "pnpm --filter @runyard/ui dev",
     "spec": "node tooling/scripts/spec.mjs"
   },
   "devDependencies": {

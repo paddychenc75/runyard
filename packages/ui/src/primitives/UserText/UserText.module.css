@@ -1,0 +1,9 @@
+/* 用户内容不换算、不翻译；长名字不撑破容器，由使用处决定是否截断 */
+.root {
+  overflow-wrap: anywhere;
+}
+
+.root[data-mono] {
+  font-family: var(--font-mono);
+  font-size: var(--text-code-small-size);
+}

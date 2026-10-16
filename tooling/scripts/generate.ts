@@ -10,6 +10,7 @@ import {
   DOC_FILE as TOKENS_DOC,
   GENERATED_FILES as TOKENS_FILES,
 } from "../../packages/tokens/build/build.ts";
+import { buildIconTable, ICON_TABLE } from "../../packages/ui/build/icons.ts";
 import { fallbackLocale, readCatalogs, sourceLocale } from "../checks/i18n-catalogs.ts";
 import { formatJson } from "./format-json.ts";
 import { type ProtocolDefs, renderCodes, renderProtocol } from "./render-reference.ts";
@@ -24,6 +25,7 @@ import { type ProtocolDefs, renderCodes, renderProtocol } from "./render-referen
 //    （一行一个键的文案对照表，来自 locales/）。pnpm i18n:build 只生成前者；pnpm generate 两个都生成。
 // 5. 设计变量：packages/tokens/generated/ 下的 tokens.css、tokens.ts、editor-themes.ts，
 //    和 docs/design/tokens.md 里两个标记之间的表格，来自 packages/tokens/src/tokens.json。pnpm tokens:build 做同样的事。
+// 6. 图标表：packages/ui/src/icons/generated/icon-paths.ts，来自 packages/ui/src/icons/svg/*.svg。pnpm icons:build 做同样的事。
 // generated-fresh 检查（tooling/checks/generated-fresh.ts）用同一份代码核对生成物是否最新。
 
 const LAYERS_FILE = "tooling/checks/layers.json";
@@ -134,6 +136,12 @@ function tokensFiles(root: string): GeneratedFile[] {
   ];
 }
 
+// 没有 packages/ui/src/icons/svg 的仓库（检查的测试用的最小仓库）没有图标表
+function iconsFiles(root: string): GeneratedFile[] {
+  if (!existsSync(join(root, "packages/ui/src/icons/svg"))) return [];
+  return [wholeFile(root, `packages/ui/${ICON_TABLE}`, buildIconTable(join(root, "packages/ui")))];
+}
+
 // 算出每个带生成内容的文件应有的全文；不写盘
 export function generate(root: string, defs: ProtocolDefs = protocolDefs): GeneratedFile[] {
   return [
@@ -154,6 +162,7 @@ export function generate(root: string, defs: ProtocolDefs = protocolDefs): Gener
       renderStrings(readCatalogs(root), sourceLocale, fallbackLocale),
     ),
     ...tokensFiles(root),
+    ...iconsFiles(root),
   ];
 }
 

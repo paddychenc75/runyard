@@ -30,7 +30,7 @@ describe("共用 Vitest 配置：两个阶段", () => {
   it.each(["win32", "darwin", "linux"])("%s：单元阶段永远排除 platform-dependent 文件", (host) => {
     const unit = projects(host).unit;
     expect(unit.exclude).toContain(PLATFORM_DEPENDENT_GLOB);
-    expect(unit.include).toEqual(["**/*.test.ts"]);
+    expect(unit.include).toEqual(["**/*.test.{ts,tsx}"]);
   });
 
   it.each(["darwin", "linux"])("%s：进程阶段只收 platform-dependent 文件", (host) => {

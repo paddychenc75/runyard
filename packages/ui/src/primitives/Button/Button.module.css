@@ -1,0 +1,141 @@
+/*
+ * 按钮：四个变体 × 三档高度。数字出自控件规范板（SpecControls）和设计变量。
+ * 悬停多一层填充，按下再多一层；聚焦是 1.5 px 强调线加 3 px 光环；禁用降到 40% 不透明度。
+ * 工作台用 data-force-state 强制显示悬停、按下、聚焦。
+ */
+.root {
+  --button-bg: transparent;
+  --button-bg-hover: var(--button-bg);
+  --button-bg-pressed: var(--button-bg-hover);
+  --button-color: var(--color-text-primary);
+  --button-weight: var(--text-body-weight);
+  --button-shadow: none;
+  --button-shadow-pressed: none;
+  --button-edge: 0 solid transparent;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  max-inline-size: 100%;
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--size-control-padding-md);
+  border: var(--button-edge);
+  border-radius: var(--radius-capsule);
+  background: var(--button-bg);
+  color: var(--button-color);
+  box-shadow: var(--button-shadow);
+  font-family: inherit;
+  font-size: var(--text-body-size);
+  font-weight: var(--button-weight);
+  line-height: var(--text-body-line-height);
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  outline: none;
+  transition: background-color var(--motion-duration-fast) linear;
+}
+
+.root[data-size="lg"] {
+  block-size: var(--size-control-lg);
+  padding-inline: var(--size-control-padding-lg);
+  font-size: var(--text-item-size);
+  line-height: var(--text-item-line-height);
+}
+
+.root[data-size="md"] {
+  block-size: var(--size-control-md);
+}
+
+.root[data-size="sm"] {
+  block-size: var(--size-control-sm);
+  padding-inline: var(--space-6);
+}
+
+.label {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.root[data-variant="primary"] {
+  --button-bg: var(--color-fill-accent);
+  --button-bg-hover: var(--color-fill-accent-hover);
+  --button-bg-pressed: var(--color-fill-accent-pressed);
+  --button-color: var(--color-text-on-accent);
+  --button-weight: var(--text-item-weight);
+  --button-shadow: var(--shadow-accent-button);
+}
+
+.root[data-variant="neutral"] {
+  --button-bg: var(--color-fill-neutral);
+  --button-bg-hover: var(--color-fill-neutral-hover);
+  --button-bg-pressed: var(--color-fill-neutral-pressed);
+}
+
+.root[data-variant="destructive"] {
+  --button-bg: var(--color-fill-danger-tint);
+  --button-bg-hover: var(--color-fill-danger-tint-hover);
+  --button-bg-pressed: var(--color-fill-danger-tint-pressed);
+  --button-color: var(--color-status-danger-text);
+  --button-weight: var(--text-control-weight);
+}
+
+/* 玻璃按钮：玻璃只用于浮层，所以只有填充、描边和投影，没有模糊（模糊在 materials.css） */
+.root[data-variant="glass"] {
+  --button-bg: var(--glass-control-bg);
+  --button-bg-hover: var(--glass-control-bg-hover);
+  --button-bg-pressed: var(--glass-control-bg-pressed);
+  --button-weight: var(--text-control-weight);
+  --button-edge: var(--glass-border-width) solid var(--glass-border-color);
+  --button-shadow: var(--shadow-1);
+}
+
+.root:hover:not([data-force-state]),
+.root[data-force-state="hover"] {
+  background: var(--button-bg-hover);
+}
+
+.root:active:not([data-force-state]),
+.root[data-force-state="pressed"] {
+  background: var(--button-bg-pressed);
+  box-shadow: var(--button-shadow-pressed);
+}
+
+.root:focus-visible:not([data-force-state]),
+.root[data-force-state="focus"] {
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.root:disabled:not([data-loading]),
+.root[aria-disabled="true"]:not([data-loading]) {
+  opacity: 0.4;
+  background: var(--button-bg);
+  box-shadow: var(--button-shadow);
+}
+
+.root[data-loading] {
+  background: var(--button-bg-hover);
+}
+
+.spinner {
+  animation: spin 900ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 减弱动态效果：没有循环动画，转圈变成静态标记，旁边的文字保留（规范板“减弱动态效果”） */
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition: none;
+  }
+
+  .spinner {
+    animation: none;
+  }
+}

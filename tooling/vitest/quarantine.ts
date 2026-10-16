@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 // 隔离名单：偶发失败的测试，修好之前的临时处理（docs/guides/testing.md“偶发失败的规则”）。
@@ -15,7 +16,8 @@ export interface QuarantineEntry {
   readonly expires: string;
 }
 
-export const QUARANTINE_FILE = fileURLToPath(new URL("./quarantine.json", import.meta.url));
+// 不用 new URL(…, import.meta.url)：在 jsdom 环境里全局 URL 是 jsdom 的实现，fileURLToPath 不认它（#163）
+export const QUARANTINE_FILE = join(dirname(fileURLToPath(import.meta.url)), "quarantine.json");
 
 export function loadQuarantine(path: string = QUARANTINE_FILE): QuarantineEntry[] {
   return JSON.parse(readFileSync(path, "utf8")) as QuarantineEntry[];

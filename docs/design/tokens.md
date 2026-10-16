@@ -30,7 +30,10 @@ disagree, `tokens.json` wins.
 | Toolbar / capsule background (`--glass-toolbar-bg`) | rgba(255, 255, 255, 0.66) | rgba(72, 72, 78, 0.55) |
 | Sidebar background (library) (`--glass-sidebar-bg`) | rgba(242, 243, 247, 0.78) | rgba(58, 58, 62, 0.55) |
 | File tree panel background (`--glass-filetree-bg`) | rgba(255, 255, 255, 0.62) | rgba(58, 58, 62, 0.55) |
-| Dialog / menu background (`--glass-dialog-bg`) | rgba(250, 250, 252, 0.84) | rgba(44, 44, 48, 0.78) |
+| Dialog / menu background (`--glass-dialog-bg`) | rgba(250, 250, 252, 0.82) | rgba(44, 44, 48, 0.78) |
+| Control on glass (secondary button), rest (`--glass-control-bg`) | rgba(255, 255, 255, 0.66) | rgba(72, 72, 78, 0.55) |
+| Control on glass, hover (one more fill layer) (`--glass-control-bg-hover`) | rgba(255, 255, 255, 0.78) | rgba(72, 72, 78, 0.68) |
+| Control on glass, pressed (`--glass-control-bg-pressed`) | rgba(255, 255, 255, 0.9) | rgba(72, 72, 78, 0.8) |
 | Glass border colour (width: glass-border-width) (`--glass-border-color`) | rgba(255, 255, 255, 0.9) | rgba(255, 255, 255, 0.14) |
 | Selected tab inside a glass capsule (`--glass-tab-selected-bg`) | #FFFFFF | rgba(255, 255, 255, 0.16) |
 
@@ -42,6 +45,8 @@ disagree, `tokens.json` wins.
 | Glass shadow, sidebar (`--shadow-2`) | 0 0 0 0.5px rgba(0, 0, 0, 0.1), 0 12px 36px rgba(15, 23, 42, 0.12), inset 0 1px 0 rgba(255, 255, 255, 1) | 0 12px 36px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12) |
 | Glass shadow, dialog (`--shadow-3`) | 0 0 0 0.5px rgba(0, 0, 0, 0.14), 0 40px 90px rgba(15, 23, 42, 0.32), inset 0 1px 0 rgba(255, 255, 255, 1) | 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 40px 90px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.14) |
 | Glass shadow, menu / popover (between sidebar and dialog) (`--shadow-menu`) | 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 16px 40px rgba(15, 23, 42, 0.2), inset 0 1px 0 rgba(255, 255, 255, 1) | 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.14) |
+| Primary button glow (`--shadow-accent-button`) | 0 4px 14px rgba(0, 113, 227, 0.25) | 0 4px 14px rgba(10, 132, 255, 0.35) |
+| Focus ring: 1.5 px accent line plus 3 px halo (`--shadow-focus-ring`) | 0 0 0 1.5px #0071E3, 0 0 0 4.5px rgba(0, 113, 227, 0.18) | 0 0 0 1.5px #0A84FF, 0 0 0 4.5px rgba(10, 132, 255, 0.32) |
 | Selected tab inside a glass capsule (`--shadow-tab-selected`) | 0 1px 3px rgba(0, 0, 0, 0.12) | inset 0 1px 0 rgba(255, 255, 255, 0.18) |
 
 ### Text
@@ -59,8 +64,8 @@ disagree, `tokens.json` wins.
 
 | Role | Light | Dark |
 | --- | --- | --- |
-| Hairline between rows / card border (`--color-line-hairline`) | rgba(0, 0, 0, 0.08) | rgba(255, 255, 255, 0.08) |
-| Stronger divider, input border (`--color-line-strong`) | rgba(0, 0, 0, 0.14) | rgba(255, 255, 255, 0.14) |
+| Hairline between rows / card border (`--color-line-hairline`) | rgba(0, 0, 0, 0.06) | rgba(255, 255, 255, 0.08) |
+| Stronger divider, input border (`--color-line-strong`) | rgba(0, 0, 0, 0.1) | rgba(255, 255, 255, 0.14) |
 
 ### Accent and status
 
@@ -70,7 +75,7 @@ disagree, `tokens.json` wins.
 | Accent line (focus ring, caret, non-text marks) (`--color-line-accent`) | #0071E3 | #0A84FF |
 | Accent text (`--color-text-accent`) | #0058B0 | #4DA3FF |
 | Link (`--color-text-link`) | #0071E3 | #4DA3FF |
-| Accent tint (selected row, focus ring) (`--color-fill-accent-tint`) | rgba(0, 113, 227, 0.12) | rgba(10, 132, 255, 0.2) |
+| Accent tint (selected row, focus ring) (`--color-fill-accent-tint`) | rgba(0, 113, 227, 0.08) | rgba(10, 132, 255, 0.32) |
 | Running: dot (`--color-status-running-mark`) | #28A745 | #30D158 |
 | Running: text (`--color-status-running-text`) | #1B7A34 | #30D158 |
 | Starting / warning: mark (`--color-status-warning-mark`) | #C27400 | #FFD60A |
@@ -79,6 +84,12 @@ disagree, `tokens.json` wins.
 | Crashed / destructive: mark (`--color-status-danger-mark`) | #D70015 | #FF453A |
 | Crashed / destructive: text (`--color-status-danger-text`) | #C4001A | #FF9F99 |
 | Destructive tint background (`--color-fill-danger-tint`) | rgba(215, 0, 21, 0.1) | rgba(255, 69, 58, 0.18) |
+| Accent fill, hover (`--color-fill-accent-hover`) | #0068D1 | #0979EB |
+| Accent fill, pressed (`--color-fill-accent-pressed`) | #005FBF | #086FD6 |
+| Neutral fill, hover (`--color-fill-neutral-hover`) | rgba(118, 118, 128, 0.22) | rgba(118, 118, 128, 0.32) |
+| Neutral fill, pressed (`--color-fill-neutral-pressed`) | rgba(118, 118, 128, 0.3) | rgba(118, 118, 128, 0.4) |
+| Destructive tint, hover (`--color-fill-danger-tint-hover`) | rgba(215, 0, 21, 0.16) | rgba(255, 69, 58, 0.26) |
+| Destructive tint, pressed (`--color-fill-danger-tint-pressed`) | rgba(215, 0, 21, 0.22) | rgba(255, 69, 58, 0.34) |
 | Agent: text (`--color-agent-text`) | #7A2E9E | #D0A8FF |
 | Agent: tint background (`--color-fill-agent-tint`) | rgba(175, 82, 222, 0.12) | rgba(191, 90, 242, 0.24) |
 | Switch on (`--color-fill-switch-on`) | #28A745 | #30D158 |
@@ -116,8 +127,9 @@ disagree, `tokens.json` wins.
 | --- | --- | --- |
 | `--glass-border-width` | 1px | Glass border width |
 | `--glass-blur-toolbar` | blur(28px) saturate(180%) | Backdrop filter, toolbar / capsule |
-| `--glass-blur-sidebar` | blur(40px) | Backdrop filter, sidebar |
-| `--glass-blur-dialog` | blur(50px) saturate(190%) | Backdrop filter, dialog / menu |
+| `--glass-blur-sidebar` | blur(40px) saturate(180%) | Backdrop filter, sidebar |
+| `--glass-blur-dialog` | blur(50px) saturate(190%) | Backdrop filter, dialog |
+| `--glass-blur-menu` | blur(40px) saturate(190%) | Backdrop filter, menu |
 
 ### Radii
 
@@ -144,7 +156,9 @@ disagree, `tokens.json` wins.
 | `--size-control-lg` | 40px | Primary button height |
 | `--size-control-md` | 32px | Secondary button height |
 | `--size-control-sm` | 28px | Segmented item, small control height |
-| `--size-row` | 48px | List row height |
+| `--size-row` | 54px | List row height |
+| `--size-control-padding-lg` | 18px | Primary button inline padding |
+| `--size-control-padding-md` | 14px | Secondary button inline padding |
 | `--size-tree-row` | 28px | File tree row height |
 | `--size-menu-item` | 32px | Menu item height |
 | `--size-window-inset` | 8px | Window inset for floating panels |
@@ -196,6 +210,7 @@ disagree, `tokens.json` wins.
 | `--text-dialog-title-weight` | 700 | Dialog title |
 | `--text-section-title-weight` | 600 | Section title |
 | `--text-item-weight` | 600 | Item name and primary button |
+| `--text-control-weight` | 500 | Secondary and glass button label |
 | `--text-body-weight` | 400 | Body |
 | `--text-secondary-weight` | 400 | Secondary and column headers |
 | `--text-caption-weight` | 400 | Key caps, small captions |
