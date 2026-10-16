@@ -46,6 +46,8 @@
   "errors.NAME_RESERVED.title": {
     "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文"
   },
+  "errors.PORT_IN_USE.hintCli": { "port": "用户指定的端口号；原样显示，不加千分位" },
+  "errors.PORT_IN_USE.title": { "port": "用户指定的端口号；原样显示，不加千分位" },
   "errors.PATH_LOCKED.title": { "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文" },
   "errors.PATH_TOO_LONG.title": {
     "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文"

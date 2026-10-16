@@ -95,6 +95,7 @@ type LogEntry =
 | 6 | `TEMPLATE_TEST_FAILED` | `{ template, step }`（冒烟测试在 `step` 这一步没达到预期：重新加载没生效、有残留进程；`step` 取 `create` `install` `start` `ready` `reload` `stop` `leftovers`） |
 | 7 | `READY_TIMEOUT` | `{ name, seconds }` |
 | 9 | `NAME_EXISTS`、`BUSY`、`PATH_LOCKED`、`PATH_TOO_LONG`、`TRASH_UNAVAILABLE` | `{ name }` |
+| 9 | `PORT_IN_USE` | `{ port }`（用户显式指定的端口被占用或被系统保留：不启动、不换端口；规格 RUN-PORTS-15） |
 | 10 | `APP_REQUIRED`、`SUPERVISOR_UNAVAILABLE`、`CLIENT_OUTDATED`、`NOT_SUPPORTED` | 无 |
 | 10 | `SUPERVISOR_OUTDATED` | `{ runs }`（升级会停掉的运行个数，非负整数） |
 | 10 | `DATA_FROM_NEWER_VERSION` | `{ file, found, supported }`（要写的文件是更新版本的 Runyard 写的：`file` 取自 `dataFileKinds`，`found` 是文件版本，`supported` 是本程序认识的最高版本；读仍允许，写一律拒绝，见 [storage.md](storage.md) 第 3 节） |

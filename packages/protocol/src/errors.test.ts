@@ -39,6 +39,7 @@ const cases: Record<ErrorCode, { ok: unknown; bad: unknown }> = {
   PATH_LOCKED: { ok: { name: "demo" }, bad: {} },
   PATH_TOO_LONG: { ok: { name: "demo" }, bad: {} },
   TRASH_UNAVAILABLE: { ok: { name: "demo" }, bad: {} },
+  PORT_IN_USE: { ok: { port: 7500 }, bad: { port: 0 } },
   APP_REQUIRED: { ok: {}, bad: null },
   SUPERVISOR_UNAVAILABLE: { ok: {}, bad: null },
   SUPERVISOR_OUTDATED: { ok: { runs: 2 }, bad: { runs: -1 } },
@@ -59,7 +60,7 @@ const exitTable: Record<number, ErrorCode[]> = {
   5: ["SETUP_FAILED", "DEPS_OFFLINE"],
   6: ["RUN_FAILED", "SCRIPT_ERRORED", "TEMPLATE_TEST_FAILED"],
   7: ["READY_TIMEOUT"],
-  9: ["NAME_EXISTS", "BUSY", "PATH_LOCKED", "PATH_TOO_LONG", "TRASH_UNAVAILABLE"],
+  9: ["NAME_EXISTS", "BUSY", "PATH_LOCKED", "PATH_TOO_LONG", "TRASH_UNAVAILABLE", "PORT_IN_USE"],
   10: [
     "APP_REQUIRED",
     "SUPERVISOR_UNAVAILABLE",
@@ -76,8 +77,8 @@ const released: Record<string, number> = Object.fromEntries(
 );
 
 describe("错误码登记表", () => {
-  it("共 30 个错误码，没有重复", () => {
-    expect(errorCodes).toHaveLength(30);
+  it("共 31 个错误码，没有重复", () => {
+    expect(errorCodes).toHaveLength(31);
     expect(new Set(errorCodes).size).toBe(errorCodes.length);
   });
 

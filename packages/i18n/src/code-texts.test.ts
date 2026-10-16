@@ -48,6 +48,7 @@ const errorExamples: { [C in ErrorCode]: ErrorParams<C> } = {
   PATH_LOCKED: { name: "react19-3" },
   PATH_TOO_LONG: { name: "react19-3" },
   TRASH_UNAVAILABLE: { name: "react19-3" },
+  PORT_IN_USE: { port: 7500 },
   APP_REQUIRED: {},
   SUPERVISOR_UNAVAILABLE: {},
   SUPERVISOR_OUTDATED: { runs: 3 },

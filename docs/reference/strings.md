@@ -160,6 +160,10 @@
 | errors.PLAYGROUND_NOT_FOUND.hint | 检查名称是否拼写正确。 | Check that the name is spelled correctly. | — |
 | errors.PLAYGROUND_NOT_FOUND.hintCli | 运行 runyard status 查看现有的项目。 | Run runyard status to list existing playgrounds. | — |
 | errors.PLAYGROUND_NOT_FOUND.title | 找不到项目「{name}」 | Playground "{name}" not found | name：项目名称（也是文件夹名）；命令行传路径时是用户给的原文 |
+| errors.PORT_IN_USE.body | 你指定了这个端口，所以没有启动项目，也没有改用别的端口。 | You asked for this exact port, so the playground was not started and Runyard did not switch to another port. | — |
+| errors.PORT_IN_USE.hint | 关掉正在使用这个端口的程序，或者不指定端口再启动。 | Stop the program that is using the port, or start without choosing a port. | — |
+| errors.PORT_IN_USE.hintCli | 找到正在使用 {port} 端口的程序并关掉它，或者去掉 --port 重新运行，使用登记的端口。 | Find the program that is using port {port} and stop it, or run the command again without --port to use the registered port. | port：用户指定的端口号；原样显示，不加千分位 |
+| errors.PORT_IN_USE.title | {port} 端口已被占用 | Port {port} is already in use | port：用户指定的端口号；原样显示，不加千分位 |
 | errors.READY_TIMEOUT.body | 进程仍在运行，没有被停止，只是命令不再等待它。 | The process is still running and was not stopped. The command just stopped waiting for it. | — |
 | errors.READY_TIMEOUT.hint | 过一会儿再看它是否就绪，或者查看输出。 | Check again in a moment whether it is ready, or read the output. | — |
 | errors.READY_TIMEOUT.hintCli | 运行 runyard status {name} 看它是否就绪，或运行 runyard logs {name} 查看输出。 | Run runyard status {name} to see whether it is ready, or runyard logs {name} to read the output. | name：项目名称（也是文件夹名）；命令行传路径时是用户给的原文 |

@@ -1,6 +1,6 @@
 import { type AbsPath, joinPath, posixRelPath } from "@runyard/platform";
 import type { ErrorCause, FailureReason, RunyardError } from "@runyard/protocol";
-import { chooseRunPort } from "../ports/choose-run-port.ts";
+import { chooseRunPort, isPortRefused } from "../ports/choose-run-port.ts";
 import { DEFAULT_PORT_RANGE } from "../ports/port-range.ts";
 import { expandCommand } from "../run/expand-command.ts";
 import type { RunPlan } from "../run/run-types.ts";
@@ -16,13 +16,24 @@ export async function runPortStep(step: PrepareStep): Promise<Port | undefined |
   const { deps, subject, context } = step;
   if (context.request.kind === "oneshot") return undefined;
   const range = deps.portRange?.() ?? DEFAULT_PORT_RANGE;
+  const explicit = context.request.port !== undefined;
   const wanted = context.request.port ?? subject.registeredPort ?? range.min;
   const chosen = await chooseRunPort({
     platform: deps.platform,
     wanted,
+    explicit,
     range,
     registeredByOthers: subject.otherRegisteredPorts,
   });
+  if (isPortRefused(chosen)) {
+    return {
+      failure: {
+        code: "PORT_IN_USE",
+        params: { port: chosen.refused.port },
+        debug: `explicit port ${chosen.refused.port} is not free (${chosen.refused.reason})`,
+      },
+    };
+  }
   if (chosen === null) {
     return {
       failure: {
