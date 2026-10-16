@@ -239,10 +239,7 @@ export type CatalogMessages = {
   "desktop.error.title.label": {
     title: string | number;
   };
-  "desktop.library.empty.hint": Record<never, never>;
-  "desktop.library.title": Record<never, never>;
   "desktop.preview.frame.label": Record<never, never>;
-  "desktop.preview.placeholder": Record<never, never>;
   "desktop.preview.waiting.label": Record<never, never>;
   "desktop.run.action": Record<never, never>;
   "desktop.state.idle.label": Record<never, never>;
@@ -270,6 +267,20 @@ export type CatalogMessages = {
   "format.relative.minutes": {
     count: number;
   };
+  "library.column.actions.aria": Record<never, never>;
+  "library.column.creator.label": Record<never, never>;
+  "library.column.lastOpened.label": Record<never, never>;
+  "library.column.name.label": Record<never, never>;
+  "library.column.port.label": Record<never, never>;
+  "library.column.retention.label": Record<never, never>;
+  "library.column.status.label": Record<never, never>;
+  "library.column.template.label": Record<never, never>;
+  "library.creator.agent.label": Record<never, never>;
+  "library.creator.cli.label": Record<never, never>;
+  "library.creator.me.label": Record<never, never>;
+  "library.empty.cli.label": Record<never, never>;
+  "library.empty.hint": Record<never, never>;
+  "library.empty.title": Record<never, never>;
   "library.filter.agent.label": Record<never, never>;
   "library.filter.all.label": Record<never, never>;
   "library.filter.autoClean.label": Record<never, never>;
@@ -280,14 +291,27 @@ export type CatalogMessages = {
   "library.nav.settings.label": Record<never, never>;
   "library.nav.templates.label": Record<never, never>;
   "library.nav.unused.label": Record<never, never>;
+  "library.note.empty.label": Record<never, never>;
   "library.page.summary.label": {
     running: number;
     total: number;
   };
+  "library.retention.autoClean.label": {
+    days: number;
+  };
+  "library.retention.autoClean.tooltip": {
+    days: number;
+  };
+  "library.retention.kept.label": Record<never, never>;
   "library.sidebar.footer.label": {
     count: number;
   };
   "library.tab.title": Record<never, never>;
+  "library.table.aria": Record<never, never>;
+  "library.topbar.idle.label": Record<never, never>;
+  "library.topbar.running.label": {
+    count: number;
+  };
   "platform.fileManager": Record<never, never>;
   "platform.trash": Record<never, never>;
   "workspace.tabs.aria": Record<never, never>;

@@ -167,6 +167,17 @@ disagree, `tokens.json` wins.
 | `--size-window-controls` | 72px | Space reserved for the native window buttons in a title bar |
 | `--size-card-gap` | 8px | Gap between cards |
 | `--size-dialog-width` | 580px | Dialog width |
+| `--size-status-mark` | 9px | Status dot / square in a list row |
+| `--size-badge` | 22px | Badge (retention, creator) height |
+| `--size-tile` | 22px | Template monogram tile, in a table row |
+| `--size-tile-lg` | 24px | Template monogram tile, on a chip |
+| `--size-column-icon` | 36px | Table column: row actions |
+| `--size-column-sm` | 84px | Table column: port |
+| `--size-column-md` | 96px | Table column: retention |
+| `--size-column-lg` | 110px | Table column: last opened, creator |
+| `--size-column-xl` | 132px | Table column: status |
+| `--size-column-flex-min` | 140px | Table column that shares leftover width, minimum |
+| `--size-column-fill-min` | 220px | Table name column, minimum |
 
 ### Spacing scale
 
@@ -196,6 +207,7 @@ disagree, `tokens.json` wins.
 | --- | --- | --- |
 | `--text-page-title-size` | 28px | Page title (weight 700) |
 | `--text-dialog-title-size` | 20px | Dialog title (weight 700) |
+| `--text-empty-title-size` | 24px | Empty state title (weight 700) |
 | `--text-section-title-size` | 16px | Section title (weight 600) |
 | `--text-item-size` | 14px | Item name and primary button (weight 600) |
 | `--text-body-size` | 13px | Body (weight 400) |
@@ -226,6 +238,7 @@ disagree, `tokens.json` wins.
 | --- | --- | --- |
 | `--text-page-title-line-height` | 34px | Page title |
 | `--text-dialog-title-line-height` | 26px | Dialog title |
+| `--text-empty-title-line-height` | 30px | Empty state title |
 | `--text-section-title-line-height` | 22px | Section title |
 | `--text-item-line-height` | 20px | Item name and primary button |
 | `--text-body-line-height` | 18px | Body |

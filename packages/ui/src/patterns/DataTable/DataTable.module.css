@@ -1,0 +1,134 @@
+/* 列宽是 --table-columns（由组件按列的档位拼出，值都是设计变量）；
+   表宽取视口宽，但不小于各列最小宽之和，窄了就比视口宽，由滚动区横向滚动。
+   不用 max(100%, …)：百分比取决于滚动区的内容宽，内容宽又取决于表，会循环成“按文字最长算” */
+.root {
+  --row-bg: var(--color-bg-window);
+
+  min-block-size: 0;
+}
+
+/* 用真正的 table 元素保住表格语义，版面改用网格：每一行自己是一个网格 */
+.table,
+.head,
+.body {
+  display: block;
+}
+
+.table {
+  box-sizing: border-box;
+  border-collapse: collapse;
+  inline-size: 100%;
+  min-inline-size: var(--table-min);
+}
+
+.head {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--z-sticky);
+  background: var(--color-bg-window);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: var(--table-columns);
+  column-gap: var(--space-6);
+  align-items: center;
+  box-sizing: border-box;
+  padding-inline: var(--space-6);
+}
+
+.head .row {
+  padding-block-end: var(--space-4);
+  border-block-end: 1px solid var(--color-line-strong);
+  color: var(--color-text-secondary);
+  font-size: var(--text-secondary-size);
+  font-weight: var(--text-secondary-weight);
+  line-height: var(--text-secondary-line-height);
+}
+
+.body {
+  padding-block-start: var(--space-3);
+}
+
+.body .row {
+  block-size: var(--size-row);
+  border-radius: var(--radius-row);
+  background-color: var(--row-bg);
+  transition: background-color var(--motion-duration-fast) linear;
+}
+
+.body .row + .row {
+  margin-block-start: var(--space-1);
+}
+
+.body .row[data-selected] {
+  background-image: linear-gradient(var(--color-fill-accent-tint), var(--color-fill-accent-tint));
+}
+
+.body .row:not([data-selected]):hover {
+  background-image: linear-gradient(var(--color-fill-neutral), var(--color-fill-neutral));
+}
+
+.cell,
+.headerCell {
+  min-inline-size: 0;
+  padding: 0;
+  font-weight: inherit;
+  text-align: start;
+}
+
+/* 固定的列要盖住横向滚过去的内容，所以要有不透明的底：取整行的底（含选中的淡色） */
+.cell[data-pin],
+.headerCell[data-pin] {
+  position: sticky;
+  z-index: var(--z-base);
+  background: inherit;
+}
+
+.head .headerCell[data-pin] {
+  background: var(--color-bg-window);
+}
+
+[data-pin="start"] {
+  inset-inline-start: 0;
+}
+
+[data-pin="end"] {
+  inset-inline-end: 0;
+}
+
+/* 行的左右内边距要让固定列贴着行边：固定列自己补回这一段，选中的强调线画在它上面 */
+.row > [data-pin="start"] {
+  margin-inline-start: calc(var(--space-6) * -1);
+  padding-inline-start: var(--space-6);
+  border-start-start-radius: var(--radius-row);
+  border-end-start-radius: var(--radius-row);
+}
+
+.row > [data-pin="end"] {
+  margin-inline-end: calc(var(--space-6) * -1);
+  padding-inline-end: var(--space-6);
+  border-start-end-radius: var(--radius-row);
+  border-end-end-radius: var(--radius-row);
+}
+
+.body .row[data-selected] > [data-pin="start"] {
+  box-shadow: inset calc(var(--space-1) + 1px) 0 0 var(--color-line-accent);
+}
+
+.hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+/* 选择器要比被隐藏的组件自己的 .root 规则更具体，否则 display 谁先谁后说了算 */
+.table [data-when-overflowing] {
+  display: none;
+}
+
+.root[data-overflowing] .table [data-when-overflowing] {
+  display: inline-flex;
+}

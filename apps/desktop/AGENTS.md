@@ -2,7 +2,7 @@
 
 ## 用途
 
-桌面应用（技术设计 §2.2、§6）。界面是 React（用 `@runyard/ui`、`@runyard/i18n/react`、`@runyard/tokens`），主窗口有外壳（设计稿 Main）：左边悬浮的玻璃侧栏（`TitleBar`、`NavList`），顶上的标签条（资源库固定在第一位、不能关闭），主题（浅色、深色、跟随系统）和语言（中文系统用简体中文，其余英文）。资源库标签的内容区暂时放开发期的朴素列表（`renderer/app/DevLibraryPanel.tsx`）：列出项目，点名字或“运行”即“打开”（`tab.open`），列表下方用内置模板新建；资源库列表（#169）、新建对话框（#175）做好后整块替换它。打开项目 = 新开它的标签页并启动运行（`run.start`，持有者是标签页、绑定到本连接）；已开着的只切换、不再启动（规格 DESKTOP-WORKSPACE-01、02）。标签页的内容区由左边的 `TabContent`（暂时只有名字、状态和“运行”/“停止”）和右边的 `PreviewPane`（地址栏加预览占位区）组成：手动停止后标签仍开着，出现“运行”按钮再次启动，持有者仍是这个标签页（DESKTOP-WORKSPACE-11、12）。标签条里项目标签名字前的小圆点反映运行状态；标签的关闭钮和确认对话框是 #174，运行条是 #176。
+桌面应用（技术设计 §2.2、§6）。界面是 React（用 `@runyard/ui`、`@runyard/i18n/react`、`@runyard/tokens`），主窗口有外壳（设计稿 Main）：左边悬浮的玻璃侧栏（`TitleBar`、`NavList`），顶上的标签条（资源库固定在第一位、不能关闭），主题（浅色、深色、跟随系统）和语言（中文系统用简体中文，其余英文）。资源库标签的内容区是资源库页（#169，设计稿 Main、MainNarrow、Empty）：页标题和概况、项目表（`LibraryPage`、`LibraryTable`，用 `DataTable`：名称与备注、状态、模板、端口、保留、上次打开、创建者；运行中的排最前，主进程在 `build-library-state.ts` 里排好），没有项目时是空状态。表随管理进程的 `run`、`playground` 事件实时更新（控制器重读），相对时间和“剩 N 天”每半分钟走字。顶栏有“N 个运行中”（标签页和命令行持有的都算）。还留着开发期的东西，对应的功能做好后拆掉：操作列的“运行/停止”按钮和双击行（`tab.open`，#171 换成“打开”“停止运行”和更多菜单）、表下面“用内置模板新建”的按钮（#173 新建对话框）。搜索筛选（#181）、页概况里的“存放在 …”（要管理进程给出资源库路径）还没有。打开项目 = 新开它的标签页并启动运行（`run.start`，持有者是标签页、绑定到本连接）；已开着的只切换、不再启动（规格 DESKTOP-WORKSPACE-01、02）。标签页的内容区由左边的 `TabContent`（暂时只有名字、状态和“运行”/“停止”）和右边的 `PreviewPane`（地址栏加预览占位区）组成：手动停止后标签仍开着，出现“运行”按钮再次启动，持有者仍是这个标签页（DESKTOP-WORKSPACE-11、12）。标签条里项目标签名字前的小圆点反映运行状态；标签的关闭钮和确认对话框是 #174，运行条是 #176。
 包是 `private`，没有发布配置。构建用 esbuild 自己打包（`build.ts`，产物在 `dist/`），不用 electron-vite：它要 Vite 7，而 Vite 7.3.7 发布不满 14 天（`docs/architecture/dependencies.md`）。
 
 ## 对外暴露什么
@@ -42,7 +42,7 @@ pnpm --filter @runyard/desktop smoke             # 冒烟自检：窗口不显�
 
 - `src/main/`：主进程。`integration/` 放依赖 Electron 的系统差异（窗口外框与底色、单实例、用户数据目录、启动信息），系统分支只许写在这里；`native-ui/`（菜单、对话框、通知）等第一个菜单出现时再建。`index.ts` 只接线；`composition-root.ts` 经 `@runyard/client` 连接或拉起管理进程（客户端种类 `app`）；`library-controller.ts` 是窗口背后的全部逻辑（不认识 Electron，用假客户端测）；`ipc-handlers.ts` 把界面的消息接到控制器；`preview-view.ts`、`integration/main-window.ts` 是 Electron 接线；`app-protocol.ts`、`preview-policy.ts`（含导航判断）是安全相关的纯判断；`smoke.ts` 是冒烟自检。
 - `src/preload/`：预加载脚本，构建成 CommonJS（沙箱里的预加载脚本不能是 ES 模块）。
-- `src/renderer/`：界面，React。`app/`（外壳：`AppFrame` 管文案、`<html>` 属性和版面变量，`AppShell`、`Sidebar`、`TopBar`、`PreviewPane`、`DevLibraryPanel`）、`widgets/`（`PreviewSlot`）、`shared/`（浮层计数器）、`bridge/`（全仓库唯一读 `window.runyard` 的地方，`ui-layers` 守着；别处经 `getDesktopBridge()` 取接口）、`library-view.ts`（开发期列表的文字）。CSP 里 `img-src data:` 只为显示主进程截来的预览那一帧；`style-src` 里有一个哈希，放行 Base UI 滚动区插入的固定 `<style>`（见 `index.html` 的注释）。
+- `src/renderer/`：界面，React。`app/`（外壳：`AppFrame` 管文案、`<html>` 属性和版面变量，`AppShell`、`Sidebar`、`TopBar`、`LibraryPage`、`LibraryTable`、`PreviewPane`）、`widgets/`（`PreviewSlot`）、`shared/`（浮层计数器）、`bridge/`（全仓库唯一读 `window.runyard` 的地方，`ui-layers` 守着；别处经 `getDesktopBridge()` 取接口）、`library-view.ts`（列表每一格显示什么的纯判断：状态标记、保留剩余天数、模板缩写、创建者）。CSP 里 `img-src data:` 只为显示主进程截来的预览那一帧；`style-src` 里有一个哈希，放行 Base UI 滚动区插入的固定 `<style>`（见 `index.html` 的注释）。
 - `src/shared/`：主进程、预加载脚本、界面共用的类型和版面常量。
 
 ## 测试
