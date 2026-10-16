@@ -41,7 +41,10 @@
       "npm":  { "command": ["npm", "install", "--prefer-offline", "--no-audit", "--no-fund"] }
     },
     "errors": [
-      { "match": "ERR_PNPM_NO_OFFLINE_TARBALL|ENOTCACHED|ENOTFOUND|EAI_AGAIN", "reason": "DEPS_OFFLINE" },
+      { "match": "ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY", "reason": "SETUP_FAILED" },
+      { "match": "ERR_PNPM_IGNORED_BUILDS", "reason": "SETUP_FAILED" },
+      { "match": "ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION", "reason": "SETUP_FAILED" },
+      { "match": "ERR_PNPM_NO_OFFLINE_TARBALL|ERR_PNPM_NO_OFFLINE_META|ERR_PNPM_META_FETCH_FAIL|ENOTCACHED|ENOTFOUND|EAI_AGAIN|ECONNREFUSED|ECONNRESET", "reason": "DEPS_OFFLINE" },
       { "match": "VCRUNTIME140|The specified module could not be found", "reason": "RUNTIME_MISSING" }
     ]
   },
@@ -56,7 +59,7 @@
 }
 ```
 
-模板侧：`"runner": "vite"`，`requires` 里 node 与 pnpm 的版本范围（pnpm 带回退 npm）；模板同时带两种锁文件，创建时只复制选定的那个。匹配串中的错误字样来自记忆，要对着真实输出校对（M1 与模板一起落地时逐条校对）；已见过真实文字的三个 pnpm 错误码应加进匹配表：`ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY`（无终端时要清空 `node_modules` 却无处确认，带 `--config.confirmModulesPurge=false` 重试，不设 `CI=1`）、`ERR_PNPM_IGNORED_BUILDS`、`ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`（0011）。
+模板侧：`"runner": "vite"`，`requires` 里 node 与 pnpm 的版本范围（pnpm 带回退 npm）；模板同时带两种锁文件，创建时只复制选定的那个。匹配串已在 #51 对着真实输出校对（pnpm 11.28.0、npm 11.20.0，2026-10-16，macOS）：实测不可达注册表时输出里没有 `ENOTFOUND` 一类字样（本机经代理，也许与此有关），pnpm 的真实输出是 `ERR_PNPM_META_FETCH_FAIL` 和 `ERR_PNPM_NO_OFFLINE_META`，已补上；`VCRUNTIME140` 一条是 Windows 的字样，macOS 上无法核对。三个 pnpm 错误码已加进匹配表（上面的前三条，先于 `DEPS_OFFLINE` 一条，以免被它抢先匹配）：`ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY`（无终端时要清空 `node_modules` 却无处确认，带 `--config.confirmModulesPurge=false` 重试，不设 `CI=1`）、`ERR_PNPM_IGNORED_BUILDS`、`ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`（0011）。
 
 ## 3. 完整示例二：`python`（运行器 `python-file`）
 
