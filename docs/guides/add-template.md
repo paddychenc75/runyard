@@ -26,7 +26,7 @@
 
 ## 冒烟（脚本类模板）
 
-`pnpm template:smoke <模板标识>`（`node-ts`、`python`、`go`，不联网）：用本机真实的工具走一遍运行、语法错误、改正、标准输入和停止。新的脚本类模板在 `tooling/scripts/template-smoke-script.ts` 的 `programs` 里加它自己的几份源码。
+`pnpm template:smoke <模板标识>`（`node-ts`、`python`、`go`，不联网）：用本机真实的工具走一遍运行、语法错误、改正、标准输入和停止。CI 上由 `setup-python` / `setup-go` / `setup-node` 装下限和上限版本各跑一次。新的脚本类模板在 `tooling/scripts/template-smoke-script.ts` 的 `programs` 里加它自己的几份源码。
 
 ## 验证
 
@@ -34,4 +34,4 @@
 
 ## 完成标准
 
-`pnpm template:lint` 对新模板输出 `"ok":true`；`pnpm verify` 通过；冒烟测试（`template test`，另一个 issue）通过；PR 引用对应的规格场景。
+`pnpm template:lint` 对新模板输出 `"ok":true`；`pnpm verify` 通过；冒烟测试通过（`pnpm template:smoke <id>`；模板 CI 在拉取请求里自动对改动的模板跑，每晚对全部模板跑，见 `docs/guides/commands.md` 的“模板 CI”；`runyard template test` 命令本身还没有行为）；PR 引用对应的规格场景。

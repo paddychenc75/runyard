@@ -1,0 +1,85 @@
+# 每晚的模板冒烟（技术设计 §8.3，规格“模板被接受和被移除的条件”）：全部内置模板，工具版本的上限和下限，
+# 在 Ubuntu 和 macOS 上。失败时自动开 issue（已有未关闭的同类 issue 就追加评论），不挡 PR。
+# 公共仓库 60 天没有活动时，GitHub 会自动停用定时任务；停用后到 Actions 页手动启用。
+# 连续 30 天不通过就移出模板索引（TEMPLATES-FORMAT-57）还没有自动化：失败的 issue 是记录，移除由负责人决定。
+name: 每晚模板冒烟
+
+on:
+  schedule:
+    # UTC 03:07，错开每晚安全扫描（02:17）和整点的排队高峰
+    - cron: "7 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    name: 算出矩阵（全部模板）
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: 安装 Node（版本读自 .node-version）
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+
+      - name: 矩阵
+        id: matrix
+        run: |
+          matrix="$(node tooling/ci/template-matrix.ts --mode nightly)"
+          echo "matrix=${matrix}" >> "$GITHUB_OUTPUT"
+          echo "$matrix" >> "$GITHUB_STEP_SUMMARY"
+
+  smoke:
+    name: 冒烟
+    needs: plan
+    uses: ./.github/workflows/template-smoke.yml
+    with:
+      matrix: ${{ needs.plan.outputs.matrix }}
+
+  notify:
+    name: 失败时开 issue
+    needs: [plan, smoke]
+    if: ${{ always() && (needs.plan.result == 'failure' || needs.smoke.result == 'failure') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # 只有这个任务能写 issue
+    permissions:
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      PLAN_RESULT: ${{ needs.plan.result }}
+      SMOKE_RESULT: ${{ needs.smoke.result }}
+    steps:
+      - name: 开 issue 或追加评论
+        run: |
+          title="每晚模板冒烟失败"
+          {
+            echo "运行记录：${RUN_URL}"
+            echo
+            echo "- 算矩阵：${PLAN_RESULT}"
+            echo "- 冒烟：${SMOKE_RESULT}"
+            echo
+            echo "哪个模板、哪个系统、哪个版本失败，看运行记录里红色的任务名（模板、系统、上限或下限）。"
+          } > body.md
+          gh label create templates --color FBCA04 --description "内置模板、运行器、工具定义" 2>/dev/null || true
+          existing="$(gh issue list --state open --label templates --search "\"${title}\" in:title" --json number --jq '.[0].number // empty')"
+          if [ -n "${existing}" ]; then
+            gh issue comment "${existing}" --body-file body.md
+          else
+            gh issue create --title "${title}" --label templates --body-file body.md
+          fi

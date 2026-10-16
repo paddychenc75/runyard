@@ -31,7 +31,7 @@
 - 三个模板共用运行器 `vite`；版本固定在技术设计 §8.6.5 的表里，每个直接依赖在 `docs/architecture/dependencies.md` 有一行。锁文件 `pnpm-lock.yaml` 和 `package-lock.json` 都带（没有 pnpm 时回退 npm）。重新生成锁文件的办法见 `docs/guides/add-template.md`；不要手改，也不要让它们进根工作区的锁文件。
 - Vite 的报错框颜色去不掉，Vite 也不支持 `--no-color`：写在每个模板的 `description` 和 `files/README.md` 里；运行器因此不传 `--no-color`。
 - `setup.errors` 的特征串对着真实输出校对过（pnpm 11.28.0、npm 11.20.0，2026-10-16）。不可达注册表和离线时 pnpm 的真实输出是 `ERR_PNPM_META_FETCH_FAIL`、`ERR_PNPM_NO_OFFLINE_META`（没有出现 `ENOTFOUND`），所以它们和 `ECONNREFUSED`、`ECONNRESET` 一起归 `DEPS_OFFLINE`；`VCRUNTIME140` 一条是 Windows 上的字样，macOS 上无法核对，留给做 Windows 时。
-- 这些模板自带的依赖不进仓库工作区，仓库里不安装它们。真实安装加启动的冒烟要联网，用 `pnpm template:smoke`，不在 `pnpm test` 里（模板 CI 接入是 #54）。
+- 这些模板自带的依赖不进仓库工作区，仓库里不安装它们。真实安装加启动的冒烟要联网，用 `pnpm template:smoke`，不在 `pnpm test` 里（模板 CI 见 `docs/guides/commands.md` 的“模板 CI”：`.github/workflows/templates.yml` 与 `templates-nightly.yml`）。
 
 ## 脚本类模板（node-ts、python、go）
 
@@ -39,7 +39,11 @@
 - 检查命令：`node-ts` 用 `stripTypeScriptTypes`（含 `enum` 报 `ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX`，语法错报 `ERR_INVALID_TYPESCRIPT_SYNTAX`），不用 `node --check`；`python-file` 用 `ast.parse`；`go` 用 `gofmt -e -l`（语法错退出码 2，写法不规范但语法正确的文件退出 0 并列出文件名，算通过）。`gofmt` 不是工具定义里的工具，由 `resolveExecutable` 按登录环境的 `PATH` 找（它和 `go` 同在一个 `bin/`）。
 - Go：`stop.mode` 是 `interrupt`；`GOTMPDIR` 由 `core` 的准备阶段为每次运行单独设置并在停止后删除，`GOTOOLCHAIN=local` 由平台层的运行环境默认值给。模板带 `go.mod`（`go 1.26`，与 `requires` 下限一致）。
 - Python：`PYTHONUTF8=1`、`PYTHONUNBUFFERED=1` 由管理进程给所有运行加，运行器里只写 `PYTHONDONTWRITEBYTECODE=1`；Node 的 `.ts` 在 22.18 以下不能直接运行，所以模板的 `requires` 下限是 22.18，`TOOL_TOO_OLD` 在运行前报。
-- 真实工具的冒烟：`pnpm template:smoke node-ts|python|go`（不联网，用本机的 node、python3、go；不在 `pnpm test` 里，因为 CI 机器不保证有够新的 python 和 go，接入是 #54）。它用真实的平台层、`core` 的运行引擎和 `ScriptRuns` 走：运行、语法错误（不运行、旧输出还在、`stale`）、改正后恢复、标准输入（不补换行）、运行中停止；Python 另验中文输出和没有 `__pycache__`，Go 另验不规范格式、`go.mod` 要求更新的 Go 时不下载工具链、停止后系统临时目录和 `GOTMPDIR` 里没有 `go-build*`。
+- 真实工具的冒烟：`pnpm template:smoke node-ts|python|go`（不联网，用本机的 node、python3、go；不在 `pnpm test` 里，因为 CI 机器不保证有够新的 python 和 go，模板 CI 里用 setup-python / setup-go / setup-node 装下限和上限版本跑）。它用真实的平台层、`core` 的运行引擎和 `ScriptRuns` 走：运行、语法错误（不运行、旧输出还在、`stale`）、改正后恢复、标准输入（不补换行）、运行中停止；Python 另验中文输出和没有 `__pycache__`，Go 另验不规范格式、`go.mod` 要求更新的 Go 时不下载工具链、停止后系统临时目录和 `GOTMPDIR` 里没有 `go-build*`。
+
+## 静态页面模板（html）
+
+- 运行器 `static` 没有安装步骤，页面由管理进程自己托管；`pnpm template:smoke html`（不联网）用同一个页面服务走：首页带自动刷新脚本、只监听 `127.0.0.1`、改入口文件后收到刷新通知且新内容可取、停止后端口释放。
 
 ## Hono 模板（hono）
 

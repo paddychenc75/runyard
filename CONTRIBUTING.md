@@ -117,6 +117,8 @@ pnpm audit --prod --json > audit.json; node tooling/ci/audit-gate.ts --file audi
 | --- | --- | --- | --- | --- |
 | `actions/checkout` | v7.0.1 | `3d3c42e5aac5ba805825da76410c181273ba90b1` | 2026-07-20 | 7 线最新，发布 84 天；7.0.0 已满 90 天 |
 | `actions/setup-node` | v7.0.0 | `820762786026740c76f36085b0efc47a31fe5020` | 2026-07-14 | 7.1.0 发布于 2026-10-08，只有 4 天，不选；7.0.0 刚满 90 天 |
+| `actions/setup-python` | v7.0.0 | `5fda3b95a4ea91299a34e894583c3862153e4b97` | 2026-07-20 | 7 线最新，发布 88 天；只在模板冒烟（`template-smoke.yml`）里装模板要的 Python 版本。公告三处均 0 条（2026-10-16 查） |
+| `actions/setup-go` | v7.0.0 | `b7ad1dad31e06c5925ef5d2fc7ad053ef454303e` | 2026-07-16 | 7 线最新，发布 92 天；同上，装模板要的 Go 版本。公告三处均 0 条（2026-10-16 查） |
 | `pnpm/action-setup` | v6.1.0 | `ea17c68df8912ef543352723c149a84f56e3d413` | 2026-09-05 | 6.0.0 起支持 pnpm 11，缺省版本读 `packageManager` 字段；发布 37 天 |
 | `actions/dependency-review-action` | v5.0.0 | `a1d282b36b6f3519aa1f3fc636f609c47dddb294` | 2026-05-08 | 当前最新，运行时 node24；公共仓库免费 |
 | `google/osv-scanner-action`（可复用工作流） | v2.6.0 | `a345acffa64b0eaede81a3d9aae6141214d9c8fc` | 2026-09-14 | 当前最新，发布 28 天；它内部再引用的 Action 也是固定哈希 |
