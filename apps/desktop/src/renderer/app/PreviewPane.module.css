@@ -1,0 +1,39 @@
+/* 设计稿 Web：圆角 16 的卡片，顶上 44 高的地址栏（输入框样的地址，等宽字体） */
+.root {
+  flex: 1;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-block-end: var(--size-window-inset);
+  margin-inline-end: var(--size-window-inset);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-line-hairline);
+  background: var(--color-bg-card);
+}
+
+.address {
+  flex: none;
+  block-size: var(--size-toolbar);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding-inline: var(--space-3);
+  border-block-end: 1px solid var(--color-line-hairline);
+}
+
+.url {
+  flex: 1;
+  min-inline-size: 0;
+  block-size: var(--size-control-sm);
+  display: flex;
+  align-items: center;
+  padding-inline: var(--space-5);
+  border-radius: var(--radius-control);
+  background: var(--color-bg-inset);
+  font-family: var(--font-mono);
+  font-size: var(--text-code-small-size);
+  color: var(--color-text-primary);
+  overflow: hidden;
+  white-space: nowrap;
+}

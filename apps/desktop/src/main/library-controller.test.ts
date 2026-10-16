@@ -40,11 +40,27 @@ class FakeClient {
 class FakePreview implements PreviewHost {
   shown: { id: string; url: string }[] = [];
   hidden = 0;
+  released: string[] = [];
+  bounds: unknown[] = [];
+  visible: boolean[] = [];
+  frame: string | null = "data:image/png;base64,AAAA";
   show(id: string, url: string) {
     this.shown.push({ id, url });
   }
   hide() {
     this.hidden += 1;
+  }
+  release(id: string) {
+    this.released.push(id);
+  }
+  setBounds(bounds: unknown) {
+    this.bounds.push(bounds);
+  }
+  async capture() {
+    return this.frame;
+  }
+  setVisible(visible: boolean) {
+    this.visible.push(visible);
   }
 }
 
@@ -95,20 +111,37 @@ describe("LibraryController", () => {
     });
   });
 
-  it("就绪后预览显示这个项目的地址，停止后收起", async () => {
+  it("[DESKTOP-WORKSPACE-13] 运行变为 ready 后预览显示该页面；没就绪时没有预览（界面显示占位）", async () => {
     const { client, preview, controller } = setup();
     await controller.start();
+    client.runs = [run("a", "starting", { startedAt: 5 })];
     await controller.openProject("a");
     expect(preview.shown).toEqual([]);
+    expect(controller.getState().tabs[0]?.previewUrl).toBeNull();
 
     client.runs = [run("a", "ready", { url: "http://127.0.0.1:7101", startedAt: 5 })];
     await controller.refresh();
     expect(preview.shown.at(-1)).toEqual({ id: "a", url: "http://127.0.0.1:7101" });
+    expect(controller.getState().tabs[0]?.previewUrl).toBe("http://127.0.0.1:7101");
 
-    const hiddenBefore = preview.hidden;
+    // 停止后页面没了：销毁视图，界面回到占位
+    preview.released = [];
     client.runs = [run("a", "stopped", { startedAt: 5 })];
     await controller.refresh();
-    expect(preview.hidden).toBeGreaterThan(hiddenBefore);
+    expect(preview.released).toContain("a");
+    expect(controller.getState().tabs[0]?.previewUrl).toBeNull();
+  });
+
+  it("占位区的位置、截帧和显隐都转给预览宿主", async () => {
+    const { preview, controller } = setup();
+    const area = { x: 10, y: 20, width: 300, height: 200 };
+    controller.setPreviewBounds(area);
+    controller.setPreviewBounds(null);
+    expect(preview.bounds).toEqual([area, null]);
+    expect(await controller.capturePreview()).toBe("data:image/png;base64,AAAA");
+    controller.setPreviewVisible(false);
+    controller.setPreviewVisible(true);
+    expect(preview.visible).toEqual([false, true]);
   });
 
   it("管理进程的事件触发重读", async () => {
@@ -236,12 +269,13 @@ describe("LibraryController", () => {
   });
 
   it("项目从资源库里消失，它的标签随之去掉并回到资源库", async () => {
-    const { client, controller } = setup();
+    const { client, preview, controller } = setup();
     await controller.start();
     await controller.openProject("a");
     client.playgrounds = [client.playgrounds[1] as (typeof client.playgrounds)[number]];
     await controller.refresh();
     expect(controller.getState().tabs).toEqual([]);
+    expect(preview.released).toContain("a");
     expect(controller.getState().activeTab).toBe("library");
   });
 

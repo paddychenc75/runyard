@@ -1,25 +1,120 @@
 import { type BrowserWindow, shell, WebContentsView } from "electron";
-import { previewBounds } from "../shared/layout.ts";
+import type { Bounds } from "../shared/layout.ts";
 import type { PreviewHost } from "./library-controller.ts";
-import { isLocalPreviewUrl, isPermissionAllowed } from "./preview-policy.ts";
+import {
+  createNavigationGuards,
+  isLocalPreviewUrl,
+  isPermissionAllowed,
+} from "./preview-policy.ts";
 
-// 预览：一个项目一个 WebContentsView，摆在窗口右侧（技术设计 §6.1、§6.5）。
+// 预览：每个有页面的标签页一个 WebContentsView，摆在界面占位区上面（技术设计 §6.1、§6.5）。
 // 隔离：沙箱、没有预加载脚本、没有 Node，每个项目一个独立的内存存储分区，权限默认拒绝。
+// 位置不在这里算：界面的占位区（PreviewSlot）量出自己的矩形报来，视图就摆在那里。
+
+interface Entry {
+  view: WebContentsView;
+  url: string;
+}
 
 export class ElectronPreviewHost implements PreviewHost {
   readonly #window: BrowserWindow;
-  #view: WebContentsView | undefined;
-  #shown: { id: string; url: string } | undefined;
+  readonly #views = new Map<string, Entry>();
+  /** 此刻摆在窗口里的那个视图的项目 id */
+  #current: string | undefined;
+  #bounds: Bounds | null = null;
+  #visible = true;
 
   constructor(window: BrowserWindow) {
     this.#window = window;
-    window.on("resize", () => this.#layout());
   }
 
   show(playgroundId: string, url: string): void {
-    if (this.#shown?.id === playgroundId && this.#shown.url === url) return;
-    this.hide();
-    if (!isLocalPreviewUrl(url)) return;
+    if (!isLocalPreviewUrl(url)) {
+      this.release(playgroundId);
+      return;
+    }
+    if (this.#current !== undefined && this.#current !== playgroundId) this.#detach();
+    let entry = this.#views.get(playgroundId);
+    if (entry !== undefined && entry.url !== url) {
+      // 重新运行后端口换了：旧视图丢掉重建，不在同一个视图里跳转
+      this.release(playgroundId);
+      entry = undefined;
+    }
+    if (entry === undefined) {
+      entry = { view: this.#createView(playgroundId), url };
+      this.#views.set(playgroundId, entry);
+      void entry.view.webContents.loadURL(url);
+    }
+    if (this.#current !== playgroundId) {
+      this.#window.contentView.addChildView(entry.view);
+      this.#current = playgroundId;
+    }
+    this.#apply();
+  }
+
+  hide(): void {
+    this.#detach();
+  }
+
+  release(playgroundId: string): void {
+    const entry = this.#views.get(playgroundId);
+    if (entry === undefined) return;
+    if (this.#current === playgroundId) this.#detach();
+    this.#views.delete(playgroundId);
+    entry.view.webContents.close();
+  }
+
+  setBounds(bounds: Bounds | null): void {
+    this.#bounds = bounds === null ? null : roundBounds(bounds);
+    this.#apply();
+  }
+
+  async capture(): Promise<string | null> {
+    const view = this.#currentView();
+    if (view === undefined) return null;
+    try {
+      const image = await view.webContents.capturePage();
+      return image.isEmpty() ? null : image.toDataURL();
+    } catch {
+      // 窗口藏着或最小化时截不到画面；没有帧就不换截图，调用方照常处理
+      return null;
+    }
+  }
+
+  setVisible(visible: boolean): void {
+    this.#visible = visible;
+    this.#apply();
+  }
+
+  /** 预览此刻真正加载着的地址（冒烟自检用） */
+  currentUrl(): string | undefined {
+    return this.#currentView()?.webContents.getURL();
+  }
+
+  /** 预览视图此刻的位置（冒烟自检用）；没有预览是 undefined */
+  currentBounds(): Bounds | undefined {
+    return this.#currentView()?.getBounds();
+  }
+
+  #currentView(): WebContentsView | undefined {
+    return this.#current === undefined ? undefined : this.#views.get(this.#current)?.view;
+  }
+
+  #detach(): void {
+    const view = this.#currentView();
+    if (view !== undefined) this.#window.contentView.removeChildView(view);
+    this.#current = undefined;
+  }
+
+  #apply(): void {
+    const view = this.#currentView();
+    if (view === undefined) return;
+    // 占位区还没报位置、或浮层要盖住它时，视图藏起来（占位区显示截来的那一帧）
+    if (this.#bounds !== null) view.setBounds(this.#bounds);
+    view.setVisible(this.#visible && this.#bounds !== null);
+  }
+
+  #createView(playgroundId: string): WebContentsView {
     const view = new WebContentsView({
       webPreferences: {
         sandbox: true,
@@ -36,40 +131,23 @@ export class ElectronPreviewHost implements PreviewHost {
     contents.session.setPermissionCheckHandler((_contents, permission) =>
       isPermissionAllowed(permission),
     );
-    // 只放行本机地址；其他网页链接交给系统浏览器，别的协议一律拦下
+    const guards = createNavigationGuards((address) => void shell.openExternal(address));
     contents.on("will-navigate", (event, target) => {
-      if (!isLocalPreviewUrl(target)) event.preventDefault();
+      if (!guards.onWillNavigate(target)) event.preventDefault();
     });
-    contents.setWindowOpenHandler(({ url: target }) => {
-      if (target.startsWith("https://") || target.startsWith("http://")) {
-        if (!isLocalPreviewUrl(target)) void shell.openExternal(target);
-      }
-      return { action: "deny" };
+    contents.on("will-redirect", (event, target) => {
+      if (!guards.onWillRedirect(target)) event.preventDefault();
     });
-    this.#view = view;
-    this.#shown = { id: playgroundId, url };
-    this.#window.contentView.addChildView(view);
-    this.#layout();
-    void contents.loadURL(url);
+    contents.setWindowOpenHandler(({ url: target }) => guards.onWindowOpen(target));
+    return view;
   }
+}
 
-  /** 预览此刻真正加载着的地址（冒烟自检用） */
-  currentUrl(): string | undefined {
-    return this.#view?.webContents.getURL();
-  }
-
-  hide(): void {
-    const view = this.#view;
-    if (view === undefined) return;
-    this.#window.contentView.removeChildView(view);
-    view.webContents.close();
-    this.#view = undefined;
-    this.#shown = undefined;
-  }
-
-  #layout(): void {
-    if (this.#view === undefined) return;
-    const [width = 0, height = 0] = this.#window.getContentSize();
-    this.#view.setBounds(previewBounds({ width, height }));
-  }
+function roundBounds(bounds: Bounds): Bounds {
+  return {
+    x: Math.round(bounds.x),
+    y: Math.round(bounds.y),
+    width: Math.round(bounds.width),
+    height: Math.round(bounds.height),
+  };
 }

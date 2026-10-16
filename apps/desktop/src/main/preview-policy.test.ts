@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { isLocalPreviewUrl, isPermissionAllowed } from "./preview-policy.ts";
+import {
+  createNavigationGuards,
+  decideNavigation,
+  isLocalPreviewUrl,
+  isPermissionAllowed,
+} from "./preview-policy.ts";
 
 describe("预览的安全策略", () => {
   it("只放行 http://127.0.0.1 的地址", () => {
@@ -24,5 +29,39 @@ describe("预览的安全策略", () => {
     ]) {
       expect(isPermissionAllowed(denied)).toBe(false);
     }
+  });
+});
+
+describe("预览里的导航", () => {
+  it("[DESKTOP-WORKSPACE-14] 点外部链接：交给系统浏览器，预览不跳转", () => {
+    const opened: string[] = [];
+    const guards = createNavigationGuards((address) => opened.push(address));
+    // 点链接 -> will-navigate：不放行（预览不跳转），同时交给系统浏览器
+    expect(guards.onWillNavigate("https://example.com/docs")).toBe(false);
+    expect(opened).toEqual(["https://example.com/docs"]);
+    // target=_blank / window.open：不开新窗口，同样交给系统浏览器
+    expect(guards.onWindowOpen("http://example.org/")).toEqual({ action: "deny" });
+    expect(opened).toEqual(["https://example.com/docs", "http://example.org/"]);
+  });
+
+  it("本机地址在预览里正常跳转，不交给系统浏览器", () => {
+    const opened: string[] = [];
+    const guards = createNavigationGuards((address) => opened.push(address));
+    expect(guards.onWillNavigate("http://127.0.0.1:7101/about")).toBe(true);
+    expect(guards.onWindowOpen("http://127.0.0.1:7101/")).toEqual({ action: "deny" });
+    expect(opened).toEqual([]);
+  });
+
+  it("其他协议一律拦下，不交给系统（mailto:、runyard://、file:）；服务端重定向到外部也只拦下", () => {
+    const opened: string[] = [];
+    const guards = createNavigationGuards((address) => opened.push(address));
+    for (const address of ["mailto:a@b.c", "runyard://open/x", "file:///etc/passwd", "nope"]) {
+      expect(decideNavigation(address)).toBe("block");
+      expect(guards.onWillNavigate(address)).toBe(false);
+      expect(guards.onWindowOpen(address)).toEqual({ action: "deny" });
+    }
+    expect(guards.onWillRedirect("https://example.com/")).toBe(false);
+    expect(guards.onWillRedirect("http://127.0.0.1:7101/next")).toBe(true);
+    expect(opened).toEqual([]);
   });
 });

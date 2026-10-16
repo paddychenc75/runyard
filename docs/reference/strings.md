@@ -122,7 +122,9 @@
 | desktop.error.title.label | 出错了：{title} | Error: {title} | title：错误的标题，来自 errors.<代码>.title，已是翻译好的句子 |
 | desktop.library.empty.hint | 还没有项目。从下面的模板新建一个。 | No playgrounds yet. Create one from a template below. | — |
 | desktop.library.title | 项目 | Playgrounds | — |
+| desktop.preview.frame.label | 页面预览的截图 | Screenshot of the page preview | — |
 | desktop.preview.placeholder | 运行一个项目，页面会显示在这里。 | Run a playground and its page shows up here. | — |
+| desktop.preview.waiting.label | 页面还没有就绪，就绪后会显示在这里。 | The page isn't ready yet. It shows up here once it is. | — |
 | desktop.run.action | 运行 | Run | — |
 | desktop.state.idle.label | 未运行 | Not running | — |
 | desktop.stop.action | 停止 | Stop | — |

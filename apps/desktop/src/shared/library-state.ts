@@ -30,6 +30,8 @@ export interface TabRow {
   /** 此刻是否有进行中的运行；false 时标签页内容区显示“运行”按钮 */
   active: boolean;
   busy: boolean;
+  /** 页面已就绪时的预览地址（http://127.0.0.1:<端口>/）；没就绪是 null，预览区显示占位 */
+  previewUrl: string | null;
 }
 
 export interface TemplateRow {

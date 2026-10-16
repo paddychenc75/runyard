@@ -5,7 +5,7 @@
     <!-- style-src 里的哈希：Base UI 的滚动区会插入一段固定内容的 <style>（隐藏原生滚动条），按哈希放行，不开 unsafe-inline；升级 Base UI 后内容变了，控制台会报这条 CSP，换哈希即可 -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; script-src app://runyard; style-src app://runyard 'sha256-kLmvWqfziFavKtqHqRsb90f006UAK2Dmd0It5Iz2KFA='"
+      content="default-src 'none'; script-src app://runyard; img-src data:; style-src app://runyard 'sha256-kLmvWqfziFavKtqHqRsb90f006UAK2Dmd0It5Iz2KFA='"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title></title>

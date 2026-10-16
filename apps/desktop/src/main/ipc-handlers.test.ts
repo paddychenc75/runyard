@@ -27,6 +27,9 @@ function setup() {
     openProject: async (id: string) => void calls.push(["open", id]),
     selectTab: (id: string) => void calls.push(["select", id]),
     create: async (id: string) => void calls.push(["create", id]),
+    setPreviewBounds: (bounds: unknown) => void calls.push(["bounds", bounds]),
+    capturePreview: async () => "data:image/png;base64,AAAA",
+    setPreviewVisible: (visible: boolean) => void calls.push(["visible", visible]),
     onChange: (listener: (next: LibraryState) => void) => {
       push = listener;
       return () => {};
@@ -115,5 +118,23 @@ describe("registerBridgeHandlers", () => {
     const { sent, push, state } = setup();
     push(state);
     expect(sent).toEqual([{ channel: desktopChannels.event, event: "library.changed", state }]);
+  });
+
+  it("预览通道：占位区的矩形只收形状正确的，截帧和显隐照转", async () => {
+    const { call, calls } = setup();
+    const area = { x: 1, y: 2, width: 3, height: 4 };
+    await call(app, "preview.bounds", area);
+    await call(app, "preview.bounds", null);
+    await call(app, "preview.bounds", { x: 1, y: 2, width: -3, height: 4 });
+    await call(app, "preview.bounds", { x: "1", y: 2, width: 3, height: 4 });
+    await call(app, "preview.bounds", { x: Number.NaN, y: 2, width: 3, height: 4 });
+    await call(app, "preview.visible", "yes");
+    await call(app, "preview.visible", false);
+    expect(await call(app, "preview.capture")).toBe("data:image/png;base64,AAAA");
+    expect(calls).toEqual([
+      ["bounds", area],
+      ["bounds", null],
+      ["visible", false],
+    ]);
   });
 });
