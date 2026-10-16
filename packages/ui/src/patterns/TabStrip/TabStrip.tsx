@@ -137,7 +137,9 @@ export function TabStrip({
                   data-status={item.status}
                 />
               )}
-              <span className={styles.label}>{item.label}</span>
+              <span className={styles.label} data-truncate="">
+                {item.label}
+              </span>
             </button>
             {item.closeLabel === undefined ? null : (
               // 鼠标用的关闭钮不进 Tab 顺序：键盘用户在标签上按 Delete 关闭

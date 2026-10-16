@@ -77,7 +77,9 @@ export function NavList({
                     ) : (
                       <Icon name={item.icon} size={15} />
                     )}
-                    <span className={styles.label}>{item.label}</span>
+                    <span className={styles.label} data-truncate="">
+                      {item.label}
+                    </span>
                     {item.count === undefined ? null : (
                       <span className={styles.count}>{item.count}</span>
                     )}
