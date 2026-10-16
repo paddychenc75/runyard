@@ -49,6 +49,7 @@ export function composeExtensions(api: SupervisorApi, options: ComposeOptions): 
     ...options.run,
     templateData: options.templateData,
     appVersion: options.appVersion,
+    idleStopAt: idle.idleStopAt,
     observer: combineObservers(
       logs.observer,
       idle.observer,

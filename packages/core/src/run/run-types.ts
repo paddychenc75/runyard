@@ -144,6 +144,8 @@ export type RunEngineDeps = {
   readonly removeDir: (dir: AbsPath) => Promise<void>;
   /** 默认 `run-<序号>`；游标格式要求 id 不含冒号和空白 */
   readonly newRunId?: () => string;
+  /** 命令行持有的运行预计空闲停止的时刻；填进快照的 idleStopAt（没有就不填）。持有者由调用方传入，免得回头再取快照 */
+  readonly idleStopAt?: (runId: string, owner: Owner) => number | undefined;
 };
 
 /** 引擎内部给会话的宿主能力 */

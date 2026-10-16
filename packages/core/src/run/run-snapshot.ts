@@ -18,6 +18,7 @@ export type SnapshotFields = {
   readonly readyMs?: number | undefined;
   readonly endedAt?: number | undefined;
   readonly logCount: number;
+  readonly idleStopAt?: number | undefined;
 };
 
 export function buildSnapshot(f: SnapshotFields): RunSnapshot {
@@ -40,6 +41,7 @@ export function buildSnapshot(f: SnapshotFields): RunSnapshot {
     startedAt: f.startedAt,
     ...(f.readyMs === undefined ? {} : { readyMs: f.readyMs }),
     ...(f.endedAt === undefined ? {} : { durationMs: f.endedAt - f.startedAt }),
+    ...(f.idleStopAt === undefined ? {} : { idleStopAt: f.idleStopAt }),
     cursor: `${f.runId}:${f.logCount}`,
   };
 }

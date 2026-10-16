@@ -64,6 +64,8 @@ export interface RunModuleOptions {
   /** 写进新项目的 template.appVersion */
   readonly appVersion?: string;
   readonly observer?: RunObserver;
+  /** 命令行持有的运行的预计空闲停止时刻，填进快照（#141；实现是 `IdleStop.idleStopAt`） */
+  readonly idleStopAt?: (runId: string, owner: Owner) => number | undefined;
   /** 以下几项缺省是真实实现；测试换成替身 */
   readonly preparer?: RunPreparer;
   readonly readiness?: ReadinessProbe;
@@ -145,6 +147,7 @@ export function createRunModule(api: SupervisorApi, options: RunModuleOptions): 
     removeDir: (dir) => rm(dir, { recursive: true, force: true }),
     // 管理进程重启后序号会重来，所以带上时间：运行 id 同时是运行标记和日志文件名的一部分
     newRunId: () => `run-${clock.now().toString(36)}-${(++counter).toString(36)}`,
+    ...(options.idleStopAt === undefined ? {} : { idleStopAt: options.idleStopAt }),
     sinks: {
       state: (event) => {
         api.publish("run.state", event);
