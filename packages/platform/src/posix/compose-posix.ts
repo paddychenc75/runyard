@@ -1,4 +1,5 @@
 import { release } from "node:os";
+import type { AbsPath } from "../path-types.ts";
 import type { Arch, Env, Platform, PlatformId } from "../platform.ts";
 import type { LoginShellSources } from "./env/login-shell.ts";
 import { createPosixToolchain } from "./env/posix-toolchain.ts";
@@ -27,7 +28,12 @@ export interface PosixConfig {
   processes: ProcessSource;
   sockets: SocketTable;
   /** 登录环境怎么解析：本进程的环境、可选的指定 shell、向目录服务要 shell 的办法（各系统不同） */
-  toolchain: { baseEnv: Env; loginShell?: string; directory: LoginShellSources["directory"] };
+  toolchain: {
+    baseEnv: Env;
+    shellHome?: AbsPath;
+    loginShell?: string;
+    directory: LoginShellSources["directory"];
+  };
   /** 废纸篓是各系统自己的事：darwin 有实现，linux 抛 NOT_SUPPORTED */
   trash: Platform["fs"]["trash"];
 }
@@ -38,7 +44,7 @@ export function composePosix(config: PosixConfig): Platform {
   const proc = createPosixProc({ source: config.processes });
   const { loginShell, directory, baseEnv } = config.toolchain;
   const toolchain = createPosixToolchain({
-    home: paths.home,
+    home: config.toolchain.shellHome ?? paths.home,
     baseEnv,
     loginShell: {
       ...(loginShell === undefined ? {} : { override: loginShell }),

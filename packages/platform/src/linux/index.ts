@@ -39,6 +39,7 @@ export function createLinuxPlatform(options: PlatformOptions): Platform {
     },
     toolchain: {
       baseEnv: options.baseEnv ?? stringEnv(process.env),
+      ...(options.shellHome === undefined ? {} : { shellHome: options.shellHome }),
       ...(options.loginShell === undefined ? {} : { loginShell: options.loginShell }),
       directory: directoryShellLookup("getent", (user) => ["passwd", user], parseGetentShell),
     },

@@ -33,6 +33,7 @@ export function getPlatform(overrides: Partial<PlatformOptions> = {}): Platform 
     home: overrides.home ?? absPath(homedir()),
     arch: overrides.arch ?? hostArch(),
     profile: "profile" in overrides ? overrides.profile : devProfile(),
+    ...(overrides.shellHome === undefined ? {} : { shellHome: overrides.shellHome }),
     ...(overrides.baseEnv === undefined ? {} : { baseEnv: overrides.baseEnv }),
     ...(overrides.loginShell === undefined ? {} : { loginShell: overrides.loginShell }),
   };

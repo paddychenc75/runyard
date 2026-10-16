@@ -81,10 +81,13 @@ describe("磁盘文件", () => {
 
   it("[RUN-LOGS-14] 一次运行的日志超过 10 MB：磁盘上只留最后一部分，文件不超过 10 MB", async () => {
     const { logs, run, platform, dir } = setup();
-    const line = "x".repeat(1000);
+    // 总量仍是 12 MB（真实的 10 MB 上限，不注入小阈值）；用 120 行大行而不是 1.2 万行小行，
+    // 把逐行序列化、逐行断言的开销降两个数量级，CI 慢机器上不再逼近 5 秒上限（#140）
+    const line = "x".repeat(100_000);
+    const total = 120;
     run(
       "run-a-1",
-      Array.from({ length: 12_000 }, (_, i) => `${i + 1} ${line}`),
+      Array.from({ length: total }, (_, i) => `${i + 1} ${line}`),
     );
     await logs.flush();
     const file = absPath(join(dir, "run-a-1.pg-1.jsonl"));
@@ -94,11 +97,19 @@ describe("磁盘文件", () => {
     const first = JSON.parse(rows[0] as string) as { seq: number };
     const last = JSON.parse(rows.at(-1) as string) as { seq: number; text: string };
     // 掐的是头部：最后一行还在，最前面的没了；掐掉旧行后序号不重排，从中间开始
-    expect(last.seq).toBe(12_000);
-    expect(last.text.startsWith("12000 ")).toBe(true);
+    expect(last.seq).toBe(total);
+    expect(last.text.startsWith(`${total} `)).toBe(true);
     expect(first.seq).toBeGreaterThan(1);
-    // 每一行都是完整的 JSON（没有从行中间切开）
-    for (const row of rows) expect(() => JSON.parse(row)).not.toThrow();
+    // 每一行都是完整的 JSON（没有从行中间切开）；这里不对每行单独 expect，只数坏行
+    let broken = 0;
+    for (const row of rows) {
+      try {
+        JSON.parse(row);
+      } catch {
+        broken += 1;
+      }
+    }
+    expect(broken).toBe(0);
   });
 
   it("[RUN-LOGS-15] 第 6 次运行开始时，最旧一次的日志被删除，只剩最近 5 次；别的项目不受影响", async () => {
