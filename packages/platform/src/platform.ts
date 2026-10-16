@@ -190,6 +190,13 @@ export interface Platform {
     makeDir(dir: AbsPath): Promise<void>;
     /** 直接写（不是原子的），父目录必须已存在，已有同名文件就覆盖。要求不能写坏的文件用 writeAtomic */
     writeFile(file: AbsPath, data: string | Uint8Array): Promise<void>;
+    /** 追加到文件末尾，文件不存在就建；父目录必须已存在。运行日志这类只增不改的流用它 */
+    appendFile(file: AbsPath, data: string): Promise<void>;
+    /**
+     * 删一个普通文件（管理进程自己的日志、轮转文件）；不存在不报错。
+     * 目录和符号链接不删：抛 INTERNAL。用户的项目只能经 trash
+     */
+    removeFile(file: AbsPath): Promise<void>;
     /** 改文件名；目标已存在抛 NAME_EXISTS，不覆盖 */
     renameFile(from: AbsPath, to: AbsPath): Promise<void>;
     /**

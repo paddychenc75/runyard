@@ -136,6 +136,25 @@ export class Session {
     return this.#subscriptions.delete(sub);
   }
 
+  hasSubscription(sub: number): boolean {
+    return !this.#closed && this.#subscriptions.has(sub);
+  }
+
+  /**
+   * 只发给某一个订阅（logs.follow：run.log 的事件体里没有项目，谁该收到由日志服务按项目决定）。
+   * 序号、积压上限的处理与 deliver 相同
+   */
+  deliverTo(sub: number, event: EventName, data: unknown): void {
+    const subscription = this.#subscriptions.get(sub);
+    if (subscription === undefined || this.#closed || !this.ready) return;
+    if (this.#socket.writableLength > this.#deps.maxPendingEventBytes) {
+      this.close("slow-consumer");
+      return;
+    }
+    subscription.seq += 1;
+    this.#write({ t: "evt", sub, seq: subscription.seq, event, data });
+  }
+
   /** 这条连接现在会不会收到这个事件（订阅了所属主题）；释放顺序据此决定等谁回报 */
   wouldReceive(event: EventName): boolean {
     if (this.#closed || !this.ready) return false;

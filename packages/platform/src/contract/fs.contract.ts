@@ -88,6 +88,39 @@ export function fsContract(ctx: ContractContext): void {
     });
   });
 
+  describe("fs.appendFile", () => {
+    it('"fs.appendFile" 文件不存在就建，已有的接在末尾，不覆盖', async () => {
+      const at = await fresh();
+      await fs.appendFile(at("a.log"), "一\n");
+      await fs.appendFile(at("a.log"), "二\n");
+      expect(await fs.readText(at("a.log"))).toBe("一\n二\n");
+    });
+
+    it('"fs.appendFile" 父目录不存在是错误，不会悄悄建出来', async () => {
+      const at = await fresh();
+      expect(await codeOf(fs.appendFile(at("missing", "a.log"), "x"))).toBe("INTERNAL");
+      expect(await fs.exists(at("missing"))).toBe(false);
+    });
+  });
+
+  describe("fs.removeFile", () => {
+    it('"fs.removeFile" 删掉一个文件，不存在不报错', async () => {
+      const at = await fresh();
+      await fs.writeFile(at("a.log"), "x");
+      await fs.removeFile(at("a.log"));
+      await fs.removeFile(at("a.log"));
+      expect(await fs.exists(at("a.log"))).toBe(false);
+    });
+
+    it('"fs.removeFile" 不删目录：抛错，目录和里面的东西原样', async () => {
+      const at = await fresh();
+      await fs.makeDir(at("dir"));
+      await fs.writeFile(at("dir", "f.txt"), "x");
+      expect(await codeOf(fs.removeFile(at("dir")))).toBe("INTERNAL");
+      expect(await fs.readText(at("dir", "f.txt"))).toBe("x");
+    });
+  });
+
   describe("fs.listFiles", () => {
     it('"fs.listFiles" 只列下一层的文件，排好序；目录不存在返回空数组', async () => {
       const at = await fresh();

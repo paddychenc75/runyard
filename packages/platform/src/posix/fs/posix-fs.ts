@@ -1,5 +1,14 @@
 import type { Dirent } from "node:fs";
-import { lstat, mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
+import {
+  appendFile,
+  lstat,
+  mkdir,
+  readdir,
+  readFile,
+  stat,
+  unlink,
+  writeFile,
+} from "node:fs/promises";
 import { basename, join, relative, sep } from "node:path";
 import type { AbsPath } from "../../path-types.ts";
 import type { Platform } from "../../platform.ts";
@@ -105,6 +114,32 @@ export function createPosixFs(options: PosixFsOptions = {}): Omit<Platform["fs"]
         await writeFile(file, data);
       } catch (error) {
         throw fsError(error, file, "write");
+      }
+    },
+
+    async appendFile(file, data) {
+      try {
+        await appendFile(file, data);
+      } catch (error) {
+        throw fsError(error, file, "append");
+      }
+    },
+
+    async removeFile(file) {
+      const info = await lstat(file).catch((error) => {
+        if (errnoOf(error) === "ENOENT" || errnoOf(error) === "ENOTDIR") return null;
+        throw fsError(error, file, "remove");
+      });
+      if (info === null) return;
+      if (!info.isFile()) {
+        throw platformError("INTERNAL", {}, `removeFile target is not a regular file: ${file}`);
+      }
+      try {
+        // delete-allow: 只删单个普通文件（管理进程自己的日志），目录和链接在上面已拒绝
+        await unlink(file);
+      } catch (error) {
+        if (errnoOf(error) === "ENOENT") return;
+        throw fsError(error, file, "remove");
       }
     },
 

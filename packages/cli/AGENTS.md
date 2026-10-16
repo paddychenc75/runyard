@@ -3,7 +3,7 @@
 ## 用途
 
 `runyard` 命令：参数解析、输出模块、`--json`、退出码映射、语言解析、`--help`（技术设计 §5.3、§6.8；`docs/architecture/cli-contract.md`；规格 `openspec/specs/cli/commands`）。命令行只随桌面应用安装，第一版不发 npm：包是 `private`，没有 `bin`、没有发布配置；M1 期间从仓库源码运行（`pnpm --filter runyard start -- <参数>` 或 `node packages/cli/src/main.ts <参数>`）。
-现状：`config get|set lang`、`doctor`（含 `--template`、`--bundle`）、`skill install`、`template list|show|save|lint` 有行为；`new run stop status logs rm` 和 `template test` 只有声明（帮助里看得到，运行得到 `NOT_SUPPORTED`，退出码 10），前者由 #46、#47 补，`template test` 的冒烟测试在 #54。
+现状：`config get|set lang`、`doctor`（含 `--template`、`--bundle`）、`skill install`、`template list|show|save|lint`、`new`、`run` 有行为；`stop status logs rm` 和 `template test` 只有声明（帮助里看得到，运行得到 `NOT_SUPPORTED`，退出码 10），前者由 #47 补，`template test` 的冒烟测试在 #54。
 
 ## 对外暴露什么
 
@@ -32,10 +32,13 @@
 - `skill install`（`src/commands/skill-install.ts`、`src/skill/skill-text.ts`）：只写 `<主目录>/.claude/skills/runyard/SKILL.md` 和 `<主目录>/.agents/skills/runyard/SKILL.md`；全文是英文数据，不走文案包，有快照测试。
 - `template list|show|save` 经管理进程（`template.list|get|save`）；`save` 在发请求前先校验 `--as`（`NAME_INVALID`）和 `--include|--exclude`（`USAGE`）。`template lint` 在本进程直接调 core 的 `lintTemplateRef`；有错误时先输出结果对象，再以 `TEMPLATE_INVALID`（2）结束。管理进程一侧的 `template.*` 处理不在本包。
 
+- `new`、`run`（`src/commands/new.ts`、`run.ts`、`start-run.ts`）：参数先在本进程检查完再连管理进程（`--var` 写法或键为 `name` 是 `VAR_INVALID`，`--clean-after` 不是“正整数加 d”、`--if-exists`、`--timeout`、`--port` 不合法是 `USAGE`），所以参数不对时不创建任何文件夹。`new` 发 `playground.create`（`ifExists` 缺省显式传 `fail`），`--run` 再发 `run.start`；`run` 先 `playground.get` 取种类（服务等 `ready`，脚本等 `exit`，`--no-wait` 是 `none`），`--timeout` 缺省 60 秒（`new` 也是，cli-contract“未定”第 4 项的暂定做法）换成毫秒交给管理进程。`--restart` 是 `run.stop`（没有运行可停不算错）加 `run.start`，因为 `run.restart` 没有等待参数。`<pg>` 原样交给管理进程，名称、id、绝对路径它都认（`PlaygroundLibrary.find`）。结果整理成规格的键：服务 `logTail`、脚本 `output` 取自 `logs.read` 的最后 200 行（与 `logs` 默认一致），`idleStopMinutes` 取设置 `cliIdleStopMinutes`；管理进程默认返回清洗过的整行，系统提示不算输出，`cursor` 用这次读取返回的。端口回退在文字模式下写成 `PORT_FALLBACK` 提示，`--json` 里是 `portFallback`。
+- 创建者与持有者（`src/creator/detect-creator.ts`）：`RUNYARD_AGENT`，其次 `CLAUDECODE=1`（记为 `Claude Code`），其次 `AI_AGENT` 的原值，都没有是 `cli` 且不带名字；记下的“创建命令”只有命令词和位置参数（`runyard new html demo`），不含 `--note`、`--var` 的值。
+
 ## 子目录地图
 
 - `src/run-cli.ts`（解析、建输出和翻译、统一的错误出口）、`execute-command.ts`（分派帮助和命令）、`parse-command-line.ts`、`cli-error.ts`、`cli-deps.ts`、`composition-root.ts`、`main.ts`
-- `src/commands/`：声明（`declarations.ts`）、`command-spec.ts`、`command-context.ts`、`global-options.ts`、`config-commands.ts`、`doctor.ts`、`skill-install.ts`、`template-commands.ts`；`src/doctor/`：诊断的各部分；`src/skill/`：SKILL.md 全文；`src/templates/`：模板目录位置；`src/real-clock.ts`
+- `src/commands/`：声明（`declarations.ts`）、`command-spec.ts`、`command-context.ts`、`global-options.ts`、`config-commands.ts`、`new.ts`、`run.ts`、`start-run.ts`、`doctor.ts`、`skill-install.ts`、`template-commands.ts`；`src/doctor/`：诊断的各部分；`src/skill/`：SKILL.md 全文；`src/templates/`：模板目录位置；`src/real-clock.ts`
 - `src/output/`：唯一的输出口；`src/help/`：`--help` 正文；`src/settings/`：`cli.json`；`src/language/`：语言解析
 - `src/help/__snapshots__/help.en.txt`、`help.zh-CN.txt`：`--help` 快照
 

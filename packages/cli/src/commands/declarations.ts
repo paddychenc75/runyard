@@ -7,10 +7,12 @@ import {
 } from "./command-spec.ts";
 import { configGet, configSet } from "./config-commands.ts";
 import { doctor } from "./doctor.ts";
+import { newPlayground } from "./new.ts";
+import { runPlayground } from "./run.ts";
 import { skillInstall as skillInstallRun } from "./skill-install.ts";
 import { templateLint, templateList, templateSave, templateShow } from "./template-commands.ts";
 
-// 命令表（docs/architecture/cli-contract.md 第 2 节）。new run stop status logs rm 只有声明，没有 run（#46、#47）；
+// 命令表（docs/architecture/cli-contract.md 第 2 节）。stop status logs rm 只有声明，没有 run（#47）；
 // template test 也没有 run，等 #54 的冒烟测试。
 // template、skill 子命令的位置参数契约没写，按“show / lint / test 收一个模板，save 收一个项目”声明。
 
@@ -72,6 +74,7 @@ const newCommand = defineCommand({
     noWait,
   ],
   needsSupervisor: true,
+  run: newPlayground,
 });
 
 const runCommand = defineCommand({
@@ -85,6 +88,7 @@ const runCommand = defineCommand({
     { name: "port", type: "string", valueName: "n", hint: (t) => t("cli.option.port.hint") },
   ],
   needsSupervisor: true,
+  run: runPlayground,
 });
 
 const stopCommand = defineCommand({

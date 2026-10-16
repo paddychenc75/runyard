@@ -1,6 +1,7 @@
 import { fileURLToPath } from "node:url";
 import { absPath, getPlatform, isPlatformError } from "@runyard/platform";
 import { PROTOCOL_VERSION } from "@runyard/protocol";
+import { createLogModule } from "./log-module.ts";
 import { parseSupervisorArgs } from "./parse-args.ts";
 import { createRunModule } from "./run-module.ts";
 import { startSupervisor } from "./start-supervisor.ts";
@@ -57,7 +58,27 @@ export async function runSupervisorMain(argv: readonly string[]): Promise<number
         startedBy: args.startedBy,
       },
       templateData,
-      extend: (api) => createRunModule(api, { templateData }),
+      extend: (api) => {
+        // 日志要问引擎“这次运行是哪个项目的”，引擎在运行模块里，所以两者互相引用，都只在回调里用
+        const logs = createLogModule(api, {
+          playgroundOf: (runId) => run.engine.get(runId)?.request.playgroundId,
+          stateOf: (playgroundId) => run.engine.current(playgroundId)?.state,
+        });
+        const run = createRunModule(api, {
+          templateData,
+          appVersion: args.version,
+          observer: logs.observer,
+        });
+        return {
+          ...run,
+          handlers: { ...run.handlers, ...logs.handlers },
+          // 运行停完之后最后几行才到，所以日志落盘排在它后面
+          onShutdown: async (reason) => {
+            await run.onShutdown(reason);
+            await logs.flush();
+          },
+        };
+      },
       host: args.host,
       execPath: process.execPath,
       log: diagnostic,

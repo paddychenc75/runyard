@@ -14,6 +14,7 @@ import { createLibraryService } from "./library-service.ts";
 import { createSessionManager } from "./session-manager.ts";
 import type { SupervisorApi } from "./supervisor-api.ts";
 import { createSystemClock } from "./supervisor-clock.ts";
+import { rotateSupervisorLog } from "./supervisor-log-rotation.ts";
 import {
   HANDSHAKE_TIMEOUT_MS,
   IDLE_EXIT_MS,
@@ -162,6 +163,10 @@ export function createSupervisorRuntime(options: StartSupervisorOptions) {
     };
     dispatch = createDispatcher(mergeHandlers(own, extensions.handlers), api);
     await store.remove();
+    // 日志轮转只在启动时做，失败不影响启动（日志大一点比起不来好）
+    await rotateSupervisorLog(platform).catch((error: unknown) =>
+      log(`supervisor.log rotation failed: ${String(error)}`),
+    );
     try {
       await extensions.recoverCrashedRuns?.();
     } catch (error) {
