@@ -2,8 +2,11 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { describe as describeRollbacks, findRollbacks, isRevertTitle } from "./check-rollback.ts";
+
+// 每个用例要建临时仓库、跑十几次 git；Windows 机器上 git 很慢，默认 5 秒不够
+vi.setConfig({ testTimeout: 60_000 });
 
 const script = join(import.meta.dirname, "check-rollback.ts");
 const dirs: string[] = [];
