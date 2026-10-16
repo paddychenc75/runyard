@@ -77,6 +77,16 @@ export const status: CommandHandler = async (context) => {
     chosen = playgrounds.filter((p) => p.name === ref || p.id === ref || p.path === ref);
     if (chosen.length === 0) throw cliError("PLAYGROUND_NOT_FOUND", { name: ref });
   }
+  if (ref !== undefined) {
+    // 指名某个项目就算“提到了它”，让管理进程把空闲停止的计时归零：用已登记的 run.get
+    // （管理进程只认握手自称 cli 的连接）；顺带拿到最新的快照
+    for (const p of chosen) {
+      const active = latest.get(p.id);
+      if (active !== undefined && isActiveState(active.state)) {
+        latest.set(p.id, await client.call("run.get", { runId: active.runId }));
+      }
+    }
+  }
   let rows = chosen.map((p) => row(p, latest.get(p.id), now));
   if (context.flag("running")) {
     rows = rows.filter((item) => item.owner !== null);

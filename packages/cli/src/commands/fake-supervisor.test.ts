@@ -125,6 +125,12 @@ export class FakeSupervisor {
     this.calls.push({ method, params });
     const p = params as Record<string, unknown>;
     switch (method) {
+      case "run.get": {
+        const found = this.runs.find((r) => r.runId === p.runId);
+        if (found === undefined)
+          throw clientError("RUN_NOT_FOUND", { runId: String(p.runId) }, "none");
+        return found;
+      }
       case "run.list":
         return p.running === true ? this.runs.filter((r) => isActive(r.state)) : this.runs;
       case "run.stop": {

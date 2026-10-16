@@ -99,6 +99,22 @@ describe("status", () => {
     });
   });
 
+  it("[RUN-OWNERSHIP-11] status <名称> 对活动中的运行发 run.get（提到它，管理进程据此归零计时）；不带名称的 status 不发", async () => {
+    const make = () =>
+      new FakeSupervisor({
+        playgrounds: [playground("demo"), playground("other")],
+        runs: [run("demo", { runId: "r1" }), run("other", { runId: "r2" })],
+      });
+    const named = make();
+    await setup(named).run(["status", "demo", "--json"]);
+    const gets = named.calls.filter((c) => c.method === "run.get");
+    expect(gets).toEqual([{ method: "run.get", params: { runId: "r1" } }]);
+
+    const all = make();
+    await setup(all).run(["status", "--json"]);
+    expect(all.calls.some((c) => c.method === "run.get")).toBe(false);
+  });
+
   it("[CLI-COMMANDS-53] --running 只列有活动运行的项目，running 仍是总数", async () => {
     const fake = new FakeSupervisor({
       playgrounds: [playground("up"), playground("down")],

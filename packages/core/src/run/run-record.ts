@@ -65,6 +65,7 @@ export class RunRecord {
       readyMs: this.readyMs,
       endedAt: this.endedAt,
       logCount: this.#logCount,
+      idleStopAt: this.host.deps.idleStopAt?.(this.runId, this.owner),
     });
   }
 

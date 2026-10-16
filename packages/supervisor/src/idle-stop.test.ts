@@ -193,6 +193,34 @@ describe("命令行持有的运行空闲后自动停止", { timeout: 30_000 }, (
     await w.dispose();
   });
 
+  it("[CLI-COMMANDS-51] 快照里 idleStopAt 是最后活动加 30 分钟，活动归零时跟着更新；标签页持有的没有", async () => {
+    const ctx = await setup();
+    const { w, cli, app, id } = ctx;
+    const { run, origin } = await startServer(ctx);
+    const idleStopAt = async () =>
+      (await app.result<RunSnapshot>("run.get", { runId: run.runId })).idleStopAt;
+
+    // 计时从运行进入 ready 前的某一刻起算，比启动那一刻晚几百毫秒（假时钟）
+    const first = await idleStopAt();
+    expect(first).toBeGreaterThanOrEqual(origin + 30 * MIN);
+    expect(first).toBeLessThan(origin + 30 * MIN + 5_000);
+    await advanceTo(w, origin, 10 * MIN);
+    await cli.result("logs.read", { playground: "demo" });
+    const mentionedAt = w.clock.now();
+    expect(await idleStopAt()).toBe(mentionedAt + 30 * MIN);
+    // 事件里的快照和 run.list 同样有值
+    const listed = await app.result<RunSnapshot[]>("run.list", {});
+    expect(listed.find((r) => r.runId === run.runId)?.idleStopAt).toBe(mentionedAt + 30 * MIN);
+    await app.result("run.adopt", { runId: run.runId, owner: tabOwner("app-1", "t9") });
+    expect(await idleStopAt()).toBeUndefined();
+
+    w.server(undefined);
+    const tab = await w.startRun(app, id, tabOwner());
+    await w.ready(app, tab.runId);
+    expect(tab.idleStopAt).toBeUndefined();
+    await w.dispose();
+  });
+
   it("改为由我管理之后不再做空闲停止", async () => {
     const ctx = await setup();
     const { w, app } = ctx;

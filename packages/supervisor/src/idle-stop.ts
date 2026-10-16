@@ -1,5 +1,6 @@
 import { isActiveState, type Run } from "@runyard/core";
 import { type AbsPath, type Disposable, posixRelPath } from "@runyard/platform";
+import type { Owner } from "@runyard/protocol";
 import type { RunObserver } from "./run-module.ts";
 import type { Session } from "./session.ts";
 import type { SupervisorApi } from "./supervisor-api.ts";
@@ -25,6 +26,8 @@ export interface IdleStopDeps {
 export interface IdleStop {
   readonly observer: Required<Pick<RunObserver, "mentioned" | "state" | "log" | "exit">>;
   /** 命令行的一条命令提到了这个项目（logs.read 等不经 `RunObserver.mentioned` 的）；app 的请求忽略 */
+  /** 填进快照的 `idleStopAt`：最后活动 + 空闲分钟；只有命令行持有、被盯着的运行有（#141，CLI-COMMANDS-51） */
+  idleStopAt(runId: string, owner: Owner): number | undefined;
   mentionPlayground(playgroundId: string, session: Session | undefined): void;
   /** 管理进程关闭：停掉所有计时和监听 */
   dispose(): void;
@@ -34,6 +37,8 @@ interface Tracked {
   readonly runId: string;
   readonly playgroundId: string;
   last: number;
+  /** 最近一次读到的 cliIdleStopMinutes（快照里的 idleStopAt 用，不另读设置） */
+  minutes?: number;
   closed: boolean;
   timer?: number;
   sampler?: number;
@@ -49,6 +54,7 @@ export function createIdleStop(api: SupervisorApi, deps: IdleStopDeps): IdleStop
   const minutesNow = async () => (await api.readSettings()).cliIdleStopMinutes;
 
   function schedule(t: Tracked, minutes: number): void {
+    t.minutes = minutes;
     if (t.timer !== undefined) clock.clearTimeout(t.timer);
     const wait = Math.max(0, t.last + minutes * 60_000 - clock.now());
     t.timer = clock.setTimeout(() => void expire(t), wait);
@@ -59,6 +65,7 @@ export function createIdleStop(api: SupervisorApi, deps: IdleStopDeps): IdleStop
     if (t.closed) return;
     const minutes = await minutesNow();
     if (t.closed) return;
+    t.minutes = minutes;
     if (clock.now() < t.last + minutes * 60_000) return schedule(t, minutes);
     untrack(t);
     const run = deps.runOf(t.runId);
@@ -137,6 +144,11 @@ export function createIdleStop(api: SupervisorApi, deps: IdleStopDeps): IdleStop
       mentioned: (run, session) => {
         if (fromCli(session)) touch(run.runId);
       },
+    },
+    idleStopAt: (runId, owner) => {
+      const t = tracked.get(runId);
+      if (t === undefined || t.minutes === undefined || owner.kind !== "cli") return undefined;
+      return t.last + t.minutes * 60_000;
     },
     mentionPlayground(playgroundId, session) {
       if (!fromCli(session)) return;
