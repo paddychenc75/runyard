@@ -219,6 +219,25 @@ describe("脚本项目的自动重新运行监听", { timeout: 30_000 }, () => {
     await ctx.w.dispose();
   });
 
+  it("[RUN-SCRIPTS-29] stop 恰好撞上已触发、排队中的保存重跑：重跑被撤销，不会起新运行也不会重新挂上监听（#153）", async () => {
+    const ctx = await setup();
+    // 旧进程不响应停止信号，重跑停在“等旧的停掉”这一步，直到宽限期后被强杀
+    ctx.w.world.fake.processes.when(["node", "script.js"], { ignoresStop: true });
+    const first = await ctx.w.startRun(ctx.cli, ctx.id, cliOwner);
+    await ctx.w.until(async () => (await ctx.w.stateOf(ctx.app, first.runId)) === "running");
+    save(ctx, "// edited");
+    // 只推进到去抖到点：重跑任务已触发，正等旧的停掉、还没起新进程；此刻 stop 插进来
+    await ctx.w.clock.advance(300);
+    const stopping = ctx.cli.result("run.stop", { playground: ctx.id });
+    await settle(ctx);
+    await stopping;
+    await ctx.w.until(async () => (await ctx.w.stateOf(ctx.app, first.runId)) === "stopped");
+    await settle(ctx);
+    expect(await runsOf(ctx)).toHaveLength(1);
+    expect(ctx.w.module.scriptWatch.isWatching(ctx.id)).toBe(false);
+    await ctx.w.dispose();
+  });
+
   it("标签页持有的脚本运行不开始监听（桌面应用的监听在 M2）", async () => {
     const ctx = await setup();
     const run = await ctx.w.startRun(ctx.app, ctx.id, tabOwner());
