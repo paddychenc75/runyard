@@ -1,0 +1,15 @@
+{
+  "formatVersion": 1,
+  "id": "go",
+  "kind": "oneshot",
+  "needs": ["go"],
+  "check": { "command": ["gofmt", "-e", "-l", "{entry}"], "timeoutMs": 5000 },
+  "run": { "command": ["go", "run", "{entry}"], "stdin": true },
+  "preview": { "type": "console" },
+  "watch": {
+    "mode": "rerun",
+    "paths": ["**/*.go", "go.mod"],
+    "debounceMs": 300
+  },
+  "stop": { "mode": "interrupt", "graceMs": 2000 }
+}

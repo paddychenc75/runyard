@@ -1,0 +1,14 @@
+{
+  "formatVersion": 1,
+  "id": "go",
+  "name": { "en": "Go program", "zh-CN": "Go 程序" },
+  "description": {
+    "en": "A single Go file run with go run, using only the standard library.",
+    "zh-CN": "一个用 go run 运行的 Go 文件，只用标准库。"
+  },
+  "category": "script",
+  "runner": "go",
+  "requires": { "go": { "version": ">=1.26 <2" } },
+  "entry": "main.go",
+  "maintainer": "Runyard"
+}

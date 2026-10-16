@@ -78,6 +78,8 @@ export type HarnessOptions = {
   runner?: Runner;
   requires?: Requires;
   registeredPort?: number;
+  /** 入口文件，默认 main.py */
+  entry?: string;
   otherPorts?: number[];
   packageManager?: string;
   tools?: ("node" | "pnpm" | "npm" | "python" | "go")[];
@@ -118,7 +120,7 @@ export function createPrepareHarness(options: HarnessOptions = {}) {
     folder,
     runner,
     requires,
-    entry: "main.py",
+    entry: options.entry ?? "main.py",
     otherRegisteredPorts: new Set(options.otherPorts ?? []),
     ...(options.registeredPort === undefined ? {} : { registeredPort: options.registeredPort }),
     ...(options.packageManager === undefined ? {} : { packageManager: options.packageManager }),

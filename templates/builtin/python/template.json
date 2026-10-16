@@ -1,0 +1,14 @@
+{
+  "formatVersion": 1,
+  "id": "python",
+  "name": { "en": "Python script", "zh-CN": "Python 脚本" },
+  "description": {
+    "en": "A single Python file with no third-party packages.",
+    "zh-CN": "一个 Python 文件，不用第三方包。"
+  },
+  "category": "script",
+  "runner": "python-file",
+  "requires": { "python": { "version": ">=3.12 <4" } },
+  "entry": "main.py",
+  "maintainer": "Runyard"
+}

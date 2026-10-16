@@ -1,0 +1,14 @@
+{
+  "formatVersion": 1,
+  "id": "node-ts",
+  "name": { "en": "Node + TypeScript script", "zh-CN": "Node + TypeScript 脚本" },
+  "description": {
+    "en": "A TypeScript script run directly by Node, with no dependencies and no build step. Only type annotations are supported (no enum or namespace).",
+    "zh-CN": "由 Node 直接运行的 TypeScript 脚本，没有依赖，不用构建。只支持类型注解（不支持 enum、namespace）。"
+  },
+  "category": "script",
+  "runner": "node-ts",
+  "requires": { "node": { "version": ">=22.18 <27" } },
+  "entry": "main.ts",
+  "maintainer": "Runyard"
+}
