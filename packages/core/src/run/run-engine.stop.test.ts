@@ -265,3 +265,22 @@ describe("重启与全部停止", () => {
     expect(tab.run.state).toBe("stopped");
   });
 });
+
+describe("空闲停止的原因", () => {
+  it("带 idle 的 stop：日志是 IDLE_STOPPED，run.exit 带 reason idle，状态照常走到 stopped", async () => {
+    const { h, run } = await readyServer();
+    const snapshot = await run.stop({ idle: { minutes: 30 } });
+    expect(snapshot.state).toBe("stopped");
+    const notices = h.logs.flatMap(({ entry }) => (entry.kind === "system" ? [entry.notice] : []));
+    expect(notices).toContainEqual({ code: "IDLE_STOPPED", params: { minutes: 30 } });
+    expect(notices.some((notice) => notice.code === "STOPPED_BY_USER")).toBe(false);
+    expect(h.exits.at(-1)).toMatchObject({ runId: run.runId, reason: "idle" });
+    expect(h.states.slice(-2).map((s) => s.run.state)).toEqual(["stopping", "stopped"]);
+  });
+
+  it("普通 stop 的 run.exit 没有 reason", async () => {
+    const { h, run } = await readyServer();
+    await run.stop();
+    expect(h.exits.at(-1)?.reason).toBeUndefined();
+  });
+});

@@ -22,10 +22,12 @@ import {
 } from "./run-session-steps.ts";
 import { IllegalTransitionError, isActiveState } from "./run-transitions.ts";
 import {
+  type CrashedRunInput,
   DEFAULT_SLOW_AFTER_MS,
   type RunHost,
   type RunPlan,
   type StartRequest,
+  type StopOptions,
 } from "./run-types.ts";
 import { StartupWatch } from "./startup-watch.ts";
 import { stopProcessTree } from "./stop-process-tree.ts";
@@ -47,6 +49,8 @@ export class RunSession implements Run {
 
   readonly #waitFor: Promise<unknown>;
   #spawnError: unknown;
+  /** 崩溃后恢复出来的记录没有进程对象，只有当时的 pid */
+  #restoredPid?: number;
 
   /** `after`：同一个项目上一次运行正在停止时，等它停完再开始准备（所有者的决定，见 run-engine.ts） */
   constructor(runId: string, request: StartRequest, host: RunHost, after?: Promise<unknown>) {
@@ -60,10 +64,25 @@ export class RunSession implements Run {
       runId,
     });
     this.#rec = new RunRecord(runId, request, host, {
-      pid: () => this.#proc?.ref.pid,
+      pid: () => this.#proc?.ref.pid ?? this.#restoredPid,
       slow: () => this.#watch.slow,
       onLog: (entry) => this.#watch.feed(entry),
     });
+  }
+
+  /**
+   * 管理进程崩溃之后的清理（规格 SUPERVISOR-LIFECYCLE-16、17）：上次的运行只剩一条记录，
+   * 在引擎里留一个 `crashed` 的运行，让 run.get、状态能说出它的结局。不会再变，也不持有任何进程
+   */
+  static restoreCrashed(host: RunHost, input: CrashedRunInput): RunSession {
+    const session = new RunSession(input.runId, input.request, host);
+    session.#restoredPid = input.pid;
+    const rec = session.#rec;
+    rec.plan = input.plan;
+    rec.startedAt = input.startedAt;
+    rec.endedAt = input.endedAt;
+    rec.state = "crashed";
+    return session;
   }
 
   get state(): RunState {
@@ -105,10 +124,10 @@ export class RunSession implements Run {
     this.#preparing = this.#waitFor.then(() => this.#prepareAndLaunch());
   }
 
-  stop(): Promise<RunSnapshot> {
+  stop(options: StopOptions = {}): Promise<RunSnapshot> {
     if (this.#stopping !== undefined) return this.#stopping;
     if (!isActiveState(this.#rec.state)) return Promise.resolve(this.snapshot());
-    this.#stopping = this.#stopRun();
+    this.#stopping = this.#stopRun(options);
     return this.#stopping;
   }
 
@@ -217,6 +236,15 @@ export class RunSession implements Run {
     }
     const proc = spawned.proc;
     this.#proc = proc;
+    this.#host.deps.sinks.spawned?.({
+      runId: this.runId,
+      request: this.request,
+      owner: this.#rec.owner,
+      ref: proc.ref,
+      plan,
+      state: this.#rec.state,
+      startedAt: this.#rec.startedAt,
+    });
     this.#output = pumpOutput(proc, {
       now: () => this.#host.deps.clock.now(),
       emit: (entry) => this.#rec.emitLog(entry),
@@ -333,12 +361,16 @@ export class RunSession implements Run {
 
   // ---- 停止 ----
 
-  async #stopRun(): Promise<RunSnapshot> {
+  async #stopRun({ idle }: StopOptions): Promise<RunSnapshot> {
     this.#rec.transition("stopping");
     this.#watch.clearSlowTimer();
     this.#prepareAbort.abort();
     this.#watch.abortReadiness();
-    this.#rec.log({ code: "STOPPED_BY_USER", params: {} });
+    this.#rec.log(
+      idle === undefined
+        ? { code: "STOPPED_BY_USER", params: {} }
+        : { code: "IDLE_STOPPED", params: { minutes: idle.minutes } },
+    );
     await this.#preparing;
     const proc = this.#proc;
     if (proc !== undefined && this.#rec.plan !== undefined) {
@@ -355,7 +387,11 @@ export class RunSession implements Run {
     }
     await this.#cleanup();
     this.#rec.end("stopped");
-    this.#host.deps.sinks.exit?.({ runId: this.runId, ...this.#exitFields() });
+    this.#host.deps.sinks.exit?.({
+      runId: this.runId,
+      ...(idle === undefined ? {} : { reason: "idle" as const }),
+      ...this.#exitFields(),
+    });
     return this.snapshot();
   }
 }

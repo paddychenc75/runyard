@@ -32,7 +32,7 @@ export class RunRecord {
   readyMs?: number;
   plan?: RunPlan;
   stale = false;
-  readonly startedAt: number;
+  startedAt: number;
   readonly runId: string;
   readonly request: StartRequest;
   readonly host: RunHost;

@@ -3,7 +3,7 @@
 ## 用途
 
 管理进程（`runyardd`）：单实例、发现文件、握手服务、会话与方法分发、事件订阅、空闲自己退出、关闭（技术设计 §2.1 到 §2.4、§5.1；决策记录 0002、0005）。纯 JS，不导入 Electron，不含原生模块，普通 Node 24 直接运行。
-现状：骨架、会话组方法，以及资源库、设置、自动清理、模板的方法（#41、#119）。运行编排与持有者（#40）在 `src/run-*.ts`，经 `createRunModule` 接上；崩溃后清理与命令行运行的空闲停止（#42）由它自己的 issue 通过下面的接缝和 `RunObserver` 接上；日志（#43）已接在 `RunObserver.log` 上（`log-module.ts`，见下）。
+现状：骨架、会话组方法，以及资源库、设置、自动清理、模板的方法（#41、#119）。运行编排与持有者（#40）在 `src/run-*.ts`，经 `createRunModule` 接上；命令行运行的空闲停止和崩溃后清理（#42）、日志（#43）都挂在 `RunObserver` 上，入口用 `composeExtensions`（`compose-extensions.ts`）把它们和运行编排装在一起（见下）。
 
 ## 对外暴露什么
 
@@ -29,6 +29,9 @@
   - `logs.follow` 返回的订阅不接收 `publish` 的任何事件：`run.log` 的事件体里没有项目，所以由日志服务按项目经 `Session.deliverTo` 点对点推送（不清洗时 `raw: true`）。只推订阅之后的新条目，`since`、`tail` 对它没有意义。订阅被取消或连接关闭后下一次推送时顺手清掉。
   - `supervisor.log` 轮转（`supervisor-log-rotation.ts`）：启动时（拿到锁之后）超过 5 MB 就复制到 `.1`（旧的顺延，保留 `.1` 到 `.3`）再清空原文件，不改名（启动者以追加方式打开着它）；只在启动时做。
   - `doctor --bundle` 取最近三次运行日志靠文件名从小到大，改文件名规则要同步 `packages/cli/src/doctor/diagnostic-bundle.ts`。
+- 空闲停止（#42，`idle-stop.ts`，PRD #prd-idle-stop）：只盯 `cli` 持有的服务和页面（脚本、标签页持有的不参与；运行被“改为由我管理”后到点也不停）。四种活动只更新“最后活动时间”：stdout/stderr 输出（`RunObserver.log`）、项目文件夹里的文件变化（`platform.watch`，忽略 `.runyard`、`node_modules`、`.git`）、命令行的命令提到它（`RunObserver.mentioned` 与 `logs.read|follow` 经 `LogModuleOptions.onMention`；**只认握手时自称 `cli` 的连接**，应用发的同样请求和 `attach`/`detach` 都不算）、端口上已建立的连接（`platform.ports.connections`，每 `PORT_SAMPLE_MS` = 60 秒采样）。一个到期定时器，到点现读设置 `cliIdleStopMinutes`，没满就按剩余时间再等；满了调 `run.stop({ idle: { minutes } })`（日志 `IDLE_STOPPED`，`run.exit` 带 `reason: 'idle'`）。设置改了从下一次到点起生效。`status <名称>` 现在走 `playground.list` + `run.list`，没有“提到某次运行”的请求，所以还不算活动（缺口，见 PR）；“请求面板”还不存在。
+- 崩溃后清理（#42，`crash-recovery.ts`、`run-record-store.ts`，规格 SUPERVISOR-LIFECYCLE-16、17）：`RunObserver.spawned`（core 的 `RunSinks.spawned`，进程起来和重新加载换进程时）写 `<状态目录>/run/runs/<runId>.json`（`RunRecord`，`processStart` 是平台层给的启动时间），`exit` 时删，同一个运行的写删排成一条。`recoverCrashedRuns` 在拿锁之后、写发现文件之前逐个读：pid 加启动时间都对得上才 `stopProcessTree`（整棵结束，不对就连结束请求都不发）；然后无论如何删记录，并用 `RunEngine.restoreCrashed` 在引擎里留一个 `crashed` 的运行（`run.get`、状态看得见；项目名取资源库，找不到用 id）。坏记录改名留存、里面的进程不动；更新版本写的原样不动。不重新接管。只有起了子进程的运行有记录（`static` 页面服务在管理进程里，随它一起没了）。
+- `composeExtensions`（`compose-extensions.ts`）：运行编排 + 日志 + 空闲停止 + 崩溃记录的单一装配，`run-main.ts` 和单元测试现场（`run-harness.test.ts`）都用它；`combineObservers`（`run-observers.ts`）把几个 `RunObserver` 并成一个。`onShutdown` 的顺序：停空闲计时 → 停全部运行 → 等运行记录落盘 → 等日志落盘。
 - 处理函数用 `methodFailure(code, params, debug)` 返回协议错误；`HandlerOutcome` 带“响应写出之后”的动作。
 
 ## 本包特有的规则
@@ -48,7 +51,7 @@
 - `src/handshake-server.ts`、`session.ts`（一个连接）、`session-manager.ts`、`dispatch.ts`（分发）、`builtin-methods.ts`（会话组、事件订阅）、`method-failure.ts`
 - `src/run-module.ts`（装配）、`run-control.ts`（启动、等待、停止）、`run-handlers.ts`（方法）、`run-owners.ts`（持有者与连接）、`run-subjects.ts`（项目与运行器的事实）
 - `src/log-module.ts`（装配）、`log-handlers.ts`、`run-log-service.ts`、`run-log-ring.ts`、`run-log-files.ts`、`run-log-writer.ts`、`supervisor-log-rotation.ts`
-- `src/idle-monitor.ts`（60 秒空闲）、`discovery-file.ts`、`supervisor-clock.ts`
+- `src/idle-monitor.ts`（管理进程自己 60 秒空闲退出）、`src/idle-stop.ts`（命令行运行的空闲停止）、`src/crash-recovery.ts`、`src/run-record-store.ts`（崩溃后清理）、`src/compose-extensions.ts`、`src/run-observers.ts`（装配）、`discovery-file.ts`、`supervisor-clock.ts`
 - `src/main.ts`（入口，纯 JS）、`run-main.ts`、`parse-args.ts`
 - 测试替身（不是产品代码）：`test-client.ts`（能走歪的客户端）、`test-processes.ts`（短前缀临时主目录、起真入口、按 pid 加启动时间记账）、`supervisor-harness.test.ts`（假平台、假时钟、内存里的发现文件；只有 `*.test.ts` 能导入 `@runyard/testing`）
 
@@ -58,4 +61,4 @@
 pnpm test --filter @runyard/supervisor
 ```
 
-单元测试用假平台（`127.0.0.1` 上的 socket）、假时钟，Windows 任务也跑。`*.platform-dependent.test.ts` 把真实入口当单独的 Node 进程跑（临时主目录，绝不碰 `~/.runyard`）：并发启动、强杀后恢复、原始 socket 上握手成败、超长行；每个进程按 pid 加启动时间记账，teardown 时核对无遗留。
+单元测试用假平台（`127.0.0.1` 上的 socket）、假时钟，Windows 任务也跑。`*.platform-dependent.test.ts` 把真实入口当单独的 Node 进程跑（临时主目录，绝不碰 `~/.runyard`）：并发启动、强杀后恢复、原始 socket 上握手成败、超长行、管理进程崩溃后下次启动清理（`crash-recovery.platform-dependent.test.ts`：上一个管理进程用“只关监听、不停运行”模拟崩溃）；每个进程按 pid 加启动时间记账，teardown 时核对无遗留。

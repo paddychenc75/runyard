@@ -61,7 +61,7 @@
 - `src/ports/`：范围（`port-range.ts`）、槽位分配（`port-slot-allocator.ts`）、运行时选端口与回退（`choose-run-port.ts`）
 - `src/prepare/`：依赖安装（`install-dependencies.ts`）、准备的三个步骤（`prepare-install.ts`、`prepare-plan.ts`）、门面（`run-preparer.ts`）、命令第一个词换成真实路径（`resolve-executable.ts`）；`prepare-harness.test.ts` 是测试共用的现场（假平台上装好工具，真的准备器、就绪探测和引擎接在一起）
 - `src/scripts/`：语法检查（`check-script.ts`）、监听与重跑（`script-runs.ts`）、路径通配（`watch-glob.ts`）
-- `src/run/`：转移表（`run-transitions.ts`）、一次运行的会话（`run-session.ts`，状态与结果字段的账在 `run-record.ts`，启动到就绪的看护在 `startup-watch.ts`，不碰状态机的几个步骤在 `run-session-steps.ts`）、对外的运行句柄类型（`run-handle.ts`）、状态等待者（`state-waiters.ts`）、引擎（`run-engine.ts`）、停止（`stop-process-tree.ts`）、输出收集（`run-output.ts`）、辅助命令（`run-command.ts`，安装与语法检查用）、环境（`run-env.ts`）、就绪探测（`readiness-probe.ts`，真正碰网络的两个动作在 `probe-io.ts`）、快照（`run-snapshot.ts`）、引擎自己产生的错误（`run-failures.ts`）、类型与接缝（`run-types.ts`）；`run-harness.test.ts` 是测试共用的现场（假平台、记录事件的出口），只有测试文件能导入 `@runyard/testing`
+- `src/run/`：转移表（`run-transitions.ts`）、一次运行的会话（`run-session.ts`，状态与结果字段的账在 `run-record.ts`，启动到就绪的看护在 `startup-watch.ts`，不碰状态机的几个步骤在 `run-session-steps.ts`）、对外的运行句柄类型（`run-handle.ts`）、状态等待者（`state-waiters.ts`）、引擎（`run-engine.ts`）、停止（`stop-process-tree.ts`）、输出收集（`run-output.ts`）、辅助命令（`run-command.ts`，安装与语法检查用）、环境（`run-env.ts`）、就绪探测（`readiness-probe.ts`，真正碰网络的两个动作在 `probe-io.ts`）、快照（`run-snapshot.ts`）、空闲停止的原因（`Run.stop({ idle })`，`StopOptions`）、进程起来的通知（`RunSinks.spawned`，管理进程据此写运行记录）、崩溃后清理出来的 `crashed` 运行（`RunEngine.restoreCrashed`）、引擎自己产生的错误（`run-failures.ts`）、类型与接缝（`run-types.ts`）；`run-harness.test.ts` 是测试共用的现场（假平台、记录事件的出口），只有测试文件能导入 `@runyard/testing`
 
 ## 测试
 
