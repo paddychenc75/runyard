@@ -12,6 +12,13 @@ export {
   type ToolObservation,
   toolsToDetect,
 } from "./evaluate-requirements.ts";
+export {
+  detectInstallContext,
+  type InstallCommand,
+  type InstallContext,
+  type InstallHint,
+  selectInstallHint,
+} from "./install-hint.ts";
 export { VERSION_COMMAND_TIMEOUT_MS } from "./run-version-command.ts";
 export {
   type ToolchainRequest,

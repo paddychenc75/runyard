@@ -10,7 +10,10 @@ import type {
   RunyardError,
 } from "@runyard/protocol";
 import { childEnv, RUN_MARKER_VAR } from "./child-env.ts";
+import { internalFailure, runFailedBeforeReady, scriptErrored } from "./run-failures.ts";
+import type { Run } from "./run-handle.ts";
 import { pumpOutput, type RunOutput } from "./run-output.ts";
+import { buildSnapshot } from "./run-snapshot.ts";
 import {
   assertTransition,
   endStates,
@@ -24,29 +27,8 @@ import {
   type RunPlan,
   type StartRequest,
 } from "./run-types.ts";
+import { StateWaiters } from "./state-waiters.ts";
 import { PORT_RELEASE_LIMIT_MS, stopProcessTree } from "./stop-process-tree.ts";
-
-/** 对外的一次运行。查询、等待、停止；持有者只是一个可以改的字段，引擎不解释它 */
-export type Run = {
-  readonly runId: string;
-  readonly request: StartRequest;
-  readonly state: RunState;
-  snapshot(): RunSnapshot;
-  /** 进入 failed 或 errored 时的完整错误（码、参数、现场）；其余状态没有 */
-  error(): RunyardError | undefined;
-  /** starting 已超过 slowAfterMs。状态不变，界面可以另加“较慢”字样 */
-  isSlow(): boolean;
-  setOwner(owner: Owner): void;
-  /** 到达 states 之一，或者运行已经结束（不会再变）时返回当时的快照 */
-  waitFor(states: readonly RunState[]): Promise<RunSnapshot>;
-  /** 对已经结束的运行原样返回；停止中再停止返回同一个结果 */
-  stop(): Promise<RunSnapshot>;
-  /** 接缝：由应用负责重启的服务在保存文件时用（ready ⇄ reloading），驱动者是 supervisor */
-  beginReload(): void;
-  endReload(): void;
-};
-
-type Waiter = { states: readonly RunState[]; resolve: (snapshot: RunSnapshot) => void };
 
 export class RunSession implements Run {
   readonly runId: string;
@@ -65,15 +47,24 @@ export class RunSession implements Run {
   #output?: RunOutput;
   #served?: Disposable;
   #slow = false;
+  #stale = false;
   #slowTimer?: number;
+  /** 重新加载时被换掉的旧进程：它的退出不是这次运行的退出 */
+  readonly #replaced = new WeakSet<ManagedProcess>();
+  readonly #lineListeners = new Set<(entry: LogEntry) => void>();
   #logCount = 0;
   #prepareAbort = new AbortController();
   #readyAbort = new AbortController();
   #preparing: Promise<void> = Promise.resolve();
   #stopping?: Promise<RunSnapshot>;
-  #waiters: Waiter[] = [];
+  readonly #waiters = new StateWaiters();
 
-  constructor(runId: string, request: StartRequest, host: RunHost) {
+  readonly #waitFor: Promise<unknown>;
+  #spawnError: unknown;
+
+  /** `after`：同一个项目上一次运行正在停止时，等它停完再开始准备（所有者的决定，见 run-engine.ts） */
+  constructor(runId: string, request: StartRequest, host: RunHost, after?: Promise<unknown>) {
+    this.#waitFor = after ?? Promise.resolve();
     this.runId = runId;
     this.request = request;
     this.#owner = request.owner;
@@ -107,39 +98,35 @@ export class RunSession implements Run {
   }
 
   snapshot(): RunSnapshot {
-    const plan = this.#plan;
-    return {
+    return buildSnapshot({
       runId: this.runId,
-      playgroundId: this.request.playgroundId,
-      name: this.request.name,
-      kind: this.request.kind,
+      request: this.request,
       state: this.#state,
-      ...(this.#reason === undefined ? {} : { reason: this.#reason }),
       owner: this.#owner,
-      ...(this.#slow ? { slow: true } : {}),
-      ...(plan?.port === undefined ? {} : { port: plan.port }),
-      ...(plan?.url === undefined ? {} : { url: plan.url }),
-      ...(plan?.portFallback === undefined ? {} : { portFallback: plan.portFallback }),
-      ...(this.#proc === undefined ? {} : { pid: this.#proc.ref.pid }),
-      ...(this.#exitCode === undefined ? {} : { exitCode: this.#exitCode }),
+      reason: this.#reason,
+      stale: this.#stale,
+      slow: this.#slow,
+      plan: this.#plan,
+      pid: this.#proc?.ref.pid,
+      exitCode: this.#exitCode,
       startedAt: this.#startedAt,
-      ...(this.#readyMs === undefined ? {} : { readyMs: this.#readyMs }),
-      ...(this.#endedAt === undefined ? {} : { durationMs: this.#endedAt - this.#startedAt }),
-      cursor: `${this.runId}:${this.#logCount}`,
-    };
+      readyMs: this.#readyMs,
+      endedAt: this.#endedAt,
+      logCount: this.#logCount,
+    });
   }
 
   waitFor(states: readonly RunState[]): Promise<RunSnapshot> {
     if (states.includes(this.#state) || endStates.includes(this.#state)) {
       return Promise.resolve(this.snapshot());
     }
-    return new Promise((resolve) => this.#waiters.push({ states, resolve }));
+    return this.#waiters.wait(states);
   }
 
   /** 引擎登记之后调用一次：发出第一个状态，开始准备 */
   begin(): void {
     this.#emitState(undefined);
-    this.#preparing = this.#prepareAndLaunch();
+    this.#preparing = this.#waitFor.then(() => this.#prepareAndLaunch());
   }
 
   stop(): Promise<RunSnapshot> {
@@ -162,6 +149,39 @@ export class RunSession implements Run {
     this.#transition("ready");
   }
 
+  markStale(checkOutput: readonly LogEntry[]): void {
+    for (const entry of checkOutput) this.#emitLog(entry);
+    this.#stale = true;
+    // 状态没变，只是快照多了 stale：客户端靠这条事件知道要刷新
+    this.#emitState(this.#state);
+  }
+
+  async reload(): Promise<void> {
+    const plan = this.#plan;
+    const old = this.#proc;
+    if (this.#state !== "ready" || plan === undefined || old === undefined) return;
+    this.beginReload();
+    this.#replaced.add(old);
+    await stopProcessTree(
+      this.#host.deps.platform,
+      this.#host.deps.clock,
+      old.ref,
+      plan.stop,
+      plan.port,
+      { name: RUN_MARKER_VAR, value: this.runId },
+    );
+    await old.exited;
+    await this.#output?.finish();
+    // 重新加载期间被停止：停止流程负责收尾，不再起新进程
+    if (this.state !== "reloading") return;
+    if (!this.#spawn(plan)) {
+      this.#proc = undefined;
+      await this.#finishFailed(internalFailure(this.request.name, this.#spawnError));
+      return;
+    }
+    this.#awaitReady(plan, "reloading");
+  }
+
   // ---- 启动 ----
 
   async #prepareAndLaunch(): Promise<void> {
@@ -177,7 +197,7 @@ export class RunSession implements Run {
         log: (entry) => this.#emitLog(entry),
       });
     } catch (error) {
-      outcome = { ok: false, failure: this.#internalFailure(error) };
+      outcome = { ok: false, failure: internalFailure(this.request.name, error) };
     }
     if (this.#state === "stopping") {
       if (outcome.ok) await this.#removeTempDir(outcome.plan);
@@ -192,8 +212,33 @@ export class RunSession implements Run {
 
   async #launch(plan: RunPlan): Promise<void> {
     this.#plan = plan;
+    this.#announcePortFallback(plan);
     const kind = this.request.kind;
     if (kind === "static") return this.#launchStatic(plan);
+    if (!this.#spawn(plan)) {
+      await this.#finishFailed(internalFailure(this.request.name, this.#spawnError));
+      return;
+    }
+    if (kind === "oneshot") {
+      this.#transition("running");
+      return;
+    }
+    this.#enterStarting(plan);
+  }
+
+  #announcePortFallback({ portFallback, port }: RunPlan): void {
+    if (portFallback === undefined || port === undefined) return;
+    this.#host.deps.sinks.port?.({
+      runId: this.runId,
+      wanted: portFallback.wanted,
+      actual: port,
+      reason: portFallback.reason,
+      ...(portFallback.occupant === undefined ? {} : { occupant: portFallback.occupant }),
+    });
+  }
+
+  /** 起进程并接上输出和退出的处理；失败时把原因留在 #spawnError 并返回 false */
+  #spawn(plan: RunPlan): boolean {
     let proc: ManagedProcess;
     try {
       proc = this.#host.deps.platform.exec.spawn({
@@ -203,8 +248,8 @@ export class RunSession implements Run {
         stdin: plan.stdin,
       });
     } catch (error) {
-      await this.#finishFailed(this.#internalFailure(error));
-      return;
+      this.#spawnError = error;
+      return false;
     }
     this.#proc = proc;
     this.#output = pumpOutput(proc, {
@@ -212,12 +257,8 @@ export class RunSession implements Run {
       emit: (entry) => this.#emitLog(entry),
     });
     // 退出的时刻在这里取：后面的收尾要让出几轮事件循环，不能让它们拖长耗时
-    void proc.exited.then((info) => this.#onExit(info.exitCode, this.#host.deps.clock.now()));
-    if (kind === "oneshot") {
-      this.#transition("running");
-      return;
-    }
-    this.#enterStarting(plan);
+    void proc.exited.then((info) => this.#onExit(proc, info.exitCode, this.#host.deps.clock.now()));
+    return true;
   }
 
   async #launchStatic(plan: RunPlan): Promise<void> {
@@ -226,7 +267,7 @@ export class RunSession implements Run {
       const served = await plan.serve?.();
       if (served !== undefined) this.#served = served;
     } catch (error) {
-      await this.#finishFailed(this.#internalFailure(error));
+      await this.#finishFailed(internalFailure(this.request.name, error));
     }
   }
 
@@ -240,19 +281,33 @@ export class RunSession implements Run {
       this.#slow = true;
       this.#host.deps.sinks.slow?.(this.snapshot());
     }, slowAfter);
+    this.#awaitReady(plan, "starting");
+  }
+
+  /** 就绪探测；只有运行还停在 `from`（starting 或重新加载时的 reloading）才算数 */
+  #awaitReady(plan: RunPlan, from: "starting" | "reloading"): void {
     void this.#host.deps.readiness
-      .waitReady({ runId: this.runId, plan, signal: this.#readyAbort.signal })
+      .waitReady({
+        runId: this.runId,
+        plan,
+        signal: this.#readyAbort.signal,
+        onLine: (listener) => {
+          this.#lineListeners.add(listener);
+          return () => void this.#lineListeners.delete(listener);
+        },
+      })
       .then(() => {
-        if (this.#state !== "starting") return;
+        if (this.#state !== from) return;
         this.#clearSlowTimer();
-        this.#readyMs = this.#host.deps.clock.now() - this.#startedAt;
+        if (from === "starting") this.#readyMs = this.#host.deps.clock.now() - this.#startedAt;
         this.#transition("ready");
       });
   }
 
   // ---- 进程自己退出 ----
 
-  async #onExit(exitCode: number | null, exitedAt: number): Promise<void> {
+  async #onExit(proc: ManagedProcess, exitCode: number | null, exitedAt: number): Promise<void> {
+    if (this.#replaced.has(proc)) return; // 重新加载时换下来的旧进程
     await this.#output?.finish();
     if (this.#state === "stopping" || !isActiveState(this.#state)) return; // 停止流程在管
     this.#clearSlowTimer();
@@ -271,24 +326,14 @@ export class RunSession implements Run {
     if (state === "running") {
       if (exitCode === 0) this.#end("finished", exitedAt);
       else {
-        this.#error = {
-          code: "SCRIPT_ERRORED",
-          params: { name: this.request.name },
-          debug: "script exited with a non-zero code",
-          cause,
-        };
+        this.#error = scriptErrored(this.request.name, cause);
         this.#end("errored", exitedAt);
       }
     } else if (state === "starting") {
-      await this.#finishFailed(
-        {
-          code: "RUN_FAILED",
-          params: { name: this.request.name },
-          debug: "process exited before it was ready",
-          cause,
-        },
-        exitedAt,
-      );
+      // 启动阶段的输出也按运行器登记的特征归类（如缺运行库），归不了就是 RUN_FAILED
+      const failure =
+        this.#plan?.startupFailure?.(cause) ?? runFailedBeforeReady(this.request.name, cause);
+      await this.#finishFailed(failure, exitedAt);
       return;
     } else {
       this.#end("crashed", exitedAt); // ready、reloading：不自动重启
@@ -317,14 +362,6 @@ export class RunSession implements Run {
     this.#end("failed", at);
     await this.#cleanup();
     this.#host.deps.sinks.exit?.({ runId: this.runId, reason: failure.code });
-  }
-
-  #internalFailure(error: unknown): RunyardError<FailureReason> {
-    return {
-      code: "RUN_FAILED",
-      params: { name: this.request.name },
-      debug: `run could not be started: ${String(error)}`,
-    };
   }
 
   #exitFields(): { exitCode?: number } {
@@ -394,11 +431,7 @@ export class RunSession implements Run {
     this.#state = to;
     this.#emitState(previous);
     const snapshot = this.snapshot();
-    const ready = this.#waiters.filter(
-      (waiter) => waiter.states.includes(to) || endStates.includes(to),
-    );
-    this.#waiters = this.#waiters.filter((waiter) => !ready.includes(waiter));
-    for (const waiter of ready) waiter.resolve(snapshot);
+    this.#waiters.notify(to, snapshot);
   }
 
   #emitState(previous: RunState | undefined): void {
@@ -417,6 +450,7 @@ export class RunSession implements Run {
   #emitLog(entry: LogEntry): void {
     this.#logCount += 1;
     this.#host.deps.sinks.log(this.runId, entry);
+    for (const listener of this.#lineListeners) listener(entry);
   }
 
   #clearSlowTimer(): void {
