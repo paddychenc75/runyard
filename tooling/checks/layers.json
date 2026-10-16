@@ -44,6 +44,10 @@
       ],
       "devOnly": ["@runyard/testing"]
     },
+    "@runyard/desktop": {
+      "path": "apps/desktop",
+      "allow": ["@runyard/protocol", "@runyard/platform", "@runyard/client", "@runyard/i18n"]
+    },
     "@runyard/testing": {
       "path": "packages/testing",
       "allow": ["@runyard/protocol", "@runyard/platform", "@runyard/core"],

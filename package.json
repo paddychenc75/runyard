@@ -12,6 +12,7 @@
     "lint": "biome check .",
     "format": "biome format --write .",
     "typecheck": "tsc -b",
+    "dev": "pnpm --filter @runyard/desktop dev",
     "test": "node tooling/scripts/run-tests.ts",
     "test:unit": "turbo run test",
     "test:process": "turbo run test:process --concurrency=1",

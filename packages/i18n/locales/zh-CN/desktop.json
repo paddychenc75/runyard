@@ -1,0 +1,11 @@
+{
+  "desktop.create.title": "新建",
+  "desktop.error.title.label": "出错了：{title}",
+  "desktop.library.empty.hint": "还没有项目。从下面的模板新建一个。",
+  "desktop.library.title": "项目",
+  "desktop.preview.placeholder": "运行一个项目，页面会显示在这里。",
+  "desktop.run.action": "运行",
+  "desktop.state.idle.label": "未运行",
+  "desktop.stop.action": "停止",
+  "desktop.window.title": "Runyard"
+}

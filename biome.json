@@ -6,6 +6,7 @@
       "!**/node_modules",
       "!**/.tsbuild",
       "!**/.turbo",
+      "!**/dist",
       "!pnpm-lock.yaml",
       "!.release-please-manifest.json",
       "!docs/design",
@@ -54,6 +55,47 @@
         "./tooling/biome/native-attr-literal.grit",
         "./tooling/biome/jsx-child-literal.grit"
       ]
+    },
+    {
+      "includes": ["apps/desktop/src/renderer/**"],
+      "linter": {
+        "rules": {
+          "correctness": { "noNodejsModules": "error" },
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "electron": "界面进程里不许用 electron（技术设计 §3.2 规则 1、2）；只用 window.runyard",
+                  "@runyard/client": "界面进程只许导入 protocol（只用类型）和 i18n，连接管理进程是主进程的事（技术设计 §3.2）",
+                  "@runyard/platform": "界面进程只许导入 protocol（只用类型）和 i18n（技术设计 §3.2）",
+                  "@runyard/core": "界面进程只许导入 protocol（只用类型）和 i18n（技术设计 §3.2）",
+                  "@runyard/supervisor": "界面进程只许导入 protocol（只用类型）和 i18n（技术设计 §3.2）"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["apps/desktop/src/preload/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "@runyard/client": "预加载脚本只转发，不导入业务包（技术设计 §3.2：preload 只导入 protocol）",
+                  "@runyard/platform": "预加载脚本只转发，不导入业务包（技术设计 §3.2：preload 只导入 protocol）",
+                  "@runyard/i18n": "预加载脚本只转发，不导入业务包（技术设计 §3.2：preload 只导入 protocol）"
+                }
+              }
+            }
+          }
+        }
+      }
     },
     {
       "includes": ["packages/cli/src/**", "!**/*.test.ts"],

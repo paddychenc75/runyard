@@ -1,0 +1,27 @@
+{
+  "name": "@runyard/desktop",
+  "version": "0.0.0",
+  "private": true,
+  "description": "桌面应用的最早外壳：主进程、预加载脚本、界面；从源码用 pnpm dev 打开",
+  "type": "module",
+  "main": "dist/main/index.mjs",
+  "scripts": {
+    "build": "node build.ts",
+    "dev": "node build.ts && electron dist/main/index.mjs",
+    "smoke": "node build.ts && electron dist/main/index.mjs --smoke",
+    "test": "vitest run --project unit",
+    "test:process": "vitest run --project process --passWithNoTests"
+  },
+  "dependencies": {
+    "@runyard/client": "workspace:*",
+    "@runyard/i18n": "workspace:*",
+    "@runyard/platform": "workspace:*",
+    "@runyard/protocol": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "electron": "catalog:",
+    "esbuild": "catalog:",
+    "vitest": "catalog:"
+  }
+}

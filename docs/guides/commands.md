@@ -37,6 +37,7 @@
 | 命令 | 跑什么 |
 | --- | --- |
 | `pnpm install` | 按锁文件安装依赖。发布不满 14 天的版本会被拒绝，这是规则，不要绕过 |
+| `pnpm dev` | 从源码打开桌面应用的窗口：先用 esbuild 打包 `apps/desktop`，再启动 Electron。第一次运行会下载 Electron 的二进制（约 100 MB）。默认用真实的 `~/Runyard`；开发和试验请加 `-- --root <临时目录>`（路径要短，如 `mktemp -d /tmp/ry.XXXX`），其余参数见 `apps/desktop/AGENTS.md` |
 | `pnpm install --frozen-lockfile` | CI 用的写法：锁文件和 `package.json` 对不上就失败 |
 
 ## 检查失败了怎么办
