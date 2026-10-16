@@ -109,6 +109,8 @@ export function createRunModule(api: SupervisorApi, options: RunModuleOptions): 
     settings = await api.readSettings();
   };
 
+  const cacheSaves = new Set<Promise<void>>();
+
   // 工具定义要先从磁盘读，所以工具检测服务和准备阶段都在第一次用到时才创建
   const tools = once(async () => {
     const definitions = await readToolDefinitions(platform, options.templateData.toolsDir);
@@ -123,7 +125,12 @@ export function createRunModule(api: SupervisorApi, options: RunModuleOptions): 
       ...(cached === undefined
         ? {}
         : { initialCache: { formatVersion: TOOLCHAIN_FILE_VERSION, entries: cached } }),
-      onCacheChange: (file) => void store.save(file.entries).catch(() => undefined),
+      onCacheChange: (file) => {
+        // 记下后台写，关闭时要等它落盘（否则临时目录清理时它还在写，#216）
+        const saving = store.save(file.entries).catch(() => undefined);
+        cacheSaves.add(saving);
+        void saving.finally(() => cacheSaves.delete(saving));
+      },
     });
     const preparer = createRunPreparer({
       platform,
@@ -310,6 +317,8 @@ export function createRunModule(api: SupervisorApi, options: RunModuleOptions): 
       scriptWatch.dispose();
       owners.dispose();
       await engine.stopAll();
+      // 停运行时的最后一次检测可能还在写缓存
+      await Promise.all(cacheSaves);
     },
     sessions: {
       onReady: (session) => owners.sessionReady(session),
