@@ -16,7 +16,8 @@
     "@runyard/client": "workspace:*",
     "@runyard/i18n": "workspace:*",
     "@runyard/platform": "workspace:*",
-    "@runyard/protocol": "workspace:*"
+    "@runyard/protocol": "workspace:*",
+    "@runyard/tokens": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "catalog:",

@@ -1,11 +1,13 @@
 import { BrowserWindow } from "electron";
-import { APP_ORIGIN } from "./app-protocol.ts";
+import { APP_ORIGIN } from "../app-protocol.ts";
 
 // 唯一的窗口：沙箱、上下文隔离、没有 Node；只加载 app://runyard/ 下的界面，页面不能自己跳走或开新窗口。
 
 export interface MainWindowOptions {
   preloadPath: string;
   show: boolean;
+  /** 窗口底色，界面画出来之前显示，避免启动时白闪 */
+  backgroundColor: string;
 }
 
 export function createMainWindow(options: MainWindowOptions): BrowserWindow {
@@ -15,6 +17,7 @@ export function createMainWindow(options: MainWindowOptions): BrowserWindow {
     minWidth: 720,
     minHeight: 420,
     show: options.show,
+    backgroundColor: options.backgroundColor,
     webPreferences: {
       preload: options.preloadPath,
       sandbox: true,

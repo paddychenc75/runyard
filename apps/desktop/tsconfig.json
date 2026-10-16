@@ -17,6 +17,7 @@
     { "path": "../../packages/protocol" },
     { "path": "../../packages/platform" },
     { "path": "../../packages/i18n" },
+    { "path": "../../packages/tokens" },
     { "path": "../../packages/client" },
     { "path": "./tsconfig.renderer.json" }
   ]

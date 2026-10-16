@@ -26,12 +26,12 @@ export function renderLibrary(root: HTMLElement, view: LibraryView, bridge: Desk
     const item = element("li", row.previewing ? "row previewing" : "row");
     item.dataset.playground = row.id;
     const name = element("button", "name", row.name);
-    name.addEventListener("click", () => void bridge.select(row.id));
+    name.addEventListener("click", () => void bridge.call("preview.select", row.id));
     const state = element("span", "state", row.stateLabel);
     const action = element("button", "action", row.actionLabel);
     action.disabled = row.busy;
     action.addEventListener("click", () => {
-      void (row.action === "run" ? bridge.start(row.id) : bridge.stop(row.id));
+      void bridge.call(row.action === "run" ? "run.start" : "run.stop", row.id);
     });
     item.append(name, state, action);
     rows.append(item);
@@ -42,7 +42,7 @@ export function renderLibrary(root: HTMLElement, view: LibraryView, bridge: Desk
   create.append(element("h2", "heading", view.createHeading));
   for (const template of view.templates) {
     const button = element("button", "template", template.label);
-    button.addEventListener("click", () => void bridge.create(template.id));
+    button.addEventListener("click", () => void bridge.call("playground.create", template.id));
     create.append(button);
   }
   list.append(create);

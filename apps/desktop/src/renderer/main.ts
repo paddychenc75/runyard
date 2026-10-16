@@ -12,5 +12,5 @@ const bridge = window.runyard;
 const show = (state: Parameters<typeof buildLibraryView>[0]) =>
   renderLibrary(root, buildLibraryView(state), bridge);
 
-bridge.onState(show);
-void bridge.getState().then(show);
+bridge.on("library.changed", show);
+void bridge.call("library.get").then(show);
