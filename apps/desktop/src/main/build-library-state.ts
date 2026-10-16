@@ -1,6 +1,12 @@
 import type { Locale } from "@runyard/i18n";
 import type { Playground, RunSnapshot, RunState, TemplateRecord } from "@runyard/protocol";
-import type { DesktopError, LibraryState, PlaygroundRow } from "../shared/library-state.ts";
+import type {
+  DesktopError,
+  LibraryState,
+  PlaygroundRow,
+  TabRow,
+  TabStatus,
+} from "../shared/library-state.ts";
 
 // 结束了的状态；其余都算进行中（run-state-machine.md 第 1 节）
 const ENDED_STATES: readonly RunState[] = ["stopped", "finished", "errored", "crashed", "failed"];
@@ -14,7 +20,9 @@ export interface LibraryInputs {
   playgrounds: readonly Playground[];
   runs: readonly RunSnapshot[];
   templates: readonly TemplateRecord[];
-  previewId: string | null;
+  /** 打开的项目标签（项目 id，按打开顺序） */
+  tabIds: readonly string[];
+  activeTab: string;
   busyIds: ReadonlySet<string>;
   error: DesktopError | null;
 }
@@ -30,6 +38,26 @@ export function latestRunByPlayground(runs: readonly RunSnapshot[]): Map<string,
   return latest;
 }
 
+/** 运行状态归并成标签上的小圆点：就绪和运行中是绿，准备中是黄，崩溃失败是红，其余（含手动停止）是空心 */
+export function tabStatus(state: RunState | "idle"): TabStatus {
+  switch (state) {
+    case "ready":
+    case "running":
+    case "reloading":
+      return "running";
+    case "checking":
+    case "installing":
+    case "starting":
+      return "starting";
+    case "crashed":
+    case "errored":
+    case "failed":
+      return "crashed";
+    default:
+      return "stopped";
+  }
+}
+
 export function buildLibraryState(inputs: LibraryInputs): LibraryState {
   const latest = latestRunByPlayground(inputs.runs);
   const playgrounds = inputs.playgrounds.map((playground): PlaygroundRow => {
@@ -40,13 +68,28 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
       kind: playground.kind,
       state: run?.state ?? "idle",
       active: run !== undefined && isActiveRun(run.state),
-      previewing: inputs.previewId === playground.id,
+      previewing: inputs.activeTab === playground.id,
       busy: inputs.busyIds.has(playground.id),
     };
   });
+  const tabs: TabRow[] = [];
+  for (const row of playgrounds) {
+    if (!inputs.tabIds.includes(row.id)) continue;
+    tabs.push({
+      id: row.id,
+      name: row.name,
+      status: tabStatus(row.state),
+      state: row.state,
+      active: row.active,
+      busy: row.busy,
+    });
+  }
+  tabs.sort((a, b) => inputs.tabIds.indexOf(a.id) - inputs.tabIds.indexOf(b.id));
   return {
     locale: inputs.locale,
     playgrounds,
+    tabs,
+    activeTab: inputs.activeTab,
     // 无效的用户模板建不出项目，列表里只给内置的、格式有效的
     templates: inputs.templates
       .filter(

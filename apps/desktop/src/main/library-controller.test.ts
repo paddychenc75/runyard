@@ -98,7 +98,7 @@ describe("LibraryController", () => {
   it("就绪后预览显示这个项目的地址，停止后收起", async () => {
     const { client, preview, controller } = setup();
     await controller.start();
-    await controller.startRun("a");
+    await controller.openProject("a");
     expect(preview.shown).toEqual([]);
 
     client.runs = [run("a", "ready", { url: "http://127.0.0.1:7101", startedAt: 5 })];
@@ -159,13 +159,96 @@ describe("LibraryController", () => {
     expect(client.calls.filter((call) => call.method === "run.start")).toHaveLength(1);
   });
 
-  it("选中的项目在列表里标为预览中，取消选中收起预览", async () => {
-    const { preview, controller } = setup();
+  it("[DESKTOP-WORKSPACE-01] 打开项目：新开标签并启动运行，持有者是这个标签，绑定到本连接", async () => {
+    const { client, controller } = setup();
     await controller.start();
-    await controller.select("b");
-    expect(controller.getState().playgrounds.find((row) => row.id === "b")?.previewing).toBe(true);
+    await controller.openProject("a");
+    const starts = client.calls.filter((call) => call.method === "run.start");
+    expect(starts.map((call) => call.params)).toEqual([
+      {
+        playground: "a",
+        owner: { kind: "tab", clientId: "app-1", tabId: "tab-a" },
+        wait: "none",
+      },
+    ]);
+    expect(controller.getState().tabs.map((tab) => tab.id)).toEqual(["a"]);
+    expect(controller.getState().activeTab).toBe("a");
+  });
+
+  it("[DESKTOP-WORKSPACE-02] 已经打开的项目只切换：标签总数不变，没有第二次启动", async () => {
+    const { client, controller } = setup();
+    await controller.start();
+    await controller.openProject("a");
+    await controller.openProject("b");
+    expect(controller.getState().activeTab).toBe("b");
+    await controller.openProject("a");
+    expect(controller.getState().activeTab).toBe("a");
+    expect(controller.getState().tabs.map((tab) => tab.id)).toEqual(["a", "b"]);
+    const started = client.calls.filter((call) => call.method === "run.start");
+    expect(started.map((call) => (call.params as { playground: string }).playground)).toEqual([
+      "a",
+      "b",
+    ]);
+  });
+
+  it("[DESKTOP-WORKSPACE-11] 手动停止后标签仍开着，状态是已停止、可再点运行", async () => {
+    const { client, controller } = setup();
+    await controller.start();
+    client.runs = [run("a", "ready", { url: "http://127.0.0.1:7101", startedAt: 5 })];
+    await controller.openProject("a");
+    expect(controller.getState().tabs[0]).toMatchObject({ status: "running", active: true });
+    client.runs = [run("a", "stopped", { startedAt: 5 })];
+    await controller.stopRun("a");
+    expect(controller.getState().tabs[0]).toMatchObject({
+      id: "a",
+      status: "stopped",
+      active: false,
+    });
+    expect(controller.getState().activeTab).toBe("a");
+  });
+
+  it("[DESKTOP-WORKSPACE-12] 停止后再运行：重新启动，持有者仍是这个标签", async () => {
+    const { client, controller } = setup();
+    await controller.start();
+    await controller.openProject("a");
+    client.runs = [run("a", "stopped", { startedAt: 5 })];
+    await controller.stopRun("a");
+    await controller.startRun("a");
+    const starts = client.calls.filter((call) => call.method === "run.start");
+    expect(starts).toHaveLength(2);
+    expect(starts[1]?.params).toMatchObject({
+      owner: { kind: "tab", clientId: "app-1", tabId: "tab-a" },
+    });
+    expect(controller.getState().tabs).toHaveLength(1);
+  });
+
+  it("预览跟着当前标签：切到资源库收起，切回来再显示", async () => {
+    const { client, preview, controller } = setup();
+    await controller.start();
+    client.runs = [run("a", "ready", { url: "http://127.0.0.1:7101", startedAt: 5 })];
+    await controller.openProject("a");
+    expect(preview.shown.at(-1)).toEqual({ id: "a", url: "http://127.0.0.1:7101" });
     const hiddenBefore = preview.hidden;
-    await controller.select(null);
+    controller.selectTab("library");
     expect(preview.hidden).toBeGreaterThan(hiddenBefore);
+    controller.selectTab("a");
+    expect(preview.shown.at(-1)).toEqual({ id: "a", url: "http://127.0.0.1:7101" });
+  });
+
+  it("项目从资源库里消失，它的标签随之去掉并回到资源库", async () => {
+    const { client, controller } = setup();
+    await controller.start();
+    await controller.openProject("a");
+    client.playgrounds = [client.playgrounds[1] as (typeof client.playgrounds)[number]];
+    await controller.refresh();
+    expect(controller.getState().tabs).toEqual([]);
+    expect(controller.getState().activeTab).toBe("library");
+  });
+
+  it("选不存在的标签被忽略", async () => {
+    const { controller } = setup();
+    await controller.start();
+    controller.selectTab("nope");
+    expect(controller.getState().activeTab).toBe("library");
   });
 });

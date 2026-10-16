@@ -18,6 +18,20 @@ export interface PlaygroundRow {
   busy: boolean;
 }
 
+/** 标签上的状态小圆点；由最近一次运行的状态归并而来 */
+export type TabStatus = "running" | "starting" | "stopped" | "crashed";
+
+export interface TabRow {
+  /** 项目 id（标签页 id 是 `tab-<项目 id>`，只在主进程绑定持有者时用） */
+  id: string;
+  name: string;
+  status: TabStatus;
+  state: RunState | "idle";
+  /** 此刻是否有进行中的运行；false 时标签页内容区显示“运行”按钮 */
+  active: boolean;
+  busy: boolean;
+}
+
 export interface TemplateRow {
   id: string;
   name: LocalizedText;
@@ -32,6 +46,10 @@ export interface DesktopError {
 export interface LibraryState {
   locale: Locale;
   playgrounds: PlaygroundRow[];
+  /** 打开的项目标签，按打开顺序；资源库标签固定在最前，不在这里 */
+  tabs: TabRow[];
+  /** 当前标签："library" 或项目 id */
+  activeTab: string;
   templates: TemplateRow[];
   error: DesktopError | null;
 }

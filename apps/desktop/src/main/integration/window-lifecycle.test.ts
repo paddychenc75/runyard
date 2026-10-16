@@ -27,7 +27,7 @@ function setup(closeKeepsAppAlive: boolean) {
 }
 
 describe("keepAliveAfterClose", () => {
-  it("macOS：关窗口只是藏起来，不退出；点 Dock 图标再显示", () => {
+  it("[DESKTOP-WORKSPACE-23] macOS：关窗口只是藏起来，不退出也不道别（运行继续）；点 Dock 图标再显示", () => {
     const { log, appListeners, close } = setup(true);
     expect(close()).toBe(true);
     expect(log).toEqual(["hide"]);
