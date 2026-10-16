@@ -26,7 +26,7 @@
 | `pnpm generate` | 重新生成由脚本生成的内容（根 `AGENTS.md` 里的包依赖表，`docs/reference/` 里的协议参考和文案对照表 `strings.md`，`packages/i18n/generated/messages.d.ts`）。改了 `tooling/checks/layers.json`、新建了包，改了 `packages/protocol` 里的方法、事件、错误码，或改了 `packages/i18n/locales/` 里的文案之后运行 |
 | `pnpm i18n:build` | 只从 `packages/i18n/locales/zh-CN/*.json` 生成 `packages/i18n/generated/messages.d.ts`（文案的键和参数类型）；`pnpm generate` 也会生成它，另外还生成文案对照表。改了中文文案之后运行其一 |
 | `pnpm template:lint` | 检查 `templates/` 里的工具定义、运行器和全部内置模板（每个模板一行 JSON 结果；有问题时退出码 2）。模板和运行器的写法见 `docs/guides/add-template.md`、`docs/guides/add-runner.md` |
-| `pnpm template:smoke <模板标识> [--node <node 路径>] [--pm pnpm\|npm]` | 内置服务类模板的冒烟：复制到系统临时目录，按运行器真的安装依赖、类型检查、构建、启动、等 HTTP 响应、改源文件看热更新（进程不重启）、停止并确认端口释放。**需要网络**，不在 `pnpm test` 和 `pnpm verify` 里；声明范围的下限和上限版本各跑一次，见 `docs/guides/add-template.md` |
+| `pnpm template:smoke <模板标识> [--node <node 路径>] [--pm pnpm\|npm]` | 内置服务类模板的冒烟：复制到系统临时目录，按运行器真的安装依赖、类型检查、（Vite 类）构建、启动、等 HTTP 响应、核对监听地址只有 127.0.0.1、改源文件（框架热更新的看进程不重启；`watch` 为 `restart` 的服务停了再起，端口不变、内容更新）、停止并确认端口释放、没有带运行标记的进程残留（2 秒内）。**需要网络**，不在 `pnpm test` 和 `pnpm verify` 里；声明范围的下限和上限版本各跑一次，见 `docs/guides/add-template.md` |
 | `pnpm deps:lookup <包名>` | 列出一个依赖最近 10 个稳定版本、发布日期、距今天数，并查 OSV 和 GitHub 公告库。用法见 `docs/guides/add-a-dependency.md` |
 | `pnpm spec <参数…>` | 调用 OpenSpec（规格校验、查看、合并），脚本 `tooling/scripts/spec.mjs` 先关掉它的匿名统计和版本检查。常用：`pnpm spec validate --all --strict --no-interactive`、`pnpm spec list --specs`。不要直接运行 `openspec init` 或 `openspec update` |
 
