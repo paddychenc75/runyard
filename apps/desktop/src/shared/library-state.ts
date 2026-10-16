@@ -45,6 +45,18 @@ export interface TabRow {
   /** 此刻是否有进行中的运行；false 时标签页内容区显示“运行”按钮 */
   active: boolean;
   busy: boolean;
+  kind: RunKind;
+  /** 最近一次运行的持有者是这个标签页（关闭标签页会停止它）；命令行持有的运行只是被查看 */
+  ownedByTab: boolean;
+  /** 模板的显示名（运行条上项目名后面的那一小段）；模板已不在列表里是 null */
+  templateName: LocalizedText | null;
+  /** 此刻占着的端口；没有端口（脚本）或没运行是 null */
+  port: number | null;
+  /** 最近一次运行的开始时间；从没运行过是 null（脚本运行中用它算“已 N 秒”） */
+  startedAt: number | null;
+  /** 最近一次运行的退出码和耗时（脚本跑完后显示）；没有就是 null */
+  exitCode: number | null;
+  durationMs: number | null;
   /** 页面已就绪时的预览地址（http://127.0.0.1:<端口>/）；没就绪是 null，预览区显示占位 */
   previewUrl: string | null;
 }

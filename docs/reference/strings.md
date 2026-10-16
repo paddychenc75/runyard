@@ -118,13 +118,25 @@
 | cli.usage.unknownCommand.body | 不认识的命令：{command}。 | Unknown command: {command}. | command：用户输入的命令，原样显示 |
 | cli.usage.unknownOption.body | 不认识的选项：{option}。 | Unknown option: {option}. | option：用户输入的选项，原样显示 |
 | cli.usage.unknownSetting.body | 不认识的设置项：{name}。目前只有 lang。 | Unknown setting: {name}. The only setting is lang. | name：用户输入的设置项，原样显示 |
+| desktop.console.tab.label | 输出 | Output | — |
 | desktop.create.title | 新建 | New | — |
+| desktop.duration.seconds.label | {seconds} 秒 | {seconds} s | seconds：秒数，已按语言格式化的数字 |
 | desktop.error.title.label | 出错了：{title} | Error: {title} | title：错误的标题，来自 errors.<代码>.title，已是翻译好的句子 |
+| desktop.output.aria | 进程输出 | Process output | — |
+| desktop.output.empty.label | 还没有输出。 | No output yet. | — |
 | desktop.preview.frame.label | 页面预览的截图 | Screenshot of the page preview | — |
 | desktop.preview.waiting.label | 页面还没有就绪，就绪后会显示在这里。 | The page isn't ready yet. It shows up here once it is. | — |
+| desktop.rerun.action | 重新运行 | Run again | — |
 | desktop.run.action | 运行 | Run | — |
+| desktop.runbar.aria | 运行条 | Run bar | — |
+| desktop.runbar.closeHint.label | 关闭标签页即停止 | Stops when the tab closes | — |
+| desktop.runbar.state.label | {state} :{port} | {state} :{port} | state：运行状态的名字，来自 runState.<状态>；port：端口号，纯数字字符串（不加千分位） |
+| desktop.script.ended.label | {state} · 退出码 {exitCode} · {duration} | {state} · exit code {exitCode} · {duration} | state：运行状态的名字，来自 runState.<状态>；exitCode：进程的退出码；duration：这次运行的总耗时 |
+| desktop.script.endedNoCode.label | {state} · {duration} | {state} · {duration} | state：运行状态的名字，来自 runState.<状态>；duration：这次运行的总耗时 |
+| desktop.script.running.label | {state} · 已 {duration} | {state} · {duration} | state：运行状态的名字，来自 runState.<状态>；duration：已经运行的时长，如 3.2 秒 |
 | desktop.state.idle.label | 未运行 | Not running | — |
 | desktop.stop.action | 停止 | Stop | — |
+| desktop.stopped.body | 你手动停止了它。点“运行”重新启动；关闭标签页后再打开，也会自动运行。 | You stopped it. Choose Run to start it again; closing the tab and opening it again also runs it. | — |
 | desktop.window.title | Runyard | Runyard | — |
 | errors.APP_REQUIRED.body | open 和 screenshot 要由桌面应用来完成，命令行自己做不到。 | The open and screenshot commands are carried out by the desktop app. The command line cannot do them on its own. | — |
 | errors.APP_REQUIRED.hint | 打开 Runyard 应用后重新运行。 | Open the Runyard app, then run it again. | — |

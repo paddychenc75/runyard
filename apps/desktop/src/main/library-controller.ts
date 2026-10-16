@@ -1,9 +1,11 @@
 import { isClientError, type RunyardClient } from "@runyard/client";
 import type { Locale } from "@runyard/i18n";
 import type { Playground, RunSnapshot, TemplateRecord } from "@runyard/protocol";
+import type { ConsoleAppend, ConsoleLine } from "../shared/console-state.ts";
 import type { Bounds } from "../shared/layout.ts";
 import type { DesktopError, LibraryState } from "../shared/library-state.ts";
 import { buildLibraryState, ownedActiveRun, previewUrlFor } from "./build-library-state.ts";
+import { ConsoleLogs } from "./console-logs.ts";
 import { LIBRARY_TAB, WorkspaceTabs } from "./workspace-tabs.ts";
 
 // 窗口背后的逻辑：向管理进程要项目、模板、运行，转成界面看的状态；执行界面发来的动作。
@@ -24,7 +26,7 @@ export interface PreviewHost {
 }
 
 /** 控制器用到的客户端的那一小部分 */
-export type LibraryClient = Pick<RunyardClient, "call" | "subscribe">;
+export type LibraryClient = Pick<RunyardClient, "call" | "subscribe" | "followLogs">;
 
 export interface LibraryControllerOptions {
   client: LibraryClient;
@@ -46,6 +48,7 @@ export class LibraryController {
   #templates: TemplateRecord[] = [];
   readonly #workspace = new WorkspaceTabs();
   #closeRequestId: string | null = null;
+  readonly #console: ConsoleLogs;
   #error: DesktopError | null = null;
   #refreshing: Promise<void> | undefined;
   #refreshAgain = false;
@@ -55,6 +58,7 @@ export class LibraryController {
     this.#clientId = options.clientId;
     this.#locale = options.locale;
     this.#preview = options.preview;
+    this.#console = new ConsoleLogs(options.client);
   }
 
   /** 订阅管理进程的事件并读第一份数据 */
@@ -116,7 +120,20 @@ export class LibraryController {
     const isNew = this.#workspace.open(playgroundId);
     this.#applyPreview();
     this.#emit();
-    if (isNew) await this.startRun(playgroundId);
+    if (isNew) {
+      // 先接上控制台再启动：安装和启动阶段的输出也要看得到（规格 DESKTOP-WORKSPACE-16）
+      await this.#console.watch(playgroundId);
+      await this.startRun(playgroundId);
+    }
+  }
+
+  /** 这个项目标签页的控制台已有的全部输出（界面挂载时先取这份，再接后面的推送） */
+  consoleLines(playgroundId: string): ConsoleLine[] {
+    return this.#console.lines(playgroundId);
+  }
+
+  onConsole(listener: (append: ConsoleAppend) => void): () => void {
+    return this.#console.onAppend(listener);
   }
 
   /** 启动（或标签页里点“运行”再次启动）；持有者始终是这个项目的标签页 */
@@ -186,6 +203,7 @@ export class LibraryController {
     const owned = ownedActiveRun(playgroundId, this.#runs) !== null;
     if (!this.#workspace.close(playgroundId)) return;
     this.#preview.release(playgroundId);
+    this.#console.unwatch(playgroundId);
     this.#applyPreview();
     this.#emit();
     if (owned) {
@@ -243,7 +261,10 @@ export class LibraryController {
       const removed = this.#workspace.retain(
         new Set(playgrounds.map((playground) => playground.id)),
       );
-      for (const id of removed) this.#preview.release(id);
+      for (const id of removed) {
+        this.#preview.release(id);
+        this.#console.unwatch(id);
+      }
       if (this.#closeRequestId !== null && !this.#workspace.tabs.includes(this.#closeRequestId)) {
         this.#closeRequestId = null;
       }

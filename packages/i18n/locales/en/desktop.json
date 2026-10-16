@@ -1,10 +1,22 @@
 {
+  "desktop.console.tab.label": "Output",
   "desktop.create.title": "New",
+  "desktop.duration.seconds.label": "{seconds} s",
   "desktop.error.title.label": "Error: {title}",
+  "desktop.output.aria": "Process output",
+  "desktop.output.empty.label": "No output yet.",
   "desktop.preview.frame.label": "Screenshot of the page preview",
   "desktop.preview.waiting.label": "The page isn't ready yet. It shows up here once it is.",
+  "desktop.rerun.action": "Run again",
   "desktop.run.action": "Run",
+  "desktop.runbar.aria": "Run bar",
+  "desktop.runbar.closeHint.label": "Stops when the tab closes",
+  "desktop.runbar.state.label": "{state} :{port}",
+  "desktop.script.ended.label": "{state} · exit code {exitCode} · {duration}",
+  "desktop.script.endedNoCode.label": "{state} · {duration}",
+  "desktop.script.running.label": "{state} · {duration}",
   "desktop.state.idle.label": "Not running",
   "desktop.stop.action": "Stop",
+  "desktop.stopped.body": "You stopped it. Choose Run to start it again; closing the tab and opening it again also runs it.",
   "desktop.window.title": "Runyard"
 }

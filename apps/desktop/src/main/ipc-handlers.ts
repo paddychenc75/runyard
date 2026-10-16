@@ -5,7 +5,6 @@ import {
   desktopMethodNames,
 } from "../shared/desktop-bridge.ts";
 import type { Bounds } from "../shared/layout.ts";
-import type { LibraryState } from "../shared/library-state.ts";
 import { isAppUrl } from "./app-protocol.ts";
 import type { LibraryController } from "./library-controller.ts";
 
@@ -21,7 +20,7 @@ export interface IpcHost {
   handle(channel: string, handler: (sender: IpcSender, ...args: unknown[]) => unknown): void;
   /** 同步调用（ipcRenderer.sendSync），只给启动信息用 */
   handleSync(channel: string, handler: (sender: IpcSender) => unknown): void;
-  send(channel: string, event: string, payload: LibraryState): void;
+  send(channel: string, event: string, payload: unknown): void;
 }
 
 function text(value: unknown): string | null {
@@ -87,6 +86,10 @@ export function registerBridgeHandlers(
     "preview.visible": (visible) => {
       if (typeof visible === "boolean") controller.setPreviewVisible(visible);
     },
+    "console.get": (id) => {
+      const playground = text(id);
+      return playground === null ? [] : controller.consoleLines(playground);
+    },
     "playground.create": async (id) => {
       const template = text(id);
       if (template !== null) await controller.create(template);
@@ -110,5 +113,14 @@ export function registerBridgeHandlers(
     trusted(sender);
     return bootstrap;
   });
-  return controller.onChange((state) => host.send(desktopChannels.event, "library.changed", state));
+  const stopState = controller.onChange((state) =>
+    host.send(desktopChannels.event, "library.changed", state),
+  );
+  const stopConsole = controller.onConsole((append) =>
+    host.send(desktopChannels.event, "console.appended", append),
+  );
+  return () => {
+    stopState();
+    stopConsole();
+  };
 }

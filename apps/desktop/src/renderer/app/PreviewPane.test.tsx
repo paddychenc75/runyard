@@ -7,6 +7,7 @@ import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { TabRow } from "../../shared/library-state.ts";
 import { OverlayCounter } from "../shared/overlay-counter.ts";
 import { addressLabel, PreviewPane } from "./PreviewPane.tsx";
+import { sampleTab } from "./sample-tab.ts";
 
 afterEach(cleanup);
 
@@ -36,15 +37,12 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-const tab = (previewUrl: string | null): TabRow => ({
-  id: "a",
-  name: "react-counter",
-  status: previewUrl === null ? "starting" : "running",
-  state: previewUrl === null ? "starting" : "ready",
-  active: true,
-  busy: false,
-  previewUrl,
-});
+const tab = (previewUrl: string | null): TabRow =>
+  sampleTab({
+    status: previewUrl === null ? "starting" : "running",
+    state: previewUrl === null ? "starting" : "ready",
+    previewUrl,
+  });
 
 function setup(row: TabRow, capture: string | null = "data:image/png;base64,AAAA") {
   const calls: [string, unknown][] = [];

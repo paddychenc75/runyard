@@ -3,7 +3,7 @@
 ## 用途
 
 界面的通用组件包：基础组件、图标、玻璃材质、组件工作台（技术设计 §6.7）。它不认识产品：不导入 `protocol`、`electron`、Node 接口（`src/` 里 Biome 的 `noNodejsModules` 拦），文件名、导出名、标识符里不出现产品词，不自己取数据。
-现状：骨架加组件 `Icon`、`Button`、`GlassSurface`、`UserText`，主窗口外壳用到的 `IconButton`、`Tooltip`、`ScrollArea`，资源库列表用到的 `StatusMark`、`Badge`、`MonogramTile`、`Truncate`、`EmptyState`（基础层），`AlertDialog`、`Checkbox`（#174 的关闭确认用），以及 `NavList`、`TitleBar`、`TabStrip`、`DataTable`、`ConfirmDialog`（组合层，在 `src/patterns/`）；其余组件随第一个用到它的功能 PR 加（§6.7 规则 8），不提前做。截图比对（`ui-visual`，`visual/`）已就位；`Localized` 属性的 React 绑定随 #164。六项组件化检查（`ui-layers`、`ui-purity`、`style-tokens`、`ui-fixtures`、`icons`、`file-size`）已在 `pnpm check` 里（#165），下面的规则就是它们守的。
+现状：骨架加组件 `Icon`、`Button`、`GlassSurface`、`UserText`，主窗口外壳用到的 `IconButton`、`Tooltip`、`ScrollArea`，资源库列表用到的 `StatusMark`、`Badge`、`MonogramTile`、`Truncate`、`EmptyState`（基础层），以及 `NavList`、`TitleBar`、`TabStrip`、`DataTable`、`LogView`、`ConfirmDialog`（组合层，在 `src/patterns/`），`AlertDialog`、`Checkbox`（基础层，#174 的关闭确认用）；其余组件随第一个用到它的功能 PR 加（§6.7 规则 8），不提前做。截图比对（`ui-visual`，`visual/`）已就位；`Localized` 属性的 React 绑定随 #164。六项组件化检查（`ui-layers`、`ui-purity`、`style-tokens`、`ui-fixtures`、`icons`、`file-size`）已在 `pnpm check` 里（#165），下面的规则就是它们守的。
 
 ## 对外暴露什么
 
@@ -54,6 +54,10 @@
 
 - `DataTable`：列用档位（`fill`、`flex`、`icon`、`sm`、`md`、`lg`、`xl`）说宽度，档位对应设计变量 `size-column-*`；`pin: "start" | "end"` 的列在窗口变窄、整张表横向滚动时固定在两侧。放不下时根元素带 `data-overflowing`，单元格里带 `data-when-overflowing` 的元素只在这时显示（名称列里补的状态圆点）。用的是真正的 `<table>`，版面靠 CSS 网格。
 - `StatusMark` 的形状随状态变（实心圆、空心圆、方块），不只靠颜色；`Badge` 的 `violet` 变体是“来源”标记，`dashed` 比 `solid` 更轻。
+
+## 日志视图的约定（#176）
+
+- `LogView`：一行一条、不折行（行高固定，才能虚拟滚动：只有视口内加上下余量的行在 DOM 里；没量出行高时最多画最后 200 行），用户在底部时新行到来就跟到底部，往上翻看就不打扰。行文字是进程自己的输出，用 `UserText` 显示、不翻译；`tone`（`command`、`notice`、`error`）只决定颜色。区域是 `role="log"` 且可聚焦（键盘用方向键翻看）。
 
 ## 弹窗组件的约定（#174）
 

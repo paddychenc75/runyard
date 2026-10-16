@@ -1,10 +1,22 @@
 {
+  "desktop.console.tab.label": "输出",
   "desktop.create.title": "新建",
+  "desktop.duration.seconds.label": "{seconds} 秒",
   "desktop.error.title.label": "出错了：{title}",
+  "desktop.output.aria": "进程输出",
+  "desktop.output.empty.label": "还没有输出。",
   "desktop.preview.frame.label": "页面预览的截图",
   "desktop.preview.waiting.label": "页面还没有就绪，就绪后会显示在这里。",
+  "desktop.rerun.action": "重新运行",
   "desktop.run.action": "运行",
+  "desktop.runbar.aria": "运行条",
+  "desktop.runbar.closeHint.label": "关闭标签页即停止",
+  "desktop.runbar.state.label": "{state} :{port}",
+  "desktop.script.ended.label": "{state} · 退出码 {exitCode} · {duration}",
+  "desktop.script.endedNoCode.label": "{state} · {duration}",
+  "desktop.script.running.label": "{state} · 已 {duration}",
   "desktop.state.idle.label": "未运行",
   "desktop.stop.action": "停止",
+  "desktop.stopped.body": "你手动停止了它。点“运行”重新启动；关闭标签页后再打开，也会自动运行。",
   "desktop.window.title": "Runyard"
 }

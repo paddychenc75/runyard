@@ -26,9 +26,19 @@ class FakeClient {
       "template.list": [template("html")],
       "run.start": run("a", "starting"),
       "run.stop": run("a", "stopped"),
+      "logs.read": { entries: this.logEntries, cursor: "r:1", truncated: false },
       "playground.create": { playground: playground("c"), created: true },
     };
     return results[method] as MethodResult<M>;
+  };
+
+  logEntries: { at: number; kind: "stdout"; text: string }[] = [];
+  wakeLogs: (() => void) | undefined;
+
+  followLogs = async (_params: unknown, listener: () => void) => {
+    this.calls.push({ method: "logs.follow", params: _params });
+    this.wakeLogs = listener;
+    return { sub: 2, unsubscribe: async () => {} };
   };
 
   subscribe: LibraryClient["subscribe"] = async (_topics, listener) => {
@@ -280,6 +290,29 @@ describe("LibraryController", () => {
       active: false,
     });
     expect(controller.getState().activeTab).toBe("a");
+  });
+
+  it("[DESKTOP-WORKSPACE-16] 打开标签页：先接上控制台再启动运行，启动阶段的输出也看得到", async () => {
+    const { client, controller } = setup();
+    await controller.start();
+    const pushed: unknown[] = [];
+    controller.onConsole((append) => pushed.push(append));
+    client.logEntries = [{ at: 1, kind: "stdout", text: "installing" }];
+    await controller.openProject("a");
+    const order = client.calls.map((call) => call.method);
+    expect(order.indexOf("logs.follow")).toBeLessThan(order.indexOf("run.start"));
+    expect(controller.consoleLines("a").map((line) => line.entry)).toEqual(client.logEntries);
+    expect(pushed).toHaveLength(1);
+  });
+
+  it("[DESKTOP-WORKSPACE-17] 切到资源库再切回：控制台里的行还在", async () => {
+    const { client, controller } = setup();
+    await controller.start();
+    client.logEntries = [{ at: 1, kind: "stdout", text: "hello" }];
+    await controller.openProject("a");
+    controller.selectTab("library");
+    controller.selectTab("a");
+    expect(controller.consoleLines("a")).toHaveLength(1);
   });
 
   it("[DESKTOP-WORKSPACE-12] 停止后再运行：重新启动，持有者仍是这个标签", async () => {

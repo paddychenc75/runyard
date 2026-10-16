@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { LibraryState } from "../../shared/library-state.ts";
 import { AppFrame } from "./AppFrame.tsx";
+import { sampleTab } from "./sample-tab.ts";
 
 afterEach(cleanup);
 
@@ -17,15 +18,7 @@ vi.stubGlobal(
   },
 );
 
-const tab = {
-  id: "a",
-  name: "hono-todo-api",
-  status: "running" as const,
-  state: "ready" as const,
-  active: true,
-  busy: false,
-  previewUrl: null,
-};
+const tab = sampleTab({ id: "a", name: "hono-todo-api" });
 
 const base: LibraryState = {
   locale: "zh-CN",
@@ -38,7 +31,10 @@ const base: LibraryState = {
 };
 
 function setup(state: LibraryState) {
-  const call = vi.fn(async (method: string) => (method === "library.get" ? state : undefined));
+  // 控制台面板会取快照，给它一个空的
+  const call = vi.fn(async (method: string) =>
+    method === "library.get" ? state : method === "console.get" ? [] : undefined,
+  );
   const bridge = {
     bootstrap: {
       platform: "darwin",

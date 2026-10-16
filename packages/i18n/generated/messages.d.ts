@@ -235,15 +235,42 @@ export type CatalogMessages = {
   "cli.usage.unknownSetting.body": {
     name: string | number;
   };
+  "desktop.console.tab.label": Record<never, never>;
   "desktop.create.title": Record<never, never>;
+  "desktop.duration.seconds.label": {
+    seconds: string | number;
+  };
   "desktop.error.title.label": {
     title: string | number;
   };
+  "desktop.output.aria": Record<never, never>;
+  "desktop.output.empty.label": Record<never, never>;
   "desktop.preview.frame.label": Record<never, never>;
   "desktop.preview.waiting.label": Record<never, never>;
+  "desktop.rerun.action": Record<never, never>;
   "desktop.run.action": Record<never, never>;
+  "desktop.runbar.aria": Record<never, never>;
+  "desktop.runbar.closeHint.label": Record<never, never>;
+  "desktop.runbar.state.label": {
+    port: string | number;
+    state: string | number;
+  };
+  "desktop.script.ended.label": {
+    duration: string | number;
+    exitCode: string | number;
+    state: string | number;
+  };
+  "desktop.script.endedNoCode.label": {
+    duration: string | number;
+    state: string | number;
+  };
+  "desktop.script.running.label": {
+    duration: string | number;
+    state: string | number;
+  };
   "desktop.state.idle.label": Record<never, never>;
   "desktop.stop.action": Record<never, never>;
+  "desktop.stopped.body": Record<never, never>;
   "desktop.window.title": Record<never, never>;
   "format.duration.days": {
     count: number;

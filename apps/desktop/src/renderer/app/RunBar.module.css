@@ -1,0 +1,39 @@
+/* 设计稿 Service：顶栏里 44 高的玻璃胶囊，名字加粗、模板和提示是次要色，按钮在最右 */
+.root {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: var(--space-5);
+  box-sizing: border-box;
+  min-inline-size: 0;
+  block-size: var(--size-toolbar);
+  padding-inline: var(--space-7) var(--space-3);
+  margin-inline-end: var(--space-4);
+  white-space: nowrap;
+}
+
+.name {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: var(--text-section-title-weight);
+}
+
+.template,
+.hint {
+  color: var(--color-text-secondary);
+}
+
+.template {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status {
+  flex: none;
+  font-weight: var(--text-control-weight);
+}
+
+.status[data-danger] {
+  color: var(--color-status-danger-text);
+}

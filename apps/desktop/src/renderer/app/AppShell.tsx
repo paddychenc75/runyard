@@ -7,8 +7,11 @@ import { OverlayContext } from "../shared/overlay-context.tsx";
 import { OverlayCounter } from "../shared/overlay-counter.ts";
 import styles from "./AppShell.module.css";
 import { CloseConfirmDialog } from "./CloseConfirmDialog.tsx";
+import { ConsolePanel } from "./ConsolePanel.tsx";
 import { LibraryPage } from "./LibraryPage.tsx";
 import { PreviewPane } from "./PreviewPane.tsx";
+import { isScript } from "./run-view.ts";
+import { ScriptOutput } from "./ScriptOutput.tsx";
 import { Sidebar } from "./Sidebar.tsx";
 import { TabContent } from "./TabContent.tsx";
 import { TopBar } from "./TopBar.tsx";
@@ -20,7 +23,8 @@ export interface AppShellProps {
 }
 
 // 主窗口的外壳（设计稿 Main）：悬浮的玻璃侧栏、顶部的标签条，右下是内容区。
-// 资源库标签的内容区是资源库页（整宽的项目表）；项目标签是 TabContent 加右边的预览（原生视图）。
+// 资源库标签的内容区是资源库页（整宽的项目表）；项目标签上面是 TabContent 加右边的预览（原生视图）
+// 或脚本输出，下面是控制台（脚本的输出就在右边，不再另开）。
 export function AppShell({ bridge, library }: AppShellProps) {
   const t = useT();
   const [overlays] = useState(() => new OverlayCounter());
@@ -38,10 +42,12 @@ export function AppShell({ bridge, library }: AppShellProps) {
       <div className={styles.root}>
         <Sidebar windowControls={windowControls} total={total} />
         <TopBar
+          bridge={bridge}
           modKey={modKey}
           tabs={tabs}
           activeTab={activeTab}
           running={runningCount(library?.playgrounds ?? [])}
+          activeTabRow={activeTabRow}
           onSelect={(id) => void bridge.call("tab.select", id)}
           onClose={(id) => void bridge.call("tab.close", id)}
         />
@@ -49,10 +55,17 @@ export function AppShell({ bridge, library }: AppShellProps) {
           {activeTabRow === undefined ? (
             <LibraryPage bridge={bridge} library={library} />
           ) : (
-            <>
-              <TabContent bridge={bridge} tab={activeTabRow} />
-              <PreviewPane bridge={bridge} tab={activeTabRow} overlays={overlays} />
-            </>
+            <div className={styles.workspace}>
+              <div className={styles.top}>
+                <TabContent tab={activeTabRow} />
+                {isScript(activeTabRow) ? (
+                  <ScriptOutput bridge={bridge} tab={activeTabRow} />
+                ) : (
+                  <PreviewPane bridge={bridge} tab={activeTabRow} overlays={overlays} />
+                )}
+              </div>
+              {isScript(activeTabRow) ? null : <ConsolePanel bridge={bridge} tab={activeTabRow} />}
+            </div>
           )}
         </main>
         <CloseConfirmDialog bridge={bridge} request={library?.closeRequest ?? null} />

@@ -1,0 +1,36 @@
+/* 设计稿 Script：圆角卡片，头部一行状态加按钮，下面是等宽的输出 */
+.root {
+  flex: 1;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-line-hairline);
+  background: var(--color-bg-card);
+}
+
+.header {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding: var(--space-4) var(--space-4) var(--space-4) var(--space-7);
+  border-block-end: 1px solid var(--color-line-hairline);
+}
+
+.status {
+  min-inline-size: 0;
+  font-weight: var(--text-control-weight);
+}
+
+.status[data-danger] {
+  color: var(--color-status-danger-text);
+}
+
+.log {
+  flex: 1;
+  min-block-size: 0;
+  padding-block: var(--space-5);
+}
