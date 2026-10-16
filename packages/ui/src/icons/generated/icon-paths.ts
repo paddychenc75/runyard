@@ -17,6 +17,10 @@ export const iconPaths = {
     viewBox: "0 0 16 16",
     paths: ["M8 1.5L14 5v6l-6 3.5L2 11V5zM2 5l6 3.5L14 5M8 8.5v6"],
   },
+  exclamation: {
+    viewBox: "0 0 16 16",
+    paths: ["M8 3v6M8 12.4v.1"],
+  },
   grid: {
     viewBox: "0 0 16 16",
     paths: [
@@ -37,6 +41,10 @@ export const iconPaths = {
     viewBox: "0 0 16 16",
     paths: ["M8 3.25v9.5M3.25 8h9.5"],
   },
+  refresh: {
+    viewBox: "0 0 16 16",
+    paths: ["M13.3 8a5.3 5.3 0 1 1-1.6-3.8M13.3 2.7v2.9h-2.9"],
+  },
   sliders: {
     viewBox: "0 0 16 16",
     paths: [
@@ -56,6 +64,10 @@ export const iconPaths = {
   stop: {
     viewBox: "0 0 16 16",
     paths: ["M4.5 4.5h7v7h-7z"],
+  },
+  warning: {
+    viewBox: "0 0 16 16",
+    paths: ["M8 2.2l6.3 11.3H1.7zM8 6.6v3M8 11.8v.1"],
   },
 } as const;
 

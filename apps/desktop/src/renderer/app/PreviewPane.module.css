@@ -35,3 +35,10 @@
   overflow: hidden;
   white-space: nowrap;
 }
+
+/* 预览区上方的端口说明：占一行，下面的地址栏和预览往下让 */
+.notice {
+  flex: none;
+  padding: var(--space-4);
+  border-block-end: 1px solid var(--color-line-hairline);
+}

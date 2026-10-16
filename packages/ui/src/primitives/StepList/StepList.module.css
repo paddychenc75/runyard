@@ -1,0 +1,65 @@
+.root {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  --step-color: var(--color-text-tertiary);
+  --step-fill: transparent;
+  --step-radius: var(--radius-capsule);
+  --step-ink: var(--color-text-secondary);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  min-inline-size: 0;
+  text-align: center;
+}
+
+.step[data-status="done"] {
+  --step-color: var(--color-status-running-mark);
+  --step-ink: var(--color-status-running-text);
+}
+
+.step[data-status="current"] {
+  --step-color: var(--color-status-warning-mark);
+  --step-ink: var(--color-status-warning-text);
+}
+
+.step[data-status="failed"] {
+  --step-color: var(--color-status-danger-mark);
+  --step-fill: var(--color-status-danger-mark);
+  --step-radius: var(--space-2);
+  --step-ink: var(--color-status-danger-text);
+  font-weight: var(--text-control-weight);
+}
+
+.mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  inline-size: var(--size-checkbox);
+  block-size: var(--size-checkbox);
+  border: calc(var(--space-1) * 0.75) solid var(--step-color);
+  border-radius: var(--step-radius);
+  background: var(--step-fill);
+  color: var(--step-color);
+}
+
+.step[data-status="failed"] .mark {
+  color: var(--color-text-on-accent);
+}
+
+.label {
+  color: var(--step-ink);
+  font-size: var(--text-secondary-size);
+  line-height: var(--text-secondary-line-height);
+  overflow-wrap: anywhere;
+}

@@ -10,13 +10,15 @@ export interface ConsoleOutputProps {
   bridge: DesktopBridge;
   playground: string;
   className?: string;
+  /** 只显示最后几行（失败画面里的日志摘要）；不给就是全部 */
+  tail?: number;
 }
 
 type NoticeText = (key: string, values: unknown) => Localized;
 
 // 一个项目的进程输出（规格 desktop/workspace「控制台显示进程输出」）：主进程留着、读取时清洗过的
 // 行，这里只负责显示。进程自己的输出不翻译，管理进程插入的提示按提示码翻译。
-export function ConsoleOutput({ bridge, playground, className }: ConsoleOutputProps) {
+export function ConsoleOutput({ bridge, playground, className, tail }: ConsoleOutputProps) {
   const t = useT();
   const fmt = useFormat();
   const lines = useConsoleLines(bridge, playground);
@@ -40,8 +42,8 @@ export function ConsoleOutput({ bridge, playground, className }: ConsoleOutputPr
           return { id: seq, time, text: entry.text };
       }
     };
-    return lines.map(toItem);
-  }, [lines, t, fmt]);
+    return (tail === undefined ? lines : lines.slice(-tail)).map(toItem);
+  }, [lines, t, fmt, tail]);
   return (
     <LogView
       {...(className === undefined ? {} : { className })}
