@@ -1,3 +1,4 @@
+import { join } from "node:path";
 import { absPath } from "@runyard/platform";
 import type { SupervisorFile } from "@runyard/protocol";
 import { createFakePlatform, FakeClock, type FakePlatform } from "@runyard/testing";
@@ -57,9 +58,9 @@ export class World {
       platform: this.fake.platform,
       identity,
       templateData: {
-        builtinDir: absPath("/app/templates/builtin"),
-        runnersDir: absPath("/app/templates/runners"),
-        toolsDir: absPath("/app/templates/tools"),
+        builtinDir: absPath(join("/app/templates", "builtin")),
+        runnersDir: absPath(join("/app/templates", "runners")),
+        toolsDir: absPath(join("/app/templates", "tools")),
       },
       host: "node",
       execPath: process.execPath,
