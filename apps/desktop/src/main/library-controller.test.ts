@@ -1,7 +1,12 @@
 import { clientError } from "@runyard/client";
 import type { MethodName, MethodParams, MethodResult } from "@runyard/protocol";
 import { describe, expect, it } from "vitest";
-import { type LibraryClient, LibraryController, type PreviewHost } from "./library-controller.ts";
+import {
+  type LibraryClient,
+  LibraryController,
+  type PreviewHost,
+  type SystemActions,
+} from "./library-controller.ts";
 import { playground, run, template } from "./library-fixtures.ts";
 
 // 假客户端：记录每次调用，按方法名给固定的返回；subscribe 把监听函数交给测试，以便模拟管理进程的事件
@@ -74,16 +79,29 @@ class FakePreview implements PreviewHost {
   }
 }
 
+class FakeSystem implements SystemActions {
+  revealed: string[] = [];
+  copied: string[] = [];
+  revealInFileManager(path: string) {
+    this.revealed.push(path);
+  }
+  copyText(text: string) {
+    this.copied.push(text);
+  }
+}
+
 function setup() {
   const client = new FakeClient();
   const preview = new FakePreview();
+  const system = new FakeSystem();
   const controller = new LibraryController({
     client: client as unknown as LibraryClient,
     clientId: "app-1",
     locale: "zh-CN",
     preview,
+    system,
   });
-  return { client, preview, controller };
+  return { client, preview, system, controller };
 }
 
 describe("LibraryController 实时更新", () => {
@@ -359,5 +377,55 @@ describe("LibraryController", () => {
     await controller.start();
     controller.selectTab("nope");
     expect(controller.getState().activeTab).toBe("library");
+  });
+});
+
+describe("资源库行的打开、停止与更多菜单", () => {
+  it("[DESKTOP-LIBRARY-VIEW-07] 打开已停止的项目：出现它的标签页并开始运行，持有者是这个标签页", async () => {
+    const { client, controller } = setup();
+    await controller.start();
+    expect(controller.getState().tabs).toEqual([]);
+    await controller.openProject("a");
+    expect(controller.getState().tabs.map((tab) => tab.id)).toEqual(["a"]);
+    const start = client.calls.find((call) => call.method === "run.start");
+    expect(start?.params).toMatchObject({
+      playground: "a",
+      owner: { kind: "tab", clientId: "app-1", tabId: "tab-a" },
+    });
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-08] 停止没有标签页的运行：发 run.stop，该行变为已停止、操作回到打开", async () => {
+    const { client, controller } = setup();
+    client.runs = [
+      run("a", "ready", {
+        owner: { kind: "cli", clientId: "cli-1", pid: 1, startedAt: 1 } as never,
+      }),
+    ];
+    await controller.start();
+    expect(controller.getState().playgrounds[0]?.active).toBe(true);
+    client.runs = [run("a", "stopped")];
+    await controller.stopRun("a");
+    expect(client.calls.some((call) => call.method === "run.stop")).toBe(true);
+    const row = controller.getState().playgrounds.find((r) => r.id === "a");
+    expect(row?.active).toBe(false);
+    expect(row?.state).toBe("stopped");
+    expect(controller.getState().tabs).toEqual([]);
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-11] 复制路径：剪贴板拿到项目文件夹的绝对路径（管理进程给的那份）", async () => {
+    const { controller, system } = setup();
+    await controller.start();
+    controller.copyFolderPath("b");
+    expect(system.copied).toEqual(["/lib/b"]);
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-12] 在访达中显示：向系统发出选中项目文件夹的请求；不认识的项目什么也不做", async () => {
+    const { controller, system } = setup();
+    await controller.start();
+    controller.revealFolder("a");
+    controller.revealFolder("missing");
+    controller.copyFolderPath("missing");
+    expect(system.revealed).toEqual(["/lib/a"]);
+    expect(system.copied).toEqual([]);
   });
 });

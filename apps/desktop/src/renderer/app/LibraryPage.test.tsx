@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { act, cleanup, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { BootstrapInfo, DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { LibraryState, PlaygroundRow } from "../../shared/library-state.ts";
@@ -18,6 +19,7 @@ function row(id: string, extra: Partial<PlaygroundRow> = {}): PlaygroundRow {
   return {
     id,
     name: id,
+    path: `/lib/${id}`,
     kind: "server",
     state: "idle",
     active: false,
@@ -201,21 +203,6 @@ describe("资源库列表", () => {
     expect(cells.getAllByText("—").length).toBeGreaterThan(0);
   });
 
-  it("开发期的运行和停止按钮仍在操作列里", async () => {
-    const { call } = setup(
-      library([row("a", { state: "ready", active: true }), row("b", { lastOpenedAt: 1 })]),
-    );
-    const rows = bodyRows(await table());
-    (
-      within(rows[0] as HTMLElement).getByRole("button", { name: "停止" }) as HTMLButtonElement
-    ).click();
-    (
-      within(rows[1] as HTMLElement).getByRole("button", { name: "运行" }) as HTMLButtonElement
-    ).click();
-    expect(call).toHaveBeenCalledWith("run.stop", "a");
-    expect(call).toHaveBeenCalledWith("tab.open", "b");
-  });
-
   it("[DESKTOP-LIBRARY-VIEW-10] 顶栏的计数包含标签页持有和命令行持有的运行，已结束的脚本不计", async () => {
     // 两个进行中（不论持有者）加一个已跑完的脚本；持有者在主进程算数时不区分
     setup(
@@ -233,5 +220,87 @@ describe("资源库列表", () => {
     setup(library([row("a")]));
     await table();
     expect(screen.getByText("没有在运行的项目")).toBeTruthy();
+  });
+});
+
+describe("资源库一行的操作", () => {
+  const openMenu = async (user: ReturnType<typeof userEvent.setup>, id: string) => {
+    const rows = bodyRows(await table());
+    const target = rows.find((r) => r.getAttribute("data-row-id") === id) as HTMLElement;
+    await user.click(within(target).getByRole("button", { name: `${id} 的更多操作` }));
+    return await screen.findByRole("menu");
+  };
+
+  it("[DESKTOP-LIBRARY-VIEW-07] 已停止的行主操作是“打开”，点它发 tab.open", async () => {
+    const user = userEvent.setup();
+    const { call } = setup(library([row("demo")]));
+    const rows = bodyRows(await table());
+    await user.click(within(rows[0] as HTMLElement).getByRole("button", { name: "打开" }));
+    expect(call).toHaveBeenCalledWith("tab.open", "demo");
+    // 没有“运行但不打开”
+    expect(screen.queryByRole("button", { name: /^运行$/ })).toBeNull();
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-08] 运行中的行主操作是“停止运行”，点它发 run.stop", async () => {
+    const user = userEvent.setup();
+    const { call } = setup(library([row("demo", { state: "ready", active: true, port: 7101 })]));
+    const rows = bodyRows(await table());
+    await user.click(within(rows[0] as HTMLElement).getByRole("button", { name: "停止运行" }));
+    expect(call).toHaveBeenCalledWith("run.stop", "demo");
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-08] 停止后状态推来，该行操作变回“打开”", async () => {
+    const running = row("demo", { state: "ready", active: true, port: 7101 });
+    const { push } = setup(library([running]));
+    const rows = bodyRows(await table());
+    expect(within(rows[0] as HTMLElement).getByRole("button", { name: "停止运行" })).toBeTruthy();
+    await push(library([row("demo", { state: "stopped" })]));
+    const after = bodyRows(await table());
+    expect(within(after[0] as HTMLElement).getByRole("button", { name: "打开" })).toBeTruthy();
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-09] 已停止的行，更多菜单里没有“停止运行”", async () => {
+    const user = userEvent.setup();
+    setup(library([row("demo")]));
+    const menu = await openMenu(user, "demo");
+    const names = within(menu)
+      .getAllByRole("menuitem")
+      .map((item) => item.textContent);
+    expect(names.some((name) => name?.includes("停止运行"))).toBe(false);
+    expect(names).toHaveLength(3);
+  });
+
+  it("更多菜单只有批准的几项：运行中的行是打开、停止运行、在访达中显示、复制路径", async () => {
+    const user = userEvent.setup();
+    setup(library([row("demo", { state: "ready", active: true, port: 7101 })]));
+    const menu = await openMenu(user, "demo");
+    const names = within(menu)
+      .getAllByRole("menuitem")
+      .map((item) => item.textContent);
+    expect(names).toEqual(["打开回车", "停止运行", "在访达中显示", "复制路径"]);
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-11] 更多菜单里选“复制路径”，向主进程发 playground.copyPath", async () => {
+    const user = userEvent.setup();
+    const { call } = setup(library([row("demo")]));
+    const menu = await openMenu(user, "demo");
+    await user.click(within(menu).getByRole("menuitem", { name: "复制路径" }));
+    expect(call).toHaveBeenCalledWith("playground.copyPath", "demo");
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-12] 更多菜单里选“在访达中显示”，向主进程发 playground.reveal（访达本身手动验证）", async () => {
+    const user = userEvent.setup();
+    const { call } = setup(library([row("demo")]));
+    const menu = await openMenu(user, "demo");
+    await user.click(within(menu).getByRole("menuitem", { name: "在访达中显示" }));
+    expect(call).toHaveBeenCalledWith("playground.reveal", "demo");
+  });
+
+  it("菜单打开期间通知外壳有浮层（预览让位），关闭后撤销", async () => {
+    const user = userEvent.setup();
+    setup(library([row("demo")]));
+    await openMenu(user, "demo");
+    await user.keyboard("{Escape}");
+    await vi.waitFor(() => expect(screen.queryByRole("menu")).toBeNull());
   });
 });

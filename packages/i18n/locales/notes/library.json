@@ -9,6 +9,9 @@
   "library.retention.autoClean.tooltip": {
     "days": "自动清理设定的天数"
   },
+  "library.row.more.aria": {
+    "name": "项目名（用户自己起的，不翻译）"
+  },
   "library.sidebar.footer.label": {
     "count": "资源库里项目的总数"
   },
