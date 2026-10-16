@@ -9,6 +9,10 @@ import { sampleTab } from "./sample-tab.ts";
 
 afterEach(cleanup);
 
+// 整个外壳加弹窗在 Windows 的慢机器上要一两秒才画出来，默认的 1 秒等待不够
+const SLOW = { timeout: 8000 };
+vi.setConfig({ testTimeout: 20_000 });
+
 (Element.prototype as { getAnimations?: () => unknown[] }).getAnimations = () => [];
 vi.stubGlobal(
   "ResizeObserver",
@@ -58,7 +62,9 @@ describe("关闭标签页的确认对话框", () => {
   it("点标签上的关闭钮和按 ⌘W 都只是请求关闭当前项目标签，交给主进程判断", async () => {
     const user = userEvent.setup();
     const call = setup(base);
-    await user.click(await screen.findByRole("button", { name: "关闭 hono-todo-api" }));
+    await user.click(
+      await screen.findByRole("button", { name: "关闭 hono-todo-api" }, undefined, SLOW),
+    );
     expect(call).toHaveBeenCalledWith("tab.close", "a");
     call.mockClear();
     await user.keyboard("{Meta>}w{/Meta}");
@@ -67,9 +73,14 @@ describe("关闭标签页的确认对话框", () => {
 
   it("[DESKTOP-WORKSPACE-04] 主进程要求确认时弹出：写明会停止运行，有取消、关闭并停止和不再提示", async () => {
     setup(asking);
-    const dialog = await screen.findByRole("alertdialog", {
-      name: "关闭 hono-todo-api 并停止运行？",
-    });
+    const dialog = await screen.findByRole(
+      "alertdialog",
+      {
+        name: "关闭 hono-todo-api 并停止运行？",
+      },
+      undefined,
+      SLOW,
+    );
     expect(within(dialog).getByText(/代码和文件不受影响/)).toBeTruthy();
     expect(within(dialog).getByRole("button", { name: "取消" })).toBeTruthy();
     expect(within(dialog).getByRole("button", { name: "关闭并停止" })).toBeTruthy();
@@ -79,21 +90,21 @@ describe("关闭标签页的确认对话框", () => {
 
   it("没有确认请求时不显示对话框", async () => {
     setup(base);
-    await screen.findByRole("tab", { name: /hono-todo-api/ });
+    await screen.findByRole("tab", { name: /hono-todo-api/ }, undefined, SLOW);
     expect(screen.queryByRole("alertdialog")).toBeNull();
   });
 
   it("[DESKTOP-WORKSPACE-05] 点“关闭并停止”发确认，没勾选就是 dontAskAgain: false", async () => {
     const user = userEvent.setup();
     const call = setup(asking);
-    await user.click(await screen.findByRole("button", { name: "关闭并停止" }));
+    await user.click(await screen.findByRole("button", { name: "关闭并停止" }, undefined, SLOW));
     expect(call).toHaveBeenCalledWith("tab.closeConfirm", { id: "a", dontAskAgain: false });
   });
 
   it("[DESKTOP-WORKSPACE-06] 点“取消”只发取消；Escape 同样", async () => {
     const user = userEvent.setup();
     const call = setup(asking);
-    await user.click(await screen.findByRole("button", { name: "取消" }));
+    await user.click(await screen.findByRole("button", { name: "取消" }, undefined, SLOW));
     await user.keyboard("{Escape}");
     const methods = call.mock.calls.map((args) => args[0]);
     expect(methods.filter((method) => method === "tab.closeCancel")).toHaveLength(2);
@@ -103,7 +114,7 @@ describe("关闭标签页的确认对话框", () => {
   it("[DESKTOP-WORKSPACE-07] 勾选“不再提示”再点“关闭并停止”，确认里带 dontAskAgain: true", async () => {
     const user = userEvent.setup();
     const call = setup(asking);
-    await user.click(await screen.findByRole("checkbox", { name: "不再提示" }));
+    await user.click(await screen.findByRole("checkbox", { name: "不再提示" }, undefined, SLOW));
     await user.click(screen.getByRole("button", { name: "关闭并停止" }));
     expect(call).toHaveBeenCalledWith("tab.closeConfirm", { id: "a", dontAskAgain: true });
   });
@@ -111,7 +122,7 @@ describe("关闭标签页的确认对话框", () => {
   it("[DESKTOP-WORKSPACE-08] 勾选后点“取消”：界面只发取消，不带勾选", async () => {
     const user = userEvent.setup();
     const call = setup(asking);
-    await user.click(await screen.findByRole("checkbox", { name: "不再提示" }));
+    await user.click(await screen.findByRole("checkbox", { name: "不再提示" }, undefined, SLOW));
     await user.click(screen.getByRole("button", { name: "取消" }));
     expect(call).toHaveBeenCalledWith("tab.closeCancel");
     expect(call.mock.calls.map((args) => args[0])).not.toContain("tab.closeConfirm");
