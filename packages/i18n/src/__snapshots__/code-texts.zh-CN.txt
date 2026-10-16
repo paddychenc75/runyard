@@ -41,7 +41,7 @@ errors.RUN_NOT_FOUND.hintCli: 运行 runyard status 查看现有的运行。
 errors.TOOL_MISSING.title: 没有找到 go
 errors.TOOL_MISSING.body: 运行这个项目需要 go（版本 >=1.22 <2），但没有在这台电脑上找到它。项目已经创建，代码可以照常编辑。
 errors.TOOL_MISSING.hint: 安装 go 后点“重新检测”，项目就会启动。
-errors.TOOL_MISSING.hintCli: 安装 go（>=1.22 <2），用 runyard doctor 确认后重新运行这条命令。
+errors.TOOL_MISSING.hintCli: 安装 go（>=1.22 <2），用 runyard doctor 确认后重新运行这条命令。 项目写的安装命令（应用不会替你运行）：`brew install go` 安装说明：https://go.dev/dl/
 errors.TOOL_TOO_OLD.title: node 的版本过低
 errors.TOOL_TOO_OLD.body: 这个项目需要 node >=22.18，当前是 20.11.0。项目已经创建，代码可以照常编辑。
 errors.TOOL_TOO_OLD.hint: 把 node 升级到 >=22.18 后点“重新检测”。

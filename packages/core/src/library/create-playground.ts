@@ -110,6 +110,7 @@ function buildFile(
     template: seed.template,
     runner: seed.runner,
     requires: { ...seed.requires },
+    ...(seed.requiresInstall === undefined ? {} : { requiresInstall: seed.requiresInstall }),
     toolchainAtCreate: { ...seed.toolchainAtCreate },
     ...(seed.packageManager === undefined ? {} : { packageManager: seed.packageManager }),
     ...(seed.entry === undefined ? {} : { entry: seed.entry }),

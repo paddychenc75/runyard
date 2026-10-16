@@ -41,7 +41,7 @@ errors.RUN_NOT_FOUND.hintCli: Run runyard status to see the current runs.
 errors.TOOL_MISSING.title: Cannot find go
 errors.TOOL_MISSING.body: This playground needs go (>=1.22 <2), but it was not found on this computer. The playground is created and you can still edit the code.
 errors.TOOL_MISSING.hint: Install go, then click "Check again" and the playground will start.
-errors.TOOL_MISSING.hintCli: Install go (>=1.22 <2), check it with runyard doctor, then run the command again.
+errors.TOOL_MISSING.hintCli: Install go (>=1.22 <2), check it with runyard doctor, then run the command again. Install command from the playground (Runyard will not run it): `brew install go` Install instructions: https://go.dev/dl/
 errors.TOOL_TOO_OLD.title: The installed node is too old
 errors.TOOL_TOO_OLD.body: This playground needs node >=22.18, but 20.11.0 is installed. The playground is created and you can still edit the code.
 errors.TOOL_TOO_OLD.hint: Upgrade node to >=22.18, then click "Check again".

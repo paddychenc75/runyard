@@ -118,6 +118,11 @@ export function createTemplateCatalog(deps: TemplateCatalogDeps): TemplateCatalo
       if (kind !== undefined) kinds.set(template.runner, kind);
 
       const toolchainAtCreate = (await deps.detectVersions?.(template.requires)) ?? {};
+      const installs = Object.fromEntries(
+        Object.entries(template.requires).flatMap(([tool, need]) =>
+          need.install === undefined ? [] : [[tool, need.install]],
+        ),
+      );
       return {
         template: {
           id: template.id,
@@ -128,6 +133,7 @@ export function createTemplateCatalog(deps: TemplateCatalogDeps): TemplateCatalo
         requires: Object.fromEntries(
           Object.entries(template.requires).map(([tool, need]) => [tool, need.version]),
         ),
+        ...(Object.keys(installs).length === 0 ? {} : { requiresInstall: installs }),
         toolchainAtCreate,
         entry: template.entry,
         files: filesOf(joinPath(target.dir, posixRelPath("files")), template, values),

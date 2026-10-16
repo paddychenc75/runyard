@@ -42,7 +42,7 @@ function harness(tools: ("node" | "pnpm" | "npm")[] = ["node", "pnpm", "npm"]) {
     tools,
   });
   if (tools.includes("pnpm")) h.fake.tools.install("pnpm", { version: "10.34.6" });
-  h.fake.tools.install("node", { version: "22.12.0" });
+  h.fake.tools.install("node", { version: "22.13.0" });
   return h;
 }
 

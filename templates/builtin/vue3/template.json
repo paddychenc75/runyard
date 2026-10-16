@@ -9,7 +9,7 @@
   "category": "frontend",
   "runner": "vite",
   "requires": {
-    "node": { "version": ">=22.12 <27" },
+    "node": { "version": ">=22.13 <27" },
     "pnpm": { "version": ">=10.34.6 <12", "fallback": "npm" }
   },
   "entry": "src/App.vue",
