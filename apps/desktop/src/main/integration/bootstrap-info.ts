@@ -33,3 +33,8 @@ export function buildBootstrapInfo(
     highContrast: inputs.highContrast,
   };
 }
+
+/** 关掉窗口后应用是否继续运行：macOS 的惯例，规格 desktop/workspace 要求如此 */
+export function closeKeepsAppAlive(platform: BootstrapInfo["platform"]): boolean {
+  return platform === "darwin";
+}

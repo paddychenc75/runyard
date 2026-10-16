@@ -3,10 +3,15 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { app, type BrowserWindow, ipcMain, nativeTheme, net, protocol } from "electron";
 import { APP_ORIGIN, APP_SCHEME, resolveAppFile } from "./app-protocol.ts";
 import { connectToSupervisor, unavailableClient } from "./composition-root.ts";
-import { buildBootstrapInfo, currentPlatform } from "./integration/bootstrap-info.ts";
+import {
+  buildBootstrapInfo,
+  closeKeepsAppAlive,
+  currentPlatform,
+} from "./integration/bootstrap-info.ts";
 import { createMainWindow, PLACEHOLDER_BACKGROUND } from "./integration/main-window.ts";
 import { claimSingleInstance, focusWindow } from "./integration/single-instance.ts";
 import { resolveUserDataDir } from "./integration/user-data.ts";
+import { keepAliveAfterClose } from "./integration/window-lifecycle.ts";
 import { registerBridgeHandlers } from "./ipc-handlers.ts";
 import { type LibraryClient, LibraryController } from "./library-controller.ts";
 import { type DesktopArgs, parseDesktopArgs, resolveDesktopLocale } from "./parse-args.ts";
@@ -52,6 +57,7 @@ async function main(args: DesktopArgs): Promise<void> {
       : PLACEHOLDER_BACKGROUND.light,
   });
   mainWindow = window;
+  keepAliveAfterClose(app, window, closeKeepsAppAlive(currentPlatform()));
   const preview = new ElectronPreviewHost(window);
 
   let client: LibraryClient;
@@ -131,7 +137,6 @@ if (!parsed.ok) {
     }),
   );
   if (claimSingleInstance(app, () => focusWindow(mainWindow))) {
-    app.on("window-all-closed", () => app.quit());
     void app.whenReady().then(() => main(args));
   }
 }

@@ -24,6 +24,7 @@ pnpm --filter @runyard/desktop smoke             # 冒烟自检：窗口不显�
 
 - 只有本包可以导入 `electron`（技术设计 §3.2 规则 1）。界面（`src/renderer/`）没有 Node 接口，也不许导入 `electron`、`client`、`platform`、`core`、`supervisor`；预加载脚本只转发。由 Biome 的 `noRestrictedImports`、`noNodejsModules` 和界面单独的 `tsconfig.renderer.json`（DOM、没有 Node 类型）拦住。可导入的包的唯一出处是 `tooling/checks/layers.json`。
 - 单实例：同一份用户数据目录只许一个应用进程，第二次启动直接退出，由已有的进程聚焦窗口（`main/integration/single-instance.ts`）。用户数据目录显式设置（`integration/user-data.ts`）：正式 `Runyard`，从源码运行 `Runyard-dev`，指定 `--root` 时放在 `<root>/.runyard/app-data`；因此不同 `--root` 的试验窗口与正在用的窗口互不抢锁、互不混数据。
+- 关窗口（规格 desktop/workspace「关闭窗口与退出应用」）：macOS 上关窗口只是藏起来，应用和运行继续，点 Dock 图标再显示；其他系统关掉最后一个窗口就退出（`integration/window-lifecycle.ts`）。
 - 退出：第一次退出请求先 `session.bye`，道别期间的再次请求只拦下（`quit-coordinator.ts`，决策记录 0005）。
 - 窗口：`contextIsolation` 开、`sandbox` 开、`nodeIntegration` 关；界面只从 `app://runyard/` 加载打包好的文件（`app-protocol.ts` 只许落在界面目录内），页面带内容安全策略；主进程只响应来自这个地址的 IPC 发送者。
 - 预览（技术设计 §6.5）：每个项目一个 `WebContentsView`，沙箱、没有预加载脚本、没有 Node，独立的内存存储分区；只许导航到 `http://127.0.0.1:<端口>`，其他网页链接交给系统浏览器；权限默认拒绝，只放行剪贴板。视图位置由 `shared/layout.ts` 定：列表宽度写一次，主进程据此摆视图，界面据此写 CSS 变量。
