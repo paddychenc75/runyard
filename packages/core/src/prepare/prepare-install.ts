@@ -1,4 +1,5 @@
 import type { FailureReason, RunyardError } from "@runyard/protocol";
+import { installHintParams } from "../toolchain/install-hint-params.ts";
 import { installDependencies, installIsCurrent } from "./install-dependencies.ts";
 import type { PrepareStep, StepFailure } from "./prepare-step.ts";
 import { resolveExecutable } from "./resolve-executable.ts";
@@ -53,7 +54,11 @@ export async function runInstallStep(step: PrepareStep): Promise<StepFailure | u
     return {
       failure: {
         code: "TOOL_MISSING",
-        params: { tool, required: subject.requires[tool]?.version ?? "*" },
+        params: {
+          tool,
+          required: subject.requires[tool]?.version ?? "*",
+          ...installHintParams(subject.requires[tool]?.install),
+        },
         debug: "no package manager from the runner's variants is available",
       },
     };

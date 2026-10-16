@@ -45,6 +45,28 @@ describe("evaluateRequirements", () => {
     expect(result.errors[0]?.params).toEqual({ tool: "pnpm", required: ">=10" });
   });
 
+  it("[TEMPLATES-CUSTOM-21] 缺工具和版本过低都带上项目自己写的 install（命令连成一行），没写就没有这两个参数", () => {
+    const install = {
+      command: ["brew", "install", "my tool"],
+      url: "https://ziglang.org/download/",
+    };
+    const wanted: Requires = { zig: { version: ">=0.14", install } };
+    const missingResult = evaluateRequirements(wanted, observed(missing("zig")));
+    expect(missingResult.errors[0]?.params).toEqual({
+      tool: "zig",
+      required: ">=0.14",
+      installCommand: 'brew install "my tool"',
+      installUrl: "https://ziglang.org/download/",
+    });
+    const oldResult = evaluateRequirements(wanted, observed(found("zig", "0.13.0")));
+    expect(oldResult.errors[0]?.params).toMatchObject({
+      found: "0.13.0",
+      installCommand: 'brew install "my tool"',
+    });
+    const bare = evaluateRequirements({ zig: { version: ">=0.14" } }, observed(missing("zig")));
+    expect(bare.errors[0]?.params).toEqual({ tool: "zig", required: ">=0.14" });
+  });
+
   it("pnpm 太旧不能靠回退绕过", () => {
     const withFallback: Requires = { pnpm: { version: ">=10", fallback: "npm" } };
     const result = evaluateRequirements(

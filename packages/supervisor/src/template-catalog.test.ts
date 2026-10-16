@@ -119,6 +119,26 @@ describe("创建时的模板展开", () => {
     });
   });
 
+  it("[TEMPLATES-CUSTOM-21] 模板 requires 里的 install 原样存进 playground.json 的 requiresInstall", async () => {
+    const pump = await setup();
+    const install = { command: ["brew", "install", "zig"], url: "https://ziglang.org/download/" };
+    put(
+      app("builtin", "tpl"),
+      template("tpl", {
+        requires: { node: { version: ">=22.18 <27" }, zig: { version: ">=0.14", install } },
+      }),
+    );
+    expect((await create(pump, "tpl", "demo")).ok).toBe(true);
+    const file = playgroundJson("demo");
+    expect(file.requires).toEqual({ node: ">=22.18 <27", zig: ">=0.14" });
+    expect(file.requiresInstall).toEqual({ zig: install });
+
+    // 没有 install 的模板不写这个字段
+    put(app("builtin", "plain"), template("plain"));
+    expect((await create(pump, "plain", "demo2")).ok).toBe(true);
+    expect("requiresInstall" in playgroundJson("demo2")).toBe(false);
+  });
+
   it("[TEMPLATES-FORMAT-02] 变量是字面替换：所列文件里的 {{title}} 原样换成值，未列出的文件不动", async () => {
     const pump = await setup();
     put(

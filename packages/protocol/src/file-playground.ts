@@ -3,6 +3,7 @@ import { createdBySchema } from "./created-by.ts";
 import { defineFileFormat } from "./file-format.ts";
 import { autoCleanSchema, packageManagers, playgroundSchema } from "./playground.ts";
 import { relativePathSchema, timestampSchema } from "./primitives.ts";
+import { templateInstallSchema } from "./template-file.ts";
 
 // 项目文件夹里的 .runyard/playground.json（docs/architecture/storage.md 2.1）。
 // 共用的形状（template、createdBy、autoClean、packageManager、entry）直接取自 Playground，
@@ -21,6 +22,12 @@ export const playgroundFileSchema = z.looseObject({
   template: playgroundSchema.shape.template,
   runner: playgroundSchema.shape.runner,
   requires: z.record(toolId, z.string()).describe("创建时从模板复制的工具与版本范围"),
+  // 创建时从模板 requires 复制的 install，只展示不执行；没有就不写这个字段。
+  // 单独一个字段而不改 requires 的值：旧程序读 requires 仍是 { 工具: 范围 }，不用升格式版本
+  requiresInstall: z
+    .record(toolId, templateInstallSchema)
+    .optional()
+    .describe("创建时从模板复制的安装方式（只展示）"),
   toolchainAtCreate: z.record(toolId, z.string().min(1)).describe("创建时各工具的实际版本"),
   packageManager: z.enum(packageManagers).optional(),
   entry: relativePathSchema.optional(),

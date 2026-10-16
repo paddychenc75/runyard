@@ -2,6 +2,7 @@ import type { LibraryItem, RunSubject, StartRequest } from "@runyard/core";
 import { type AbsPath, absPath, joinPath, posixRelPath } from "@runyard/platform";
 import {
   type PlaygroundFile,
+  type Requires,
   type Runner,
   readVersionedText,
   runnerFileFormat,
@@ -25,6 +26,16 @@ export interface RunSubjects {
   item(ref: string): Promise<LibraryItem>;
   /** 给准备阶段（core 的 RunPreparer）用 */
   subjectOf(request: StartRequest): Promise<RunSubject>;
+}
+
+/** playground.json 里存的是版本范围，另有可选的 requiresInstall；准备阶段要 { 工具: { version, install? } } */
+export function requiresOf(file: Pick<PlaygroundFile, "requires" | "requiresInstall">): Requires {
+  return Object.fromEntries(
+    Object.entries(file.requires).map(([tool, version]) => {
+      const install = file.requiresInstall?.[tool];
+      return [tool, install === undefined ? { version } : { version, install }];
+    }),
+  );
 }
 
 export function createRunSubjects(api: SupervisorApi, runnersDir: AbsPath): RunSubjects {
@@ -86,9 +97,7 @@ export function createRunSubjects(api: SupervisorApi, runnersDir: AbsPath): RunS
       folder: absPath(item.entry.path),
       runner,
       // playground.json 里只存版本范围；准备阶段要的 Requires 是 { 工具: { version } }
-      requires: Object.fromEntries(
-        Object.entries(file.requires).map(([tool, version]) => [tool, { version }]),
-      ),
+      requires: requiresOf(file),
       ...(file.entry === undefined ? {} : { entry: file.entry }),
       ...(item.entry.port === undefined ? {} : { registeredPort: item.entry.port }),
       otherRegisteredPorts: others,
