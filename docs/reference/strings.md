@@ -87,7 +87,13 @@
 | cli.option.timeout.hint | 最多等待的秒数 | Longest time to wait, in seconds | — |
 | cli.option.toolVersion.hint | 用指定的工具版本测试 | Test with the given tool version | — |
 | cli.option.var.hint | 替换模板里的变量，可以重复 | Replace a variable in the template; can be repeated | — |
+| cli.rm.trashed.body | 已把 {name} 移到{term_trash}：{path} | Moved {name} to the {term_trash}: {path} | name：项目名称，原样显示；path：项目原来所在文件夹的绝对路径，原样显示 |
 | cli.skillInstall.installed.body | 已写入 {target, select, claude {Claude} other {智能体}} 的说明：{path} | Wrote the {target, select, claude {Claude} other {agents}} instructions: {path} | target：claude 或 agents；用 select 选词；path：写入的 SKILL.md 绝对路径，原样显示 |
+| cli.status.empty.body | 没有项目。 | No playgrounds. | — |
+| cli.status.item.body | {name}　{state}{url, select, none {} other {　{url}}}{missing, select, yes {　（找不到文件夹）} other {}} | {name}  {state}{url, select, none {} other {  {url}}}{missing, select, yes {  (folder missing)} other {}} | name：项目名称，原样显示；state：运行状态（已按当前语言挑选的文字）；url：地址，原样显示；没有时是 none；missing：yes 或 no；yes 时加“找不到文件夹”标记 |
+| cli.status.summary.body | {count, plural, other {# 个项目运行中}} | {count, plural, one {# playground running} other {# playgrounds running}} | count：运行中的个数 |
+| cli.stop.none.body | 没有可停止的运行。 | No runs to stop. | — |
+| cli.stop.stopped.body | 已停止 {name}（运行 {runId}） | Stopped {name} (run {runId}) | name：项目名称，原样显示；runId：运行 id，原样显示 |
 | cli.templateLint.failed.body | 模板 {template} 没有通过检查： | Template {template} did not pass: | template：模板标识，原样显示 |
 | cli.templateLint.issue.body | {rule}　{path}　{message} | {rule}  {path}  {message} | rule：检查规则名，原样显示；path：出问题的字段或文件，原样显示；message：英文说明，原样显示 |
 | cli.templateLint.ok.body | 模板 {template} 通过检查。 | Template {template} passed. | template：模板标识，原样显示 |
@@ -100,6 +106,7 @@
 | cli.usage.missingCommand.body | 没有给出命令。 | No command was given. | — |
 | cli.usage.optionNeedsValue.body | 选项 {option} 需要一个值。 | Option {option} needs a value. | option：选项名，如 --timeout |
 | cli.usage.optionTakesNoValue.body | 选项 {option} 不接受值。 | Option {option} does not take a value. | option：选项名，如 --json |
+| cli.usage.stopTarget.body | 要么给出项目，要么用 --all，二者只能有一个；--mine 只能和 --all 一起用。 | Give a playground or --all, not both or neither; --mine only goes with --all. | — |
 | cli.usage.tooManyArguments.body | 多出来的参数：{argument}。 | Unexpected argument: {argument}. | argument：多出来的参数，原样显示 |
 | cli.usage.unknownCommand.body | 不认识的命令：{command}。 | Unknown command: {command}. | command：用户输入的命令，原样显示 |
 | cli.usage.unknownOption.body | 不认识的选项：{option}。 | Unknown option: {option}. | option：用户输入的选项，原样显示 |

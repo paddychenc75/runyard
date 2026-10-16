@@ -7,10 +7,14 @@ import {
 } from "./command-spec.ts";
 import { configGet, configSet } from "./config-commands.ts";
 import { doctor } from "./doctor.ts";
+import { logs } from "./logs.ts";
+import { rm } from "./rm.ts";
 import { skillInstall as skillInstallRun } from "./skill-install.ts";
+import { status } from "./status.ts";
+import { stop } from "./stop.ts";
 import { templateLint, templateList, templateSave, templateShow } from "./template-commands.ts";
 
-// 命令表（docs/architecture/cli-contract.md 第 2 节）。new run stop status logs rm 只有声明，没有 run（#46、#47）；
+// 命令表（docs/architecture/cli-contract.md 第 2 节）。new run 只有声明，没有 run（#46）；
 // template test 也没有 run，等 #54 的冒烟测试。
 // template、skill 子命令的位置参数契约没写，按“show / lint / test 收一个模板，save 收一个项目”声明。
 
@@ -96,6 +100,7 @@ const stopCommand = defineCommand({
     { name: "mine", type: "boolean", hint: (t) => t("cli.option.mine.hint") },
   ],
   needsSupervisor: true,
+  run: stop,
 });
 
 const statusCommand = defineCommand({
@@ -104,6 +109,7 @@ const statusCommand = defineCommand({
   positionals: [pg(false)],
   options: [{ name: "running", type: "boolean", hint: (t) => t("cli.option.running.hint") }],
   needsSupervisor: true,
+  run: status,
 });
 
 const logsCommand = defineCommand({
@@ -117,6 +123,7 @@ const logsCommand = defineCommand({
     { name: "raw", type: "boolean", hint: (t) => t("cli.option.raw.hint") },
   ],
   needsSupervisor: true,
+  run: logs,
 });
 
 const rmCommand = defineCommand({
@@ -125,6 +132,7 @@ const rmCommand = defineCommand({
   positionals: [pg()],
   options: [],
   needsSupervisor: true,
+  run: rm,
 });
 
 const doctorCommand = defineCommand({

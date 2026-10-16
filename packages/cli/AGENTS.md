@@ -3,7 +3,7 @@
 ## 用途
 
 `runyard` 命令：参数解析、输出模块、`--json`、退出码映射、语言解析、`--help`（技术设计 §5.3、§6.8；`docs/architecture/cli-contract.md`；规格 `openspec/specs/cli/commands`）。命令行只随桌面应用安装，第一版不发 npm：包是 `private`，没有 `bin`、没有发布配置；M1 期间从仓库源码运行（`pnpm --filter runyard start -- <参数>` 或 `node packages/cli/src/main.ts <参数>`）。
-现状：`config get|set lang`、`doctor`（含 `--template`、`--bundle`）、`skill install`、`template list|show|save|lint` 有行为；`new run stop status logs rm` 和 `template test` 只有声明（帮助里看得到，运行得到 `NOT_SUPPORTED`，退出码 10），前者由 #46、#47 补，`template test` 的冒烟测试在 #54。
+现状：`config get|set lang`、`doctor`（含 `--template`、`--bundle`）、`skill install`、`template list|show|save|lint`、`stop`、`status`、`logs`、`rm` 有行为；`new run` 和 `template test` 只有声明（帮助里看得到，运行得到 `NOT_SUPPORTED`，退出码 10），前者由 #46 补，`template test` 的冒烟测试在 #54。
 
 ## 对外暴露什么
 
@@ -32,10 +32,15 @@
 - `skill install`（`src/commands/skill-install.ts`、`src/skill/skill-text.ts`）：只写 `<主目录>/.claude/skills/runyard/SKILL.md` 和 `<主目录>/.agents/skills/runyard/SKILL.md`；全文是英文数据，不走文案包，有快照测试。
 - `template list|show|save` 经管理进程（`template.list|get|save`）；`save` 在发请求前先校验 `--as`（`NAME_INVALID`）和 `--include|--exclude`（`USAGE`）。`template lint` 在本进程直接调 core 的 `lintTemplateRef`；有错误时先输出结果对象，再以 `TEMPLATE_INVALID`（2）结束。管理进程一侧的 `template.*` 处理不在本包。
 
+- `stop`（`src/commands/stop.ts`）：`<pg>` 或 `--all [--mine]`，参数组合不对先报 `USAGE`，不连管理进程。管理进程的 `run.stop` 对没运行过的项目报 `RUN_NOT_FOUND`、对已结束的运行也返回快照，所以先用 `run.list { running: true }` 记下活动中的运行，只把停之前确实活动的列进 `stopped`。
+- `status`（`src/commands/status.ts`）：`playground.list` 加 `run.list` 在本进程里拼出规格的键；`url`、`port`、`owner`、`agent`、`idleStopAt` 只对活动中的运行有值，结束后是 `null`；`cleanInDays` 用 core 的 `dueAt` 向上取整。`<pg>` 按名称、id 或路径在列表里找，找不到报 `PLAYGROUND_NOT_FOUND`（所以找不到文件夹的项目仍能列出，`missing: true`）。
+- `logs`（`src/commands/logs.ts`、`logs-follow.ts`、`log-text.ts`）：默认 `tail` 200（RUN-LOGS-18），给了 `--since` 就不截断；实际向管理进程要 `tail + 1` 行，多出来的一行只用来判断 `truncated`。`--json` 下管理进程插入的提示（`system` 条目）永远用英文文案拼，文字输出才跟 `--lang`。游标 `none:0`（从没运行过）对外是 `null`。`--follow` 订阅 `logs.follow` 和 `run` 主题只当“有新东西”的信号，内容每次都用 `logs.read` 按游标取，所以不丢行不重复；运行进入结束状态（或从没运行过）就输出 `{ "end": true, "cursor" }` 并取消订阅。`--follow --json` 每行 `{ text, cursor, state }`，没有新内容不输出空行。
+- `rm`（`src/commands/rm.ts`）：先 `playground.get` 取名称和路径，再 `playground.trash`（管理进程先停止再只经平台层 `fs.trash`）；本包没有任何删除文件的路径。
+
 ## 子目录地图
 
 - `src/run-cli.ts`（解析、建输出和翻译、统一的错误出口）、`execute-command.ts`（分派帮助和命令）、`parse-command-line.ts`、`cli-error.ts`、`cli-deps.ts`、`composition-root.ts`、`main.ts`
-- `src/commands/`：声明（`declarations.ts`）、`command-spec.ts`、`command-context.ts`、`global-options.ts`、`config-commands.ts`、`doctor.ts`、`skill-install.ts`、`template-commands.ts`；`src/doctor/`：诊断的各部分；`src/skill/`：SKILL.md 全文；`src/templates/`：模板目录位置；`src/real-clock.ts`
+- `src/commands/`：声明（`declarations.ts`）、`command-spec.ts`、`command-context.ts`、`global-options.ts`、`config-commands.ts`、`doctor.ts`、`skill-install.ts`、`template-commands.ts`、`stop.ts`、`status.ts`、`logs.ts`（含 `logs-follow.ts`、`log-text.ts`）、`rm.ts`；`src/doctor/`：诊断的各部分；`src/skill/`：SKILL.md 全文；`src/templates/`：模板目录位置；`src/real-clock.ts`
 - `src/output/`：唯一的输出口；`src/help/`：`--help` 正文；`src/settings/`：`cli.json`；`src/language/`：语言解析
 - `src/help/__snapshots__/help.en.txt`、`help.zh-CN.txt`：`--help` 快照
 
@@ -46,4 +51,4 @@ pnpm test --filter runyard
 pnpm --filter runyard exec vitest run --project unit --update src/help   # 改了命令、选项或帮助文案之后更新快照，再读 git diff
 ```
 
-单元测试在进程内调 `runCli`（`cli-harness.test.ts` 给假平台和可替换的命令实现）。`main.platform-dependent.test.ts` 起真正的入口和真正的管理进程，临时目录，不碰真实目录。
+单元测试在进程内调 `runCli`（`cli-harness.test.ts` 给假平台和可替换的命令实现）。`main.platform-dependent.test.ts`、`run-commands.platform-dependent.test.ts` 起真正的入口和真正的管理进程，临时目录，不碰真实目录；`stop status logs rm` 的单元测试用 `src/commands/fake-supervisor.test.ts`（按协议语义在内存里回答 `run.*`、`playground.*`、`logs.*` 的假管理进程）。

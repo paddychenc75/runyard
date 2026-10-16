@@ -132,9 +132,28 @@ export type CatalogMessages = {
   "cli.option.timeout.hint": Record<never, never>;
   "cli.option.toolVersion.hint": Record<never, never>;
   "cli.option.var.hint": Record<never, never>;
+  "cli.rm.trashed.body": {
+    name: string | number;
+    path: string | number;
+  };
   "cli.skillInstall.installed.body": {
     path: string | number;
     target: string;
+  };
+  "cli.status.empty.body": Record<never, never>;
+  "cli.status.item.body": {
+    missing: string;
+    name: string | number;
+    state: string | number;
+    url: string;
+  };
+  "cli.status.summary.body": {
+    count: number;
+  };
+  "cli.stop.none.body": Record<never, never>;
+  "cli.stop.stopped.body": {
+    name: string | number;
+    runId: string | number;
   };
   "cli.templateLint.failed.body": {
     template: string | number;
@@ -177,6 +196,7 @@ export type CatalogMessages = {
   "cli.usage.optionTakesNoValue.body": {
     option: string | number;
   };
+  "cli.usage.stopTarget.body": Record<never, never>;
   "cli.usage.tooManyArguments.body": {
     argument: string | number;
   };

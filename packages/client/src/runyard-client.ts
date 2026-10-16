@@ -102,10 +102,29 @@ export class RunyardClient {
     topics: readonly [EventTopic, ...EventTopic[]],
     listener: EventListener,
   ): Promise<EventSubscription> {
+    return this.#open("events.subscribe", { topics: [...topics] }, listener);
+  }
+
+  /**
+   * 订阅一个项目的日志（logs.follow）：订阅之后的新条目以 run.log 事件到达 listener。
+   * 与 subscribe 同一套登记和取消，所以紧跟响应的第一个条目也不会丢。
+   */
+  async followLogs(
+    params: MethodParams<"logs.follow">,
+    listener: EventListener,
+  ): Promise<EventSubscription> {
+    return this.#open("logs.follow", params, listener);
+  }
+
+  async #open(
+    method: "events.subscribe" | "logs.follow",
+    params: unknown,
+    listener: EventListener,
+  ): Promise<EventSubscription> {
     let sub = -1;
-    await this.#connection.request("events.subscribe", { topics: [...topics] }, (raw) => {
+    await this.#connection.request(method, params, (raw) => {
       const parsed = subscriptionSchema.safeParse(raw);
-      if (!parsed.success) throw clientError("INTERNAL", {}, "events.subscribe result is invalid");
+      if (!parsed.success) throw clientError("INTERNAL", {}, `${method} result is invalid`);
       sub = parsed.data.sub;
       this.#subscriptions.set(sub, { listener, lastSeq: 0 });
     });

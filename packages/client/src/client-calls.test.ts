@@ -152,6 +152,29 @@ describe("事件订阅", () => {
     client.close();
   });
 
+  it("followLogs 登记 logs.follow 的订阅：紧跟响应的 run.log 条目收得到，取消走 events.unsubscribe", async () => {
+    const entry = { at: 1, kind: "stdout", text: "hello" };
+    const { client, supervisor } = await connected({
+      eventsRightAfterSubscribe: [{ seq: 1, event: "run.log", data: entry }],
+    });
+    const seen: ClientEvent[] = [];
+    const subscription = await client.followLogs({ playground: "demo" }, (event) =>
+      seen.push(event),
+    );
+    await nextTurns();
+    expect(supervisor.requests.at(-1)).toEqual({
+      method: "logs.follow",
+      params: { playground: "demo" },
+    });
+    expect(seen).toEqual([{ event: "run.log", data: entry, seq: 1, gap: false }]);
+    await subscription.unsubscribe();
+    expect(supervisor.requests.at(-1)).toEqual({
+      method: "events.unsubscribe",
+      params: { sub: subscription.sub },
+    });
+    client.close();
+  });
+
   it("取消订阅会通知管理进程，之后同一个 sub 的事件不再交给监听者", async () => {
     const { client, supervisor } = await connected();
     const seen: ClientEvent[] = [];

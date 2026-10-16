@@ -67,9 +67,26 @@
     "value": "用户给的语言值，原样显示",
     "source": "值来自哪里：flag、env 或 saved；用 select 选词"
   },
+  "cli.rm.trashed.body": {
+    "name": "项目名称，原样显示",
+    "path": "项目原来所在文件夹的绝对路径，原样显示"
+  },
   "cli.skillInstall.installed.body": {
     "target": "claude 或 agents；用 select 选词",
     "path": "写入的 SKILL.md 绝对路径，原样显示"
+  },
+  "cli.status.item.body": {
+    "name": "项目名称，原样显示",
+    "state": "运行状态（已按当前语言挑选的文字）",
+    "url": "地址，原样显示；没有时是 none",
+    "missing": "yes 或 no；yes 时加“找不到文件夹”标记"
+  },
+  "cli.status.summary.body": {
+    "count": "运行中的个数"
+  },
+  "cli.stop.stopped.body": {
+    "name": "项目名称，原样显示",
+    "runId": "运行 id，原样显示"
   },
   "cli.templateLint.failed.body": {
     "template": "模板标识，原样显示"

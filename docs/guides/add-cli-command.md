@@ -5,7 +5,7 @@
 ## 何时用
 
 - 要给 `runyard` 加一条命令或子命令，或给已有命令加选项
-- 要让一条只有声明的命令（`new`、`run`、`stop`、`status`、`logs`、`rm`、`doctor`、`template …`、`skill install`）有行为
+- 要让一条只有声明的命令（`new`、`run`、`doctor`、`template …`、`skill install`）有行为
 
 ## 步骤
 

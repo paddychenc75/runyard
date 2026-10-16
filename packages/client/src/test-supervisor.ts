@@ -215,7 +215,8 @@ export class TestSupervisor {
         if (closing) void this.stop();
         return;
       }
-      case "events.subscribe": {
+      case "events.subscribe":
+      case "logs.follow": {
         const sub = this.#nextSub++;
         const events = (this.#options.eventsRightAfterSubscribe ?? []).map((e) =>
           encodeLine({ t: "evt", sub, ...e }),
