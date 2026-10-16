@@ -13,6 +13,8 @@
 | `pnpm test:process` | 只跑进程阶段；可加 `--filter <包名>` | 改了平台层、起进程的代码，或复现进程测试的问题 |
 | 结束回复时的钩子 | 只跑 `tsc -b` 和 `pnpm check`，不跑测试。不通过就让智能体继续修；超过 90 秒放行并提示 | 自动运行（Claude Code），脚本是 `tooling/hooks/on-stop.ts` |
 
+“受影响的包”只按包目录里的文件算，看不到包外的 `templates/`。读模板数据的包（现在是 `@runyard/core`、`@runyard/supervisor`、`runyard`）靠两处保证不漏：它们的 `packages/<包>/turbo.json` 把 `templates/**` 列为测试任务的输入（模板变了缓存就失效，不会拿旧结果放行）；`tooling/scripts/run-tests.ts` 在 `--affected` 且对比 `main` 发现 `templates/` 有改动时，另跑这些包（清单在 `tooling/scripts/template-readers.ts`，新增读 `templates/` 的包必须登记，测试会核对）。CI 跑全部包的测试，所以 CI 与本地结果一致。
+
 `pnpm verify` 不含两个测试阶段以外的慢测试；两个阶段的划分和进程阶段的时间预算见 `docs/guides/testing.md`；模板冒烟测试和端到端测试随对应的包加入时，在这里各加一行。
 
 ## 单项
