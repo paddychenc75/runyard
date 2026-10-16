@@ -1,5 +1,6 @@
 import type { Owner, RunSnapshot } from "@runyard/protocol";
-import { type Run, RunSession } from "./run-session.ts";
+import type { Run } from "./run-handle.ts";
+import { RunSession } from "./run-session.ts";
 import { isActiveState } from "./run-transitions.ts";
 import type { RunEngineDeps, StartRequest } from "./run-types.ts";
 
@@ -25,16 +26,21 @@ export class RunEngine {
 
   start(request: StartRequest): StartResult {
     const existing = this.#current.get(request.playgroundId);
-    // 登记是同步的：并发的两个启动请求里，后到的一定看见先到的（规格 RUN-LIFECYCLE-13）
-    if (existing !== undefined && isActiveState(existing.state)) {
+    // 登记是同步的：并发的两个启动请求里，后到的一定看见先到的（规格 RUN-LIFECYCLE-13）。
+    // 上一次正在 stopping 不算“正在运行”：负责人的决定是等它停完再起新的（CLI-COMMANDS-78、-79），
+    // 不再沿用 RUN-LIFECYCLE-12 旧写法里“对 stopping 也返回现有运行”（议题 #73）
+    if (existing !== undefined && isActiveState(existing.state) && existing.state !== "stopping") {
       return { run: existing, snapshot: { ...existing.snapshot(), alreadyRunning: true } };
     }
+    const afterStop = existing?.state === "stopping" ? existing.stop() : undefined;
     this.#counter += 1;
     const runId = this.#deps.newRunId?.() ?? `run-${this.#counter}`;
-    const session = new RunSession(runId, request, {
-      deps: this.#deps,
-      runningCount: () => this.runningCount(),
-    });
+    const session = new RunSession(
+      runId,
+      request,
+      { deps: this.#deps, runningCount: () => this.runningCount() },
+      afterStop,
+    );
     this.#runs.set(runId, session);
     this.#current.set(request.playgroundId, session);
     session.begin();

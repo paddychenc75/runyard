@@ -1,11 +1,13 @@
 import type { AbsPath, Disposable, Env, Platform } from "@runyard/platform";
 import type {
+  ErrorCause,
   EventData,
   FailureReason,
   LogEntry,
   Owner,
   PortFallback,
   RunKind,
+  RunnerReady,
   RunSnapshot,
   RunyardError,
 } from "@runyard/protocol";
@@ -48,6 +50,10 @@ export type RunPlan = {
   readonly port?: number;
   readonly url?: string;
   readonly portFallback?: PortFallback;
+  /** 怎样算就绪；没有就绪判断的（页面）启动后立刻就绪 */
+  readonly ready?: RunnerReady;
+  /** 就绪之前进程退出时，按输出特征归类（如缺运行库）；返回 undefined 表示按 RUN_FAILED */
+  readonly startupFailure?: (cause: ErrorCause) => RunyardError<FailureReason> | undefined;
   /** Go 的单独临时目录（GOTMPDIR）：停止后删除 */
   readonly tempDir?: AbsPath;
   /** `static` 运行没有子进程：由管理进程托管，引擎只负责在停止时释放 */
@@ -77,6 +83,8 @@ export type ReadinessContext = {
   readonly runId: string;
   readonly plan: RunPlan;
   readonly signal: AbortSignal;
+  /** 订阅这次运行之后的日志条目（`ready.log` 看输出）；返回取消订阅的函数 */
+  onLine(listener: (entry: LogEntry) => void): () => void;
 };
 
 export type ReadinessProbe = {
@@ -85,12 +93,15 @@ export type ReadinessProbe = {
 
 export type RunStateEvent = EventData<"run.state">;
 export type RunExitEvent = EventData<"run.exit">;
+export type RunPortEvent = EventData<"run.port">;
 
 /** 接缝：事件出口。supervisor 把它们接到订阅者和日志存储上 */
 export type RunSinks = {
   state(event: RunStateEvent): void;
   log(runId: string, entry: LogEntry): void;
   exit?(event: RunExitEvent): void;
+  /** 登记的端口被占用或被保留，本次改用别的端口（规格 RUN-PORTS-06） */
+  port?(event: RunPortEvent): void;
   /** starting 超过 slowAfterMs 仍未就绪：状态不变，只通知一次 */
   slow?(snapshot: RunSnapshot): void;
 };
