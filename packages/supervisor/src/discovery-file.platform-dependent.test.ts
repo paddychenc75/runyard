@@ -6,7 +6,7 @@ import { createPlatformDiscoveryStore, discoveryFilePath } from "./discovery-fil
 import { makeShortHome, platformAt } from "./process-harness.test.ts";
 
 const sample = {
-  formatVersion: 1 as const,
+  formatVersion: 2 as const,
   pid: 4242,
   startedAt: 1_700_000_000_000,
   endpoint: "/tmp/x.sock",

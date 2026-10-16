@@ -10,7 +10,9 @@ import { runIdSchema } from "./run-snapshot.ts";
 // ~/.runyard/run/ 下的两种文件（storage.md 2.4）。都是整个重写、不做读改写，
 // 所以未知字段不保留（默认的 strip）：这两个文件只在一台机器、一个管理进程生命周期内有意义。
 
-export const SUPERVISOR_FILE_VERSION = 1;
+// v2 加了 processStart。v1 到 v2 的升级不补这个字段：旧文件里没有，谁也编不出来，
+// 读的一方遇到缺失就退回只比 pid（见 processStart 的说明）
+export const SUPERVISOR_FILE_VERSION = 2;
 
 // 握手口令：32 字节随机数，小写十六进制（协议文档第 2 节）
 export const supervisorTokenSchema = z.string().regex(/^[0-9a-f]{64}$/);
@@ -23,6 +25,10 @@ export const supervisorFileSchema = z.object({
   formatVersion: z.literal(SUPERVISOR_FILE_VERSION),
   pid: z.number().int().positive(),
   startedAt: timestampSchema,
+  // 操作系统给出的管理进程启动时间，platform 的 identity().startTime 原样。pid 会被系统复用，
+  // 客户端靠 pid 加它确认“还是不是那个管理进程”。v1 升上来的文件和取不到启动时间的写入方没有它，
+  // 这时只能退回只比 pid
+  processStart: z.number().int().nonnegative().optional(),
   endpoint: z.string().min(1).describe("连接点：socket 路径（以后是命名管道名）"),
   token: supervisorTokenSchema,
   protocol: protocolVersionSchema,
@@ -41,7 +47,7 @@ export const supervisorFileFormat = defineFileFormat({
   name: "supervisor.json",
   currentVersion: SUPERVISOR_FILE_VERSION,
   schema: supervisorFileSchema,
-  migrations: {},
+  migrations: { 1: (old) => old },
   recovery: "discard",
 });
 

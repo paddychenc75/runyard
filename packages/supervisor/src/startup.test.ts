@@ -20,13 +20,25 @@ describe("启动", () => {
     expect(await client.request("ping")).toMatchObject({ ok: true });
   });
 
+  it("发现文件带上管理进程自己的启动时间；平台取不到时不写这个字段", async () => {
+    world = new World();
+    const self = world.fake.processes.addForeign({ pid: process.pid });
+    await world.start();
+    expect(world.discovery.file?.processStart).toBe(self.startTime);
+    world.fake.processes.exit(self);
+    await world.dispose();
+    world = new World();
+    await world.start();
+    expect(world.discovery.file).not.toHaveProperty("processStart");
+  });
+
   it("[SUPERVISOR-LIFECYCLE-11] 监听完成后发现文件写好，含进程号、连接点、口令、版本、构建标识、启动者和可执行文件", async () => {
     world = new World();
     const handle = await world.start({ host: "electron", execPath: "/Applications/Runyard.app/x" });
     const file = world.discovery.file;
     expect(supervisorFileSchema.safeParse(file).success).toBe(true);
     expect(file).toMatchObject({
-      formatVersion: 1,
+      formatVersion: 2,
       pid: process.pid,
       endpoint: world.fake.platform.ipc.endpoint(),
       token: handle.token,
