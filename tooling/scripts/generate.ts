@@ -4,6 +4,12 @@ import { z } from "zod";
 import { buildMessagesTypes } from "../../packages/i18n/build/build.ts";
 import { renderStrings } from "../../packages/i18n/build/render-strings.ts";
 import * as protocol from "../../packages/protocol/src/index.ts";
+import {
+  buildTokens,
+  replaceDocBlock as replaceTokensDoc,
+  DOC_FILE as TOKENS_DOC,
+  GENERATED_FILES as TOKENS_FILES,
+} from "../../packages/tokens/build/build.ts";
 import { fallbackLocale, readCatalogs, sourceLocale } from "../checks/i18n-catalogs.ts";
 import { formatJson } from "./format-json.ts";
 import { type ProtocolDefs, renderCodes, renderProtocol } from "./render-reference.ts";
@@ -16,6 +22,8 @@ import { type ProtocolDefs, renderCodes, renderProtocol } from "./render-referen
 //    写模板的人和编辑器用它；以 zod 为准，这里只是从它推出来。
 // 4. 国际化：packages/i18n/generated/messages.d.ts（键和参数类型，来自中文文案）和 docs/reference/strings.md
 //    （一行一个键的文案对照表，来自 locales/）。pnpm i18n:build 只生成前者；pnpm generate 两个都生成。
+// 5. 设计变量：packages/tokens/generated/ 下的 tokens.css、tokens.ts、editor-themes.ts，
+//    和 docs/design/tokens.md 里两个标记之间的表格，来自 packages/tokens/src/tokens.json。pnpm tokens:build 做同样的事。
 // generated-fresh 检查（tooling/checks/generated-fresh.ts）用同一份代码核对生成物是否最新。
 
 const LAYERS_FILE = "tooling/checks/layers.json";
@@ -109,6 +117,23 @@ function wholeFile(root: string, path: string, content: string): GeneratedFile {
   return { path, content, fresh, whole: true };
 }
 
+function tokensFiles(root: string): GeneratedFile[] {
+  const out = buildTokens(join(root, "packages/tokens"));
+  const doc = readFileSync(join(root, TOKENS_DOC), "utf8");
+  const content = replaceTokensDoc(doc, out.docTables);
+  if (content === undefined) {
+    throw new Error(
+      `${TOKENS_DOC} 里找不到 generated:tokens 的开始和结束标记。把这两行加回去再运行 pnpm generate。`,
+    );
+  }
+  return [
+    wholeFile(root, `packages/tokens/${TOKENS_FILES.css}`, out.css),
+    wholeFile(root, `packages/tokens/${TOKENS_FILES.ts}`, out.ts),
+    wholeFile(root, `packages/tokens/${TOKENS_FILES.editor}`, out.editor),
+    { path: TOKENS_DOC, content, fresh: content === doc, whole: false },
+  ];
+}
+
 // 算出每个带生成内容的文件应有的全文；不写盘
 export function generate(root: string, defs: ProtocolDefs = protocolDefs): GeneratedFile[] {
   return [
@@ -128,6 +153,7 @@ export function generate(root: string, defs: ProtocolDefs = protocolDefs): Gener
       "docs/reference/strings.md",
       renderStrings(readCatalogs(root), sourceLocale, fallbackLocale),
     ),
+    ...tokensFiles(root),
   ];
 }
 

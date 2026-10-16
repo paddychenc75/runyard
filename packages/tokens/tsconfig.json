@@ -1,0 +1,10 @@
+{
+  "extends": "../../tooling/tsconfig/neutral.json",
+  "compilerOptions": {
+    "outDir": "../../.tsbuild/tokens",
+    "tsBuildInfoFile": "../../.tsbuild/tokens/tsconfig.tsbuildinfo",
+    "rootDir": "."
+  },
+  "include": ["src/**/*.ts", "generated/**/*.ts"],
+  "references": [{ "path": "./tsconfig.build.json" }]
+}

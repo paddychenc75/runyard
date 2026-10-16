@@ -1,0 +1,20 @@
+{
+  "name": "@runyard/tokens",
+  "version": "0.0.0",
+  "private": true,
+  "description": "设计变量：tokens.json 是唯一来源，生成 CSS 变量、TS 常量、编辑器配色",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens.css": "./generated/tokens.css"
+  },
+  "scripts": {
+    "build": "node build/build.ts",
+    "test": "vitest run --project unit",
+    "test:process": "vitest run --project process --passWithNoTests"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "vitest": "catalog:"
+  }
+}

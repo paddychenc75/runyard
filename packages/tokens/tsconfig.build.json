@@ -1,0 +1,9 @@
+{
+  "extends": "../../tooling/tsconfig/node.json",
+  "compilerOptions": {
+    "outDir": "../../.tsbuild/tokens-build",
+    "tsBuildInfoFile": "../../.tsbuild/tokens-build/tsconfig.tsbuildinfo",
+    "rootDir": "."
+  },
+  "include": ["build/**/*.ts"]
+}
