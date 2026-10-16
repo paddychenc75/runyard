@@ -1,0 +1,9 @@
+{
+  "formatVersion": 1,
+  "id": "static",
+  "kind": "static",
+  "needs": [],
+  "preview": { "type": "web", "path": "/" },
+  "watch": { "mode": "none" },
+  "stop": { "mode": "graceful", "graceMs": 2000 }
+}
