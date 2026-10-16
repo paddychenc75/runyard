@@ -274,4 +274,50 @@ describe("页面", () => {
     await stopRun(h, run);
     expect(disposed).toBe(true);
   });
+  it("[TEMPLATES-RUNNERS-08] 页面服务开始监听之后才算就绪；监听还没完成就停止，会释放它而不进入就绪", async () => {
+    const gate: { release?: () => void } = {};
+    let disposed = false;
+    const fire = () => gate.release?.();
+    const h = createPrepareHarness({
+      registeredPort: 7100,
+      runner: {
+        ...serverRunner,
+        id: "static-page",
+        kind: "static",
+        run: undefined,
+        setup: undefined,
+        ready: undefined,
+      },
+      requires: {},
+      serve: () => async () => {
+        await new Promise<void>((resolve) => {
+          gate.release = resolve;
+        });
+        return {
+          dispose: async () => {
+            disposed = true;
+          },
+        };
+      },
+    });
+    const first = h.engine.start(h.request({ kind: "static" })).run;
+    await h.advance(100);
+    expect(first.state).not.toBe("ready");
+    fire();
+    await h.advance(100);
+    expect(first.state).toBe("ready");
+    await stopRun(h, first);
+    expect(disposed).toBe(true);
+
+    disposed = false;
+    gate.release = undefined;
+    const second = h.engine.start(h.request({ kind: "static" })).run;
+    await h.advance(100);
+    const stopping = second.stop();
+    fire();
+    await h.advance(100);
+    await stopping;
+    expect(disposed).toBe(true);
+    expect(second.state).not.toBe("ready");
+  });
 });

@@ -271,14 +271,18 @@ export class RunSession implements Run {
     return true;
   }
 
+  // 先监听、再进 starting：静态页面没有就绪探测，进了 starting 就立刻 ready，
+  // 那时端口必须已经能连上（规格 TEMPLATES-RUNNERS-08）
   async #launchStatic(plan: RunPlan): Promise<void> {
-    this.#enterStarting(plan);
     try {
       const served = await plan.serve?.();
       if (served !== undefined) this.#served = served;
     } catch (error) {
       await this.#finishFailed(internalFailure(this.request.name, error));
+      return;
     }
+    if (this.#state === "stopping") return; // 停止流程会释放页面服务
+    this.#enterStarting(plan);
   }
 
   #enterStarting(plan: RunPlan): void {
