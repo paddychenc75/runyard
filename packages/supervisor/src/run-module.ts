@@ -11,6 +11,7 @@ import {
   RunEngine,
   type RunExitEvent,
   type RunPreparer,
+  type RunSpawnedEvent,
   type RunStateEvent,
   readToolDefinitions,
   ScriptRuns,
@@ -49,6 +50,8 @@ export interface RunObserver {
   exit?(event: RunExitEvent): void;
   /** 运行产生的每一条日志（含系统提示），run.log 事件只经 logs.follow 推送 */
   log?(runId: string, entry: LogEntry): void;
+  /** 进程起来了（含重新加载换的新进程）：崩溃清理据此写运行记录（#42） */
+  spawned?(event: RunSpawnedEvent): void;
 }
 
 export interface RunModuleOptions {
@@ -154,6 +157,7 @@ export function createRunModule(api: SupervisorApi, options: RunModuleOptions): 
         observer.exit?.(event);
       },
       port: (event) => api.publish("run.port", event),
+      spawned: (event) => observer.spawned?.(event),
     },
   });
 

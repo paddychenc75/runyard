@@ -4,9 +4,10 @@ import { absPath } from "@runyard/platform";
 import type { Owner, RunSnapshot } from "@runyard/protocol";
 import type { ProcessBehavior } from "@runyard/testing";
 import { expect, it } from "vitest";
+import { composeExtensions } from "./compose-extensions.ts";
 import { LibraryWorld, Pump } from "./library-harness.test.ts";
-import { createLogModule, type LogModule } from "./log-module.ts";
-import { createRunModule, type RunModule, type RunModuleOptions } from "./run-module.ts";
+import type { LogModule } from "./log-module.ts";
+import type { RunModule, RunModuleOptions } from "./run-module.ts";
 import type { Session } from "./session.ts";
 import type { SupervisorHandle } from "./supervisor-options.ts";
 
@@ -115,32 +116,28 @@ export class RunWorld extends LibraryWorld {
     this.handle = await this.world.start({
       log: (line) => this.logs.push(line),
       extend: (api) => {
-        if (this.withLogs) {
-          this.logModule = createLogModule(api, {
-            playgroundOf: (runId) => this.module.engine.get(runId)?.request.playgroundId,
-            stateOf: (playgroundId) => this.module.engine.current(playgroundId)?.state,
-          });
-        }
-        this.module = createRunModule(api, {
+        const composed = composeExtensions(api, {
           templateData: {
             runnersDir: runners,
             toolsDir: absPath(join("/app/templates", "tools")),
           },
-          preparer: this.preparer,
-          readiness: this.readiness,
-          observer: {
-            mentioned: (run: { runId: string }, session: Session | undefined) =>
-              void this.mentions.push(`${run.runId}:${session?.info?.kind ?? "-"}`),
-            ...(this.withLogs ? this.logModule.observer : {}),
+          appVersion: "0.0.0-test",
+          log: (line) => this.logs.push(line),
+          run: {
+            preparer: this.preparer,
+            readiness: this.readiness,
+            observer: {
+              mentioned: (run: { runId: string }, session: Session | undefined) =>
+                void this.mentions.push(`${run.runId}:${session?.info?.kind ?? "-"}`),
+            },
+            ...this.moduleOptions,
           },
-          ...this.moduleOptions,
         });
+        this.module = composed.run;
+        this.logModule = composed.logs;
         return {
-          ...this.module,
-          ...(this.withLogs
-            ? { handlers: { ...this.module.handlers, ...this.logModule.handlers } }
-            : {}),
-          library: { ...this.seams(), ...seams, runs: this.module.runs },
+          ...composed.extensions,
+          library: { ...this.seams(), ...seams, runs: composed.run.runs },
         };
       },
     });

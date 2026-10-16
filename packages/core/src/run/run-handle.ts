@@ -1,5 +1,5 @@
 import type { LogEntry, Owner, RunSnapshot, RunState, RunyardError } from "@runyard/protocol";
-import type { StartRequest } from "./run-types.ts";
+import type { StartRequest, StopOptions } from "./run-types.ts";
 
 export type StdinOutcome = "written" | "closed" | "unsupported";
 
@@ -16,8 +16,11 @@ export type Run = {
   setOwner(owner: Owner): void;
   /** 到达 states 之一，或者运行已经结束（不会再变）时返回当时的快照 */
   waitFor(states: readonly RunState[]): Promise<RunSnapshot>;
-  /** 对已经结束的运行原样返回；停止中再停止返回同一个结果 */
-  stop(): Promise<RunSnapshot>;
+  /**
+   * 对已经结束的运行原样返回；停止中再停止返回同一个结果（先到的那次说了算，包括停止原因）。
+   * `idle` 表示管理进程因空闲而停止（规格 RUN-OWNERSHIP-09）：日志里记 IDLE_STOPPED，run.exit 带 reason: 'idle'
+   */
+  stop(options?: StopOptions): Promise<RunSnapshot>;
   /** 接缝：由应用负责重启的服务在保存文件时用（ready ⇄ reloading），驱动者是 supervisor */
   beginReload(): void;
   endReload(): void;

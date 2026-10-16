@@ -9,6 +9,7 @@ import type {
   ReadinessProbe,
   RunExitEvent,
   RunPlan,
+  RunSpawnedEvent,
   RunStateEvent,
   StartRequest,
 } from "./run-types.ts";
@@ -34,6 +35,7 @@ export function createHarness(options: HarnessOptions = {}) {
   const logs: { runId: string; entry: LogEntry }[] = [];
   const exits: RunExitEvent[] = [];
   const slows: RunSnapshot[] = [];
+  const spawned: RunSpawnedEvent[] = [];
   const removed: AbsPath[] = [];
 
   // 就绪探测：每 100 毫秒看一次计划里的端口，被占用就是就绪（和 #36 的 port 探测同样的做法）
@@ -72,6 +74,7 @@ export function createHarness(options: HarnessOptions = {}) {
       log: (runId, entry) => logs.push({ runId, entry }),
       exit: (event) => exits.push(event),
       slow: (snapshot) => slows.push(snapshot),
+      spawned: (event) => spawned.push(event),
     },
     preparer: {
       prepare: (context) =>
@@ -97,7 +100,7 @@ export function createHarness(options: HarnessOptions = {}) {
   const script = (behavior: ProcessBehavior, argv: readonly string[] = serverArgv) =>
     fake.processes.when(argv, behavior);
 
-  return { fake, engine, states, logs, exits, slows, removed, request, settle, script };
+  return { fake, engine, states, logs, exits, slows, spawned, removed, request, settle, script };
 }
 
 it("现场：启动请求把计划里的参数原样交给平台，并带运行标记", async () => {

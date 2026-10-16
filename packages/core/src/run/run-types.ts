@@ -1,4 +1,4 @@
-import type { AbsPath, Disposable, Env, Platform } from "@runyard/platform";
+import type { AbsPath, Disposable, Env, Platform, ProcRef } from "@runyard/platform";
 import type {
   ErrorCause,
   EventData,
@@ -9,6 +9,7 @@ import type {
   RunKind,
   RunnerReady,
   RunSnapshot,
+  RunState,
   RunyardError,
 } from "@runyard/protocol";
 import type { RunClock } from "./run-clock.ts";
@@ -26,6 +27,11 @@ export type RunStopSpec = {
 
 export const DEFAULT_GRACE_MS = 2000;
 export const DEFAULT_SLOW_AFTER_MS = 30_000;
+
+/** 停止的原因。缺省是用户（或应用）要求停止 */
+export type StopOptions = {
+  readonly idle?: { readonly minutes: number };
+};
 
 /** 启动请求：调用方（supervisor）已经知道项目和运行器种类 */
 export type StartRequest = {
@@ -95,11 +101,33 @@ export type RunStateEvent = EventData<"run.state">;
 export type RunExitEvent = EventData<"run.exit">;
 export type RunPortEvent = EventData<"run.port">;
 
+/** 进程刚起来（含重新加载后换的新进程）：管理进程据此写运行记录，崩溃后凭它核对身份（#42） */
+export type RunSpawnedEvent = {
+  readonly runId: string;
+  readonly request: StartRequest;
+  readonly owner: Owner;
+  readonly ref: ProcRef;
+  readonly plan: RunPlan;
+  readonly state: RunState;
+  readonly startedAt: number;
+};
+
+/** 崩溃后清理出来的一次运行的事实（来自上次留下的运行记录） */
+export type CrashedRunInput = {
+  readonly runId: string;
+  readonly request: StartRequest;
+  readonly plan: RunPlan;
+  readonly pid: number;
+  readonly startedAt: number;
+  readonly endedAt: number;
+};
+
 /** 接缝：事件出口。supervisor 把它们接到订阅者和日志存储上 */
 export type RunSinks = {
   state(event: RunStateEvent): void;
   log(runId: string, entry: LogEntry): void;
   exit?(event: RunExitEvent): void;
+  spawned?(event: RunSpawnedEvent): void;
   /** 登记的端口被占用或被保留，本次改用别的端口（规格 RUN-PORTS-06） */
   port?(event: RunPortEvent): void;
   /** starting 超过 slowAfterMs 仍未就绪：状态不变，只通知一次 */

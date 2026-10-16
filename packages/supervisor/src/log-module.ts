@@ -4,6 +4,7 @@ import type { HandlerMap } from "./dispatch.ts";
 import { createLogHandlers } from "./log-handlers.ts";
 import { RunLogService } from "./run-log-service.ts";
 import type { RunObserver } from "./run-module.ts";
+import type { Session } from "./session.ts";
 import type { SupervisorApi } from "./supervisor-api.ts";
 
 // 日志的装配（#43）：给运行编排一个 `RunObserver.log`，给方法分发 logs.read|follow|clear。
@@ -12,6 +13,8 @@ import type { SupervisorApi } from "./supervisor-api.ts";
 export interface LogModuleOptions {
   playgroundOf(runId: string): string | undefined;
   stateOf(playgroundId: string): RunState | undefined;
+  /** 命令行读或跟随了这个项目的日志（空闲停止把它算作活动） */
+  onMention?(playgroundId: string, session: Session): void;
 }
 
 export interface LogModule {
@@ -32,7 +35,7 @@ export function createLogModule(api: SupervisorApi, options: LogModuleOptions): 
   return {
     service,
     observer: { log: (runId, entry) => service.record(runId, entry) },
-    handlers: createLogHandlers(api, service),
+    handlers: createLogHandlers(api, service, options.onMention),
     flush: () => service.flush(),
   };
 }
