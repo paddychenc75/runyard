@@ -98,22 +98,41 @@ export async function installIsCurrent(
   return stampMatches(platform, folder, setup, hash);
 }
 
+// pnpm 在没有终端时要确认清空 node_modules（来自别的包管理器、仓库位置或虚拟存储目录变了）：
+// 它按 ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY 退出并提示设 CI 或 confirmModulesPurge。
+// 规格 TEMPLATES-RUNNERS-16 要求带下面的参数只重试一次，不设 CI（CI 会改变别的行为）。
+// 这是 pnpm 专有的已知情况，不进运行器格式；第二次仍失败按原来的方式报告。
+const PNPM_PURGE_NO_TTY = "ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY";
+const PNPM_PURGE_RETRY_ARG = "--config.confirmModulesPurge=false";
+
+async function runInstall(input: InstallInput, argv: readonly string[]) {
+  input.onEntry({ at: input.clock.now(), kind: "command", text: argv.join(" ") });
+  return runCommand({
+    platform: input.platform,
+    clock: input.clock,
+    argv,
+    cwd: input.folder,
+    env: input.env,
+    signal: input.signal,
+    onEntry: input.onEntry,
+  });
+}
+
 export async function installDependencies(input: InstallInput): Promise<InstallOutcome> {
   const { platform, setup, folder, variant } = input;
   // 哈希在安装之前算：安装期间 lock 文件被改写，下次就会因为哈希不同而再装一次，而不是漏装
   const hash = await hashInstallInputs(platform, folder, setup.inputs, variant);
   if (await stampMatches(platform, folder, setup, hash)) return { status: "skipped" };
 
-  input.onEntry({ at: input.clock.now(), kind: "command", text: input.argv.join(" ") });
-  const result = await runCommand({
-    platform,
-    clock: input.clock,
-    argv: input.argv,
-    cwd: folder,
-    env: input.env,
-    signal: input.signal,
-    onEntry: input.onEntry,
-  });
+  let result = await runInstall(input, input.argv);
+  if (
+    variant === "pnpm" &&
+    !result.aborted &&
+    result.exitCode !== 0 &&
+    result.text.includes(PNPM_PURGE_NO_TTY)
+  ) {
+    result = await runInstall(input, [...input.argv, PNPM_PURGE_RETRY_ARG]);
+  }
   if (result.aborted) return { status: "aborted" };
   if (result.exitCode === 0 && !result.spawnFailed) {
     await writeStamp(platform, folder, setup, hash);
