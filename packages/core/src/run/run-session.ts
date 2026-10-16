@@ -11,7 +11,7 @@ import type {
 } from "@runyard/protocol";
 import { childEnv, RUN_MARKER_VAR } from "./child-env.ts";
 import { internalFailure, runFailedBeforeReady, scriptErrored } from "./run-failures.ts";
-import type { Run } from "./run-handle.ts";
+import type { Run, StdinOutcome } from "./run-handle.ts";
 import { pumpOutput, type RunOutput } from "./run-output.ts";
 import { buildSnapshot } from "./run-snapshot.ts";
 import {
@@ -147,6 +147,16 @@ export class RunSession implements Run {
       throw new IllegalTransitionError(this.request.kind, this.#state, "ready");
     }
     this.#transition("ready");
+  }
+
+  writeStdin(data: string): Promise<StdinOutcome> {
+    if (!isActiveState(this.#state) || this.#state === "stopping") return Promise.resolve("closed");
+    const stream = this.#proc?.stdin;
+    if (stream === null || stream === undefined) return Promise.resolve("unsupported");
+    return new Promise((resolve) => {
+      // 写入失败（进程刚好退出，管道已断）等于运行已经结束
+      stream.write(data, (error) => resolve(error ? "closed" : "written"));
+    });
   }
 
   markStale(checkOutput: readonly LogEntry[]): void {

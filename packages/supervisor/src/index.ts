@@ -16,7 +16,16 @@ export type { LibrarySeams, TemplateCatalog } from "./library-seams.ts";
 export { MethodFailure, methodFailure } from "./method-failure.ts";
 export { parseSupervisorArgs, type SupervisorArgs } from "./parse-args.ts";
 export { RELEASE_TIMEOUT_MS } from "./release-coordinator.ts";
+export { STOP_WAIT_LIMIT_MS } from "./run-control.ts";
 export { EXIT_ALREADY_RUNNING_LINE, runSupervisorMain } from "./run-main.ts";
+export {
+  BYE_STOP_WAIT_MS,
+  createRunModule,
+  type RunModule,
+  type RunModuleOptions,
+  type RunObserver,
+} from "./run-module.ts";
+export { DISCONNECT_GRACE_MS } from "./run-owners.ts";
 export { noRuns, type RunsView } from "./runs-view.ts";
 export type { Session, SessionCloseReason, SessionInfo } from "./session.ts";
 export {

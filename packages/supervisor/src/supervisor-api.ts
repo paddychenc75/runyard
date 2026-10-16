@@ -1,5 +1,6 @@
+import type { PlaygroundLibrary } from "@runyard/core";
 import type { Platform } from "@runyard/platform";
-import type { EventData, EventName, ShutdownReason } from "@runyard/protocol";
+import type { EventData, EventName, Settings, ShutdownReason } from "@runyard/protocol";
 import type { Session } from "./session.ts";
 import type { SupervisorClock } from "./supervisor-clock.ts";
 
@@ -15,6 +16,10 @@ export interface SupervisorApi {
    * 没有这个通知，空闲退出只会在下一次连接变化时才重新判断
    */
   notifyRunsChanged(): void;
+  /** 资源库（跟随设置里的根目录）；运行编排据此查项目、记使用 */
+  openLibrary(): Promise<PlaygroundLibrary>;
+  /** 当前设置（端口范围、工具路径等运行时要用的几项） */
+  readSettings(): Promise<Settings>;
   /** 握手完成的会话 */
   readySessions(): readonly Session[];
   /** 请管理进程退出（也是 supervisor.shutdown 走的路径）；重复调用返回同一个 Promise */

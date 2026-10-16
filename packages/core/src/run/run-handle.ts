@@ -1,6 +1,8 @@
 import type { LogEntry, Owner, RunSnapshot, RunState, RunyardError } from "@runyard/protocol";
 import type { StartRequest } from "./run-types.ts";
 
+export type StdinOutcome = "written" | "closed" | "unsupported";
+
 /** 对外的一次运行。查询、等待、停止；持有者只是一个可以改的字段，引擎不解释它 */
 export type Run = {
   readonly runId: string;
@@ -24,6 +26,11 @@ export type Run = {
    * 期间状态是 reloading，运行 id 不变；不在 ready 时什么也不做
    */
   reload(): Promise<void>;
+  /**
+   * 向进程的标准输入原样写入（规格 RUN-SCRIPTS-22、23，不补换行）。
+   * `closed`：运行已经结束，什么也没写；`unsupported`：这次运行没有开标准输入（服务，或运行器声明不接收）
+   */
+  writeStdin(data: string): Promise<StdinOutcome>;
   /** 脚本语法检查没过：保留这次运行的一切，标 stale，把检查的输出追加进它的日志 */
   markStale(checkOutput: readonly LogEntry[]): void;
 };
