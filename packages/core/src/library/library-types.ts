@@ -34,6 +34,8 @@ export interface PlaygroundSeed {
   readonly template: Playground["template"];
   readonly runner: string;
   readonly requires: Readonly<Record<string, string>>;
+  /** 模板 requires 里的 install，原样存进 playground.json；没有就不给 */
+  readonly requiresInstall?: PlaygroundFile["requiresInstall"];
   readonly toolchainAtCreate: Readonly<Record<string, string>>;
   readonly packageManager?: PlaygroundFile["packageManager"];
   readonly entry?: PlaygroundFile["entry"];

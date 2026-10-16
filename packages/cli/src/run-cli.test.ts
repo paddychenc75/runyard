@@ -120,6 +120,28 @@ describe("--json 输出", () => {
     }
   });
 
+  it("[TEMPLATES-CUSTOM-21] 缺工具带项目自己的安装方式：中英文提示都展示，--json 的 data 原样给出", async () => {
+    const params = {
+      tool: "zig",
+      required: ">=0.14",
+      name: "demo",
+      installCommand: "brew install zig",
+      installUrl: "https://ziglang.org/download/",
+    };
+    const failing = async () => {
+      throw cliError("TOOL_MISSING", params);
+    };
+    const h = harness({ handlers: { run: failing } });
+    const json = await h.run(["run", "demo", "--json"]);
+    const error = h.json(json).error as { data: unknown; hint: string };
+    expect(error.data).toEqual(params);
+    expect(error.hint).toContain("brew install zig");
+    expect(error.hint).toContain("https://ziglang.org/download/");
+    const chinese = (await h.run(["run", "demo", "--lang", "zh-CN"])).stderr;
+    expect(chinese).toContain("brew install zig");
+    expect(chinese).toContain("https://ziglang.org/download/");
+  });
+
   it("[CLI-COMMANDS-05] 缺少必需的参数立即以 USAGE 结束，不读标准输入", async () => {
     // 调用入口根本没有标准输入这个参数；永不结束的管道在进程阶段的测试里验证
     const h = harness();

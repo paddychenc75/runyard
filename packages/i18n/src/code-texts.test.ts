@@ -34,7 +34,12 @@ const errorExamples: { [C in ErrorCode]: ErrorParams<C> } = {
   TEMPLATE_INVALID: { template: "hello" },
   FOLDER_MISSING: { name: "vue-drag-list" },
   RUN_NOT_FOUND: { runId: "r_8f3a" },
-  TOOL_MISSING: { tool: "go", required: ">=1.22 <2" },
+  TOOL_MISSING: {
+    tool: "go",
+    required: ">=1.22 <2",
+    installCommand: "brew install go",
+    installUrl: "https://go.dev/dl/",
+  },
   TOOL_TOO_OLD: { tool: "node", required: ">=22.18", found: "20.11.0" },
   RUNTIME_MISSING: { tool: "python" },
   SETUP_FAILED: { name: "react19-3" },

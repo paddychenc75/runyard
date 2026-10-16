@@ -7,6 +7,7 @@ import type {
   ToolCheck,
 } from "@runyard/protocol";
 import type { ToolProbe } from "./detect-tool.ts";
+import { installHintParams } from "./install-hint-params.ts";
 import { judgeVersion } from "./version-compare.ts";
 
 // 把“找到了什么”对照模板的 requires 判定（规格 TOOLCHAIN-DETECTION-03、08、09、10）。纯函数，不碰平台。
@@ -82,6 +83,7 @@ export function evaluateRequirements(
         tool,
         required: requirement.version,
         found: check.version as string,
+        ...installHintParams(requirement.install),
       };
       errors.push({
         code: "TOOL_TOO_OLD",
@@ -108,7 +110,11 @@ export function evaluateRequirements(
       } else {
         errors.push({
           code: "TOOL_MISSING",
-          params: { tool, required: requirement.version },
+          params: {
+            tool,
+            required: requirement.version,
+            ...installHintParams(requirement.install),
+          },
           debug: `${tool} was not found (version command failed or printed no version)`,
         });
       }

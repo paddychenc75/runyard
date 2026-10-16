@@ -87,8 +87,8 @@ type LogEntry =
 | 3 | `PLAYGROUND_NOT_FOUND`、`FOLDER_MISSING` | `{ name }` |
 | 3 | `RUN_NOT_FOUND` | `{ runId }`（按 `runId` 找不到运行：`run.stop` `run.get` `run.adopt` `run.attach` `run.detach`；#19 补） |
 | 3 | `TEMPLATE_NOT_FOUND` | `{ template }` |
-| 4 | `TOOL_MISSING` | `{ tool, required }` |
-| 4 | `TOOL_TOO_OLD` | `{ tool, required, found }` |
+| 4 | `TOOL_MISSING` | `{ tool, required, name?, installCommand?, installUrl? }` |
+| 4 | `TOOL_TOO_OLD` | `{ tool, required, found, name?, installCommand?, installUrl? }` |
 | 4 | `RUNTIME_MISSING` | `{ tool }` |
 | 5 | `SETUP_FAILED`、`DEPS_OFFLINE` | `{ name }`；原始现场放 `cause` |
 | 6 | `RUN_FAILED`、`SCRIPT_ERRORED` | `{ name }`；原始现场放 `cause` |

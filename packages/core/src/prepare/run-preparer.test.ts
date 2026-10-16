@@ -32,6 +32,24 @@ describe("工具检查与安装", () => {
     expect(h.stateNames()).toEqual(["checking", "failed"]);
   });
 
+  it("[TEMPLATES-CUSTOM-21] 项目自带的安装方式出现在 TOOL_MISSING 的参数里，应用没有执行它", async () => {
+    const h = createPrepareHarness({
+      tools: ["node", "pnpm", "npm"],
+      requires: {
+        ...serverRequires,
+        zig: { version: ">=0.14", install: { command: ["brew", "install", "zig"] } },
+      },
+    });
+    h.fake.processes.when(installArgv, installOk);
+    const { run } = h.engine.start(h.request());
+    await h.advance(100);
+    expect(run.error()).toMatchObject({
+      code: "TOOL_MISSING",
+      params: { tool: "zig", required: ">=0.14", installCommand: "brew install zig" },
+    });
+    expect(spawnedArgvs(h).some((line) => line.includes("brew"))).toBe(false);
+  });
+
   it("[TOOLCHAIN-DETECTION-03] 缺工具不安装；启动的子进程环境里 uv 与 Go 的自动下载被关闭", async () => {
     const h = createPrepareHarness({ tools: ["node", "pnpm", "npm"] });
     h.fake.env.runDefaults = { UV_PYTHON_DOWNLOADS: "never", GOTOOLCHAIN: "local" };

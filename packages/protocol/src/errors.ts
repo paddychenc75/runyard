@@ -35,9 +35,17 @@ export const errorRegistry = {
 
   // name 是被阻止运行的项目：命令行的提示要写出重跑命令 runyard run <名称>（规格 CLI-COMMANDS-03）。
   // 可选：只检测工具、不针对某个项目时（如 doctor）没有项目名
+  // installCommand / installUrl：项目自己（模板 requires 里的 install）写的安装方式，只展示、从不执行
+  //（规格 TEMPLATES-CUSTOM-21）。命令是给人看的一行（参数用空格连起来），--json 原样给出
   TOOL_MISSING: {
     exit: 4,
-    params: z.object({ tool: toolId, required: z.string().min(1), name: name.optional() }),
+    params: z.object({
+      tool: toolId,
+      required: z.string().min(1),
+      name: name.optional(),
+      installCommand: z.string().min(1).optional(),
+      installUrl: z.string().min(1).optional(),
+    }),
   },
   TOOL_TOO_OLD: {
     exit: 4,
@@ -46,6 +54,8 @@ export const errorRegistry = {
       required: z.string().min(1),
       found: z.string().min(1),
       name: name.optional(),
+      installCommand: z.string().min(1).optional(),
+      installUrl: z.string().min(1).optional(),
     }),
   },
   RUNTIME_MISSING: { exit: 4, params: z.object({ tool: toolId }) },

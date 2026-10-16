@@ -37,6 +37,7 @@
 | `template` | 来自哪个模板（`{ id, source: 'builtin' \| 'user', appVersion }`） |
 | `runner` | 运行器 id |
 | `requires` | 创建时从模板复制的工具与版本范围，以后抬高模板下限不影响旧项目 |
+| `requiresInstall` | 可无。创建时从模板 `requires.<工具>.install` 原样复制的安装方式（`{ <工具>: { command?: string[], url?: string } }`），只在缺工具提示里展示、从不执行。单独成字段是为了 `requires` 的值仍是版本范围字符串；它是可选新增字段，旧程序原样保留（顶层未知字段），不升 `formatVersion`、不加升级链条目 |
 | `toolchainAtCreate` | 创建时各工具的实际版本 |
 | `packageManager` | `pnpm` 或 `npm`，创建时选定后固定 |
 | `entry`、`open` | 入口文件、创建时打开的文件（`/` 分隔的相对路径） |
