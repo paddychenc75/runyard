@@ -3,7 +3,7 @@
 ## 用途
 
 工具检测、运行引擎、资源库、模板、自动清理的判断（技术设计 §3.2）。运行引擎不知道“标签页”和“命令行”是什么，持有者只是 `supervisor` 里的概念。
-现状：日志的切行、解码和读取时清洗（`src/logs/`），一次运行的状态机和进程生命周期（`src/run/`），资源库里的项目创建、命名、索引和“文件夹被动过”的判断（`src/library/`），以及工具链检测（`src/toolchain/`）。其他模块由后续 issue 各自加入。
+现状：日志的切行、解码和读取时清洗（`src/logs/`），一次运行的状态机和进程生命周期（`src/run/`），资源库里的项目创建、命名、索引和“文件夹被动过”的判断（`src/library/`），工具链检测（`src/toolchain/`），以及模板的 lint 和工具定义的读取（`src/templates/`）。其他模块由后续 issue 各自加入。
 
 ## 对外暴露什么
 
@@ -17,6 +17,7 @@
 - `expandCommand`（运行器命令占位符，参数数组，不经 shell）、`childEnv`（去掉 `ELECTRON_RUN_AS_NODE`、放运行标记 `RUNYARD_RUN_ID`）、`stopProcessTree`。
 - `PlaygroundLibrary`（`src/library/`）：`open(deps)` 读 `state/library.json`，不存在或坏了（坏文件改名留存）就从磁盘重建；`list`、`find(id 或名称)`、`requireFolder`（找不到文件夹报 `FOLDER_MISSING`）、`create(seed, request)`（默认名“模板标识加序号”、`ifExists: reuse | fail`、`PATH_NEAR_LIMIT` 提示放在结果的 `notices`）、`rescan()`（返回 `ScanReport`：`added`、`changed`、`missing`、`copied` 和 `skipped`，由 supervisor 发 `playground.*` 事件）、`relocate`。错误是 `LibraryError`（`error` 里是协议的 `RunyardError`），更新版本写的 `library.json` 或 `playground.json` 只读不写（`DATA_FROM_NEWER_VERSION`）。
 - `ToolchainService`（`src/toolchain/`）：`check({ requires, cwd?, cachedOnly? })` 返回 `ToolchainResult`（`tools: ToolCheck[]`、`errors`（`TOOL_MISSING` / `TOOL_TOO_OLD`，空表示可以运行）、`notices`（`ENV_UNRESOLVED`、`ENV_DEGRADED`、`TOOL_VERSION_UNTESTED`、`PACKAGE_MANAGER_FALLBACK`）、`fallbacks`、`envSource`）；`doctor(cwd?)`、`recheck(cwd?)`（清缓存、`env.load({ refresh: true })`、重新检测）、`warmUp(cwd?)`（应用启动时后台刷新，完成后 `onChanged`）、`snapshot()`（`ToolchainFile`，由 supervisor 写 `state/toolchain.json`）、`isCacheFresh(cwd?)`。构造参数 `ToolchainServiceDeps`：平台、时钟、`definitions`（工具定义表）、`toolPaths()`（设置里的手动路径）、`onChanged`（发 `toolchain.changed`）、`initialCache`、`onCacheChange`。
+- 模板（`src/templates/`，纯函数，文件由调用方读好交进来）：`lintTemplate({ folder, builtin, runners, knownTools, fallbackName })` 返回 `LintResult`，运行器的问题路径以 `runner.` 开头；`parseToolDefinitions(sources)` 把 `templates/tools/*.json` 读成 `{ definitions, problems }`，`definitions` 原样交给 `ToolchainService`。
 - 工具链的纯函数：`detectTool`、`extractVersion`、`evaluateRequirements`（对照 `requires` 出错误与提示，可单独用）、`toolsToDetect`、`judgeVersion` / `parseVersionNumbers`（范围比较只比范围里写了的几段）。
 - `nextDefaultName`、`createUlid` / `randomUlid`（项目 id）。
 

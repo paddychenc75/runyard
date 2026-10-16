@@ -1,0 +1,12 @@
+{
+  "formatVersion": 1,
+  "id": "go",
+  "supported": ">=1.26",
+  "detect": { "args": ["version"], "pattern": "go version go(\\d+\\.\\d+(?:\\.\\d+)?)" },
+  "install": {
+    "darwin": {
+      "url": "https://go.dev/dl/",
+      "homebrew": { "command": ["brew", "install", "go"] }
+    }
+  }
+}

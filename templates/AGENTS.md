@@ -3,7 +3,7 @@
 ## 用途
 
 随应用发布的数据文件：模板、运行器、工具定义。它们是数据，不是代码，格式的唯一出处是 `packages/protocol` 里的 zod 定义（规格 `openspec/specs/templates/format`）。
-现状：只有 `schema/`；内置模板、运行器和工具定义随后续 issue 放进来。
+现状：目录骨架和六份工具定义已有；内置模板和运行器是空的，随后续 issue 放进来。
 
 ## 对外暴露什么
 
@@ -17,8 +17,15 @@
 
 ## 子目录地图
 
+- `builtin/<id>/`：内置模板，`template.json` 加 `files/`（现在为空）。文件夹名必须等于模板 `id`。步骤见 `docs/guides/add-template.md`。
+- `runners/<id>/runner.json`：运行器（现在为空）。文件夹名必须等于运行器 `id`。步骤见 `docs/guides/add-runner.md`。
+- `tools/<tool>.json`：工具定义，node、npm、pnpm、python、uv、go。文件名必须等于 `id`；`core` 的 `parseToolDefinitions` 读成工具链检测的 `definitions`。安装命令和官网链接只展示，应用从不执行；各系统分开放在 `install.<系统>` 下，第一版只有 `darwin`。
 - `schema/template.schema.json`、`runner.schema.json`、`tool.schema.json`：**由 `pnpm generate` 从 zod 生成，不要手改**；`generated-fresh` 检查会拦住过期的。
+
+## 检查与 lint
+
+`pnpm template:lint`（也在 `pnpm check` 里，叫 `template-data`）检查 `tools/`、`runners/`、`builtin/` 三处。判定逻辑是 `@runyard/core` 的 `lintTemplate`：模板文件夹、运行器、已知工具由调用方读好交进去，返回 `LintResult`（规则见规格 templates/format）。内置模板不通过，`pnpm check` 就失败。
 
 ## 测试
 
-往返测试在 `tooling/scripts/json-schema.test.ts`：JSON Schema 与 zod 对同一批样例的结论必须一致。运行 `pnpm test --filter @runyard/tooling`。
+往返测试在 `tooling/scripts/json-schema.test.ts`：JSON Schema 与 zod 对同一批样例的结论必须一致。运行 `pnpm test --filter @runyard/tooling`。工具定义和仓库数据的测试在 `tooling/scripts/template-data.test.ts`，lint 规则的测试在 `packages/core/src/templates/`。

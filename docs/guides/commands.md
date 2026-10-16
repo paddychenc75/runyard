@@ -25,6 +25,7 @@
 | `pnpm check` | 全部仓库检查，脚本在 `tooling/checks/`，清单见 `tooling/checks/run.ts`。每条报错都写明哪里错、怎么改 |
 | `pnpm generate` | 重新生成由脚本生成的内容（根 `AGENTS.md` 里的包依赖表，`docs/reference/` 里的协议参考和文案对照表 `strings.md`，`packages/i18n/generated/messages.d.ts`）。改了 `tooling/checks/layers.json`、新建了包，改了 `packages/protocol` 里的方法、事件、错误码，或改了 `packages/i18n/locales/` 里的文案之后运行 |
 | `pnpm i18n:build` | 只从 `packages/i18n/locales/zh-CN/*.json` 生成 `packages/i18n/generated/messages.d.ts`（文案的键和参数类型）；`pnpm generate` 也会生成它，另外还生成文案对照表。改了中文文案之后运行其一 |
+| `pnpm template:lint` | 检查 `templates/` 里的工具定义、运行器和全部内置模板（每个模板一行 JSON 结果；有问题时退出码 2）。模板和运行器的写法见 `docs/guides/add-template.md`、`docs/guides/add-runner.md` |
 | `pnpm deps:lookup <包名>` | 列出一个依赖最近 10 个稳定版本、发布日期、距今天数，并查 OSV 和 GitHub 公告库。用法见 `docs/guides/add-a-dependency.md` |
 
 ## 安装

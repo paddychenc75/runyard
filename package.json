@@ -19,6 +19,7 @@
     "verify": "pnpm lint && pnpm typecheck && pnpm check && node tooling/scripts/run-tests.ts --affected",
     "deps:lookup": "node tooling/scripts/deps-lookup.ts",
     "generate": "node tooling/scripts/generate.ts",
+    "template:lint": "node tooling/scripts/template-data.ts",
     "i18n:build": "node packages/i18n/build/build.ts"
   },
   "devDependencies": {

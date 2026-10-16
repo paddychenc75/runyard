@@ -1,0 +1,13 @@
+{
+  "formatVersion": 1,
+  "id": "npm",
+  "supported": ">=0.0.0",
+  "detect": { "args": ["--version"], "pattern": "(\\d+\\.\\d+\\.\\d+)" },
+  "install": {
+    "darwin": {
+      "url": "https://nodejs.org/en/download",
+      "versionManagers": [{ "id": "nvm", "command": ["nvm", "install", "--lts"] }],
+      "homebrew": { "command": ["brew", "install", "node"] }
+    }
+  }
+}
