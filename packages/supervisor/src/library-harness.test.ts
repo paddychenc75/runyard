@@ -115,10 +115,11 @@ export class Pump {
   }
 
   async waitForEvent(name: string): Promise<unknown> {
-    for (let i = 0; i < 200; i++) {
+    // 连接上的事件走真实的 socket，到达要几个事件循环；按真实时间轮询，上限 2 秒
+    for (let i = 0; i < 400; i++) {
       const found = this.eventsOf(name);
       if (found.length > 0) return found[found.length - 1];
-      await new Promise((resolve) => setImmediate(resolve));
+      await new Promise((resolve) => setTimeout(resolve, 5));
     }
     throw new Error(`no ${name} event arrived`);
   }

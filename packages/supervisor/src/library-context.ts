@@ -1,3 +1,4 @@
+import { normalize } from "node:path";
 import { type LibraryItem, PlaygroundLibrary, type ScanReport } from "@runyard/core";
 import { absPath } from "@runyard/platform";
 import type { Playground, PlaygroundFile } from "@runyard/protocol";
@@ -56,7 +57,8 @@ export function createLibraryContext(
     async open() {
       const { libraryRoot } = await settings.get();
       if (opened === undefined || opened.rootText !== libraryRoot) {
-        const root = absPath(libraryRoot);
+        // 归一化分隔符和重复的斜杠：设置里的路径可能是手写的
+        const root = absPath(normalize(libraryRoot));
         const library = PlaygroundLibrary.open({
           root,
           platform,

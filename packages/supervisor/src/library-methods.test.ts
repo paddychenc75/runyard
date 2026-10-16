@@ -240,8 +240,6 @@ describe("更新、忘记与被动过的文件夹", () => {
     );
     await lw.start();
     const app = await lw.client();
-    for (let i = 0; i < 50 && lw.world.discovery.log.length === 0; i++)
-      await new Promise((r) => setImmediate(r));
     const all = await app.result<Pg[]>("playground.list", {});
     expect(all.map((p) => p.id)).toEqual(["OLD-ID"]);
   });

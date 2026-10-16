@@ -1,3 +1,5 @@
+import { dirname, join } from "node:path";
+import { absPath, absPath } from "@runyard/platform";
 import { afterEach, describe, expect, it } from "vitest";
 import { LibraryWorld } from "./library-harness.test.ts";
 
@@ -67,7 +69,7 @@ describe("settings.get / settings.set", () => {
     const app = await setup(() => lw.fs.writeFile(lw.settingsPath(), "{not json"));
     expect(await app.result("settings.get", {})).toMatchObject({ packageManager: "auto" });
     const kept = lw.fs
-      .list(lw.world.fake.platform.paths.stateDir)
+      .list(absPath(dirname(lw.settingsPath())))
       .filter((name) => name.includes("settings.json.corrupt-"));
     expect(kept).toHaveLength(1);
     expect(lw.fs.exists(lw.settingsPath())).toBe(false);
