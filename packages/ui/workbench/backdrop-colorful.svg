@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none" shape-rendering="crispEdges">
+  <title>工作台的彩色底图</title>
+  <rect x="0" width="25" height="100" fill="#ff7a59"/>
+  <rect x="25" width="25" height="100" fill="#3ac4a1"/>
+  <rect x="50" width="25" height="100" fill="#4d7cff"/>
+  <rect x="75" width="25" height="100" fill="#f2c14e"/>
+</svg>

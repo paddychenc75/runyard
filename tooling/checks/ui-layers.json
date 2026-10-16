@@ -1,0 +1,55 @@
+{
+  "$comment": "界面内部的层次规则，ui-layers 检查的唯一来源（技术设计 §3.3、§6.7 分层表）。按目录匹配 import 语句；包与包之间的依赖方向在 layers.json。改这个文件要说明理由并附决策记录。",
+  "forbiddenImports": [
+    {
+      "from": "packages/ui/src/primitives/",
+      "to": ["packages/ui/src/patterns/"],
+      "why": "基础组件（第 2 层）只能用设计变量和别的基础组件，不能导入组合组件（第 3 层）"
+    },
+    {
+      "from": "packages/ui/src/",
+      "to": ["apps/"],
+      "why": "通用组件包不认识应用，不能导入 apps/ 下的任何东西"
+    },
+    {
+      "from": "apps/desktop/src/renderer/features/",
+      "to": ["apps/desktop/src/renderer/app/"],
+      "why": "功能模块（第 4 层）不能导入应用外壳（第 5 层），层只能从上往下导入"
+    },
+    {
+      "from": "apps/desktop/src/renderer/shared/",
+      "to": ["apps/desktop/src/renderer/features/", "apps/desktop/src/renderer/app/"],
+      "why": "shared/ 放功能模块共用的小东西，不许导入任何功能模块或应用外壳"
+    },
+    {
+      "from": "apps/desktop/src/renderer/widgets/",
+      "to": ["apps/desktop/src/renderer/features/", "apps/desktop/src/renderer/app/"],
+      "why": "widgets/ 是编辑器、终端、预览占位的薄封装，只可导入第 1 到 3 层、i18n 和 bridge"
+    },
+    {
+      "from": "apps/desktop/src/renderer/bridge/",
+      "to": [
+        "apps/desktop/src/renderer/features/",
+        "apps/desktop/src/renderer/app/",
+        "apps/desktop/src/renderer/widgets/",
+        "apps/desktop/src/renderer/shared/"
+      ],
+      "why": "bridge/ 是对预加载接口的带类型封装，只导入 protocol，不导入界面的任何一层"
+    }
+  ],
+  "siblingDirs": [
+    {
+      "parent": "apps/desktop/src/renderer/features/",
+      "why": "功能模块之间不能互相导入（library 不能导入 workspace）；两个以上模块共用的东西放进 renderer/shared/"
+    }
+  ],
+  "preloadApi": {
+    "$comment": "window.runyard 是预加载脚本交出来的窄接口，全仓库只有 bridge/ 能碰它",
+    "scope": ["apps/desktop/src/renderer/", "packages/ui/"],
+    "allowedIn": ["apps/desktop/src/renderer/bridge/"]
+  },
+  "stdoutOutlet": {
+    "$comment": "命令行的打印只许走输出口；管理进程写给日志文件的标准错误用 // i18n-allow: 理由 放行（技术设计 §6.8 第 3 层）",
+    "dir": "packages/cli/src/output/"
+  }
+}

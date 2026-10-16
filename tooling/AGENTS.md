@@ -22,7 +22,7 @@
 
 ## 子目录地图
 
-- `checks/`：`pnpm check` 的全部检查，入口 `run.ts`（`platform-branching`：读运行系统、导入 `child_process`、手写路径分隔符（语法部分在 `platform-branching-syntax.ts`，不查 `tooling` 目录）；`no-permanent-delete`：产品源码里的永久删除调用，例外只能用 `// delete-allow: 理由` 声明，平台层的递归删除只许出现在复制兜底的那一个文件）；`test-helpers.ts` 造临时仓库
+- `checks/`：`pnpm check` 的全部检查，入口 `run.ts`（`platform-branching`：读运行系统、导入 `child_process`、手写路径分隔符（语法部分在 `platform-branching-syntax.ts`，不查 `tooling` 目录）；`no-permanent-delete`：产品源码里的永久删除调用，例外只能用 `// delete-allow: 理由` 声明，平台层的递归删除只许出现在复制兜底的那一个文件）；`test-helpers.ts` 造临时仓库。组件化的六项：`ui-layers`（规则在 `ui-layers.json`：层的导入方向、功能模块互相导入、`window.runyard`、`process.stdout.write`）、`ui-purity`（词表读术语表，通用词登记在 `ui-purity.json`）、`style-tokens`（逐行正则，CSS 切分在 `css-declarations.ts`，`style={{}}` 在 `style-attributes.ts`）、`ui-fixtures`、`icons`（直接导入 `packages/ui/build/icons.ts` 的解析和渲染，和生成脚本是同一份实现）、`file-size`（不含测试文件和 `generated/`）
 - `scripts/`：开发脚本（`generate.ts` 生成文档里的表和 `docs/reference/` 的协议参考，排版在 `render-reference.ts`、`schema-doc.ts`；查依赖版本和公告）
 - `ci/`：只在 CI 里用的脚本（标题格式、依赖审计门、更新日志防手改、发版白话说明、手动触发运行的状态回报）
 - `hooks/`：Claude Code 钩子，由 `.claude/settings.json` 调用
