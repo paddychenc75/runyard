@@ -10,6 +10,7 @@ import * as emptyState from "../src/primitives/EmptyState/EmptyState.fixture.tsx
 import * as glassSurface from "../src/primitives/GlassSurface/GlassSurface.fixture.tsx";
 import * as icon from "../src/primitives/Icon/Icon.fixture.tsx";
 import * as iconButton from "../src/primitives/IconButton/IconButton.fixture.tsx";
+import * as menu from "../src/primitives/Menu/Menu.fixture.tsx";
 import * as monogramTile from "../src/primitives/MonogramTile/MonogramTile.fixture.tsx";
 import * as scrollArea from "../src/primitives/ScrollArea/ScrollArea.fixture.tsx";
 import * as statusMark from "../src/primitives/StatusMark/StatusMark.fixture.tsx";
@@ -26,6 +27,7 @@ export const fixtures: readonly FixtureModule[] = [
   glassSurface,
   icon,
   iconButton,
+  menu,
   monogramTile,
   logView,
   navList,

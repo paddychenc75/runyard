@@ -25,6 +25,13 @@ export interface PreviewHost {
   setVisible(visible: boolean): void;
 }
 
+/** 系统层的两个动作（Electron 的 shell 和剪贴板在 integration/system-actions.ts，这里不认识 Electron） */
+export interface SystemActions {
+  /** 在文件管理器里选中这个路径 */
+  revealInFileManager(path: string): void;
+  copyText(text: string): void;
+}
+
 /** 控制器用到的客户端的那一小部分 */
 export type LibraryClient = Pick<RunyardClient, "call" | "subscribe" | "followLogs">;
 
@@ -34,6 +41,7 @@ export interface LibraryControllerOptions {
   clientId: string;
   locale: Locale;
   preview: PreviewHost;
+  system: SystemActions;
 }
 
 export class LibraryController {
@@ -41,6 +49,7 @@ export class LibraryController {
   readonly #clientId: string;
   readonly #locale: Locale;
   readonly #preview: PreviewHost;
+  readonly #system: SystemActions;
   readonly #listeners = new Set<(state: LibraryState) => void>();
   readonly #busy = new Set<string>();
   #playgrounds: Playground[] = [];
@@ -57,6 +66,7 @@ export class LibraryController {
     this.#clientId = options.clientId;
     this.#locale = options.locale;
     this.#preview = options.preview;
+    this.#system = options.system;
     this.#console = new ConsoleLogs(options.client);
   }
 
@@ -150,6 +160,22 @@ export class LibraryController {
     await this.#act(playgroundId, async () => {
       await this.#client.call("run.stop", { playground: playgroundId });
     });
+  }
+
+  /** 更多菜单“在访达中显示”：路径取管理进程给的那份，界面只报项目 id */
+  revealFolder(playgroundId: string): void {
+    const path = this.#folderOf(playgroundId);
+    if (path !== null) this.#system.revealInFileManager(path);
+  }
+
+  /** 更多菜单“复制路径”：把项目文件夹的绝对路径放进剪贴板 */
+  copyFolderPath(playgroundId: string): void {
+    const path = this.#folderOf(playgroundId);
+    if (path !== null) this.#system.copyText(path);
+  }
+
+  #folderOf(playgroundId: string): string | null {
+    return this.#playgrounds.find((playground) => playground.id === playgroundId)?.path ?? null;
   }
 
   selectTab(id: string): void {

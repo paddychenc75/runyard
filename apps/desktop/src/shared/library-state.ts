@@ -7,6 +7,8 @@ import type { CreatedBy, ErrorCode, LocalizedText, RunKind, RunState } from "@ru
 export interface PlaygroundRow {
   id: string;
   name: string;
+  /** 项目文件夹的绝对路径（“在访达中显示”“复制路径”用，界面不拼路径） */
+  path: string;
   kind: RunKind;
   /** 最近一次运行的状态；从没运行过是 idle */
   state: RunState | "idle";

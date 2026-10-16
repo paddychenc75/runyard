@@ -76,6 +76,7 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
     return {
       id: playground.id,
       name: playground.name,
+      path: playground.path,
       kind: playground.kind,
       state: run?.state ?? "idle",
       active,

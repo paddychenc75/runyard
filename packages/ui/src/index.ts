@@ -53,6 +53,12 @@ export {
   type IconButtonVariant,
 } from "./primitives/IconButton/index.ts";
 export {
+  Menu,
+  type MenuEntry,
+  type MenuItemEntry,
+  type MenuProps,
+} from "./primitives/Menu/index.ts";
+export {
   MonogramTile,
   type MonogramTileProps,
   type MonogramTileSize,

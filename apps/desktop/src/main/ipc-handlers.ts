@@ -77,6 +77,14 @@ export function registerBridgeHandlers(
       const playground = text(id);
       return playground === null ? [] : controller.consoleLines(playground);
     },
+    "playground.reveal": (id) => {
+      const playground = text(id);
+      if (playground !== null) controller.revealFolder(playground);
+    },
+    "playground.copyPath": (id) => {
+      const playground = text(id);
+      if (playground !== null) controller.copyFolderPath(playground);
+    },
     "playground.create": async (id) => {
       const template = text(id);
       if (template !== null) await controller.create(template);

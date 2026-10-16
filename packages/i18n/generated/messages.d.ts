@@ -330,6 +330,14 @@ export type CatalogMessages = {
     days: number;
   };
   "library.retention.kept.label": Record<never, never>;
+  "library.row.copyPath.action": Record<never, never>;
+  "library.row.more.aria": {
+    name: string | number;
+  };
+  "library.row.open.action": Record<never, never>;
+  "library.row.openHint.label": Record<never, never>;
+  "library.row.reveal.action": Record<never, never>;
+  "library.row.stop.action": Record<never, never>;
   "library.sidebar.footer.label": {
     count: number;
   };

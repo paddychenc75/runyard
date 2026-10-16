@@ -2,7 +2,6 @@ import type { Locale } from "@runyard/i18n";
 import { useFormat, useT } from "@runyard/i18n/react";
 import {
   Badge,
-  Button,
   DataTable,
   type DataTableColumn,
   MonogramTile,
@@ -23,6 +22,7 @@ import {
   statusMarkOf,
 } from "../library-view.ts";
 import styles from "./LibraryTable.module.css";
+import { RowActions } from "./RowActions.tsx";
 
 export interface LibraryTableProps {
   bridge: DesktopBridge;
@@ -36,7 +36,7 @@ const NONE = "—";
 
 // 资源库列表（设计稿 Main、MainNarrow；PRD #prd-library-list）：依次是名称与备注、状态、模板、
 // 端口、保留、上次打开、创建者、操作。窗口变窄时名称与备注固定在左，圆点补进名称列。
-// 操作列现在只有开发期的运行/停止按钮：打开、停止运行、更多菜单随 #171。
+// 操作列是“打开”或“停止运行”加“更多”菜单（RowActions，#171）。
 export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
   const t = useT();
   const format = useFormat();
@@ -147,17 +147,9 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
     {
       id: "actions",
       hiddenHeader: t("library.column.actions.aria"),
-      width: "md",
+      width: "lg",
       pin: "end",
-      render: (row) => (
-        <Button
-          size="sm"
-          disabled={row.busy}
-          onClick={() => void bridge.call(row.active ? "run.stop" : "tab.open", row.id)}
-        >
-          {row.active ? t("desktop.stop.action") : t("desktop.run.action")}
-        </Button>
-      ),
+      render: (row) => <RowActions bridge={bridge} row={row} />,
     },
   ];
 

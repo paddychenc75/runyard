@@ -23,6 +23,10 @@ export interface DesktopMethods {
   /** 切到资源库（"library"）或已打开的项目标签 */
   "tab.select": { param: string; result: undefined };
   "playground.create": { param: string; result: undefined };
+  /** 在系统文件管理器（访达）里选中项目文件夹 */
+  "playground.reveal": { param: string; result: undefined };
+  /** 把项目文件夹的绝对路径放进剪贴板 */
+  "playground.copyPath": { param: string; result: undefined };
   /** 预览占位区在窗口里的位置和大小（CSS 像素）；占位区卸载时报 null */
   "preview.bounds": { param: Bounds | null; result: undefined };
   /** 截预览当前的一帧（PNG 的 data 地址）；没有预览是 null。浮层打开前先截帧再隐藏（技术设计 §6.1） */
@@ -41,6 +45,8 @@ export const desktopMethodNames: readonly DesktopMethod[] = [
   "tab.open",
   "tab.select",
   "playground.create",
+  "playground.reveal",
+  "playground.copyPath",
   "preview.bounds",
   "preview.capture",
   "preview.visible",

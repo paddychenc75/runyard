@@ -17,6 +17,7 @@ function row(extra: Partial<PlaygroundRow> = {}): PlaygroundRow {
   return {
     id: "a",
     name: "a",
+    path: "/lib/a",
     kind: "server",
     state: "idle",
     active: false,

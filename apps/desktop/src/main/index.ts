@@ -11,6 +11,7 @@ import {
 } from "./integration/bootstrap-info.ts";
 import { createMainWindow } from "./integration/main-window.ts";
 import { claimSingleInstance, focusWindow } from "./integration/single-instance.ts";
+import { ElectronSystemActions } from "./integration/system-actions.ts";
 import { resolveUserDataDir } from "./integration/user-data.ts";
 import { keepAliveAfterClose } from "./integration/window-lifecycle.ts";
 import { registerBridgeHandlers } from "./ipc-handlers.ts";
@@ -91,7 +92,13 @@ async function main(args: DesktopArgs): Promise<void> {
     client = unavailableClient(error);
   }
 
-  const controller = new LibraryController({ client, clientId, locale, preview });
+  const controller = new LibraryController({
+    client,
+    clientId,
+    locale,
+    preview,
+    system: new ElectronSystemActions(),
+  });
   registerBridgeHandlers(
     {
       handle: (channel, handler) =>
