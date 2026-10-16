@@ -19,7 +19,7 @@ import {
   type StaticServer,
   ToolchainService,
 } from "@runyard/core";
-import { joinPath, posixRelPath } from "@runyard/platform";
+import { absPath, joinPath, posixRelPath } from "@runyard/platform";
 import type { FailureReason, LogEntry, Owner, RunyardError, Settings } from "@runyard/protocol";
 import { TOOLCHAIN_FILE_VERSION } from "@runyard/protocol";
 import { RunControl, STOP_WAIT_LIMIT_MS } from "./run-control.ts";
@@ -27,6 +27,7 @@ import { createRunHandlers, RunViewers } from "./run-handlers.ts";
 import { OwnerBindings } from "./run-owners.ts";
 import { createRunSubjects } from "./run-subjects.ts";
 import type { RunsView } from "./runs-view.ts";
+import { createScriptWatch, type ScriptWatch } from "./script-watch.ts";
 import type { Session } from "./session.ts";
 import { createStaticServer } from "./static-server.ts";
 import type { SupervisorApi } from "./supervisor-api.ts";
@@ -80,6 +81,8 @@ export interface RunModule extends Required<Omit<SupervisorExtensions, "recoverC
   readonly engine: RunEngine;
   readonly runs: RunsView;
   readonly viewers: RunViewers;
+  /** 脚本项目保存后自动重跑的监听（#138）；日志方法收到命令行的查看请求时也要给它记一次活动 */
+  readonly scriptWatch: ScriptWatch;
   /** 工具检测服务（懒创建：要先读工具定义）；工具链方法也该用这一个 */
   toolchain(): Promise<ToolchainService>;
   /** 失败之后给用户的安装提示（只是数据，不执行任何命令） */
@@ -152,6 +155,7 @@ export function createRunModule(api: SupervisorApi, options: RunModuleOptions): 
       state: (event) => {
         api.publish("run.state", event);
         api.notifyRunsChanged();
+        scriptWatch.observer.state(event);
         observer.state?.(event);
       },
       log: (runId, entry) => observer.log?.(runId, entry),
@@ -164,19 +168,33 @@ export function createRunModule(api: SupervisorApi, options: RunModuleOptions): 
     },
   });
 
+  const autoRunEnabled = async (playgroundId: string) => {
+    const { file } = await subjects.lookup(playgroundId);
+    return (settings?.scriptAutoRun ?? true) && (file.script?.autoRun ?? true);
+  };
   const scripts = new ScriptRuns({
     platform,
     clock,
     engine,
     toolchain: { check: async (request) => (await tools()).toolchain.check(request) },
     resolve: subjects.subjectOf,
-    autoRunEnabled: async (playgroundId) => {
-      const { file } = await subjects.lookup(playgroundId);
-      return (settings?.scriptAutoRun ?? true) && (file.script?.autoRun ?? true);
+    autoRunEnabled,
+  });
+
+  const scriptWatch = createScriptWatch(api, {
+    scripts,
+    runOf: (runId) => engine.get(runId),
+    autoRunEnabled,
+    folderOf: async (playgroundId) => {
+      const item = (await api.openLibrary()).find(playgroundId);
+      return item === undefined ? undefined : absPath(item.entry.path);
     },
   });
 
-  const mentioned = (run: Run, session: Session | undefined) => observer.mentioned?.(run, session);
+  const mentioned = (run: Run, session: Session | undefined) => {
+    scriptWatch.mention(run.request.playgroundId, session);
+    observer.mentioned?.(run, session);
+  };
   // control 在 owners 的到期回调里要用，owners 又是 control 的依赖
   const owners = new OwnerBindings({
     clock,
@@ -191,6 +209,7 @@ export function createRunModule(api: SupervisorApi, options: RunModuleOptions): 
     owners,
     refreshSettings,
     mentioned,
+    stopRequested: (playgroundId) => scriptWatch.end(playgroundId),
     stopWaitLimitMs: options.stopWaitLimitMs ?? STOP_WAIT_LIMIT_MS,
   });
   const viewers = new RunViewers();
@@ -250,6 +269,8 @@ export function createRunModule(api: SupervisorApi, options: RunModuleOptions): 
     },
     ownerOf: (id) => currentActive(id)?.snapshot().owner,
     stop: async (id) => {
+      // 移到废纸篓、改名都先停运行：脚本的监听随之结束（RUN-SCRIPTS-30）
+      scriptWatch.end(id);
       await currentActive(id)?.stop();
     },
     start: async (id, owner: Owner) => {
@@ -266,10 +287,11 @@ export function createRunModule(api: SupervisorApi, options: RunModuleOptions): 
     engine,
     runs,
     viewers,
+    scriptWatch,
     toolchain: async () => (await tools()).toolchain,
     installHintFor: async (request, failure) =>
       (await tools()).preparer.installHintFor(request, failure),
-    handlers: createRunHandlers({ api, control, owners, viewers, mentioned }),
+    handlers: createRunHandlers({ api, control, owners, viewers, mentioned, scriptWatch }),
     runCount: () => engine.runningCount(),
     library: {
       runs,
@@ -284,6 +306,8 @@ export function createRunModule(api: SupervisorApi, options: RunModuleOptions): 
           }),
     },
     onShutdown: async () => {
+      // 先摘监听，免得停运行的同时又被重跑起来
+      scriptWatch.dispose();
       owners.dispose();
       await engine.stopAll();
     },

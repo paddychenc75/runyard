@@ -4,6 +4,7 @@ import type { HandlerMap } from "./dispatch.ts";
 import { methodFailure } from "./method-failure.ts";
 import type { RunControl } from "./run-control.ts";
 import type { OwnerBindings } from "./run-owners.ts";
+import type { ScriptWatch } from "./script-watch.ts";
 import type { Session } from "./session.ts";
 import type { SupervisorApi } from "./supervisor-api.ts";
 
@@ -34,6 +35,7 @@ export interface RunHandlerDeps {
   readonly owners: OwnerBindings;
   readonly viewers: RunViewers;
   readonly mentioned: (run: Run, session: Session | undefined) => void;
+  readonly scriptWatch: Pick<ScriptWatch, "endAll">;
 }
 
 export function createRunHandlers(deps: RunHandlerDeps): HandlerMap {
@@ -53,6 +55,8 @@ export function createRunHandlers(deps: RunHandlerDeps): HandlerMap {
     "run.stop": (params, { session }) => control.stop(params, session),
     "run.stopAll": async ({ mine }) => {
       const stopped = await engine.stopAll(mine === undefined ? {} : { mine });
+      // 脚本跑完后没有活动的运行，所以不能只看 stopped 里的项目
+      deps.scriptWatch.endAll();
       return { stopped: stopped.map((snapshot) => snapshot.runId) };
     },
     "run.restart": ({ playground }, { session }) => control.restart(playground, session),
