@@ -78,10 +78,12 @@
   font-size: var(--text-body-size);
   line-height: var(--text-body-line-height);
   color: var(--color-text-secondary);
+  overflow-wrap: anywhere;
 }
 
 .actions {
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
   gap: var(--space-5);
 }

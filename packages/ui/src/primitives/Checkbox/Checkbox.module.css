@@ -62,6 +62,7 @@
   color: var(--color-text-primary);
   cursor: default;
   user-select: none;
+  overflow-wrap: anywhere;
 }
 
 .hint {
@@ -69,6 +70,7 @@
   font-weight: var(--text-secondary-weight);
   line-height: var(--text-secondary-line-height);
   color: var(--color-text-secondary);
+  overflow-wrap: anywhere;
 }
 
 @media (prefers-reduced-motion: reduce) {
