@@ -57,6 +57,10 @@
       ]
     },
     {
+      "includes": ["packages/ui/src/**", "!**/*.test.ts", "!**/*.test.tsx"],
+      "linter": { "rules": { "correctness": { "noNodejsModules": "error" } } }
+    },
+    {
       "includes": ["apps/desktop/src/renderer/**"],
       "linter": {
         "rules": {

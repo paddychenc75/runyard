@@ -7,14 +7,23 @@ packages:
 
 # 统一版本表：全部精确版本（§8.6.1 规则 7），选版本的依据见 docs/architecture/dependencies.md
 catalog:
+  "@base-ui/react": 1.8.0
   "@biomejs/biome": 2.5.14
   "@fission-ai/openspec": 1.14.0
   "@formatjs/icu-messageformat-parser": 3.5.18
+  "@testing-library/dom": 10.4.2
+  "@testing-library/react": 16.3.3
+  "@testing-library/user-event": 14.6.7
   "@types/node": 24.19.0
+  "@types/react": 19.3.0
+  "@types/react-dom": 19.3.0
   chokidar: 5.0.0
   electron: 44.5.1
   esbuild: 0.28.2
   intl-messageformat: 11.2.15
+  jsdom: 29.1.1
+  react: 19.3.0
+  react-dom: 19.3.0
   turbo: 2.11.4
   typescript: 6.0.3
   vitest: 4.1.11

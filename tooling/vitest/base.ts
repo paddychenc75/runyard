@@ -39,7 +39,7 @@ export function createConfig(host: string = process.platform) {
           extends: true,
           test: {
             name: "unit",
-            include: ["**/*.test.ts"],
+            include: ["**/*.test.{ts,tsx}"],
             exclude: [...NEVER_COLLECTED, PLATFORM_DEPENDENT_GLOB],
           },
         },

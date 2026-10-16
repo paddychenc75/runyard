@@ -3,7 +3,7 @@
 ## 用途
 
 设计变量的唯一出处（技术设计 §6.7）：颜色、玻璃材质、阴影、圆角、尺寸、间距、字号、动效、层级。`src/tokens.json` 是源，`pnpm tokens:build`（或 `pnpm generate`）生成三样，并重写 `docs/design/tokens.md` 两个标记之间的表。设计稿和 `tokens.json` 不一致时以 `tokens.json` 为准。
-现状：只有变量本身和生成脚本；没有组件（通用组件包由 #163 建），`prefers-contrast: more` 的覆盖值设计稿没画，还没有。
+现状：只有变量本身和生成脚本；没有组件（组件在 `packages/ui`），`prefers-contrast: more` 的覆盖值设计稿没画，还没有。
 
 ## 对外暴露什么
 

@@ -22,6 +22,9 @@
     },
     {
       "path": "../packages/supervisor"
+    },
+    {
+      "path": "../packages/ui"
     }
   ]
 }

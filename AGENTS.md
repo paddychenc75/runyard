@@ -29,6 +29,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `packages/platform/` | 平台层：`Platform` 接口、`getPlatform()`、路径与名称校验、`darwin` 和薄 `linux` 实现、契约测试（目前有接口、paths、ipc、spawnDetached、exec、proc、ports、fs（含 macOS 废纸篓、`readBytes` / `listFiles` / `appendFile` / `removeFile`）、system（版本串）、watch、env（登录 shell 解析）、tools、shell 的实现，其余是占位，随后续 issue 加入） |
 | `packages/protocol/` | 所有跨进程约定（目前有错误码、提示码、枚举、`RunyardError` / `Notice` / `LogEntry` / `Owner`、分帧、`Frame`、握手消息、版本比对、方法与事件的登记表、`Playground` / `RunSnapshot`、磁盘文件格式与升级链、`template.json` / `runner.json` / 工具定义的格式与校验） |
 | `packages/tokens/` | 设计变量：`src/tokens.json` 是唯一来源，`pnpm tokens:build` 生成 `generated/` 下的 CSS 变量、TS 常量、编辑器配色，并重写 `docs/design/tokens.md` 的表；不导入任何包 |
+| `packages/ui/` | 界面基础组件、图标和组件工作台（目前有 `Icon`、`Button`、`GlassSurface`；`pnpm ui:dev` 打开工作台，规则见该包的 `AGENTS.md`）；不认识产品，不导入 `protocol`、`electron`、Node 接口 |
 | `packages/i18n/` | 文案、`createTranslator`、数字和时长格式、命令行语言解析（`resolveCliLocale`）、由中文文案生成的键和参数类型 |
 | `packages/supervisor/` | 管理进程：单实例、发现文件、握手服务、会话与方法分发、事件订阅、空闲退出、关闭；空闲停止、崩溃后清理（目前有骨架、会话组方法，资源库、设置、自动清理、模板的方法，运行编排与持有者，静态页面服务，模板展开成项目，以及运行日志文件与 `logs.read|follow|clear`、`supervisor.log` 轮转） |
 | `packages/client/` | 管理进程的客户端：读发现文件、握手、经平台层拉起并重连、版本表、带类型的 `call` 和事件订阅；错误是 `ClientError`（代码加参数），不打印 |
@@ -54,6 +55,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `@runyard/protocol` | 无 | 已有 |
 | `@runyard/tokens` | 无 | 已有 |
 | `@runyard/i18n` | `@runyard/protocol` | 已有 |
+| `@runyard/ui` | `@runyard/tokens`、`@runyard/i18n` | 已有 |
 | `@runyard/platform` | `@runyard/protocol` | 已有 |
 | `@runyard/core` | `@runyard/protocol`、`@runyard/platform`、`@runyard/testing`（只在测试里） | 已有 |
 | `@runyard/supervisor` | `@runyard/protocol`、`@runyard/platform`、`@runyard/core`、`@runyard/testing`（只在测试里） | 已有 |
@@ -65,12 +67,10 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 
 下面几条在对应的包建立时生效（现在多数包还没建，先知道；出处是技术设计 §3.2）：
 
-- `electron` 只许出现在桌面应用里；界面进程（renderer）里不许用 Node 接口。
-- `@runyard/protocol` 里不许用 Node、浏览器、Electron 的任何接口。
+- `electron` 只许出现在桌面应用里；界面进程（renderer）里不许用 Node 接口；`@runyard/protocol` 里不许用 Node、浏览器、Electron 的任何接口。
 - 系统分支（读 `process.platform`、直接启动进程、手写路径分隔符）只许写在 `@runyard/platform` 和桌面应用主进程的 integration 目录里，其他地方调用平台接口。`platform-branching` 查 `packages` 和 `apps` 两个目录（含测试）：读运行系统的写法、导入 `child_process`、传给 `node:fs`/`node:path` 函数的手写 `/` 或 `\\` 拼接和 `path.sep` 拼接；`tooling` 目录不查（脚本要启动 git、pnpm）。其余手写分隔符的写法靠评审。
 - 第一版只发 macOS（决策记录 0013）：平台层只有 `darwin` 和薄的 `linux` 两份实现，不许新增只属于 Windows 的代码（`win32` 实现、辅助程序、安装器）；接口按以后好加 Windows 来写（不假设信号和进程组，进程身份是 pid 加启动时间）。依赖平台实现的测试只在 macOS 和 Ubuntu 跑，在 Windows 上只通过测试手册里那一个机制跳过，不在测试里写 `if (process.platform …)`。
-- 包之间只从入口导入（如 `@runyard/core`），不伸进内部文件。管理进程一侧的包（protocol、platform、core、supervisor、client）不产生给人看的句子，只发“代码加参数”。
-- 界面分五层，只能从上往下导入，通用组件包不认识产品。
+- 包之间只从入口导入（如 `@runyard/core`），不伸进内部文件。管理进程一侧的包（protocol、platform、core、supervisor、client）不产生给人看的句子，只发“代码加参数”。界面分五层，只能从上往下导入，通用组件包（`@runyard/ui`）不认识产品。
 - 给人看的文字一律走文案包。现在 `pnpm check` 已拦：缺文案或参数不一致（`i18n-keys`、`i18n-codes`）、未使用的键（`i18n-unused`）、术语和措辞（`i18n-glossary`、`i18n-wording`）、源码字符串里的汉字和命令行输出口之外的 `process.stdout.write`（`ui-strings`）；
 - 永久删除：产品源码里的 `fs.rm`、`rmSync`、`rmdir`、`unlink`、经进程的 `rm` 一律被 `no-permanent-delete` 拦住。用户的项目只进废纸篓（`fs.trash`）；管理进程自己的临时文件、运行文件、日志轮转、刚建的占位要删，在同一行或上一行写 `// delete-allow: 理由`（理由必填）；平台层里可能递归删除的调用只许出现在 `remove-after-verified-copy.ts`；界面一侧（JSX 规则、`Localized` 属性、伪语言扫页面）随 M2 的界面包才生效。
 

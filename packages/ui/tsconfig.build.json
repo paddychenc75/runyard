@@ -1,0 +1,9 @@
+{
+  "extends": "../../tooling/tsconfig/node.json",
+  "compilerOptions": {
+    "outDir": "../../.tsbuild/ui-build",
+    "tsBuildInfoFile": "../../.tsbuild/ui-build/tsconfig.tsbuildinfo",
+    "rootDir": "."
+  },
+  "include": ["build/**/*.ts"]
+}

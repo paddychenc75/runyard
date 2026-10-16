@@ -1,0 +1,18 @@
+/* 页面级基础：字体栈、文字颜色、窗口底色。只引用设计变量（packages/tokens）。 */
+html {
+  font-family: var(--font-sans);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line-height);
+  color: var(--color-text-primary);
+  background: var(--color-bg-window);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+}
+
+/* 所有会弹出的东西渲染在应用根元素之内，根元素自成层叠上下文（技术设计 §6.7） */
+#root {
+  isolation: isolate;
+}

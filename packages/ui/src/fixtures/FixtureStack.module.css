@@ -1,0 +1,11 @@
+.root {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.root[data-direction="column"] {
+  flex-direction: column;
+  align-items: flex-start;
+}

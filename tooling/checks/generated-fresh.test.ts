@@ -1,4 +1,4 @@
-import { readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { generate, protocolDefs, writeGenerated } from "../scripts/generate.ts";
@@ -152,6 +152,31 @@ describe("generated-fresh 检查", () => {
       expect(generatedFresh.run(root)).not.toEqual([]);
       expect(writeGenerated(root, generate(root))).toEqual(["docs/reference/codes.md"]);
       expect(generatedFresh.run(root)).toEqual([]);
+    });
+  });
+
+  describe("界面包的图标表", () => {
+    const SVG = '<svg viewBox="0 0 16 16"><path d="M1 1"/></svg>';
+
+    function iconRepo(): string {
+      const root = repo(`${BEGIN}\n${END}\n`);
+      mkdirSync(join(root, "packages/ui/src/icons/svg"), { recursive: true });
+      writeFileSync(join(root, "packages/ui/src/icons/svg/dot.svg"), SVG);
+      return root;
+    }
+
+    it("有图标源文件但没生成图标表：报缺失", () => {
+      expect(generatedFresh.run(iconRepo()).join("\n")).toContain(
+        "packages/ui/src/icons/generated/icon-paths.ts",
+      );
+    });
+
+    it("生成之后通过；加了一个图标源文件没重新生成：报过期", () => {
+      const root = iconRepo();
+      writeGenerated(root, generate(root));
+      expect(generatedFresh.run(root)).toEqual([]);
+      writeFileSync(join(root, "packages/ui/src/icons/svg/dot-two.svg"), SVG);
+      expect(generatedFresh.run(root).join("\n")).toContain("icon-paths.ts");
     });
   });
 });

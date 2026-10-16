@@ -1,4 +1,4 @@
-import { relative } from "node:path";
+import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { beforeEach } from "vitest";
 import { isExpired, loadQuarantine, quarantineId, today } from "./quarantine.ts";
@@ -11,7 +11,8 @@ const active = new Map(
     .map((entry) => [entry.id, entry]),
 );
 
-const repoRoot = fileURLToPath(new URL("../..", import.meta.url));
+// 同 quarantine.ts：不用 new URL，jsdom 环境里它不是 Node 的 URL（#163）
+const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "../..");
 
 beforeEach((context) => {
   if (active.size === 0) return;

@@ -54,7 +54,10 @@
   --glass-toolbar-bg: light-dark(rgba(255, 255, 255, 0.66), rgba(72, 72, 78, 0.55));
   --glass-sidebar-bg: light-dark(rgba(242, 243, 247, 0.78), rgba(58, 58, 62, 0.55));
   --glass-filetree-bg: light-dark(rgba(255, 255, 255, 0.62), rgba(58, 58, 62, 0.55));
-  --glass-dialog-bg: light-dark(rgba(250, 250, 252, 0.84), rgba(44, 44, 48, 0.78));
+  --glass-dialog-bg: light-dark(rgba(250, 250, 252, 0.82), rgba(44, 44, 48, 0.78));
+  --glass-control-bg: light-dark(rgba(255, 255, 255, 0.66), rgba(72, 72, 78, 0.55));
+  --glass-control-bg-hover: light-dark(rgba(255, 255, 255, 0.78), rgba(72, 72, 78, 0.68));
+  --glass-control-bg-pressed: light-dark(rgba(255, 255, 255, 0.9), rgba(72, 72, 78, 0.8));
   --glass-border-color: light-dark(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.14));
   --glass-tab-selected-bg: light-dark(var(--white), rgba(255, 255, 255, 0.16));
   --color-text-primary: light-dark(var(--ink-900), var(--gray-50));
@@ -63,13 +66,13 @@
   --color-text-tertiary: light-dark(var(--gray-500), var(--gray-500));
   --color-text-placeholder: light-dark(var(--gray-600), var(--gray-400));
   --color-text-on-accent: light-dark(var(--white), var(--white));
-  --color-line-hairline: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.08));
-  --color-line-strong: light-dark(rgba(0, 0, 0, 0.14), rgba(255, 255, 255, 0.14));
+  --color-line-hairline: light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.08));
+  --color-line-strong: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.14));
   --color-fill-accent: light-dark(var(--blue-600), var(--blue-600));
   --color-line-accent: light-dark(var(--blue-600), var(--blue-500));
   --color-text-accent: light-dark(var(--blue-700), var(--blue-400));
   --color-text-link: light-dark(var(--blue-600), var(--blue-400));
-  --color-fill-accent-tint: light-dark(rgba(0, 113, 227, 0.12), rgba(10, 132, 255, 0.2));
+  --color-fill-accent-tint: light-dark(rgba(0, 113, 227, 0.08), rgba(10, 132, 255, 0.32));
   --color-status-running-mark: light-dark(var(--green-600), var(--green-500));
   --color-status-running-text: light-dark(var(--green-800), var(--green-500));
   --color-status-warning-mark: light-dark(var(--amber-700), var(--yellow-500));
@@ -78,6 +81,12 @@
   --color-status-danger-mark: light-dark(var(--red-600), var(--red-500));
   --color-status-danger-text: light-dark(var(--red-700), var(--red-300));
   --color-fill-danger-tint: light-dark(rgba(215, 0, 21, 0.1), rgba(255, 69, 58, 0.18));
+  --color-fill-accent-hover: light-dark(#0068d1, #0979eb);
+  --color-fill-accent-pressed: light-dark(#005fbf, #086fd6);
+  --color-fill-neutral-hover: light-dark(rgba(118, 118, 128, 0.22), rgba(118, 118, 128, 0.32));
+  --color-fill-neutral-pressed: light-dark(rgba(118, 118, 128, 0.3), rgba(118, 118, 128, 0.4));
+  --color-fill-danger-tint-hover: light-dark(rgba(215, 0, 21, 0.16), rgba(255, 69, 58, 0.26));
+  --color-fill-danger-tint-pressed: light-dark(rgba(215, 0, 21, 0.22), rgba(255, 69, 58, 0.34));
   --color-agent-text: light-dark(var(--purple-700), var(--purple-300));
   --color-fill-agent-tint: light-dark(rgba(175, 82, 222, 0.12), rgba(191, 90, 242, 0.24));
   --color-fill-switch-on: light-dark(var(--green-600), var(--green-500));
@@ -110,11 +119,14 @@
   --shadow-menu:
     0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 16px 40px rgba(15, 23, 42, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 1);
+  --shadow-accent-button: 0 4px 14px rgba(0, 113, 227, 0.25);
+  --shadow-focus-ring: 0 0 0 1.5px #0071e3, 0 0 0 4.5px rgba(0, 113, 227, 0.18);
   --shadow-tab-selected: 0 1px 3px rgba(0, 0, 0, 0.12);
   --glass-border-width: 1px;
   --glass-blur-toolbar: blur(28px) saturate(180%);
-  --glass-blur-sidebar: blur(40px);
+  --glass-blur-sidebar: blur(40px) saturate(180%);
   --glass-blur-dialog: blur(50px) saturate(190%);
+  --glass-blur-menu: blur(40px) saturate(190%);
   --radius-sidebar: 20px;
   --radius-card: 16px;
   --radius-dialog: 28px;
@@ -126,7 +138,9 @@
   --size-control-lg: 40px;
   --size-control-md: 32px;
   --size-control-sm: 28px;
-  --size-row: 48px;
+  --size-row: 54px;
+  --size-control-padding-lg: 18px;
+  --size-control-padding-md: 14px;
   --size-tree-row: 28px;
   --size-menu-item: 32px;
   --size-window-inset: 8px;
@@ -158,6 +172,7 @@
   --text-dialog-title-weight: 700;
   --text-section-title-weight: 600;
   --text-item-weight: 600;
+  --text-control-weight: 500;
   --text-body-weight: 400;
   --text-secondary-weight: 400;
   --text-caption-weight: 400;
@@ -200,6 +215,8 @@
   --shadow-menu:
     0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 16px 40px rgba(0, 0, 0, 0.5),
     inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  --shadow-accent-button: 0 4px 14px rgba(10, 132, 255, 0.35);
+  --shadow-focus-ring: 0 0 0 1.5px #0a84ff, 0 0 0 4.5px rgba(10, 132, 255, 0.32);
   --shadow-tab-selected: inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
@@ -213,6 +230,8 @@
     --shadow-menu:
       0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 16px 40px rgba(0, 0, 0, 0.5),
       inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    --shadow-accent-button: 0 4px 14px rgba(10, 132, 255, 0.35);
+    --shadow-focus-ring: 0 0 0 1.5px #0a84ff, 0 0 0 4.5px rgba(10, 132, 255, 0.32);
     --shadow-tab-selected: inset 0 1px 0 rgba(255, 255, 255, 0.18);
   }
 }
@@ -223,5 +242,8 @@
     --glass-sidebar-bg: light-dark(#f2f3f7, #3a3a3e);
     --glass-filetree-bg: light-dark(#f5f5f7, #3a3a3e);
     --glass-dialog-bg: light-dark(#fafafc, #2c2c30);
+    --glass-control-bg: light-dark(#ededf0, #48484e);
+    --glass-control-bg-hover: light-dark(#f3f3f6, #54545a);
+    --glass-control-bg-pressed: light-dark(#f9f9fb, #5e5e64);
   }
 }

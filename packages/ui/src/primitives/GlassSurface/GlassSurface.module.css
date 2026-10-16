@@ -1,0 +1,4 @@
+/* 玻璃上的文字用主文字色；背景、模糊、描边、圆角、投影都在 styles/materials.css */
+.root {
+  color: var(--color-text-primary);
+}
