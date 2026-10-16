@@ -11,7 +11,9 @@
     "dev": "node workbench/serve.ts",
     "build": "node build/icons.ts",
     "test": "vitest run --project unit",
-    "test:process": "vitest run --project process --passWithNoTests"
+    "test:process": "vitest run --project process --passWithNoTests",
+    "visual": "playwright test --config visual/playwright.config.ts",
+    "visual:install": "playwright install chromium"
   },
   "dependencies": {
     "@base-ui/react": "catalog:",
@@ -21,6 +23,7 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
+    "@playwright/test": "catalog:",
     "@testing-library/dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@testing-library/user-event": "catalog:",

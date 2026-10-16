@@ -38,7 +38,7 @@
 
 - `pnpm check` 里的国际化检查会指出问题，每条报错写明哪里错、怎么改：`i18n-keys`（两种语言的键和参数、复数类别、备注、字数上限、键名）、`i18n-codes`（登记表里的代码都有文案）、`i18n-unused`（没人用的键）、`i18n-glossary` 和 `i18n-wording`（术语、系统用词、中英文间距、标点）、`ui-strings`（源码字符串里的汉字）、`generated-fresh`（改了文案要运行 `pnpm generate`）。
 - 界面（JSX）里写死文字：`pnpm lint` 里 Biome 的 `noJsxLiterals` 和 `tooling/biome/` 的两条规则拦标签之间的文字、`{"文字"}`、模板字符串、三元和 `||` 里的字面量、原生元素上的 `aria-label` `title` `placeholder` `alt`；`ui-strings` 拦所有含汉字的字符串（含 JSX 属性）。范围是 `apps/desktop/src/renderer/`、界面组件包（`@runyard/ui`）的 src、`packages/i18n/src/react/`，不含 `*.test.tsx`。组件属性的 `Localized` 类型随 `@runyard/ui` 的组件加入，在那之前别当成已经拦住了。
-- 伪语言下扫页面：`scanPageForLeaks`（`@runyard/i18n`）由截图和端到端测试在页面上调用，随 `@runyard/ui` 的截图流水线接入。
+- 伪语言下扫页面：`scanPageForLeaks`（`@runyard/i18n`）由 `packages/ui/visual/visual.spec.ts` 在伪语言页面上调用（`pnpm ui:visual`、CI 的 `ui-visual`，手册 `docs/guides/ui-visual.md`）；端到端测试随后续 issue 接入。
 - 命令行的输出口在 `packages/cli/src/output/`，只收 `Localized`；`ui-strings` 检查保证只有那个目录能写标准输出和标准错误。
 - 可选参数（登记表里 `exitCode?`）写成 `{exitCode, select, none {} other {…{exitCode}…}}`；术语不成对的例外和字数上限写在 `locales/notes/`（`glossarySkip` 加必填的 `glossarySkipReason`、`max`）。
 - 开发者诊断（抛出的异常消息）用英文，不要在源码字符串里写汉字；确实需要时同一行或上一行写 `// i18n-allow: 理由`。

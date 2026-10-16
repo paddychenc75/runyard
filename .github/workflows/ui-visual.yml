@@ -1,0 +1,89 @@
+# 界面截图比对（技术设计 §6.7、§8.3 的 ui-visual 一行）：构建组件工作台，每个组件样例在
+# 浅色 / 深色 × 中文 / 英文和伪语言 en-XA 下截图，和提交在 packages/ui/visual/__screenshots__/ 的基准图比对；
+# 伪语言那张另做溢出检查和漏网文字检查；失败时产出“界面变更对照页”，作为运行产物下载。
+# 基准图只在 macos-26 上生成和比对（K15，决策记录 0011），所以这个任务只在 macos-26 上跑；怎么更新见 ui-baseline.yml。
+# 这个任务现在不是必过检查（是否升为必过由负责人决定，技术设计 §8.3）。
+name: ui-visual
+
+on:
+  pull_request:
+    branches: [main]
+    # 只在会影响界面的目录有改动时跑；工作流文件和锁文件自己改了也要跑一次（Playwright 升级会改渲染）
+    paths:
+      - packages/ui/**
+      - packages/tokens/**
+      - packages/i18n/**
+      - apps/desktop/src/renderer/**
+      - .github/workflows/ui-visual.yml
+      - pnpm-lock.yaml
+  push:
+    branches: [main]
+    paths:
+      - packages/ui/**
+      - packages/tokens/**
+      - packages/i18n/**
+      - apps/desktop/src/renderer/**
+      - .github/workflows/ui-visual.yml
+      - pnpm-lock.yaml
+  # ui-baseline 在 PR 分支上提交了新基准图之后手动触发它（机器人用默认令牌推的提交不会触发 pull_request）
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  ui-visual:
+    name: ui-visual（界面截图比对）
+    runs-on: macos-26
+    # 目标 4 分钟以内【估计】；浏览器下载和安装依赖占大头，留 15 分钟的上限
+    timeout-minutes: 15
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: 安装 pnpm（版本读自 package.json 的 packageManager 字段）
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: 安装 Node（版本读自 .node-version）
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: 安装依赖（锁文件必须与 package.json 一致）
+        run: pnpm install --frozen-lockfile
+
+      - name: 安装 Playwright 管理的 Chromium
+        run: pnpm --filter @runyard/ui visual:install
+
+      - name: 检查基准图的体积预算
+        run: node packages/ui/visual/check-budget.ts
+
+      - name: 截图比对、溢出检查、漏网文字检查
+        run: pnpm ui:visual
+
+      - name: 上传界面变更对照页和失败截图
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ui-change-report
+          path: |
+            packages/ui/visual/.output/change-report/
+            packages/ui/visual/.output/test-results/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: 在运行摘要里说明怎么看
+        if: failure()
+        run: |
+          {
+            echo "### 界面截图比对失败"
+            echo "下载本次运行的产物 ui-change-report，打开里面的 ui-change-report.html（界面变更对照页）。"
+            echo "变化是有意的：给 PR 加标签 update-ui-baseline，CI 会在 macOS 上重新生成基准图并提交到这个 PR。"
+          } >> "$GITHUB_STEP_SUMMARY"

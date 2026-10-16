@@ -10,7 +10,13 @@
     "types": ["node"],
     "jsx": "react-jsx"
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "workbench/**/*.ts", "workbench/**/*.tsx"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "workbench/**/*.ts",
+    "workbench/**/*.tsx",
+    "visual/**/*.ts"
+  ],
   "references": [
     {
       "path": "../tokens"

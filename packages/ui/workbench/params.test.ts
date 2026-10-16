@@ -27,4 +27,9 @@ describe("工作台地址栏参数", () => {
     expect(formatParams(params)).toBe("?component=Icon&theme=light&locale=zh-CN");
     expect(parseParams(formatParams(params))).toEqual(params);
   });
+
+  it("工作台认识伪语言 en-XA（设置页的语言列表里没有它）", () => {
+    expect(parseParams("?locale=en-XA").locale).toBe("en-XA");
+    expect(parseParams(formatParams({ ...defaultParams, locale: "en-XA" })).locale).toBe("en-XA");
+  });
 });
