@@ -1,0 +1,10 @@
+{
+  "$comment": "模板 CI 里“上限”版本用哪个：node 取最新的 24 线，python 和 go 取最新稳定版，pnpm 空串表示用仓库自己的 pnpm（packageManager）。“下限”不在这里：取自每个模板 requires 的下界（补成 X.Y.0）。新增工具时在 tooling/ci/template-matrix.ts 的 TOOLS 里加一项并在这里写它的上限。",
+  "upper": {
+    "node": "24.x",
+    "pnpm": "",
+    "python": "3.x",
+    "go": "stable"
+  },
+  "os": ["ubuntu-latest", "macos-26"]
+}

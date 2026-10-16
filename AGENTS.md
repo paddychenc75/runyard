@@ -37,7 +37,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `templates/` | 模板和运行器的数据文件。`schema/`（由 `packages/protocol` 的 zod 定义生成的 JSON Schema，`pnpm generate`，不要手改）、`tools/`（六份工具定义）、`builtin/`（目前有 `html`、`react19`、`react18`、`vue3`、`node-ts`、`python`、`go`、`hono`）和 `runners/`（目前有 `static`、`vite`、`node-ts`、`python-file`、`go`、`hono`），其余内置模板与运行器随后续 issue 放进来 |
 | `tooling/checks/` | 仓库检查脚本，`pnpm check` 的全部内容；`layers.json` 是包依赖规则的唯一出处 |
 | `tooling/biome/` | Biome 的 GritQL 规则（界面里不许写死文字，随 `biome.json` 在界面包和 renderer 出现时生效） |
-| `tooling/scripts/` | 脚本：`deps-lookup.ts`（查依赖版本和公告）、`generate.ts`（生成文档里的表和协议参考）、`spec.mjs`（`pnpm spec` 的包装，关掉 OpenSpec 的联网） |
+| `tooling/scripts/` | 脚本（CI 用的在 `tooling/ci/`，含模板 CI 的矩阵 `template-matrix.ts`）：`deps-lookup.ts`（查依赖版本和公告）、`generate.ts`（生成文档里的表和协议参考）、`spec.mjs`（`pnpm spec` 的包装，关掉 OpenSpec 的联网） |
 | `tooling/hooks/` | Claude Code 的钩子脚本，由 `.claude/settings.json` 调用 |
 | `tooling/design-render/` | 把设计源文件渲染成图片的脚本（图片不进仓库） |
 | `openspec/` | 规格驱动：`specs/` 是批准的行为规格（唯一出处），`config.yaml` 和 `schemas/runyard/` 是流程；进行中的改动在 `changes/`（只在开发分支） |
@@ -108,7 +108,7 @@ Claude Code 的钩子：改完文件后对那一个文件跑 Biome；结束回�
 | 加或改一条给人看的文字（命令行） | `docs/guides/add-ui-string.md` |
 | 加一条命令行命令 | `docs/guides/add-cli-command.md` |
 | 加一个跨进程命令（方法或事件） | `docs/guides/add-ipc-command.md` |
-| 查某条命令跑什么 | `docs/guides/commands.md` |
+| 查某条命令跑什么、模板 CI 怎么跑；本机和 CI 上踩过的坑 | `docs/guides/commands.md`、`docs/guides/pitfalls.md` |
 | 发版、写版本说明、看更新日志 | `docs/guides/release.md` |
 
 完成标准（一个 PR 合并前）：引用了 PRD 锚点；新行为有测试；`pnpm verify` 通过并贴了结果；改了包结构、依赖规则、磁盘格式、构建发布做法的附了决策记录；动了依赖的按手册十步做完；文字都是中文，两个 README 同步；没有新增未说明的跳过。

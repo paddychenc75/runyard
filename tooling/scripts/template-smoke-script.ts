@@ -25,7 +25,7 @@ import type { LogEntry, Runner, Template } from "../../packages/protocol/src/ind
 // 脚本重跑（ScriptRuns），在系统临时目录里对着本机真正的 node / python3 / go 走一遍：
 // 运行 → 保存语法错误（不运行、旧输出还在、标 stale）→ 改正（恢复）→ 不规范格式 → 标准输入 → 运行中停止。
 // 不需要网络。数据目录全部在临时主目录里，不碰 ~/.runyard。手动运行：pnpm template:smoke <node-ts|python|go>。
-// 它不进 pnpm test：CI 的机器不保证装有够新的 python / go（模板 CI 接入是 issue #54）。
+// 它不进 pnpm test：CI 的机器不保证装有够新的 python / go（模板 CI 里用 setup-python / setup-go 装下限和上限版本跑，见 .github/workflows/template-smoke.yml）。
 
 const repoRoot = join(import.meta.dirname, "..", "..");
 

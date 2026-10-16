@@ -1,0 +1,90 @@
+# 模板 CI（技术设计 §8.3，规格 TEMPLATES-FORMAT-58）：拉取请求只测改动的模板，只用工具版本的上限，
+# 另外对全部内置模板跑 `template:lint`。只在模板或冒烟脚本相关的文件变了才触发。
+# 这个工作流不是必过检查，也不进 `pnpm verify`；要不要设成必过由负责人决定。
+name: 模板
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "templates/**"
+      - "tooling/scripts/template-*.ts"
+      - "tooling/ci/template-*"
+      - ".github/workflows/template*.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  plan:
+    name: 算出要测的模板
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+      count: ${{ steps.matrix.outputs.count }}
+    steps:
+      - name: 检出代码（带完整历史，要和目标分支比较）
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: 安装 Node（版本读自 .node-version）
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+
+      - name: 矩阵（拉取请求：改动的模板、只用上限；手动触发：全部模板）
+        id: matrix
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if [ "$EVENT" = "pull_request" ]; then
+            matrix="$(node tooling/ci/template-matrix.ts --mode pr --base "$BASE_SHA" --head "$HEAD_SHA")"
+          else
+            matrix="$(node tooling/ci/template-matrix.ts --mode pr --all)"
+          fi
+          echo "matrix=${matrix}" >> "$GITHUB_OUTPUT"
+          echo "count=$(node -e 'console.log(JSON.parse(process.argv[1]).include.length)' "$matrix")" >> "$GITHUB_OUTPUT"
+          echo "$matrix" >> "$GITHUB_STEP_SUMMARY"
+
+  lint:
+    name: template lint（全部内置模板）
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: 安装 pnpm（版本读自 package.json 的 packageManager 字段）
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: 安装 Node（版本读自 .node-version）
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: 安装依赖（锁文件必须与 package.json 一致）
+        run: pnpm install --frozen-lockfile
+
+      - name: 检查全部内置模板
+        run: pnpm template:lint
+
+  smoke:
+    name: 冒烟
+    needs: plan
+    if: ${{ needs.plan.outputs.count != '0' }}
+    uses: ./.github/workflows/template-smoke.yml
+    with:
+      matrix: ${{ needs.plan.outputs.matrix }}

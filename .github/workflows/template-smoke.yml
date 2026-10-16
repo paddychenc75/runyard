@@ -1,0 +1,94 @@
+# 模板冒烟的可复用任务（技术设计 §8.3）：按矩阵在真实的 runner 上跑 `pnpm template:smoke <模板>`。
+# 工具用 setup-node / setup-python / setup-go / 指定版本的 pnpm 装到矩阵给的版本，所以“下限”真的是下限。
+# 由 templates.yml（拉取请求，只测改动的模板、只用上限）和 templates-nightly.yml（每晚，全部模板、上下限）调用。
+# 联网安装依赖只发生在这里，不在 pnpm test 里。
+name: 模板冒烟（可复用）
+
+on:
+  workflow_call:
+    inputs:
+      matrix:
+        description: "tooling/ci/template-matrix.ts 的输出（JSON）"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: ${{ matrix.template }}（${{ matrix.os }}，${{ matrix.bound }}）
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      # 每个组合都要看到结果，不因为一个失败就取消其他的
+      fail-fast: false
+      matrix: ${{ fromJSON(inputs.matrix) }}
+    env:
+      TEMPLATE: ${{ matrix.template }}
+      TEMPLATE_NODE: ${{ matrix.node }}
+      TEMPLATE_PNPM: ${{ matrix.pnpm }}
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: 安装 pnpm（版本读自 package.json 的 packageManager 字段）
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: 安装 Node（运行冒烟脚本本身用仓库的版本，读自 .node-version）
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: 安装依赖（锁文件必须与 package.json 一致）
+        run: pnpm install --frozen-lockfile
+
+      - name: 记下运行冒烟脚本的 Node
+        run: echo "REPO_NODE=$(command -v node)" >> "$GITHUB_ENV"
+
+      # 模板用的 Node 与上面的分开：脚本用仓库的 Node 跑，模板按矩阵的版本跑
+      - name: 安装模板要的 Node（${{ matrix.node }}）
+        if: ${{ matrix.node != '' }}
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: 安装模板要的 Python（${{ matrix.python }}）
+        if: ${{ matrix.python != '' }}
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: 安装模板要的 Go（${{ matrix.go }}）
+        if: ${{ matrix.go != '' }}
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: ${{ matrix.go }}
+          # 仓库里没有 go.sum，也不要缓存：要的是干净环境的结果
+          cache: false
+
+      # 下限的 pnpm：装到单独的目录并放到 PATH 最前面；上限用仓库自己的 pnpm
+      - name: 安装模板要的 pnpm（${{ matrix.pnpm }}）
+        if: ${{ matrix.pnpm != '' }}
+        run: |
+          npm install --prefix "$RUNNER_TEMP/pnpm-template" --ignore-scripts --no-audit --no-fund "pnpm@${TEMPLATE_PNPM}"
+          echo "$RUNNER_TEMP/pnpm-template/node_modules/.bin" >> "$GITHUB_PATH"
+
+      - name: 打印本次用的工具版本
+        run: |
+          echo "node: $(node --version)"
+          pnpm --version
+          python3 --version || true
+          go version || true
+
+      # 数据目录在冒烟脚本自己建的临时目录里；服务类模板的 --node 指向矩阵版本的 node
+      - name: 冒烟
+        run: |
+          if [ -n "$TEMPLATE_NODE" ]; then
+            "$REPO_NODE" tooling/scripts/template-smoke.ts "$TEMPLATE" --node "$(command -v node)"
+          else
+            "$REPO_NODE" tooling/scripts/template-smoke.ts "$TEMPLATE"
+          fi

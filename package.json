@@ -21,6 +21,7 @@
     "generate": "node tooling/scripts/generate.ts",
     "template:lint": "node tooling/scripts/template-data.ts",
     "template:smoke": "node tooling/scripts/template-smoke.ts",
+    "test:template": "node tooling/scripts/template-smoke.ts",
     "i18n:build": "node packages/i18n/build/build.ts",
     "spec": "node tooling/scripts/spec.mjs"
   },
