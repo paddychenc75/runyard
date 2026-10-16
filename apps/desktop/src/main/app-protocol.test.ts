@@ -1,12 +1,14 @@
+import { join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { isAppUrl, resolveAppFile } from "./app-protocol.ts";
 
-const dir = "/dist/renderer";
+// 用 resolve 和 join 拼期望值：Windows 上路径分隔符不同
+const dir = resolve("dist", "renderer");
 
 describe("resolveAppFile", () => {
   it("根路径对应 index.html，其他路径对应界面目录里的文件", () => {
-    expect(resolveAppFile(dir, "app://runyard/")).toBe("/dist/renderer/index.html");
-    expect(resolveAppFile(dir, "app://runyard/main.js")).toBe("/dist/renderer/main.js");
+    expect(resolveAppFile(dir, "app://runyard/")).toBe(join(dir, "index.html"));
+    expect(resolveAppFile(dir, "app://runyard/main.js")).toBe(join(dir, "main.js"));
   });
 
   it("跳出界面目录的路径一律拒绝", () => {
@@ -17,9 +19,9 @@ describe("resolveAppFile", () => {
 
   it("地址解析器已折叠的 .. 不会让路径落到界面目录之外", () => {
     expect(resolveAppFile(dir, "app://runyard/../preload/index.cjs")).toBe(
-      "/dist/renderer/preload/index.cjs",
+      join(dir, "preload", "index.cjs"),
     );
-    expect(resolveAppFile(dir, "app://runyard//etc/passwd")).toBe("/dist/renderer/etc/passwd");
+    expect(resolveAppFile(dir, "app://runyard//etc/passwd")).toBe(join(dir, "etc", "passwd"));
   });
 
   it("别的主机、别的协议、乱写的地址都拒绝", () => {
