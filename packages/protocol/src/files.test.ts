@@ -53,8 +53,9 @@ const libraryFile = {
 };
 
 const supervisorFile = {
-  formatVersion: 1,
+  formatVersion: 2,
   pid: 4242,
+  processStart: 1_760_000_000_000,
   startedAt: 1_760_000_000_000,
   endpoint: "/Users/someone/.runyard/run/supervisor.sock",
   token,
@@ -315,6 +316,16 @@ describe("各文件的约定", () => {
       "execPath",
     ])
       expect(result.value).toHaveProperty(key);
+  });
+
+  it("上一版（v1）的发现文件没有启动时间：升到 v2 后照常读出，processStart 缺失", () => {
+    const { processStart: _omit, ...rest } = supervisorFile;
+    const result = readVersioned(supervisorFileFormat, { ...rest, formatVersion: 1 });
+    expect(result.status).toBe("ok");
+    if (result.status !== "ok") return;
+    expect(result.upgradedFrom).toBe(1);
+    expect(result.value.formatVersion).toBe(2);
+    expect(result.value.processStart).toBeUndefined();
   });
 
   it("doctor --bundle 打包前去掉口令，其余字段不变", () => {

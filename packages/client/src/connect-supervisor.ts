@@ -8,7 +8,7 @@ import {
   type ResolvedOptions,
   resolveOptions,
 } from "./connect-options.ts";
-import { sameDiscovery } from "./discovery.ts";
+import { discoveredProcessAlive, sameDiscovery } from "./discovery.ts";
 import { launchSupervisor } from "./launch-supervisor.ts";
 import { attemptSession, type SessionAttempt } from "./open-session.ts";
 import { RunyardClient, type VersionOutcome } from "./runyard-client.ts";
@@ -154,7 +154,7 @@ async function replace(
     });
   }
   connection.close();
-  await waitForExit(ctx, file.pid);
+  await waitForExit(ctx, file);
   return settle(ctx, await launchAndWait(ctx), {
     launched: true,
     mayReplace: false,
@@ -182,10 +182,11 @@ function peerSummary(
 }
 
 // 内核锁随进程退出才释放；连接断开早于锁释放，这时拉起新的会撞上 BUSY 而安静退出
-async function waitForExit(ctx: ResolvedOptions, pid: number): Promise<void> {
+// pid 被别的进程占用（启动时间对不上）就是旧的已经退出
+async function waitForExit(ctx: ResolvedOptions, file: Ready["file"]): Promise<void> {
   const { clock, platform, timeouts } = ctx;
   const startedAt = clock.now();
-  while ((await platform.proc.identity(pid)) !== null) {
+  while (await discoveredProcessAlive(platform, file)) {
     if (clock.now() - startedAt >= timeouts.replaceMs) {
       throw unavailable("the old supervisor did not exit in time");
     }

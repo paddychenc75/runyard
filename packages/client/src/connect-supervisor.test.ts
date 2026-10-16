@@ -241,6 +241,59 @@ describe("版本表", () => {
     client.close();
   });
 
+  // 管理进程在假平台里的“进程”：发现文件的 pid 和 processStart 指它；退出由测试决定
+  async function replaceWith(
+    fakeProc: { pid: number; startTime: number },
+    publish: Parameters<Awaited<ReturnType<World["supervisor"]>>["publishDiscovery"]>[0],
+  ) {
+    const old = await setup({ build: "1.0.0+old", pid: fakeProc.pid }, publish);
+    world.onSpawn = async () => {
+      const fresh = await world.supervisor({ build: "1.0.0+aaaa" });
+      await fresh.publishDiscovery();
+    };
+    return old;
+  }
+
+  it("[PROTOCOL-HANDSHAKE-08] 旧管理进程的 pid 已被别的进程占用（启动时间不同）：当作旧的已退出，不等到超时", async () => {
+    world = new World();
+    const stranger = world.fake.processes.addForeign({ pid: 5151 });
+    await replaceWith(stranger, { processStart: stranger.startTime - 5000 });
+    const client = await connectSupervisor(world.options());
+    expect(client.outcome).toEqual({ kind: "replaced" });
+    // 没有为等“旧进程”睡过：如果只比 pid，会一直等到 replaceMs 超时
+    expect(world.sleeps).not.toContain(50);
+    client.close();
+  });
+
+  it("[PROTOCOL-HANDSHAKE-08] pid 和启动时间都对得上：旧管理进程还活着，要等到它退出才拉起新的", async () => {
+    world = new World();
+    const alive = world.fake.processes.addForeign({ pid: 5252 });
+    await replaceWith(alive, { processStart: alive.startTime });
+    world.afterSleep = async () => world.fake.processes.exit(alive);
+    const client = await connectSupervisor(world.options());
+    expect(client.outcome).toEqual({ kind: "replaced" });
+    expect(world.sleeps).toContain(50);
+    expect(world.fake.processes.isAlive(alive)).toBe(false);
+    client.close();
+  });
+
+  it("[PROTOCOL-HANDSHAKE-08] 上一版格式的发现文件没有启动时间：退回只比 pid，pid 还在就等", async () => {
+    world = new World();
+    const alive = world.fake.processes.addForeign({ pid: 5353 });
+    const old = await replaceWith(alive, {});
+    // 写成 v1：去掉 processStart，版本号回到 1
+    const file = discoveryFilePath(world.platform.paths.stateDir);
+    const { processStart: _omit, ...rest } = old.discoveryFile();
+    await world.platform.fs.writeAtomic(file, JSON.stringify({ ...rest, formatVersion: 1 }), {
+      private: true,
+    });
+    world.afterSleep = async () => world.fake.processes.exit(alive);
+    const client = await connectSupervisor(world.options());
+    expect(client.outcome).toEqual({ kind: "replaced" });
+    expect(world.sleeps).toContain(50);
+    client.close();
+  });
+
   it("[PROTOCOL-HANDSHAKE-09] 构建标识不同且有运行：沿用旧的，不发 shutdown，给应用提示信息", async () => {
     world = new World();
     const old = await setup({ build: "1.0.0+old", runs: 2 });

@@ -1,7 +1,7 @@
 import { randomBytes as cryptoRandomBytes } from "node:crypto";
 import type { Server, Socket } from "node:net";
 import type { EventData, EventName, ShutdownReason } from "@runyard/protocol";
-import { NONCE_BYTES } from "@runyard/protocol";
+import { NONCE_BYTES, SUPERVISOR_FILE_VERSION } from "@runyard/protocol";
 import { createBuiltinHandlers } from "./builtin-methods.ts";
 import { createPlatformDiscoveryStore } from "./discovery-file.ts";
 import { createDispatcher, type HandlerMap } from "./dispatch.ts";
@@ -154,9 +154,12 @@ export function createSupervisorRuntime(options: StartSupervisorOptions) {
       // 清理失败不能让管理进程起不来：起不来比留下一个孤儿进程更糟，错误进日志
       log(`crash recovery failed: ${String(error)}`);
     }
+    // 取不到启动时间就不写，读的一方退回只比 pid
+    const self = await platform.proc.identity(process.pid);
     await store.write({
-      formatVersion: 1,
+      formatVersion: SUPERVISOR_FILE_VERSION,
       pid: process.pid,
+      ...(self === null ? {} : { processStart: self.startTime }),
       startedAt: clock.now(),
       endpoint: platform.ipc.endpoint(),
       token,

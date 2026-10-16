@@ -86,8 +86,10 @@ describe("真实进程：启动与发现文件", () => {
     const running = ledger.startSupervisor(home);
     const file = await waitReady(running);
     expect(file).toMatchObject({
-      formatVersion: 1,
+      formatVersion: 2,
       pid: running.pid,
+      // 真进程自己写的启动时间，和平台层从外面查到的一致：客户端靠它确认“还是不是这个进程”
+      processStart: (await platform.proc.identity(running.pid))?.startTime,
       endpoint: platform.ipc.endpoint(),
       protocol: 1,
       version: "0.0.0-it",

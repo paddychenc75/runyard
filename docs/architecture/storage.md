@@ -91,7 +91,7 @@
 
 | 文件 | 内容 | 说明 |
 | --- | --- | --- |
-| `supervisor.json` | `pid`、`startedAt`、`endpoint`（连接点）、`token`（握手口令，32 字节随机数）、`protocol`、`minClientProtocol`、产品版本、构建标识、`host`（`electron` 或 `node`）、`execPath` | 只有本人可读（权限 600）；先写临时文件再改名；`doctor --bundle` 打包前去掉 `token` |
+| `supervisor.json` | `pid`、`processStart`（管理进程的启动时间，操作系统给出；v2 起，v1 文件没有，缺失时客户端只比 pid）、`startedAt`、`endpoint`（连接点）、`token`（握手口令，32 字节随机数）、`protocol`、`minClientProtocol`、产品版本、构建标识、`host`（`electron` 或 `node`）、`execPath` | 只有本人可读（权限 600）；先写临时文件再改名；`doctor --bundle` 打包前去掉 `token` |
 | `supervisor.lock` | 空文件 | macOS 用 `O_EXLOCK` 持有，进程一死由内核释放；Linux 用抽象 socket，没有文件 |
 | `supervisor.sock` | socket 文件 | 持锁者才许删除残留并监听 |
 | `runs/<runId>.json` | `runId`、`playgroundId`、`owner`、`pid`、`processStart`（操作系统给出的进程启动时间）、`cwd`、`port`、`command`、`startedAt`、`state`，运行标记另需（0006，Windows 以后必须） | 只为崩溃恢复：下次启动逐个核对 pid 加启动时间，仍活着的整棵结束，标 `crashed`；运行期间的真相在内存里 |
@@ -108,7 +108,7 @@
 
 ## 3. 版本与升级（§4.2、决策记录 0005 以后的格式规则）
 
-- 每个文件有整数 `formatVersion`；每种文件一条升级链（`vN` 到 `vN+1`），读入时在内存里升到最新，下次写入时落盘。升级链放在 `protocol`（`file-format.ts`），现在每种文件都是 v1，链是空的。
+- 每个文件有整数 `formatVersion`；每种文件一条升级链（`vN` 到 `vN+1`），读入时在内存里升到最新，下次写入时落盘。升级链放在 `protocol`（`file-format.ts`），现在只有 `supervisor.json` 是 v2（v1 到 v2 加了 `processStart`，升级不改内容），其余都是 v1、链是空的。
 - 读到比程序认识的**更新**的版本：只读不写，提示需要更新版本的 Runyard。这样旧命令行不会把新应用写的文件改坏。`readVersioned` 对这种文件返回 `status: "newer"`（带 `readOnly: true`、文件版本、程序认识的版本，不解析内容）；`canWrite` 只对读入成功的返回真。对这种文件：**读仍然允许**（只读视图，能看到内容）；**任何会写它的操作一律拒绝**，返回错误码 `DATA_FROM_NEWER_VERSION { file, found, supported }`（退出码 10，与 `CLIENT_OUTDATED` 同类：要用户升级 Runyard 才能继续）。不改写、不降级、不为了写入而先“修一下”。`file` 是 `dataFileKinds` 里的文件名（`playground.json`、`library.json`、`settings.json`、`cli.json`），`found` 是文件里的版本，`supported` 是本程序认识的最高版本。会声明这个错误码的方法见 `docs/reference/protocol.md`（`playground.create|rename|update|duplicate|trash|relocate|forget`、`library.rescan`、`run.start|restart`（写 `library.json` 里记住的端口和 `lastUsedAt`）、`settings.set`、`toolchain.setPath`）；读方法不声明。两个例外：`toolchain.json` 是缓存，读到更新版本时不写缓存、照常检测，不报这个错；`supervisor.json` 和运行记录由管理进程每次整个重写，不经方法。`cli.json` 由命令行自己写，`config set lang` 遇到更新版本的 `cli.json` 同样以这个错误码失败。
 - 写入一律先写临时文件再改名；改名覆盖遇到占用时的重试（Windows 以后）。
 - 解析失败（不是 JSON、不是对象、版本号不对、升级抛错、形状不合法）：把坏文件改名留存（`quarantineFileName`：`<文件名>.corrupt-<毫秒时间>`），再按文件种类处理，`readVersioned` 的返回里带 `recovery`：`library.json` 重扫（`rescan`）；`settings.json`、`cli.json` 回到默认并提示一次（`defaults`）；`toolchain.json`、`supervisor.json` 丢弃（`discard`，缓存重建；发现文件坏了按“没有发现文件”）；`playground.json`、运行记录跳过这一个、不重写（`skip`，身份只存在那个文件里；崩溃清理无法核对身份的进程不结束）。

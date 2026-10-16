@@ -9,6 +9,7 @@ import {
   helloSchema,
   NONCE_BYTES,
   proofMessage,
+  SUPERVISOR_FILE_VERSION,
   type SupervisorFile,
 } from "@runyard/protocol";
 
@@ -73,7 +74,7 @@ export class TestSupervisor {
 
   discoveryFile(overrides: Partial<SupervisorFile> = {}): SupervisorFile {
     return {
-      formatVersion: 1,
+      formatVersion: SUPERVISOR_FILE_VERSION,
       pid: this.#options.pid ?? 424242,
       startedAt: 1_700_000_000_000,
       endpoint: this.#options.platform.ipc.endpoint(),
