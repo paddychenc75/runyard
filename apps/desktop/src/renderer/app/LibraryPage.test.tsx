@@ -39,7 +39,15 @@ function row(id: string, extra: Partial<PlaygroundRow> = {}): PlaygroundRow {
 }
 
 function library(playgrounds: PlaygroundRow[], locale: "zh-CN" | "en" = "zh-CN"): LibraryState {
-  return { locale, error: null, templates: [], tabs: [], activeTab: "library", playgrounds };
+  return {
+    locale,
+    error: null,
+    closeRequest: null,
+    templates: [],
+    tabs: [],
+    activeTab: "library",
+    playgrounds,
+  };
 }
 
 function setup(state: LibraryState, locale: "zh-CN" | "en" = "zh-CN") {

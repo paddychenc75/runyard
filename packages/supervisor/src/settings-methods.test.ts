@@ -25,6 +25,7 @@ describe("settings.get / settings.set", () => {
       cliIdleStopMinutes: 30,
       ports: { min: 7100, max: 7999 },
       updateCheck: true,
+      confirmCloseRunningTab: true,
     });
     expect(lw.fs.exists(lw.settingsPath())).toBe(false);
   });
@@ -42,6 +43,16 @@ describe("settings.get / settings.set", () => {
     expect(after).toMatchObject({ updateCheck: false, cliIdleStopMinutes: 30 });
     expect(readSettings()).toEqual({ formatVersion: 1, theme: "dark", updateCheck: false });
     expect(await app.waitForEvent("settings.changed")).toEqual({});
+  });
+
+  it("旧文件里没有 confirmCloseRunningTab 按 true 读，写 false 后读回 false，不升 formatVersion", async () => {
+    const app = await setup(() => {
+      lw.fs.writeFile(lw.settingsPath(), JSON.stringify({ formatVersion: 1, updateCheck: false }));
+    });
+    expect(await app.result("settings.get", {})).toMatchObject({ confirmCloseRunningTab: true });
+    await app.result("settings.set", { confirmCloseRunningTab: false });
+    expect(await app.result("settings.get", {})).toMatchObject({ confirmCloseRunningTab: false });
+    expect(readSettings()).toMatchObject({ formatVersion: 1, confirmCloseRunningTab: false });
   });
 
   it("ports.min 大于 ports.max 报 USAGE，文件不动", async () => {

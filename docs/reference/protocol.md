@@ -741,6 +741,7 @@
 | `ports` | `{ min: integer; max: integer }` | 否 | 分配端口的范围，含两端 |
 | `urlNewSkipConfirmForBuiltin` | `boolean` | 否 |  |
 | `updateCheck` | `boolean` | 否 |  |
+| `confirmCloseRunningTab` | `boolean` | 否 | 关闭运行中的标签页前是否确认；“不再提示”关掉它 |
 
 出参：
 
@@ -1000,6 +1001,7 @@
 | `ports` | `{ min: integer; max: integer }` | 是 | 分配端口的范围，含两端 |
 | `urlNewSkipConfirmForBuiltin` | `boolean` | 是 |  |
 | `updateCheck` | `boolean` | 是 |  |
+| `confirmCloseRunningTab` | `boolean` | 是 | 关闭运行中的标签页前是否确认；“不再提示”关掉它 |
 
 ### `TemplateRecord`
 

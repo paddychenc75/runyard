@@ -24,6 +24,8 @@ export interface LibraryInputs {
   tabIds: readonly string[];
   activeTab: string;
   busyIds: ReadonlySet<string>;
+  /** 等确认关闭的标签（项目 id） */
+  closeRequestId?: string | null;
   error: DesktopError | null;
 }
 
@@ -130,8 +132,27 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
         (template) => template.source === "builtin" && template.valid && template.kind !== null,
       )
       .map((template) => ({ id: template.id, name: template.name })),
+    closeRequest: closeRequestOf(inputs.closeRequestId ?? null, rows),
     error: inputs.error,
   };
+}
+
+function closeRequestOf(
+  id: string | null,
+  rows: readonly PlaygroundRow[],
+): LibraryState["closeRequest"] {
+  if (id === null) return null;
+  const row = rows.find((candidate) => candidate.id === id);
+  return row === undefined ? null : { id, name: row.name };
+}
+
+/** 这个项目最近一次运行是否由标签页持有且仍在进行：关闭标签页要停它（命令行持有的和已停止的不用） */
+export function ownedActiveRun(
+  playgroundId: string,
+  runs: readonly RunSnapshot[],
+): RunSnapshot | null {
+  const run = latestRunByPlayground(runs).get(playgroundId);
+  return run !== undefined && run.owner.kind === "tab" && isActiveRun(run.state) ? run : null;
 }
 
 /** 预览该显示哪个地址：被选中的项目的最近一次运行已就绪且有地址 */

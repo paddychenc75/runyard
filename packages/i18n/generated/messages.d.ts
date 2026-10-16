@@ -349,5 +349,16 @@ export type CatalogMessages = {
   };
   "platform.fileManager": Record<never, never>;
   "platform.trash": Record<never, never>;
+  "workspace.closeConfirm.body": Record<never, never>;
+  "workspace.closeConfirm.cancel.action": Record<never, never>;
+  "workspace.closeConfirm.confirm.action": Record<never, never>;
+  "workspace.closeConfirm.optOut.hint": Record<never, never>;
+  "workspace.closeConfirm.optOut.label": Record<never, never>;
+  "workspace.closeConfirm.title": {
+    name: string | number;
+  };
+  "workspace.tab.close.label": {
+    name: string | number;
+  };
   "workspace.tabs.aria": Record<never, never>;
 };

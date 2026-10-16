@@ -62,6 +62,19 @@ export function registerBridgeHandlers(
       const tab = text(id);
       if (tab !== null) controller.selectTab(tab);
     },
+    "tab.close": async (id) => {
+      const tab = text(id);
+      if (tab !== null) await controller.requestCloseTab(tab);
+    },
+    "tab.closeConfirm": async (value) => {
+      if (typeof value !== "object" || value === null) return;
+      const { id, dontAskAgain } = value as Record<string, unknown>;
+      const tab = text(id);
+      if (tab !== null && typeof dontAskAgain === "boolean") {
+        await controller.confirmClose(tab, dontAskAgain);
+      }
+    },
+    "tab.closeCancel": () => controller.cancelClose(),
     "preview.bounds": (value) => {
       if (value === null) controller.setPreviewBounds(null);
       else {

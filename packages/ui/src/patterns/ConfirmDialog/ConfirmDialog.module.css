@@ -1,0 +1,5 @@
+/* 设计稿的“取消”是 500 字重（和确认钮同为强调的一对），中性按钮默认是正文字重；
+   选择器带元素名，保证压过按钮自己的同级类 */
+button.cancel {
+  --button-weight: var(--text-control-weight);
+}

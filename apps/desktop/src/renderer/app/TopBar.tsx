@@ -16,11 +16,13 @@ export interface TopBarProps {
   /** 当前的项目标签；在资源库时是 undefined，不显示运行条 */
   activeTabRow: TabRow | undefined;
   onSelect: (id: string) => void;
+  /** 关闭项目标签（关闭钮、⌘W）；要不要确认由主进程决定 */
+  onClose: (id: string) => void;
 }
 
 // 顶栏：标签条里资源库固定在第一位、不能关闭（规格 desktop/workspace 的 DESKTOP-WORKSPACE-03），
-// 后面是打开的项目标签，名字前是运行状态的小圆点。项目标签的关闭钮、确认对话框随 #174
-// （给项目标签加 closeLabel 和 onClose 即可，TabStrip 已支持）。右边是“N 个运行中”
+// 后面是打开的项目标签，名字前是运行状态的小圆点。项目标签有关闭钮和 ⌘W（#174，
+// 运行中的会先出确认对话框，见 CloseConfirmDialog）。右边是“N 个运行中”
 // （点开运行视图随 #186）；当前标签是项目时右边多一条运行条（#176）；搜索、新建随 #181、#173。
 export function TopBar({
   bridge,
@@ -30,6 +32,7 @@ export function TopBar({
   running,
   activeTabRow,
   onSelect,
+  onClose,
 }: TopBarProps) {
   const t = useT();
   const items: TabStripItem[] = [
@@ -39,6 +42,7 @@ export function TopBar({
         id: tab.id,
         label: <UserText>{tab.name}</UserText>,
         status: tab.status,
+        closeLabel: t("workspace.tab.close.label", { name: tab.name }),
         statusLabel:
           tab.state === "idle" ? t("desktop.state.idle.label") : t(`runState.${tab.state}`),
       }),
@@ -51,6 +55,7 @@ export function TopBar({
         items={items}
         value={activeTab}
         onValueChange={onSelect}
+        onClose={onClose}
         modKey={modKey}
       />
       <div className={styles.spacer} />

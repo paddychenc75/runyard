@@ -23,6 +23,12 @@ export interface DesktopMethods {
   /** 切到资源库（"library"）或已打开的项目标签 */
   "tab.select": { param: string; result: undefined };
   "playground.create": { param: string; result: undefined };
+  /** 请求关闭项目标签（关闭钮、⌘W）：运行中且由标签持有时先出确认（状态里的 closeRequest），否则直接关 */
+  "tab.close": { param: string; result: undefined };
+  /** 确认关闭并停止；dontAskAgain 为真就记住“不再提示” */
+  "tab.closeConfirm": { param: { id: string; dontAskAgain: boolean }; result: undefined };
+  /** 取消关闭：什么都不变，也不记住勾选 */
+  "tab.closeCancel": { param: undefined; result: undefined };
   /** 在系统文件管理器（访达）里选中项目文件夹 */
   "playground.reveal": { param: string; result: undefined };
   /** 把项目文件夹的绝对路径放进剪贴板 */
@@ -45,6 +51,9 @@ export const desktopMethodNames: readonly DesktopMethod[] = [
   "tab.open",
   "tab.select",
   "playground.create",
+  "tab.close",
+  "tab.closeConfirm",
+  "tab.closeCancel",
   "playground.reveal",
   "playground.copyPath",
   "preview.bounds",

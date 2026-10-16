@@ -83,7 +83,7 @@
 | `toolchain.check` | `playground?` 或 `template?`、`cachedOnly?` | `{ tools }`，每项 `tool`、`status`（`found` `missing` `too-old` `unknown`）、`path?`、`version?`、`required?`、`untested?`、`source?` | `cachedOnly: true` 只读缓存，不触发检测 |
 | `toolchain.doctor` / `.recheck` / `.setPath` | `-` / `-` / `tool`、`path` | 同 `toolchain.check` 的 `{ tools }` | `recheck` 重新解析登录环境、清缓存 |
 | `request.send` / `.getLast` | `playground`、`method`、`path`、`headers?`、`body?` | 状态码、耗时、响应头、响应体 | 属于 M3 的请求面板，M1 不实现 |
-| `settings.get` / `.set` | `-` / 部分设置 | 设置 | 字段见 storage.md 2.3；协议里现在有 `libraryRoot` `externalEditor?` `packageManager` `scriptAutoRun` `cliIdleStopMinutes` `toolPaths` `ports { min, max }` `urlNewSkipConfirmForBuiltin` `updateCheck`，其余（`autoSave` `network` `theme` `language`）等设置的规格批准后再加 |
+| `settings.get` / `.set` | `-` / 部分设置 | 设置 | 字段见 storage.md 2.3；协议里现在有 `libraryRoot` `externalEditor?` `packageManager` `scriptAutoRun` `cliIdleStopMinutes` `toolPaths` `ports { min, max }` `urlNewSkipConfirmForBuiltin` `updateCheck` `confirmCloseRunningTab`（本键因已批准的 DESKTOP-WORKSPACE-07/08 提前加入），其余（`autoSave` `network` `theme` `language`）等设置的规格批准后再加 |
 | `clean.due` | 无 | `{ remind, clean }`：项目 id 数组，待提醒清单和可清理清单 | 判断在 `core` 的纯函数，调度在桌面应用主进程（§4.7）。清理本身走 `playground.trash`，没有单独的方法 |
 | `clean.ackReminder` / `clean.keep` | `playgroundId` | 空 | 界面确认提醒已显示 / 提醒里的“改为保留”。会写共享文件，可能返回 `DATA_FROM_NEWER_VERSION` |
 

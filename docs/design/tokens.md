@@ -141,6 +141,7 @@ disagree, `tokens.json` wins.
 | `--radius-menu` | 16px | Menu |
 | `--radius-row` | 12px | List row / input |
 | `--radius-control` | 9px | Small control |
+| `--radius-checkbox` | 5px | Checkbox box |
 
 ### Capsule radius
 
@@ -167,6 +168,8 @@ disagree, `tokens.json` wins.
 | `--size-window-controls` | 72px | Space reserved for the native window buttons in a title bar |
 | `--size-card-gap` | 8px | Gap between cards |
 | `--size-dialog-width` | 580px | Dialog width |
+| `--size-checkbox` | 18px | Checkbox box edge |
+| `--size-dialog-icon` | 40px | Dialog icon block |
 | `--size-status-mark` | 9px | Status dot / square in a list row |
 | `--size-badge` | 22px | Badge (retention, creator) height |
 | `--size-tile` | 22px | Template monogram tile, in a table row |

@@ -1,3 +1,10 @@
 {
+  "workspace.closeConfirm.body": "Closing the tab stops this playground. Your code and files are not affected, and it runs again the next time you open it.",
+  "workspace.closeConfirm.cancel.action": "Cancel",
+  "workspace.closeConfirm.confirm.action": "Close and stop",
+  "workspace.closeConfirm.optOut.hint": "Tabs will then close and stop right away. You can turn the prompt back on in Settings › Editing and running.",
+  "workspace.closeConfirm.optOut.label": "Don’t ask again",
+  "workspace.closeConfirm.title": "Close {name} and stop it?",
+  "workspace.tab.close.label": "Close {name}",
   "workspace.tabs.aria": "Tabs"
 }
