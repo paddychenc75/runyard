@@ -1,10 +1,12 @@
 import { listFiles, PRD_FILE, readText } from "./docs.ts";
+import { readSpecs } from "./spec-scenarios.ts";
 import type { Check } from "./workspace.ts";
 
 // prd-refs：文档里引用的 PRD 锚点真的存在（技术设计 §9.5、§9.4）。
 // 引用的写法是 “PRD #prd-run-ownership”，或链接里的 02-prd.md#prd-run-ownership。
 // 范围：仓库里全部 Markdown（PRD 自己除外），包括说明文件、手册、决策记录和技术设计。
-// 规格（openspec/specs/）的“来源”一行随第 5 次提交加入这项检查。
+// 规格（openspec/specs/）也在范围内：每条要求必须有单独一行的“来源：”（技术设计 §9.6.9）；
+// 来源写 PRD 锚点，没有 PRD 出处的写“来源：ADR NNNN”或“来源：实现细节”。
 
 // PRD 里声明的全部锚点：单独占一行的 <a id="prd-…"></a>（正文里举例用的不算）
 export function prdAnchors(prdText: string): string[] {
@@ -34,6 +36,13 @@ export const prdRefs: Check = {
             );
           }
         });
+    }
+    for (const spec of readSpecs(root)) {
+      for (const requirement of spec.requirements.filter((r) => !r.hasSource)) {
+        errors.push(
+          `${spec.file}:${requirement.line} 要求“${requirement.name}”没有“来源”一行。在要求正文后单独写一行“来源：PRD #prd-…”；没有 PRD 出处的写“来源：ADR NNNN”或“来源：实现细节”。`,
+        );
+      }
     }
     return errors;
   },

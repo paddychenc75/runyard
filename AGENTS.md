@@ -1,7 +1,6 @@
 # Runyard
 
-> 不要在本仓库或它的上级目录里建 `CLAUDE.md`、`CLAUDE.local.md`：有了它们，Claude Code 就不再读这份文件。
-> 个人偏好放 `~/.claude/CLAUDE.md`，或把 Claude Code 的 Project instructions 设置改为 `claude-md-and-agents-md`。
+> 不要在本仓库或它的上级目录里建 `CLAUDE.md`、`CLAUDE.local.md`：有了它们，Claude Code 就不再读这份文件。个人偏好放 `~/.claude/CLAUDE.md`，或把 Claude Code 的 Project instructions 设置改为 `claude-md-and-agents-md`。
 
 Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用本地模板新建、运行和管理小的代码示例（叫“项目”，代码里是 `playground`）。所有运行由一个后台的管理进程（`supervisor`）统一照看，桌面应用和命令行都只是它的客户端。命令行只随桌面应用安装，第一版不发 npm。
 现状：1.0 之前，仓库里只有工具链和文档，产品代码还没开始写。范围和里程碑见 PRD #prd-release-plan。
@@ -38,9 +37,10 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `templates/` | 模板和运行器的数据文件。`schema/`（由 `packages/protocol` 的 zod 定义生成的 JSON Schema，`pnpm generate`，不要手改）、`tools/`（六份工具定义）、`builtin/` 和 `runners/`（目前为空，内置模板与运行器随后续 issue 放进来） |
 | `tooling/checks/` | 仓库检查脚本，`pnpm check` 的全部内容；`layers.json` 是包依赖规则的唯一出处 |
 | `tooling/biome/` | Biome 的 GritQL 规则（界面里不许写死文字，随 `biome.json` 在界面包和 renderer 出现时生效） |
-| `tooling/scripts/` | 脚本：`deps-lookup.ts`（查依赖版本和公告）、`generate.ts`（生成文档里的表和协议参考） |
+| `tooling/scripts/` | 脚本：`deps-lookup.ts`（查依赖版本和公告）、`generate.ts`（生成文档里的表和协议参考）、`spec.mjs`（`pnpm spec` 的包装，关掉 OpenSpec 的联网） |
 | `tooling/hooks/` | Claude Code 的钩子脚本，由 `.claude/settings.json` 调用 |
 | `tooling/design-render/` | 把设计源文件渲染成图片的脚本（图片不进仓库） |
+| `openspec/` | 规格驱动：`specs/` 是批准的行为规格（唯一出处），`config.yaml` 和 `schemas/runyard/` 是流程；进行中的改动在 `changes/`（只在开发分支） |
 | `security/allowlist.toml` | 依赖安全允许清单，改之前先问 |
 | `.claude/` | Claude Code 的设置、skills、子智能体 |
 
@@ -68,8 +68,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 - `@runyard/protocol` 里不许用 Node、浏览器、Electron 的任何接口。
 - 系统分支（读 `process.platform`、直接启动进程、手写路径分隔符）只许写在 `@runyard/platform` 和桌面应用主进程的 integration 目录里，其他地方调用平台接口。`platform-branching` 查 `packages` 和 `apps` 两个目录（含测试）：读运行系统的写法、导入 `child_process`、传给 `node:fs`/`node:path` 函数的手写 `/` 或 `\\` 拼接和 `path.sep` 拼接；`tooling` 目录不查（脚本要启动 git、pnpm）。其余手写分隔符的写法靠评审。
 - 第一版只发 macOS（决策记录 0013）：平台层只有 `darwin` 和薄的 `linux` 两份实现，不许新增只属于 Windows 的代码（`win32` 实现、辅助程序、安装器）；接口按以后好加 Windows 来写（不假设信号和进程组，进程身份是 pid 加启动时间）。依赖平台实现的测试只在 macOS 和 Ubuntu 跑，在 Windows 上只通过测试手册里那一个机制跳过，不在测试里写 `if (process.platform …)`。
-- 包之间只从入口导入（如 `@runyard/core`），不伸进内部文件。
-- 管理进程一侧的包（protocol、platform、core、supervisor、client）不产生给人看的句子，只发“代码加参数”。
+- 包之间只从入口导入（如 `@runyard/core`），不伸进内部文件。管理进程一侧的包（protocol、platform、core、supervisor、client）不产生给人看的句子，只发“代码加参数”。
 - 界面分五层，只能从上往下导入，通用组件包不认识产品。
 - 给人看的文字一律走文案包。现在 `pnpm check` 已拦：缺文案或参数不一致（`i18n-keys`、`i18n-codes`）、未使用的键（`i18n-unused`）、术语和措辞（`i18n-glossary`、`i18n-wording`）、源码字符串里的汉字和命令行输出口之外的 `process.stdout.write`（`ui-strings`）；
 - 永久删除：产品源码里的 `fs.rm`、`rmSync`、`rmdir`、`unlink`、经进程的 `rm` 一律被 `no-permanent-delete` 拦住。用户的项目只进废纸篓（`fs.trash`）；管理进程自己的临时文件、运行文件、日志轮转、刚建的占位要删，在同一行或上一行写 `// delete-allow: 理由`（理由必填）；平台层里可能递归删除的调用只许出现在 `remove-after-verified-copy.ts`；界面一侧（JSX 规则、`Localized` 属性、伪语言扫页面）随 M2 的界面包才生效。
@@ -82,12 +81,10 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 pnpm install                 # 安装依赖
 pnpm verify                  # 交付前必跑：lint + typecheck + check + 受影响的包的测试（两个阶段）
 pnpm check                   # 全部仓库检查（依赖规则、文档、术语、PRD 锚点等）
-pnpm lint                    # Biome：格式和代码规则，只检查不修改
-pnpm format                  # Biome：按规则重排格式
+pnpm lint / pnpm format      # Biome：检查格式和代码规则（只检查）/ 按规则重排格式
 pnpm typecheck               # tsc -b，全仓库类型检查
 pnpm test                    # 全部包的测试：先单元阶段，再进程阶段（起真进程的 *.platform-dependent.test.ts，一次一个包）
-pnpm test:unit               # 只跑单元阶段；pnpm test:process 只跑进程阶段
-pnpm test --filter <包名>     # 只跑一个包的测试，如 pnpm test --filter @runyard/protocol
+pnpm test:unit               # 只跑单元阶段；pnpm test:process 只跑进程阶段；pnpm test --filter <包名> 只跑一个包
 pnpm generate                # 重新生成文档里由脚本生成的部分
 pnpm deps:lookup <包名>       # 查一个依赖的候选版本、发布日期和安全公告
 ```
@@ -101,8 +98,7 @@ Claude Code 的钩子：改完文件后对那一个文件跑 Biome；结束回�
 3. 修缺陷先写一个能复现的失败测试。测试放在代码旁边：`allowlist.ts`、`allowlist.test.ts`。
 4. 说“做完了”之前运行 `pnpm verify` 并贴出结果。没运行过的不要说通过。
 5. 把任务交给任何子智能体时，交代里写明：先读根 `AGENTS.md` 和所改目录的 `AGENTS.md`。
-6. 手册有错或缺步骤，在同一次改动里改掉。新增一类任务时，在同一个 PR 里写它的手册。
-7. 长期有用的知识写进仓库（这份文件、手册、决策记录），不留在某台机器的智能体记忆里。
+6. 手册有错或缺步骤，在同一次改动里改掉；新增一类任务时，在同一个 PR 里写它的手册。长期有用的知识写进仓库（这份文件、手册、决策记录），不留在某台机器的智能体记忆里。
 
 | 任务 | 读 |
 | --- | --- |
@@ -117,13 +113,20 @@ Claude Code 的钩子：改完文件后对那一个文件跑 Biome；结束回�
 
 完成标准（一个 PR 合并前）：引用了 PRD 锚点；新行为有测试；`pnpm verify` 通过并贴了结果；改了包结构、依赖规则、磁盘格式、构建发布做法的附了决策记录；动了依赖的按手册十步做完；文字都是中文，两个 README 同步；没有新增未说明的跳过。
 
+## 规格驱动（SDD）
+
+- 新增或改变外部看得见的行为之前，先走 `propose-change`，得到负责人批准后才写代码；完整步骤只在 `docs/guides/change-with-spec.md`，不要凭记忆做。
+- 重构、依赖、文档、工具、CI、补测试和技术验证的一次性代码不走这套流程；修缺陷时规格里已有对应场景就直接写带编号的失败测试再修，没有就先补场景；拿不准就走流程。
+- 产品层面以 PRD 为准，规格不能与它矛盾，发现矛盾就停下报告；要动 PRD 写明的行为，先改 PRD（需要负责人同意）。
+- 规格只写行为，不写类名、函数名、库的选择；测试标题带它验证的场景编号，如 `[RUN-OWNERSHIP-01]`。
+- 只通过 `pnpm spec …` 调用 OpenSpec（如 `pnpm spec list --specs`、`pnpm spec validate --all --strict`），不运行 `openspec init`、`openspec update`。
+
 ## 约定
 
 - 一个文件一个概念，文件名是主要导出的 kebab-case 名字。不建 `utils.ts`、`helpers.ts`、`common.ts`。
 - 只用具名导出。不用 `enum`、`namespace`（源码要能在去掉类型后直接运行）。
 - 源码文件不超过 400 行，函数不超过 80 行。超了就拆，不调上限。
-- 注释写“为什么”，不写“做了什么”。不加许可证头。
-- 检查脚本的报错是一句指令：哪里错、怎么改、看哪份文档。
+- 注释写“为什么”，不写“做了什么”。不加许可证头。检查脚本的报错是一句指令：哪里错、怎么改、看哪份文档。
 - 本机地址一律写 `127.0.0.1`。运行器的命令是参数数组，不经过 shell；`stop` 不写信号名。
 
 ## 禁止事项
@@ -132,13 +135,10 @@ Claude Code 的钩子：改完文件后对那一个文件跑 Biome；结束回�
 - 必过检查失败了不要直接重跑：先开带 `flaky` 标签的 issue 并附运行链接（`docs/guides/testing.md`“偶发失败的规则”）。
 - 不要无说明地压掉报错（`biome-ignore`、`@ts-expect-error`、跳过测试）：旁边必须有带 issue 编号的注释。
 - 不要手改 `package.json` 里的版本号，不要写 `^`、`~`、`latest`。加或升级依赖之前按手册查公告（OSV、GitHub 公告库、项目公告页三处）、查年龄（满 15 天）、记进 `docs/architecture/dependencies.md`。
-- 不要设 `dangerouslyAllowAllBuilds`，不要不看脚本就批准依赖的安装脚本，不要用 `--force` 或 `--no-frozen-lockfile`。
-- 不要为了让检查变绿而改 `security/allowlist.toml` 或 `minimumReleaseAgeExclude`，要改先问。
-- 不要手改 `pnpm-lock.yaml` 和文档里两行 generated 标记之间的内容，它们是生成的。
-- 不要把 `node-pty` 或任何原生模块加进 `packages/` 下的包。
+- 不要设 `dangerouslyAllowAllBuilds`，不要不看脚本就批准依赖的安装脚本，不要用 `--force` 或 `--no-frozen-lockfile`；不要为了让检查变绿而改 `security/allowlist.toml` 或 `minimumReleaseAgeExclude`，要改先问。
+- 不要手改 `pnpm-lock.yaml` 和文档里两行 generated 标记之间的内容，它们是生成的；不要把 `node-pty` 或任何原生模块加进 `packages/` 下的包。
 - 不要用 `fs.rm` 一类的永久删除来删用户的项目，只用平台层的 `fs.trash`。端口探测不要绑定 `0.0.0.0`。
-- 不要在测试或开发运行中读写用户真实的 `~/Runyard` 和 `~/.runyard`，用临时目录。
-- 不要把过程产物（讨论、调研、评审、草稿）放进仓库；说明文件只引用仓库里存在的文件。
+- 不要在测试或开发运行中读写用户真实的 `~/Runyard` 和 `~/.runyard`，用临时目录。不要把过程产物（讨论、调研、评审、草稿）放进仓库；说明文件只引用仓库里存在的文件。
 - 不要改 `docs/product/` 里的产品文档，除非任务明确要求（改之前要负责人同意）。
 - 不要推送到 `main`，变更只经 PR 进入 `main`（六项必过检查通过后自动合并，决策记录 0012）；不要发版或发布到 npm，这些由负责人做；不要合并 release-please 开的发版 PR。
 - 不要手改 `CHANGELOG.md` 和 `.release-please-manifest.json`，它们只由发版 PR 写（CI 会拦）；要给负责人写版本说明，写 `docs/releases/<版本>.md`（`docs/guides/release.md`）。PR 标题的 type 就是更新日志的分类，要选对。
