@@ -3,7 +3,6 @@
 # 不许新增（新规格的场景要么同时带测试，要么在批准规格的 PR 里一次性登记）。
 
 # CLI-COMMANDS
-CLI-COMMANDS-20
 CLI-COMMANDS-37
 CLI-COMMANDS-47
 CLI-COMMANDS-48
