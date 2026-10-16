@@ -3,7 +3,7 @@
 ## 用途
 
 `runyard` 命令：参数解析、输出模块、`--json`、退出码映射、语言解析、`--help`（技术设计 §5.3、§6.8；`docs/architecture/cli-contract.md`；规格 `openspec/specs/cli/commands`）。命令行只随桌面应用安装，第一版不发 npm：包是 `private`，没有 `bin`、没有发布配置；M1 期间从仓库源码运行（`pnpm --filter runyard start -- <参数>` 或 `node packages/cli/src/main.ts <参数>`）。
-现状：`config get|set lang`、`doctor`（含 `--template`、`--bundle`）、`skill install`、`template list|show|save|lint`、`new`、`run` 有行为；`stop status logs rm` 和 `template test` 只有声明（帮助里看得到，运行得到 `NOT_SUPPORTED`，退出码 10），前者由 #47 补，`template test` 的冒烟测试在 #54。
+现状：`config get|set lang`、`doctor`（含 `--template`、`--bundle`）、`skill install`、`template list|show|save|lint`、`new`、`run`、`stop`、`status`、`logs`、`rm` 有行为；`template test` 只有声明（帮助里看得到，运行得到 `NOT_SUPPORTED`，退出码 10），其冒烟测试在 #54。
 
 ## 对外暴露什么
 
@@ -34,11 +34,15 @@
 
 - `new`、`run`（`src/commands/new.ts`、`run.ts`、`start-run.ts`）：参数先在本进程检查完再连管理进程（`--var` 写法或键为 `name` 是 `VAR_INVALID`，`--clean-after` 不是“正整数加 d”、`--if-exists`、`--timeout`、`--port` 不合法是 `USAGE`），所以参数不对时不创建任何文件夹。`new` 发 `playground.create`（`ifExists` 缺省显式传 `fail`），`--run` 再发 `run.start`；`run` 先 `playground.get` 取种类（服务等 `ready`，脚本等 `exit`，`--no-wait` 是 `none`），`--timeout` 缺省 60 秒（`new` 也是，cli-contract“未定”第 4 项的暂定做法）换成毫秒交给管理进程。`--restart` 是 `run.stop`（没有运行可停不算错）加 `run.start`，因为 `run.restart` 没有等待参数。`<pg>` 原样交给管理进程，名称、id、绝对路径它都认（`PlaygroundLibrary.find`）。结果整理成规格的键：服务 `logTail`、脚本 `output` 取自 `logs.read` 的最后 200 行（与 `logs` 默认一致），`idleStopMinutes` 取设置 `cliIdleStopMinutes`；管理进程默认返回清洗过的整行，系统提示不算输出，`cursor` 用这次读取返回的。端口回退在文字模式下写成 `PORT_FALLBACK` 提示，`--json` 里是 `portFallback`。
 - 创建者与持有者（`src/creator/detect-creator.ts`）：`RUNYARD_AGENT`，其次 `CLAUDECODE=1`（记为 `Claude Code`），其次 `AI_AGENT` 的原值，都没有是 `cli` 且不带名字；记下的“创建命令”只有命令词和位置参数（`runyard new html demo`），不含 `--note`、`--var` 的值。
+- `stop`（`src/commands/stop.ts`）：`<pg>` 或 `--all [--mine]`，参数组合不对先报 `USAGE`，不连管理进程。管理进程的 `run.stop` 对没运行过的项目报 `RUN_NOT_FOUND`、对已结束的运行也返回快照，所以先用 `run.list { running: true }` 记下活动中的运行，只把停之前确实活动的列进 `stopped`。
+- `status`（`src/commands/status.ts`）：`playground.list` 加 `run.list` 在本进程里拼出规格的键；`url`、`port`、`owner`、`agent`、`idleStopAt` 只对活动中的运行有值，结束后是 `null`；`cleanInDays` 用 core 的 `dueAt` 向上取整。`<pg>` 按名称、id 或路径在列表里找，找不到报 `PLAYGROUND_NOT_FOUND`（所以找不到文件夹的项目仍能列出，`missing: true`）。
+- `logs`（`src/commands/logs.ts`、`logs-follow.ts`、`log-text.ts`）：默认 `tail` 200（RUN-LOGS-18），给了 `--since` 就不截断；实际向管理进程要 `tail + 1` 行，多出来的一行只用来判断 `truncated`。`--json` 下管理进程插入的提示（`system` 条目）永远用英文文案拼，文字输出才跟 `--lang`。游标 `none:0`（从没运行过）对外是 `null`。`--follow` 订阅 `logs.follow` 和 `run` 主题只当“有新东西”的信号，内容每次都用 `logs.read` 按游标取，所以不丢行不重复；运行进入结束状态（或从没运行过）就输出 `{ "end": true, "cursor" }` 并取消订阅。`--follow --json` 每行 `{ text, cursor, state }`，没有新内容不输出空行。
+- `rm`（`src/commands/rm.ts`）：先 `playground.get` 取名称和路径，再 `playground.trash`（管理进程先停止再只经平台层 `fs.trash`）；本包没有任何删除文件的路径。
 
 ## 子目录地图
 
 - `src/run-cli.ts`（解析、建输出和翻译、统一的错误出口）、`execute-command.ts`（分派帮助和命令）、`parse-command-line.ts`、`cli-error.ts`、`cli-deps.ts`、`composition-root.ts`、`main.ts`
-- `src/commands/`：声明（`declarations.ts`）、`command-spec.ts`、`command-context.ts`、`global-options.ts`、`config-commands.ts`、`new.ts`、`run.ts`、`start-run.ts`、`doctor.ts`、`skill-install.ts`、`template-commands.ts`；`src/doctor/`：诊断的各部分；`src/skill/`：SKILL.md 全文；`src/templates/`：模板目录位置；`src/real-clock.ts`
+- `src/commands/`：声明（`declarations.ts`）、`command-spec.ts`、`command-context.ts`、`global-options.ts`、`config-commands.ts`、`new.ts`、`run.ts`、`start-run.ts`、`doctor.ts`、`skill-install.ts`、`template-commands.ts`、`stop.ts`、`status.ts`、`logs.ts`（含 `logs-follow.ts`、`log-text.ts`）、`rm.ts`；`src/doctor/`：诊断的各部分；`src/skill/`：SKILL.md 全文；`src/templates/`：模板目录位置；`src/real-clock.ts`
 - `src/output/`：唯一的输出口；`src/help/`：`--help` 正文；`src/settings/`：`cli.json`；`src/language/`：语言解析
 - `src/help/__snapshots__/help.en.txt`、`help.zh-CN.txt`：`--help` 快照
 
@@ -49,4 +53,4 @@ pnpm test --filter runyard
 pnpm --filter runyard exec vitest run --project unit --update src/help   # 改了命令、选项或帮助文案之后更新快照，再读 git diff
 ```
 
-单元测试在进程内调 `runCli`（`cli-harness.test.ts` 给假平台和可替换的命令实现）。`main.platform-dependent.test.ts` 起真正的入口和真正的管理进程，临时目录，不碰真实目录。
+单元测试在进程内调 `runCli`（`cli-harness.test.ts` 给假平台和可替换的命令实现）。`main.platform-dependent.test.ts`、`run-commands.platform-dependent.test.ts` 起真正的入口和真正的管理进程，临时目录，不碰真实目录；`stop status logs rm` 的单元测试用 `src/commands/fake-supervisor.test.ts`（按协议语义在内存里回答 `run.*`、`playground.*`、`logs.*` 的假管理进程）。

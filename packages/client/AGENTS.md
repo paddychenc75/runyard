@@ -9,7 +9,7 @@
 
 只从 `src/index.ts` 导出，其他包只从 `@runyard/client` 导入。
 - `connectSupervisor(options)`：返回 `RunyardClient`，失败抛 `ClientError`。`options` 的 `platform`、`client`（`kind` `version` `build`）、`launch`（`command` 是启动管理进程的命令前缀，如 `[process.execPath, 入口文件]`，client 在后面补 `--home --version --build --started-by [--host] [--profile]`）由调用方给；`clock`、`protocol`、`timeouts`、`newNonce`、`onDiagnostic` 可省，测试用。
-- `RunyardClient`：`call(method, params)`（入参出参类型来自方法登记表，出参按登记表校验）、`subscribe(topics, listener)`、`close()`（立刻断开，不是 `session.bye`）、`closed`；`supervisor`（`SupervisorSummary`）、`outcome`（`VersionOutcome`：`current` / `replaced` / `outdated { reason, runs }`）、`launched`。
+- `RunyardClient`：`call(method, params)`（入参出参类型来自方法登记表，出参按登记表校验）、`subscribe(topics, listener)`、`followLogs(params, listener)`（`logs.follow`，`run.log` 条目经同一套订阅登记到达）、`close()`（立刻断开，不是 `session.bye`）、`closed`；`supervisor`（`SupervisorSummary`）、`outcome`（`VersionOutcome`：`current` / `replaced` / `outdated { reason, runs }`）、`launched`。
 - `ClientError`：`code`、`error`（`RunyardError` 或没登记过的 `WireError`）、`known`（登记过才有）。管理进程返回的错误原样带着；连接断了是 `SUPERVISOR_UNAVAILABLE`；出参不合登记表是 `INTERNAL`。
 
 ## 本包特有的规则

@@ -61,6 +61,16 @@
 { "text": "[vite] hmr update /src/App.tsx\n", "lines": 1, "cursor": "r_8f3a:13",
   "state": "ready", "truncated": false }
 
+// runyard stop demo --json   （stop --all 同形；没有运行可停时 stopped 是空数组）
+{ "stopped": [ { "runId": "r_8f3a", "name": "demo" } ] }
+
+// runyard rm demo --json
+{ "name": "demo", "path": "/Users/me/Runyard/demo", "trashed": true }
+
+// runyard logs hello-py --follow --json   （NDJSON：每行一个对象，没有新内容不输出；最后一行固定）
+{ "text": "Hello\n", "cursor": "r_91c2:1", "state": "running" }
+{ "end": true, "cursor": "r_91c2:3" }
+
 // 出错（message 与 hint 永远是英文，由命令行从错误码生成）
 { "error": { "code": "TOOL_MISSING", "message": "…", "hint": "Run: … then: runyard run demo",
              "data": { "tool": "go", "required": ">=1.26", "found": null } } }
@@ -101,8 +111,8 @@
 
 ## 未定
 
-1. `stop`、`rm`、`doctor`、`template list|show|save`、`config get`、`skill install` 的 `--json` 输出形状，设计和 PRD 只给了上面五个示例；随 `cli/commands` 规格定。
-2. `logs --follow --json` 每行对象的字段（只规定了结束行）。
+1. `doctor`、`template list|show|save`、`config get`、`skill install` 的 `--json` 输出形状（`stop`、`rm`、`logs --follow --json` 已在上面定稿，与规格一致）。
+2. （已定：`logs --follow --json` 每行 `{ text, cursor, state }`，见第 3 节。）
 3. 进度行输出到哪里（标准输出还是标准错误）、`--quiet` 到底压掉什么。骨架暂定：进度和提示写到标准错误，`--quiet` 只压它们，不压结果和错误，不改 `--json`（待负责人确认）。
 4. `new` 的 `--timeout` 默认值（`run` 是 60 秒，设计没有单列 `new` 的）。
 5. `--root <dir>` 覆盖的是资源库根目录还是 `~/.runyard`。骨架暂定：它代替主目录（状态目录 `<dir>/.runyard`，资源库 `<dir>/Runyard`），测试和手动试用靠它隔离真实目录（待负责人确认）。
