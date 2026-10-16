@@ -82,6 +82,8 @@ export function LogView({ lines, label, empty, className, ...rest }: LogViewProp
       tabIndex={0}
       className={className === undefined ? styles.root : `${styles.root} ${className}`}
       onScroll={onScroll}
+      // 长行不折行、横向滚动：这是有意的，不是撑破
+      data-truncate=""
       data-virtual={measured ? "" : undefined}
     >
       {/* 量行高用的探针：一行的高度由样式固定，所以量一行就够 */}
@@ -89,7 +91,12 @@ export function LogView({ lines, label, empty, className, ...rest }: LogViewProp
       {lines.length === 0 && empty !== undefined ? <p className={styles.empty}>{empty}</p> : null}
       <div style={measured ? { paddingBlockStart: first * rowHeight } : undefined} />
       {visible.map((line) => (
-        <div key={line.id} className={styles.line} data-tone={line.tone ?? "plain"}>
+        <div
+          key={line.id}
+          className={styles.line}
+          data-tone={line.tone ?? "plain"}
+          data-truncate=""
+        >
           {line.time === undefined ? null : <span className={styles.time}>{line.time}</span>}
           <UserText mono className={styles.text}>
             {line.text}
