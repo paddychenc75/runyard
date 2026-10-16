@@ -11,6 +11,7 @@ import { pendingContract } from "./pending.contract.ts";
 import { portsContract } from "./ports.contract.ts";
 import { procContract } from "./proc.contract.ts";
 import { shellContract } from "./shell.contract.ts";
+import { systemContract } from "./system.contract.ts";
 import { toolsContract } from "./tools.contract.ts";
 import { watchContract } from "./watch.contract.ts";
 
@@ -24,6 +25,7 @@ export function runContract(ctx: ContractContext): void {
     envContract(ctx);
     toolsContract(ctx);
     shellContract(ctx);
+    systemContract(ctx);
     fsContract(ctx);
     watchContract(ctx);
     // 起真进程、绑真端口：只对本机的实现注册（ContractContext.native）

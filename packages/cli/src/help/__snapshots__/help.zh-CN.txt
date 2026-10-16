@@ -259,10 +259,18 @@ $ runyard template save --help
 runyard template save - 把项目存为模板
 
 用法：
-  runyard template save <pg>
+  runyard template save <pg> [options]
 
 参数：
   pg  项目名称或路径
+
+选项：
+  --as <id>             新模板的标识，只用小写字母、数字和连字符
+  --name <text>         新模板的名称，不写则用标识
+  --description <text>  新模板的说明，不写则为空
+  --replace-name        把文件里的项目名换成 {{name}} 变量
+  --include <path>      把默认不收录的文件加进模板，可重复
+  --exclude <path>      从模板里去掉默认会收录的文件，可重复
 
 全局选项：
   --json           输出一个 JSON 对象，不受语言影响

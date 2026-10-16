@@ -1,6 +1,7 @@
 import type { RunyardClient } from "@runyard/client";
 import type { CliLocaleResolution, Format, Locale, Translate } from "@runyard/i18n";
 import type { Env, Platform } from "@runyard/platform";
+import type { CliHost } from "../cli-deps.ts";
 import type { Output } from "../output/output.ts";
 import type { CliSettings } from "../settings/cli-settings.ts";
 import type { GlobalFlags } from "./global-options.ts";
@@ -28,6 +29,7 @@ export interface CommandContext {
   /** 本次调用的环境变量（注入的，不是 process.env） */
   readonly env: Env;
   readonly settings: CliSettings;
+  readonly host: CliHost;
   /** 第一次调用时才连管理进程（连不上就拉起）；之后复用；命令结束时由入口关闭 */
   client(): Promise<RunyardClient>;
 }

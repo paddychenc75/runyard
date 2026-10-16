@@ -62,6 +62,9 @@ importers:
       '@runyard/client':
         specifier: workspace:*
         version: link:../client
+      '@runyard/core':
+        specifier: workspace:*
+        version: link:../core
       '@runyard/i18n':
         specifier: workspace:*
         version: link:../i18n

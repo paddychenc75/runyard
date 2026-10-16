@@ -33,6 +33,19 @@
 | cli.command.templateTest.title | 对模板做冒烟测试 | Smoke-test a template | — |
 | cli.config.getLang.body | {lang}（来源：{source, select, flag {--lang} env {RUNYARD_LANG} saved {已保存的设置} other {默认值}}） | {lang} (source: {source, select, flag {--lang} env {RUNYARD_LANG} saved {saved setting} other {default}}) | lang：生效的语言，en 或 zh-CN，原样显示；source：来源：flag、env、saved 或 default；用 select 选词 |
 | cli.config.setLang.body | 语言已设为 {lang}。 | Language set to {lang}. | lang：写入的语言，en 或 zh-CN，原样显示 |
+| cli.doctor.bundle.body | 诊断包已导出：{path} | Diagnostics bundle exported: {path} | path：诊断包的绝对路径，原样显示 |
+| cli.doctor.cli.body | 命令行：版本 {version}，{kind, select, app {随应用安装} other {从源码运行}}，位置 {path} | Command line: version {version}, {kind, select, app {installed with the app} other {run from source}}, at {path} | version：命令行版本，原样显示；kind：app 或 source；用 select 选词；path：命令行位置，原样显示 |
+| cli.doctor.installCommand.body | 安装方法（只是提示，不会自动执行）：{command} | How to install (a hint only, nothing is run for you): {command} | command：安装命令，原样显示 |
+| cli.doctor.installUrl.body | 官网：{url} | Website: {url} | url：官网链接，原样显示 |
+| cli.doctor.library.body | 资源库：{root} | Library: {root} | root：资源库文件夹的绝对路径，原样显示 |
+| cli.doctor.other.body | PATH 上还有另一份：{kind, select, app {随应用安装} other {从源码运行}}，版本 {version}，位置 {path} | Another copy is on PATH: {kind, select, app {installed with the app} other {run from source}}, version {version}, at {path} | kind：app 或 source；用 select 选词；version：版本，认不出时是问号；path：位置，原样显示 |
+| cli.doctor.supervisorDown.body | 管理进程：不可用（{reason}） | Background process: not available ({reason}) | reason：错误码，原样显示 |
+| cli.doctor.supervisorRunning.body | 管理进程：运行中，版本 {version}，{runs, plural, other {# 个运行}}，由{startedBy, select, app {应用} other {命令行}}启动 | Background process: running, version {version}, {runs, plural, one {# run} other {# runs}}, started by the {startedBy, select, app {app} other {command line}} | version：管理进程版本，原样显示；runs：运行个数；startedBy：app 或 cli；用 select 选词 |
+| cli.doctor.system.body | 系统：{os} {version}（{arch}） | System: {os} {version} ({arch}) | os：系统标识，原样显示；version：系统版本，原样显示；arch：芯片架构，原样显示 |
+| cli.doctor.toolFound.body | {tool}：{version}（{path}） | {tool}: {version} ({path}) | tool：工具名，原样显示；version：版本号，原样显示；path：可执行文件路径，原样显示 |
+| cli.doctor.toolMissing.body | {tool}：没有找到 | {tool}: not found | tool：工具名，原样显示 |
+| cli.doctor.toolTooOld.body | {tool}：{version} 版本过低，需要 {required} | {tool}: {version} is too old, needs {required} | tool：工具名，原样显示；version：已安装的版本号，原样显示；required：要求的版本范围，原样显示 |
+| cli.doctor.toolUnknown.body | {tool}：还不知道 | {tool}: not known yet | tool：工具名，原样显示 |
 | cli.error.title.label | 错误：{title} | Error: {title} | title：错误的标题，来自错误码的文案，原样显示 |
 | cli.help.arguments.label | 参数： | Arguments: | — |
 | cli.help.commands.label | 命令： | Commands: | — |
@@ -43,11 +56,15 @@
 | cli.help.usage.label | 用法： | Usage: | — |
 | cli.lang.unsupported.hint | 不支持的语言 {value}（{source, select, flag {来自 --lang} env {来自 RUNYARD_LANG} other {来自已保存的设置}}），改用英文。支持的值：en、zh-CN。 | Unsupported language {value} (from {source, select, flag {--lang} env {RUNYARD_LANG} other {the saved setting}}), using English. Supported values: en, zh-CN. | value：用户给的语言值，原样显示；source：值来自哪里：flag、env 或 saved；用 select 选词 |
 | cli.option.all.hint | 停止全部运行 | Stop all runs | — |
+| cli.option.as.hint | 新模板的标识，只用小写字母、数字和连字符 | Id of the new template: lowercase letters, digits and hyphens | — |
 | cli.option.bundle.hint | 导出诊断包并打印路径 | Export a diagnostics bundle and print its path | — |
 | cli.option.cleanAfter.hint | 指定天数后自动清理，如 30d | Clean up automatically after this many days, such as 30d | — |
+| cli.option.description.hint | 新模板的说明，不写则为空 | Description of the new template; empty by default | — |
+| cli.option.exclude.hint | 从模板里去掉默认会收录的文件，可重复 | Leave out a file that is included by default; repeatable | — |
 | cli.option.follow.hint | 持续输出新内容直到运行结束 | Keep printing new output until the run ends | — |
 | cli.option.help.hint | 显示说明 | Show help | — |
 | cli.option.ifExists.hint | 名称已存在时的做法，reuse 或 fail | What to do if the name exists: reuse or fail | — |
+| cli.option.include.hint | 把默认不收录的文件加进模板，可重复 | Add a file that is left out by default; repeatable | — |
 | cli.option.json.hint | 输出一个 JSON 对象，不受语言影响 | Print one JSON object; not affected by language | — |
 | cli.option.keepDir.hint | 测试后保留临时文件夹 | Keep the temporary folder after the test | — |
 | cli.option.lang.hint | 只对这一条命令使用的语言，en 或 zh-CN | Language for this command only: en or zh-CN | — |
@@ -57,6 +74,7 @@
 | cli.option.port.hint | 只用于这一次的端口 | Port to use for this run only | — |
 | cli.option.quiet.hint | 不输出进度和提示，结果和错误照常输出 | Do not print progress or notices; results and errors are still printed | — |
 | cli.option.raw.hint | 保留颜色码等控制序列 | Keep control sequences such as color codes | — |
+| cli.option.replaceName.hint | 把文件里的项目名换成 '{{name}}' 变量 | Replace the playground name in files with the '{{name}}' variable | — |
 | cli.option.restart.hint | 已在运行时先重启 | Restart first if it is already running | — |
 | cli.option.root.hint | 用这个目录代替主目录 | Use this folder in place of the home folder | — |
 | cli.option.run.hint | 创建后立即运行 | Run it right after creating | — |
@@ -65,9 +83,18 @@
 | cli.option.tail.hint | 只读最后几行 | Read only the last lines | — |
 | cli.option.target.hint | 写到哪里：claude、agents 或 all | Where to write: claude, agents or all | — |
 | cli.option.template.hint | 只检查这个模板所需的环境 | Check only what this template needs | — |
+| cli.option.templateName.hint | 新模板的名称，不写则用标识 | Name of the new template; defaults to the id | — |
 | cli.option.timeout.hint | 最多等待的秒数 | Longest time to wait, in seconds | — |
 | cli.option.toolVersion.hint | 用指定的工具版本测试 | Test with the given tool version | — |
 | cli.option.var.hint | 替换模板里的变量，可以重复 | Replace a variable in the template; can be repeated | — |
+| cli.skillInstall.installed.body | 已写入 {target, select, claude {Claude} other {智能体}} 的说明：{path} | Wrote the {target, select, claude {Claude} other {agents}} instructions: {path} | target：claude 或 agents；用 select 选词；path：写入的 SKILL.md 绝对路径，原样显示 |
+| cli.templateLint.failed.body | 模板 {template} 没有通过检查： | Template {template} did not pass: | template：模板标识，原样显示 |
+| cli.templateLint.issue.body | {rule}　{path}　{message} | {rule}  {path}  {message} | rule：检查规则名，原样显示；path：出问题的字段或文件，原样显示；message：英文说明，原样显示 |
+| cli.templateLint.ok.body | 模板 {template} 通过检查。 | Template {template} passed. | template：模板标识，原样显示 |
+| cli.templateList.item.body | {id}　{name}　{source, select, builtin {内置} other {我的}}{valid, select, yes {} other {　（无效）}} | {id}  {name}  {source, select, builtin {built-in} other {mine}}{valid, select, yes {} other {  (invalid)}} | id：模板标识，原样显示；name：模板名称（已按当前语言挑选），原样显示；source：builtin 或 user；用 select 选词；valid：yes 或 no；no 时加“无效”标记 |
+| cli.templateSave.saved.body | 已存为模板 {id}：{path} | Saved as template {id}: {path} | id：新模板的标识，原样显示；path：新模板文件夹的绝对路径，原样显示 |
+| cli.templateShow.file.body | {file} | {file} | file：模板里文件的相对路径，原样显示 |
+| cli.templateShow.path.body | 位置：{path} | Location: {path} | path：模板文件夹的绝对路径，原样显示 |
 | cli.usage.invalidValue.body | {option} 的值 {value} 不合法。 | The value {value} is not valid for {option}. | option：选项或设置名；value：用户输入的值，原样显示 |
 | cli.usage.missingArgument.body | 缺少参数：{argument}。 | Missing argument: {argument}. | argument：缺少的参数名，如 <pg> |
 | cli.usage.missingCommand.body | 没有给出命令。 | No command was given. | — |
