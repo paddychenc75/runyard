@@ -19,6 +19,7 @@
 - `ToolchainService`（`src/toolchain/`）：`check({ requires, cwd?, cachedOnly? })` 返回 `ToolchainResult`（`tools: ToolCheck[]`、`errors`（`TOOL_MISSING` / `TOOL_TOO_OLD`，空表示可以运行）、`notices`（`ENV_UNRESOLVED`、`ENV_DEGRADED`、`TOOL_VERSION_UNTESTED`、`PACKAGE_MANAGER_FALLBACK`）、`fallbacks`、`envSource`）；`doctor(cwd?)`、`recheck(cwd?)`（清缓存、`env.load({ refresh: true })`、重新检测）、`warmUp(cwd?)`（应用启动时后台刷新，完成后 `onChanged`）、`snapshot()`（`ToolchainFile`，由 supervisor 写 `state/toolchain.json`）、`isCacheFresh(cwd?)`。构造参数 `ToolchainServiceDeps`：平台、时钟、`definitions`（工具定义表）、`toolPaths()`（设置里的手动路径）、`onChanged`（发 `toolchain.changed`）、`initialCache`、`onCacheChange`。
 - 模板（`src/templates/`，纯函数，文件由调用方读好交进来）：`lintTemplate({ folder, builtin, runners, knownTools, fallbackName })` 返回 `LintResult`，运行器的问题路径以 `runner.` 开头；`parseToolDefinitions(sources)` 把 `templates/tools/*.json` 读成 `{ definitions, problems }`，`definitions` 原样交给 `ToolchainService`。
 - 工具链的纯函数：`detectTool`、`extractVersion`、`evaluateRequirements`（对照 `requires` 出错误与提示，可单独用）、`toolsToDetect`、`judgeVersion` / `parseVersionNumbers`（范围比较只比范围里写了的几段）。
+- 改名、移到废纸篓、自动清理（`src/library/`，#38）：`library.rename(ref, newName, { isBusy, beforeMove })` 与 `library.trash(ref, { beforeMove, regenerable? })` 只做技术设计 §4.3 固定顺序的第 5 步；停止、请客户端释放句柄、改名前在运行的项目改名后重新启动（持有者不变）由 supervisor 编排，经 `beforeMove` 接入。顺序是名称校验、`BUSY`、重名、`beforeMove`、平台层动作、改索引；平台层的错误码（`PATH_LOCKED`、`TRASH_UNAVAILABLE`、`NAME_EXISTS`、`FOLDER_MISSING`）原样抛出，失败时文件夹和索引都不动。`judgeAutoClean`（纯函数）与 `library.checkAutoClean(inUse)`（读设置、判断、把顺延记成 `snoozedUntil`）给出 `{ remind, clean, postponed, skipped? }`；`inUse` 是现在有运行的项目 id（开标签页即有运行，判断不认识标签页，规格措辞见 issue #73）。`setAutoClean(ref, days | null)`（从已保留打开时计时从现在起算）、`keep`、`ackReminder`、`markUsed`（记一次使用并清除提醒与顺延；只读命令和“打开但不运行”不调用）。
 - `nextDefaultName`、`createUlid` / `randomUlid`（项目 id）。
 
 ## 本包特有的规则
@@ -31,7 +32,7 @@
 - 停止：把运行器的 `mode` 和 `graceMs`（缺省 2000）原样交给 `platform.proc.terminate`（它负责核对 pid 加启动时间、礼貌请求、等满 `graceMs`、整树强制结束）；返回后引擎再核对 `members` 为空（否则整棵 `kill`），再按运行标记（`RUNYARD_RUN_ID`）找脱离进程组的后代，等它们自己走掉（上限 2 秒，到时还在就核对身份后结束；规格 RUN-LIFECYCLE-20），最后等端口在 3 秒内可绑定；等满 3 秒端口仍不可绑定时 `stop` 照常返回，日志里留一条 `PORT_NOT_RELEASED` 提示（端口、实际等的毫秒数、上限）。只等进程退出，不等输出管道关闭，退出后主动销毁管道。进程自己退出后树里留下的后代也一起结束。
 - 四个接缝，别的 issue 在这里接上，不改引擎的类型：`RunPreparer`（checking 与 installing：工具检查、安装、端口、环境，返回 `RunPlan` 或 `RunyardError<FailureReason>`；#36）、`ReadinessProbe`（就绪探测；#36）、`RunSinks`（`run.state`、日志、`run.exit`、较慢通知的出口；supervisor）、`Run.setOwner` 与 `StartRequest.owner`（持有者只是字段；#40）。`RunEngineDeps.removeDir` 用来删 Go 的单独临时目录。
 - 资源库的接缝（类型在 `src/library/library-types.ts`）：读目录、读写文件、改名、原子写直接用平台接口 `platform.fs`（`readText`、`listDirs`、`exists`、`makeDir`、`writeFile`、`renameFile`、`writeAtomic`），没有另设存储接缝；`PortSlotAllocator`（新端口槽位，返回 `null` 表示没有端口，#36）、`PlaygroundSeed`（模板那一侧交来的“相对路径加内容”和写进元数据的几项，模板各 issue 接上）。路径长度上限直接取 `platform.paths.maxPathLength`，不再由装配方传。
-- 资源库不做永久删除，也没有任何 `rm` 一类的帮助函数；创建中途失败的半成品只经平台层 `fs.trash`。改名、移到废纸篓、自动清理不在这里（#38）。
+- 资源库不做永久删除，也没有任何 `rm` 一类的帮助函数；创建中途失败的半成品只经平台层 `fs.trash`。
 - 创建的顺序是规格要求的：先校验名称（不碰任何东西），再查重名和路径长度，写文件，最后写 `.runyard/playground.json` 和索引；没有元数据文件的文件夹会被扫描忽略。默认名的序号只看资源库根目录里现存的文件夹。
 
 ## 工具链检测的约定
@@ -46,7 +47,7 @@
 ## 子目录地图
 
 - `src/logs/`：日志的切行、解码和清洗；每个文件旁有同名 `.test.ts`
-- `src/library/`：名称（`playground-name.ts`）、创建（`create-playground.ts`）、索引（`library-index.ts`）、扫描判断（`scan-library.ts`，文件头有五行判断表）、门面（`playground-library.ts`）；`library-harness.test.ts` 是测试共用的现场（假平台的内存文件系统，经平台接口 `fs` 使用）
+- `src/library/`：名称（`playground-name.ts`）、创建（`create-playground.ts`）、索引（`library-index.ts`）、扫描判断（`scan-library.ts`，文件头有五行判断表）、门面（`playground-library.ts`）、改名与移到废纸篓（`library-operations.ts`）、自动清理的判断（`auto-clean.ts`）；`library-harness.test.ts` 是测试共用的现场（假平台的内存文件系统，经平台接口 `fs` 使用）
 - `src/toolchain/`：版本比较（`version-compare.ts`）、版本命令（`run-version-command.ts`）、找一个工具（`detect-tool.ts`）、对照 requires 判定（`evaluate-requirements.ts`）、门面与缓存（`toolchain-service.ts`）；`toolchain-harness.test.ts` 是测试共用的现场（工具定义、假平台、`resolveWith` 边等边推假时钟）
 - `src/run/`：转移表（`run-transitions.ts`）、一次运行的会话（`run-session.ts`）、引擎（`run-engine.ts`）、停止（`stop-process-tree.ts`）、输出收集（`run-output.ts`）、类型与接缝（`run-types.ts`）；`run-harness.test.ts` 是测试共用的现场（假平台、记录事件的出口），只有测试文件能导入 `@runyard/testing`
 
