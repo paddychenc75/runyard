@@ -122,7 +122,7 @@ describe("template lint", () => {
   });
 
   it("入口缺失和变量没声明在同一次里报出，运行器的警告进 warnings", () => {
-    const files = { ...goodFiles, "index.html": "{{color}}" };
+    const files: Record<string, string> = { ...goodFiles, "index.html": "{{color}}" };
     delete files["src/main.ts"];
     const runner = { ...goodRunner };
     const result = lint(
