@@ -22,6 +22,12 @@ export interface DesktopMethods {
   /** 切到资源库（"library"）或已打开的项目标签 */
   "tab.select": { param: string; result: undefined };
   "playground.create": { param: string; result: undefined };
+  /** 请求关闭项目标签（关闭钮、⌘W）：运行中且由标签持有时先出确认（状态里的 closeRequest），否则直接关 */
+  "tab.close": { param: string; result: undefined };
+  /** 确认关闭并停止；dontAskAgain 为真就记住“不再提示” */
+  "tab.closeConfirm": { param: { id: string; dontAskAgain: boolean }; result: undefined };
+  /** 取消关闭：什么都不变，也不记住勾选 */
+  "tab.closeCancel": { param: undefined; result: undefined };
   /** 预览占位区在窗口里的位置和大小（CSS 像素）；占位区卸载时报 null */
   "preview.bounds": { param: Bounds | null; result: undefined };
   /** 截预览当前的一帧（PNG 的 data 地址）；没有预览是 null。浮层打开前先截帧再隐藏（技术设计 §6.1） */
@@ -38,6 +44,9 @@ export const desktopMethodNames: readonly DesktopMethod[] = [
   "tab.open",
   "tab.select",
   "playground.create",
+  "tab.close",
+  "tab.closeConfirm",
+  "tab.closeCancel",
   "preview.bounds",
   "preview.capture",
   "preview.visible",

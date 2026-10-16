@@ -6,6 +6,7 @@ import { runningCount } from "../library-view.ts";
 import { OverlayContext } from "../shared/overlay-context.tsx";
 import { OverlayCounter } from "../shared/overlay-counter.ts";
 import styles from "./AppShell.module.css";
+import { CloseConfirmDialog } from "./CloseConfirmDialog.tsx";
 import { LibraryPage } from "./LibraryPage.tsx";
 import { PreviewPane } from "./PreviewPane.tsx";
 import { Sidebar } from "./Sidebar.tsx";
@@ -42,6 +43,7 @@ export function AppShell({ bridge, library }: AppShellProps) {
           activeTab={activeTab}
           running={runningCount(library?.playgrounds ?? [])}
           onSelect={(id) => void bridge.call("tab.select", id)}
+          onClose={(id) => void bridge.call("tab.close", id)}
         />
         <main className={styles.content}>
           {activeTabRow === undefined ? (
@@ -53,6 +55,7 @@ export function AppShell({ bridge, library }: AppShellProps) {
             </>
           )}
         </main>
+        <CloseConfirmDialog bridge={bridge} request={library?.closeRequest ?? null} />
       </div>
     </OverlayContext.Provider>
   );

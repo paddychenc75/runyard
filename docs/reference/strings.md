@@ -318,4 +318,11 @@
 | runState.starting | 启动中 | Starting | — |
 | runState.stopped | 已停止 | Stopped | — |
 | runState.stopping | 停止中 | Stopping | — |
+| workspace.closeConfirm.body | 关闭标签页会停止这个项目。代码和文件不受影响，下次打开会重新运行。 | Closing the tab stops this playground. Your code and files are not affected, and it runs again the next time you open it. | — |
+| workspace.closeConfirm.cancel.action | 取消 | Cancel | — |
+| workspace.closeConfirm.confirm.action | 关闭并停止 | Close and stop | — |
+| workspace.closeConfirm.optOut.hint | 以后关闭标签页直接停止。可以在“设置 › 编辑与运行”里重新打开提示。 | Tabs will then close and stop right away. You can turn the prompt back on in Settings › Editing and running. | — |
+| workspace.closeConfirm.optOut.label | 不再提示 | Don’t ask again | — |
+| workspace.closeConfirm.title | 关闭 {name} 并停止运行？ | Close {name} and stop it? | name：项目名，用户自己起的，不翻译 |
+| workspace.tab.close.label | 关闭 {name} | Close {name} | name：项目名，用户自己起的，不翻译 |
 | workspace.tabs.aria | 标签页 | Tabs | — |

@@ -1,0 +1,78 @@
+/*
+ * 勾选项（弹窗“不再提示”，设计稿 CloseConfirm）：18 的方框、圆角 5、1.5 的描边；
+ * 勾上后填强调色。文字是 500 的名字加 12 的说明。
+ */
+.root {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-5);
+}
+
+.box {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  inline-size: var(--size-checkbox);
+  block-size: var(--size-checkbox);
+  margin: 0;
+  padding: 0;
+  border: calc(var(--space-1) * 0.75) solid var(--color-text-tertiary);
+  border-radius: var(--radius-checkbox);
+  background: transparent;
+  color: var(--color-text-on-accent);
+  outline: none;
+  transition: background-color var(--motion-duration-fast) linear;
+}
+
+.box[data-checked] {
+  border-color: var(--color-fill-accent);
+  background: var(--color-fill-accent);
+}
+
+.box:focus-visible:not([data-force-state]),
+.box[data-force-state="focus"] {
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.box[data-disabled] {
+  opacity: 0.4;
+}
+
+.indicator {
+  display: inline-flex;
+}
+
+.indicator[data-unchecked] {
+  display: none;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-inline-size: 0;
+}
+
+.label {
+  font-size: var(--text-body-size);
+  font-weight: var(--text-control-weight);
+  line-height: var(--text-body-line-height);
+  color: var(--color-text-primary);
+  cursor: default;
+  user-select: none;
+}
+
+.hint {
+  font-size: var(--text-secondary-size);
+  font-weight: var(--text-secondary-weight);
+  line-height: var(--text-secondary-line-height);
+  color: var(--color-text-secondary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .box {
+    transition: none;
+  }
+}

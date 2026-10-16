@@ -18,6 +18,7 @@ function setup() {
     tabs: [],
     activeTab: "library",
     templates: [],
+    closeRequest: null,
     error: null,
   } as LibraryState;
   const controller = {
@@ -27,6 +28,9 @@ function setup() {
     openProject: async (id: string) => void calls.push(["open", id]),
     selectTab: (id: string) => void calls.push(["select", id]),
     create: async (id: string) => void calls.push(["create", id]),
+    requestCloseTab: async (id: string) => void calls.push(["close", id]),
+    confirmClose: async (id: string, again: boolean) => void calls.push(["confirm", id, again]),
+    cancelClose: () => void calls.push(["cancel"]),
     setPreviewBounds: (bounds: unknown) => void calls.push(["bounds", bounds]),
     capturePreview: async () => "data:image/png;base64,AAAA",
     setPreviewVisible: (visible: boolean) => void calls.push(["visible", visible]),
@@ -67,12 +71,20 @@ describe("registerBridgeHandlers", () => {
     await call(app, "tab.open", "a");
     await call(app, "tab.select", "library");
     await call(app, "playground.create", "html");
+    await call(app, "tab.close", "a");
+    await call(app, "tab.closeConfirm", { id: "a", dontAskAgain: true });
+    await call(app, "tab.closeConfirm", { id: "a", dontAskAgain: "yes" });
+    await call(app, "tab.closeConfirm", null);
+    await call(app, "tab.closeCancel");
     expect(calls).toEqual([
       ["start", "a"],
       ["stop", "a"],
       ["open", "a"],
       ["select", "library"],
       ["create", "html"],
+      ["close", "a"],
+      ["confirm", "a", true],
+      ["cancel"],
     ]);
   });
 

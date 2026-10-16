@@ -2,7 +2,7 @@
 
 ## 用途
 
-桌面应用（技术设计 §2.2、§6）。界面是 React（用 `@runyard/ui`、`@runyard/i18n/react`、`@runyard/tokens`），主窗口有外壳（设计稿 Main）：左边悬浮的玻璃侧栏（`TitleBar`、`NavList`），顶上的标签条（资源库固定在第一位、不能关闭），主题（浅色、深色、跟随系统）和语言（中文系统用简体中文，其余英文）。资源库标签的内容区是资源库页（#169，设计稿 Main、MainNarrow、Empty）：页标题和概况、项目表（`LibraryPage`、`LibraryTable`，用 `DataTable`：名称与备注、状态、模板、端口、保留、上次打开、创建者；运行中的排最前，主进程在 `build-library-state.ts` 里排好），没有项目时是空状态。表随管理进程的 `run`、`playground` 事件实时更新（控制器重读），相对时间和“剩 N 天”每半分钟走字。顶栏有“N 个运行中”（标签页和命令行持有的都算）。还留着开发期的东西，对应的功能做好后拆掉：操作列的“运行/停止”按钮和双击行（`tab.open`，#171 换成“打开”“停止运行”和更多菜单）、表下面“用内置模板新建”的按钮（#173 新建对话框）。搜索筛选（#181）、页概况里的“存放在 …”（要管理进程给出资源库路径）还没有。打开项目 = 新开它的标签页并启动运行（`run.start`，持有者是标签页、绑定到本连接）；已开着的只切换、不再启动（规格 DESKTOP-WORKSPACE-01、02）。标签页的内容区由左边的 `TabContent`（暂时只有名字、状态和“运行”/“停止”）和右边的 `PreviewPane`（地址栏加预览占位区）组成：手动停止后标签仍开着，出现“运行”按钮再次启动，持有者仍是这个标签页（DESKTOP-WORKSPACE-11、12）。标签条里项目标签名字前的小圆点反映运行状态；标签的关闭钮和确认对话框是 #174，运行条是 #176。
+桌面应用（技术设计 §2.2、§6）。界面是 React（用 `@runyard/ui`、`@runyard/i18n/react`、`@runyard/tokens`），主窗口有外壳（设计稿 Main）：左边悬浮的玻璃侧栏（`TitleBar`、`NavList`），顶上的标签条（资源库固定在第一位、不能关闭），主题（浅色、深色、跟随系统）和语言（中文系统用简体中文，其余英文）。资源库标签的内容区是资源库页（#169，设计稿 Main、MainNarrow、Empty）：页标题和概况、项目表（`LibraryPage`、`LibraryTable`，用 `DataTable`：名称与备注、状态、模板、端口、保留、上次打开、创建者；运行中的排最前，主进程在 `build-library-state.ts` 里排好），没有项目时是空状态。表随管理进程的 `run`、`playground` 事件实时更新（控制器重读），相对时间和“剩 N 天”每半分钟走字。顶栏有“N 个运行中”（标签页和命令行持有的都算）。还留着开发期的东西，对应的功能做好后拆掉：操作列的“运行/停止”按钮和双击行（`tab.open`，#171 换成“打开”“停止运行”和更多菜单）、表下面“用内置模板新建”的按钮（#173 新建对话框）。搜索筛选（#181）、页概况里的“存放在 …”（要管理进程给出资源库路径）还没有。打开项目 = 新开它的标签页并启动运行（`run.start`，持有者是标签页、绑定到本连接）；已开着的只切换、不再启动（规格 DESKTOP-WORKSPACE-01、02）。标签页的内容区由左边的 `TabContent`（暂时只有名字、状态和“运行”/“停止”）和右边的 `PreviewPane`（地址栏加预览占位区）组成：手动停止后标签仍开着，出现“运行”按钮再次启动，持有者仍是这个标签页（DESKTOP-WORKSPACE-11、12）。标签条里项目标签名字前的小圆点反映运行状态；项目标签有关闭钮和 ⌘W，关闭运行中的标签前出确认（设计稿 CloseConfirm，规格 DESKTOP-WORKSPACE-04 至 10，见下面“关闭标签页”）；运行条是 #176。
 包是 `private`，没有发布配置。构建用 esbuild 自己打包（`build.ts`，产物在 `dist/`），不用 electron-vite：它要 Vite 7，而 Vite 7.3.7 发布不满 14 天（`docs/architecture/dependencies.md`）。
 
 ## 对外暴露什么
@@ -31,12 +31,13 @@ pnpm --filter @runyard/desktop smoke             # 冒烟自检：窗口不显�
 - 窗口：`contextIsolation` 开、`sandbox` 开、`nodeIntegration` 关；界面只从 `app://runyard/` 加载打包好的文件（`app-protocol.ts` 只许落在界面目录内），页面带内容安全策略；主进程只响应来自这个地址的 IPC 发送者。
 - 预览（技术设计 §6.1、§6.5）：每个有页面的标签页一个 `WebContentsView`（`preview-view.ts`），沙箱、没有预加载脚本、没有 Node，独立的内存存储分区；页面就绪才创建，没就绪、停止、崩溃时销毁，界面的占位区显示说明；切到资源库或别的标签只是摘下视图、保留着（“只保留最近 3 个”的优化以后做）。导航判断在 `preview-policy.ts`：只许 `http://127.0.0.1:<端口>`，其他网页链接交给系统浏览器、预览不跳转，别的协议（`mailto:`、`runyard://`、`file:`）拦下；权限默认拒绝，只放行剪贴板。位置不在主进程算：界面的 `PreviewSlot`（`renderer/widgets/`）用 `ResizeObserver` 实测自己的矩形，经 `preview.bounds` 报来，主进程据此摆视图。
 - 预览与界面浮层（技术设计 §6.1 表）：原生视图永远盖在界面之上，所以弹窗、菜单、下拉打开期间要调 `useOverlay(open, rect?)`（`renderer/shared/overlay-context.tsx`，外壳提供计数器）；与占位区重叠时 `usePreviewSuspension` 先 `preview.capture` 截一帧显示在占位处、等画出来再 `preview.visible(false)`，关闭后换回。弹窗做出来的 PR（#173、#174、#172）在打开时接上这个钩子，关闭、新建、选择器都要。K7 的实测见 `docs/architecture/evidence/k7-preview-view.md`。
+- 关闭标签页（`main/library-controller.ts` 的 `requestCloseTab` / `confirmClose` / `cancelClose`，界面 `renderer/app/CloseConfirmDialog.tsx`）：只有“最近一次运行仍在进行且持有者是标签页”才需要确认（`ownedActiveRun`）；已停止的和命令行持有的（只是查看）直接关，不停运行。是否弹出由主进程决定，界面只显示状态里的 `closeRequest`（弹窗期间调 `useOverlay`，预览换成截图）。确认 = 先去掉标签再 `run.stop`（3 秒时限由管理进程保证）；“不再提示”勾选后确认才写设置 `confirmCloseRunningTab: false`（`settings.set`），勾选后取消不记；读不到设置按要确认处理。设置页里重新打开提示随“设置页”issue。
 - 运行的持有者是标签页：`{ kind: "tab", clientId: <每次启动随机生成>, tabId: "tab-<项目 id>" }`，`wait: "none"`，进度靠 `run.state` 等事件。
 - 所有给人看的文字走文案包（`desktop` 组加 `errors.<码>.title`）；代码里不写句子。主进程的 `process.stderr.write` 只写开发者诊断，要有 `// i18n-allow: 理由`。
 - 应用拉起的管理进程是脱离的后台进程（从源码运行时用 Electron 自己当 Node 跑 `packages/supervisor/src/main.ts`）。退出时先 `session.bye`；管理进程空闲后自己退出，试验后要立刻清理时，按进程号加启动时间确认后再结束它。
 - 窗口底色取自 `@runyard/tokens` 的 `windowBackground`（随系统深浅色），界面画出来之前显示，避免启动白闪；`tokens` 只为这一件事导入（技术设计 §3.2）。
 - 标签页状态在主进程（`main/workspace-tabs.ts`，只记打开的项目标签的顺序和当前标签，资源库固定在最前不在表里），随 `library.changed` 一起推给界面（`tabs`、`activeTab`）。项目被删时它的标签随之去掉。
-- 还没有：`runyard://` 链接、标签页恢复、标签的关闭、设置里的语言和主题切换、应用菜单（⌘W 等应用级快捷键注册成菜单项，现在靠 Electron 默认菜单）、关窗口时的提示、打包（asar、fuse、签名）。
+- 还没有：`runyard://` 链接、标签页恢复、设置里的语言和主题切换、应用菜单（⌘W 等应用级快捷键注册成菜单项，现在靠 Electron 默认菜单）、关窗口时的提示、打包（asar、fuse、签名）。
 
 ## 子目录地图
 

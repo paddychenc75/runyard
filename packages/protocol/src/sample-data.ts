@@ -47,6 +47,7 @@ export const sampleSettings: Settings = {
   ports: { min: 7100, max: 7999 },
   urlNewSkipConfirmForBuiltin: false,
   updateCheck: true,
+  confirmCloseRunningTab: true,
 };
 
 export const sampleTemplateRecord: TemplateRecord = {

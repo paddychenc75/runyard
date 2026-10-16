@@ -68,5 +68,7 @@ export interface LibraryState {
   /** 当前标签："library" 或项目 id */
   activeTab: string;
   templates: TemplateRow[];
+  /** 正在等用户确认的“关闭运行中的标签页”；没有是 null（规格 DESKTOP-WORKSPACE-04） */
+  closeRequest: { id: string; name: string } | null;
   error: DesktopError | null;
 }

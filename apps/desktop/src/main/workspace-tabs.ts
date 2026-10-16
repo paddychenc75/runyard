@@ -1,6 +1,6 @@
 // 工作区的标签页（规格 desktop/workspace「打开标签页即运行」）：资源库固定第一位、不能关闭，
 // 它不在这张表里；这里只记打开的项目标签页，顺序是打开的先后，每个项目最多一个。
-// 纯数据，不认识 Electron 和管理进程。关闭标签页（#174，带确认）将在这里加 close。
+// 纯数据，不认识 Electron 和管理进程。要不要确认、要不要停运行是控制器的事（#174）。
 
 export const LIBRARY_TAB = "library";
 
@@ -28,6 +28,15 @@ export class WorkspaceTabs {
   /** 切到资源库或一个已打开的标签；不存在的 id 忽略 */
   select(id: string): void {
     if (id === LIBRARY_TAB || this.#open.includes(id)) this.#active = id;
+  }
+
+  /** 去掉一个项目标签；它是当前标签时回到左邻的标签（没有就回资源库）。返回有没有真的去掉 */
+  close(playgroundId: string): boolean {
+    const index = this.#open.indexOf(playgroundId);
+    if (index === -1) return false;
+    this.#open = this.#open.filter((id) => id !== playgroundId);
+    if (this.#active === playgroundId) this.#active = this.#open[index - 1] ?? LIBRARY_TAB;
+    return true;
   }
 
   /** 项目已不在资源库里（被删），它的标签随之去掉；返回被去掉的标签 */

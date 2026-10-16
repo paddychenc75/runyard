@@ -3,7 +3,7 @@ import type { Locale } from "@runyard/i18n";
 import type { Playground, RunSnapshot, TemplateRecord } from "@runyard/protocol";
 import type { Bounds } from "../shared/layout.ts";
 import type { DesktopError, LibraryState } from "../shared/library-state.ts";
-import { buildLibraryState, previewUrlFor } from "./build-library-state.ts";
+import { buildLibraryState, ownedActiveRun, previewUrlFor } from "./build-library-state.ts";
 import { LIBRARY_TAB, WorkspaceTabs } from "./workspace-tabs.ts";
 
 // 窗口背后的逻辑：向管理进程要项目、模板、运行，转成界面看的状态；执行界面发来的动作。
@@ -45,6 +45,7 @@ export class LibraryController {
   #runs: RunSnapshot[] = [];
   #templates: TemplateRecord[] = [];
   readonly #workspace = new WorkspaceTabs();
+  #closeRequestId: string | null = null;
   #error: DesktopError | null = null;
   #refreshing: Promise<void> | undefined;
   #refreshAgain = false;
@@ -77,6 +78,7 @@ export class LibraryController {
       tabIds: this.#workspace.tabs,
       activeTab: this.#workspace.active,
       busyIds: this.#busy,
+      closeRequestId: this.#closeRequestId,
       error: this.#error,
     });
   }
@@ -135,6 +137,67 @@ export class LibraryController {
     });
   }
 
+  /**
+   * 关闭项目标签（规格 DESKTOP-WORKSPACE-04、06、09、10）：只有“标签页持有、仍在进行”的运行
+   * 才需要确认，而且用户没勾过“不再提示”；已停止的和命令行持有的直接关。
+   */
+  async requestCloseTab(playgroundId: string): Promise<void> {
+    if (!this.#workspace.tabs.includes(playgroundId)) return;
+    if (ownedActiveRun(playgroundId, this.#runs) === null) {
+      await this.#closeNow(playgroundId);
+      return;
+    }
+    // 读不到设置就当作要确认：宁可多问一次，不要悄悄停掉用户的运行
+    const confirmNeeded = await this.#client.call("settings.get", {}).then(
+      (settings) => settings.confirmCloseRunningTab,
+      () => true,
+    );
+    if (!confirmNeeded) {
+      await this.#closeNow(playgroundId);
+      return;
+    }
+    this.#closeRequestId = playgroundId;
+    this.#emit();
+  }
+
+  /** 确认关闭并停止；勾了“不再提示”就先记下（失败只报错，不拦着关） */
+  async confirmClose(playgroundId: string, dontAskAgain: boolean): Promise<void> {
+    if (this.#closeRequestId !== playgroundId) return;
+    this.#closeRequestId = null;
+    if (dontAskAgain) {
+      try {
+        await this.#client.call("settings.set", { confirmCloseRunningTab: false });
+      } catch (error) {
+        this.#fail(error);
+      }
+    }
+    await this.#closeNow(playgroundId);
+  }
+
+  /** 取消：弹窗关掉，标签和运行都不动，勾选也不记 */
+  cancelClose(): void {
+    if (this.#closeRequestId === null) return;
+    this.#closeRequestId = null;
+    this.#emit();
+  }
+
+  // 先把标签去掉（界面立刻响应），再停它持有的运行；停止的时限由管理进程保证（run/ownership）
+  async #closeNow(playgroundId: string): Promise<void> {
+    const owned = ownedActiveRun(playgroundId, this.#runs) !== null;
+    if (!this.#workspace.close(playgroundId)) return;
+    this.#preview.release(playgroundId);
+    this.#applyPreview();
+    this.#emit();
+    if (owned) {
+      try {
+        await this.#client.call("run.stop", { playground: playgroundId });
+      } catch (error) {
+        this.#fail(error);
+      }
+    }
+    await this.refresh();
+  }
+
   selectTab(id: string): void {
     this.#workspace.select(id);
     this.#applyPreview();
@@ -181,6 +244,9 @@ export class LibraryController {
         new Set(playgrounds.map((playground) => playground.id)),
       );
       for (const id of removed) this.#preview.release(id);
+      if (this.#closeRequestId !== null && !this.#workspace.tabs.includes(this.#closeRequestId)) {
+        this.#closeRequestId = null;
+      }
     } catch (error) {
       this.#fail(error);
     }

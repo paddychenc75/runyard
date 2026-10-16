@@ -1,3 +1,10 @@
 {
+  "workspace.closeConfirm.body": "关闭标签页会停止这个项目。代码和文件不受影响，下次打开会重新运行。",
+  "workspace.closeConfirm.cancel.action": "取消",
+  "workspace.closeConfirm.confirm.action": "关闭并停止",
+  "workspace.closeConfirm.optOut.hint": "以后关闭标签页直接停止。可以在“设置 › 编辑与运行”里重新打开提示。",
+  "workspace.closeConfirm.optOut.label": "不再提示",
+  "workspace.closeConfirm.title": "关闭 {name} 并停止运行？",
+  "workspace.tab.close.label": "关闭 {name}",
   "workspace.tabs.aria": "标签页"
 }

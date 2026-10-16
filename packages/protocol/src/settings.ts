@@ -15,6 +15,7 @@ const settingsFields = z.object({
   ports: z.object({ min: portSchema, max: portSchema }).describe("分配端口的范围，含两端"),
   urlNewSkipConfirmForBuiltin: z.boolean(),
   updateCheck: z.boolean(),
+  confirmCloseRunningTab: z.boolean().describe("关闭运行中的标签页前是否确认；“不再提示”关掉它"),
 });
 
 export const settingsSchema = settingsFields.meta({ id: "Settings" });

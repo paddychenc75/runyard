@@ -43,6 +43,10 @@ export const iconPaths = {
     viewBox: "0 0 16 16",
     paths: ["M8 2.25a5.75 5.75 0 1 0 5.75 5.75"],
   },
+  stop: {
+    viewBox: "0 0 16 16",
+    paths: ["M6 4h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"],
+  },
 } as const;
 
 export type IconName = keyof typeof iconPaths;

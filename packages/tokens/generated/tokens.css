@@ -133,6 +133,7 @@
   --radius-menu: 16px;
   --radius-row: 12px;
   --radius-control: 9px;
+  --radius-checkbox: 5px;
   --radius-capsule: 9999px;
   --size-toolbar: 44px;
   --size-control-lg: 40px;
@@ -149,6 +150,8 @@
   --size-window-controls: 72px;
   --size-card-gap: 8px;
   --size-dialog-width: 580px;
+  --size-checkbox: 18px;
+  --size-dialog-icon: 40px;
   --size-status-mark: 9px;
   --size-badge: 22px;
   --size-tile: 22px;

@@ -82,6 +82,7 @@
 | `ports` | 范围 7100 到 7999 |
 | `urlNewSkipConfirmForBuiltin` | `false` |
 | `updateCheck` | `true` |
+| `confirmCloseRunningTab` | `true`（关闭运行中的标签页前确认；“不再提示”写 `false`；文件里没有这个字段按 `true` 读，不升 `formatVersion`） |
 | `theme`、`language` | `language` 只管桌面应用界面语言 |
 
 `cli.json`：`formatVersion`、`lang`（`en` 或 `zh-CN`；没有这个字段就是英文）。只由 `runyard config set lang <locale>` 写入，`--lang` 和环境变量 `RUNYARD_LANG` 不写它。放单独文件是因为 `--help` 和 `config` 在管理进程没起来时也要能用。

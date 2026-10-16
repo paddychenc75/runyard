@@ -8,6 +8,10 @@ export type {
 } from "./fixtures/fixture-types.ts";
 export type { IconName } from "./icons/generated/icon-paths.ts";
 export {
+  ConfirmDialog,
+  type ConfirmDialogProps,
+} from "./patterns/ConfirmDialog/index.ts";
+export {
   DataTable,
   type DataTableColumn,
   type DataTableColumnWidth,
@@ -26,6 +30,7 @@ export {
   type TabStripProps,
 } from "./patterns/TabStrip/index.ts";
 export { TitleBar, type TitleBarControls, type TitleBarProps } from "./patterns/TitleBar/index.ts";
+export { AlertDialog, type AlertDialogProps } from "./primitives/AlertDialog/index.ts";
 export { Badge, type BadgeProps, type BadgeVariant } from "./primitives/Badge/index.ts";
 export {
   Button,
@@ -33,6 +38,7 @@ export {
   type ButtonSize,
   type ButtonVariant,
 } from "./primitives/Button/index.ts";
+export { Checkbox, type CheckboxProps } from "./primitives/Checkbox/index.ts";
 export { EmptyState, type EmptyStateProps } from "./primitives/EmptyState/index.ts";
 export {
   type GlassMaterial,
