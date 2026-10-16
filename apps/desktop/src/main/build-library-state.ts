@@ -1,5 +1,11 @@
 import type { Locale } from "@runyard/i18n";
-import type { Playground, RunSnapshot, RunState, TemplateRecord } from "@runyard/protocol";
+import type {
+  ErrorCode,
+  Playground,
+  RunSnapshot,
+  RunState,
+  TemplateRecord,
+} from "@runyard/protocol";
 import type {
   DesktopError,
   LibraryState,
@@ -10,6 +16,16 @@ import type {
 
 // 结束了的状态；其余都算进行中（run-state-machine.md 第 1 节）
 const ENDED_STATES: readonly RunState[] = ["stopped", "finished", "errored", "crashed", "failed"];
+
+/** 预览区有专门画面的启动失败；其余失败（脚本出错、超时等）不在这里 */
+export const FAILURE_CODES: readonly ErrorCode[] = [
+  "TOOL_MISSING",
+  "TOOL_TOO_OLD",
+  "RUNTIME_MISSING",
+  "SETUP_FAILED",
+  "DEPS_OFFLINE",
+  "RUN_FAILED",
+];
 
 export function isActiveRun(state: RunState): boolean {
   return !ENDED_STATES.includes(state);
@@ -27,6 +43,10 @@ export interface LibraryInputs {
   /** 等确认关闭的标签（项目 id） */
   closeRequestId?: string | null;
   error: DesktopError | null;
+  /** 启动请求失败时管理进程给的错误（项目 id → 错误）；带着缺工具的参数 */
+  startErrors?: ReadonlyMap<string, DesktopError>;
+  /** 崩溃前截下的预览最后一帧（项目 id → data 地址） */
+  lastFrames?: ReadonlyMap<string, string>;
 }
 
 /** 每个项目取最近一次运行（startedAt 最大）；它决定列表里显示的状态 */
@@ -118,6 +138,10 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
       exitCode: run?.exitCode ?? null,
       durationMs: run?.durationMs ?? null,
       previewUrl: previewUrlFor(row.id, inputs.runs),
+      slow: run?.state === "starting" && run.slow === true,
+      failure: failureOf(row, run, inputs.startErrors?.get(row.id)),
+      portFallback: portFallbackOf(row.active ? run : undefined),
+      lastFrame: run?.state === "crashed" ? (inputs.lastFrames?.get(row.id) ?? null) : null,
     });
   }
   tabs.sort((a, b) => inputs.tabIds.indexOf(a.id) - inputs.tabIds.indexOf(b.id));
@@ -164,4 +188,30 @@ export function previewUrlFor(
   const run = latestRunByPlayground(runs).get(previewId);
   if (run === undefined || run.state !== "ready" || run.url === undefined) return null;
   return run.url;
+}
+
+function failureOf(
+  row: PlaygroundRow,
+  run: RunSnapshot | undefined,
+  recorded: DesktopError | undefined,
+): DesktopError | null {
+  if (run === undefined || row.kind === "oneshot") return null;
+  if (run.state !== "failed" && run.state !== "errored") return null;
+  const code = run.reason;
+  if (code === undefined || !FAILURE_CODES.includes(code)) return null;
+  if (recorded?.code === code) return recorded;
+  // 缺工具的参数（要什么、当前什么版本）只有启动请求的错误响应里有；其余失败只需要项目名
+  if (code === "TOOL_MISSING" || code === "TOOL_TOO_OLD" || code === "RUNTIME_MISSING") return null;
+  return { code, params: { name: row.name } };
+}
+
+function portFallbackOf(run: RunSnapshot | undefined): TabRow["portFallback"] {
+  const fallback = run?.portFallback;
+  if (run === undefined || fallback === undefined || run.port === undefined) return null;
+  return {
+    wanted: fallback.wanted,
+    actual: run.port,
+    reason: fallback.reason,
+    occupant: fallback.occupant ?? null,
+  };
 }

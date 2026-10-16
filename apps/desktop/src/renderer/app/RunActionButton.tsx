@@ -19,7 +19,7 @@ export function RunActionButton({ bridge, tab, size }: RunActionButtonProps) {
     <Button
       variant={action === "stop" ? "neutral" : "primary"}
       size={size ?? "md"}
-      icon={action === "stop" ? "stop" : "play"}
+      icon={action === "stop" ? "stop" : action === "recheck" ? "refresh" : "play"}
       disabled={tab.busy}
       onClick={() => void bridge.call(action === "stop" ? "run.stop" : "run.start", tab.id)}
     >
@@ -27,7 +27,9 @@ export function RunActionButton({ bridge, tab, size }: RunActionButtonProps) {
         ? t("desktop.stop.action")
         : action === "run"
           ? t("desktop.run.action")
-          : t("desktop.rerun.action")}
+          : action === "recheck"
+            ? t("desktop.missing.recheck.action")
+            : t("desktop.rerun.action")}
     </Button>
   );
 }

@@ -11,4 +11,8 @@ export class ElectronSystemActions implements SystemActions {
   copyText(text: string): void {
     clipboard.writeText(text);
   }
+
+  openExternal(url: string): void {
+    void shell.openExternal(url);
+  }
 }

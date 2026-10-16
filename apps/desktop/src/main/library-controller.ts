@@ -4,33 +4,21 @@ import type { Playground, RunSnapshot, TemplateRecord } from "@runyard/protocol"
 import type { ConsoleAppend, ConsoleLine } from "../shared/console-state.ts";
 import type { Bounds } from "../shared/layout.ts";
 import type { DesktopError, LibraryState } from "../shared/library-state.ts";
-import { buildLibraryState, ownedActiveRun, previewUrlFor } from "./build-library-state.ts";
+import {
+  buildLibraryState,
+  FAILURE_CODES,
+  latestRunByPlayground,
+  ownedActiveRun,
+  previewUrlFor,
+} from "./build-library-state.ts";
 import { ConsoleLogs } from "./console-logs.ts";
+import type { PreviewHost, SystemActions } from "./controller-hosts.ts";
 import { LIBRARY_TAB, WorkspaceTabs } from "./workspace-tabs.ts";
+
+export type { PreviewHost, SystemActions } from "./controller-hosts.ts";
 
 // 窗口背后的逻辑：向管理进程要项目、模板、运行，转成界面看的状态；执行界面发来的动作。
 // 不认识 Electron：预览通过 PreviewHost 这个接口交给外面，所以可以用假客户端整个测。
-
-/** 预览视图的宿主。同一个项目、同一个地址再次 show 时应当什么都不做 */
-export interface PreviewHost {
-  show(playgroundId: string, url: string): void;
-  /** 藏起当前预览但保留视图（切到资源库或别的标签） */
-  hide(): void;
-  /** 销毁这个项目的预览视图（标签被去掉、或页面没了/不再就绪） */
-  release(playgroundId: string): void;
-  /** 占位区的位置；null 是占位区不在了 */
-  setBounds(bounds: Bounds | null): void;
-  /** 截当前预览的一帧；没有预览是 null */
-  capture(): Promise<string | null>;
-  setVisible(visible: boolean): void;
-}
-
-/** 系统层的两个动作（Electron 的 shell 和剪贴板在 integration/system-actions.ts，这里不认识 Electron） */
-export interface SystemActions {
-  /** 在文件管理器里选中这个路径 */
-  revealInFileManager(path: string): void;
-  copyText(text: string): void;
-}
 
 /** 控制器用到的客户端的那一小部分 */
 export type LibraryClient = Pick<RunyardClient, "call" | "subscribe" | "followLogs">;
@@ -59,6 +47,10 @@ export class LibraryController {
   #closeRequestId: string | null = null;
   readonly #console: ConsoleLogs;
   #error: DesktopError | null = null;
+  /** 启动请求失败时的错误（带缺工具的参数）；再次启动时清掉 */
+  readonly #startErrors = new Map<string, DesktopError>();
+  /** 崩溃前截下的预览最后一帧 */
+  readonly #lastFrames = new Map<string, string>();
   #refreshing: Promise<void> | undefined;
   #refreshAgain = false;
 
@@ -94,6 +86,8 @@ export class LibraryController {
       busyIds: this.#busy,
       closeRequestId: this.#closeRequestId,
       error: this.#error,
+      startErrors: this.#startErrors,
+      lastFrames: this.#lastFrames,
     });
   }
 
@@ -148,14 +142,46 @@ export class LibraryController {
 
   /** 启动（或标签页里点“运行”再次启动）；持有者始终是这个项目的标签页 */
   async startRun(playgroundId: string): Promise<void> {
+    this.#startErrors.delete(playgroundId);
+    this.#lastFrames.delete(playgroundId);
+    const kind = this.#playgrounds.find((playground) => playground.id === playgroundId)?.kind;
     await this.#act(playgroundId, async () => {
       // 标签页持有者：这个项目在本应用里的“标签页”就是它自己，运行随本连接的生死
-      await this.#client.call("run.start", {
+      const starting = this.#client.call("run.start", {
         playground: playgroundId,
         owner: { kind: "tab", clientId: this.#clientId, tabId: `tab-${playgroundId}` },
-        wait: "none",
+        // 服务等到就绪或失败：失败时错误响应带参数（缺哪个工具、模板写的安装命令），
+        // 运行状态里只有错误码。脚本没有就绪，它的失败只看状态
+        wait: kind === "oneshot" ? "none" : "ready",
       });
+      if (kind === "oneshot") {
+        await starting;
+        return;
+      }
+      // 不等到就绪：运行条要立刻能点“停止”。立刻就有的错误（项目不见了等）赶得上这一轮，
+      // 之后才到的错误由 #startSettled 记下
+      const settled = starting.then(
+        () => this.#startSettled(playgroundId),
+        (error: unknown) => this.#startSettled(playgroundId, error),
+      );
+      await Promise.race([settled, new Promise<void>((resolve) => setTimeout(resolve, 0))]);
     });
+  }
+
+  // 启动请求有了结果：失败的原因留给预览区的专门画面，其余错误照旧报在 error 里
+  async #startSettled(playgroundId: string, error?: unknown): Promise<void> {
+    if (error !== undefined) {
+      const known = isClientError(error) ? error.known : undefined;
+      if (known !== undefined && FAILURE_CODES.includes(known.code)) {
+        this.#startErrors.set(playgroundId, {
+          code: known.code,
+          params: known.params as Record<string, unknown>,
+        });
+      } else if (known?.code !== "READY_TIMEOUT") {
+        this.#fail(error);
+      }
+    }
+    await this.refresh();
   }
 
   async stopRun(playgroundId: string): Promise<void> {
@@ -214,6 +240,8 @@ export class LibraryController {
     if (!this.#workspace.close(playgroundId)) return;
     this.#preview.release(playgroundId);
     this.#console.unwatch(playgroundId);
+    this.#startErrors.delete(playgroundId);
+    this.#lastFrames.delete(playgroundId);
     this.#applyPreview();
     this.#emit();
     if (owned) {
@@ -236,6 +264,16 @@ export class LibraryController {
   copyFolderPath(playgroundId: string): void {
     const path = this.#folderOf(playgroundId);
     if (path !== null) this.#system.copyText(path);
+  }
+
+  /** 缺工具画面的“复制命令”：只放进剪贴板，从不执行 */
+  copyText(text: string): void {
+    this.#system.copyText(text);
+  }
+
+  /** 安装说明的官网：只放行 https（链接来自模板或工具定义，不可全信） */
+  openLink(url: string): void {
+    if (/^https:\/\/\S+$/.test(url)) this.#system.openExternal(url);
   }
 
   #folderOf(playgroundId: string): string | null {
@@ -281,6 +319,7 @@ export class LibraryController {
         this.#client.call("run.list", {}),
         this.#client.call("template.list", {}),
       ]);
+      await this.#keepLastFrame(runs);
       this.#playgrounds = playgrounds;
       this.#runs = runs;
       this.#templates = templates;
@@ -288,6 +327,8 @@ export class LibraryController {
         new Set(playgrounds.map((playground) => playground.id)),
       );
       for (const id of removed) {
+        this.#startErrors.delete(id);
+        this.#lastFrames.delete(id);
         this.#preview.release(id);
         this.#console.unwatch(id);
       }
@@ -299,6 +340,16 @@ export class LibraryController {
     }
     this.#applyPreview();
     this.#emit();
+  }
+
+  // 正显示着的页面所属的服务崩溃了：预览视图马上要销毁，先截下最后一帧留给“崩溃”画面（规格 DESKTOP-WORKSPACE-21）
+  async #keepLastFrame(next: readonly RunSnapshot[]): Promise<void> {
+    const active = this.#workspace.active;
+    if (active === LIBRARY_TAB || previewUrlFor(active, this.#runs) === null) return;
+    if (previewUrlFor(active, next) !== null) return;
+    if (latestRunByPlayground(next).get(active)?.state !== "crashed") return;
+    const frame = await this.#preview.capture().catch(() => null);
+    if (frame !== null) this.#lastFrames.set(active, frame);
   }
 
   setPreviewBounds(bounds: Bounds | null): void {

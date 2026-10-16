@@ -26,3 +26,18 @@
   object-fit: cover;
   object-position: top left;
 }
+
+/* 盖在截图上的提示：压暗下面的最后一帧，提示居中、内容过长时自己滚动 */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+  overflow: auto;
+}
+
+.overlay[data-framed] {
+  background: var(--color-scrim);
+}

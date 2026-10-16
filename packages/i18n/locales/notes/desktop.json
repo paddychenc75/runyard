@@ -1,13 +1,37 @@
 {
+  "desktop.crashed.title": {
+    "exitCode": "进程的退出码"
+  },
   "desktop.duration.seconds.label": {
     "seconds": "秒数，已按语言格式化的数字"
   },
   "desktop.error.title.label": {
     "title": "错误的标题，来自 errors.<代码>.title，已是翻译好的句子"
   },
+  "desktop.missing.requirement.label": {
+    "tool": "工具标识，如 go、node",
+    "required": "需要的版本范围，原样显示"
+  },
+  "desktop.port.body.label": {
+    "actual": "现在实际使用的端口，纯数字字符串"
+  },
+  "desktop.port.occupant.label": {
+    "name": "占用端口的进程名，原样显示",
+    "pid": "占用者的进程号"
+  },
+  "desktop.port.title": {
+    "wanted": "原来想用的端口，纯数字字符串",
+    "reason": "PORT_OCCUPIED 或 PORT_RESERVED"
+  },
+  "desktop.runbar.missing.label": {
+    "tool": "工具标识，如 go、node"
+  },
   "desktop.runbar.state.label": {
     "state": "运行状态的名字，来自 runState.<状态>",
     "port": "端口号，纯数字字符串（不加千分位）"
+  },
+  "desktop.runbar.tooOld.label": {
+    "tool": "工具标识，如 go、node"
   },
   "desktop.script.ended.label": {
     "state": "运行状态的名字，来自 runState.<状态>",

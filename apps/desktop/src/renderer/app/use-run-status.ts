@@ -24,6 +24,12 @@ export function useRunStatus(tab: TabRow): RunStatusView {
   switch (text.kind) {
     case "plain":
       return { mark, danger, text: stateName(text.state) };
+    case "slow":
+      return { mark, danger, text: t("desktop.slow.title") };
+    case "tool-missing":
+      return { mark, danger, text: t("desktop.runbar.missing.label", { tool: text.tool }) };
+    case "tool-too-old":
+      return { mark, danger, text: t("desktop.runbar.tooOld.label", { tool: text.tool }) };
     case "port":
       return {
         mark,

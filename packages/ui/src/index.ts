@@ -38,6 +38,7 @@ export {
 export { TitleBar, type TitleBarControls, type TitleBarProps } from "./patterns/TitleBar/index.ts";
 export { AlertDialog, type AlertDialogProps } from "./primitives/AlertDialog/index.ts";
 export { Badge, type BadgeProps, type BadgeVariant } from "./primitives/Badge/index.ts";
+export { Banner, type BannerProps, type BannerTone } from "./primitives/Banner/index.ts";
 export {
   Button,
   type ButtonProps,
@@ -45,6 +46,7 @@ export {
   type ButtonVariant,
 } from "./primitives/Button/index.ts";
 export { Checkbox, type CheckboxProps } from "./primitives/Checkbox/index.ts";
+export { CopyableCommand, type CopyableCommandProps } from "./primitives/CopyableCommand/index.ts";
 export { EmptyState, type EmptyStateProps } from "./primitives/EmptyState/index.ts";
 export {
   type GlassMaterial,
@@ -79,6 +81,12 @@ export {
   type StatusMarkProps,
   type StatusMarkStatus,
 } from "./primitives/StatusMark/index.ts";
+export {
+  StepList,
+  type StepListItem,
+  type StepListProps,
+  type StepStatus,
+} from "./primitives/StepList/index.ts";
 export { Tooltip, type TooltipProps } from "./primitives/Tooltip/index.ts";
 export { Truncate, type TruncateProps } from "./primitives/Truncate/index.ts";
 export { UserText, type UserTextProps } from "./primitives/UserText/index.ts";

@@ -10,6 +10,8 @@ export interface PreviewSlotProps {
   placeholder: ReactNode;
   /** 有浮层盖住时主进程截来的那一帧（图片地址）；没有就是 null */
   frame: string | null;
+  /** 盖在占位区（含截图）上的一层提示，如崩溃说明；不给就没有 */
+  overlay?: ReactNode;
   /** 占位区位置变了的回调（外壳据此判断浮层是否盖住它） */
   onBounds?: (bounds: Bounds | null) => void;
 }
@@ -17,7 +19,7 @@ export interface PreviewSlotProps {
 // 预览占位（技术设计 §6.7）：一个占位的 div，把自己在窗口里的位置和大小报给主进程，
 // 主进程把预览视图摆在上面。预览还没有（启动中、已停止）时它显示占位内容；
 // 有浮层盖住时它显示截来的那一帧，视图则被主进程藏起。
-export function PreviewSlot({ bridge, placeholder, frame, onBounds }: PreviewSlotProps) {
+export function PreviewSlot({ bridge, placeholder, frame, overlay, onBounds }: PreviewSlotProps) {
   const t = useT();
   const ref = useRef<HTMLDivElement>(null);
   const report = useRef(onBounds);
@@ -58,6 +60,11 @@ export function PreviewSlot({ bridge, placeholder, frame, onBounds }: PreviewSlo
           alt={t("desktop.preview.frame.label")}
           data-preview-frame=""
         />
+      )}
+      {overlay === undefined ? null : (
+        <div className={styles.overlay} data-framed={frame !== null ? "" : undefined}>
+          {overlay}
+        </div>
       )}
     </div>
   );

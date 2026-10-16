@@ -7,8 +7,10 @@ import * as tabStrip from "../src/patterns/TabStrip/TabStrip.fixture.tsx";
 import * as titleBar from "../src/patterns/TitleBar/TitleBar.fixture.tsx";
 import * as alertDialog from "../src/primitives/AlertDialog/AlertDialog.fixture.tsx";
 import * as badge from "../src/primitives/Badge/Badge.fixture.tsx";
+import * as banner from "../src/primitives/Banner/Banner.fixture.tsx";
 import * as button from "../src/primitives/Button/Button.fixture.tsx";
 import * as checkbox from "../src/primitives/Checkbox/Checkbox.fixture.tsx";
+import * as copyableCommand from "../src/primitives/CopyableCommand/CopyableCommand.fixture.tsx";
 import * as emptyState from "../src/primitives/EmptyState/EmptyState.fixture.tsx";
 import * as glassSurface from "../src/primitives/GlassSurface/GlassSurface.fixture.tsx";
 import * as icon from "../src/primitives/Icon/Icon.fixture.tsx";
@@ -17,6 +19,7 @@ import * as menu from "../src/primitives/Menu/Menu.fixture.tsx";
 import * as monogramTile from "../src/primitives/MonogramTile/MonogramTile.fixture.tsx";
 import * as scrollArea from "../src/primitives/ScrollArea/ScrollArea.fixture.tsx";
 import * as statusMark from "../src/primitives/StatusMark/StatusMark.fixture.tsx";
+import * as stepList from "../src/primitives/StepList/StepList.fixture.tsx";
 import * as tooltip from "../src/primitives/Tooltip/Tooltip.fixture.tsx";
 import * as truncate from "../src/primitives/Truncate/Truncate.fixture.tsx";
 import * as userText from "../src/primitives/UserText/UserText.fixture.tsx";
@@ -25,9 +28,11 @@ import * as userText from "../src/primitives/UserText/UserText.fixture.tsx";
 export const fixtures: readonly FixtureModule[] = [
   alertDialog,
   badge,
+  banner,
   button,
   checkbox,
   confirmDialog,
+  copyableCommand,
   dataTable,
   emptyState,
   glassSurface,
@@ -39,6 +44,7 @@ export const fixtures: readonly FixtureModule[] = [
   navList,
   scrollArea,
   statusMark,
+  stepList,
   tabStrip,
   titleBar,
   tooltip,
