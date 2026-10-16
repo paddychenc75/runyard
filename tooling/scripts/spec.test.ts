@@ -3,8 +3,11 @@ import { mkdtempSync, readdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { specEnv } from "./spec.mjs";
+
+// 每个用例要起子进程（跑脚本或 git）；Windows 机器上子进程慢，默认 5 秒不够
+vi.setConfig({ testTimeout: 60_000 });
 
 const SCRIPT = fileURLToPath(new URL("./spec.mjs", import.meta.url));
 

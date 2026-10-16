@@ -2,8 +2,11 @@ import { spawnSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { changesClosedErrors, openChanges } from "./spec-changes-closed.ts";
+
+// 每个用例要起子进程（跑脚本或 git）；Windows 机器上子进程慢，默认 5 秒不够
+vi.setConfig({ testTimeout: 60_000 });
 
 const script = join(import.meta.dirname, "spec-changes-closed.ts");
 const dirs: string[] = [];
