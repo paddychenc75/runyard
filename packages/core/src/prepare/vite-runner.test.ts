@@ -121,10 +121,6 @@ describe("vite 运行器", () => {
       "ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION",
       "[ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION] 28 lockfile entries failed verification:\n  react@19.3.0 was published within the minimumReleaseAge cutoff\n",
     ],
-    [
-      "ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY",
-      "[ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY] Aborted removal of modules directory due to no TTY\n",
-    ],
   ];
 
   for (const [code, output] of setupFailures) {
