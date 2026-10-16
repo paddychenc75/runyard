@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { BootstrapInfo, DesktopBridge } from "../../shared/desktop-bridge.ts";
@@ -54,8 +54,7 @@ function fakeBridge(overrides: Partial<BootstrapInfo> = {}) {
 }
 
 describe("主窗口外壳", () => {
-  it("[DESKTOP-WORKSPACE-03] 资源库标签固定在第一位、没有关闭按钮，⌘W 在它上面不起作用", async () => {
-    const user = userEvent.setup();
+  it("[DESKTOP-WORKSPACE-03] 资源库标签固定在第一位、没有关闭按钮，⌘W 在它上面不起作用", () => {
     const { bridge } = fakeBridge();
     render(<AppFrame bridge={bridge} locale="zh-CN" theme="system" />);
     const tabs = screen.getAllByRole("tab");
@@ -65,7 +64,7 @@ describe("主窗口外壳", () => {
     const event = new KeyboardEvent("keydown", { key: "w", metaKey: true, cancelable: true });
     document.dispatchEvent(event);
     expect(event.defaultPrevented).toBe(true);
-    await user.keyboard("{Meta>}w{/Meta}");
+    fireEvent.keyDown(document.body, { key: "w", metaKey: true });
     expect(screen.getAllByRole("tab")).toHaveLength(1);
   });
 
