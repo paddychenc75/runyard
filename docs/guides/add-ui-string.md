@@ -1,6 +1,6 @@
 # 加或改一条给人看的文字
 
-规则的出处是技术设计 §6.8（`docs/product/03-tech-design.md`）；这份手册是它“手册要点”的八步，现在只写命令行的部分，界面的部分（`<T>`、`useFormat()`、`Truncate`、伪语言）随 M2 的界面包补进来。
+规则的出处是技术设计 §6.8（`docs/product/03-tech-design.md`）；这份手册是它“手册要点”的八步。命令行和界面共用，界面特有的部分在“界面里怎么用”一节；`Truncate` 随 `@runyard/ui` 的组件补进来。
 
 ## 何时用
 
@@ -21,10 +21,24 @@
 7. **写测试。** 断言键和错误码，不断言显示出来的文字：用 `createTestTranslator()`，它把每条文案渲染成 `⟦键|参数=值⟧`；核心和管理进程的测试断言 `err.code`。只有 `format.ts` 的单元测试断言真实文字。
 8. **验证。** 运行 `pnpm verify`；PR 描述里贴出新增和修改的中文原文；改了命令行文字的，另贴 `--lang zh-CN` 下的一段输出。
 
+## 界面里怎么用
+
+`@runyard/i18n/react`（命令行不导入）：
+
+- 应用最外层包一次 `<I18nProvider locale platform catalogs={desktopCatalogs}>`；`catalogs` 用模块级常量，别在渲染里现建数组。语言变了改 `locale` 就行，不用刷新。`<html lang>` 用 `htmlLang(locale)`。
+- 取文案：`const t = useT();`，`{t("library.empty.title")}`。键和参数的类型检查与命令行一样。
+- 带标签的文案（`create.folderHint` 这类，中文写 `<code>{path}</code>`）：`<T k="create.folderHint" values={{ path }} components={{ code: <CodeText /> }} />`。没有标签的文案用 `t()`，不用 `<T>`。
+- 数字、日期、大小、时长：`const fmt = useFormat();`，`fmt.number(n)`、`fmt.date(ms)`、`fmt.fileSize(bytes)`、`fmt.humanDuration(ms)`、`fmt.relativeTime(then, now)`。不直接调 `Intl`，不自己拼单位。
+- 属性里的文字（`aria-label`、`title`、`placeholder`）同样 `t()`：`<button aria-label={t("ui.close.aria")} />`。
+- 测试里用 `createTestTranslator()` 包一个只返回“键加参数”的翻译器，断言键，不断言句子。
+- 看版面撑不撑得住：开发版或测试里把 `locale` 传成 `pseudoLocale`（`en-XA`），每句文案变成 `⟦Ŕúñ~~⟧` 这样更长的样子；页面上不是这个样子的文字就是漏网的。
+- 新建界面文案组（`library`、`create`、`workspace`、`ui`）时，把它加进 `src/desktop-catalogs.ts` 的列表，键必须在同一个改动里被代码引用，否则 `i18n-unused` 会红。
+
 ## 验证
 
 - `pnpm check` 里的国际化检查会指出问题，每条报错写明哪里错、怎么改：`i18n-keys`（两种语言的键和参数、复数类别、备注、字数上限、键名）、`i18n-codes`（登记表里的代码都有文案）、`i18n-unused`（没人用的键）、`i18n-glossary` 和 `i18n-wording`（术语、系统用词、中英文间距、标点）、`ui-strings`（源码字符串里的汉字）、`generated-fresh`（改了文案要运行 `pnpm generate`）。
-- 现在没有、随 M2 的界面包才有的：JSX 里写死文字的 Biome 规则（`biome.json` 已配好，对应目录出现时生效）、组件属性的 `Localized` 类型、伪语言下扫页面。别把这些当成已经拦住了。
+- 界面（JSX）里写死文字：`pnpm lint` 里 Biome 的 `noJsxLiterals` 和 `tooling/biome/` 的两条规则拦标签之间的文字、`{"文字"}`、模板字符串、三元和 `||` 里的字面量、原生元素上的 `aria-label` `title` `placeholder` `alt`；`ui-strings` 拦所有含汉字的字符串（含 JSX 属性）。范围是 `apps/desktop/src/renderer/`、界面组件包（`@runyard/ui`）的 src、`packages/i18n/src/react/`，不含 `*.test.tsx`。组件属性的 `Localized` 类型随 `@runyard/ui` 的组件加入，在那之前别当成已经拦住了。
+- 伪语言下扫页面：`scanPageForLeaks`（`@runyard/i18n`）由截图和端到端测试在页面上调用，随 `@runyard/ui` 的截图流水线接入。
 - 命令行的输出口在 `packages/cli/src/output/`，只收 `Localized`；`ui-strings` 检查保证只有那个目录能写标准输出和标准错误。
 - 可选参数（登记表里 `exitCode?`）写成 `{exitCode, select, none {} other {…{exitCode}…}}`；术语不成对的例外和字数上限写在 `locales/notes/`（`glossarySkip` 加必填的 `glossarySkipReason`、`max`）。
 - 开发者诊断（抛出的异常消息）用英文，不要在源码字符串里写汉字；确实需要时同一行或上一行写 `// i18n-allow: 理由`。

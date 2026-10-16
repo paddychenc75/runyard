@@ -14,9 +14,15 @@ export interface Format {
   technicalDuration(ms: number): Localized;
   /** 说给人听的时长：秒 / 分钟 / 小时 / 天，取四舍五入后合适的单位 */
   humanDuration(ms: number): Localized;
+  /** 日期：Intl.DateTimeFormat，系统本地时区（协议里的时间是 UTC 毫秒数，只在显示时转换） */
+  date(ms: number, style?: DateStyle): Localized;
+  /** 日期加时间（时间到分钟）：同上 */
+  dateTime(ms: number, style?: DateStyle): Localized;
   /** 相对时间：刚刚 / N 分钟前 / N 小时前 / N 天前。now 由调用方传入，函数本身不读时钟 */
   relativeTime(thenMs: number, nowMs: number): Localized;
 }
+
+export type DateStyle = "short" | "medium" | "long";
 
 const SIZE_UNITS = ["B", "KB", "MB", "GB", "TB"] as const;
 
@@ -68,6 +74,18 @@ export function createFormat(translator: Translator): Format {
       const hours = Math.round(minutes / 60);
       if (hours < 24) return t("format.duration.hours", { count: hours });
       return t("format.duration.days", { count: Math.round(hours / 24) });
+    },
+
+    date(ms, style = "medium") {
+      assertFinite(ms, "time");
+      return markLocalized(new Intl.DateTimeFormat(locale, { dateStyle: style }).format(ms));
+    },
+
+    dateTime(ms, style = "medium") {
+      assertFinite(ms, "time");
+      return markLocalized(
+        new Intl.DateTimeFormat(locale, { dateStyle: style, timeStyle: "short" }).format(ms),
+      );
     },
 
     relativeTime(thenMs, nowMs) {

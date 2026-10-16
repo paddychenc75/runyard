@@ -35,6 +35,39 @@ export const b = \`x\${1}\`;
     expect(errors).toHaveLength(2);
   });
 
+  it("JSX 里写死的汉字：标签之间、表达式里的字面量、模板、组件属性、原生属性都红", () => {
+    const path = "packages/ui/src/a.tsx";
+    const jsx = (inner: string) => `export const A = () => (\n  <div>\n    ${inner}\n  </div>\n);`;
+    const t = ["$", "{n}"].join("");
+    const cases = [
+      "<p>还没有项目</p>",
+      '<p>{"还没有项目"}</p>',
+      `<p>{\`共 ${t} 个\`}</p>`,
+      '<p>{ok ? "是" : t("x")}</p>',
+      '<p>{name || "默认"}</p>',
+      '<Button label="保存" />',
+      '<input placeholder="搜索" />',
+      '<button aria-label={"关闭"} type="button" />',
+    ];
+    for (const inner of cases) {
+      expect(checkUiStrings(path, jsx(inner)).length, inner).toBeGreaterThan(0);
+    }
+  });
+
+  it("JSX 里走 t()、变量、不含汉字的文字放行；字符引用拼出的汉字照样红", () => {
+    const path = "apps/desktop/src/renderer/a.tsx";
+    const good = `export const A = () => (<div><p>{t("library.title")}</p><span>{name}</span><i>·</i><code>ls</code></div>);`;
+    expect(checkUiStrings(path, good)).toEqual([]);
+    expect(
+      checkUiStrings(path, `export const A = () => <p>&#x4e2d;&#25991;</p>;`).length,
+    ).toBeGreaterThan(0);
+  });
+
+  it("*.test.tsx 不在范围里（测试标题和断言可以是中文）", () => {
+    expect(isProductSource("packages/ui/src/a.tsx")).toBe(true);
+    expect(isProductSource("packages/ui/src/a.test.tsx")).toBe(false);
+  });
+
   it("注释里的引号和字符串里的 // 不会骗过扫描", () => {
     expect(check(SRC, `// "还没有项目"\nconst a = 1;`)).toBe("");
     expect(check(SRC, `const url = "http://x/中文";`)).toContain("有汉字");
