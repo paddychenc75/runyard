@@ -50,7 +50,13 @@
     },
     "@runyard/desktop": {
       "path": "apps/desktop",
-      "allow": ["@runyard/protocol", "@runyard/platform", "@runyard/client", "@runyard/i18n"]
+      "allow": [
+        "@runyard/protocol",
+        "@runyard/platform",
+        "@runyard/client",
+        "@runyard/i18n",
+        "@runyard/tokens"
+      ]
     },
     "@runyard/testing": {
       "path": "packages/testing",
