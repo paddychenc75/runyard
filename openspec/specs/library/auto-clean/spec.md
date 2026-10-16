@@ -162,7 +162,7 @@
 - 验证：test
 
 ### Requirement: 正在使用的顺延，找不到的和根目录不在的跳过
-正在运行或有标签页开着的项目 MUST NOT 被清理，清理 MUST 顺延一天后再判断；顺延只作用于清理，不改变提醒。`missingSince` 不为空（找不到文件夹）的项目 MUST NOT 被提醒也 MUST NOT 被清理。资源库根目录不在（如外置盘没挂上、网盘还没同步完）时，这一轮检查 MUST 整体跳过，MUST 记一行日志，MUST NOT 把项目标成找不到，也 MUST NOT 清理任何项目。
+当前有运行的项目 MUST NOT 被清理（开着标签页的项目总持有一次运行），清理 MUST 顺延一天后再判断；顺延只作用于清理，不改变提醒。`missingSince` 不为空（找不到文件夹）的项目 MUST NOT 被提醒也 MUST NOT 被清理。资源库根目录不在（如外置盘没挂上、网盘还没同步完）时，这一轮检查 MUST 整体跳过，MUST 记一行日志，MUST NOT 把项目标成找不到，也 MUST NOT 清理任何项目。
 来源：PRD #prd-auto-clean；PRD #prd-decision-table（第 19 项）
 
 #### Scenario: [LIBRARY-AUTO-CLEAN-25] 正在运行的项目顺延
@@ -172,7 +172,7 @@
 - 验证：test
 
 #### Scenario: [LIBRARY-AUTO-CLEAN-26] 有标签页开着的项目顺延
-- 前提：项目已满足全部清理条件，没有运行，但有一个标签页开着
+- 前提：项目已满足全部清理条件，开着一个标签页，因此它当前持有一次运行
 - **WHEN** 判断哪些项目可以清理
 - **THEN** 它不在可清理清单里，推迟一天
 - 验证：test
