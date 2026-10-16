@@ -14,6 +14,7 @@ import {
   readToolDefinitions,
   ScriptRuns,
   type StartRequest,
+  type StaticServer,
   ToolchainService,
 } from "@runyard/core";
 import type { FailureReason, LogEntry, Owner, RunyardError, Settings } from "@runyard/protocol";
@@ -24,6 +25,7 @@ import { OwnerBindings } from "./run-owners.ts";
 import { createRunSubjects } from "./run-subjects.ts";
 import type { RunsView } from "./runs-view.ts";
 import type { Session } from "./session.ts";
+import { createStaticServer } from "./static-server.ts";
 import type { SupervisorApi } from "./supervisor-api.ts";
 import type { SupervisorExtensions, TemplateDataDirs } from "./supervisor-options.ts";
 import { createToolchainStore } from "./toolchain-store.ts";
@@ -52,6 +54,8 @@ export interface RunModuleOptions {
   /** 以下几项缺省是真实实现；测试换成替身 */
   readonly preparer?: RunPreparer;
   readonly readiness?: ReadinessProbe;
+  /** `static` 运行器的页面服务；缺省是管理进程自己的实现 */
+  readonly serveStatic?: StaticServer;
   readonly disconnectGraceMs?: number;
   readonly byeWaitMs?: number;
   readonly stopWaitLimitMs?: number;
@@ -110,6 +114,7 @@ export function createRunModule(api: SupervisorApi, options: RunModuleOptions): 
       resolve: subjects.subjectOf,
       definitions,
       portRange: () => settings?.ports ?? DEFAULT_PORT_RANGE,
+      serveStatic: options.serveStatic ?? createStaticServer({ platform }),
     });
     return { toolchain, preparer };
   });

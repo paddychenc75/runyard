@@ -1,0 +1,15 @@
+{
+  "formatVersion": 1,
+  "id": "html",
+  "name": { "en": "HTML page", "zh-CN": "HTML 页面" },
+  "description": {
+    "en": "A single HTML page with CSS and JavaScript. No tools to install.",
+    "zh-CN": "一个带样式和脚本的 HTML 页面，不用安装任何工具。"
+  },
+  "category": "page",
+  "runner": "static",
+  "requires": {},
+  "entry": "index.html",
+  "substitute": ["index.html"],
+  "maintainer": "Runyard"
+}
