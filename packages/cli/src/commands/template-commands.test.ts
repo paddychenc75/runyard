@@ -1,3 +1,4 @@
+import { join } from "node:path";
 import type { RunyardClient } from "@runyard/client";
 import { clientError } from "@runyard/client";
 import { absPath } from "@runyard/platform";
@@ -230,17 +231,17 @@ describe("template lint", () => {
   function setup() {
     const { h } = harness();
     const { builtinDir, runnersDir } = h.appData;
-    h.fake.fs.writeFile(absPath(`${runnersDir}/static/runner.json`), JSON.stringify(runner));
+    h.fake.fs.writeFile(absPath(join(runnersDir, "static", "runner.json")), JSON.stringify(runner));
     const put = (dir: string, json: unknown) => {
-      h.fake.fs.writeFile(absPath(`${dir}/template.json`), JSON.stringify(json));
-      h.fake.fs.writeFile(absPath(`${dir}/files/index.html`), "<html></html>");
+      h.fake.fs.writeFile(absPath(join(dir, "template.json")), JSON.stringify(json));
+      h.fake.fs.writeFile(absPath(join(dir, "files", "index.html")), "<html></html>");
     };
     return { h, put, builtinDir };
   }
 
   it("[CLI-COMMANDS-72] 不连管理进程：lint 成功，没有尝试连接", async () => {
     const { h, put, builtinDir } = setup();
-    put(`${builtinDir}/demo`, template());
+    put(join(builtinDir, "demo"), template());
     const result = await h.run(["template", "lint", "demo", "--json"]);
     expect(result.code).toBe(0);
     expect(h.json(result)).toEqual({ template: "demo", ok: true, errors: [], warnings: [] });
@@ -249,18 +250,23 @@ describe("template lint", () => {
 
   it("[TEMPLATES-FORMAT-42] 不在模板目录里的文件夹按绝对路径照常检查；文件夹不存在报 TEMPLATE_NOT_FOUND，退出码 3", async () => {
     const { h, put } = setup();
-    const elsewhere = `${h.platform.paths.home}/elsewhere/anything`;
+    const elsewhere = join(h.platform.paths.home, "elsewhere", "anything");
     put(elsewhere, template());
     const ok = await h.run(["template", "lint", elsewhere, "--json"]);
     expect(h.json(ok)).toMatchObject({ template: "demo", ok: true });
-    const missing = await h.run(["template", "lint", `${h.platform.paths.home}/nope`, "--json"]);
+    const missing = await h.run([
+      "template",
+      "lint",
+      join(h.platform.paths.home, "nope"),
+      "--json",
+    ]);
     expect(missing.code).toBe(3);
     expect(h.json(missing).error).toMatchObject({ code: "TEMPLATE_NOT_FOUND" });
   });
 
   it("有错误时结果对象照常输出，ok 为 false，退出码 2", async () => {
     const { h, put, builtinDir } = setup();
-    put(`${builtinDir}/broken`, template({ id: "broken", runner: "missing" }));
+    put(join(builtinDir, "broken"), template({ id: "broken", runner: "missing" }));
     const result = await h.run(["template", "lint", "broken", "--json"]);
     expect(result.code).toBe(2);
     const body = h.json(result) as { ok: boolean; errors: { rule: string }[] };
@@ -270,7 +276,7 @@ describe("template lint", () => {
 
   it("标识和文件夹名不一致：lint 报 template-json-invalid", async () => {
     const { h, put } = setup();
-    put(`${h.platform.paths.stateDir}/templates/hello`, template({ id: "hi" }));
+    put(join(h.platform.paths.stateDir, "templates", "hello"), template({ id: "hi" }));
     const result = await h.run(["template", "lint", "hello", "--json"]);
     const body = h.json(result) as { errors: { rule: string }[] };
     expect(body.errors.map((e) => e.rule)).toContain("template-json-invalid");
@@ -278,9 +284,12 @@ describe("template lint", () => {
 
   it("用户模板自带的 runner.json 不会被当作运行器", async () => {
     const { h, put } = setup();
-    const dir = `${h.platform.paths.stateDir}/templates/mine`;
+    const dir = join(h.platform.paths.stateDir, "templates", "mine");
     put(dir, template({ id: "mine", runner: "my-own" }));
-    h.fake.fs.writeFile(absPath(`${dir}/runner.json`), JSON.stringify({ ...runner, id: "my-own" }));
+    h.fake.fs.writeFile(
+      absPath(join(dir, "runner.json")),
+      JSON.stringify({ ...runner, id: "my-own" }),
+    );
     const result = await h.run(["template", "lint", "mine", "--json"]);
     const body = h.json(result) as { errors: { rule: string }[] };
     expect(body.errors.map((e) => e.rule)).toContain("runner-not-found");
@@ -288,8 +297,8 @@ describe("template lint", () => {
 
   it("用户模板占用了内置标识：按路径检查它时报 template-id-reserved", async () => {
     const { h, put, builtinDir } = setup();
-    put(`${builtinDir}/react19`, template({ id: "react19" }));
-    const dir = `${h.platform.paths.stateDir}/templates/react19`;
+    put(join(builtinDir, "react19"), template({ id: "react19" }));
+    const dir = join(h.platform.paths.stateDir, "templates", "react19");
     put(dir, template({ id: "react19" }));
     const result = await h.run(["template", "lint", dir, "--json"]);
     const body = h.json(result) as { errors: { rule: string }[] };

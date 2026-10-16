@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { delimiter, join } from "node:path";
 import type { RunyardClient } from "@runyard/client";
 import { clientError } from "@runyard/client";
 import { absPath } from "@runyard/platform";
@@ -33,7 +34,7 @@ function harness(options: { supervisor?: boolean; host?: Partial<CliHost> } = {}
       new URL(`../../../../templates/tools/${id}.json`, import.meta.url),
       "utf8",
     );
-    h.fake.fs.writeFile(absPath(`${h.appData.toolsDir}/${id}.json`), text);
+    h.fake.fs.writeFile(absPath(join(h.appData.toolsDir, `${id}.json`)), text);
   }
   return h;
 }
@@ -41,7 +42,7 @@ afterEach(async () => {
   for (const h of open.splice(0)) await h.dispose();
 });
 
-const state = (h: Harness, path: string) => absPath(`${h.platform.paths.stateDir}/${path}`);
+const state = (h: Harness, path: string) => absPath(join(h.platform.paths.stateDir, path));
 
 describe("doctor", () => {
   it("[CLI-COMMANDS-63] 基本诊断：五个键齐全，supervisor.running 是 true", async () => {
@@ -85,7 +86,7 @@ describe("doctor", () => {
 
   function addTemplate(h: Harness, id: string, requires: Record<string, unknown>) {
     h.fake.fs.writeFile(
-      absPath(`${h.appData.builtinDir}/${id}/template.json`),
+      absPath(join(h.appData.builtinDir, id, "template.json")),
       JSON.stringify({ id, requires }),
     );
   }
@@ -113,13 +114,15 @@ describe("doctor", () => {
     const h = harness({
       host: { probeInstall: async () => ({ kind: "app", version: "1.2.0" }) },
     });
-    const bin = "/Applications/Runyard.app/bin";
-    h.fake.fs.writeFile(absPath(`${bin}/runyard`), "#!/bin/sh\n");
-    const result = await h.run(["doctor", "--json"], { PATH: `/usr/bin:${bin}` });
+    const bin = join("/Applications", "Runyard.app", "bin");
+    h.fake.fs.writeFile(absPath(join(bin, "runyard")), "#!/bin/sh\n");
+    const result = await h.run(["doctor", "--json"], {
+      PATH: [join("/usr", "bin"), bin].join(delimiter),
+    });
     expect((h.json(result).cli as { other: unknown }).other).toEqual({
       kind: "app",
       version: "1.2.0",
-      path: `${bin}/runyard`,
+      path: join(bin, "runyard"),
     });
   });
 
@@ -127,8 +130,9 @@ describe("doctor", () => {
     const h = harness({
       host: { probeInstall: async () => ({ kind: "source", version: "0.0.0" }) },
     });
-    h.fake.fs.writeFile(absPath("/usr/local/bin/runyard"), "#!/bin/sh\n");
-    const result = await h.run(["doctor", "--json"], { PATH: "/usr/local/bin" });
+    const local = join("/usr", "local", "bin");
+    h.fake.fs.writeFile(absPath(join(local, "runyard")), "#!/bin/sh\n");
+    const result = await h.run(["doctor", "--json"], { PATH: local });
     expect((h.json(result).cli as { other: unknown }).other).toBeNull();
   });
 
@@ -158,7 +162,7 @@ describe("doctor", () => {
 
   it("缺 node 时安装提示按环境选：有 nvm 给 nvm 的命令，只有官网链接始终在", async () => {
     const h = harness();
-    h.fake.fs.writeFile(absPath(`${h.platform.paths.home}/.nvm/nvm.sh`), "");
+    h.fake.fs.writeFile(absPath(join(h.platform.paths.home, ".nvm", "nvm.sh")), "");
     const result = await h.run(["doctor", "--json"]);
     const node = (
       h.json(result).tools as {

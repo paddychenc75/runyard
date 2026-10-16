@@ -1,3 +1,4 @@
+import { join } from "node:path";
 import { absPath } from "@runyard/platform";
 import { afterEach, describe, expect, it } from "vitest";
 import { Harness } from "../cli-harness.test.ts";
@@ -14,9 +15,9 @@ afterEach(async () => {
 });
 
 const claudePath = (h: Harness) =>
-  absPath(`${h.platform.paths.home}/.claude/skills/runyard/SKILL.md`);
+  absPath(join(h.platform.paths.home, ".claude", "skills", "runyard", "SKILL.md"));
 const agentsPath = (h: Harness) =>
-  absPath(`${h.platform.paths.home}/.agents/skills/runyard/SKILL.md`);
+  absPath(join(h.platform.paths.home, ".agents", "skills", "runyard", "SKILL.md"));
 
 describe("skill install", () => {
   it("[CLI-COMMANDS-73] 空的主目录里写到两个位置，结果有 claude 和 agents 两项和绝对路径", async () => {
