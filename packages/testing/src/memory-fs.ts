@@ -102,6 +102,26 @@ export class MemoryFs {
     this.writeFile(path, data);
   }
 
+  /** 平台接口 appendFile：父目录必须已存在，文件不存在就建 */
+  appendFileChecked(path: AbsPath, data: string): void {
+    if (!this.#dirs.has(dirname(path))) {
+      throw platformError("INTERNAL", {}, `ENOENT: ${dirname(path)}`);
+    }
+    const existing = this.#files.get(path);
+    if (existing === undefined) this.writeFile(path, data);
+    else this.writeFile(path, `${this.readFile(path)}${data}`);
+  }
+
+  /** 平台接口 removeFile：不存在不报错；目录不删 */
+  removeFileChecked(path: AbsPath): void {
+    if (this.#dirs.has(path)) {
+      throw platformError("INTERNAL", {}, `removeFile target is not a regular file: ${path}`);
+    }
+    if (!this.#files.has(path)) return;
+    this.#files.delete(path);
+    this.#emit(path, "remove");
+  }
+
   /** 平台接口 renameFile：目标已存在抛 NAME_EXISTS，不覆盖 */
   renameFile(from: AbsPath, to: AbsPath): void {
     if (!this.#files.has(from)) throw platformError("INTERNAL", {}, `ENOENT: ${from}`);
