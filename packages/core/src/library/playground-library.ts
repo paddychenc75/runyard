@@ -1,10 +1,21 @@
 import { basename, join } from "node:path";
 import { type AbsPath, absPath, type Platform } from "@runyard/platform";
 import type { LibraryEntry } from "@runyard/protocol";
+import { type AutoCleanCandidate, type AutoCleanVerdict, judgeAutoClean } from "./auto-clean.ts";
 import { type CreateContext, createPlayground } from "./create-playground.ts";
 import { randomUlid } from "./create-ulid.ts";
 import { libraryError } from "./library-error.ts";
 import { LibraryIndex, libraryIndexPath } from "./library-index.ts";
+import {
+  type OperationContext,
+  type RenameHooks,
+  type RenameResult,
+  renamePlayground,
+  type TrashHooks,
+  type TrashOutcome,
+  trashPlayground,
+  writeAutoClean,
+} from "./library-operations.ts";
 import type {
   CreatePlaygroundRequest,
   CreatePlaygroundResult,
@@ -26,8 +37,8 @@ export type PlaygroundLibraryDeps = {
   readonly newId?: () => string;
 };
 
-// 资源库：索引加上“文件夹被动过”的判断。改名、移到废纸篓、自动清理不在这里（#38），
-// 文件锁和原子写入的编排属于 supervisor（#41）。
+// 资源库：索引、“文件夹被动过”的判断、改名、移到废纸篓、自动清理的判断与计时状态。
+// 停止运行、释放句柄的编排、文件锁和调度属于 supervisor（#41）。
 export class PlaygroundLibrary {
   readonly #deps: PlaygroundLibraryDeps;
   readonly #index: LibraryIndex;
@@ -106,6 +117,110 @@ export class PlaygroundLibrary {
     this.#index.replace(entry);
     await this.#index.save(this.#deps.root);
     return entry;
+  }
+
+  /** 改名（技术设计 §4.3 固定顺序的第 5 步）；停止、释放、改名后重新启动由调用方经 hooks 编排 */
+  async rename(ref: string, newName: string, hooks: RenameHooks): Promise<RenameResult> {
+    return renamePlayground(this.#operations(), this.requireFolder(ref), newName, hooks);
+  }
+
+  /** 移到废纸篓（`rm` 与自动清理共用）；只经平台层 fs.trash，失败时项目原样保留 */
+  async trash(ref: string, hooks: TrashHooks): Promise<TrashOutcome> {
+    return trashPlayground(this.#operations(), this.requireFolder(ref), hooks);
+  }
+
+  /**
+   * 自动清理的一轮检查（clean.due 的实现）：读出每个项目的自动清理设置，交给纯函数判断，
+   * 并把“正在使用而顺延”记成 snoozedUntil。`inUse` 是现在有运行的项目 id（supervisor 提供）。
+   * 找不到 playground.json 或它是更新版本写的项目，当作“已保留”跳过。
+   */
+  async checkAutoClean(inUse: ReadonlySet<string>): Promise<AutoCleanVerdict> {
+    const { root, platform, now } = this.#deps;
+    const rootPresent = await platform.fs.exists(root);
+    const candidates: AutoCleanCandidate[] = [];
+    if (rootPresent) {
+      for (const { entry } of this.list()) {
+        const read = await readPlaygroundFile(platform.fs, absPath(entry.path));
+        if (read.status !== "ok") continue;
+        candidates.push({
+          id: entry.id,
+          autoClean: read.value.autoClean,
+          lastUsedAt: entry.lastUsedAt,
+          remindedAt: entry.clean?.remindedAt,
+          snoozedUntil: entry.clean?.snoozedUntil,
+          missingSince: entry.missingSince,
+        });
+      }
+    }
+    const verdict = judgeAutoClean({ now: now(), rootPresent, candidates, inUse });
+    if (verdict.postponed.length > 0 && !this.#index.isReadOnly()) {
+      for (const { id, until } of verdict.postponed) {
+        const entry = this.#index.byId(id);
+        if (entry)
+          this.#index.replace({ ...entry, clean: { ...entry.clean, snoozedUntil: until } });
+      }
+      await this.#index.save(root);
+    }
+    return verdict;
+  }
+
+  /**
+   * 打开、关闭或改天数。从“已保留”打开时计时从现在起算（LIBRARY-AUTO-CLEAN-07）；
+   * 关闭或改天数都清除提醒状态，到期时间变了，旧提醒不再作数（-05、-18）
+   */
+  async setAutoClean(ref: string, days: number | null): Promise<LibraryItem> {
+    const item = this.requireFolder(ref);
+    const file = await readPlaygroundFile(this.#deps.platform.fs, absPath(item.entry.path));
+    const wasEnabled = file.status === "ok" && file.value.autoClean.enabled;
+    await writeAutoClean(
+      this.#operations(),
+      item,
+      days === null ? { enabled: false } : { enabled: true, days },
+    );
+    const { clean: _cleared, ...rest } = item.entry;
+    const entry: LibraryEntry =
+      days !== null && !wasEnabled ? { ...rest, lastUsedAt: this.#deps.now() } : rest;
+    this.#index.replace(entry);
+    await this.#index.save(this.#deps.root);
+    return { name: item.name, entry };
+  }
+
+  /** 界面确认提醒真的显示了：记下时间，之后不再进入待提醒清单（clean.ackReminder） */
+  async ackReminder(ref: string): Promise<void> {
+    const item = this.#known(ref);
+    this.#index.replace({
+      ...item.entry,
+      clean: { ...item.entry.clean, remindedAt: this.#deps.now() },
+    });
+    await this.#index.save(this.#deps.root);
+  }
+
+  /** 提醒里的“改为保留”（clean.keep） */
+  async keep(ref: string): Promise<LibraryItem> {
+    return this.setAutoClean(ref, null);
+  }
+
+  /**
+   * 记一次使用（运行启动：命令行 run、new --run，或持有者为 tab 的 run.start）：
+   * 计时重新开始并清除提醒与顺延。只读命令和“打开但不运行”不要调用它
+   */
+  async markUsed(ref: string): Promise<void> {
+    const item = this.#known(ref);
+    const { clean: _cleared, ...rest } = item.entry;
+    this.#index.replace({ ...rest, lastUsedAt: this.#deps.now() });
+    await this.#index.save(this.#deps.root);
+  }
+
+  /** 只动索引的操作（提醒、使用）：文件夹找不到也可以做 */
+  #known(ref: string): LibraryItem {
+    const item = this.find(ref);
+    if (!item) throw libraryError("PLAYGROUND_NOT_FOUND", { name: ref }, `no playground ${ref}`);
+    return item;
+  }
+
+  #operations(): OperationContext {
+    const { root, platform, now } = this.#deps;
+    return { root, platform, now, index: this.#index };
   }
 
   #context(): CreateContext {

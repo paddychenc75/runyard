@@ -32,7 +32,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `packages/i18n/` | 文案、`createTranslator`、数字和时长格式、命令行语言解析（`resolveCliLocale`）、由中文文案生成的键和参数类型 |
 | `packages/supervisor/` | 管理进程：单实例、发现文件、握手服务、会话与方法分发、事件订阅、空闲退出、关闭；运行编排、资源库、日志等由后续 issue 通过接缝接入（目前只有骨架和会话组方法） |
 | `packages/client/` | 管理进程的客户端：读发现文件、握手、经平台层拉起并重连、版本表、带类型的 `call` 和事件订阅；错误是 `ClientError`（代码加参数），不打印 |
-| `packages/core/` | 工具检测、运行引擎、资源库等业务逻辑（目前有日志的切行、解码和读取时清洗，运行状态机与进程生命周期，资源库的项目创建、命名、索引和文件夹被动过的判断，工具链检测，以及 `template lint` 的判定 `lintTemplate`） |
+| `packages/core/` | 工具检测、运行引擎、资源库等业务逻辑（目前有日志的切行、解码和读取时清洗，运行状态机与进程生命周期，资源库的项目创建、命名、索引、文件夹被动过的判断、改名、移到废纸篓和自动清理的判断，工具链检测，以及 `template lint` 的判定 `lintTemplate`） |
 | `packages/cli/` | 命令行 `runyard`：参数解析、输出模块（唯一能写标准输出的地方）、`--json`、退出码、语言解析、`--help` 快照、`config get|set lang`；其余命令目前只有声明，行为由后续 issue 加入 |
 | `packages/testing/` | 测试替身：假时钟、假平台（含假进程、假端口、内存文件系统、假工具链）、临时主目录；只在 `*.test.ts` 里导入（决策记录 0014） |
 | `templates/` | 模板和运行器的数据文件。`schema/`（由 `packages/protocol` 的 zod 定义生成的 JSON Schema，`pnpm generate`，不要手改）、`tools/`（六份工具定义）、`builtin/` 和 `runners/`（目前为空，内置模板与运行器随后续 issue 放进来） |

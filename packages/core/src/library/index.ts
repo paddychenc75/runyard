@@ -1,6 +1,20 @@
+export {
+  type AutoCleanCandidate,
+  type AutoCleanInput,
+  type AutoCleanVerdict,
+  DAY_MS,
+  dueAt,
+  judgeAutoClean,
+} from "./auto-clean.ts";
 export { createUlid, randomUlid } from "./create-ulid.ts";
 export { isLibraryError, LibraryError, libraryError } from "./library-error.ts";
 export { libraryIndexPath } from "./library-index.ts";
+export type {
+  RenameHooks,
+  RenameResult,
+  TrashHooks,
+  TrashOutcome,
+} from "./library-operations.ts";
 export type {
   CreatePlaygroundRequest,
   CreatePlaygroundResult,

@@ -18,7 +18,12 @@ export type PlaygroundFileRead =
   | { readonly status: "absent" }
   | { readonly status: "ok"; readonly value: PlaygroundFile }
   /** 更新版本写的：认得 id，但不改写 */
-  | { readonly status: "newer"; readonly id: string | null }
+  | {
+      readonly status: "newer";
+      readonly id: string | null;
+      readonly found: number;
+      readonly supported: number;
+    }
   | { readonly status: "corrupt" };
 
 export async function readPlaygroundFile(
@@ -31,7 +36,12 @@ export async function readPlaygroundFile(
   if (result.status === "ok") return { status: "ok", value: result.value };
   if (result.status === "newer") {
     const id = result.raw.id;
-    return { status: "newer", id: typeof id === "string" && id !== "" ? id : null };
+    return {
+      status: "newer",
+      id: typeof id === "string" && id !== "" ? id : null,
+      found: result.fileVersion,
+      supported: result.supportedVersion,
+    };
   }
   return { status: "corrupt" };
 }

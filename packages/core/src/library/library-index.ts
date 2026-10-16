@@ -136,6 +136,14 @@ export class LibraryIndex {
     this.#dirty = true;
   }
 
+  /** 移出索引（移到废纸篓之后）；找不到 id 是缺陷 */
+  remove(id: string): void {
+    this.assertWritable();
+    if (!this.byId(id)) throw libraryError("INTERNAL", {}, `no index entry with id ${id}`);
+    this.#file = { ...this.#file, playgrounds: this.#file.playgrounds.filter((e) => e.id !== id) };
+    this.#dirty = true;
+  }
+
   /** 有改动才落盘；root 跟随当前资源库根目录 */
   async save(root: AbsPath): Promise<void> {
     this.assertWritable();
