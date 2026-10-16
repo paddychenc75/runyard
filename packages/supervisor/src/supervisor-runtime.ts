@@ -57,6 +57,7 @@ export function createSupervisorRuntime(options: StartSupervisorOptions) {
   let extensions: SupervisorExtensions = {};
   let server: Server | undefined;
   let shutdownPromise: Promise<void> | undefined;
+  let startupScan: Promise<void> = Promise.resolve();
   let resolveClosed!: () => void;
   const closed = new Promise<void>((resolve) => {
     resolveClosed = resolve;
@@ -119,6 +120,8 @@ export function createSupervisorRuntime(options: StartSupervisorOptions) {
         } catch (error) {
           log(`onShutdown failed: ${String(error)}`);
         }
+        // 启动时的扫描还在写资源库的话，等它结束再往下（否则调用方刚清掉目录它又写回去）
+        await startupScan;
         // 先删发现文件：之后再来的客户端不会拿到一个马上要失效的口令
         await store
           .remove()
@@ -191,7 +194,8 @@ export function createSupervisorRuntime(options: StartSupervisorOptions) {
     });
     idle.evaluate();
     // 启动时扫描资源库（规格 LIBRARY-PLAYGROUNDS-26 到 30）；不挡着接受连接，失败只记日志
-    void libraryService.start();
+    // start 自己吞掉错误；留着这个 promise 是为了关闭时等它收尾
+    startupScan = libraryService.start();
   }
 
   return {
