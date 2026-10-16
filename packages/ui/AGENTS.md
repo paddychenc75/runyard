@@ -3,7 +3,7 @@
 ## 用途
 
 界面的通用组件包：基础组件、图标、玻璃材质、组件工作台（技术设计 §6.7）。它不认识产品：不导入 `protocol`、`electron`、Node 接口（`src/` 里 Biome 的 `noNodejsModules` 拦），文件名、导出名、标识符里不出现产品词，不自己取数据。
-现状：骨架加三个组件 `Icon`、`Button`、`GlassSurface`、`UserText`；其余组件随第一个用到它的功能 PR 加（§6.7 规则 8），不提前做。截图比对（`ui-visual`）、`Localized` 属性的 React 绑定、六项组件化检查分别随 #166、#164、#165。
+现状：骨架加三个组件 `Icon`、`Button`、`GlassSurface`、`UserText`；其余组件随第一个用到它的功能 PR 加（§6.7 规则 8），不提前做。截图比对（`ui-visual`）随 #166。六项组件化检查（`ui-layers`、`ui-purity`、`style-tokens`、`ui-fixtures`、`icons`、`file-size`）已在 `pnpm check` 里（#165），下面的规则就是它们守的。
 
 ## 对外暴露什么
 
@@ -20,6 +20,13 @@
 - 基准图只由 CI 生成，给 PR 加 `update-ui-baseline` 标签，不要在本地更新（`ui-visual` 随 #166）。
 - 界面里不调 `usePlatform()`，快捷键用 `<Kbd shortcut="…">`（这两样随后续组件加入）。
 - 测试优先按“角色加名字”找元素，找不到才用 `data-testid`。
+
+## 检查怎么报错
+
+- `ui-purity`：文件名、目录名和声明的名字按词匹配术语表“代码标识符”一列（`playground`、`template`、`supervisor`、`toolchain`、`runyard`、`library`、`run` 等）；`platform`、`tab`、`preview` 等本来就是通用控件词的，登记在 `tooling/checks/ui-purity.json`（每项写明理由）。
+- `style-tokens`：`.css` 和 `.tsx` 里不许有十六进制颜色、`rgb()` 一类、颜色关键字、除 `0` 和 `1px` 外的像素、直接写数值的圆角 / 字号 / 字体 / 层级 / 阴影、基础级变量、左右方向属性、`style={{…}}` 里的颜色和尺寸；图片里的颜色放进图片文件（如工作台的 `backdrop-colorful.svg`）。
+- `ui-fixtures`：`primitives/<名>/`、`patterns/<名>/` 必须有 `<名>.fixture.tsx` 并导出 `meta`、`samples`。基准图放 `visual/__screenshots__/`，文件名以组件名开头（`Button-light-zh-CN.png`）；这个目录建立之后每个样例文件都要有基准图。单张不超过 200 KB，总量不超过 30 MB。
+- `icons`：图标源文件规格同 `build/icons.ts`，图标表必须是 `pnpm icons:build` 的最新输出。
 
 ## 命令
 

@@ -24,7 +24,7 @@
 | `pnpm lint` | Biome 检查格式和代码规则，只检查不修改 |
 | `pnpm format` | Biome 按规则重排格式（会改文件） |
 | `pnpm typecheck` | `tsc -b`，按 project references 检查全仓库的类型 |
-| `pnpm check` | 全部仓库检查，脚本在 `tooling/checks/`，清单见 `tooling/checks/run.ts`。每条报错都写明哪里错、怎么改 |
+| `pnpm check` | 全部仓库检查，脚本在 `tooling/checks/`，清单见 `tooling/checks/run.ts`。每条报错都写明哪里错、怎么改。界面相关的六项：`ui-layers`（界面分层、`window.runyard`、命令行输出口）、`ui-purity`（`packages/ui` 里的产品词）、`style-tokens`（写死的颜色 / 像素等）、`ui-fixtures`（样例文件和基准图）、`icons`（图标源文件和图标表）、`file-size`（源码文件不超过 400 行） |
 | `pnpm generate` | 重新生成由脚本生成的内容（根 `AGENTS.md` 里的包依赖表，`docs/reference/` 里的协议参考和文案对照表 `strings.md`，`packages/i18n/generated/messages.d.ts`，`packages/tokens/generated/` 和 `docs/design/tokens.md` 的表，`packages/ui/src/icons/generated/` 的图标表）。改了 `tooling/checks/layers.json`、新建了包，改了 `packages/protocol` 里的方法、事件、错误码，或改了 `packages/i18n/locales/` 里的文案之后运行 |
 | `pnpm tokens:build` | 从 `packages/tokens/src/tokens.json` 生成 `packages/tokens/generated/` 下的 `tokens.css`、`tokens.ts`、`editor-themes.ts`，并重写 `docs/design/tokens.md` 里两个标记之间的表；`pnpm generate` 也会生成它们。改了 `tokens.json` 之后运行其一 |
 | `pnpm icons:build` | 从 `packages/ui/src/icons/svg/*.svg` 生成 `packages/ui/src/icons/generated/icon-paths.ts`（图标表和 `IconName` 类型）；`pnpm generate` 也会生成。加、改、删了图标源文件之后运行其一 |

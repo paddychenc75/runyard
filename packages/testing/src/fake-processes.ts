@@ -9,8 +9,9 @@ import type {
   ProcRef,
   TerminateMode,
 } from "@runyard/platform";
-import type { FakeClock, TimerId } from "./fake-clock.ts";
+import type { FakeClock } from "./fake-clock.ts";
 import type { FakePorts } from "./fake-ports.ts";
+import type { Proc, Sink } from "./fake-process-table.ts";
 import type { MemoryFs } from "./memory-fs.ts";
 import type {
   BehaviorSource,
@@ -19,30 +20,6 @@ import type {
   SpawnRecord,
   SpawnSpec,
 } from "./process-behavior.ts";
-
-interface Sink {
-  write(stream: "stdout" | "stderr", data: Uint8Array): void;
-  end(): void;
-}
-
-interface Proc {
-  readonly ref: ProcRef;
-  readonly name: string;
-  /** 环境：后代继承父进程的（脱离进程组的也一样），按标记找进程靠它 */
-  readonly env: Env;
-  readonly behavior: ProcessBehavior;
-  readonly parent: Proc | null;
-  readonly detached: boolean;
-  readonly holdsPipe: boolean;
-  readonly pipeRoot: Proc;
-  readonly children: Proc[];
-  readonly timers: TimerId[];
-  readonly exitWaiters: ((info: ExitInfo) => void)[];
-  sink: Sink | null;
-  sinkEnded: boolean;
-  alive: boolean;
-  exitInfo: ExitInfo | null;
-}
 
 const encoder = new TextEncoder();
 const bytes = (data: string | Uint8Array): Uint8Array =>

@@ -1,0 +1,14 @@
+{
+  "$comment": "ui-purity 的配置（技术设计 §3.3、§6.7 规则 2）。产品词的主体从 docs/glossary.md 的“代码标识符”一列读，这里只放两类补充。改这个文件要说明理由。",
+  "extraProductWords": ["runyard"],
+  "genericWords": {
+    "$comment": "术语表里的标识符，同时也是界面控件的通用词，在 packages/ui 里不当产品词。每一项写明为什么通用；技术设计 §6.7 规则 2 点名的产品词（项目、模板、运行、playground、template、supervisor、toolchain、runyard）不许放进来。",
+    "platform": "平台上下文和快捷键显示放在 packages/ui/src/platform/（技术设计 §6.7 目录树）",
+    "tab": "标签条 TabStrip 是通用控件（Base UI 的 Tabs）",
+    "preview": "预览是通用词，如“预览图”",
+    "note": "备注是通用词，如提示、批注",
+    "owner": "所有者是通用词，没有 Runyard 独有的含义",
+    "agent": "通用词，如 userAgent",
+    "trash": "废纸篓图标和“移到废纸篓”的用词由文案系统管，图标名 trash 是通用图标名"
+  }
+}

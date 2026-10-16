@@ -76,11 +76,8 @@
 
 /*
  * 玻璃组件的样例背后垫一张固定的彩色底图（技术设计 §6.7），否则看不出模糊和透明。
- * 底图固定不随主题变，所以颜色直接写在这里：这是工作台的舞台，不是组件。
+ * 底图固定不随主题变，所以它是一张图片文件（backdrop-colorful.svg），颜色写在图里，不写在样式里。
  */
 .stage[data-backdrop="colorful"] {
-  background:
-    radial-gradient(circle at 15% 30%, #ff7a59 0, transparent 40%),
-    radial-gradient(circle at 80% 20%, #3ac4a1 0, transparent 38%),
-    radial-gradient(circle at 60% 90%, #4d7cff 0, transparent 45%), #f2c14e;
+  background: url("./backdrop-colorful.svg") center / 100% 100% no-repeat;
 }

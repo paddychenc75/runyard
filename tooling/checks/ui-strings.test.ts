@@ -87,16 +87,8 @@ export const b = \`x\${1}\`;
     expect(check("packages/protocol/src/x.ts", `const msg = "给用户看";`)).toContain("有汉字");
   });
 
-  it("process.stdout.write / stderr.write 只许出现在 packages/cli/src/output/", () => {
-    const code = `process.stdout.write("done\\n");\nprocess.stderr.write("x");`;
-    expect(check("packages/cli/src/commands/run.ts", code)).toContain("process.stdout.write");
-    expect(check("packages/cli/src/commands/run.ts", code)).toContain("process.stderr.write");
-    // 开发者诊断（管理进程的标准错误只进日志文件）可以用 i18n-allow 放行，理由必填
-    const diagnostic = `// i18n-allow: 只进日志文件，不显示给用户\nprocess.stderr.write("x");`;
-    expect(check("packages/supervisor/src/run-main.ts", diagnostic)).toBe("");
-    const noReason = `// i18n-allow:\nprocess.stderr.write("x");`;
-    expect(check("packages/supervisor/src/run-main.ts", noReason)).toContain("没有写理由");
-    expect(check("packages/cli/src/output/out.ts", code)).toBe("");
+  it("process.stdout.write 不归这里管，由 ui-layers 接管（技术设计 §6.8）", () => {
+    expect(check("packages/cli/src/commands/run.ts", `process.stdout.write("done\\n");`)).toBe("");
   });
 
   it("哪些文件算产品源码：测试、契约、测试辅助、testing 包都不算", () => {
