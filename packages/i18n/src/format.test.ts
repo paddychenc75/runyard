@@ -109,3 +109,24 @@ describe("format.relativeTime", () => {
     expect(en.relativeTime(now + HOUR, now)).toBe("just now");
   });
 });
+
+describe("format.date / dateTime", () => {
+  // 正午 UTC：除了 UTC+12 以东的时区，本地日期都是同一天
+  const noon = Date.UTC(2026, 9, 12, 12, 0, 0);
+
+  it("日期随语言：英文 Oct 12, 2026，中文 2026年10月12日", () => {
+    expect(en.date(noon)).toBe("Oct 12, 2026");
+    expect(zh.date(noon)).toBe("2026年10月12日");
+    expect(en.date(noon, "long")).toBe("October 12, 2026");
+  });
+
+  it("日期加时间带分钟", () => {
+    expect(en.dateTime(noon)).toMatch(/^Oct 1[23], 2026(, | at )\d{1,2}:\d{2}\s?(AM|PM)$/);
+    expect(zh.dateTime(noon)).toMatch(/^2026年10月1[23]日 \d{2}:\d{2}$/);
+  });
+
+  it("不是有限数字抛错（开发者诊断）", () => {
+    expect(() => en.date(Number.NaN)).toThrow(RangeError);
+    expect(() => en.dateTime(Number.POSITIVE_INFINITY)).toThrow(RangeError);
+  });
+});

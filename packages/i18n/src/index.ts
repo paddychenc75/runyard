@@ -7,10 +7,11 @@ export {
   createTranslator,
   type Translate,
   type Translator,
+  type TranslatorLocale,
   type TranslatorOptions,
 } from "./create-translator.ts";
 export { desktopCatalogs } from "./desktop-catalogs.ts";
-export { createFormat, type Format } from "./format.ts";
+export { createFormat, type DateStyle, type Format } from "./format.ts";
 export {
   fallbackLocale,
   isLocale,
@@ -20,7 +21,13 @@ export {
   sourceLocale,
 } from "./locale.ts";
 export type { Localized } from "./localized.ts";
-export type { MessageValue, MessageValues, TagFormatter } from "./message-format.ts";
+export type {
+  MessageValue,
+  MessageValues,
+  RichTagFormatter,
+  RichTags,
+  TagFormatter,
+} from "./message-format.ts";
 export type {
   CodeMessages,
   ErrorMessageField,
@@ -29,6 +36,20 @@ export type {
   Messages,
   ValuesArgs,
 } from "./messages.ts";
+export {
+  PSEUDO_CLOSE,
+  PSEUDO_OPEN,
+  type PseudoLocale,
+  pseudoLocale,
+  pseudolocalize,
+} from "./pseudo.ts";
+export {
+  collectPageTexts,
+  findLeakedText,
+  type PageNodeLike,
+  type PageText,
+  scanPageForLeaks,
+} from "./pseudo-scan.ts";
 export {
   type CliLocaleInput,
   type CliLocaleResolution,
