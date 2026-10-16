@@ -1,0 +1,28 @@
+{
+  "formatVersion": 1,
+  "id": "python-file",
+  "kind": "oneshot",
+  "needs": ["python"],
+  "check": {
+    "command": [
+      "python",
+      "-c",
+      "import ast,sys;ast.parse(open(sys.argv[1],encoding='utf-8').read(),sys.argv[1])",
+      "{entry}"
+    ],
+    "timeoutMs": 5000
+  },
+  "run": {
+    "command": ["python", "-u", "{entry}"],
+    "env": { "PYTHONDONTWRITEBYTECODE": "1" },
+    "stdin": true
+  },
+  "preview": { "type": "console" },
+  "watch": {
+    "mode": "rerun",
+    "paths": ["**/*.py"],
+    "ignore": [".venv/**", "__pycache__/**"],
+    "debounceMs": 300
+  },
+  "stop": { "mode": "graceful", "graceMs": 2000 }
+}
