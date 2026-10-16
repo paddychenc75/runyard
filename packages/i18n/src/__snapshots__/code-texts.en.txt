@@ -77,7 +77,7 @@ errors.READY_TIMEOUT.hintCli: Run runyard status next16-1 to see whether it is r
 errors.NAME_EXISTS.title: A playground named pricing-table already exists
 errors.NAME_EXISTS.body: The library already has a playground with this name. The existing playground is unchanged.
 errors.NAME_EXISTS.hint: Choose a different name.
-errors.NAME_EXISTS.hintCli: Run runyard run pricing-table to use the existing playground, or run the command again with a different name.
+errors.NAME_EXISTS.hintCli: Run runyard run pricing-table to use the existing playground, add --if-exists reuse to the same command, or run it again with a different name.
 errors.BUSY.title: Playground react19-3 is busy
 errors.BUSY.body: It is installing dependencies or starting, so it cannot be renamed right now. Nothing was changed.
 errors.BUSY.hint: Try again once it is ready or stopped.

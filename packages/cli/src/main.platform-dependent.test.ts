@@ -65,11 +65,12 @@ describe("真实入口", () => {
   });
 
   it("[CLI-COMMANDS-11] 系统语言是中文时仍然输出英文", async () => {
-    const result = await runEntry(tempHome(), ["run", "demo"], {
+    // 真管理进程里没有这个项目：PLAYGROUND_NOT_FOUND（3），错误信息是英文
+    const result = await runEntry(tempHome(), ["run", "no-such-project"], {
       LANG: "zh_CN.UTF-8",
       LC_ALL: "zh_CN.UTF-8",
     });
-    expect(result.code).toBe(10);
+    expect(result.code).toBe(3);
     expect(CJK.test(result.stderr)).toBe(false);
     expect(result.stdout).toBe("");
   });
@@ -252,4 +253,80 @@ describe("模板命令连着真的管理进程", () => {
       await stopSupervisor(platform, client);
     }
   }, 30_000);
+});
+
+describe("new、run 连着真的管理进程", () => {
+  it("[CLI-COMMANDS-20] 没有管理进程时 new html --run 自己拉起它：创建并运行，地址是 127.0.0.1，再 run 一次返回同一个运行", async () => {
+    const home = tempHome();
+    const platform: Platform = getPlatform({ home, profile: undefined });
+    // 没有预先连管理进程：命令行自己拉起；结束后再连上去关掉
+    expect(await platform.fs.exists(discoveryFilePath(platform.paths.stateDir))).toBe(false);
+    const first = await runEntry(
+      home,
+      ["new", "html", "demo", "--run", "--note", "page", "--json"],
+      { RUNYARD_AGENT: "Test Agent" },
+    );
+    const client = await createDeps(developmentConfig()).connect(platform);
+    try {
+      expect(first.stderr).toBe("");
+      expect(first.code).toBe(0);
+      const created = JSON.parse(first.stdout) as Record<string, unknown> & {
+        run: Record<string, unknown>;
+      };
+      expect(created).toMatchObject({
+        name: "demo",
+        path: join(home, "Runyard", "demo"),
+        template: "html",
+        created: true,
+        entry: "index.html",
+        retention: "kept",
+      });
+      expect(created.run).toMatchObject({
+        state: "ready",
+        // html 模板的运行器是 static（管理进程自己服务页面），种类与 server 并列
+        kind: "static",
+        alreadyRunning: false,
+        owner: "cli",
+        idleStopMinutes: 30,
+      });
+      expect(String(created.run.url).startsWith("http://127.0.0.1:")).toBe(true);
+      expect(first.stdout).not.toContain("localhost");
+      // 页面真的在服务
+      const page = await fetch(String(created.run.url));
+      expect(page.status).toBe(200);
+
+      // 创建者记下来了：智能体名和创建命令
+      const file = JSON.parse(
+        (await platform.fs.readText(
+          absPath(join(home, "Runyard", "demo", ".runyard", "playground.json")),
+        )) ?? "{}",
+      );
+      expect(file.createdBy).toEqual({
+        kind: "agent",
+        agent: "Test Agent",
+        command: "runyard new html demo",
+      });
+      expect(file.note).toBe("page");
+
+      // 对活动中的项目再 run：同一个运行
+      const again = await runEntry(home, ["run", "demo", "--json"]);
+      expect(again.code).toBe(0);
+      expect(JSON.parse(again.stdout)).toMatchObject({
+        runId: created.run.runId,
+        alreadyRunning: true,
+      });
+      // 按文件夹的绝对路径运行与按名称等价
+      const byPath = await runEntry(home, ["run", join(home, "Runyard", "demo"), "--json"]);
+      expect(JSON.parse(byPath.stdout)).toMatchObject({ runId: created.run.runId });
+
+      // 已存在默认失败，--if-exists reuse 沿用
+      const clash = await runEntry(home, ["new", "html", "demo", "--json"]);
+      expect(clash.code).toBe(9);
+      expect(JSON.parse(clash.stdout).error.hint).toContain("--if-exists reuse");
+      const reuse = await runEntry(home, ["new", "html", "demo", "--if-exists", "reuse", "--json"]);
+      expect(JSON.parse(reuse.stdout)).toMatchObject({ created: false, name: "demo" });
+    } finally {
+      await stopSupervisor(platform, client);
+    }
+  }, 60_000);
 });

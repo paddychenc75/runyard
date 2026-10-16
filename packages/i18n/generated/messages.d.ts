@@ -100,6 +100,14 @@ export type CatalogMessages = {
     source: string;
     value: string | number;
   };
+  "cli.new.created.body": {
+    name: string | number;
+    path: string | number;
+  };
+  "cli.new.reused.body": {
+    name: string | number;
+    path: string | number;
+  };
   "cli.option.all.hint": Record<never, never>;
   "cli.option.as.hint": Record<never, never>;
   "cli.option.bundle.hint": Record<never, never>;
@@ -135,6 +143,24 @@ export type CatalogMessages = {
   "cli.rm.trashed.body": {
     name: string | number;
     path: string | number;
+  };
+  "cli.run.alreadyRunning.body": {
+    name: string | number;
+  };
+  "cli.run.finished.body": {
+    exitCode: string | number;
+    name: string | number;
+  };
+  "cli.run.ready.body": {
+    name: string | number;
+    url: string | number;
+  };
+  "cli.run.started.body": {
+    name: string | number;
+    runId: string | number;
+  };
+  "cli.run.starting.body": {
+    name: string | number;
   };
   "cli.skillInstall.installed.body": {
     path: string | number;

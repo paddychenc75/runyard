@@ -26,6 +26,18 @@ async function codeOf(promise: Promise<unknown>): Promise<string | undefined> {
 
 const idle = { isBusy: () => false, beforeMove: async () => {} };
 
+describe("按路径找项目", () => {
+  it("[CLI-COMMANDS-43] 项目文件夹的绝对路径（含结尾的斜杠）与名称、id 找到同一个项目", async () => {
+    const { h, library } = await setup();
+    const byName = library.find("demo");
+    expect(byName).toBeDefined();
+    expect(library.find(h.at("demo"))).toEqual(byName);
+    expect(library.find(`${h.at("demo")}/`)).toEqual(byName);
+    expect(library.find(byName?.entry.id ?? "")).toEqual(byName);
+    expect(library.find(h.at("nope"))).toBeUndefined();
+  });
+});
+
 describe("改名", () => {
   it("[LIBRARY-PLAYGROUNDS-13] 改名到保留名：NAME_RESERVED，没有调用停止，文件夹名没变", async () => {
     const { h, library } = await setup();
