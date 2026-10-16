@@ -21,7 +21,7 @@ const isProgramLog = (name: string): boolean =>
 
 /**
  * 每次运行一个日志文件，直接放在 logs/ 下（storage.md 2.5）；运行编号是按时间递增的，
- * 文件名从小到大就是从旧到新，所以取名字最大的三个。运行日志的具体文件名由管理进程的日志模块（#43）定，
+ * 文件名从小到大就是从旧到新，所以取名字最大的三个。运行日志的文件名是 `<runId>.<playgroundId>.jsonl`（管理进程的日志模块，#43），
  * 这里只假定“不是 app.log / supervisor.log（含轮转）的文件就是运行日志”
  */
 async function latestRunLogs(platform: Platform, logDir: AbsPath): Promise<string[]> {

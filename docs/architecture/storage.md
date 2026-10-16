@@ -104,7 +104,9 @@
 | 读取时清洗 | 九条规则，全文在 [证据 0008](evidence/0008-log-capture-and-cleaning.md) 6.2；`--raw` 跳过 |
 | 容量 | 内存里每次运行最近 1 万行或 4 MB；磁盘单个文件上限 10 MB，每个项目留最近 5 次运行 |
 | 顺序 | 两路输出按到达顺序合并，每行带序号；不承诺 stdout 与 stderr 的严格先后 |
-| 程序日志 | `supervisor.log`（管理进程）、`app.log`（桌面应用 main，renderer 的日志经 main 转写），同一套轮转规则 |
+| 文件位置 | `~/.runyard/logs/<runId>.<playgroundId>.jsonl`，与 `supervisor.log`、`app.log` 同在 `logs/` 下，不分子目录；运行编号按时间递增，文件名从小到大就是从旧到新（`doctor --bundle` 靠这一点取最近三次） |
+| 磁盘上限 | 单个文件超过 10 MB 时从头部掐掉旧行，一次砍到 9 MB 以内的整行（留出余量，免得之后每写一行都重写一遍文件）；掐掉的行序号不重排。每个项目留最近 5 次（第 6 次运行开始时删最旧的）；`logs.clear` 清空正在写的这一次、删掉更早的 |
+| 程序日志 | `supervisor.log`（管理进程）、`app.log`（桌面应用 main，renderer 的日志经 main 转写），同一套轮转规则：单个文件超过 5 MB 就轮转，保留 `.1` 到 `.3` 三份旧文件。启动者以追加方式打开 `supervisor.log`，所以不改名，而是复制到 `.1`（旧的顺延）再清空原文件；只在管理进程启动时做 |
 
 ## 3. 版本与升级（§4.2、决策记录 0005 以后的格式规则）
 
@@ -119,8 +121,8 @@
 
 ## 未定
 
-1. 轮转规则的数字：`supervisor.log`、`app.log` 单个文件大小和保留份数（设计写“建仓库时定”）。
-2. 每次运行日志文件的目录和文件命名（设计只说“每次运行一个文件”）。
+1. ~~轮转规则的数字~~ 已定（#43）：单个文件 5 MB，保留 `.1` 到 `.3`，启动时复制再清空（见 2.5）。`app.log` 由桌面应用沿用同一规则，实现不在 #43。
+2. ~~每次运行日志文件的目录和文件命名~~ 已定（#43）：`logs/<runId>.<playgroundId>.jsonl`（见 2.5）。
 3. ~~测试里怎样把 `~/.runyard` 和 `~/Runyard` 换成临时目录~~ 已定：显式传参，不读环境变量。平台层的 `home` 选项决定两个目录，`@runyard/testing` 的 `createTempHome()` 造临时主目录（决策记录 0014）。
 4. ~~`toolchain.json` 的逐字段形状~~ 已定（#19）：`{ formatVersion, entries: { <键>: { checkedAt, tools: ToolCheck[] } } }`。键由 core 按 0009 拼成不透明字符串（登录 shell 加启动文件 mtime 指纹，有项目版本文件时加项目路径）；有效期 `TOOLCHAIN_CACHE_TTL_MS` 为 1 小时（`isToolchainCacheFresh`，时间由调用方给）；条目与 `toolchain.check` 的出参同形，不留检测用的 PATH。
 5. 升级时是否保留 `.bak-vN` 备份：`protocol` 只做内存里的纯升级，返回里带 `upgradedFrom`，不碰磁盘；要不要在第一次落盘前备份由 core 和 supervisor 的实现 issue 决定，设计仍未确认，需要负责人拍板。
