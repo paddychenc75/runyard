@@ -1,4 +1,6 @@
 // @vitest-environment node
+// 这是真起 esbuild 子进程打包整个工作台的集成测试（#209：Windows 冷启动曾耗时 3.8 秒，贴近 5 秒默认超时而偶发失败），
+// 所以归进程阶段（单文件串行、超时在 tooling/vitest/base.ts 统一给足）；同一份入口也由 ui-visual 流水线在 CI 里打包。
 // esbuild 在 jsdom 下会因为 TextEncoder 的实现不同而拒绝工作，构建测试用 Node 环境
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
