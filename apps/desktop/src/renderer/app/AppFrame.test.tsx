@@ -3,34 +3,38 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { BootstrapInfo, DesktopBridge } from "../../shared/desktop-bridge.ts";
-import type { LibraryState } from "../../shared/library-state.ts";
+import type { LibraryState, PlaygroundRow } from "../../shared/library-state.ts";
 import { AppFrame } from "./AppFrame.tsx";
 
 afterEach(cleanup);
+
+// 这个文件只关心外壳，列表各列的内容由 LibraryPage.test.tsx 测
+function row(
+  extra: Pick<PlaygroundRow, "id" | "name" | "kind" | "state" | "active">,
+): PlaygroundRow {
+  return {
+    previewing: false,
+    busy: false,
+    note: "",
+    templateId: "html",
+    templateName: null,
+    port: null,
+    autoClean: { enabled: false, days: null },
+    lastUsedAt: 1,
+    lastOpenedAt: null,
+    createdBy: { kind: "user" },
+    createdAt: 1,
+    ...extra,
+  };
+}
 
 const state: LibraryState = {
   locale: "zh-CN",
   error: null,
   templates: [{ id: "html", name: { en: "Plain HTML", "zh-CN": "纯 HTML" } }],
   playgrounds: [
-    {
-      id: "a",
-      name: "react-counter",
-      kind: "server",
-      state: "ready",
-      active: true,
-      previewing: false,
-      busy: false,
-    },
-    {
-      id: "b",
-      name: "landing-hero",
-      kind: "static",
-      state: "idle",
-      active: false,
-      previewing: false,
-      busy: false,
-    },
+    row({ id: "a", name: "react-counter", kind: "server", state: "ready", active: true }),
+    row({ id: "b", name: "landing-hero", kind: "static", state: "idle", active: false }),
   ],
 };
 
@@ -89,19 +93,25 @@ describe("主窗口外壳", () => {
     expect((screen.getByRole("button", { name: "模板" }) as HTMLButtonElement).disabled).toBe(true);
   });
 
-  it("开发期列表仍能运行、停止、选中预览和新建", async () => {
+  it("开发期的运行、停止按钮和用模板新建仍在", async () => {
     const user = userEvent.setup();
     const { bridge, call } = fakeBridge();
     render(<AppFrame bridge={bridge} locale="zh-CN" theme="system" />);
     await screen.findByText("react-counter");
     await user.click(screen.getByRole("button", { name: "停止" }));
     await user.click(screen.getByRole("button", { name: "运行" }));
-    await user.click(screen.getByRole("button", { name: "react-counter" }));
     await user.click(screen.getByRole("button", { name: /纯 HTML/ }));
     expect(call).toHaveBeenCalledWith("run.stop", "a");
     expect(call).toHaveBeenCalledWith("run.start", "b");
-    expect(call).toHaveBeenCalledWith("preview.select", "a");
     expect(call).toHaveBeenCalledWith("playground.create", "html");
+  });
+
+  it("点资源库标签就是回到列表：让开发期的预览让开", async () => {
+    const user = userEvent.setup();
+    const { bridge, call } = fakeBridge();
+    render(<AppFrame bridge={bridge} locale="zh-CN" theme="system" />);
+    await user.click(screen.getByRole("tab", { name: "资源库" }));
+    expect(call).toHaveBeenCalledWith("preview.select", null);
   });
 
   it("没有窗口按钮要让位的系统（inset 为 0）不留空", () => {

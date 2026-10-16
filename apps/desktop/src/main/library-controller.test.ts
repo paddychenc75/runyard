@@ -60,6 +60,48 @@ function setup() {
   return { client, preview, controller };
 }
 
+describe("LibraryController 实时更新", () => {
+  it("[DESKTOP-LIBRARY-VIEW-05] 命令行新建的项目在事件到来后自动出现，创建者不是用户", async () => {
+    const { client, controller } = setup();
+    await controller.start();
+    expect(controller.getState().playgrounds.map((row) => row.name)).toEqual(["a", "b"]);
+    client.playgrounds = [
+      ...client.playgrounds,
+      { ...playground("demo"), createdBy: { kind: "agent", agent: "Claude Code" } },
+    ];
+    client.onEvent?.();
+    await controller.refresh();
+    const demo = controller.getState().playgrounds.find((row) => row.name === "demo");
+    expect(demo?.createdBy).toEqual({ kind: "agent", agent: "Claude Code" });
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-06] 命令行运行再停止：状态变化，运行中的排到最前，停止后排回去", async () => {
+    const { client, controller } = setup();
+    client.playgrounds = [
+      { ...playground("a"), lastOpenedAt: 100 },
+      { ...playground("b"), lastOpenedAt: 50 },
+    ];
+    await controller.start();
+    expect(controller.getState().playgrounds.map((row) => row.id)).toEqual(["a", "b"]);
+
+    client.runs = [run("b", "starting")];
+    client.onEvent?.();
+    await controller.refresh();
+    expect(controller.getState().playgrounds.map((row) => [row.id, row.state])).toEqual([
+      ["b", "starting"],
+      ["a", "idle"],
+    ]);
+
+    client.runs = [run("b", "stopped")];
+    client.onEvent?.();
+    await controller.refresh();
+    expect(controller.getState().playgrounds.map((row) => [row.id, row.state])).toEqual([
+      ["a", "idle"],
+      ["b", "stopped"],
+    ]);
+  });
+});
+
 describe("LibraryController", () => {
   it("启动时读项目、运行和模板，并订阅 run 与 playground 事件", async () => {
     const { client, controller } = setup();

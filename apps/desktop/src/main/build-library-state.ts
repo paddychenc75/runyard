@@ -30,20 +30,44 @@ export function latestRunByPlayground(runs: readonly RunSnapshot[]): Map<string,
   return latest;
 }
 
+// 运行中的排最前，其余按上次打开从新到旧；从没打开过的用创建时间排，名字兜底（规格 DESKTOP-LIBRARY-VIEW-01）
+function compareRows(a: PlaygroundRow, b: PlaygroundRow): number {
+  if (a.active !== b.active) return a.active ? -1 : 1;
+  const aTime = a.lastOpenedAt ?? a.createdAt;
+  const bTime = b.lastOpenedAt ?? b.createdAt;
+  if (aTime !== bTime) return bTime - aTime;
+  return a.name.localeCompare(b.name);
+}
+
 export function buildLibraryState(inputs: LibraryInputs): LibraryState {
   const latest = latestRunByPlayground(inputs.runs);
-  const playgrounds = inputs.playgrounds.map((playground): PlaygroundRow => {
+  const templateNames = new Map(inputs.templates.map((template) => [template.id, template.name]));
+  const rows = inputs.playgrounds.map((playground): PlaygroundRow => {
     const run = latest.get(playground.id);
+    const active = run !== undefined && isActiveRun(run.state);
     return {
       id: playground.id,
       name: playground.name,
       kind: playground.kind,
       state: run?.state ?? "idle",
-      active: run !== undefined && isActiveRun(run.state),
+      active,
       previewing: inputs.previewId === playground.id,
       busy: inputs.busyIds.has(playground.id),
+      note: playground.note ?? "",
+      templateId: playground.template.id,
+      templateName: templateNames.get(playground.template.id) ?? null,
+      port: (active ? run.port : undefined) ?? playground.port ?? null,
+      autoClean: {
+        enabled: playground.autoClean.enabled,
+        days: playground.autoClean.days ?? null,
+      },
+      lastUsedAt: playground.lastUsedAt,
+      lastOpenedAt: playground.lastOpenedAt ?? null,
+      createdBy: playground.createdBy,
+      createdAt: playground.createdAt,
     };
   });
+  const playgrounds = rows.sort(compareRows);
   return {
     locale: inputs.locale,
     playgrounds,

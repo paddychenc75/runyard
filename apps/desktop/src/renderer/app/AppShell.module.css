@@ -14,8 +14,9 @@
   min-block-size: 0;
 }
 
-/* 预览是主进程摆的原生视图，盖在这一块上；没有预览时显示这里的底色 */
+/* 预览是主进程摆的原生视图，盖在整个内容区上；没有预览时是资源库页 */
 .preview {
-  flex: 1;
-  min-inline-size: 0;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }

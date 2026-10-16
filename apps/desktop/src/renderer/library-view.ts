@@ -1,77 +1,81 @@
-import { createTranslator, desktopCatalogs, type Locale, type Localized } from "@runyard/i18n";
-import type { LocalizedText } from "@runyard/protocol";
-import type { LibraryState } from "../shared/library-state.ts";
+import type { Locale } from "@runyard/i18n";
+import type { LocalizedText, RunState } from "@runyard/protocol";
+import type { StatusMarkStatus } from "@runyard/ui";
+import type { PlaygroundRow } from "../shared/library-state.ts";
 
-// 把主进程给的状态变成界面要显示的内容：所有文字在这里经文案包生成，DOM 那一层只管摆。
-// 不碰 DOM，所以可以直接测。
+// 资源库列表里每一格“显示什么”的纯判断，不碰 DOM、不生成文字（文字在组件里经文案包），所以可以直接测。
 
-export interface RowView {
-  id: string;
-  name: string;
-  stateLabel: Localized;
-  action: "run" | "stop";
-  actionLabel: Localized;
-  busy: boolean;
-  previewing: boolean;
-}
-
-export interface TemplateView {
-  id: string;
-  label: string;
-}
-
-export interface LibraryView {
-  locale: Locale;
-  windowTitle: Localized;
-  heading: Localized;
-  emptyHint: Localized | null;
-  rows: RowView[];
-  createHeading: Localized;
-  templates: TemplateView[];
-  previewPlaceholder: Localized;
-  errorText: Localized | null;
-}
-
-// 错误码到文案：键 errors.<码>.title 由协议登记表推出，参数类型随码变，所以这里按字符串键调用一次
-type LooseTranslate = (key: string, values?: unknown) => Localized;
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 export function pickLocalizedText(text: LocalizedText, locale: Locale): string {
   return typeof text === "string" ? text : (text[locale] ?? text.en);
 }
 
-export function buildLibraryView(state: LibraryState): LibraryView {
-  const { t } = createTranslator({
-    locale: state.locale,
-    // 第一版只有 macOS；平台只影响“废纸篓”之类的系统用词，这里的文案用不到
-    platform: "darwin",
-    catalogs: desktopCatalogs,
-  });
-  const loose = t as LooseTranslate;
-  return {
-    locale: state.locale,
-    windowTitle: t("desktop.window.title"),
-    heading: t("desktop.library.title"),
-    emptyHint: state.playgrounds.length === 0 ? t("desktop.library.empty.hint") : null,
-    rows: state.playgrounds.map((row) => ({
-      id: row.id,
-      name: row.name,
-      stateLabel: row.state === "idle" ? t("desktop.state.idle.label") : t(`runState.${row.state}`),
-      action: row.active ? "stop" : "run",
-      actionLabel: row.active ? t("desktop.stop.action") : t("desktop.run.action"),
-      busy: row.busy,
-      previewing: row.previewing,
-    })),
-    createHeading: t("desktop.create.title"),
-    templates: state.templates.map((template) => ({
-      id: template.id,
-      label: pickLocalizedText(template.name, state.locale),
-    })),
-    previewPlaceholder: t("desktop.preview.placeholder"),
-    errorText:
-      state.error === null
-        ? null
-        : t("desktop.error.title.label", {
-            title: loose(`errors.${state.error.code}.title`, state.error.params),
-          }),
-  };
+/** 行的状态标记的样子；没运行过算已停止（设计稿只有“已停止”，没有“未运行”） */
+export function statusMarkOf(state: RunState | "idle"): StatusMarkStatus {
+  switch (state) {
+    case "ready":
+    case "running":
+      return "running";
+    case "checking":
+    case "installing":
+    case "starting":
+    case "reloading":
+    case "stopping":
+      return "starting";
+    case "crashed":
+    case "errored":
+    case "failed":
+      return "crashed";
+    case "stopped":
+    case "finished":
+    case "idle":
+      return "stopped";
+  }
+}
+
+/** 状态文字用的文案键：从没运行过和已停止显示同一句；就绪的服务在列表里就是“运行中”（设计稿 Main） */
+export function stateLabelKey(state: RunState | "idle"): `runState.${RunState}` {
+  if (state === "idle") return "runState.stopped";
+  return state === "ready" ? "runState.running" : `runState.${state}`;
+}
+
+export type Retention =
+  | { kind: "kept" }
+  | { kind: "autoClean"; daysLeft: number }
+  | { kind: "autoCleanUnknown" };
+
+/** 保留列：已保留，或自动清理还剩几天（从最近一次使用起算，不足一天按一天算，最少 0） */
+export function retentionOf(row: PlaygroundRow, now: number): Retention {
+  if (!row.autoClean.enabled) return { kind: "kept" };
+  if (row.autoClean.days === null) return { kind: "autoCleanUnknown" };
+  const elapsedDays = Math.floor(Math.max(0, now - row.lastUsedAt) / DAY_MS);
+  return { kind: "autoClean", daysLeft: Math.max(0, row.autoClean.days - elapsedDays) };
+}
+
+/** 模板的缩写方块：id 带连字符取各段首字母（node-ts 是 NT），否则首字母大写加第二个字母小写（react19 是 Re） */
+export function monogramOf(templateId: string): string {
+  const segments = templateId.split("-").filter((segment) => /^[a-z]/i.test(segment));
+  if (segments.length > 1) {
+    return segments
+      .slice(0, 2)
+      .map((segment) => segment.charAt(0).toUpperCase())
+      .join("");
+  }
+  const letters = (segments[0] ?? templateId).replace(/[^a-z]/gi, "");
+  return letters.charAt(0).toUpperCase() + letters.slice(1, 2).toLowerCase();
+}
+
+export type CreatorView = { kind: "me" } | { kind: "cli" } | { kind: "agent"; name: string | null };
+
+export function creatorOf(row: PlaygroundRow): CreatorView {
+  const { kind, agent } = row.createdBy;
+  if (kind === "user") return { kind: "me" };
+  if (kind === "agent") return { kind: "agent", name: agent ?? null };
+  // 命令行创建的也可能带了智能体名字（PRD #prd-agent-created）：有名字就按智能体显示
+  return agent === undefined ? { kind: "cli" } : { kind: "agent", name: agent };
+}
+
+export function runningCount(rows: readonly PlaygroundRow[]): number {
+  return rows.filter((row) => row.active).length;
 }

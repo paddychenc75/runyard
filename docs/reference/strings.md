@@ -120,11 +120,7 @@
 | cli.usage.unknownSetting.body | 不认识的设置项：{name}。目前只有 lang。 | Unknown setting: {name}. The only setting is lang. | name：用户输入的设置项，原样显示 |
 | desktop.create.title | 新建 | New | — |
 | desktop.error.title.label | 出错了：{title} | Error: {title} | title：错误的标题，来自 errors.<代码>.title，已是翻译好的句子 |
-| desktop.library.empty.hint | 还没有项目。从下面的模板新建一个。 | No playgrounds yet. Create one from a template below. | — |
-| desktop.library.title | 项目 | Playgrounds | — |
-| desktop.preview.placeholder | 运行一个项目，页面会显示在这里。 | Run a playground and its page shows up here. | — |
 | desktop.run.action | 运行 | Run | — |
-| desktop.state.idle.label | 未运行 | Not running | — |
 | desktop.stop.action | 停止 | Stop | — |
 | desktop.window.title | Runyard | Runyard | — |
 | errors.APP_REQUIRED.body | open 和 screenshot 要由桌面应用来完成，命令行自己做不到。 | The open and screenshot commands are carried out by the desktop app. The command line cannot do them on its own. | — |
@@ -259,6 +255,20 @@
 | format.relative.hours | {count, plural, other {# 小时前}} | {count, plural, one {# hr ago} other {# hr ago}} | count：距现在的整数小时数，1 到 23 |
 | format.relative.justNow | 刚刚 | just now | — |
 | format.relative.minutes | {count, plural, other {# 分钟前}} | {count, plural, one {# min ago} other {# min ago}} | count：距现在的整数分钟数，1 到 59 |
+| library.column.actions.aria | 操作 | Actions | — |
+| library.column.creator.label | 创建者 | Created by | — |
+| library.column.lastOpened.label | 上次打开 | Last opened | — |
+| library.column.name.label | 名称与备注 | Name and note | — |
+| library.column.port.label | 端口 | Port | — |
+| library.column.retention.label | 保留 | Retention | — |
+| library.column.status.label | 状态 | Status | — |
+| library.column.template.label | 模板 | Template | — |
+| library.creator.agent.label | 智能体 | Agent | — |
+| library.creator.cli.label | 命令行 | Command line | — |
+| library.creator.me.label | 我 | Me | — |
+| library.empty.cli.label | 也可以让智能体用命令行创建： | An agent can also create one from the command line: | — |
+| library.empty.hint | 选一个模板，新建你的第一个项目。 | Pick a template to create your first playground. | — |
+| library.empty.title | 还没有项目 | No playgrounds yet | — |
 | library.filter.agent.label | 智能体创建 | Agent-made | — |
 | library.filter.all.label | 全部 | All | — |
 | library.filter.autoClean.label | 自动清理 | Auto-clean | — |
@@ -269,9 +279,16 @@
 | library.nav.settings.label | 设置 | Settings | — |
 | library.nav.templates.label | 模板 | Templates | — |
 | library.nav.unused.label | 长期未使用 | Unused for a while | — |
+| library.note.empty.label | 未填写备注 | No note | — |
 | library.page.summary.label | {total, plural, other {# 个项目}} · {running, plural, other {# 个正在运行}} | {total, plural, one {# playground} other {# playgrounds}} · {running, plural, one {# running} other {# running}} | total：资源库里项目的总数；running：正在运行的项目数 |
+| library.retention.autoClean.label | 剩 {days, plural, other {# 天}} | {days, plural, one {# day} other {# days}} left | days：距离自动清理还剩的天数 |
+| library.retention.autoClean.tooltip | {days, plural, other {# 天}}没打开就移到{term_trash}，每次打开重新计时 | Moved to the {term_trash} after {days, plural, one {# day} other {# days}} unopened; the count restarts on every open | days：自动清理设定的天数 |
+| library.retention.kept.label | 已保留 | Kept | — |
 | library.sidebar.footer.label | {count, plural, other {# 个项目}} | {count, plural, one {# playground} other {# playgrounds}} | count：资源库里项目的总数 |
 | library.tab.title | 资源库 | Library | — |
+| library.table.aria | 项目列表 | Playgrounds | — |
+| library.topbar.idle.label | 没有在运行的项目 | No playground running | — |
+| library.topbar.running.label | {count, plural, other {# 个运行中}} | {count, plural, one {# running} other {# running}} | count：正在运行的项目数（标签页和命令行持有的都算） |
 | notice.DEPS_FROM_CACHE | 依赖来自本机缓存。 | Dependencies came from the local cache. | — |
 | notice.ENV_DEGRADED | 只读到了非交互的终端环境，工具检测的结果可能不准。 | Only the non-interactive terminal environment could be read, so tool detection may be inaccurate. | — |
 | notice.ENV_UNRESOLVED | 没能读取你终端的环境（{reason, select, timeout {读取超时} other {读取失败}}），工具检测的结果可能不准。先用常用目录的扫描结果，后台会再试一次。 | Could not read your terminal environment ({reason, select, timeout {timed out} other {failed}}), so tool detection may be inaccurate. Runyard is using a scan of common directories for now and will try again in the background. | reason：读取失败的原因：timeout（超时）或 failed（失败）；用 select 选词 |

@@ -85,3 +85,65 @@ describe("previewUrlFor", () => {
     expect(previewUrlFor("b", [ready])).toBeNull();
   });
 });
+
+describe("buildLibraryState 的列和顺序", () => {
+  const at = (id: string, lastOpenedAt: number | undefined) => ({
+    ...playground(id),
+    ...(lastOpenedAt === undefined ? {} : { lastOpenedAt }),
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-01] 运行中的排在最前，其余按上次打开从新到旧", () => {
+    const state = buildLibraryState({
+      ...base,
+      // 三个项目里只有“上次打开最早”的那个在运行
+      playgrounds: [at("recent", 300), at("running", 100), at("older", 200)],
+      runs: [run("running", "ready")],
+    });
+    expect(state.playgrounds.map((row) => row.id)).toEqual(["running", "recent", "older"]);
+  });
+
+  it("从没打开过的项目按创建时间排，时间相同按名字", () => {
+    const created = (id: string, createdAt: number) => ({ ...playground(id), createdAt });
+    const state = buildLibraryState({
+      ...base,
+      playgrounds: [created("b", 5), created("a", 5), created("c", 9)],
+      runs: [],
+    });
+    expect(state.playgrounds.map((row) => row.id)).toEqual(["c", "a", "b"]);
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-02] 备注和端口：进行中的运行用实际端口，其次是登记的端口，脚本没有端口", () => {
+    const withPort = { ...playground("svc"), note: "pricing table layout test", port: 7101 };
+    const script = { ...playground("script"), kind: "oneshot" as const };
+    const state = buildLibraryState({
+      ...base,
+      playgrounds: [withPort, script],
+      runs: [run("svc", "ready", { port: 7105 })],
+    });
+    const byId = new Map(state.playgrounds.map((row) => [row.id, row]));
+    expect(byId.get("svc")).toMatchObject({ note: "pricing table layout test", port: 7105 });
+    expect(byId.get("script")).toMatchObject({ note: "", port: null });
+    const stopped = buildLibraryState({ ...base, playgrounds: [withPort], runs: [] });
+    expect(stopped.playgrounds[0]?.port).toBe(7101);
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-03] 保留的信息：关闭自动清理就是已保留，开启的带天数", () => {
+    const temp = { ...playground("temp"), autoClean: { enabled: true, days: 30 } };
+    const state = buildLibraryState({ ...base, playgrounds: [playground("kept"), temp], runs: [] });
+    const byId = new Map(state.playgrounds.map((row) => [row.id, row]));
+    expect(byId.get("kept")?.autoClean).toEqual({ enabled: false, days: null });
+    expect(byId.get("temp")?.autoClean).toEqual({ enabled: true, days: 30 });
+  });
+
+  it("模板名从模板列表按 id 取，模板不在了就是 null", () => {
+    const state = buildLibraryState({
+      ...base,
+      templates: [template("html")],
+      playgrounds: [playground("a")],
+      runs: [],
+    });
+    expect(state.playgrounds[0]?.templateName).toEqual({ en: "html", "zh-CN": "html-zh" });
+    const missing = buildLibraryState({ ...base, playgrounds: [playground("a")], runs: [] });
+    expect(missing.playgrounds[0]?.templateName).toBeNull();
+  });
+});
