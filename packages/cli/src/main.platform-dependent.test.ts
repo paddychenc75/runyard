@@ -65,11 +65,12 @@ describe("真实入口", () => {
   });
 
   it("[CLI-COMMANDS-11] 系统语言是中文时仍然输出英文", async () => {
-    const result = await runEntry(tempHome(), ["run", "demo"], {
+    // 真管理进程里没有这个项目：PLAYGROUND_NOT_FOUND（3），错误信息是英文
+    const result = await runEntry(tempHome(), ["run", "no-such-project"], {
       LANG: "zh_CN.UTF-8",
       LC_ALL: "zh_CN.UTF-8",
     });
-    expect(result.code).toBe(10);
+    expect(result.code).toBe(3);
     expect(CJK.test(result.stderr)).toBe(false);
     expect(result.stdout).toBe("");
   });

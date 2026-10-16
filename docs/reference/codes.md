@@ -19,8 +19,8 @@
 | 3 | `TEMPLATE_NOT_FOUND` | `{ template: string }` |
 | 3 | `FOLDER_MISSING` | `{ name: string }` |
 | 3 | `RUN_NOT_FOUND` | `{ runId: string }` |
-| 4 | `TOOL_MISSING` | `{ tool: string; required: string }` |
-| 4 | `TOOL_TOO_OLD` | `{ tool: string; required: string; found: string }` |
+| 4 | `TOOL_MISSING` | `{ tool: string; required: string; name?: string }` |
+| 4 | `TOOL_TOO_OLD` | `{ tool: string; required: string; found: string; name?: string }` |
 | 4 | `RUNTIME_MISSING` | `{ tool: string }` |
 | 5 | `SETUP_FAILED` | `{ name: string }` |
 | 5 | `DEPS_OFFLINE` | `{ name: string }` |

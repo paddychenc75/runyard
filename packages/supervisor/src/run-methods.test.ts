@@ -21,7 +21,7 @@ const errorOf = async (
 ) => (await pump.call(method, params)).error as { code: string; params: Record<string, unknown> };
 
 describe("run.start", () => {
-  it("项目不存在：PLAYGROUND_NOT_FOUND；文件夹找不到：FOLDER_MISSING", async () => {
+  it("[CLI-COMMANDS-44] 项目不存在：PLAYGROUND_NOT_FOUND；文件夹找不到：FOLDER_MISSING", async () => {
     const { w, cli, id } = await setup();
     expect(
       (await errorOf(cli, "run.start", { playground: "nope", owner: cliOwner, wait: "none" })).code,
@@ -43,7 +43,7 @@ describe("run.start", () => {
     await w.dispose();
   });
 
-  it("[RUN-LIFECYCLE-11] 等待就绪超时：READY_TIMEOUT，进程继续运行，没有被杀", async () => {
+  it("[RUN-LIFECYCLE-11] [CLI-COMMANDS-45] 等待就绪超时：READY_TIMEOUT，进程继续运行，没有被杀", async () => {
     const { w, cli, id } = await setup();
     w.world.fake.processes.when((spec) => spec.argv[1] === "server.js", {});
     const response = await w.drive(
@@ -69,7 +69,19 @@ describe("run.start", () => {
     await w.dispose();
   });
 
-  it("run.start 记一次使用：lastUsedAt 更新", async () => {
+  it("[CLI-COMMANDS-43] 项目文件夹的绝对路径与名称等价：同一个项目，同一个运行", async () => {
+    const { w, cli, id } = await setup();
+    const byName = await w.startRun(cli, id, cliOwner);
+    const byPath = await cli.result<{
+      runId: string;
+      playgroundId: string;
+      alreadyRunning: boolean;
+    }>("run.start", { playground: w.at("demo"), owner: cliOwner, wait: "none" });
+    expect(byPath).toMatchObject({ playgroundId: id, runId: byName.runId, alreadyRunning: true });
+    await w.dispose();
+  });
+
+  it("[CLI-COMMANDS-46] run.start 记一次使用：lastUsedAt 更新", async () => {
     const { w, cli, id } = await setup();
     const before = (await cli.result<{ lastUsedAt: number }>("playground.get", { playground: id }))
       .lastUsedAt;

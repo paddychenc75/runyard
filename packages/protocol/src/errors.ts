@@ -33,10 +33,20 @@ export const errorRegistry = {
   // 按 runId 找不到运行（run.stop / get / adopt / attach / detach）。runId 是调用方给的原样字符串
   RUN_NOT_FOUND: { exit: 3, params: z.object({ runId: z.string().min(1) }) },
 
-  TOOL_MISSING: { exit: 4, params: z.object({ tool: toolId, required: z.string().min(1) }) },
+  // name 是被阻止运行的项目：命令行的提示要写出重跑命令 runyard run <名称>（规格 CLI-COMMANDS-03）。
+  // 可选：只检测工具、不针对某个项目时（如 doctor）没有项目名
+  TOOL_MISSING: {
+    exit: 4,
+    params: z.object({ tool: toolId, required: z.string().min(1), name: name.optional() }),
+  },
   TOOL_TOO_OLD: {
     exit: 4,
-    params: z.object({ tool: toolId, required: z.string().min(1), found: z.string().min(1) }),
+    params: z.object({
+      tool: toolId,
+      required: z.string().min(1),
+      found: z.string().min(1),
+      name: name.optional(),
+    }),
   },
   RUNTIME_MISSING: { exit: 4, params: z.object({ tool: toolId }) },
 

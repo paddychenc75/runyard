@@ -77,7 +77,7 @@ errors.READY_TIMEOUT.hintCli: 运行 runyard status next16-1 看它是否就绪�
 errors.NAME_EXISTS.title: 项目名称 pricing-table 已被占用
 errors.NAME_EXISTS.body: 资源库里已经有同名的项目，现有项目没有改动。
 errors.NAME_EXISTS.hint: 换一个名称。
-errors.NAME_EXISTS.hintCli: 用 runyard run pricing-table 运行已有的项目，或换一个名称重新运行这条命令。
+errors.NAME_EXISTS.hintCli: 用 runyard run pricing-table 运行已有的项目，在同一条命令里加 --if-exists reuse，或换一个名称重新运行。
 errors.BUSY.title: 项目 react19-3 正忙
 errors.BUSY.body: 它正在安装依赖或启动，现在不能改名，没有做任何改动。
 errors.BUSY.hint: 等它就绪或停止后再试。

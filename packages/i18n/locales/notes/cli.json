@@ -67,6 +67,32 @@
     "value": "用户给的语言值，原样显示",
     "source": "值来自哪里：flag、env 或 saved；用 select 选词"
   },
+  "cli.new.created.body": {
+    "name": "项目名称，原样显示",
+    "path": "项目文件夹的绝对路径，原样显示"
+  },
+  "cli.new.reused.body": {
+    "name": "项目名称，原样显示",
+    "path": "项目文件夹的绝对路径，原样显示"
+  },
+  "cli.run.alreadyRunning.body": {
+    "name": "项目名称，原样显示"
+  },
+  "cli.run.finished.body": {
+    "name": "项目名称，原样显示",
+    "exitCode": "脚本的退出码（整数）"
+  },
+  "cli.run.ready.body": {
+    "name": "项目名称，原样显示",
+    "url": "服务的地址，以 http://127.0.0.1: 开头，原样显示"
+  },
+  "cli.run.started.body": {
+    "name": "项目名称，原样显示",
+    "runId": "运行的标识，原样显示"
+  },
+  "cli.run.starting.body": {
+    "name": "项目名称，原样显示"
+  },
   "cli.skillInstall.installed.body": {
     "target": "claude 或 agents；用 select 选词",
     "path": "写入的 SKILL.md 绝对路径，原样显示"

@@ -57,7 +57,7 @@ export async function runSupervisorMain(argv: readonly string[]): Promise<number
         startedBy: args.startedBy,
       },
       templateData,
-      extend: (api) => createRunModule(api, { templateData }),
+      extend: (api) => createRunModule(api, { templateData, appVersion: args.version }),
       host: args.host,
       execPath: process.execPath,
       log: diagnostic,

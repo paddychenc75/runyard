@@ -44,7 +44,11 @@ export function createRunPreparer(deps: RunPreparerDeps): RunPreparerHandle {
     const checked = await deps.toolchain.check({ requires: subject.requires, cwd: subject.folder });
     for (const notice of checked.notices) log(notice);
     const missing = checked.errors[0];
-    if (missing !== undefined) return { ok: false, failure: missing };
+    // 带上项目名：命令行的提示要写出 runyard run <名称>（规格 CLI-COMMANDS-03）
+    if (missing !== undefined) {
+      const params = { ...missing.params, name: context.request.name };
+      return { ok: false, failure: { ...missing, params } as typeof missing };
+    }
 
     const loaded = await platform.env.load({ cwd: subject.folder });
     const network = deps.network?.();

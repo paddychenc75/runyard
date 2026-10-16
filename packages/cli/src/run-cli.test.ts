@@ -33,8 +33,8 @@ const sampleParams: { [C in ErrorCode]: ErrorParams<C> } = {
   TEMPLATE_NOT_FOUND: { template: "react19" },
   FOLDER_MISSING: { name: "demo" },
   RUN_NOT_FOUND: { runId: "r_1" },
-  TOOL_MISSING: { tool: "go", required: ">=1.26" },
-  TOOL_TOO_OLD: { tool: "go", required: ">=1.26", found: "1.20.1" },
+  TOOL_MISSING: { tool: "go", required: ">=1.26", name: "demo" },
+  TOOL_TOO_OLD: { tool: "go", required: ">=1.26", found: "1.20.1", name: "demo" },
   RUNTIME_MISSING: { tool: "node" },
   SETUP_FAILED: { name: "demo" },
   DEPS_OFFLINE: { name: "demo" },
@@ -112,6 +112,11 @@ describe("--json 输出", () => {
       const result = await h.run(["run", "demo", "--json"]);
       const error = h.json(result).error as { hint: string };
       expect(error.hint, code).toMatch(/runyard \S+/);
+      // 缺工具时要写出重跑命令（issue #108）；项目已存在时要提到 --if-exists reuse
+      if (code === "TOOL_MISSING" || code === "TOOL_TOO_OLD") {
+        expect(error.hint, code).toContain("runyard run demo");
+      }
+      if (code === "NAME_EXISTS") expect(error.hint).toContain("--if-exists reuse");
     }
   });
 
