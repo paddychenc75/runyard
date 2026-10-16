@@ -2,7 +2,7 @@ import type { Owner, RunSnapshot } from "@runyard/protocol";
 import type { Run } from "./run-handle.ts";
 import { RunSession } from "./run-session.ts";
 import { isActiveState } from "./run-transitions.ts";
-import type { RunEngineDeps, StartRequest } from "./run-types.ts";
+import type { CrashedRunInput, RunEngineDeps, StartRequest } from "./run-types.ts";
 
 export type StartResult = {
   readonly run: Run;
@@ -65,6 +65,17 @@ export class RunEngine {
     let count = 0;
     for (const session of this.#runs.values()) if (isActiveState(session.state)) count += 1;
     return count;
+  }
+
+  /** 崩溃后清理的结果：在引擎里登记一个 `crashed` 的运行（不会运行，也不计入“运行中”） */
+  restoreCrashed(input: CrashedRunInput): Run {
+    const session = RunSession.restoreCrashed(
+      { deps: this.#deps, runningCount: () => this.runningCount() },
+      input,
+    );
+    this.#runs.set(input.runId, session);
+    this.#current.set(input.request.playgroundId, session);
+    return session;
   }
 
   /** 先停止再启动，端口不变（规格 RUN-LIFECYCLE-22）。返回新的一次运行 */
