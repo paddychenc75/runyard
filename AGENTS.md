@@ -2,8 +2,7 @@
 
 > 不要在本仓库或它的上级目录里建 `CLAUDE.md`、`CLAUDE.local.md`：有了它们，Claude Code 就不再读这份文件。个人偏好放 `~/.claude/CLAUDE.md`，或把 Claude Code 的 Project instructions 设置改为 `claude-md-and-agents-md`。
 
-Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用本地模板新建、运行和管理小的代码示例（叫“项目”，代码里是 `playground`）。所有运行由一个后台的管理进程（`supervisor`）统一照看，桌面应用和命令行都只是它的客户端。命令行只随桌面应用安装，第一版不发 npm。
-现状：1.0 之前，仓库里只有工具链和文档，产品代码还没开始写。范围和里程碑见 PRD #prd-release-plan。
+Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用本地模板新建、运行和管理小的代码示例（叫“项目”，代码里是 `playground`）。所有运行由一个后台的管理进程（`supervisor`）统一照看，桌面应用和命令行都只是它的客户端。命令行只随桌面应用安装，第一版不发 npm。现状：1.0 之前，M1 的核心包和命令行已有，桌面应用只有最早的开发外壳（`apps/desktop`）。范围和里程碑见 PRD #prd-release-plan。
 
 ## 语言
 
@@ -26,6 +25,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `docs/guides/` | 操作手册和命令表。有手册的任务按手册做，不要临场发挥 |
 | `docs/releases/` | 每个版本给负责人看的白话说明（`<版本>.md`）。更新日志 `CHANGELOG.md` 在根目录，自动生成，不要手改 |
 | `docs/glossary.md` | 术语表：中文术语、唯一的英文标识符、禁用的同义词 |
+| `apps/desktop/` | 桌面应用（Electron）：主进程、预加载脚本、界面三部分。目前是最早的开发外壳：一个窗口，列出项目、运行和停止、就绪后预览，用现成的内置模板新建；从源码 `pnpm dev` 打开。设计系统、标签页、编辑器、终端等随 M2 后续 PR |
 | `packages/platform/` | 平台层：`Platform` 接口、`getPlatform()`、路径与名称校验、`darwin` 和薄 `linux` 实现、契约测试（目前有接口、paths、ipc、spawnDetached、exec、proc、ports、fs（含 macOS 废纸篓、`readBytes` / `listFiles` / `appendFile` / `removeFile`）、system（版本串）、watch、env（登录 shell 解析）、tools、shell 的实现，其余是占位，随后续 issue 加入） |
 | `packages/protocol/` | 所有跨进程约定（目前有错误码、提示码、枚举、`RunyardError` / `Notice` / `LogEntry` / `Owner`、分帧、`Frame`、握手消息、版本比对、方法与事件的登记表、`Playground` / `RunSnapshot`、磁盘文件格式与升级链、`template.json` / `runner.json` / 工具定义的格式与校验） |
 | `packages/i18n/` | 文案、`createTranslator`、数字和时长格式、命令行语言解析（`resolveCliLocale`）、由中文文案生成的键和参数类型 |
@@ -59,6 +59,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `@runyard/supervisor` | `@runyard/protocol`、`@runyard/platform`、`@runyard/core`、`@runyard/testing`（只在测试里） | 已有 |
 | `@runyard/client` | `@runyard/protocol`、`@runyard/platform`、`@runyard/testing`（只在测试里） | 已有 |
 | `runyard` | `@runyard/protocol`、`@runyard/platform`、`@runyard/client`、`@runyard/core`、`@runyard/i18n`、`@runyard/testing`（只在测试里） | 已有 |
+| `@runyard/desktop` | `@runyard/protocol`、`@runyard/platform`、`@runyard/client`、`@runyard/i18n` | 已有 |
 | `@runyard/testing` | `@runyard/protocol`、`@runyard/platform`、`@runyard/core`（只在测试里） | 已有 |
 <!-- generated:layers 结束 -->
 
@@ -79,14 +80,13 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 
 ```sh
 pnpm install                 # 安装依赖
+pnpm dev                     # 从源码打开桌面应用的窗口（加 -- --root <临时目录> 不碰真实的 ~/Runyard，见 apps/desktop/AGENTS.md）
 pnpm verify                  # 交付前必跑：lint + typecheck + check + 受影响的包的测试（两个阶段）
 pnpm check                   # 全部仓库检查（依赖规则、文档、术语、PRD 锚点等）
-pnpm lint / pnpm format      # Biome：检查格式和代码规则（只检查）/ 按规则重排格式
-pnpm typecheck               # tsc -b，全仓库类型检查
+pnpm lint / pnpm format      # Biome：检查格式和代码规则（只检查）/ 按规则重排格式；pnpm typecheck 是 tsc -b
 pnpm test                    # 全部包的测试：先单元阶段，再进程阶段（起真进程的 *.platform-dependent.test.ts，一次一个包）
 pnpm test:unit               # 只跑单元阶段；pnpm test:process 只跑进程阶段；pnpm test --filter <包名> 只跑一个包
-pnpm generate                # 重新生成文档里由脚本生成的部分
-pnpm deps:lookup <包名>       # 查一个依赖的候选版本、发布日期和安全公告
+pnpm generate / pnpm deps:lookup <包名>   # 重新生成文档里由脚本生成的部分 / 查依赖的版本和公告
 ```
 
 Claude Code 的钩子：改完文件后对那一个文件跑 Biome；结束回复前跑 `tsc -b` 和 `pnpm check`，不通过就继续修，超过 90 秒放行并提示。钩子不代替 `pnpm verify`。

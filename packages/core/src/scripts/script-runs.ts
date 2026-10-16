@@ -77,10 +77,13 @@ export class ScriptRuns {
     if (rule.mode === "none") return { dispose: async () => undefined };
 
     let timer: number | undefined;
+    // 停止监听之后，已经触发、还在队列里的重跑也要作废（#153）：否则它会在 stop 之后起出新的运行
+    let disposed = false;
+    const cancelled = () => disposed;
     const fire = () => {
       timer = undefined;
       this.#enqueue(request.playgroundId, () =>
-        rule.mode === "rerun" ? this.#rerun(request) : this.#restart(request),
+        rule.mode === "rerun" ? this.#rerun(request, cancelled) : this.#restart(request, cancelled),
       );
     };
     const ignore = ignoredDirectories(rule.ignore).map((dir) => posixRelPath(dir));
@@ -91,6 +94,7 @@ export class ScriptRuns {
     });
     return {
       dispose: async () => {
+        disposed = true;
         if (timer !== undefined) clock.clearTimeout(timer);
         timer = undefined;
         await watcher.dispose();
@@ -107,21 +111,26 @@ export class ScriptRuns {
     );
   }
 
-  async #rerun(request: StartRequest): Promise<void> {
+  async #rerun(request: StartRequest, cancelled: () => boolean): Promise<void> {
     const { engine } = this.#deps;
+    if (cancelled()) return;
     if (!(await this.#deps.autoRunEnabled(request.playgroundId))) return;
     const current = engine.current(request.playgroundId);
     const gate = await this.#gate(request);
+    if (cancelled()) return;
     if (gate !== undefined && !gate.ok) {
       current?.markStale(gate.entries);
       return;
     }
     // 先把旧的整棵停掉、确认为空，再起新的，任何时刻只有一个脚本进程（RUN-SCRIPTS-20）
     if (current !== undefined && isActiveState(current.state)) await current.stop();
+    // 停旧的期间监听可能被结束（runyard stop）：不再起新的
+    if (cancelled()) return;
     engine.start(request);
   }
 
-  async #restart(request: StartRequest): Promise<void> {
+  async #restart(request: StartRequest, cancelled: () => boolean): Promise<void> {
+    if (cancelled()) return;
     const current = this.#deps.engine.current(request.playgroundId);
     if (current?.state === "ready") await current.reload();
   }

@@ -37,9 +37,10 @@ export const layers: Check = {
       );
     }
 
-    // 只管 packages/ 下的业务包；tooling 不在管辖范围，apps/desktop 内部各部分等它出现时再加
+    // 管 packages/ 下的业务包和 apps/desktop；tooling 不在管辖范围。
+    // apps/desktop 内部各部分（main、preload、renderer）能导入什么，由 Biome 的 noRestrictedImports 管（biome.json）
     for (const pkg of listWorkspacePackages(root)) {
-      if (!pkg.dir.startsWith("packages/")) continue;
+      if (!pkg.dir.startsWith("packages/") && !pkg.dir.startsWith("apps/")) continue;
       const name = nameByPath.get(pkg.dir);
       if (name === undefined || pkg.manifest.name !== name) {
         errors.push(

@@ -1,3 +1,4 @@
+import { homedir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { absPath, getPlatform, isPlatformError } from "@runyard/platform";
 import { PROTOCOL_VERSION } from "@runyard/protocol";
@@ -45,7 +46,12 @@ export async function runSupervisorMain(argv: readonly string[]): Promise<number
   process.on("SIGTERM", requestStop);
   process.on("SIGINT", requestStop);
   try {
-    const platform = getPlatform({ home: absPath(args.home), profile: args.profile });
+    const platform = getPlatform({
+      home: absPath(args.home),
+      // --home 只是数据根目录；登录 shell 要用真实主目录才读得到启动文件（issue #152）
+      shellHome: absPath(homedir()),
+      profile: args.profile,
+    });
     const templateData = templateDataDirs();
     const handle = await startSupervisor({
       platform,

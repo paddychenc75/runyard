@@ -9,6 +9,7 @@
     { "path": "packages/supervisor" },
     { "path": "packages/client" },
     { "path": "packages/cli" },
-    { "path": "packages/testing" }
+    { "path": "packages/testing" },
+    { "path": "apps/desktop" }
   ]
 }

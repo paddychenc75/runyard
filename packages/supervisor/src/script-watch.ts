@@ -1,4 +1,4 @@
-import { type Run, type RunStateEvent, type ScriptRuns } from "@runyard/core";
+import { isActiveState, type Run, type RunStateEvent, type ScriptRuns } from "@runyard/core";
 import { type AbsPath, type Disposable, posixRelPath } from "@runyard/platform";
 import type { RunObserver } from "./run-module.ts";
 import type { Session } from "./session.ts";
@@ -114,6 +114,8 @@ export function createScriptWatch(api: SupervisorApi, deps: ScriptWatchDeps): Sc
       state: ({ run: snapshot }: RunStateEvent) => {
         if (snapshot.owner.kind !== "cli" || snapshot.kind !== "oneshot") return;
         if (watching.has(snapshot.playgroundId)) return;
+        // 正在停止的运行不开始监听：`runyard stop` 先摘掉监听，随后这次运行自己的“停止中”事件不能把它重新挂上（#153）
+        if (!isActiveState(snapshot.state) || snapshot.state === "stopping") return;
         const run = deps.runOf(snapshot.runId);
         if (run !== undefined) void begin(run);
       },

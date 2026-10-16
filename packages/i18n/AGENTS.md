@@ -11,6 +11,7 @@
 - `createTranslator({ locale, platform, catalogs })` 得到 `{ locale, t }`；`t(key, values)` 返回 `Localized`。
 - `createTestTranslator()`：测试用，返回“键加参数”（`⟦键|参数=值⟧`），测试断言键，不断言句子。
 - `cliCatalogs`：命令行打包的文案组（两种语言），交给 `createTranslator({ catalogs })`；新增文案组时加进这个列表（`src/cli-catalogs.ts`）。
+- `desktopCatalogs`：桌面应用打包的文案组（`desktop`、`errors`、`notice`、`runState`、`platform`），同样的用法（`src/desktop-catalogs.ts`）；`desktop` 组放桌面外壳自己的文字，键以 `desktop.` 开头。
 - `createFormat(translator)`：数字、文件大小、技术性时长、说给人听的时长、相对时间。
 - `resolveCliLocale({ flag, env, saved })`：`--lang` > `RUNYARD_LANG` > `cli.json` 的 `lang` > 英文；不认识的值给 `unsupported`，调用方要在标准错误输出一行提示。读环境变量和文件由 `cli` 做。
 - `Localized`：带标记的字符串，输出口只收它；包外拿不到“把任意字符串标成已翻译”的办法。

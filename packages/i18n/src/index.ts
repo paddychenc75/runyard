@@ -9,6 +9,7 @@ export {
   type Translator,
   type TranslatorOptions,
 } from "./create-translator.ts";
+export { desktopCatalogs } from "./desktop-catalogs.ts";
 export { createFormat, type Format } from "./format.ts";
 export {
   fallbackLocale,
