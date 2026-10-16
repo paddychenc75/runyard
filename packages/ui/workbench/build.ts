@@ -19,7 +19,8 @@ export function workbenchBuildOptions(outDir: string): BuildOptions {
     target: "chrome152",
     jsx: "automatic",
     // .module.css 默认就是 local-css（类名带散列）；别的 .css 是全局样式
-    loader: { ".svg": "text" },
+    // 样式里 url() 引用的图片（工作台的彩色底图）内联进 main.css，页面不依赖额外文件
+    loader: { ".svg": "dataurl" },
     define: { "process.env.NODE_ENV": '"development"' },
     sourcemap: true,
     logLevel: "silent",

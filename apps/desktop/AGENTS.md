@@ -40,7 +40,7 @@ pnpm --filter @runyard/desktop smoke             # 冒烟自检：窗口不显�
 
 - `src/main/`：主进程。`integration/` 放依赖 Electron 的系统差异（窗口外框与底色、单实例、用户数据目录、启动信息），系统分支只许写在这里；`native-ui/`（菜单、对话框、通知）等第一个菜单出现时再建。`index.ts` 只接线；`composition-root.ts` 经 `@runyard/client` 连接或拉起管理进程（客户端种类 `app`）；`library-controller.ts` 是窗口背后的全部逻辑（不认识 Electron，用假客户端测）；`ipc-handlers.ts` 把界面的消息接到控制器；`preview-view.ts`、`integration/main-window.ts` 是 Electron 接线；`app-protocol.ts`、`preview-policy.ts` 是安全相关的纯判断；`smoke.ts` 是冒烟自检。
 - `src/preload/`：预加载脚本，构建成 CommonJS（沙箱里的预加载脚本不能是 ES 模块）。
-- `src/renderer/`：界面，React。`app/`（外壳：`AppFrame` 管文案、`<html>` 属性和版面变量，`AppShell`、`Sidebar`、`TopBar`、`DevLibraryPanel`）、`bridge/`（唯一碰 `window.runyard` 的地方）、`library-view.ts`（开发期列表的文字）。CSP 的 `style-src` 里有一个哈希，放行 Base UI 滚动区插入的固定 `<style>`（见 `index.html` 的注释）。
+- `src/renderer/`：界面，React。`app/`（外壳：`AppFrame` 管文案、`<html>` 属性和版面变量，`AppShell`、`Sidebar`、`TopBar`、`DevLibraryPanel`）、`bridge/`（全仓库唯一读 `window.runyard` 的地方，`ui-layers` 守着；别处经 `getDesktopBridge()` 取接口）、`library-view.ts`（开发期列表的文字）。CSP 的 `style-src` 里有一个哈希，放行 Base UI 滚动区插入的固定 `<style>`（见 `index.html` 的注释）。
 - `src/shared/`：主进程、预加载脚本、界面共用的类型和版面常量。
 
 ## 测试

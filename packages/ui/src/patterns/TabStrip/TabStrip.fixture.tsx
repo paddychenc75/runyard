@@ -20,29 +20,29 @@ function project(data: SampleData, id: string, status: TabStatus): TabStripItem 
   };
 }
 
-function library(data: SampleData): TabStripItem {
-  return { id: "library", label: data.label, icon: "grid" };
+function pinned(data: SampleData): TabStripItem {
+  return { id: "pinned", label: data.label, icon: "grid" };
 }
 
 const statuses: readonly TabStatus[] = ["running", "starting", "stopped", "crashed"];
 
 export const samples: readonly FixtureSample[] = [
   {
-    name: "library-only",
+    name: "pinned-only",
     render: (data) => (
       <FixtureBox>
-        <TabStrip label={data.label} items={[library(data)]} value="library" />
+        <TabStrip label={data.label} items={[pinned(data)]} value="pinned" />
       </FixtureBox>
     ),
   },
   {
-    name: "library-selected",
+    name: "pinned-selected",
     render: (data) => (
       <FixtureBox>
         <TabStrip
           label={data.label}
-          items={[library(data), project(data, "a", "running"), project(data, "b", "running")]}
-          value="library"
+          items={[pinned(data), project(data, "a", "running"), project(data, "b", "running")]}
+          value="pinned"
         />
       </FixtureBox>
     ),
@@ -53,7 +53,7 @@ export const samples: readonly FixtureSample[] = [
       <FixtureBox>
         <TabStrip
           label={data.label}
-          items={[library(data), project(data, "a", "running"), project(data, "b", "running")]}
+          items={[pinned(data), project(data, "a", "running"), project(data, "b", "running")]}
           value="a"
         />
       </FixtureBox>
@@ -65,7 +65,7 @@ export const samples: readonly FixtureSample[] = [
       <FixtureBox>
         <TabStrip
           label={data.label}
-          items={[library(data), ...statuses.map((status) => project(data, status, status))]}
+          items={[pinned(data), ...statuses.map((status) => project(data, status, status))]}
           value="running"
         />
       </FixtureBox>
@@ -78,7 +78,7 @@ export const samples: readonly FixtureSample[] = [
         <TabStrip
           label={data.label}
           items={[
-            library(data),
+            pinned(data),
             {
               id: "long",
               label: <UserText>{data.longLabel}</UserText>,

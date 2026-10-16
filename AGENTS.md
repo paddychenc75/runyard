@@ -70,9 +70,9 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 - `electron` 只许出现在桌面应用里；界面进程（renderer）里不许用 Node 接口；`@runyard/protocol` 里不许用 Node、浏览器、Electron 的任何接口。
 - 系统分支（读 `process.platform`、直接启动进程、手写路径分隔符）只许写在 `@runyard/platform` 和桌面应用主进程的 integration 目录里，其他地方调用平台接口。`platform-branching` 查 `packages` 和 `apps` 两个目录（含测试）：读运行系统的写法、导入 `child_process`、传给 `node:fs`/`node:path` 函数的手写 `/` 或 `\\` 拼接和 `path.sep` 拼接；`tooling` 目录不查（脚本要启动 git、pnpm）。其余手写分隔符的写法靠评审。
 - 第一版只发 macOS（决策记录 0013）：平台层只有 `darwin` 和薄的 `linux` 两份实现，不许新增只属于 Windows 的代码（`win32` 实现、辅助程序、安装器）；接口按以后好加 Windows 来写（不假设信号和进程组，进程身份是 pid 加启动时间）。依赖平台实现的测试只在 macOS 和 Ubuntu 跑，在 Windows 上只通过测试手册里那一个机制跳过，不在测试里写 `if (process.platform …)`。
-- 包之间只从入口导入（如 `@runyard/core`），不伸进内部文件。管理进程一侧的包（protocol、platform、core、supervisor、client）不产生给人看的句子，只发“代码加参数”。界面分五层，只能从上往下导入，通用组件包（`@runyard/ui`）不认识产品。
-- 给人看的文字一律走文案包。现在 `pnpm check` 已拦：缺文案或参数不一致（`i18n-keys`、`i18n-codes`）、未使用的键（`i18n-unused`）、术语和措辞（`i18n-glossary`、`i18n-wording`）、源码字符串里的汉字和命令行输出口之外的 `process.stdout.write`（`ui-strings`）；
-- 永久删除：产品源码里的 `fs.rm`、`rmSync`、`rmdir`、`unlink`、经进程的 `rm` 一律被 `no-permanent-delete` 拦住。用户的项目只进废纸篓（`fs.trash`）；管理进程自己的临时文件、运行文件、日志轮转、刚建的占位要删，在同一行或上一行写 `// delete-allow: 理由`（理由必填）；平台层里可能递归删除的调用只许出现在 `remove-after-verified-copy.ts`；界面一侧（JSX 规则、`Localized` 属性、伪语言扫页面）随 M2 的界面包才生效。
+- 包之间只从入口导入（如 `@runyard/core`），不伸进内部文件。管理进程一侧的包（protocol、platform、core、supervisor、client）不产生给人看的句子，只发“代码加参数”。界面分五层，只能从上往下导入，功能模块之间不互相导入，只有 `renderer/bridge/` 能碰 `window.runyard`（`ui-layers`）；通用组件包（`@runyard/ui`）不认识产品（`ui-purity`），样式只用设计变量（`style-tokens`），每个组件有样例文件和基准图（`ui-fixtures`），图标源文件合规（`icons`）。
+- 给人看的文字一律走文案包。现在 `pnpm check` 已拦：缺文案或参数不一致（`i18n-keys`、`i18n-codes`）、未使用的键（`i18n-unused`）、术语和措辞（`i18n-glossary`、`i18n-wording`）、源码字符串里的汉字（`ui-strings`）、命令行输出口之外的 `process.stdout.write`（`ui-layers`）；
+- 永久删除：产品源码里的 `fs.rm`、`rmSync`、`rmdir`、`unlink`、经进程的 `rm` 一律被 `no-permanent-delete` 拦住。用户的项目只进废纸篓（`fs.trash`）；管理进程自己的临时文件、运行文件、日志轮转、刚建的占位要删，在同一行或上一行写 `// delete-allow: 理由`（理由必填）；平台层里可能递归删除的调用只许出现在 `remove-after-verified-copy.ts`；界面一侧的 JSX 规则和 `Localized` 属性已生效，伪语言扫页面随 `ui-visual`（#166）。
 
 ## 命令
 
