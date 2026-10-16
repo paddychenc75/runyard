@@ -41,7 +41,7 @@ export function DevLibraryPanel({ bridge, library }: DevLibraryPanelProps) {
                   <button
                     type="button"
                     className={styles.name}
-                    onClick={() => void bridge.call("preview.select", row.id)}
+                    onClick={() => void bridge.call("tab.open", row.id)}
                   >
                     <UserText>{row.name}</UserText>
                   </button>
@@ -50,7 +50,7 @@ export function DevLibraryPanel({ bridge, library }: DevLibraryPanelProps) {
                     size="sm"
                     disabled={row.busy}
                     onClick={() =>
-                      void bridge.call(row.action === "run" ? "run.start" : "run.stop", row.id)
+                      void bridge.call(row.action === "run" ? "tab.open" : "run.stop", row.id)
                     }
                   >
                     {row.actionLabel}

@@ -2,7 +2,14 @@ import { describe, expect, it } from "vitest";
 import type { LibraryState } from "../shared/library-state.ts";
 import { buildLibraryView, pickLocalizedText } from "./library-view.ts";
 
-const empty: LibraryState = { locale: "en", playgrounds: [], templates: [], error: null };
+const empty: LibraryState = {
+  locale: "en",
+  playgrounds: [],
+  tabs: [],
+  activeTab: "library",
+  templates: [],
+  error: null,
+};
 
 describe("buildLibraryView", () => {
   it("没有项目时给出空列表提示", () => {

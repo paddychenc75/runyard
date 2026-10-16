@@ -32,7 +32,7 @@ export async function runSmoke(
     await controller.create("html");
     const created = await waitFor("a playground", () => controller.getState().playgrounds[0]);
     log(`created ${created.name}`);
-    await controller.startRun(created.id);
+    await controller.openProject(created.id);
     await waitFor("ready", () =>
       controller.getState().playgrounds.find((row) => row.id === created.id)?.state === "ready"
         ? true

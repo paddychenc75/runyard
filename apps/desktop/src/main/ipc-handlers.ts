@@ -44,8 +44,13 @@ export function registerBridgeHandlers(
       const playground = text(id);
       if (playground !== null) await controller.stopRun(playground);
     },
-    "preview.select": async (id) => {
-      await controller.select(id === null ? null : text(id));
+    "tab.open": async (id) => {
+      const playground = text(id);
+      if (playground !== null) await controller.openProject(playground);
+    },
+    "tab.select": async (id) => {
+      const tab = text(id);
+      if (tab !== null) controller.selectTab(tab);
     },
     "playground.create": async (id) => {
       const template = text(id);

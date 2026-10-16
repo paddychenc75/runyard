@@ -12,12 +12,20 @@ function setup() {
   const syncHandlers = new Map<string, (sender: IpcSender) => unknown>();
   const calls: unknown[][] = [];
   let push: ((state: LibraryState) => void) | undefined;
-  const state = { locale: "en", playgrounds: [], templates: [], error: null } as LibraryState;
+  const state = {
+    locale: "en",
+    playgrounds: [],
+    tabs: [],
+    activeTab: "library",
+    templates: [],
+    error: null,
+  } as LibraryState;
   const controller = {
     getState: () => state,
     startRun: async (id: string) => void calls.push(["start", id]),
     stopRun: async (id: string) => void calls.push(["stop", id]),
-    select: async (id: string | null) => void calls.push(["select", id]),
+    openProject: async (id: string) => void calls.push(["open", id]),
+    selectTab: (id: string) => void calls.push(["select", id]),
     create: async (id: string) => void calls.push(["create", id]),
     onChange: (listener: (next: LibraryState) => void) => {
       push = listener;
@@ -53,12 +61,14 @@ describe("registerBridgeHandlers", () => {
     expect(call(app, "library.get")).toBe(state);
     await call(app, "run.start", "a");
     await call(app, "run.stop", "a");
-    await call(app, "preview.select", null);
+    await call(app, "tab.open", "a");
+    await call(app, "tab.select", "library");
     await call(app, "playground.create", "html");
     expect(calls).toEqual([
       ["start", "a"],
       ["stop", "a"],
-      ["select", null],
+      ["open", "a"],
+      ["select", "library"],
       ["create", "html"],
     ]);
   });
@@ -76,7 +86,8 @@ describe("registerBridgeHandlers", () => {
       "library.get",
       "run.start",
       "run.stop",
-      "preview.select",
+      "tab.open",
+      "tab.select",
       "playground.create",
     ]) {
       expect(() => call(outsider, method, "a")).toThrow("untrusted sender");
