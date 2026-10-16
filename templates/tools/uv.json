@@ -1,0 +1,12 @@
+{
+  "formatVersion": 1,
+  "id": "uv",
+  "supported": ">=0.0.0",
+  "detect": { "args": ["--version"], "pattern": "uv (\\d+\\.\\d+\\.\\d+)" },
+  "install": {
+    "darwin": {
+      "url": "https://docs.astral.sh/uv/getting-started/installation/",
+      "homebrew": { "command": ["brew", "install", "uv"] }
+    }
+  }
+}

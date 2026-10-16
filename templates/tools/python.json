@@ -1,0 +1,13 @@
+{
+  "formatVersion": 1,
+  "id": "python",
+  "executables": ["python3", "python"],
+  "supported": ">=3.12",
+  "detect": { "args": ["--version"], "pattern": "Python (\\d+\\.\\d+\\.\\d+)" },
+  "install": {
+    "darwin": {
+      "url": "https://www.python.org/downloads/macos/",
+      "homebrew": { "command": ["brew", "install", "python"] }
+    }
+  }
+}

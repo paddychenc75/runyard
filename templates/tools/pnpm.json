@@ -1,0 +1,12 @@
+{
+  "formatVersion": 1,
+  "id": "pnpm",
+  "supported": ">=10.34.6",
+  "detect": { "args": ["--version"], "pattern": "(\\d+\\.\\d+\\.\\d+)" },
+  "install": {
+    "darwin": {
+      "url": "https://pnpm.io/installation",
+      "homebrew": { "command": ["brew", "install", "pnpm"] }
+    }
+  }
+}
