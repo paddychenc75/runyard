@@ -41,7 +41,7 @@ export const samples: readonly FixtureSample[] = [
             container={container}
             title={data.longLabel}
             description={data.longLabel}
-            actions={<Button variant="primary">{data.longLabel}</Button>}
+            actions={<Button variant="primary">{data.items[0]}</Button>}
           />
         )}
       </FixtureStage>
