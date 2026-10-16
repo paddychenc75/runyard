@@ -2,8 +2,10 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { createRequire } from "node:module";
 import { join } from "node:path";
-const require = createRequire(process.argv[2]); // playwright-core 所在位置
-const { PNG } = require("playwright-core/lib/utilsBundle");
+import { readdirSync as rd } from "node:fs";
+const pc = rd("node_modules/.pnpm").find((x) => x.startsWith("playwright-core@"));
+const require = createRequire(join(process.cwd(), "node_modules/.pnpm", pc, "node_modules/playwright-core/package.json"));
+const { PNG } = require("./lib/utilsBundle");
 const [, , , a, b] = process.argv;
 let bytesDiff = 0, pixDiff = 0, total = 0;
 for (const f of readdirSync(a).filter((x) => x.endsWith(".png")).sort()) {

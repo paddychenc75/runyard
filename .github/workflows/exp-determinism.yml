@@ -33,11 +33,12 @@ jobs:
           cp packages/ui/visual/__screenshots__/*.png out/r2/
           PWC=$(pwd)/packages/ui/package.json
           echo "== 同一任务内 r1 vs r2"
-          node exp/compare.mjs $PWC out/r1 out/r2
+          node exp/compare.mjs x out/r1 out/r2 || true
           echo "== r1 vs 仓库里的基准（git）"
           mkdir -p out/git && git show HEAD --stat >/dev/null
           git checkout -- packages/ui/visual/__screenshots__ 2>/dev/null || true
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      - if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: out-${{ matrix.job }}
           path: out/
@@ -60,6 +61,6 @@ jobs:
       - run: |
           PWC=$(pwd)/packages/ui/package.json
           echo "== 跨任务 A.r1 vs B.r1"
-          node exp/compare.mjs $PWC dl/out-A/r1 dl/out-B/r1
+          node exp/compare.mjs x dl/out-A/r1 dl/out-B/r1 || true
           echo "== 仓库基准 vs A.r1"
-          node exp/compare.mjs $PWC packages/ui/visual/__screenshots__ dl/out-A/r1
+          node exp/compare.mjs x packages/ui/visual/__screenshots__ dl/out-A/r1 || true
