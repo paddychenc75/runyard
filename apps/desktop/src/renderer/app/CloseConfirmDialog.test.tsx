@@ -76,7 +76,6 @@ describe("关闭标签页的确认对话框", () => {
       {
         name: "关闭 hono-todo-api 并停止运行？",
       },
-      undefined,
       SLOW,
     );
     expect(within(dialog).getByText(/代码和文件不受影响/)).toBeTruthy();
