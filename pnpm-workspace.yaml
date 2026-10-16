@@ -8,6 +8,7 @@ packages:
 # 统一版本表：全部精确版本（§8.6.1 规则 7），选版本的依据见 docs/architecture/dependencies.md
 catalog:
   "@biomejs/biome": 2.5.14
+  "@fission-ai/openspec": 1.14.0
   "@formatjs/icu-messageformat-parser": 3.5.18
   "@types/node": 24.19.0
   chokidar: 5.0.0

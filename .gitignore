@@ -17,5 +17,8 @@ coverage/
 /tooling/design-render/build/
 /tooling/design-render/sheets/
 
+# 做完的规格改动只在本机，不进仓库（技术设计 §9.6.2）
+/openspec/changes/archive/
+
 # 系统和编辑器产生的文件
 .DS_Store

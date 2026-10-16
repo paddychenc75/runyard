@@ -27,6 +27,7 @@
 | `pnpm i18n:build` | 只从 `packages/i18n/locales/zh-CN/*.json` 生成 `packages/i18n/generated/messages.d.ts`（文案的键和参数类型）；`pnpm generate` 也会生成它，另外还生成文案对照表。改了中文文案之后运行其一 |
 | `pnpm template:lint` | 检查 `templates/` 里的工具定义、运行器和全部内置模板（每个模板一行 JSON 结果；有问题时退出码 2）。模板和运行器的写法见 `docs/guides/add-template.md`、`docs/guides/add-runner.md` |
 | `pnpm deps:lookup <包名>` | 列出一个依赖最近 10 个稳定版本、发布日期、距今天数，并查 OSV 和 GitHub 公告库。用法见 `docs/guides/add-a-dependency.md` |
+| `pnpm spec <参数…>` | 调用 OpenSpec（规格校验、查看、合并），脚本 `tooling/scripts/spec.mjs` 先关掉它的匿名统计和版本检查。常用：`pnpm spec validate --all --strict --no-interactive`、`pnpm spec list --specs`。不要直接运行 `openspec init` 或 `openspec update` |
 
 ## 安装
 

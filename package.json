@@ -20,10 +20,12 @@
     "deps:lookup": "node tooling/scripts/deps-lookup.ts",
     "generate": "node tooling/scripts/generate.ts",
     "template:lint": "node tooling/scripts/template-data.ts",
-    "i18n:build": "node packages/i18n/build/build.ts"
+    "i18n:build": "node packages/i18n/build/build.ts",
+    "spec": "node tooling/scripts/spec.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",
+    "@fission-ai/openspec": "catalog:",
     "turbo": "catalog:",
     "typescript": "catalog:"
   }
