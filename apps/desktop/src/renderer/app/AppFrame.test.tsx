@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { BootstrapInfo, DesktopBridge } from "../../shared/desktop-bridge.ts";
@@ -32,6 +32,8 @@ const state: LibraryState = {
   locale: "zh-CN",
   error: null,
   templates: [{ id: "html", name: { en: "Plain HTML", "zh-CN": "纯 HTML" } }],
+  tabs: [],
+  activeTab: "library",
   playgrounds: [
     row({ id: "a", name: "react-counter", kind: "server", state: "ready", active: true }),
     row({ id: "b", name: "landing-hero", kind: "static", state: "idle", active: false }),
@@ -100,18 +102,76 @@ describe("主窗口外壳", () => {
     await screen.findByText("react-counter");
     await user.click(screen.getByRole("button", { name: "停止" }));
     await user.click(screen.getByRole("button", { name: "运行" }));
+    await user.dblClick(screen.getByText("react-counter"));
     await user.click(screen.getByRole("button", { name: /纯 HTML/ }));
     expect(call).toHaveBeenCalledWith("run.stop", "a");
-    expect(call).toHaveBeenCalledWith("run.start", "b");
+    expect(call).toHaveBeenCalledWith("tab.open", "b");
+    expect(call).toHaveBeenCalledWith("tab.open", "a");
     expect(call).toHaveBeenCalledWith("playground.create", "html");
   });
 
-  it("点资源库标签就是回到列表：让开发期的预览让开", async () => {
+  it("[DESKTOP-WORKSPACE-11] 项目标签：运行中有停止，手动停止后标签还在、出现“运行”按钮，点它再运行", async () => {
+    const user = userEvent.setup();
+    const tab = (active: boolean) => ({
+      id: "a",
+      name: "react-counter",
+      status: active ? ("running" as const) : ("stopped" as const),
+      state: active ? ("ready" as const) : ("stopped" as const),
+      active,
+      busy: false,
+    });
+    const make = (active: boolean): LibraryState => ({
+      ...state,
+      tabs: [tab(active)],
+      activeTab: "a",
+    });
+    const { bridge, call } = fakeBridge();
+    let push: ((next: LibraryState) => void) | undefined;
+    (bridge as { on: unknown }).on = (_event: string, listener: (next: LibraryState) => void) => {
+      push = listener;
+      return () => {};
+    };
+    call.mockImplementation(async (method: string) =>
+      method === "library.get" ? make(true) : undefined,
+    );
+    render(<AppFrame bridge={bridge} locale="zh-CN" theme="system" />);
+    const stop = await screen.findByRole("button", { name: "停止" });
+    expect(screen.getAllByRole("tab").map((node) => node.textContent)).toEqual([
+      "资源库",
+      "react-counter",
+    ]);
+    await user.click(stop);
+    expect(call).toHaveBeenCalledWith("run.stop", "a");
+    act(() => push?.(make(false)));
+    expect(screen.getAllByRole("tab")).toHaveLength(2);
+    await user.click(screen.getByRole("button", { name: "运行" }));
+    expect(call).toHaveBeenCalledWith("run.start", "a");
+  });
+
+  it("点标签切换，选的是资源库或项目 id", async () => {
     const user = userEvent.setup();
     const { bridge, call } = fakeBridge();
+    call.mockImplementation(async (method: string) =>
+      method === "library.get"
+        ? {
+            ...state,
+            tabs: [
+              {
+                id: "a",
+                name: "react-counter",
+                status: "running",
+                state: "ready",
+                active: true,
+                busy: false,
+              },
+            ],
+            activeTab: "a",
+          }
+        : undefined,
+    );
     render(<AppFrame bridge={bridge} locale="zh-CN" theme="system" />);
-    await user.click(screen.getByRole("tab", { name: "资源库" }));
-    expect(call).toHaveBeenCalledWith("preview.select", null);
+    await user.click(await screen.findByRole("tab", { name: /资源库/ }));
+    expect(call).toHaveBeenCalledWith("tab.select", "library");
   });
 
   it("没有窗口按钮要让位的系统（inset 为 0）不留空", () => {

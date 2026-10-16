@@ -11,7 +11,7 @@ function setup(bye: () => Promise<void>) {
 }
 
 describe("QuitCoordinator", () => {
-  it("第一次退出先道别再退出；道别完成后的退出请求放行", async () => {
+  it("[DESKTOP-WORKSPACE-24] ⌘Q：先向管理进程道别（由它停掉本连接的标签页运行），再退出；道别完成后的退出请求放行", async () => {
     const { coordinator, log } = setup(async () => {});
     expect(coordinator.handleBeforeQuit()).toBe(true);
     await Promise.resolve();

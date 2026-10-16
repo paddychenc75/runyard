@@ -2,7 +2,7 @@
 
 ## 用途
 
-桌面应用（技术设计 §2.2、§6）。界面是 React（用 `@runyard/ui`、`@runyard/i18n/react`、`@runyard/tokens`），主窗口有外壳（设计稿 Main）：左边悬浮的玻璃侧栏（`TitleBar`、`NavList`），顶上的标签条（资源库固定在第一位、不能关闭），主题（浅色、深色、跟随系统）和语言（中文系统用简体中文，其余英文）。内容区是资源库页（#169，设计稿 Main、MainNarrow、Empty）：页标题和概况、项目表（`LibraryPage`、`LibraryTable`，用 `DataTable`：名称与备注、状态、模板、端口、保留、上次打开、创建者；运行中的排最前，主进程在 `build-library-state.ts` 里排好），没有项目时是空状态。表随管理进程的 `run`、`playground` 事件实时更新（控制器重读），相对时间和“剩 N 天”每半分钟走字。顶栏有“N 个运行中”（标签页和命令行持有的都算）。还留着开发期的东西，对应的功能做好后拆掉：操作列的“运行/停止”按钮（#171 换成“打开”“停止运行”和更多菜单）、表下面“用内置模板新建”的按钮（#173 新建对话框）、点运行后盖住整个内容区的页面预览（#170 标签页内容；点顶栏的资源库标签回到列表）。搜索筛选（#181）、行选中（随标签页，#170）、页概况里的“存放在 …”（要管理进程给出资源库路径）还没有。
+桌面应用（技术设计 §2.2、§6）。界面是 React（用 `@runyard/ui`、`@runyard/i18n/react`、`@runyard/tokens`），主窗口有外壳（设计稿 Main）：左边悬浮的玻璃侧栏（`TitleBar`、`NavList`），顶上的标签条（资源库固定在第一位、不能关闭），主题（浅色、深色、跟随系统）和语言（中文系统用简体中文，其余英文）。资源库标签的内容区是资源库页（#169，设计稿 Main、MainNarrow、Empty）：页标题和概况、项目表（`LibraryPage`、`LibraryTable`，用 `DataTable`：名称与备注、状态、模板、端口、保留、上次打开、创建者；运行中的排最前，主进程在 `build-library-state.ts` 里排好），没有项目时是空状态。表随管理进程的 `run`、`playground` 事件实时更新（控制器重读），相对时间和“剩 N 天”每半分钟走字。顶栏有“N 个运行中”（标签页和命令行持有的都算）。还留着开发期的东西，对应的功能做好后拆掉：操作列的“运行/停止”按钮和双击行（`tab.open`，#171 换成“打开”“停止运行”和更多菜单）、表下面“用内置模板新建”的按钮（#173 新建对话框）。搜索筛选（#181）、页概况里的“存放在 …”（要管理进程给出资源库路径）还没有。打开项目 = 新开它的标签页并启动运行（`run.start`，持有者是标签页、绑定到本连接）；已开着的只切换、不再启动（规格 DESKTOP-WORKSPACE-01、02）。标签页的内容区（`renderer/app/TabContent.tsx`）暂时只有名字、状态和“运行”/“停止”：手动停止后标签仍开着，出现“运行”按钮再次启动，持有者仍是这个标签页（DESKTOP-WORKSPACE-11、12）；右边是该项目的预览，预览跟着当前标签走。标签条里项目标签名字前的小圆点反映运行状态；标签的关闭钮和确认对话框是 #174，运行条是 #176。
 包是 `private`，没有发布配置。构建用 esbuild 自己打包（`build.ts`，产物在 `dist/`），不用 electron-vite：它要 Vite 7，而 Vite 7.3.7 发布不满 14 天（`docs/architecture/dependencies.md`）。
 
 ## 对外暴露什么
@@ -19,7 +19,7 @@ pnpm --filter @runyard/desktop smoke             # 冒烟自检：窗口不显�
 - `--lang en|zh-CN` 或 `RUNYARD_LANG`：界面语言；缺省看系统语言（中文系统用中文，其余英文）。
 - `--theme system|light|dark` 或 `RUNYARD_THEME`：窗口明暗；缺省跟随系统。主进程据此设 `nativeTheme.themeSource`，预加载脚本在页面脚本之前写 `<html data-theme>`；设置页里的切换随后续 PR。
 - 第一次运行会下载 Electron 的二进制（约 100 MB）。
-- 界面拿到的唯一接口是预加载脚本交出的 `window.runyard`（`src/shared/desktop-bridge.ts`），只有三样：同步的 `bootstrap`（平台、窗口按钮位置、语言、主题等，技术设计 §6.7）、`call(方法名, 参数)`、`on(事件名, 监听)`。方法和事件是白名单（`library.get`、`run.start`、`run.stop`、`preview.select`、`playground.create`；事件 `library.changed`），表外的名字预加载脚本和主进程都拒绝；动作失败不抛，折进状态里的 `error`（代码加参数）。预加载脚本在页面脚本运行前把 `data-platform`、`data-theme`、`lang` 写到 `<html>`。
+- 界面拿到的唯一接口是预加载脚本交出的 `window.runyard`（`src/shared/desktop-bridge.ts`），只有三样：同步的 `bootstrap`（平台、窗口按钮位置、语言、主题等，技术设计 §6.7）、`call(方法名, 参数)`、`on(事件名, 监听)`。方法和事件是白名单（`library.get`、`run.start`、`run.stop`、`tab.open`、`tab.select`、`playground.create`；事件 `library.changed`），表外的名字预加载脚本和主进程都拒绝；动作失败不抛，折进状态里的 `error`（代码加参数）。预加载脚本在页面脚本运行前把 `data-platform`、`data-theme`、`lang` 写到 `<html>`。
 
 ## 本包特有的规则
 
@@ -34,7 +34,8 @@ pnpm --filter @runyard/desktop smoke             # 冒烟自检：窗口不显�
 - 所有给人看的文字走文案包（`desktop` 组加 `errors.<码>.title`）；代码里不写句子。主进程的 `process.stderr.write` 只写开发者诊断，要有 `// i18n-allow: 理由`。
 - 应用拉起的管理进程是脱离的后台进程（从源码运行时用 Electron 自己当 Node 跑 `packages/supervisor/src/main.ts`）。退出时先 `session.bye`；管理进程空闲后自己退出，试验后要立刻清理时，按进程号加启动时间确认后再结束它。
 - 窗口底色取自 `@runyard/tokens` 的 `windowBackground`（随系统深浅色），界面画出来之前显示，避免启动白闪；`tokens` 只为这一件事导入（技术设计 §3.2）。
-- 还没有：`runyard://` 链接、标签页恢复、预览截图替换浮层、设置里的语言和主题切换、应用菜单（⌘W 等应用级快捷键注册成菜单项，现在靠 Electron 默认菜单）、关窗口时的提示、打包（asar、fuse、签名）。
+- 标签页状态在主进程（`main/workspace-tabs.ts`，只记打开的项目标签的顺序和当前标签，资源库固定在最前不在表里），随 `library.changed` 一起推给界面（`tabs`、`activeTab`）。项目被删时它的标签随之去掉。
+- 还没有：`runyard://` 链接、标签页恢复、标签的关闭、预览截图替换浮层、设置里的语言和主题切换、应用菜单（⌘W 等应用级快捷键注册成菜单项，现在靠 Electron 默认菜单）、关窗口时的提示、打包（asar、fuse、签名）。
 
 ## 子目录地图
 

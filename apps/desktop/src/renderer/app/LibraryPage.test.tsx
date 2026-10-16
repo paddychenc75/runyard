@@ -37,7 +37,7 @@ function row(id: string, extra: Partial<PlaygroundRow> = {}): PlaygroundRow {
 }
 
 function library(playgrounds: PlaygroundRow[], locale: "zh-CN" | "en" = "zh-CN"): LibraryState {
-  return { locale, error: null, templates: [], playgrounds };
+  return { locale, error: null, templates: [], tabs: [], activeTab: "library", playgrounds };
 }
 
 function setup(state: LibraryState, locale: "zh-CN" | "en" = "zh-CN") {
@@ -213,7 +213,7 @@ describe("资源库列表", () => {
       within(rows[1] as HTMLElement).getByRole("button", { name: "运行" }) as HTMLButtonElement
     ).click();
     expect(call).toHaveBeenCalledWith("run.stop", "a");
-    expect(call).toHaveBeenCalledWith("run.start", "b");
+    expect(call).toHaveBeenCalledWith("tab.open", "b");
   });
 
   it("[DESKTOP-LIBRARY-VIEW-10] 顶栏的计数包含标签页持有和命令行持有的运行，已结束的脚本不计", async () => {

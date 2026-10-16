@@ -121,6 +121,7 @@
 | desktop.create.title | 新建 | New | — |
 | desktop.error.title.label | 出错了：{title} | Error: {title} | title：错误的标题，来自 errors.<代码>.title，已是翻译好的句子 |
 | desktop.run.action | 运行 | Run | — |
+| desktop.state.idle.label | 未运行 | Not running | — |
 | desktop.stop.action | 停止 | Stop | — |
 | desktop.window.title | Runyard | Runyard | — |
 | errors.APP_REQUIRED.body | open 和 screenshot 要由桌面应用来完成，命令行自己做不到。 | The open and screenshot commands are carried out by the desktop app. The command line cannot do them on its own. | — |

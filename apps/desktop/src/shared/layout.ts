@@ -10,6 +10,12 @@ export const SIDEBAR_WIDTH_PX = 240;
 export const CONTENT_LEFT_PX = numbers["size-window-inset"] * 2 + SIDEBAR_WIDTH_PX;
 /** 顶栏占的高度：胶囊上方留 14、胶囊自己 44、下方留 10（设计稿 Main） */
 export const TOPBAR_HEIGHT_PX = 14 + numbers["size-toolbar"] + 10;
+/**
+ * 内容区左边的列表宽度。现在是开发期的朴素列表（等资源库列表替换它），
+ * 预览紧挨在它右边。
+ */
+export const LIST_WIDTH_PX = 360;
+
 export interface Size {
   width: number;
   height: number;
@@ -25,11 +31,12 @@ export const layoutCssVariables: Readonly<Record<string, string>> = {
   "--layout-sidebar-width": `${SIDEBAR_WIDTH_PX}px`,
   "--layout-content-left": `${CONTENT_LEFT_PX}px`,
   "--layout-topbar-height": `${TOPBAR_HEIGHT_PX}px`,
+  "--layout-list-width": `${LIST_WIDTH_PX}px`,
 };
 
-/** 预览视图在窗口内容区里的位置：顶栏下面的整块，盖住资源库页（开发期；标签页内容随 #170） */
+/** 预览视图在窗口内容区里的位置：顶栏下面、列表右边的整块 */
 export function previewBounds(content: Size): Bounds {
-  const x = CONTENT_LEFT_PX;
+  const x = CONTENT_LEFT_PX + LIST_WIDTH_PX;
   return {
     x,
     y: TOPBAR_HEIGHT_PX,

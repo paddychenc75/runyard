@@ -6,6 +6,7 @@ import { runningCount } from "../library-view.ts";
 import styles from "./AppShell.module.css";
 import { LibraryPage } from "./LibraryPage.tsx";
 import { Sidebar } from "./Sidebar.tsx";
+import { TabContent } from "./TabContent.tsx";
 import { TopBar } from "./TopBar.tsx";
 
 export interface AppShellProps {
@@ -15,7 +16,7 @@ export interface AppShellProps {
 }
 
 // 主窗口的外壳（设计稿 Main）：悬浮的玻璃侧栏、顶部的标签条，右下是内容区。
-// 内容区是资源库页；开发期的预览（原生视图）盖在它上面，标签页内容（#170）接手后换掉。
+// 资源库标签的内容区是资源库页（整宽的项目表）；项目标签是 TabContent 加右边的预览（原生视图）。
 export function AppShell({ bridge, library }: AppShellProps) {
   const t = useT();
   const title = t("desktop.window.title");
@@ -23,14 +24,29 @@ export function AppShell({ bridge, library }: AppShellProps) {
     document.title = title;
   }, [title]);
   const { windowControls, modKey } = bridge.bootstrap;
+  const tabs = library?.tabs ?? [];
+  const activeTab = library?.activeTab ?? "library";
+  const activeTabRow = tabs.find((tab) => tab.id === activeTab);
   const total = library?.playgrounds.length ?? 0;
   return (
     <div className={styles.root}>
       <Sidebar windowControls={windowControls} total={total} />
-      <TopBar bridge={bridge} modKey={modKey} running={runningCount(library?.playgrounds ?? [])} />
+      <TopBar
+        modKey={modKey}
+        tabs={tabs}
+        activeTab={activeTab}
+        running={runningCount(library?.playgrounds ?? [])}
+        onSelect={(id) => void bridge.call("tab.select", id)}
+      />
       <main className={styles.content}>
-        <LibraryPage bridge={bridge} library={library} />
-        <div className={styles.preview} data-preview-region="" />
+        {activeTabRow === undefined ? (
+          <LibraryPage bridge={bridge} library={library} />
+        ) : (
+          <>
+            <TabContent bridge={bridge} tab={activeTabRow} />
+            <div className={styles.preview} data-preview-region="" />
+          </>
+        )}
       </main>
     </div>
   );

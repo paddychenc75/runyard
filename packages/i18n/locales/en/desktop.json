@@ -2,6 +2,7 @@
   "desktop.create.title": "New",
   "desktop.error.title.label": "Error: {title}",
   "desktop.run.action": "Run",
+  "desktop.state.idle.label": "Not running",
   "desktop.stop.action": "Stop",
   "desktop.window.title": "Runyard"
 }

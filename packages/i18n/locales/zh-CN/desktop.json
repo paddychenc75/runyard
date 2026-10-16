@@ -2,6 +2,7 @@
   "desktop.create.title": "新建",
   "desktop.error.title.label": "出错了：{title}",
   "desktop.run.action": "运行",
+  "desktop.state.idle.label": "未运行",
   "desktop.stop.action": "停止",
   "desktop.window.title": "Runyard"
 }

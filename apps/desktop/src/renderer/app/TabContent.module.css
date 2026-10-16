@@ -1,0 +1,20 @@
+.root {
+  flex: none;
+  inline-size: var(--layout-list-width);
+  box-sizing: border-box;
+  padding-block: var(--space-8) var(--space-7);
+  padding-inline: var(--space-10) var(--space-7);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--text-page-title-size);
+  font-weight: var(--text-page-title-weight);
+  line-height: var(--text-page-title-line-height);
+  letter-spacing: -0.3px;
+}
+
+.state {
+  margin: var(--space-1) 0 var(--space-7);
+  color: var(--color-text-secondary);
+}

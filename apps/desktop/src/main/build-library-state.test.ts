@@ -5,7 +5,8 @@ import { playground, run, template } from "./library-fixtures.ts";
 const base = {
   locale: "zh-CN" as const,
   templates: [],
-  previewId: null,
+  tabIds: [] as string[],
+  activeTab: "library",
   busyIds: new Set<string>(),
   error: null,
 };
@@ -61,13 +62,40 @@ describe("buildLibraryState", () => {
       ...base,
       playgrounds: [playground("a"), playground("b")],
       runs: [],
-      previewId: "b",
+      activeTab: "b",
       busyIds: new Set(["a"]),
     });
     expect(state.playgrounds.map((row) => [row.previewing, row.busy])).toEqual([
       [false, true],
       [true, false],
     ]);
+  });
+});
+
+describe("标签页", () => {
+  it("只列打开的项目，按打开顺序，状态归并成小圆点", () => {
+    const state = buildLibraryState({
+      ...base,
+      playgrounds: [playground("a"), playground("b"), playground("c")],
+      runs: [run("a", "ready"), run("b", "installing"), run("c", "crashed")],
+      tabIds: ["c", "a"],
+      activeTab: "a",
+    });
+    expect(state.tabs.map((tab) => [tab.id, tab.status])).toEqual([
+      ["c", "crashed"],
+      ["a", "running"],
+    ]);
+    expect(state.activeTab).toBe("a");
+  });
+
+  it("手动停止和从没运行过都是空心圆点", () => {
+    const state = buildLibraryState({
+      ...base,
+      playgrounds: [playground("a"), playground("b")],
+      runs: [run("a", "stopped")],
+      tabIds: ["a", "b"],
+    });
+    expect(state.tabs.map((tab) => tab.status)).toEqual(["stopped", "stopped"]);
   });
 });
 

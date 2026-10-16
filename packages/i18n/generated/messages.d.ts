@@ -240,6 +240,7 @@ export type CatalogMessages = {
     title: string | number;
   };
   "desktop.run.action": Record<never, never>;
+  "desktop.state.idle.label": Record<never, never>;
   "desktop.stop.action": Record<never, never>;
   "desktop.window.title": Record<never, never>;
   "format.duration.days": {

@@ -153,7 +153,7 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
         <Button
           size="sm"
           disabled={row.busy}
-          onClick={() => void bridge.call(row.active ? "run.stop" : "run.start", row.id)}
+          onClick={() => void bridge.call(row.active ? "run.stop" : "tab.open", row.id)}
         >
           {row.active ? t("desktop.stop.action") : t("desktop.run.action")}
         </Button>
@@ -167,6 +167,7 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
       columns={columns}
       rows={rows}
       getRowId={(row) => row.id}
+      onRowDoubleClick={(row) => void bridge.call("tab.open", row.id)}
       className={styles.table}
     />
   );

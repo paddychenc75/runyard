@@ -16,8 +16,10 @@ export interface DesktopMethods {
   "library.get": { param: undefined; result: LibraryState };
   "run.start": { param: string; result: undefined };
   "run.stop": { param: string; result: undefined };
-  /** 让预览区显示这个项目；null 是不看任何项目 */
-  "preview.select": { param: string | null; result: undefined };
+  /** 打开项目：新开标签并启动运行（持有者是这个标签）；已开着的只切换 */
+  "tab.open": { param: string; result: undefined };
+  /** 切到资源库（"library"）或已打开的项目标签 */
+  "tab.select": { param: string; result: undefined };
   "playground.create": { param: string; result: undefined };
 }
 export type DesktopMethod = keyof DesktopMethods;
@@ -26,7 +28,8 @@ export const desktopMethodNames: readonly DesktopMethod[] = [
   "library.get",
   "run.start",
   "run.stop",
-  "preview.select",
+  "tab.open",
+  "tab.select",
   "playground.create",
 ];
 

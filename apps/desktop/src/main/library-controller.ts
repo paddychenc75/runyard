@@ -3,6 +3,7 @@ import type { Locale } from "@runyard/i18n";
 import type { Playground, RunSnapshot, TemplateRecord } from "@runyard/protocol";
 import type { DesktopError, LibraryState } from "../shared/library-state.ts";
 import { buildLibraryState, previewUrlFor } from "./build-library-state.ts";
+import { LIBRARY_TAB, WorkspaceTabs } from "./workspace-tabs.ts";
 
 // 窗口背后的逻辑：向管理进程要项目、模板、运行，转成界面看的状态；执行界面发来的动作。
 // 不认识 Electron：预览通过 PreviewHost 这个接口交给外面，所以可以用假客户端整个测。
@@ -34,7 +35,7 @@ export class LibraryController {
   #playgrounds: Playground[] = [];
   #runs: RunSnapshot[] = [];
   #templates: TemplateRecord[] = [];
-  #previewId: string | null = null;
+  readonly #workspace = new WorkspaceTabs();
   #error: DesktopError | null = null;
   #refreshing: Promise<void> | undefined;
   #refreshAgain = false;
@@ -64,7 +65,8 @@ export class LibraryController {
       playgrounds: this.#playgrounds,
       runs: this.#runs,
       templates: this.#templates,
-      previewId: this.#previewId,
+      tabIds: this.#workspace.tabs,
+      activeTab: this.#workspace.active,
       busyIds: this.#busy,
       error: this.#error,
     });
@@ -95,8 +97,19 @@ export class LibraryController {
     return reading;
   }
 
+  /**
+   * 打开项目（规格 DESKTOP-WORKSPACE-01、02）：新开标签并启动运行；
+   * 已经有它的标签就只切过去，不再启动。
+   */
+  async openProject(playgroundId: string): Promise<void> {
+    const isNew = this.#workspace.open(playgroundId);
+    this.#applyPreview();
+    this.#emit();
+    if (isNew) await this.startRun(playgroundId);
+  }
+
+  /** 启动（或标签页里点“运行”再次启动）；持有者始终是这个项目的标签页 */
   async startRun(playgroundId: string): Promise<void> {
-    this.#previewId = playgroundId;
     await this.#act(playgroundId, async () => {
       // 标签页持有者：这个项目在本应用里的“标签页”就是它自己，运行随本连接的生死
       await this.#client.call("run.start", {
@@ -113,8 +126,8 @@ export class LibraryController {
     });
   }
 
-  async select(playgroundId: string | null): Promise<void> {
-    this.#previewId = playgroundId;
+  selectTab(id: string): void {
+    this.#workspace.select(id);
     this.#applyPreview();
     this.#emit();
   }
@@ -155,6 +168,7 @@ export class LibraryController {
       this.#playgrounds = playgrounds;
       this.#runs = runs;
       this.#templates = templates;
+      this.#workspace.retain(new Set(playgrounds.map((playground) => playground.id)));
     } catch (error) {
       this.#fail(error);
     }
@@ -163,8 +177,10 @@ export class LibraryController {
   }
 
   #applyPreview(): void {
-    const url = previewUrlFor(this.#previewId, this.#runs);
-    if (this.#previewId !== null && url !== null) this.#preview.show(this.#previewId, url);
+    // 预览跟着当前标签走：资源库标签没有预览
+    const active = this.#workspace.active;
+    const url = active === LIBRARY_TAB ? null : previewUrlFor(active, this.#runs);
+    if (url !== null) this.#preview.show(active, url);
     else this.#preview.hide();
   }
 
