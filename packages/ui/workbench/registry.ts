@@ -1,4 +1,5 @@
 import type { FixtureModule } from "../src/index.ts";
+import * as zzDummy from "../src/primitives/ZzDummy/ZzDummy.fixture.tsx";
 import * as confirmDialog from "../src/patterns/ConfirmDialog/ConfirmDialog.fixture.tsx";
 import * as dataTable from "../src/patterns/DataTable/DataTable.fixture.tsx";
 import * as listPicker from "../src/patterns/ListPicker/ListPicker.fixture.tsx";
@@ -34,6 +35,7 @@ import * as userText from "../src/primitives/UserText/UserText.fixture.tsx";
 
 // 工作台列出的组件。新增组件时在这里加一行；registry.test.ts 核对每个 *.fixture.tsx 都在这里
 export const fixtures: readonly FixtureModule[] = [
+  zzDummy,
   alertDialog,
   badge,
   banner,
