@@ -63,6 +63,12 @@ export interface QuitReply {
   reply: "ack" | "proceed" | "cancel";
 }
 
+/** 改名、移到废纸篓前，界面对“写入未保存的修改”请求的回话（规格 DESKTOP-EDITOR-75 至 78） */
+export interface ProjectFlushReply {
+  id: number;
+  reply: "ack" | "proceed" | "cancel";
+}
+
 /** 界面可以调用的方法：参数类型与返回类型 */
 export interface DesktopMethods
   extends EditorFileMethods,
@@ -136,6 +142,8 @@ export interface DesktopMethods
   "tab.closeCancel": { param: undefined; result: undefined };
   /** 退出前的回执（规格 DESKTOP-EDITOR-27、28）：界面收到 app.quitRequested 后先 ack，写完或问完后 proceed（可以退出）或 cancel（用户取消，不退出） */
   "app.quitReply": { param: QuitReply; result: undefined };
+  /** 回应 project.flushRequested：ack 表示收到了，写完或问完后 proceed（可以继续）或 cancel（用户取消） */
+  "project.flushReply": { param: ProjectFlushReply; result: undefined };
   /** 在系统文件管理器（访达）里选中项目文件夹 */
   "playground.reveal": { param: string; result: undefined };
   /** 把项目文件夹的绝对路径放进剪贴板 */
@@ -209,6 +217,7 @@ export const desktopMethodNames: readonly DesktopMethod[] = [
   "tab.closeConfirm",
   "tab.closeCancel",
   "app.quitReply",
+  "project.flushReply",
   "playground.reveal",
   "playground.copyPath",
   "clipboard.copy",
@@ -241,6 +250,11 @@ export interface DesktopEvents extends TerminalEvents {
   "palette.open": { mode: "commands" | "files" };
   /** 应用要退出了：编辑器先把未保存的修改写入（自动保存关着的先问用户），再用 app.quitReply 回话 */
   "app.quitRequested": { id: number };
+  /**
+   * 项目要改名或移到废纸篓了：编辑器把这个项目未保存的修改写入，再用 project.flushReply 回话。
+   * ask 为真（应用里发起的）时自动保存关着的先问用户；为假（命令行、自动清理发起的）时无条件直接写入
+   */
+  "project.flushRequested": { id: number; project: string; ask: boolean };
   /** 项目文件夹里的文件变了（监听由 files.watch 开启）：目录树更新和外部修改提示靠它 */
   "files.changed": FilesChanged;
   /** 设置变了（设置页、命令行或别处改的）：带改后的全部设置 */
@@ -257,6 +271,7 @@ export const desktopEventNames: readonly DesktopEventName[] = [
   "sidebar.toggle",
   "palette.open",
   "app.quitRequested",
+  "project.flushRequested",
   "files.changed",
   "settings.changed",
   "toolchain.changed",

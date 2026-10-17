@@ -702,6 +702,8 @@
 | library.rename.nameFolder.hint | 名称同时是文件夹名；改名后旧的 runyard://open 链接会失效。 | The name is also the folder name; renaming breaks old runyard://open links. | — |
 | library.rename.nameRunning.hint | 名称同时是文件夹名；这个项目正在运行，保存后会停止并用新名称重新启动；旧的 runyard://open 链接会失效。 | The name is also the folder name. This playground is running: saving stops it and restarts it under the new name. Old runyard://open links will stop working. | — |
 | library.rename.save.action | 保存 | Save | — |
+| library.rename.terminalClose.hint | 这个项目的终端会被关闭。 | This playground's terminal will be closed. | — |
+| library.rename.terminalCommand.hint | 终端里正在运行的 {command} 会被结束。 | The {command} running in the terminal will be ended. | command：终端里正在运行的命令名（程序名，不翻译） |
 | library.retention.autoClean.label | 剩 {days, plural, other {# 天}} | {days, plural, one {# day} other {# days}} left | days：距离自动清理还剩的天数 |
 | library.retention.autoClean.tooltip | {days, plural, other {# 天}}没打开就移到{term_trash}，每次打开重新计时 | Moved to the {term_trash} after {days, plural, one {# day} other {# days}} unopened; the count restarts on every open | days：自动清理设定的天数 |
 | library.retention.kept.label | 已保留 | Kept | — |
@@ -745,7 +747,7 @@
 | library.table.aria | 项目列表 | Playgrounds | — |
 | library.topbar.idle.label | 没有在运行的项目 | No playground running | — |
 | library.topbar.running.label | {count, plural, other {# 个运行中}} | {count, plural, one {# running} other {# running}} | count：正在运行的项目数（标签页和命令行持有的都算） |
-| library.trash.body | 文件夹会移到{term_trash}，可以在{term_trash}里恢复。{running, select, yes {它正在运行，会先停止运行。} other {它现在没有在运行。}} | The folder moves to the {term_trash}, where you can restore it. {running, select, yes {It is running and will be stopped first.} other {It is not running right now.}} | running：项目现在是否在运行：yes 或 no |
+| library.trash.body | 文件夹会移到{term_trash}，可以在{term_trash}里恢复。{running, select, yes {它正在运行，会先停止运行。} other {它现在没有在运行。}}{terminalCommand, select, none {} other {终端里还在运行 {terminalCommand}，会被结束。}} | The folder moves to the {term_trash}, where you can restore it. {running, select, yes {It is running and will be stopped first.} other {It is not running right now.}}{terminalCommand, select, none {} other { {terminalCommand} is still running in the terminal and will be ended.}} | running：项目现在是否在运行：yes 或 no；terminalCommand：终端里正在运行的命令名（程序名，不翻译）；终端空闲或没开时是 none |
 | library.trash.cancel.action | 取消 | Cancel | — |
 | library.trash.confirm.action | 移到{term_trash} | Move to {term_trash} | — |
 | library.trash.title | 把 {name} 移到{term_trash}？ | Move {name} to the {term_trash}? | name：项目名（用户自己起的，不翻译） |

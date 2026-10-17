@@ -3,6 +3,7 @@ import { Button, Dialog, Field, TextField } from "@runyard/ui";
 import { useEffect, useRef } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import { useOverlay } from "../shared/overlay-context.tsx";
+import { renameTerminalNote } from "./rename-terminal-note.ts";
 import { type RenameFocus, type RenameTarget, useRenameDraft } from "./use-rename-draft.ts";
 
 export interface RenameDialogProps {
@@ -29,6 +30,10 @@ export function RenameDialog({ bridge, target, focus, taken, onClose }: RenameDi
     if (session === null) onClose();
   }, [session, onClose]);
   if (session === null) return null;
+  const baseHint = session.target.running
+    ? t("library.rename.nameRunning.hint")
+    : t("library.rename.nameFolder.hint");
+  const terminalNote = renameTerminalNote(t, session.terminal);
   return (
     <Dialog
       open
@@ -52,11 +57,7 @@ export function RenameDialog({ bridge, target, focus, taken, onClose }: RenameDi
       <Field
         label={t("desktop.create.name.label")}
         error={draft.nameError}
-        description={
-          session.target.running
-            ? t("library.rename.nameRunning.hint")
-            : t("library.rename.nameFolder.hint")
-        }
+        description={terminalNote === null ? baseHint : `${baseHint}${terminalNote}`}
       >
         <TextField
           ref={nameRef}

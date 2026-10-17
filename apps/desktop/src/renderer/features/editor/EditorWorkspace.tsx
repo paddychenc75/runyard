@@ -83,6 +83,18 @@ export function EditorWorkspace({
       }),
     [bridge, sessions, beforeQuit],
   );
+  // 改名、移到废纸篓前：先回 ack，再写入这个项目未保存的修改（应用里发起的会问，命令行发起的直接写），最后回话
+  useEffect(
+    () =>
+      bridge.on("project.flushRequested", ({ id, project, ask }) => {
+        void bridge.call("project.flushReply", { id, reply: "ack" });
+        void (ask ? sessions.flushProject(project) : sessions.flushProjectQuietly(project)).then(
+          (proceed) =>
+            bridge.call("project.flushReply", { id, reply: proceed ? "proceed" : "cancel" }),
+        );
+      }),
+    [bridge, sessions],
+  );
   const flushProject = useCallback((id: string) => sessions.flushProject(id), [sessions]);
   const files = useMemo(
     () => ({

@@ -1,8 +1,9 @@
 import type { Localized } from "@runyard/i18n";
 import { useT } from "@runyard/i18n/react";
-import { type KeyboardEvent, useState } from "react";
+import { type KeyboardEvent, useEffect, useState } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { DesktopError } from "../../shared/library-state.ts";
+import type { TerminalStatus } from "../../shared/terminal.ts";
 import { nameProblem } from "../create-view.ts";
 import { useErrorText } from "./use-error-text.ts";
 
@@ -26,6 +27,8 @@ interface Session {
   note: string;
   rejected: DesktopError | null;
   busy: boolean;
+  /** 这个项目的终端现状（改名会关闭它，说明里要写）；还没问到是 null */
+  terminal: TerminalStatus | null;
 }
 
 export interface RenameDraft {
@@ -44,7 +47,15 @@ export interface RenameDraft {
 }
 
 function sessionOf(target: RenameTarget, focus: RenameFocus): Session {
-  return { target, focus, name: target.name, note: target.note, rejected: null, busy: false };
+  return {
+    target,
+    focus,
+    name: target.name,
+    note: target.note,
+    rejected: null,
+    busy: false,
+    terminal: null,
+  };
 }
 
 /**
@@ -61,6 +72,23 @@ export function useRenameDraft(
   const [session, setSession] = useState<Session | null>(() =>
     initial === undefined ? null : sessionOf(initial.target, initial.focus),
   );
+
+  const editing = session?.target.id;
+  // 改名会关闭这个项目的终端：问一下有没有开着、里面在运行什么，说明里据此写（规格 DESKTOP-TERMINAL-34、35）
+  useEffect(() => {
+    if (editing === undefined) return;
+    let live = true;
+    void bridge
+      .call("terminal.status", { project: editing })
+      .then(
+        (terminal) =>
+          live && setSession((current) => (current === null ? current : { ...current, terminal })),
+      )
+      .catch(() => undefined);
+    return () => {
+      live = false;
+    };
+  }, [bridge, editing]);
 
   const others = session === null ? taken : taken.filter((name) => name !== session.target.name);
   const problem =

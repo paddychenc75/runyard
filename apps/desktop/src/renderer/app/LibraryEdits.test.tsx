@@ -59,7 +59,7 @@ function library(playgrounds: PlaygroundRow[]): LibraryState {
   };
 }
 
-type Reply = EditResult | DuplicateResult;
+type Reply = EditResult | DuplicateResult | { open: boolean; command: string | null };
 
 function setup(state: LibraryState, replies: Record<string, Reply> = {}) {
   const call = vi.fn(async (method: string) =>
@@ -107,6 +107,55 @@ async function startEdit(user: ReturnType<typeof userEvent.setup>, id: string, i
 }
 const editCalls = (call: ReturnType<typeof vi.fn>) =>
   call.mock.calls.filter(([method]) => method === "playground.edit");
+
+describe("改名、移到废纸篓对终端的说明", () => {
+  it("[DESKTOP-TERMINAL-34] 项目开着终端、终端空闲：名称框下的说明追加“这个项目的终端会被关闭”", async () => {
+    const user = userEvent.setup();
+    const { call } = setup(library([row("demo")]), {
+      "terminal.status": { open: true, command: null },
+    });
+    const target = await startEdit(user, "demo", "重命名…");
+    expect(await within(target).findByText(/这个项目的终端会被关闭/)).toBeTruthy();
+    expect(call).toHaveBeenCalledWith("terminal.status", { project: "demo" });
+  });
+
+  it("[DESKTOP-TERMINAL-35] 终端里正在运行 tail：说明写明终端里正在运行的 tail 会被结束", async () => {
+    const user = userEvent.setup();
+    setup(library([row("demo")]), { "terminal.status": { open: true, command: "tail" } });
+    const target = await startEdit(user, "demo", "重命名…");
+    expect(await within(target).findByText(/终端里正在运行的 tail 会被结束/)).toBeTruthy();
+  });
+
+  it("没开终端的项目：说明里没有终端那一句", async () => {
+    const user = userEvent.setup();
+    const { call } = setup(library([row("demo")]), {
+      "terminal.status": { open: false, command: null },
+    });
+    const target = await startEdit(user, "demo", "重命名…");
+    await vi.waitFor(() =>
+      expect(call).toHaveBeenCalledWith("terminal.status", { project: "demo" }),
+    );
+    expect(within(target).queryByText(/终端/)).toBeNull();
+  });
+
+  it("[DESKTOP-TERMINAL-36] 终端里正在运行 pnpm install：移到废纸篓的确认写明“终端里还在运行 pnpm，会被结束”", async () => {
+    const user = userEvent.setup();
+    setup(library([row("demo")]), { "terminal.status": { open: true, command: "pnpm" } });
+    const menu = await openMenu(user, "demo");
+    await user.click(within(menu).getByRole("menuitem", { name: /移到废纸篓/ }));
+    const dialog = await screen.findByRole("alertdialog");
+    expect(within(dialog).getByText(/终端里还在运行 pnpm，会被结束/)).toBeTruthy();
+  });
+
+  it("终端空闲或没开：移到废纸篓的确认里没有终端那一句", async () => {
+    const user = userEvent.setup();
+    setup(library([row("demo")]), { "terminal.status": { open: true, command: null } });
+    const menu = await openMenu(user, "demo");
+    await user.click(within(menu).getByRole("menuitem", { name: /移到废纸篓/ }));
+    const dialog = await screen.findByRole("alertdialog");
+    expect(within(dialog).queryByText(/终端里还在运行/)).toBeNull();
+  });
+});
 
 describe("行内重命名与编辑备注", () => {
   it("[DESKTOP-LIBRARY-VIEW-34] 重命名运行中的项目：名称框全选并写着“保存后会停止并用新名称重新启动”，回车交给主进程，状态推来后该行显示新名称", async () => {

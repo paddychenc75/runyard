@@ -82,8 +82,17 @@ async function setup(chosen: string | null = null) {
     },
   });
   client.controller = controller;
-  controller.onProjectRelease(async (id) => {
-    client.timeline.push(`release(${id},tabs=${controller.getState().tabs.length})`);
+  controller.onProjectRelease({
+    flush: async (id, ask) => {
+      client.timeline.push(`flush(${id},ask=${ask},tabs=${controller.getState().tabs.length})`);
+      return true;
+    },
+    release: async (id) => {
+      client.timeline.push(`release(${id},tabs=${controller.getState().tabs.length})`);
+    },
+    restore: async (id) => {
+      client.timeline.push(`restore(${id})`);
+    },
   });
   await controller.start();
   return { client, controller, terminals };
@@ -100,8 +109,12 @@ describe("移到废纸篓（主进程）", () => {
     client.timeline.length = 0;
     const result = await controller.edits.trash("b");
     expect(result).toEqual({ ok: true });
-    // 释放监听时标签页已经关了；管理进程移动时监听已经放掉（停止运行在管理进程的 playground.trash 里）
-    expect(client.timeline).toEqual(["release(b,tabs=0)", "trash(tabs=0)"]);
+    // 写入时标签页还开着（关了编辑会话就没了），释放监听时标签页已经关了；管理进程移动时监听已经放掉（停止运行在管理进程的 playground.trash 里）
+    expect(client.timeline).toEqual([
+      "flush(b,ask=true,tabs=1)",
+      "release(b,tabs=0)",
+      "trash(tabs=0)",
+    ]);
     expect(ids(controller)).toEqual(["a"]);
     expect(controller.getState().tabs).toEqual([]);
     expect(controller.getState().activeTab).toBe("library");

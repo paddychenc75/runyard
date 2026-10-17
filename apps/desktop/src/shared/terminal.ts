@@ -57,6 +57,12 @@ export interface TerminalForeground {
   command: string | null;
 }
 
+/** 项目的终端现状：开着（shell 在运行）与否，和里面正在运行的命令（空闲是 null） */
+export interface TerminalStatus {
+  open: boolean;
+  command: string | null;
+}
+
 /** 一个终端里此刻在运行的命令 */
 export interface TerminalBusy {
   project: string;
@@ -90,6 +96,8 @@ export interface TerminalMethods {
   "terminal.reopen": { param: { project: string } & TerminalSize; result: TerminalSnapshot };
   /** 终端里有没有命令在运行，是哪个 */
   "terminal.foreground": { param: { project: string }; result: TerminalForeground };
+  /** 这个项目有没有开着的终端、里面在运行什么命令：改名和移到废纸篓的说明靠它（规格 DESKTOP-TERMINAL-34 至 36） */
+  "terminal.status": { param: { project: string }; result: TerminalStatus };
   /** 所有终端里在运行命令的项目和命令名：⌘Q 的确认要列出来（规格 DESKTOP-TERMINAL-30） */
   "terminal.busy": { param: undefined; result: TerminalBusy[] };
 }
@@ -105,6 +113,7 @@ export const terminalMethodNames: readonly TerminalMethod[] = [
   "terminal.clear",
   "terminal.reopen",
   "terminal.foreground",
+  "terminal.status",
   "terminal.busy",
 ];
 

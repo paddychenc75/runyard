@@ -14,7 +14,9 @@ import {
 } from "./composition-root.ts";
 import type { TerminalHooks } from "./controller-hosts.ts";
 import { EditorFileService } from "./editor-files/file-service.ts";
+import { createEditorRelease } from "./editor-release.ts";
 import { runEditorSmoke } from "./editor-smoke.ts";
+import { createFlushGates } from "./flush-gates.ts";
 import {
   buildBootstrapInfo,
   closeKeepsAppAlive,
@@ -55,7 +57,6 @@ import {
 } from "./parse-args.ts";
 import { ElectronPreviewHost } from "./preview-view.ts";
 import { registerQuitFlow } from "./quit-coordinator.ts";
-import { QuitFlushGate } from "./quit-flush-gate.ts";
 import { FileSessionStore } from "./session-store.ts";
 import { SettingsController } from "./settings-controller.ts";
 import { runSmoke } from "./smoke.ts";
@@ -139,13 +140,9 @@ async function main(args: DesktopArgs): Promise<void> {
   keepAliveAfterClose(app, window, closeKeepsAppAlive(currentPlatform()));
   const preview = new ElectronPreviewHost(window);
 
-  // 退出前问编辑器（规格 DESKTOP-EDITOR-27、28）；渲染进程没了就不问
-  const quitGate = new QuitFlushGate((id) => {
-    if (window.isDestroyed()) return false;
-    window.webContents.send(desktopChannels.event, "app.quitRequested", { id });
-    return true;
-  });
-  window.webContents.on("render-process-gone", () => quitGate.abandon());
+  // 退出前、改名或移到废纸篓前问编辑器写入未保存的修改（规格 DESKTOP-EDITOR-27、28、75 至 78）
+  const gates = createFlushGates(window);
+  const { quit: quitGate, project: projectGate } = gates;
   let client: LibraryClient;
   let clientId = "";
   let close = (): void => {};
@@ -289,8 +286,8 @@ async function main(args: DesktopArgs): Promise<void> {
       ipcHost.send(desktopChannels.event, "files.changed", { project, changes }),
   });
   app.once("will-quit", () => void files.dispose());
-  // 移到废纸篓前先放掉项目的文件监听（#265 的先后顺序）
-  controller.onProjectRelease((id) => files.unwatch(id));
+  // 改名、移到废纸篓前先写入未保存的修改、再放掉项目的文件监听（#265 的先后顺序）
+  controller.onProjectRelease(createEditorRelease(files, projectGate));
   const links = new LinkHandler(
     createLinkHost({
       controller,
@@ -330,7 +327,7 @@ async function main(args: DesktopArgs): Promise<void> {
     }),
     files,
     { reveal: (path) => system.revealInFileManager(path), open: (path) => system.openPath(path) },
-    quitGate,
+    gates,
     settings,
     terminals,
     new TemplatesView({

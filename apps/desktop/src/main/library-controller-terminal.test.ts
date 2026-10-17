@@ -14,6 +14,8 @@ class FakeClient {
   playgrounds = [playground("a", "demo"), playground("b", "api")];
   runs: ReturnType<typeof run>[] = [];
   confirmCloseRunningTab = true;
+  /** 编辑器写入未保存修改时的回答：false = 用户在询问里选了取消 */
+  flushAllowed = true;
   #listeners: ((event: ClientEvent) => void)[] = [];
 
   call = async <M extends MethodName>(
@@ -125,8 +127,17 @@ async function setup(runs: ReturnType<typeof run>[] = []) {
       chooseFolder: async () => null,
     },
   });
-  controller.onProjectRelease(async (id, reason) => {
-    client.timeline.push(`release-extras(${id},${reason})`);
+  controller.onProjectRelease({
+    flush: async (id, ask) => {
+      client.timeline.push(`flush(${id},ask=${ask})`);
+      return client.flushAllowed;
+    },
+    release: async (id, reason) => {
+      client.timeline.push(`release-extras(${id},${reason})`);
+    },
+    restore: async (id) => {
+      client.timeline.push(`restore(${id})`);
+    },
   });
   await controller.start();
   return { client, controller, terminals };
@@ -207,7 +218,9 @@ describe("移到废纸篓、改名和终端", () => {
     await controller.openProjectWithoutRun("a");
     client.timeline.length = 0;
     expect(await controller.edits.trash("a")).toEqual({ ok: true });
+    // 未保存的修改先写入，再关标签页（关了编辑会话就没了），再结束终端和放监听（DESKTOP-EDITOR-77）
     expect(client.timeline).toEqual([
+      "flush(a,ask=true)",
       "terminal.end(a,closed)",
       "terminal.end(a,trashed)",
       "release-extras(a,trash)",
@@ -220,9 +233,11 @@ describe("移到废纸篓、改名和终端", () => {
     client.timeline.length = 0;
     expect(await controller.edits.edit({ id: "a", name: "demo2", note: "" })).toEqual({ ok: true });
     expect(client.timeline).toEqual([
+      "flush(a,ask=true)",
       "terminal.end(a,renamed)",
       "release-extras(a,rename)",
       "playground.rename",
+      "restore(a)",
     ]);
     terminals.ended.length = 0;
     expect(await controller.edits.edit({ id: "a", name: "demo2", note: "新备注" })).toEqual({
@@ -242,7 +257,9 @@ describe("移到废纸篓、改名和终端", () => {
       gap: false,
     });
     await new Promise((resolve) => setTimeout(resolve, 20));
+    // 没有地方询问用户：直接写入（ask=false），再结束终端、放监听、回报（DESKTOP-EDITOR-78）
     expect(client.timeline).toEqual([
+      "flush(a,ask=false)",
       "terminal.end(a,trashed)",
       "release-extras(a,trash)",
       "playground.released",
@@ -255,6 +272,63 @@ describe("移到废纸篓、改名和终端", () => {
     await controller.refresh();
     expect(tabsOf(controller)).toEqual([]);
     expect(terminals.ended).toContain("a:trashed");
+  });
+
+  it("[DESKTOP-EDITOR-76] 询问时选了取消：改名什么都没动——终端没结束、监听没放、没有调用改名", async () => {
+    const { client, controller, terminals } = await setup();
+    client.flushAllowed = false;
+    client.timeline.length = 0;
+    expect(await controller.edits.edit({ id: "a", name: "demo2", note: "" })).toEqual({ ok: true });
+    expect(client.timeline).toEqual(["flush(a,ask=true)"]);
+    expect(terminals.ended).toEqual([]);
+    expect(controller.getState().playgrounds.find((row) => row.id === "a")?.name).toBe("demo");
+  });
+
+  it("[DESKTOP-EDITOR-76] 移到废纸篓时选了取消：标签页还开着，没有结束终端，没有调用移到废纸篓", async () => {
+    const { client, controller, terminals } = await setup();
+    await controller.openProjectWithoutRun("a");
+    client.flushAllowed = false;
+    client.timeline.length = 0;
+    await controller.edits.trash("a");
+    expect(client.timeline).toEqual(["flush(a,ask=true)"]);
+    expect(tabsOf(controller)).toEqual(["a"]);
+    expect(terminals.ended).toEqual([]);
+  });
+
+  it("管理进程请求释放改名：写入、放掉之后回报；改名做完（记录里的文件夹变了）并重读之后才把文件监听接回来", async () => {
+    const { client, controller } = await setup();
+    client.timeline.length = 0;
+    client.emit({
+      event: "playground.releaseRequested",
+      data: { playgroundId: "a", reason: "rename" },
+      seq: 1,
+      gap: false,
+    });
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(client.timeline).toEqual([
+      "flush(a,ask=false)",
+      "terminal.end(a,renamed)",
+      "release-extras(a,rename)",
+      "playground.released",
+    ]);
+    // 文件夹还没变：不接
+    const before = client.playgrounds.find((row) => row.id === "a");
+    client.emit({ event: "playground.changed", data: before, seq: 2, gap: false } as ClientEvent);
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(client.timeline).not.toContain("restore(a)");
+    // 管理进程改完名：记录里是新文件夹，重读之后接回
+    client.playgrounds = client.playgrounds.map((row) =>
+      row.id === "a" ? { ...row, name: "demo2", path: "/lib/demo2" } : row,
+    );
+    client.emit({
+      event: "playground.changed",
+      data: client.playgrounds.find((row) => row.id === "a"),
+      seq: 3,
+      gap: false,
+    } as ClientEvent);
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(client.timeline.at(-1)).toBe("restore(a)");
+    void controller;
   });
 
   it("管理进程请求释放改名：终端按“改名”结束；终端放不掉也回报，不让管理进程白等", async () => {

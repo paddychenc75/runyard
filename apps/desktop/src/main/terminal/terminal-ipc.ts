@@ -75,6 +75,10 @@ export function terminalMethods(
       const id = project(asParams(param));
       return id === null ? { command: null } : await need().foreground(id);
     },
+    "terminal.status": async (param) => {
+      const id = project(asParams(param));
+      return id === null ? { open: false, command: null } : await need().status(id);
+    },
     "terminal.busy": async () => await need().busyCommands(),
   };
 }

@@ -64,6 +64,8 @@
   "library.rename.nameFolder.hint": "The name is also the folder name; renaming breaks old runyard://open links.",
   "library.rename.nameRunning.hint": "The name is also the folder name. This playground is running: saving stops it and restarts it under the new name. Old runyard://open links will stop working.",
   "library.rename.save.action": "Save",
+  "library.rename.terminalClose.hint": "This playground's terminal will be closed.",
+  "library.rename.terminalCommand.hint": "The {command} running in the terminal will be ended.",
   "library.retention.autoClean.label": "{days, plural, one {# day} other {# days}} left",
   "library.retention.autoClean.tooltip": "Moved to the {term_trash} after {days, plural, one {# day} other {# days}} unopened; the count restarts on every open",
   "library.retention.kept.label": "Kept",
@@ -107,7 +109,7 @@
   "library.table.aria": "Playgrounds",
   "library.topbar.idle.label": "No playground running",
   "library.topbar.running.label": "{count, plural, one {# running} other {# running}}",
-  "library.trash.body": "The folder moves to the {term_trash}, where you can restore it. {running, select, yes {It is running and will be stopped first.} other {It is not running right now.}}",
+  "library.trash.body": "The folder moves to the {term_trash}, where you can restore it. {running, select, yes {It is running and will be stopped first.} other {It is not running right now.}}{terminalCommand, select, none {} other { {terminalCommand} is still running in the terminal and will be ended.}}",
   "library.trash.cancel.action": "Cancel",
   "library.trash.confirm.action": "Move to {term_trash}",
   "library.trash.title": "Move {name} to the {term_trash}?"
