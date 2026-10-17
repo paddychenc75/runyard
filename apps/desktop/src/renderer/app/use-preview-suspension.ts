@@ -11,6 +11,18 @@ const nextPaint = () =>
     requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
   );
 
+// 截图最多等这么久：卡住（窗口被遮住时可能发生）就先藏视图，不让浮层一直被盖着
+const CAPTURE_LIMIT_MS = 400;
+
+async function captureWithin(bridge: DesktopBridge, limitMs: number): Promise<string | null> {
+  const timeout = new Promise<null>((resolve) => setTimeout(() => resolve(null), limitMs));
+  try {
+    return await Promise.race([bridge.call("preview.capture"), timeout]);
+  } catch {
+    return null;
+  }
+}
+
 export function usePreviewSuspension(
   bridge: DesktopBridge,
   overlays: OverlayCounter,
@@ -30,13 +42,15 @@ export function usePreviewSuspension(
     const mine = ++round.current;
     let cancelled = false;
     void (async () => {
-      const shot = await bridge.call("preview.capture");
+      const shot = await captureWithin(bridge, CAPTURE_LIMIT_MS);
       if (cancelled) return;
-      // 没有预览（没就绪）就没有帧可截，也不用藏
-      if (shot === null) return;
-      setFrame(shot);
-      await nextPaint();
-      if (cancelled) return;
+      // 没截到（预览还没就绪、窗口藏着、截图卡住）也要把视图藏起来：
+      // 视图是原生的，晚一点才就绪时会盖在浮层上（#302）。没有帧就只显示占位内容
+      if (shot !== null) {
+        setFrame(shot);
+        await nextPaint();
+        if (cancelled) return;
+      }
       await bridge.call("preview.visible", false);
     })();
     return () => {

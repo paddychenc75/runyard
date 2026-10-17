@@ -44,7 +44,7 @@ const tab = (previewUrl: string | null): TabRow =>
     previewUrl,
   });
 
-function setup(row: TabRow, capture: string | null = "data:image/png;base64,AAAA") {
+function setup(row: TabRow, capture: string | null | Error = "data:image/png;base64,AAAA") {
   const calls: [string, unknown][] = [];
   // 隐藏视图的那一刻，截图是否已经在界面里了
   const frameShownWhenHidden: boolean[] = [];
@@ -56,6 +56,7 @@ function setup(row: TabRow, capture: string | null = "data:image/png;base64,AAAA
         frameShownWhenHidden.push(document.querySelector("[data-preview-frame]") !== null);
       }
       if (method === "console.get") return [];
+      if (method === "preview.capture" && capture instanceof Error) throw capture;
       return method === "preview.capture" ? capture : undefined;
     }),
     on: () => () => {},
@@ -122,13 +123,19 @@ describe("预览区", () => {
     expect(calls.map(([method]) => method)).not.toContain("preview.capture");
   });
 
-  it("没有预览可截（页面没就绪）时浮层打开也不隐藏视图", async () => {
+  it("没有预览可截（页面没就绪）时浮层打开也要隐藏视图，晚就绪的视图不会盖在浮层上 [#302]", async () => {
     const { calls, overlays } = setup(tab(null), null);
     act(() => {
       overlays.acquire();
     });
-    await waitFor(() => expect(calls.map(([method]) => method)).toContain("preview.capture"));
-    await new Promise((resolve) => setTimeout(resolve, 20));
-    expect(calls).not.toContainEqual(["preview.visible", false]);
+    await waitFor(() => expect(calls).toContainEqual(["preview.visible", false]));
+  });
+
+  it("截图失败（抛错）时浮层打开也要隐藏视图 [#302]", async () => {
+    const { calls, overlays } = setup(tab("http://127.0.0.1:7101/"), new Error("capture failed"));
+    act(() => {
+      overlays.acquire();
+    });
+    await waitFor(() => expect(calls).toContainEqual(["preview.visible", false]));
   });
 });
