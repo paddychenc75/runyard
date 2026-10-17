@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { act, cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { LibraryState, PlaygroundRow, TemplateRow } from "../../shared/library-state.ts";
 import { AppFrame } from "./AppFrame.tsx";
@@ -79,6 +79,14 @@ function setup(state: LibraryState) {
   render(<AppFrame bridge={bridge} locale="zh-CN" theme="system" />);
   return { call, press: () => act(() => listeners.get("picker.open")?.()) };
 }
+
+// 整个文件第一次画外壳和第一次角色查询要付一次冷启动的代价，慢机器上会挤占第一个用例的 5 秒时限
+//（#219、#234 同类）；提前热身一遍，用例的断言和时限不变
+beforeAll(async () => {
+  setup(library());
+  within(await screen.findByRole("dialog")).getAllByRole("option");
+  cleanup();
+});
 
 describe("模板选择器", () => {
   it("[DESKTOP-CREATE-FLOW-01] 空资源库首次启动直接显示选择器，没有环境检查页，html 可以选择并创建", async () => {

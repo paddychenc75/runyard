@@ -11,6 +11,8 @@
     "src/preload/**/*.ts",
     "src/shared/**/*.ts",
     "build.ts",
+    "pack.ts",
+    "packaging/**/*.ts",
     "package.json"
   ],
   "references": [

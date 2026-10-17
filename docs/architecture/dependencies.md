@@ -20,7 +20,9 @@
 | esbuild | 0.28.2 | 2026-08-08（69 天） | 2026-10-16 | 无（A）；B、C：0.28.0 及以前有 GHSA-gv7w-rqvm-qjhr（高）、GHSA-g7r4-m6w7-qqqr（低），0.28.1 起修复，本版本不受影响 | 设计表未列：`apps/desktop` 在 electron-vite 可用之前用它打包主进程、预加载脚本和界面（已在 `allowBuilds` 里放行）；0.28 线最新补丁，Vite 8 的可选 peer 也接受 ^0.28.0 |
 | electron-vite | 5.0.0 | 2025-12-07（309 天） | 2026-10-12 | 无（A、B、C） | peer 依赖只到 Vite 7，6.0 仍是测试版。**尚未装**：它要 Vite 7，而可用的 7.3.7 发布不满 14 天，装它要放宽安装的年龄限制（需负责人同意）；2026-10-20 起满 14 天，届时不需要放宽。在此之前 `apps/desktop` 用下面的 esbuild 自己打包 |
 | vite | 7.3.7 | 2026-10-06（6 天） | 2026-10-12 | 7.3.6 及以前有 GHSA-rq7h-c2jc-7f22、GHSA-vfpm-58rq-9qcg、GHSA-9jrq-w75r-8gcw，7.3.7 修复；只在 C | 安全修复例外（规则 3），**尚未装、也没有加例外**（2026-10-16 时它只发布 10 天）；2026-10-20 满 14 天后随 electron-vite 一起装，届时不需要例外条目。`packages/ui` 的工作台因此用已有的 esbuild 打包，不等 Vite（技术设计 §6.7 写的是 Vite 页面，换成 Vite 只改 `workbench/build.ts`） |
-| electron-builder | 26.17.0 | 2026-09-26（16 天） | 2026-10-12 | 无（A、B）；C 的 2 条不影响本版本 | 固定 26.x，升大版本前先读迁移说明 |
+| electron-builder | 26.17.0 | 2026-09-26（16 天） | 2026-10-17 | 无（A、B）；C 的 4 条（builder-util-runtime 9.7.0、app-builder-lib 26.15.0、electron-updater、NSIS 24.13.2 起修复）都不影响本版本 | 固定 26.x，升大版本前先读迁移说明；`apps/desktop` 的 devDependency（#193）；`electron-winstaller` 的安装脚本在 `allowBuilds` 里写 `false`（只给 Windows 用，决策记录 0007） |
+| @electron/fuses | 2.1.3 | 2026-06-29（109 天） | 2026-10-17 | 无（A、B）；C（electron/fuses）公告页 0 条 | `apps/desktop` 的 devDependency：`package` 任务读打好的可执行文件里的真实开关并断言；electron-builder 自己带的是 1.8.0，写开关用它的，这里只读 |
+| http-cache-semantics（electron-builder 的间接依赖） | 4.3.0 | 2026-10-04（13 天） | 2026-10-17 | 4.2.0 有 GHSA-ch52-4w7c-c8xp（高）；4.3.0 修复 | **安全修复例外（规则 3）**：已满 72 小时；负责人 2026-10-17 批准（“这个可以不用限制这么久”），在 `pnpm-workspace.yaml` 的 `minimumReleaseAgeExclude` 里加了 `http-cache-semantics@4.3.0`，锁文件里只有 4.3.0。2026-10-18 02:56Z 满 14 天后删掉这一条（#193）；没有加 `security/allowlist.toml` 条目 |
 | node-pty | 1.1.0 | 2025-12-22（294 天） | 2026-10-12 | 无（A、B、C） | 只在 apps/desktop；与 Electron 44 的 ABI 匹配待 K5 验证 |
 | chokidar | 5.0.0 | 2025-11-25（321 天） | 2026-10-12 | 无（A、B、C） | 文件监听，纯 JS，只在 `packages/platform`（`watch`，#28）；唯一的间接依赖 readdirp 5.1.1（2026-08-06，67 天）由 pnpm 年龄规则把关，同样纯 JS |
 | monaco-editor | 0.57.0 | 2026-09-24（18 天） | 2026-10-12 | 无（A、B、C） | 编辑器内核 |

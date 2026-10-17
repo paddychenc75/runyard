@@ -108,7 +108,7 @@ Claude Code 的钩子：改完文件后对那一个文件跑 Biome；结束回�
 | 加或改一条给人看的文字（命令行） | `docs/guides/add-ui-string.md` |
 | 加一条命令行命令 | `docs/guides/add-cli-command.md` |
 | 加一个跨进程命令（方法或事件） | `docs/guides/add-ipc-command.md` |
-| 查某条命令跑什么、模板 CI 怎么跑；本机和 CI 上踩过的坑 | `docs/guides/commands.md`、`docs/guides/pitfalls.md` |
+| 查某条命令跑什么、模板 CI 怎么跑；本机和 CI 上踩过的坑；未签名的 macOS 包“打不开” | `docs/guides/commands.md`、`docs/guides/pitfalls.md`、`docs/guides/first-open-unsigned-app.md` |
 | 发版、写版本说明、看更新日志 | `docs/guides/release.md` |
 
 完成标准（一个 PR 合并前）：引用了 PRD 锚点；新行为有测试；`pnpm verify` 通过并贴了结果；改了包结构、依赖规则、磁盘格式、构建发布做法的附了决策记录；动了依赖的按手册十步做完；文字都是中文，两个 README 同步；没有新增未说明的跳过。

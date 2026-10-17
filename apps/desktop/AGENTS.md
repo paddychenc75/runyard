@@ -39,13 +39,22 @@ pnpm --filter @runyard/desktop smoke             # 冒烟自检：窗口不显�
 - 窗口底色取自 `@runyard/tokens` 的 `windowBackground`（随系统深浅色），界面画出来之前显示，避免启动白闪；`tokens` 只为这一件事导入（技术设计 §3.2）。
 - 标签页状态在主进程（`main/workspace-tabs.ts`，只记打开的项目标签的顺序和当前标签，资源库固定在最前不在表里），随 `library.changed` 一起推给界面（`tabs`、`activeTab`）。项目被删时它的标签随之去掉。
 - 模板选择器（#172，规格 desktop/create-flow 的 01 至 05）：`renderer/app/PickerDialog.tsx`（浮层，用 `@runyard/ui` 的 `ListPicker`、`SearchField`、`Kbd`；打开期间 `useOverlay(true)`，预览区据此换成截图），分组数据在 `renderer/picker-view.ts`（顶部“最近使用”最多三个，其后按类型）。打开方式两种：空资源库的首次启动（`AppShell` 第一次读到状态时判断一次，不做环境检查）和应用菜单的“新建…”（⌘N，`main/native-ui/app-menu.ts`，焦点在预览视图里也有效，经 `picker.open` 事件通知界面）。“最近使用”由主进程按项目的创建时间推出（`LibraryState.recentTemplates`），不另存。选择器只用已有的模板列表，不触发工具检测；缺工具的模板照常可选。**接缝**：选好模板后 `AppShell.onPick(templateId)` 是交给下一步的唯一出口，新建弹窗（#173）把它换成“打开新建弹窗”；在那之前先用默认名称直接创建。搜索框现在只拿焦点，过滤是后续切片。
-- 还没有：`runyard://` 链接、标签页恢复、设置里的语言和主题切换、应用菜单里 ⌘N 以外的项（其余用 Electron 的系统角色）、关窗口时的提示、打包（asar、fuse、签名）。
+- 还没有：`runyard://` 链接、标签页恢复、设置里的语言和主题切换、应用菜单里 ⌘N 以外的项（其余用 Electron 的系统角色）、关窗口时的提示、安装包里随带管理进程、命令行和内置模板（#194：现在打出的包能开窗，但连不上管理进程，列表区显示“连不上管理进程”）、命令行装到 PATH、签名与公证（第一版不做）。
+
+## 打包（#193）
+
+- `pnpm --filter @runyard/desktop package -- --out "$(mktemp -d)"`（入口 `tooling/scripts/package-desktop.ts`，分四步各自打印：esbuild 构建、显式下载 Electron 二进制（`electron:download`，CI 里单独成步）、`pack.ts` 打包并断言开关、`codesign` 校验）；`pack.ts` 把图标同步到 `build/icon.png`，把 `dist/` 拼进临时的应用目录（只有 esbuild 的产物和最小的 `package.json`，依赖已打进单文件，不让打包工具跟随工作区链接），用 electron-builder 26.17.0 出 `.app`、dmg、zip（arm64；`--dir` 只出 `.app`；`--e2e` 保留 `nodeCliInspect`），输出目录不要放在 `/tmp` 下（打包工具把 `/private/tmp` 当不安全路径）；用 `mktemp -d` 的默认位置。输出默认在本包的 `release` 子目录（已忽略），不提交 `.app`、dmg。
+- 开关（fuse）取值只在 `packaging/fuses.ts` 写一次（技术设计 §6.5、决策记录 0007）。校验读的是打好的可执行文件里的真实取值（`packaging/verify-fuses.ts`，用 `@electron/fuses`），正式构建断言 `nodeCliInspect` 是关的；出厂的 Electron 反过来是它的反例测试。
+- 签名：`mac.identity: "-"`（ad-hoc）加 `resetAdHocDarwinSignature`，打包后 `codesign --verify --deep --strict`，不过就失败。electron-builder 会警告 hardened runtime 与 ad-hoc 签名要 `disable-library-validation`；实测包能正常启动，真机 Gatekeeper 的画面未验证。
+- 图标：`build/icon.png` 是 `docs/design/logo/final/png/icon-dock-1024.png` 的副本，`packaging/icon.test.ts` 核对没有脱节；electron-builder 自己转 `.icns`。
+- 用户第一次打开的步骤：`docs/guides/first-open-unsigned-app.md`。
 
 ## 子目录地图
 
 - `src/main/`：主进程。`integration/` 放依赖 Electron 的系统差异（窗口外框与底色、单实例、用户数据目录、启动信息），系统分支只许写在这里；`integration/system-actions.ts` 是“在访达中显示”（Electron `shell`）和复制路径（剪贴板）；菜单本身是网页层的 `Menu`，没有原生菜单，`native-ui/` 等第一个原生对话框或通知出现时再建。`index.ts` 只接线；`composition-root.ts` 经 `@runyard/client` 连接或拉起管理进程（客户端种类 `app`）；`library-controller.ts` 是窗口背后的全部逻辑（不认识 Electron，用假客户端测），`console-logs.ts` 是各标签页的控制台数据；`ipc-handlers.ts` 把界面的消息接到控制器；`preview-view.ts`、`integration/main-window.ts` 是 Electron 接线；`app-protocol.ts`、`preview-policy.ts`（含导航判断）是安全相关的纯判断；`smoke.ts` 是冒烟自检。
 - `src/preload/`：预加载脚本，构建成 CommonJS（沙箱里的预加载脚本不能是 ES 模块）。
 - `src/renderer/`：界面，React。`app/`（外壳：`AppFrame` 管文案、`<html>` 属性和版面变量，`AppShell`、`Sidebar`、`TopBar`、`LibraryPage`、`LibraryTable`、`PreviewPane`、`RunBar`、`ScriptOutput`、`ConsolePanel`）、`widgets/`（`PreviewSlot`）、`shared/`（浮层计数器）、`bridge/`（全仓库唯一读 `window.runyard` 的地方，`ui-layers` 守着；别处经 `getDesktopBridge()` 取接口）、`library-view.ts`（列表每一格显示什么的纯判断：状态标记、保留剩余天数、模板缩写、创建者）。CSP 里 `img-src data:` 只为显示主进程截来的预览那一帧；`style-src` 里有一个哈希，放行 Base UI 滚动区插入的固定 `<style>`（见 `index.html` 的注释）。
+- `packaging/`、`pack.ts`、`build/`：打包（见上面“打包”）。
 - `src/shared/`：主进程、预加载脚本、界面共用的类型和版面常量。
 
 ## 测试
