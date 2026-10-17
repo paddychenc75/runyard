@@ -3,7 +3,7 @@ import { desktopCatalogs } from "@runyard/i18n";
 import { I18nProvider } from "@runyard/i18n/react";
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { FileTree } from "./FileTree.tsx";
 import { type FakeFiles, fakeFiles } from "./fake-files-bridge.ts";
 import type { FileTreeHost } from "./use-file-tree.ts";
@@ -34,6 +34,23 @@ const PROJECT: Record<string, string | null> = {
   "package.json": "{}",
   "index.html": "",
 };
+
+// 菜单和行内输入第一次用到时要冷启动（Base UI 的菜单、输入链路），慢的 CI 虚拟机上能拖到 5 秒以上，
+// 全落在用到菜单的头一个用例里（和 vitest.setup.tsx 里的弹窗热身同一个原因）。在装载阶段先走一遍
+beforeAll(async () => {
+  const files = fakeFiles(PROJECT);
+  const user = userEvent.setup();
+  render(
+    <I18nProvider locale="zh-CN" platform="darwin" catalogs={desktopCatalogs}>
+      <FileTree bridge={files.bridge} project="demo" host={hostOf()} />
+    </I18nProvider>,
+  );
+  await user.click(await screen.findByRole("button", { name: "在项目根新建" }));
+  await user.click(await screen.findByRole("menuitem", { name: "新建文件" }));
+  await user.keyboard("warmup{Enter}");
+  await screen.findByRole("treeitem", { name: "warmup" });
+  cleanup();
+}, 30_000);
 
 function hostOf(extra: Partial<FileTreeHost> = {}) {
   const host = {
