@@ -35,7 +35,7 @@ export const samples: readonly FixtureSample[] = [
               <>
                 <Button>{data.items[3]}</Button>
                 <Button variant="primary" type="submit">
-                  {data.label}
+                  {data.items[0]}
                 </Button>
               </>
             }
@@ -63,7 +63,7 @@ export const samples: readonly FixtureSample[] = [
             hint={data.longLabel}
             actions={
               <Button variant="primary" type="submit">
-                {data.longLabel}
+                {data.items[0]}
               </Button>
             }
           >

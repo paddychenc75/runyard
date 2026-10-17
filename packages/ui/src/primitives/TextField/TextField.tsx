@@ -14,6 +14,7 @@ export function TextField({ className, ...rest }: TextFieldProps) {
     <BaseField.Control
       {...rest}
       type="text"
+      data-truncate=""
       autoComplete="off"
       spellCheck={false}
       className={className === undefined ? styles.root : `${styles.root} ${className}`}

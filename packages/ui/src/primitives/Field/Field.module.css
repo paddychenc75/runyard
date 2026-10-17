@@ -11,6 +11,7 @@
   font-weight: var(--text-item-weight);
   line-height: var(--text-body-line-height);
   color: var(--color-text-primary);
+  overflow-wrap: anywhere;
 }
 
 .optional {
