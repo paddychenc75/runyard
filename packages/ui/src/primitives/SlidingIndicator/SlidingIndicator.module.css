@@ -1,0 +1,52 @@
+/* 一组只有一块：叠在格子下面，用 transform 平移、改宽高，不碰别的元素的版面 */
+.root {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  z-index: 0;
+  box-sizing: border-box;
+  inline-size: var(--slide-w, 0);
+  block-size: var(--slide-h, 0);
+  transform: translate(var(--slide-x, 0), var(--slide-y, 0));
+  opacity: 0;
+  pointer-events: none;
+}
+
+.root[data-ready] {
+  opacity: 1;
+}
+
+/* 只有“用户换了选中项”才带动画（data-animate），其余情况直接贴 */
+.root[data-animate] {
+  transition:
+    transform var(--motion-duration-slide) var(--motion-easing-slide),
+    inline-size var(--motion-duration-slide) var(--motion-easing-slide),
+    block-size var(--motion-duration-slide) var(--motion-easing-slide);
+}
+
+/* 减弱动态效果：不位移，直接出现在新位置，120ms 淡入（旧位置随之消失） */
+@media (prefers-reduced-motion: reduce) {
+  .root[data-animate] {
+    transition: none;
+  }
+
+  .root[data-animate="a"] {
+    animation: crossfade-a var(--motion-duration-crossfade) linear;
+  }
+
+  .root[data-animate="b"] {
+    animation: crossfade-b var(--motion-duration-crossfade) linear;
+  }
+}
+
+@keyframes crossfade-a {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes crossfade-b {
+  from {
+    opacity: 0;
+  }
+}

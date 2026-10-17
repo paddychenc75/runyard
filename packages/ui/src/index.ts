@@ -96,6 +96,12 @@ export {
   type SegmentedControlProps,
 } from "./primitives/SegmentedControl/index.ts";
 export {
+  SlidingIndicator,
+  type SlidingIndicatorOptions,
+  type SlidingIndicatorProps,
+  useSlidingIndicator,
+} from "./primitives/SlidingIndicator/index.ts";
+export {
   StatusMark,
   type StatusMarkProps,
   type StatusMarkStatus,

@@ -1,5 +1,11 @@
 import { useT } from "@runyard/i18n/react";
-import { IconButton, ScrollArea, UserText } from "@runyard/ui";
+import {
+  IconButton,
+  ScrollArea,
+  SlidingIndicator,
+  UserText,
+  useSlidingIndicator,
+} from "@runyard/ui";
 import styles from "./FileTabs.module.css";
 import type { FileTab } from "./file-tab.ts";
 import { isDirty } from "./file-tab.ts";
@@ -16,6 +22,7 @@ export interface FileTabsProps {
 // 未保存的标签名后面有一个点（设计稿没有这个状态）。
 export function FileTabs({ tabs, active, onSelect, onClose }: FileTabsProps) {
   const t = useT();
+  const slide = useSlidingIndicator<HTMLDivElement>(active, { scrollIntoView: true });
   const names = tabs.map((tab) => baseName(tab.path));
   return (
     <ScrollArea
@@ -23,7 +30,8 @@ export function FileTabs({ tabs, active, onSelect, onClose }: FileTabsProps) {
       className={styles.root}
       viewportProps={{ role: "tablist", "aria-label": t("desktop.editor.tabs.aria") }}
     >
-      <div className={styles.strip}>
+      <div ref={slide.container} className={styles.strip}>
+        <SlidingIndicator indicatorRef={slide.indicator} className={styles.indicator} />
         {tabs.map((tab, index) => {
           const name = names[index] ?? tab.path;
           const dirty = isDirty(tab);

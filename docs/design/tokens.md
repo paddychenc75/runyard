@@ -326,6 +326,7 @@ disagree, `tokens.json` wins.
 | Variable | Value | Role |
 | --- | --- | --- |
 | `--z-base` | 0 | Normal content |
+| `--z-slide-content` | 1 | Labels above a sliding selection background |
 | `--z-sticky` | 10 | Sticky headers, toolbars |
 | `--z-popover` | 100 | Menus, popovers |
 | `--z-scrim` | 200 | Scrim behind dialogs |

@@ -1,0 +1,26 @@
+.root {
+  position: relative;
+  display: inline-flex;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border-radius: calc(var(--radius-sm) + var(--space-1));
+  background: var(--color-fill-neutral);
+}
+
+.indicator {
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-raised);
+  box-shadow: var(--shadow-segment-selected);
+}
+
+.item {
+  position: relative;
+  z-index: var(--z-slide-content);
+  padding-inline: var(--size-control-padding-md);
+  padding-block: var(--space-3);
+  color: var(--color-text-secondary-strong);
+}
+
+.item[data-selected] {
+  color: var(--color-text-primary);
+}
