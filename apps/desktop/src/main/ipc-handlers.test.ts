@@ -67,6 +67,8 @@ function setup() {
       lastRequest: async (id: string) => void calls.push(["lastRequest", id]),
       openRequestInBrowser: (id: string, path: string) =>
         void calls.push(["openRequest", id, path]),
+      setRequestAutoResend: async (id: string, enabled: boolean) =>
+        void calls.push(["autoResend", id, enabled]),
     },
     setPreviewBounds: (bounds: unknown) => void calls.push(["bounds", bounds]),
     capturePreview: async () => "data:image/png;base64,AAAA",
@@ -249,10 +251,12 @@ describe("registerBridgeHandlers", () => {
     });
     await call(app, "request.getLast", "a");
     await call(app, "request.openInBrowser", { id: "a", path: "/todos" });
+    await call(app, "request.setAutoResend", { id: "a", enabled: false });
     expect(calls).toEqual([
       ["request", "a", request],
       ["lastRequest", "a"],
       ["openRequest", "a", "/todos"],
+      ["autoResend", "a", false],
     ]);
     calls.length = 0;
     for (const bad of [
@@ -271,6 +275,7 @@ describe("registerBridgeHandlers", () => {
     }
     await call(app, "request.openInBrowser", { id: "a", path: 7 });
     await call(app, "request.getLast", 5);
+    await call(app, "request.setAutoResend", { id: "a", enabled: "no" });
     expect(calls).toEqual([]);
   });
 

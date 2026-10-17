@@ -89,11 +89,12 @@ export function createLibraryService(ctx: LibraryContext): LibraryService {
     mutex.run(async () => {
       const { library } = await ctx.open();
       const id = ctx.require(library, params.playground).entry.id;
-      const { note, scriptAutoRun } = params;
-      if (note !== undefined || scriptAutoRun !== undefined) {
+      const { note, scriptAutoRun, requestAutoResend } = params;
+      if (note !== undefined || scriptAutoRun !== undefined || requestAutoResend !== undefined) {
         await library.update(id, {
           ...(note !== undefined ? { note } : {}),
           ...(scriptAutoRun !== undefined ? { scriptAutoRun } : {}),
+          ...(requestAutoResend !== undefined ? { requestAutoResend } : {}),
         });
       }
       if (params.autoClean !== undefined) await library.setAutoClean(id, params.autoClean);

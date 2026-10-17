@@ -40,6 +40,8 @@ export const playgroundFileSchema = z.looseObject({
   script: z.object({ autoRun: z.boolean().optional() }).optional(),
   // 请求面板上一次发出的请求（规格 DESKTOP-REQUEST-PANEL-08）
   lastRequest: requestSpecSchema.optional(),
+  // 请求面板“服务重载后自动重发”的开合；没写过就是开（规格 DESKTOP-REQUEST-PANEL-15）
+  requestAutoResend: z.boolean().optional(),
   trust: z.literal("trusted").describe("第一版恒为 trusted"),
 });
 export type PlaygroundFile = z.infer<typeof playgroundFileSchema>;

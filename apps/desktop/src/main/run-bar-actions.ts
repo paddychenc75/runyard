@@ -70,6 +70,16 @@ export class RunBarActions {
     }
   }
 
+  /** 请求面板的“服务重载后自动重发”开关（规格 DESKTOP-REQUEST-PANEL-15）：存进项目，重开标签页、重启应用都在 */
+  setRequestAutoResend(playgroundId: string, enabled: boolean): Promise<void> {
+    return this.#hooks.act(playgroundId, async () => {
+      await this.#hooks.client.call("playground.update", {
+        playground: playgroundId,
+        requestAutoResend: enabled,
+      });
+    });
+  }
+
   async lastRequest(playgroundId: string): Promise<RequestSpec | null> {
     try {
       return (await this.#hooks.client.call("request.getLast", {

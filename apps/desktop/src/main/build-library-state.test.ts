@@ -184,6 +184,43 @@ describe("buildLibraryState 的列和顺序", () => {
     ]);
   });
 
+  it("[DESKTOP-REQUEST-PANEL-14] 用户另存的模板：运行器与某个服务类模板相同才算服务，页面类的不算", () => {
+    const owned = (id: string) => ({
+      ...playground(id),
+      template: { id: `t-${id}`, source: "user" as const, appVersion: "0" },
+    });
+    const state = buildLibraryState({
+      ...base,
+      tabIds: ["api", "page", "orphan"],
+      templates: [
+        template("hono", { category: "service", runner: "hono" }),
+        template("html", { category: "page", runner: "static" }),
+        template("t-api", { category: "mine", source: "user", runner: "hono" }),
+        template("t-page", { category: "mine", source: "user", runner: "static" }),
+      ],
+      playgrounds: [owned("api"), owned("page"), playground("orphan")],
+      runs: [],
+    });
+    expect(state.tabs.map((tab) => [tab.id, tab.service])).toEqual([
+      ["api", true],
+      ["page", false],
+      ["orphan", false],
+    ]);
+  });
+
+  it("[DESKTOP-REQUEST-PANEL-15] 标签页带着项目记的自动重发开关，没写过是开；进程号取最近一次运行的", () => {
+    const off = { ...playground("off"), requestAutoResend: false };
+    const state = buildLibraryState({
+      ...base,
+      tabIds: ["off", "fresh"],
+      playgrounds: [off, playground("fresh")],
+      runs: [run("off", "ready", { pid: 4321 })],
+    });
+    const byId = new Map(state.tabs.map((tab) => [tab.id, tab]));
+    expect(byId.get("off")).toMatchObject({ requestAutoResend: false, pid: 4321 });
+    expect(byId.get("fresh")).toMatchObject({ requestAutoResend: true, pid: null });
+  });
+
   it("模板名从模板列表按 id 取，模板不在了就是 null", () => {
     const state = buildLibraryState({
       ...base,

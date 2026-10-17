@@ -178,7 +178,7 @@
 
 #### `playground.update`
 
-改备注、自动清理（null 关闭）、脚本保存后自动运行
+改备注、自动清理（null 关闭）、脚本保存后自动运行、请求面板的自动重发开关
 
 入参：
 
@@ -188,6 +188,7 @@
 | `note` | `string` | 否 |  |
 | `autoClean` | `integer \| null` | 否 |  |
 | `scriptAutoRun` | `boolean` | 否 |  |
+| `requestAutoResend` | `boolean` | 否 |  |
 
 出参：
 
@@ -985,6 +986,7 @@
 | `createdBy` | `{ kind: 'user' \| 'agent' \| 'cli'; agent?: string; command?: string }` | 是 |  |
 | `autoClean` | `{ enabled: boolean; days?: integer }` | 是 |  |
 | `scriptAutoRun` | `boolean` | 否 | 脚本项目保存后自动运行 |
+| `requestAutoResend` | `boolean` | 否 | 请求面板：服务重载后自动重发上一次请求；没写过就是开 |
 | `port` | `integer` | 否 | 登记的端口；脚本没有；≥ 1；≤ 65535 |
 | `lastUsedAt` | `integer` | 是 | ≥ 0 |
 | `lastOpenedAt` | `integer` | 否 | ≥ 0 |

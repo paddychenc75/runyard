@@ -71,6 +71,25 @@ export interface LibraryInputs {
   notices?: readonly AppNotice[];
 }
 
+/**
+ * 哪些模板建出的项目是服务类（规格 DESKTOP-REQUEST-PANEL-14）：模板类型是“服务”的，
+ * 加上用户另存的模板里运行器与某个服务类模板相同的（另存的模板类型一律是“我的”，不能看类型）
+ */
+export function serviceTemplateTest(templates: readonly TemplateRecord[]): (id: string) => boolean {
+  const serviceRunners = new Set(
+    templates.filter((t) => t.category === "service" && t.valid).map((t) => t.runner),
+  );
+  const byId = new Map(templates.map((t) => [t.id, t]));
+  return (id) => {
+    const template = byId.get(id);
+    if (template === undefined) return false;
+    return (
+      template.category === "service" ||
+      (template.source === "user" && template.valid && serviceRunners.has(template.runner))
+    );
+  };
+}
+
 /** 每个项目取最近一次运行（startedAt 最大）；它决定列表里显示的状态 */
 export function latestRunByPlayground(runs: readonly RunSnapshot[]): Map<string, RunSnapshot> {
   const latest = new Map<string, RunSnapshot>();
@@ -151,8 +170,9 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
   const autoRuns = new Map(
     inputs.playgrounds.map((playground) => [playground.id, playground.scriptAutoRun]),
   );
-  const serviceTemplates = new Set(
-    inputs.templates.filter((template) => template.category === "service").map((t) => t.id),
+  const isService = serviceTemplateTest(inputs.templates);
+  const autoResends = new Map(
+    inputs.playgrounds.map((playground) => [playground.id, playground.requestAutoResend]),
   );
   const tabs: TabRow[] = [];
   for (const row of rows) {
@@ -184,7 +204,9 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
       folder: row.folder ?? row.path,
       phaseMs: inputs.phases?.(row.id) ?? { copy: null, install: null, start: null },
       missing: row.missing,
-      service: serviceTemplates.has(row.templateId),
+      service: isService(row.templateId),
+      requestAutoResend: autoResends.get(row.id) ?? true,
+      pid: run?.pid ?? null,
     });
   }
   tabs.sort((a, b) => inputs.tabIds.indexOf(a.id) - inputs.tabIds.indexOf(b.id));
