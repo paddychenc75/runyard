@@ -10,10 +10,12 @@ import type {
   DesktopError,
   LibraryState,
   PlaygroundRow,
+  StartPhaseMs,
   TabRow,
   TabStatus,
   TemplateRow,
 } from "../shared/library-state.ts";
+import { displayPath } from "./library-root.ts";
 
 // 结束了的状态；其余都算进行中（run-state-machine.md 第 1 节）
 const ENDED_STATES: readonly RunState[] = ["stopped", "finished", "errored", "crashed", "failed"];
@@ -50,6 +52,10 @@ export interface LibraryInputs {
   startErrors?: ReadonlyMap<string, DesktopError>;
   /** 崩溃前截下的预览最后一帧（项目 id → data 地址） */
   lastFrames?: ReadonlyMap<string, string>;
+  /** 主目录，把项目文件夹显示成 ~/…；不给就原样显示 */
+  home?: string;
+  /** 启动清单各步的用时（项目 id → 用时） */
+  phases?: (playgroundId: string) => StartPhaseMs;
 }
 
 /** 每个项目取最近一次运行（startedAt 最大）；它决定列表里显示的状态 */
@@ -145,6 +151,8 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
       failure: failureOf(row, run, inputs.startErrors?.get(row.id)),
       portFallback: portFallbackOf(row.active ? run : undefined),
       lastFrame: run?.state === "crashed" ? (inputs.lastFrames?.get(row.id) ?? null) : null,
+      folder: inputs.home === undefined ? row.path : displayPath(row.path, inputs.home),
+      phaseMs: inputs.phases?.(row.id) ?? { copy: null, install: null, start: null },
     });
   }
   tabs.sort((a, b) => inputs.tabIds.indexOf(a.id) - inputs.tabIds.indexOf(b.id));

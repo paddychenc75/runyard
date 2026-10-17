@@ -1,5 +1,6 @@
 import type { ErrorCode } from "@runyard/protocol";
 import type { TabRow } from "../../shared/library-state.ts";
+import { STARTING_STATES } from "./start-view.ts";
 
 // 预览区在没有页面时显示哪一种画面的纯判断（规格 DESKTOP-WORKSPACE-18 至 22），不碰 DOM、不生成文字。
 
@@ -14,7 +15,9 @@ export type PreviewScreen =
   | "crashed"
   /** 启动超过 30 秒还没就绪（不算失败） */
   | "slow"
-  /** 正在准备或启动 */
+  /** 创建或再次运行后的启动进度：复制、安装、启动、就绪（规格 DESKTOP-CREATE-FLOW-14） */
+  | "starting"
+  /** 在进行但不在启动阶段（停止中、重载中） */
   | "waiting"
   /** 没在运行（手动停止、从没运行过） */
   | "stopped";
@@ -27,7 +30,10 @@ export function previewScreenOf(tab: TabRow): PreviewScreen {
   if (tab.failure !== null) {
     return MISSING_CODES.includes(tab.failure.code) ? "missing" : "start-failed";
   }
-  if (tab.active) return tab.slow ? "slow" : "waiting";
+  if (tab.active) {
+    if (tab.slow) return "slow";
+    return STARTING_STATES.includes(tab.state) ? "starting" : "waiting";
+  }
   return "stopped";
 }
 

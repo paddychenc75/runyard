@@ -55,6 +55,7 @@ function setup(row: TabRow, capture: string | null = "data:image/png;base64,AAAA
       if (method === "preview.visible" && param === false) {
         frameShownWhenHidden.push(document.querySelector("[data-preview-frame]") !== null);
       }
+      if (method === "console.get") return [];
       return method === "preview.capture" ? capture : undefined;
     }),
     on: () => () => {},
@@ -78,10 +79,10 @@ function setup(row: TabRow, capture: string | null = "data:image/png;base64,AAAA
 describe("预览区", () => {
   it("[DESKTOP-WORKSPACE-13] 没就绪时占位区显示说明；就绪后地址栏显示地址，占位区把位置报给主进程", () => {
     const { calls, rerender } = setup(tab(null));
-    expect(screen.getByText("页面还没有就绪，就绪后会显示在这里。")).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "正在启动 react-counter" })).toBeTruthy();
     expect(calls).toContainEqual(["preview.bounds", RECT]);
     rerender(tab("http://127.0.0.1:7101/"));
-    expect(screen.queryByText("页面还没有就绪，就绪后会显示在这里。")).toBeNull();
+    expect(screen.queryByRole("heading", { name: "正在启动 react-counter" })).toBeNull();
     expect(screen.getByText("127.0.0.1:7101/")).toBeTruthy();
     expect(addressLabel("http://127.0.0.1:7101/")).toBe("127.0.0.1:7101/");
   });

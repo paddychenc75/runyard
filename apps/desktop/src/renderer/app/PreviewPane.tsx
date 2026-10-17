@@ -13,6 +13,7 @@ import styles from "./PreviewPane.module.css";
 import { PreviewStopped } from "./PreviewStopped.tsx";
 import { SlowStart } from "./SlowStart.tsx";
 import { StartFailed } from "./StartFailed.tsx";
+import { StartProgress } from "./StartProgress.tsx";
 import { usePreviewSuspension } from "./use-preview-suspension.ts";
 
 export interface PreviewPaneProps {
@@ -30,6 +31,7 @@ export function addressLabel(url: string | null): string {
 // 页面就绪时主进程把原生预览视图摆在占位区上，没就绪时占位区按状态显示说明或失败画面
 // （缺运行环境、依赖安装失败、启动较慢、崩溃，规格 DESKTOP-WORKSPACE-18 至 21）；
 // 端口自动改用的说明在卡片最上面（规格 DESKTOP-WORKSPACE-22）。
+// 启动进度画面没有页面可显示，设计稿 Creating 那里不画地址栏。
 // 地址栏上的刷新、在浏览器中打开、开发者工具不在 #175 范围（见 PR 的“与设计稿的差异”）。
 export function PreviewPane({ bridge, tab, overlays }: PreviewPaneProps) {
   const t = useT();
@@ -43,6 +45,9 @@ export function PreviewPane({ bridge, tab, overlays }: PreviewPaneProps) {
   switch (screen) {
     case "waiting":
       placeholder = t("desktop.preview.waiting.label");
+      break;
+    case "starting":
+      placeholder = <StartProgress bridge={bridge} tab={tab} />;
       break;
     case "stopped":
       placeholder = <PreviewStopped bridge={bridge} tab={tab} />;
@@ -77,9 +82,11 @@ export function PreviewPane({ bridge, tab, overlays }: PreviewPaneProps) {
           <PortChanged fallback={portFallback} onDismiss={() => setDismissed(portKey)} />
         </div>
       )}
-      <div className={styles.address}>
-        <span className={styles.url}>{addressLabel(tab.previewUrl)}</span>
-      </div>
+      {screen === "starting" ? null : (
+        <div className={styles.address}>
+          <span className={styles.url}>{addressLabel(tab.previewUrl)}</span>
+        </div>
+      )}
       <PreviewSlot
         bridge={bridge}
         frame={screen === "crashed" ? tab.lastFrame : suspended}

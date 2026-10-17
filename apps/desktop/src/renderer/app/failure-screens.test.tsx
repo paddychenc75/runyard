@@ -197,9 +197,9 @@ describe("启动较慢", () => {
     expect(within(screenEl).getByRole("button", { name: "查看完整输出" })).toBeTruthy();
   });
 
-  it("[DESKTOP-WORKSPACE-20] 没满 30 秒时是普通的等待说明，状态是“启动中”", () => {
+  it("[DESKTOP-WORKSPACE-20] 没满 30 秒时是普通的启动进度，状态是“启动中”", () => {
     setup(sampleTab({ state: "starting", status: "starting", active: true, slow: false }));
-    expect(screen.getByText("页面还没有就绪，就绪后会显示在这里。")).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "正在启动 react-counter" })).toBeTruthy();
     expect(within(screen.getByRole("group", { name: "运行条" })).getByText("启动中")).toBeTruthy();
   });
 });
@@ -307,7 +307,8 @@ describe("预览区画面的选择", () => {
       }),
     ).toBe("start-failed");
     expect(previewScreenOf({ ...base, active: true, slow: true })).toBe("slow");
-    expect(previewScreenOf({ ...base, active: true })).toBe("waiting");
+    expect(previewScreenOf({ ...base, active: true })).toBe("starting");
+    expect(previewScreenOf({ ...base, active: true, state: "stopping" })).toBe("waiting");
     expect(previewScreenOf({ ...base, active: false, state: "stopped" })).toBe("stopped");
   });
 });
