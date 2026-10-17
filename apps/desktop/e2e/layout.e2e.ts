@@ -4,9 +4,10 @@ import { closePicker, expect, test } from "./support/fixtures.ts";
 test("版面：搜索在页头、侧栏按钮跟着红绿灯、1024 宽时页头收紧", async ({ launch }) => {
   const runyard = await launch();
   const { page, app } = runyard;
+  // 选择器只在应用读到空资源库时弹出：先等它出现并关掉，再让命令行建项目，否则命令行抢先时选择器根本不会出现
+  await closePicker(page);
   await runyard.cli("new", "html", "alpha");
   await runyard.cli("run", "alpha");
-  await closePicker(page);
   const resize = (width: number, height: number) =>
     app.evaluate(
       ({ BrowserWindow }, size) => {
