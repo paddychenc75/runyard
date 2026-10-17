@@ -137,6 +137,25 @@ describe("侧栏的收起与显示范围", () => {
     expect(sidebar()).toBeTruthy();
   });
 
+  it("[DESKTOP-LIBRARY-VIEW-66] 侧栏按钮在侧栏顶部；收起后跟着红绿灯留在顶栏最左边，标签条在它右边；展开后回到侧栏", async () => {
+    const user = userEvent.setup();
+    setup(libraryState());
+    const collapse = await screen.findByRole("button", { name: "收起侧栏" });
+    expect(collapse.closest("[data-glass-material='sidebar']")).toBeTruthy();
+    await user.click(collapse);
+    const expand = screen.getByRole("button", { name: "显示侧栏" });
+    expect(expand.closest("[data-glass-material='sidebar']")).toBeNull();
+    // 顶栏里：侧栏按钮在标签条前面
+    const tabs = screen.getByRole("tablist");
+    expect(expand.compareDocumentPosition(tabs) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(expand.parentElement).toBe(tabs.parentElement?.parentElement);
+    await user.click(expand);
+    expect(screen.queryByRole("button", { name: "显示侧栏" })).toBeNull();
+    expect(
+      screen.getByRole("button", { name: "收起侧栏" }).closest("[data-glass-material='sidebar']"),
+    ).toBeTruthy();
+  });
+
   it("[DESKTOP-LIBRARY-VIEW-61] ⌃⌘S（应用菜单的“切换侧栏”）收起和显示侧栏", async () => {
     const { emit } = setup(libraryState());
     await screen.findByRole("navigation", { name: "资源库导航" });

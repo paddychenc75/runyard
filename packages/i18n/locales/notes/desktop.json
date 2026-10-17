@@ -109,6 +109,10 @@
   "desktop.runbar.missing.label": {
     "tool": "工具标识，如 go、node"
   },
+  "desktop.runbar.note.label": {
+    "template": "模板名（来自模板，已按界面语言选好）",
+    "hint": "持有者说明，如“关闭标签页即停止”"
+  },
   "desktop.runbar.state.label": {
     "state": "运行状态的名字，来自 runState.<状态>",
     "port": "端口号，纯数字字符串（不加千分位）"

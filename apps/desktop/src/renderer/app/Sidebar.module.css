@@ -12,6 +12,12 @@
   overflow: hidden;
 }
 
+/* 收起钮在红绿灯那一行的最右端 */
+.toggle {
+  display: flex;
+  margin-inline-start: auto;
+}
+
 /* 品牌名：设计稿 Main 里是 20 粗体 */
 .brand {
   padding-block: var(--space-6) var(--space-3);

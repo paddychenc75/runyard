@@ -55,5 +55,6 @@
   "workspace.running.title": "运行中",
   "workspace.running.uptime.label": "已运行 {duration}",
   "workspace.tab.close.label": "关闭 {name}",
-  "workspace.tabs.aria": "标签页"
+  "workspace.tabs.aria": "标签页",
+  "workspace.tabs.more.aria": "更多标签页"
 }

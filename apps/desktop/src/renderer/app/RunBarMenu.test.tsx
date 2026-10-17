@@ -68,6 +68,7 @@ describe("工作区的“更多”菜单", () => {
       .getAllByRole("menuitem")
       .map((item) => item.textContent);
     expect(labels).toEqual([
+      "关闭标签页即停止",
       "重命名…",
       "编辑备注…",
       "自动清理…现在：已保留",
@@ -128,7 +129,7 @@ describe("工作区的“更多”菜单", () => {
     ).toBe(false);
   });
 
-  it("[DESKTOP-WORKSPACE-28] 点运行条的“更多”：菜单按设计稿的顺序列出全部项，分成四组，“自动清理…”右侧写“现在：已保留”", async () => {
+  it("[DESKTOP-WORKSPACE-28] 点运行条的“更多”：最上面一行是不可点的说明，其后按设计稿的顺序列出全部项，分成四组，“自动清理…”右侧写“现在：已保留”", async () => {
     const user = userEvent.setup();
     setup();
     await user.click(screen.getByRole("button", { name: "react-counter 的更多操作" }));
@@ -138,6 +139,7 @@ describe("工作区的“更多”菜单", () => {
         .getAllByRole("menuitem")
         .map((item) => item.textContent),
     ).toEqual([
+      "关闭标签页即停止",
       "重命名…",
       "编辑备注…",
       "自动清理…现在：已保留",
@@ -150,7 +152,7 @@ describe("工作区的“更多”菜单", () => {
       "复制链接",
       "移到废纸篓",
     ]);
-    expect(within(menu).getAllByRole("separator")).toHaveLength(3);
+    expect(within(menu).getAllByRole("separator")).toHaveLength(4);
   });
 
   it("[DESKTOP-WORKSPACE-30] 选“移到废纸篓”并确认，向主进程发 playground.trash（停止运行、关标签页由主进程做）", async () => {

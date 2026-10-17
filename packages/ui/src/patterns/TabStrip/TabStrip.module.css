@@ -1,21 +1,51 @@
-/* 胶囊本身的玻璃配方在 styles/materials.css（toolbar）；这里只排标签 */
+/* 标签直接放在窗口背景上，没有外壳（第 2 档材质的规则：不套轮廓）；这里只排标签。
+   根占满顶栏里其余控件之外的宽度，宽度是折叠计算的依据；行本身贴着内容。 */
 .root {
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  min-inline-size: 0;
+  block-size: var(--size-toolbar);
+}
+
+.row {
   position: relative;
   display: flex;
+  flex: 0 1 auto;
   align-items: center;
   gap: var(--space-1);
-  box-sizing: border-box;
+  min-inline-size: 0;
   block-size: var(--size-toolbar);
-  max-inline-size: 100%;
-  padding: var(--space-2);
-  overflow: hidden;
+}
+
+/* 折进“+N”的标签：还在行里量宽度，但看不见、点不到 */
+.tab[data-folded] {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* 右端渐隐：行尾留出一段空位，由窗口底色渐变盖住 */
+.row[data-overflow] {
+  padding-inline-end: var(--space-7);
+}
+
+.row[data-overflow]::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  inline-size: var(--space-7);
+  background: linear-gradient(to right, transparent, var(--color-bg-window));
+  pointer-events: none;
+  z-index: var(--z-slide-content);
 }
 
 .tab {
   position: relative;
   z-index: var(--z-slide-content);
   display: flex;
-  flex: 0 1 auto;
+  flex: none;
   align-items: center;
   min-inline-size: 0;
   block-size: var(--size-tab);
@@ -26,11 +56,10 @@
     color var(--motion-duration-fast) linear;
 }
 
-/* 选中背景是滑动的那一块（SlidingIndicator），格子自己只换字色 */
+/* 选中背景是滑动的那一块（SlidingIndicator），只有一层浅填充：没有阴影、没有圈 */
 .indicator {
   border-radius: var(--radius-capsule);
   background: var(--glass-tab-selected-bg);
-  box-shadow: var(--shadow-tab-selected);
 }
 
 .tab[data-selected] {
@@ -50,7 +79,7 @@
   block-size: 100%;
   margin: 0;
   padding-block: 0;
-  padding-inline: var(--space-7);
+  padding-inline: var(--space-6);
   border: 0;
   border-radius: var(--radius-capsule);
   background: transparent;
@@ -85,15 +114,64 @@
   white-space: nowrap;
 }
 
-.add {
-  position: relative;
-  z-index: var(--z-slide-content);
+/* 缩成图标：方形，名字只留给读屏器和悬停提示 */
+.tab[data-icon-only] {
+  inline-size: var(--size-tab);
+}
+
+.tab[data-icon-only] .trigger {
+  justify-content: center;
+  padding-inline: 0;
+}
+
+.tab[data-icon-only] .label {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.more {
+  display: inline-flex;
   flex: none;
+  align-items: center;
+  gap: var(--space-2);
+  block-size: var(--size-tab);
+  margin: 0 0 0 var(--space-1);
+  padding-block: 0;
+  padding-inline: var(--space-5);
+  border: 0;
+  border-radius: var(--radius-capsule);
+  background: transparent;
+  color: var(--color-text-secondary-strong);
+  font-family: inherit;
+  font-size: var(--text-body-size);
+  cursor: default;
+  outline: none;
+}
+
+.more:hover,
+.more[data-popup-open] {
+  background: var(--color-fill-neutral);
+  color: var(--color-text-primary);
+}
+
+.more:focus-visible {
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.addWrap {
+  display: inline-flex;
+  flex: none;
+}
+
+.add {
   margin-inline: var(--space-1) var(--space-2);
 }
 
 .close {
-  margin-inline: var(--space-1) var(--space-5);
+  margin-inline: var(--space-1) var(--space-3);
 }
 
 .status {

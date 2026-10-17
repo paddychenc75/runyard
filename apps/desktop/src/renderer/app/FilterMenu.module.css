@@ -1,4 +1,4 @@
-/* 设计稿 Main：高 32 的胶囊，1px 细线、浅底，右边一个小箭头 */
+/* 设计稿 Main（方案 A）：高 32 的胶囊，只有控件填充、没有边，右边一个小箭头 */
 .root {
   display: inline-flex;
   flex: none;
@@ -9,9 +9,9 @@
   margin: 0;
   padding-block: 0;
   padding-inline: calc(var(--space-6) + var(--space-1));
-  border: 1px solid var(--color-line-card);
+  border: 0;
   border-radius: var(--radius-capsule);
-  background: var(--color-bg-suggestion);
+  background: var(--color-fill-neutral);
   color: var(--color-text-primary);
   font-family: inherit;
   font-size: var(--text-body-size);

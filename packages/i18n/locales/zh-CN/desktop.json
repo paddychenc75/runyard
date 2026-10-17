@@ -236,6 +236,7 @@
   "desktop.runbar.cliHint.label": "由命令行启动，关闭标签页不会停止",
   "desktop.runbar.closeHint.label": "关闭标签页即停止",
   "desktop.runbar.missing.label": "缺少 {tool}",
+  "desktop.runbar.note.label": "{template} · {hint}",
   "desktop.runbar.state.label": "{state} :{port}",
   "desktop.runbar.tooOld.label": "{tool} 版本过低",
   "desktop.saveTemplate.cancel.action": "取消",

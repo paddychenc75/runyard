@@ -33,6 +33,10 @@ if (typeof Element !== "undefined") {
   proto.getAnimations ??= () => [];
 }
 
+// jsdom 的窗口默认 1024 宽：顶栏会按“窄窗口”收紧。多数用例要的是平常的宽度（1440），
+// 要测窄窗口的用例自己把 window.innerWidth 改成 1024。
+if (typeof window !== "undefined") window.innerWidth = 1440;
+
 // 每个界面测试文件在自己的用例开始前，先把外壳整个画一遍、做一次角色查询。
 //
 // 为什么：一个文件里第一次画外壳、第一次角色查询要付一次冷启动的代价（加载、即时编译、

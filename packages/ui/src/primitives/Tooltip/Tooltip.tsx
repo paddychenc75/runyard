@@ -6,7 +6,7 @@ import styles from "./Tooltip.module.css";
 
 export interface TooltipProps {
   /** 提示的文字；只补充按钮的名字，不放按钮里没有的信息（键盘用户看不到悬停） */
-  content: Localized;
+  content: Localized | ReactElement;
   /** 触发它的元素，必须是单个能接收引用的元素（如 <IconButton>） */
   children: ReactElement;
   side?: "top" | "bottom";

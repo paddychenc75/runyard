@@ -20,10 +20,14 @@ describe("tokens.css", () => {
   });
 
   it("阴影是整段值，light-dark() 装不下，改用主题选择器：浅色在根上，深色在两处", () => {
-    expect(out.css).toMatch(/:root \{[^}]*--shadow-floating:\s+0 0 0 0\.5px/);
-    expect(out.css).toMatch(/:root\[data-theme="dark"\] \{[^}]*--shadow-floating:\s+0 10px 28px/);
     expect(out.css).toMatch(
-      /@media \(prefers-color-scheme: dark\) \{\s*:root:not\(\[data-theme="light"\]\) \{[^}]*--shadow-floating:\s+0 10px 28px/,
+      /:root \{[^}]*--shadow-floating:\s+0 1px 2px rgba\(15, 23, 42, 0\.05\)/,
+    );
+    expect(out.css).toMatch(
+      /:root\[data-theme="dark"\] \{[^}]*--shadow-floating:\s+0 1px 2px rgba\(0, 0, 0, 0\.3\)/,
+    );
+    expect(out.css).toMatch(
+      /@media \(prefers-color-scheme: dark\) \{\s*:root:not\(\[data-theme="light"\]\) \{[^}]*--shadow-floating:\s+0 1px 2px rgba\(0, 0, 0, 0\.3\)/,
     );
   });
 

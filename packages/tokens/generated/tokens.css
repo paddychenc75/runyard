@@ -54,14 +54,14 @@
   --color-fill-neutral: light-dark(rgba(118, 118, 128, 0.14), rgba(118, 118, 128, 0.24));
   --color-scrim: light-dark(rgba(20, 22, 30, 0.22), rgba(0, 0, 0, 0.45));
   --glass-toolbar-bg: light-dark(rgba(255, 255, 255, 0.66), rgba(72, 72, 78, 0.55));
-  --glass-sidebar-bg: light-dark(rgba(242, 243, 247, 0.78), rgba(58, 58, 62, 0.55));
+  --glass-sidebar-bg: light-dark(rgba(240, 241, 245, 0.92), rgba(44, 44, 48, 0.92));
   --glass-filetree-bg: light-dark(rgba(255, 255, 255, 0.62), rgba(58, 58, 62, 0.55));
   --glass-dialog-bg: light-dark(rgba(250, 250, 252, 0.82), rgba(44, 44, 48, 0.78));
   --glass-control-bg: light-dark(rgba(255, 255, 255, 0.66), rgba(72, 72, 78, 0.55));
   --glass-control-bg-hover: light-dark(rgba(255, 255, 255, 0.78), rgba(72, 72, 78, 0.68));
   --glass-control-bg-pressed: light-dark(rgba(255, 255, 255, 0.9), rgba(72, 72, 78, 0.8));
   --glass-border-color: light-dark(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.14));
-  --glass-tab-selected-bg: light-dark(var(--white), rgba(255, 255, 255, 0.16));
+  --glass-tab-selected-bg: light-dark(rgba(0, 0, 0, 0.065), rgba(255, 255, 255, 0.1));
   --color-text-primary: light-dark(var(--ink-900), var(--gray-50));
   --color-text-secondary-strong: light-dark(var(--gray-800), var(--gray-300));
   --color-text-secondary: light-dark(var(--gray-600), var(--gray-400));
@@ -129,9 +129,7 @@
   --color-tree-selected-icon: light-dark(var(--white), var(--white));
   --shadow-flat: none;
   --shadow-card: none;
-  --shadow-floating:
-    0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(15, 23, 42, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --shadow-floating: 0 1px 2px rgba(15, 23, 42, 0.05), 0 8px 24px rgba(15, 23, 42, 0.09);
   --shadow-dialog:
     0 0 0 0.5px rgba(0, 0, 0, 0.14), 0 40px 90px rgba(15, 23, 42, 0.32),
     inset 0 1px 0 rgba(255, 255, 255, 1);
@@ -143,7 +141,6 @@
   --shadow-field-focus: 0 0 0 3px rgba(0, 113, 227, 0.18);
   --shadow-segment-selected: 0 1px 3px rgba(0, 0, 0, 0.14), 0 0 0 0.5px rgba(0, 0, 0, 0.05);
   --shadow-thumb: 0 1px 3px rgba(0, 0, 0, 0.25);
-  --shadow-tab-selected: 0 1px 3px rgba(0, 0, 0, 0.12);
   --shadow-tile: inset 0 1px 0 rgba(255, 255, 255, 0.7);
   --glass-border-width: 1px;
   --glass-blur-toolbar: blur(28px) saturate(180%);
@@ -177,6 +174,8 @@
   --size-window-inset: 8px;
   --size-nav-item: 36px;
   --size-tab: 36px;
+  --size-search-wide: 240px;
+  --size-search-short: 180px;
   --size-window-controls: 72px;
   --size-card-gap: 8px;
   --size-dialog-width: 580px;
@@ -282,7 +281,7 @@
   color-scheme: dark;
   --shadow-flat: none;
   --shadow-card: none;
-  --shadow-floating: 0 10px 28px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  --shadow-floating: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 28px rgba(0, 0, 0, 0.42);
   --shadow-dialog:
     0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 40px 90px rgba(0, 0, 0, 0.6),
     inset 0 1px 0 rgba(255, 255, 255, 0.14);
@@ -294,7 +293,6 @@
   --shadow-field-focus: 0 0 0 3px rgba(10, 132, 255, 0.2);
   --shadow-segment-selected: none;
   --shadow-thumb: 0 1px 3px rgba(0, 0, 0, 0.25);
-  --shadow-tab-selected: inset 0 1px 0 rgba(255, 255, 255, 0.18);
   --shadow-tile: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
@@ -302,7 +300,7 @@
   :root:not([data-theme="light"]) {
     --shadow-flat: none;
     --shadow-card: none;
-    --shadow-floating: 0 10px 28px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    --shadow-floating: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 28px rgba(0, 0, 0, 0.42);
     --shadow-dialog:
       0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 40px 90px rgba(0, 0, 0, 0.6),
       inset 0 1px 0 rgba(255, 255, 255, 0.14);
@@ -314,7 +312,6 @@
     --shadow-field-focus: 0 0 0 3px rgba(10, 132, 255, 0.2);
     --shadow-segment-selected: none;
     --shadow-thumb: 0 1px 3px rgba(0, 0, 0, 0.25);
-    --shadow-tab-selected: inset 0 1px 0 rgba(255, 255, 255, 0.18);
     --shadow-tile: inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 }

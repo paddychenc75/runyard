@@ -358,6 +358,7 @@
 | desktop.runbar.cliHint.label | 由命令行启动，关闭标签页不会停止 | Started from the CLI; closing the tab will not stop it | — |
 | desktop.runbar.closeHint.label | 关闭标签页即停止 | Stops when the tab closes | — |
 | desktop.runbar.missing.label | 缺少 {tool} | {tool} is missing | tool：工具标识，如 go、node |
+| desktop.runbar.note.label | {template} · {hint} | {template} · {hint} | template：模板名（来自模板，已按界面语言选好）；hint：持有者说明，如“关闭标签页即停止” |
 | desktop.runbar.state.label | {state} :{port} | {state} :{port} | state：运行状态的名字，来自 runState.<状态>；port：端口号，纯数字字符串（不加千分位） |
 | desktop.runbar.tooOld.label | {tool} 版本过低 | {tool} is too old | tool：工具标识，如 go、node |
 | desktop.saveTemplate.cancel.action | 取消 | Cancel | — |
@@ -643,6 +644,7 @@
 | library.filter.agent.label | 智能体创建 | Created by agents | — |
 | library.filter.all.label | 全部 | All | — |
 | library.filter.autoClean.label | 自动清理 | Auto-clean | — |
+| library.filter.combined.label | 筛选 | Filter | — |
 | library.filter.kept.label | 已保留 | Kept | — |
 | library.filter.sort.label | 排序：{value} | Sort: {value} | value：当前选中的排序名 |
 | library.filter.status.label | 状态：{value} | Status: {value} | value：当前选中的状态名 |
@@ -700,9 +702,11 @@
 | library.row.stop.action | 停止运行 | Stop | — |
 | library.row.trash.action | 移到{term_trash} | Move to {term_trash} | — |
 | library.search.clear.aria | 清除搜索 | Clear search | — |
+| library.search.expand.aria | 展开搜索 | Expand search | — |
 | library.search.key.label | {term_searchShortcut} | {term_searchShortcut} | — |
 | library.search.label | 搜索项目 | Search playgrounds | — |
 | library.search.placeholder | 搜索名称、备注、模板 | Search name, note, template | — |
+| library.search.short.placeholder | 搜索 | Search | — |
 | library.sidebar.collapse.label | 收起侧栏 | Hide sidebar | — |
 | library.sidebar.expand.label | 显示侧栏 | Show sidebar | — |
 | library.sidebar.footer.label | {count, plural, other {# 个项目}} | {count, plural, one {# playground} other {# playgrounds}} | count：资源库里项目的总数 |
@@ -937,3 +941,4 @@
 | workspace.running.uptime.label | 已运行 {duration} | Up {duration} | duration：已运行的时长，由格式化函数生成，如“47 分钟”“2 小时 14 分钟” |
 | workspace.tab.close.label | 关闭 {name} | Close {name} | name：项目名，用户自己起的，不翻译 |
 | workspace.tabs.aria | 标签页 | Tabs | — |
+| workspace.tabs.more.aria | 更多标签页 | More tabs | — |

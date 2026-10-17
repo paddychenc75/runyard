@@ -46,7 +46,7 @@
 
 ## 外壳组件的约定（#168）
 
-- `TabStrip`：没有 `closeLabel` 的标签不能关闭（没有关闭按钮，⌘W 和 Delete 不起作用），资源库标签就这样用；键盘是手动激活的 Tabs（方向键只移动焦点）。关闭快捷键监听整个文档，按键盘上的 `modKey` 区分 ⌘ 和 Ctrl，主进程菜单接管应用级快捷键之前靠它。
+- `TabStrip`：没有 `closeLabel` 的标签不能关闭（没有关闭按钮，⌘W 和 Delete 不起作用），资源库标签就这样用；键盘是手动激活的 Tabs（方向键只移动焦点）。方案 A（2026-10-18）：没有外壳，标签直接在窗口底色上，选中只有一块浅填充（`--glass-tab-selected-bg`，没有阴影和圈）；传 `overflowLabel` 就启用折叠（`fit-tabs.ts`）：放不下先把 `shrinkToIcon` 的标签缩成图标，再把后面的折进“+N”菜单，选中的始终留在条上；折掉的标签仍在 DOM 里（`inert`、不可见）用来量宽度。`add` 是标签条末尾的“＋”。第 2 档材质（toolbar、sidebar、filetree）只有填充和一层柔和阴影，没有描边（`materials.css`）。关闭快捷键监听整个文档，按键盘上的 `modKey` 区分 ⌘ 和 Ctrl，主进程菜单接管应用级快捷键之前靠它。
 - `TitleBar`：`controls` 说明窗口按钮在哪一侧，那一头按设计变量 `size-window-controls` 留空；组件自己不判断系统。
 - 样例数据 `SampleData` 的 `label`、`items` 等是 `Localized`（工作台里标记），用户内容用 `userText` 加 `<UserText>`。
 

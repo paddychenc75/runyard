@@ -82,14 +82,12 @@
   --button-weight: var(--text-item-weight);
 }
 
-/* 玻璃按钮：玻璃只用于浮层，所以只有填充、描边和投影，没有模糊（模糊在 materials.css） */
+/* 玻璃按钮：只有填充，没有描边和投影（第 2 档材质的规则），没有模糊（模糊在 materials.css） */
 .root[data-variant="glass"] {
   --button-bg: var(--glass-control-bg);
   --button-bg-hover: var(--glass-control-bg-hover);
   --button-bg-pressed: var(--glass-control-bg-pressed);
   --button-weight: var(--text-control-weight);
-  --button-edge: var(--glass-border-width) solid var(--glass-border-color);
-  --button-shadow: var(--shadow-floating);
 }
 
 .root:hover:not([data-force-state]),

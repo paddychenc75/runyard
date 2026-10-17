@@ -55,22 +55,26 @@ const script = (extra: Partial<TabRow>) =>
   sampleTab({ kind: "oneshot", port: null, templateName: null, ...extra });
 
 describe("运行条", () => {
-  it("服务运行中：项目名、模板、状态加端口、关闭即停止的提示和“停止”", async () => {
+  it("[DESKTOP-WORKSPACE-25] 服务运行中：不写项目名；状态加端口，悬停提示是模板和“关闭标签页即停止”，有“停止”", async () => {
     const { bridge, call } = fakeBridge();
     const tab = sampleTab({ templateName: { en: "Hono", "zh-CN": "Hono" }, port: 7102 });
     render(view(<RunBar bridge={bridge} tab={tab} />));
     const bar = screen.getByRole("group", { name: "运行条" });
-    expect(within(bar).getByText("react-counter")).toBeTruthy();
-    expect(within(bar).getByText("Hono")).toBeTruthy();
-    expect(within(bar).getByText("运行中 :7102")).toBeTruthy();
-    expect(within(bar).getByText("关闭标签页即停止")).toBeTruthy();
-    await userEvent.setup().click(within(bar).getByRole("button", { name: "停止" }));
+    expect(within(bar).queryByText("react-counter")).toBeNull();
+    expect(within(bar).queryByText("Hono")).toBeNull();
+    expect(within(bar).queryByText("关闭标签页即停止")).toBeNull();
+    const user = userEvent.setup();
+    await user.hover(within(bar).getByText("运行中 :7102"));
+    expect(await screen.findByText("Hono")).toBeTruthy();
+    expect(screen.getByText("关闭标签页即停止")).toBeTruthy();
+    await user.click(within(bar).getByRole("button", { name: "停止" }));
     expect(call).toHaveBeenCalledWith("run.stop", "a");
   });
 
-  it("命令行持有的运行只是被查看：不写“关闭标签页即停止”", () => {
+  it("命令行持有的运行只是被查看：没有“关闭标签页即停止”的说明，也没有悬停提示", async () => {
     const { bridge } = fakeBridge();
     render(view(<RunBar bridge={bridge} tab={sampleTab({ ownedByTab: false })} />));
+    await userEvent.setup().hover(screen.getByText("运行中 :7101"));
     expect(screen.queryByText("关闭标签页即停止")).toBeNull();
   });
 

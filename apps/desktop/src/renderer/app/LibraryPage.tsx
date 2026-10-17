@@ -1,5 +1,6 @@
 import { useT } from "@runyard/i18n/react";
 import { Button, EmptyState, MonogramTile, UserText } from "@runyard/ui";
+import type { RefObject } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { LibraryState } from "../../shared/library-state.ts";
 import {
@@ -12,12 +13,15 @@ import {
   typeFilters,
 } from "../library-query.ts";
 import { brandOf, logoOf, monogramOf, pickLocalizedText, runningCount } from "../library-view.ts";
+import { useElementWidth } from "../shared/viewport.ts";
 import { CleanBanner } from "./CleanBanner.tsx";
+import { CombinedFilterMenu } from "./CombinedFilterMenu.tsx";
 import { FilterMenu } from "./FilterMenu.tsx";
 import styles from "./LibraryPage.module.css";
 import { LibraryTable } from "./LibraryTable.tsx";
 import { navLabel, sortLabel, statusLabel, typeLabel } from "./library-labels.ts";
 import { NoResults } from "./NoResults.tsx";
+import { SearchBox, type SearchSize } from "./SearchBox.tsx";
 import { useNow } from "./use-now.ts";
 
 export interface LibraryPageProps {
@@ -26,6 +30,8 @@ export interface LibraryPageProps {
   /** 搜索、侧栏筛选、三个下拉的当前值（外壳持有：顶栏的搜索框和侧栏也要用） */
   query: LibraryQuery;
   onQueryChange: (patch: Partial<LibraryQuery>) => void;
+  /** 页头搜索框的输入元素：⌘F 由外壳把焦点放进去（规格 DESKTOP-LIBRARY-VIEW-14） */
+  searchRef: RefObject<HTMLInputElement | null>;
   /** 空状态的“新建项目”：打开模板选择器 */
   onNew: () => void;
   /** 空状态里的常用模板胶囊：直接进入新建弹窗 */
@@ -36,6 +42,16 @@ export interface LibraryPageProps {
 
 // 相对时间和“剩 N 天”不靠事件，半分钟走一次字
 const CLOCK_INTERVAL_MS = 30_000;
+
+/** 页头比它窄就收紧：搜索框 240 缩到 180、类型和状态合成“筛选”；比 COMPACT 还窄，搜索框缩成放大镜（规格 DESKTOP-LIBRARY-VIEW-67、68） */
+export const HEADER_WIDE_PX = 900;
+export const HEADER_COMPACT_PX = 560;
+
+/** 页头宽度（0 是还没量到，当作宽）对应的收紧档 */
+export function headerMode(width: number): "wide" | "compact" | "icon" {
+  if (width === 0 || width >= HEADER_WIDE_PX) return "wide";
+  return width >= HEADER_COMPACT_PX ? "compact" : "icon";
+}
 
 /** 空状态里列出的常用模板（设计稿 Empty：静态页面、React 19、Python），库里没有的就不画 */
 const COMMON_TEMPLATES = ["html", "react19", "python"] as const;
@@ -50,12 +66,15 @@ export function LibraryPage({
   library,
   query,
   onQueryChange,
+  searchRef,
   onNew,
   onCreateFrom,
   onNewNamed,
 }: LibraryPageProps) {
   const t = useT();
   const now = useNow(CLOCK_INTERVAL_MS);
+  const [headerRef, headerWidth] = useElementWidth<HTMLElement>();
+  const mode = headerMode(headerWidth);
   if (library === null) return null;
   const { playgrounds, templates, locale } = library;
   const visible = filterRows(playgrounds, templates, locale, query);
@@ -66,7 +85,7 @@ export function LibraryPage({
   });
   return (
     <section className={styles.root}>
-      <header className={styles.header}>
+      <header ref={headerRef} className={styles.header}>
         <div className={styles.heading}>
           <h1 className={styles.title}>{navLabel(query.nav, t)}</h1>
           <p className={styles.summary}>
@@ -85,26 +104,66 @@ export function LibraryPage({
         </div>
         {playgrounds.length === 0 ? null : (
           <div className={styles.filters}>
-            <FilterMenu
-              buttonLabel={t("library.filter.type.label", { value: typeLabel(query.type, t) })}
-              menuLabel={t("library.menu.type.aria")}
-              options={typeFilters.map((id) => ({ id, label: typeLabel(id, t) }))}
-              value={query.type}
-              onValueChange={(type) => onQueryChange({ type: type as LibraryQuery["type"] })}
+            <SearchBox
+              value={query.search}
+              onValueChange={(search) => onQueryChange({ search })}
+              inputRef={searchRef}
+              size={mode === "wide" ? "wide" : mode === "compact" ? "short" : "icon"}
             />
+            {mode === "wide" ? (
+              <>
+                <FilterMenu
+                  buttonLabel={t("library.filter.type.label", { value: typeLabel(query.type, t) })}
+                  menuLabel={t("library.menu.type.aria")}
+                  options={typeFilters.map((id) => ({ id, label: typeLabel(id, t) }))}
+                  value={query.type}
+                  onValueChange={(type) => onQueryChange({ type: type as LibraryQuery["type"] })}
+                />
+                <FilterMenu
+                  buttonLabel={t("library.filter.status.label", {
+                    value: statusLabel(query.status, t),
+                  })}
+                  menuLabel={t("library.menu.status.aria")}
+                  options={statusFilters.map((id) => ({ id, label: statusLabel(id, t) }))}
+                  value={query.status}
+                  onValueChange={(status) =>
+                    onQueryChange({ status: status as LibraryQuery["status"] })
+                  }
+                />
+              </>
+            ) : (
+              <CombinedFilterMenu
+                buttonLabel={t("library.filter.combined.label")}
+                menuLabel={t("library.filter.combined.label")}
+                groups={[
+                  {
+                    id: "type",
+                    title: t("library.menu.type.aria"),
+                    options: typeFilters.map((id) => ({ id, label: typeLabel(id, t) })),
+                    value: query.type,
+                  },
+                  {
+                    id: "status",
+                    title: t("library.menu.status.aria"),
+                    options: statusFilters.map((id) => ({ id, label: statusLabel(id, t) })),
+                    value: query.status,
+                  },
+                ]}
+                onValueChange={(group, id) =>
+                  onQueryChange(
+                    group === "type"
+                      ? { type: id as LibraryQuery["type"] }
+                      : { status: id as LibraryQuery["status"] },
+                  )
+                }
+              />
+            )}
             <FilterMenu
-              buttonLabel={t("library.filter.status.label", {
-                value: statusLabel(query.status, t),
-              })}
-              menuLabel={t("library.menu.status.aria")}
-              options={statusFilters.map((id) => ({ id, label: statusLabel(id, t) }))}
-              value={query.status}
-              onValueChange={(status) =>
-                onQueryChange({ status: status as LibraryQuery["status"] })
+              buttonLabel={
+                mode === "wide"
+                  ? t("library.filter.sort.label", { value: sortLabel(query.sort, t) })
+                  : sortLabel(query.sort, t)
               }
-            />
-            <FilterMenu
-              buttonLabel={t("library.filter.sort.label", { value: sortLabel(query.sort, t) })}
               menuLabel={t("library.menu.sort.aria")}
               options={sortKeys.map((id) => ({ id, label: sortLabel(id, t) }))}
               value={query.sort}
