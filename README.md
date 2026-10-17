@@ -26,6 +26,11 @@ The macOS build is neither signed nor notarized, so macOS blocks the first launc
 | `docs/design/` | UI design sources, design tokens, and the app icon |
 | `tooling/` | Repository tooling |
 
+<!-- sec: network -->
+## Network use
+
+The only time the desktop app reaches out on its own is a once-a-day check of the public GitHub Releases API for a newer version (Settings: "Check for updates automatically", on by default). The request carries no cookies, tokens or device or user identifiers; if it fails nothing is shown; the app never downloads or installs anything itself (the "Download" button opens the release page in your browser). The command line never checks.
+
 <!-- sec: language -->
 ## Language
 

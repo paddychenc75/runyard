@@ -15,6 +15,7 @@ import { isAppUrl } from "./app-protocol.ts";
 import { editorFileMethods, type FileOpeners } from "./editor-files/editor-ipc.ts";
 import type { EditorFileService } from "./editor-files/file-service.ts";
 import type { LibraryController } from "./library-controller.ts";
+import type { LinkHandler } from "./links/link-handler.ts";
 import type { QuitFlushGate } from "./quit-flush-gate.ts";
 import { requestMethods } from "./request-ipc.ts";
 import type { SettingsController } from "./settings-controller.ts";
@@ -22,6 +23,7 @@ import { templateMethods } from "./template-ipc.ts";
 import type { TemplatesView } from "./templates-view.ts";
 import { terminalMethods } from "./terminal/terminal-ipc.ts";
 import type { TerminalService } from "./terminal/terminal-service.ts";
+import type { UpdateChecker } from "./updates/update-checker.ts";
 
 // 把界面发来的消息接到控制器上。Electron 的 ipcMain 通过 IpcHost 这个接口传进来，测试里换成假的。
 
@@ -104,6 +106,12 @@ function parseBounds(value: unknown): Bounds | null {
   return { x: x as number, y: y as number, width: width as number, height: height as number };
 }
 
+/** 链接和更新检查（它们的状态经控制器的 chrome 推给界面，界面只发这几个操作） */
+export interface AppLinks {
+  links: Pick<LinkHandler, "confirm" | "cancel">;
+  updates: Pick<UpdateChecker, "download" | "later">;
+}
+
 /** 注册全部通道，并把状态变化推给界面；返回停止推送的函数 */
 export function registerBridgeHandlers(
   host: IpcHost,
@@ -115,6 +123,7 @@ export function registerBridgeHandlers(
   settings?: SettingsController,
   terminals?: TerminalService,
   templates?: TemplatesView,
+  appLinks?: AppLinks,
 ): () => void {
   // 方法名到控制器的映射；参数不是预期类型时不调用控制器
   const methods: Record<DesktopMethod, (param: unknown) => unknown> = {
@@ -316,6 +325,10 @@ export function registerBridgeHandlers(
     "clean.keep": (ids) => controller.chrome.clean.keep(textList(ids)),
     "clean.later": (ids) => controller.chrome.clean.later(textList(ids)),
     "clean.shown": (ids) => controller.chrome.clean.shown(textList(ids)),
+    "link.confirm": () => appLinks?.links.confirm(),
+    "link.cancel": () => appLinks?.links.cancel(),
+    "update.download": () => appLinks?.updates.download(),
+    "update.later": () => appLinks?.updates.later(),
     "notice.dismiss": (id) => {
       const notice = text(id);
       if (notice !== null) controller.chrome.dismissNotice(notice);

@@ -40,6 +40,9 @@ export function builderConfig(inputs: BuilderInputs): Configuration {
       { from: join(inputs.runtimeDir, "bin"), to: "bin" },
     ],
     npmRebuild: false,
+    // runyard:// 链接：写进 Info.plist，系统在安装后的应用上登记它（规格 DESKTOP-LINKS-05）；
+    // 应用自己不在运行时向系统登记
+    protocols: [{ name: "Runyard link", schemes: ["runyard"] }],
     mac: {
       category: "public.app-category.developer-tools",
       icon: "icon.png",

@@ -35,16 +35,32 @@ export function decideNavigation(address: string): NavigationDecision {
   return "block";
 }
 
+function isAppLink(address: string): boolean {
+  try {
+    return new URL(address).protocol === "runyard:";
+  } catch {
+    return false;
+  }
+}
+
 /**
  * 把判断接到 Electron 的两个钩子上；openExternal 由调用方传入（真实的是 shell.openExternal，测试里是假的）。
  * 重定向（will-redirect）不交给系统浏览器：服务端的跳转不是用户点的链接，只拦下。
  */
-export function createNavigationGuards(openExternal: (address: string) => void) {
+export function createNavigationGuards(
+  openExternal: (address: string) => void,
+  /** 预览页里点的 runyard:// 链接交给应用自己的链接处理（规格 DESKTOP-LINKS-13）；不给就只拦下 */
+  openAppLink?: (address: string) => void,
+) {
+  const appLink = (address: string): void => {
+    if (isAppLink(address)) openAppLink?.(address);
+  };
   return {
     /** will-navigate：返回 true 表示放行 */
     onWillNavigate(address: string): boolean {
       const decision = decideNavigation(address);
       if (decision === "open-external") openExternal(address);
+      else appLink(address);
       return decision === "allow";
     },
     /** will-redirect：只放行本机地址 */
@@ -54,6 +70,7 @@ export function createNavigationGuards(openExternal: (address: string) => void) 
     /** window.open / target=_blank：预览里永远不开新窗口 */
     onWindowOpen(address: string): { action: "deny" } {
       if (decideNavigation(address) === "open-external") openExternal(address);
+      else appLink(address);
       return { action: "deny" };
     },
   };

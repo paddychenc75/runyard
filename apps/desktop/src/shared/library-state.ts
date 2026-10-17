@@ -184,7 +184,45 @@ export interface PathNearLimitNotice {
   limit: number;
 }
 
-export type AppNotice = AgentRunNotice | PathNearLimitNotice;
+/** 链接没能照做时给的一句提示（规格 DESKTOP-LINKS-03、04、10、11、14、16）：代码加一个值，句子由界面生成 */
+export type LinkNoticeCode =
+  | "open-missing"
+  | "open-invalid"
+  | "new-no-template"
+  | "new-name-invalid"
+  | "new-name-taken"
+  | "new-busy"
+  | "new-throttled"
+  | "new-failed"
+  | "link-invalid";
+
+export interface LinkNotice {
+  kind: "link";
+  id: string;
+  code: LinkNoticeCode;
+  /** 提示里要写的名称或模板；没有是 null */
+  value: string | null;
+}
+
+export type AppNotice = AgentRunNotice | PathNearLimitNotice | LinkNotice;
+
+/** runyard://new 的确认框内容（设计稿 UrlConfirm，规格 DESKTOP-LINKS-06、07、13） */
+export interface LinkConfirmView {
+  /** 链接自称的来源；没带是 null（写“未知来源”） */
+  source: string | null;
+  /** 链接是从这个项目的预览页里发出的；不是是 null */
+  fromProject: string | null;
+  template: { id: string; name: LocalizedText };
+  name: string;
+  /** 新项目的文件夹，写成 ~/… 的样子 */
+  folder: string;
+}
+
+/** “有新版本”提示条（设计稿 UpdateBanner，规格 DESKTOP-SETTINGS-26） */
+export interface UpdateBannerView {
+  latest: string;
+  current: string;
+}
 
 export interface LibraryState {
   locale: Locale;
@@ -222,4 +260,8 @@ export interface LibraryState {
   cleanDueCount?: number;
   /** 右下角的提示，先来的在前；点关闭或按钮后消失 */
   notices?: AppNotice[];
+  /** 待确认的 runyard://new 请求；没有是 null / 不写 */
+  linkConfirm?: LinkConfirmView | null;
+  /** 资源库页顶部的“有新版本”；没有是 null / 不写 */
+  update?: UpdateBannerView | null;
 }

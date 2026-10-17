@@ -1,5 +1,5 @@
 import type { Playground, RunSnapshot } from "@runyard/protocol";
-import type { AppNotice } from "../shared/library-state.ts";
+import type { AppNotice, LinkNoticeCode } from "../shared/library-state.ts";
 import { isActiveRun } from "./build-library-state.ts";
 
 // 右下角的提示（规格 DESKTOP-LIBRARY-VIEW-54 至 56）：智能体经命令行创建并运行了项目时给一条。
@@ -57,6 +57,13 @@ export class AgentNotices {
   addPathNearLimit(name: string, length: number, limit: number): void {
     this.#counter += 1;
     this.#list.push({ kind: "path-near-limit", id: `path-${this.#counter}`, name, length, limit });
+  }
+
+  /** 链接没能照做的提示（规格 DESKTOP-LINKS-03、04、10、11、14、16）；同一类同一个值的提示不叠加 */
+  addLink(code: LinkNoticeCode, value: string | null): void {
+    if (this.#list.some((n) => n.kind === "link" && n.code === code && n.value === value)) return;
+    this.#counter += 1;
+    this.#list.push({ kind: "link", id: `link-${this.#counter}`, code, value });
   }
 
   dismiss(id: string): void {

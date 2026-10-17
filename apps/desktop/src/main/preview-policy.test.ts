@@ -64,4 +64,19 @@ describe("预览里的导航", () => {
     expect(guards.onWillRedirect("http://127.0.0.1:7101/next")).toBe(true);
     expect(opened).toEqual([]);
   });
+
+  it("[DESKTOP-LINKS-13] 预览页里点的 runyard:// 链接交给应用的链接处理，页面本身不跳转；别的协议不会走这条路", () => {
+    const links: string[] = [];
+    const guards = createNavigationGuards(
+      () => {},
+      (address) => links.push(address),
+    );
+    expect(guards.onWillNavigate("runyard://new/html")).toBe(false);
+    expect(guards.onWindowOpen("runyard://open/demo")).toEqual({ action: "deny" });
+    expect(guards.onWillNavigate("mailto:a@b.c")).toBe(false);
+    expect(guards.onWillNavigate("file:///etc/passwd")).toBe(false);
+    // 服务端重定向不是用户点的链接，不当作链接请求
+    expect(guards.onWillRedirect("runyard://new/html")).toBe(false);
+    expect(links).toEqual(["runyard://new/html", "runyard://open/demo"]);
+  });
 });
