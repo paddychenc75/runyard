@@ -29,6 +29,7 @@ const base: LibraryState = {
   error: null,
   closeRequest: null,
   templates: [],
+  recentTemplates: [],
   tabs: [tab],
   activeTab: "a",
   playgrounds: [],

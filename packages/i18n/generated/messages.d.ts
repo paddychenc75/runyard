@@ -235,6 +235,12 @@ export type CatalogMessages = {
   "cli.usage.unknownSetting.body": {
     name: string | number;
   };
+  "desktop.category.frontend.label": Record<never, never>;
+  "desktop.category.fullstack.label": Record<never, never>;
+  "desktop.category.mine.label": Record<never, never>;
+  "desktop.category.page.label": Record<never, never>;
+  "desktop.category.script.label": Record<never, never>;
+  "desktop.category.service.label": Record<never, never>;
   "desktop.console.tab.label": Record<never, never>;
   "desktop.crashed.log.label": Record<never, never>;
   "desktop.crashed.overlay.aria": Record<never, never>;
@@ -255,6 +261,7 @@ export type CatalogMessages = {
   "desktop.failure.stepReady.label": Record<never, never>;
   "desktop.failure.stepStart.label": Record<never, never>;
   "desktop.failure.steps.aria": Record<never, never>;
+  "desktop.menu.new.label": Record<never, never>;
   "desktop.missing.command.label": Record<never, never>;
   "desktop.missing.copied.label": Record<never, never>;
   "desktop.missing.copy.action": Record<never, never>;
@@ -271,6 +278,18 @@ export type CatalogMessages = {
   "desktop.output.aria": Record<never, never>;
   "desktop.output.empty.label": Record<never, never>;
   "desktop.output.view.action": Record<never, never>;
+  "desktop.picker.arrowsKey.label": Record<never, never>;
+  "desktop.picker.choose.action": Record<never, never>;
+  "desktop.picker.dialog.aria": Record<never, never>;
+  "desktop.picker.empty.hint": Record<never, never>;
+  "desktop.picker.enterKey.label": Record<never, never>;
+  "desktop.picker.escKey.label": Record<never, never>;
+  "desktop.picker.list.aria": Record<never, never>;
+  "desktop.picker.move.hint": Record<never, never>;
+  "desktop.picker.next.hint": Record<never, never>;
+  "desktop.picker.recent.label": Record<never, never>;
+  "desktop.picker.search.label": Record<never, never>;
+  "desktop.picker.search.placeholder": Record<never, never>;
   "desktop.port.body.label": {
     actual: string | number;
   };

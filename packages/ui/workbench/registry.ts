@@ -1,6 +1,7 @@
 import type { FixtureModule } from "../src/index.ts";
 import * as confirmDialog from "../src/patterns/ConfirmDialog/ConfirmDialog.fixture.tsx";
 import * as dataTable from "../src/patterns/DataTable/DataTable.fixture.tsx";
+import * as listPicker from "../src/patterns/ListPicker/ListPicker.fixture.tsx";
 import * as logView from "../src/patterns/LogView/LogView.fixture.tsx";
 import * as navList from "../src/patterns/NavList/NavList.fixture.tsx";
 import * as tabStrip from "../src/patterns/TabStrip/TabStrip.fixture.tsx";
@@ -15,9 +16,11 @@ import * as emptyState from "../src/primitives/EmptyState/EmptyState.fixture.tsx
 import * as glassSurface from "../src/primitives/GlassSurface/GlassSurface.fixture.tsx";
 import * as icon from "../src/primitives/Icon/Icon.fixture.tsx";
 import * as iconButton from "../src/primitives/IconButton/IconButton.fixture.tsx";
+import * as kbd from "../src/primitives/Kbd/Kbd.fixture.tsx";
 import * as menu from "../src/primitives/Menu/Menu.fixture.tsx";
 import * as monogramTile from "../src/primitives/MonogramTile/MonogramTile.fixture.tsx";
 import * as scrollArea from "../src/primitives/ScrollArea/ScrollArea.fixture.tsx";
+import * as searchField from "../src/primitives/SearchField/SearchField.fixture.tsx";
 import * as statusMark from "../src/primitives/StatusMark/StatusMark.fixture.tsx";
 import * as stepList from "../src/primitives/StepList/StepList.fixture.tsx";
 import * as tooltip from "../src/primitives/Tooltip/Tooltip.fixture.tsx";
@@ -38,11 +41,14 @@ export const fixtures: readonly FixtureModule[] = [
   glassSurface,
   icon,
   iconButton,
+  kbd,
+  listPicker,
   menu,
   monogramTile,
   logView,
   navList,
   scrollArea,
+  searchField,
   statusMark,
   stepList,
   tabStrip,

@@ -71,3 +71,9 @@
 - `CopyableCommand`：一行等宽命令框（`user-select: all`，点三下全选），只显示、从不执行；“复制命令”按钮由调用方放在旁边并接剪贴板。
 - `StepList`：步骤横排，每步的标记形状随状态变（完成对勾、当前转圈、失败红色方块里的叉、未到空心圆），当前步骤带 `aria-current="step"`。
 - 图标新增 `warning`、`refresh`、`exclamation`。
+
+## 选择器组件的约定（#172）
+
+- `ListPicker`：分组的 listbox，焦点留在 `renderHeader` 交出的搜索框里（combobox 加 `aria-activedescendant`），上下方向键、Home、End 移动高亮，回车选择高亮行，点击一行也选择；输入法组词时（`isComposing`）按键不处理。高亮按“第几行”记，同一项可以出现在两个分组里（“最近使用”和它的类型）。不过滤：过滤由使用处决定传进来的 `groups`。行前的徽标用 `MonogramTile`（`size="lg"`）。
+- `SearchField`：放大镜加无框输入加末端提示，`ref` 指向输入框；`Kbd` 是键帽，文字由使用处给。三者都是现成的通用组件，别在功能里再造。
+

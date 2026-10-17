@@ -44,6 +44,7 @@ function library(playgrounds: PlaygroundRow[], locale: "zh-CN" | "en" = "zh-CN")
     error: null,
     closeRequest: null,
     templates: [],
+    recentTemplates: [],
     tabs: [],
     activeTab: "library",
     playgrounds,

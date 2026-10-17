@@ -433,3 +433,13 @@ describe("资源库行的打开、停止与更多菜单", () => {
     expect(system.copied).toEqual([]);
   });
 });
+
+describe("LibraryController 与模板选择器", () => {
+  it("[DESKTOP-CREATE-FLOW-02] 为选择器读数据只问项目、运行和模板，不触发任何工具检测", async () => {
+    const { client, controller } = setup();
+    await controller.start();
+    const methods = new Set(client.calls.map((call) => call.method));
+    expect([...methods].filter((method) => method.startsWith("tool"))).toEqual([]);
+    expect(controller.getState().templates.map((row) => row.id)).toEqual(["html"]);
+  });
+});

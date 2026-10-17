@@ -12,6 +12,7 @@ import type {
   PlaygroundRow,
   TabRow,
   TabStatus,
+  TemplateRow,
 } from "../shared/library-state.ts";
 
 // 结束了的状态；其余都算进行中（run-state-machine.md 第 1 节）
@@ -145,17 +146,25 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
     });
   }
   tabs.sort((a, b) => inputs.tabIds.indexOf(a.id) - inputs.tabIds.indexOf(b.id));
+  // 无效的用户模板建不出项目，列表里只给内置的、格式有效的
+  const templates = inputs.templates
+    .filter((template) => template.source === "builtin" && template.valid && template.kind !== null)
+    .map(
+      (template): TemplateRow => ({
+        id: template.id,
+        name: template.name,
+        description: template.description,
+        category: template.category,
+        unmaintained: template.tags.includes("unmaintained"),
+      }),
+    );
   return {
     locale: inputs.locale,
     playgrounds,
     tabs,
     activeTab: inputs.activeTab,
-    // 无效的用户模板建不出项目，列表里只给内置的、格式有效的
-    templates: inputs.templates
-      .filter(
-        (template) => template.source === "builtin" && template.valid && template.kind !== null,
-      )
-      .map((template) => ({ id: template.id, name: template.name })),
+    templates,
+    recentTemplates: recentTemplateIds(inputs.playgrounds, templates),
     closeRequest: closeRequestOf(inputs.closeRequestId ?? null, rows),
     error: inputs.error,
   };
@@ -214,4 +223,18 @@ function portFallbackOf(run: RunSnapshot | undefined): TabRow["portFallback"] {
     reason: fallback.reason,
     occupant: fallback.occupant ?? null,
   };
+}
+
+/** 按项目的创建时间从新到旧，取用过的模板，同一个模板只算一次；不在模板列表里的（已删除的用户模板）略过 */
+export function recentTemplateIds(
+  playgrounds: readonly Playground[],
+  templates: readonly TemplateRow[],
+): string[] {
+  const known = new Set(templates.map((template) => template.id));
+  const recent: string[] = [];
+  for (const playground of [...playgrounds].sort((a, b) => b.createdAt - a.createdAt)) {
+    const id = playground.template.id;
+    if (known.has(id) && !recent.includes(id)) recent.push(id);
+  }
+  return recent;
 }
