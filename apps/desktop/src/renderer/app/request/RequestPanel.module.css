@@ -1,0 +1,317 @@
+/* 设计稿 Service：右侧是圆角 16 的卡片，自上而下是发送行、页签与开关行、请求内容、响应 */
+.root {
+  flex: 1;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-line-hairline);
+  background: var(--color-bg-card);
+}
+
+.spacer {
+  flex: 1;
+}
+
+/* 发送行：方法、地址、发送，高 40（设计稿：上 12 下 10 左右 12，间距 8） */
+.sendRow {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-6) var(--space-5);
+}
+
+.method {
+  flex: none;
+  box-sizing: border-box;
+  block-size: var(--size-control-lg);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0;
+  padding-inline: var(--size-control-padding-md);
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-inset);
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--text-body-size);
+  font-weight: var(--text-item-weight);
+  cursor: default;
+  outline: none;
+}
+
+.method[data-method="GET"] {
+  color: var(--color-status-running-text);
+}
+
+.method[data-method="POST"] {
+  color: var(--color-text-accent);
+}
+
+.method[data-method="PUT"],
+.method[data-method="PATCH"] {
+  color: var(--color-status-warning-text);
+}
+
+.method[data-method="DELETE"] {
+  color: var(--color-status-danger-text);
+}
+
+.method:focus-visible {
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.address {
+  flex: 1;
+  min-inline-size: 0;
+  box-sizing: border-box;
+  block-size: var(--size-control-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding-inline: var(--space-6);
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-inset);
+  font-family: var(--font-mono);
+  font-size: var(--text-body-size);
+}
+
+.address:focus-within {
+  border-color: var(--color-line-accent);
+  box-shadow: var(--shadow-field-focus);
+}
+
+.prefix {
+  flex: none;
+  color: var(--color-text-secondary);
+}
+
+.path {
+  flex: 1;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  font: inherit;
+}
+
+.hint {
+  flex: none;
+  margin: 0;
+  padding: 0 var(--space-6) var(--space-4);
+  color: var(--color-status-warning-text);
+  font-size: var(--text-secondary-size);
+  line-height: var(--text-secondary-line-height);
+}
+
+/* 页签与开关行（设计稿：下面一条细线） */
+.toolRow {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: 0 var(--space-6) var(--space-5);
+  border-block-end: 1px solid var(--color-line-hairline);
+  font-size: var(--text-body-size);
+  color: var(--color-text-secondary-strong);
+}
+
+.autoResend {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  white-space: nowrap;
+}
+
+/* 请求头 / 请求体的编辑区：固定一个够用的高度，内容多了在里面滚动 */
+.editor {
+  flex: none;
+  block-size: calc(var(--size-control-lg) * 3);
+  display: flex;
+  border-block-end: 1px solid var(--color-line-hairline);
+}
+
+.editorScroll {
+  flex: 1;
+  min-inline-size: 0;
+  min-block-size: 0;
+}
+
+.textarea {
+  display: block;
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-block-size: 100%;
+  margin: 0;
+  padding: var(--space-5) var(--space-6);
+  border: 0;
+  outline: none;
+  resize: none;
+  overflow: hidden;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--text-code-small-size);
+  line-height: var(--text-code-line-height);
+}
+
+.textarea::placeholder {
+  color: var(--color-text-placeholder);
+}
+
+/* 响应 */
+.response {
+  flex: 1;
+  min-block-size: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.responseHead {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-6) var(--space-7) var(--space-3);
+}
+
+.responseTitle {
+  font-weight: var(--text-item-weight);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  block-size: var(--size-badge);
+  padding-inline: var(--space-4);
+  border-radius: var(--radius-capsule);
+  font-family: var(--font-mono);
+  font-size: var(--text-code-small-size);
+  font-weight: var(--text-item-weight);
+  color: var(--color-status-running-text);
+  background: color-mix(in srgb, var(--color-status-running-mark) 14%, transparent);
+}
+
+.status[data-tone="neutral"] {
+  color: var(--color-text-secondary-strong);
+  background: var(--color-fill-neutral);
+}
+
+.status[data-tone="warning"] {
+  color: var(--color-status-warning-text);
+  background: var(--color-fill-warning-tint);
+}
+
+.status[data-tone="danger"] {
+  color: var(--color-status-danger-text);
+  background: var(--color-fill-danger-tint);
+}
+
+.meta {
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-code-small-size);
+}
+
+.autoStamp {
+  color: var(--color-text-secondary);
+  font-size: var(--text-secondary-size);
+}
+
+.responseTabs {
+  flex: none;
+  display: flex;
+  padding: 0 var(--space-7) var(--space-1);
+}
+
+/* 响应内容放在卡片里的一块内嵌块上（视觉规范：内嵌块 md 12，第 0 档），四角是圆角 */
+.output {
+  flex: 1;
+  min-block-size: 0;
+  margin: var(--space-2) var(--space-6) var(--space-6);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-inset);
+}
+
+.outputViewport {
+  padding: var(--space-6) var(--space-6);
+  box-sizing: border-box;
+}
+
+.pre {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-code-size);
+  line-height: var(--text-code-line-height);
+  color: var(--color-code-plain);
+  white-space: pre;
+}
+
+.key {
+  color: var(--color-code-function);
+}
+
+.string {
+  color: var(--color-code-string);
+}
+
+.number {
+  color: var(--color-code-number);
+}
+
+.keyword {
+  color: var(--color-code-keyword);
+}
+
+.quiet {
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+}
+
+.headerList {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-code-small-size);
+  line-height: var(--text-code-line-height);
+}
+
+.headerLine {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.headerLine dt {
+  flex: none;
+  font-weight: var(--text-item-weight);
+}
+
+.headerValue {
+  margin: 0;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  color: var(--color-code-plain);
+}
+
+.placeholder {
+  flex: 1;
+  margin: var(--space-2) var(--space-6) var(--space-6);
+  padding: var(--space-6);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-inset);
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+}
+
+.placeholder[data-tone="failure"] {
+  color: var(--color-status-danger-text);
+}

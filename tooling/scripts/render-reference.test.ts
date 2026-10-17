@@ -17,7 +17,7 @@ describe("协议参考文档", () => {
   });
 
   it("只占名字的方法写明回 NOT_SUPPORTED，不编造入参出参", () => {
-    const section = protocol.slice(protocol.indexOf("#### `request.send`"));
+    const section = protocol.slice(protocol.indexOf("#### `run.disown`"));
     expect(section.slice(0, 300)).toContain("只占名字");
   });
 

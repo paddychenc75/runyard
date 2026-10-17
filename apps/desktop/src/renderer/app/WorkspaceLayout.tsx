@@ -9,6 +9,7 @@ import { ConsolePanel } from "./ConsolePanel.tsx";
 import { PaneToggleButton } from "./PaneToggleButton.tsx";
 import { PreviewPane } from "./PreviewPane.tsx";
 import { ResizeHandle } from "./ResizeHandle.tsx";
+import { RequestPanel } from "./request/RequestPanel.tsx";
 import { isScript } from "./run-view.ts";
 import { ScriptOutput } from "./ScriptOutput.tsx";
 import { TabContent } from "./TabContent.tsx";
@@ -104,6 +105,8 @@ export function WorkspaceLayout({ bridge, tab, overlays, prefs, onPrefs }: Works
                 <div className={styles.right}>
                   {script ? (
                     <ScriptOutput bridge={bridge} tab={tab} />
+                  ) : tab.service === true ? (
+                    <RequestPanel key={tab.id} bridge={bridge} tab={tab} />
                   ) : (
                     <PreviewPane bridge={bridge} tab={tab} overlays={overlays} />
                   )}

@@ -1,4 +1,4 @@
-import type { RunSnapshot } from "@runyard/protocol";
+import type { RequestSpec, RunSnapshot } from "@runyard/protocol";
 import { describe, expect, it } from "vitest";
 import { ConsoleLogs } from "./console-logs.ts";
 import type { LibraryClient, PreviewHost, SystemActions } from "./controller-hosts.ts";
@@ -111,5 +111,63 @@ describe("运行条动作", () => {
     const { actions, previewCalls } = setup();
     actions.openPreviewDevTools("a");
     expect(previewCalls).toEqual(["devtools:a"]);
+  });
+});
+
+describe("请求面板的动作", () => {
+  const spec: RequestSpec = { method: "GET", path: "/todos", headers: [], payload: "" };
+
+  it("[DESKTOP-REQUEST-PANEL-02] 请求转给管理进程，只带项目和请求，不带主机或端口", async () => {
+    const { actions, calls } = setup();
+    await actions.sendRequest("a", { ...spec, path: "//example.com/x" });
+    expect(calls).toEqual([
+      {
+        method: "request.send",
+        params: { playground: "a", request: { ...spec, path: "//example.com/x" } },
+      },
+    ]);
+  });
+
+  it("管理进程那边出错（连不上、找不到项目）折成“断开”的结果，不抛给界面", async () => {
+    const { actions } = setup();
+    const failing = new RunBarActions({
+      client: {
+        call: async () => {
+          throw new Error("down");
+        },
+      } as unknown as LibraryClient,
+      preview: {} as PreviewHost,
+      system: {} as SystemActions,
+      console: new ConsoleLogs({} as LibraryClient),
+      runs: () => [],
+      act: async (_id, action) => action(),
+    });
+    expect(await failing.sendRequest("a", spec)).toMatchObject({
+      outcome: "failed",
+      reason: "disconnected",
+    });
+    expect(await failing.lastRequest("a")).toBeNull();
+    expect(actions).toBeDefined();
+  });
+
+  it("[DESKTOP-REQUEST-PANEL-12] 在浏览器中打开：按运行的端口拼 http://127.0.0.1:端口加路径", () => {
+    const { actions, opened } = setup([
+      run("a", "ready", { url: "http://127.0.0.1:7102/", port: 7102 }),
+    ]);
+    actions.openRequestInBrowser("a", "/todos?x=1");
+    expect(opened).toEqual(["http://127.0.0.1:7102/todos?x=1"]);
+  });
+
+  it("[DESKTOP-REQUEST-PANEL-02] 在浏览器中打开：路径写成别的主机也只是路径；不以 / 开头的不打开；服务没就绪不打开", () => {
+    const { actions, opened } = setup([
+      run("a", "ready", { url: "http://127.0.0.1:7102/", port: 7102 }),
+    ]);
+    actions.openRequestInBrowser("a", "//example.com/x");
+    actions.openRequestInBrowser("a", "@example.com/x");
+    actions.openRequestInBrowser("a", "http://example.com/");
+    expect(opened).toEqual(["http://127.0.0.1:7102//example.com/x"]);
+    const stopped = setup([run("a", "stopped", { port: 7102 })]);
+    stopped.actions.openRequestInBrowser("a", "/todos");
+    expect(stopped.opened).toEqual([]);
   });
 });

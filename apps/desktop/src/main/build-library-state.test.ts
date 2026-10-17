@@ -167,6 +167,23 @@ describe("buildLibraryState 的列和顺序", () => {
     expect(byId.get("temp")?.autoClean).toEqual({ enabled: true, days: 30 });
   });
 
+  it("[DESKTOP-REQUEST-PANEL-01] 模板类型是“服务”的项目，标签页标 service，别的不标", () => {
+    const state = buildLibraryState({
+      ...base,
+      tabIds: ["a", "b"],
+      templates: [template("html"), template("hono", { category: "service" })],
+      playgrounds: [
+        playground("a"),
+        { ...playground("b"), template: { id: "hono", source: "builtin", appVersion: "0" } },
+      ],
+      runs: [],
+    });
+    expect(state.tabs.map((tab) => [tab.id, tab.service])).toEqual([
+      ["a", false],
+      ["b", true],
+    ]);
+  });
+
   it("模板名从模板列表按 id 取，模板不在了就是 null", () => {
     const state = buildLibraryState({
       ...base,
