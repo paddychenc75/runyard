@@ -19,7 +19,14 @@ async function supervisorPart(context: CommandContext): Promise<Record<string, u
     return { running: true, ...info };
   } catch (error) {
     // 原因只给错误码：给人看的句子在文案包里，--json 里不放
-    return { running: false, reason: toCliError(error).code };
+    const cli = toCliError(error);
+    const startFailure = cli.params.reason;
+    return {
+      running: false,
+      reason: cli.code,
+      // 启动失败的原因代码（规格 CLI-COMMANDS-90）；不知道原因时没有这个键
+      ...(typeof startFailure === "string" ? { startFailure } : {}),
+    };
   }
 }
 
@@ -49,7 +56,10 @@ function humanLines(context: CommandContext, report: Record<string, unknown>) {
           runs: Number(supervisor.runs),
           startedBy: String(supervisor.startedBy),
         })
-      : t("cli.doctor.supervisorDown.body", { reason: String(supervisor.reason) }),
+      : t("cli.doctor.supervisorDown.body", {
+          reason: String(supervisor.reason),
+          startFailure: String(supervisor.startFailure ?? "none"),
+        }),
   );
   for (const tool of tools) {
     const name = { tool: tool.tool };

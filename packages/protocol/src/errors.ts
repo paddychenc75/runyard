@@ -11,6 +11,10 @@ const toolId = z.string().min(1);
 const name = z.string().min(1);
 const none = z.object({});
 
+/** 管理进程启动失败的原因：路径过长（连接点放不下），或其他启动失败 */
+export const supervisorStartFailures = ["PATH_TOO_LONG", "STARTUP_FAILED"] as const;
+export type SupervisorStartFailure = (typeof supervisorStartFailures)[number];
+
 // 名称出问题的对象种类：缺省是项目（playground）；另存为模板的标识不合法或被占用时是 template，
 // 文案据此写“模板标识”而不是“项目名称”
 export const nameKinds = ["playground", "template"] as const;
@@ -87,7 +91,11 @@ export const errorRegistry = {
   PORT_IN_USE: { exit: 9, params: z.object({ port: portSchema }) },
 
   APP_REQUIRED: { exit: 10, params: none },
-  SUPERVISOR_UNAVAILABLE: { exit: 10, params: none },
+  // reason：管理进程启动失败的原因（规格 SUPERVISOR-LIFECYCLE-22），不知道原因时不带
+  SUPERVISOR_UNAVAILABLE: {
+    exit: 10,
+    params: z.object({ reason: z.enum(supervisorStartFailures).optional() }),
+  },
   // runs：升级会停掉的运行个数（规格 PROTOCOL-HANDSHAKE-13）
   SUPERVISOR_OUTDATED: { exit: 10, params: z.object({ runs: z.number().int().nonnegative() }) },
   CLIENT_OUTDATED: { exit: 10, params: none },

@@ -33,7 +33,7 @@
   "cli.doctor.installUrl.body": "官网：{url}",
   "cli.doctor.library.body": "资源库：{root}",
   "cli.doctor.other.body": "PATH 上还有另一份：{kind, select, app {随应用安装} other {从源码运行}}，版本 {version}，位置 {path}",
-  "cli.doctor.supervisorDown.body": "管理进程：不可用（{reason}）",
+  "cli.doctor.supervisorDown.body": "管理进程：不可用（{reason}）{startFailure, select, PATH_TOO_LONG {。启动失败：连接文件路径超过系统允许的长度，请换更短的主目录或 --root} STARTUP_FAILED {。启动失败，详细原因在状态目录的 logs/supervisor.log} none {} other {}}",
   "cli.doctor.supervisorRunning.body": "管理进程：运行中，版本 {version}，{runs, plural, other {# 个运行}}，由{startedBy, select, app {应用} other {命令行}}启动",
   "cli.doctor.system.body": "系统：{os} {version}（{arch}）",
   "cli.doctor.toolFound.body": "{tool}：{version}（{path}）",

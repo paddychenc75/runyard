@@ -107,9 +107,9 @@ errors.APP_REQUIRED.body: The open and screenshot commands are carried out by th
 errors.APP_REQUIRED.hint: Open the Runyard app, then run it again.
 errors.APP_REQUIRED.hintCli: Open the Runyard app, then run the command again.
 errors.SUPERVISOR_UNAVAILABLE.title: Cannot connect to the Runyard background process
-errors.SUPERVISOR_UNAVAILABLE.body: A trusted connection to the background process could not be established.
-errors.SUPERVISOR_UNAVAILABLE.hint: No request was sent, so you can simply run it again.
-errors.SUPERVISOR_UNAVAILABLE.hintCli: No request was sent. Run runyard doctor to find out why, then run the command again.
+errors.SUPERVISOR_UNAVAILABLE.body: The background process could not start: the path of its connection file is longer than the system allows.
+errors.SUPERVISOR_UNAVAILABLE.hint: Move the Runyard data folder to a shorter path, then run it again.
+errors.SUPERVISOR_UNAVAILABLE.hintCli: No request was sent. Use a shorter --root or home folder path, then run the command again; runyard doctor can confirm.
 errors.SUPERVISOR_OUTDATED.title: The Runyard background process is out of date
 errors.SUPERVISOR_OUTDATED.body: The running background process is older than the Runyard you are using. Replacing it would stop 3 runs. The command did not continue.
 errors.SUPERVISOR_OUTDATED.hint: The app tells you how many runs will stop and updates only after you confirm.

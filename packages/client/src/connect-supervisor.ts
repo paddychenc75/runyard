@@ -12,6 +12,7 @@ import { discoveredProcessAlive, sameDiscovery } from "./discovery.ts";
 import { launchSupervisor } from "./launch-supervisor.ts";
 import { attemptSession, type SessionAttempt } from "./open-session.ts";
 import { RunyardClient, type VersionOutcome } from "./runyard-client.ts";
+import { logSize, startupFailure } from "./startup-failure.ts";
 
 // 找到管理进程并连上（技术设计 §5.1、§5.4；规格 SUPERVISOR-LIFECYCLE-07、10，PROTOCOL-HANDSHAKE-01 到 14）：
 // 读发现文件 → 连得上就握手 → 否则拉起并按 50/100/200 毫秒退避重连（最多 3 秒）→ 按版本表决定用、换还是报错。
@@ -31,6 +32,7 @@ export async function connectSupervisor(options: ConnectOptions): Promise<Runyar
 // 拉起之后，在上限内反复尝试连接。每次都重新读发现文件，因为新进程会换一个口令。
 async function launchAndWait(ctx: ResolvedOptions): Promise<Ready> {
   const { clock, timeouts } = ctx;
+  const logBefore = await logSize(ctx);
   await launchSupervisor(ctx);
   const startedAt = clock.now();
   let lastRejected: Ready["file"] | undefined;
@@ -45,7 +47,12 @@ async function launchAndWait(ctx: ResolvedOptions): Promise<Ready> {
       lastRejected = attempt.file;
     }
     const remaining = timeouts.launchMs - (clock.now() - startedAt);
-    if (remaining <= 0) throw unavailable("the supervisor did not become reachable in time");
+    if (remaining <= 0) {
+      throw unavailable(
+        "the supervisor did not become reachable in time",
+        await startupFailure(ctx, logBefore),
+      );
+    }
     const delay = RECONNECT_BACKOFF_MS[Math.min(step, RECONNECT_BACKOFF_MS.length - 1)] as number;
     await clock.sleep(Math.min(delay, remaining));
   }

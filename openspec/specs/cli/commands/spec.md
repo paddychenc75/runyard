@@ -127,7 +127,7 @@
 - 验证：test
 
 ### Requirement: 管理进程和桌面应用没有运行时的行为
-命令行连不上管理进程时 MUST 自己启动它再继续（连接、握手、版本比对由 client 负责）；P0 命令 MUST NOT 要求桌面应用在运行，MUST NOT 拉起桌面应用。`config`、`skill install`、`template lint`、`template test`、`--help` MUST NOT 需要管理进程。管理进程连不上也启动不了时 MUST 报 `SUPERVISOR_UNAVAILABLE`，退出码 10。`doctor` 在管理进程连不上时 MUST 照常输出其余诊断信息，并在结果里写明管理进程不可用，MUST NOT 因此失败。
+命令行连不上管理进程时 MUST 自己启动它再继续（连接、握手、版本比对由 client 负责）；P0 命令 MUST NOT 要求桌面应用在运行，MUST NOT 拉起桌面应用。`config`、`skill install`、`template lint`、`template test`、`--help` MUST NOT 需要管理进程。管理进程连不上也启动不了时 MUST 报 `SUPERVISOR_UNAVAILABLE`，退出码 10。错误带有原因（`reason`，见 supervisor/lifecycle）时，提示 MUST 写出原因和对应的办法（路径过长就让用户换更短的 `--root` 或主目录），不能只说连不上。`doctor` 在管理进程连不上时 MUST 照常输出其余诊断信息，并在结果里写明管理进程不可用，有原因时 `supervisor.startFailure` 写出原因代码，人读的输出里 MUST 写明原因；MUST NOT 因此失败。
 来源：PRD #prd-cli-json；PRD #prd-cli-distribution；PRD #prd-decided-by-default
 
 #### Scenario: [CLI-COMMANDS-20] 没有管理进程时自动启动
@@ -152,6 +152,18 @@
 - 前提：管理进程连不上也启动不了
 - **WHEN** 执行 `runyard doctor --json`
 - **THEN** 退出码 0；结果的 `supervisor` 是 `{ "running": false, "reason": ... }`，其余部分（`cli`、`tools`、`library`、`system`）仍然有
+- 验证：test
+
+#### Scenario: [CLI-COMMANDS-89] 管理进程启动不了时说出原因
+- 前提：管理进程因路径过长启动失败（`SUPERVISOR_UNAVAILABLE`，`reason` 为 `PATH_TOO_LONG`）
+- **WHEN** 执行 `runyard status`，以及加 `--json`
+- **THEN** 退出码 10；人读的提示写明是路径过长、要换更短的主目录或 `--root`，仍含 `runyard doctor`；`--json` 的 `error.data.reason` 是 `PATH_TOO_LONG`，提示文字是英文
+- 验证：test
+
+#### Scenario: [CLI-COMMANDS-90] doctor 说出管理进程启动不了的原因
+- 前提：同 CLI-COMMANDS-89
+- **WHEN** 执行 `runyard doctor` 和 `runyard doctor --json`
+- **THEN** 退出码 0；`--json` 里 `supervisor.startFailure` 是 `PATH_TOO_LONG`；人读的输出写明管理进程因路径过长启动失败，不只是“不可用”
 - 验证：test
 
 ### Requirement: `new` 创建项目，可选启动并等待

@@ -177,6 +177,47 @@ describe("拉起管理进程与重连", () => {
     expect(error.code).toBe("SUPERVISOR_UNAVAILABLE");
   });
 
+  describe("[SUPERVISOR-LIFECYCLE-22] 启动失败带着原因", () => {
+    const logPath = () => supervisorLogPath(world.platform.paths.stateDir);
+    // 假管理进程“启动失败”：往日志里追加一行标准错误（真实入口写的就是这个格式）
+    const failWith = (line: string) => {
+      world.onSpawn = async () => {
+        const old = (await world.platform.fs.readBytes(logPath())) ?? new Uint8Array();
+        const text = new TextDecoder().decode(old);
+        await world.platform.fs.writeFile(logPath(), `${text}${line}\n`);
+      };
+    };
+
+    it("路径过长：reason 是 PATH_TOO_LONG", async () => {
+      world = new World();
+      failWith("startup failed: PATH_TOO_LONG: socket path is 120 bytes");
+      const error = await failure(connectSupervisor(world.options()));
+      expect(error.code).toBe("SUPERVISOR_UNAVAILABLE");
+      expect(error.known?.params).toEqual({ reason: "PATH_TOO_LONG" });
+    });
+
+    it("其他启动失败：reason 是 STARTUP_FAILED", async () => {
+      world = new World();
+      failWith("startup failed: Error: disk full");
+      const error = await failure(connectSupervisor(world.options()));
+      expect(error.known?.params).toEqual({ reason: "STARTUP_FAILED" });
+    });
+
+    it("日志里只有这次之前的旧记录：不带 reason", async () => {
+      world = new World();
+      await world.platform.fs.makeDir(dirname(logPath()) as never);
+      await world.platform.fs.writeFile(logPath(), "startup failed: PATH_TOO_LONG: old\n");
+      const error = await failure(connectSupervisor(world.options()));
+      expect(error.known?.params).toEqual({});
+    });
+
+    it("没有日志：不带 reason", async () => {
+      world = new World();
+      const error = await failure(connectSupervisor(world.options()));
+      expect(error.known?.params).toEqual({});
+    });
+  });
+
   it("残留的发现文件（没有人在监听）：当作没有管理进程，拉起新的，并改读新写的发现文件", async () => {
     world = new World();
     await world.makeExecutable("/fake/node");

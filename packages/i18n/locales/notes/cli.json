@@ -29,7 +29,8 @@
     "path": "位置，原样显示"
   },
   "cli.doctor.supervisorDown.body": {
-    "reason": "错误码，原样显示"
+    "reason": "错误码，原样显示",
+    "startFailure": "管理进程启动失败的原因：PATH_TOO_LONG（连接文件路径超过系统上限）或 STARTUP_FAILED；不知道原因时不显示这一段"
   },
   "cli.doctor.supervisorRunning.body": {
     "version": "管理进程版本，原样显示",

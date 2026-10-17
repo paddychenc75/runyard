@@ -33,7 +33,7 @@
   "cli.doctor.installUrl.body": "Website: {url}",
   "cli.doctor.library.body": "Library: {root}",
   "cli.doctor.other.body": "Another copy is on PATH: {kind, select, app {installed with the app} other {run from source}}, version {version}, at {path}",
-  "cli.doctor.supervisorDown.body": "Background process: not available ({reason})",
+  "cli.doctor.supervisorDown.body": "Background process: not available ({reason}){startFailure, select, PATH_TOO_LONG {. It failed to start: the connection file path is longer than the system allows; use a shorter home folder or --root} STARTUP_FAILED {. It failed to start; details are in logs/supervisor.log in the state folder} none {} other {}}",
   "cli.doctor.supervisorRunning.body": "Background process: running, version {version}, {runs, plural, one {# run} other {# runs}}, started by the {startedBy, select, app {app} other {command line}}",
   "cli.doctor.system.body": "System: {os} {version} ({arch})",
   "cli.doctor.toolFound.body": "{tool}: {version} ({path})",

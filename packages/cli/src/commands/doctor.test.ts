@@ -12,7 +12,9 @@ const open: Harness[] = [];
 type Body = Record<string, unknown>;
 const info = { protocol: 1, version: "0.1.0", build: "b1", startedBy: "cli", runs: 2 };
 
-function harness(options: { supervisor?: boolean; host?: Partial<CliHost> } = {}): Harness {
+function harness(
+  options: { supervisor?: boolean; startFailure?: "PATH_TOO_LONG"; host?: Partial<CliHost> } = {},
+): Harness {
   const client = {
     call: async (method: string) => {
       if (method === "supervisor.info") return info;
@@ -23,7 +25,11 @@ function harness(options: { supervisor?: boolean; host?: Partial<CliHost> } = {}
   const connect =
     options.supervisor === false
       ? async () => {
-          throw clientError("SUPERVISOR_UNAVAILABLE", {}, "cannot start");
+          throw clientError(
+            "SUPERVISOR_UNAVAILABLE",
+            options.startFailure === undefined ? {} : { reason: options.startFailure },
+            "cannot start",
+          );
         }
       : async () => client;
   const h = new Harness({ connect, ...(options.host === undefined ? {} : { host: options.host }) });
@@ -71,6 +77,22 @@ describe("doctor", () => {
     const body = h.json(result) as Body;
     expect(body.supervisor).toEqual({ running: false, reason: "SUPERVISOR_UNAVAILABLE" });
     for (const key of ["cli", "tools", "library", "system"]) expect(body[key], key).toBeDefined();
+  });
+
+  it("[CLI-COMMANDS-90] 管理进程因路径过长起不来：json 里有 startFailure，文字输出写明原因（中英文）", async () => {
+    const h = harness({ supervisor: false, startFailure: "PATH_TOO_LONG" });
+    const json = await h.run(["doctor", "--json"]);
+    expect(json.code).toBe(0);
+    expect((h.json(json) as Body).supervisor).toEqual({
+      running: false,
+      reason: "SUPERVISOR_UNAVAILABLE",
+      startFailure: "PATH_TOO_LONG",
+    });
+    const zh = await h.run(["doctor", "--lang", "zh-CN"]);
+    expect(zh.code).toBe(0);
+    expect(zh.stdout).toContain("启动失败：连接文件路径超过系统允许的长度");
+    const en = await h.run(["doctor", "--lang", "en"]);
+    expect(en.stdout).toContain("It failed to start: the connection file path is longer");
   });
 
   it("文字输出：中英文都有管理进程、工具和资源库各一行", async () => {

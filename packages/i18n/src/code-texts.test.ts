@@ -56,7 +56,7 @@ const errorExamples: { [C in ErrorCode]: ErrorParams<C> } = {
   TRASH_UNAVAILABLE: { name: "react19-3" },
   PORT_IN_USE: { port: 7500 },
   APP_REQUIRED: {},
-  SUPERVISOR_UNAVAILABLE: {},
+  SUPERVISOR_UNAVAILABLE: { reason: "PATH_TOO_LONG" },
   SUPERVISOR_OUTDATED: { runs: 3 },
   CLIENT_OUTDATED: {},
   NOT_SUPPORTED: {},
