@@ -1,4 +1,5 @@
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { act, cleanup, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import type { BootstrapInfo, DesktopBridge } from "./src/shared/desktop-bridge.ts";
 import type { LibraryState } from "./src/shared/library-state.ts";
 
@@ -9,6 +10,10 @@ import type { LibraryState } from "./src/shared/library-state.ts";
 // 逼近 5 秒上限而偶发超时（#219 资源库页、#234 外壳和失败画面）。
 // 在这里（装载阶段，不属于任何用例的时限）付掉这笔代价，用例的断言和时限都不变。
 //
+// 弹窗路径也要热身：新建弹窗的 FLOW-06 / FLOW-08 在 windows-2025 上超时（#277），原因是模板选择器、
+// 基于 Base UI 的对话框、开关、输入框和 userEvent 的输入链路第一次用到时也要冷启动，
+// 而热身只画了资源库页，这笔钱落在 CreateDialog 文件的头几个用例里。
+//
 // 只对 jsdom 环境的文件做；纯逻辑的测试文件没有 document，不付这笔钱。
 if (typeof document !== "undefined") {
   const { AppFrame } = await import("./src/renderer/app/AppFrame.tsx");
@@ -17,7 +22,17 @@ if (typeof document !== "undefined") {
     locale: "zh-CN",
     error: null,
     closeRequest: null,
-    templates: [],
+    templates: [
+      {
+        id: "react19",
+        name: { en: "React 19", "zh-CN": "React 19" },
+        description: "warmup",
+        category: "frontend",
+        unmaintained: false,
+      },
+    ],
+    recentTemplates: [],
+    libraryRoot: "~/Runyard",
     tabs: [],
     activeTab: "library",
     playgrounds: [
@@ -51,10 +66,14 @@ if (typeof document !== "undefined") {
     reducedTransparency: false,
     highContrast: false,
   };
+  const listeners = new Map<string, () => void>();
   const bridge = {
     bootstrap,
     call: async (method: string) => (method === "library.get" ? state : undefined),
-    on: () => () => {},
+    on: (event: string, listener: () => void) => {
+      listeners.set(event, listener);
+      return () => {};
+    },
   } as unknown as DesktopBridge;
 
   // 预览占位区要 ResizeObserver，Base UI 的滚动区要 getAnimations，jsdom 都没有。
@@ -73,6 +92,14 @@ if (typeof document !== "undefined") {
     render(<AppFrame bridge={bridge} locale="zh-CN" theme="light" />);
     within(await screen.findByRole("table", { name: /项目列表|Playgrounds/ })).getAllByRole("row");
     screen.getAllByRole("tab");
+
+    // 再走一遍「选择器 -> 新建弹窗 -> 开关 -> 输入 -> 回车」，把弹窗路径的冷启动也付掉
+    const user = userEvent.setup();
+    act(() => listeners.get("picker.open")?.());
+    await user.click(await screen.findByRole("option", { name: /React 19/ }));
+    const dialog = await screen.findByRole("dialog", { name: "新建项目" });
+    await user.click(within(dialog).getByRole("switch", { name: "自动清理" }));
+    await user.type(within(dialog).getByRole("textbox", { name: /备注/ }), "warmup");
   } finally {
     cleanup();
     if (savedObserver === undefined) delete target.ResizeObserver;

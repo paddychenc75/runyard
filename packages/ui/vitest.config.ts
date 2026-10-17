@@ -6,6 +6,6 @@ import { createConfig } from "../../tooling/vitest/base.ts";
 export default mergeConfig(createConfig(), {
   test: {
     environment: "jsdom",
-    setupFiles: [fileURLToPath(new URL("./vitest.setup.ts", import.meta.url))],
+    setupFiles: [fileURLToPath(new URL("./vitest.setup.tsx", import.meta.url))],
   },
 });
