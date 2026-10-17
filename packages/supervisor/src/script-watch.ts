@@ -16,6 +16,7 @@ import type { SupervisorApi } from "./supervisor-api.ts";
 // 保存与外部写入一样由磁盘变化驱动。监听跟随标签页：`run.stop`（关标签页、停止按钮）、应用断开或告别时结束，
 // 没有空闲计时；运行器 `watch.mode` 为 none（静态页面、Vite 热更新）时 `ScriptRuns.watch` 什么也不挂。
 // 服务（restart）只受运行器的规则管，不受脚本的“保存后自动运行”开关管。
+// 命令行启动的服务（`runyard run`）同样监听，结束时机与命令行的脚本相同：`runyard stop`、移到废纸篓、监听空闲（#297）。
 
 const ACTIVITY_IGNORE = [".runyard", "node_modules", ".git"].map(posixRelPath);
 
@@ -130,8 +131,9 @@ export function createScriptWatch(api: SupervisorApi, deps: ScriptWatchDeps): Sc
   return {
     observer: {
       state: ({ run: snapshot }: RunStateEvent) => {
-        const tabOwned = snapshot.owner.kind === "tab";
-        if (!tabOwned && !(snapshot.owner.kind === "cli" && snapshot.kind === "oneshot")) return;
+        // 命令行持有的脚本和服务都监听（服务是 `runyard run` 起的，如 hono：TEMPLATES-RUNNERS-36、37，#297）；
+        // 运行器 `watch.mode` 为 none 时 `ScriptRuns.watch` 什么也不挂
+        if (snapshot.owner.kind !== "tab" && snapshot.owner.kind !== "cli") return;
         if (watching.has(snapshot.playgroundId)) return;
         // 正在停止的运行不开始监听：`runyard stop` 先摘掉监听，随后这次运行自己的“停止中”事件不能把它重新挂上（#153）
         if (!isActiveState(snapshot.state) || snapshot.state === "stopping") return;
