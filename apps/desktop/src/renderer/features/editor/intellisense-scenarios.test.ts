@@ -4,7 +4,7 @@ import { StandaloneServices } from "monaco-editor/editor/standalone/browser/stan
 import { ICommandService } from "monaco-editor/platform/commands/common/commands.js";
 import { IConfigurationService } from "monaco-editor/platform/configuration/common/configuration.js";
 import { afterEach, beforeAll, describe, expect, it } from "vitest";
-import { buildTsWorker, NodeBackedWorker } from "../../../../test-support/monaco-test-workers.ts";
+import { installRealWorkers } from "../../../../test-support/monaco-test-workers.ts";
 import type { EditorRuntime } from "../../editor/runtime-types.ts";
 import { type FileTab, loadingTab, withContent } from "./file-tab.ts";
 import { buildHost, type EditorHost, type EditorHostHandlers } from "./monaco-host.ts";
@@ -20,12 +20,7 @@ import { MARKER_OWNER } from "./typescript-diagnostics.ts";
 let runtime: EditorRuntime;
 beforeAll(async () => {
   installMonacoTestEnv();
-  const file = await buildTsWorker();
-  (globalThis as unknown as { Worker: unknown }).Worker = class extends NodeBackedWorker {
-    constructor() {
-      super(file);
-    }
-  };
+  await installRealWorkers();
   const { createEditorRuntime } = await import("../../editor/runtime.ts");
   runtime = await createEditorRuntime();
   // 热身：第一次问语言服务要起线程、载入标准库，慢的 CI 机器上能超过用例的 5 秒；这笔冷启动在装载阶段付掉

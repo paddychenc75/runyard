@@ -42,6 +42,9 @@ export async function buildEditor(rendererDir: string): Promise<void> {
       entryPoints: {
         "editor.worker": "monaco-editor/editor/editor.worker.js",
         "ts.worker": "monaco-editor/language/typescript/ts.worker.js",
+        "css.worker": "monaco-editor/language/css/css.worker.js",
+        "html.worker": "monaco-editor/language/html/html.worker.js",
+        "json.worker": "monaco-editor/language/json/json.worker.js",
       },
       outdir: join(rendererDir, "workers"),
     }),

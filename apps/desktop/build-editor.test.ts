@@ -7,7 +7,7 @@ import { buildEditor } from "./build-editor.ts";
 // 真的跑一次编辑器构建（约几秒）：产物齐全、后台线程是独立文件、样式里的字体指向本地文件、没有任何远程地址。
 
 describe("buildEditor", () => {
-  it("输出编辑器脚本、样式、字体、两个后台线程和冒烟页，且不引用网络地址", async () => {
+  it("输出编辑器脚本、样式、字体、五个后台线程和冒烟页，且不引用网络地址", async () => {
     const out = mkdtempSync(join(tmpdir(), "ry-editor-build-"));
     await buildEditor(out);
     for (const file of [
@@ -16,6 +16,9 @@ describe("buildEditor", () => {
       "editor/nls-zh-cn.js",
       "workers/editor.worker.js",
       "workers/ts.worker.js",
+      "workers/css.worker.js",
+      "workers/html.worker.js",
+      "workers/json.worker.js",
       "editor-smoke.js",
       "editor-smoke.html",
     ]) {
