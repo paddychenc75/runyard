@@ -32,11 +32,16 @@ const line = (seq: number, text: string, kind: "stdout" | "stderr" = "stdout"): 
 });
 
 function setup(row: TabRow, lines: ConsoleLine[] = []) {
+  return setupWith(row, {}, lines);
+}
+
+function setupWith(row: TabRow, answers: Record<string, unknown>, lines: ConsoleLine[] = []) {
   const calls: [string, unknown][] = [];
   const bridge = {
     bootstrap: { platform: "darwin" },
     call: vi.fn(async (method: string, param?: unknown) => {
       calls.push([method, param]);
+      if (method in answers) return answers[method];
       return method === "console.get" ? lines : undefined;
     }),
     on: () => () => {},
@@ -50,7 +55,7 @@ function setup(row: TabRow, lines: ConsoleLine[] = []) {
     </I18nProvider>
   );
   const utils = render(view(row));
-  return { ...utils, calls, rerender: (next: TabRow) => utils.rerender(view(next)) };
+  return { ...utils, calls, view: utils, rerender: (next: TabRow) => utils.rerender(view(next)) };
 }
 
 const missing = (extra: Record<string, unknown> = {}): TabRow =>
@@ -101,6 +106,30 @@ describe("缺少运行环境", () => {
     const pane = screen.getByText("没有找到 go").closest("[data-failure-screen]") as HTMLElement;
     fireEvent.click(within(pane).getByRole("button", { name: "重新检测" }));
     expect(calls).toContainEqual(["run.start", "a"]);
+  });
+
+  it("[DESKTOP-SETTINGS-17] “已经装了？指定路径…”和设置页是同一个入口：选的文件被接受后再启动一次", async () => {
+    const { calls, view } = setupWith(missing(), { "toolchain.pickPath": { status: "set" } });
+    const pane = within(
+      view.getByText("没有找到 go").closest("[data-failure-screen]") as HTMLElement,
+    );
+    fireEvent.click(pane.getByRole("button", { name: "指定路径…" }));
+    await waitFor(() => expect(calls).toContainEqual(["run.start", "a"]));
+    expect(calls).toContainEqual(["toolchain.pickPath", "go"]);
+  });
+
+  it("[DESKTOP-SETTINGS-18] 选的文件不是可用的工具：写明，不再启动", async () => {
+    const { calls, view } = setupWith(missing(), {
+      "toolchain.pickPath": { status: "invalid", tool: "go", path: "/x" },
+    });
+    const pane = within(
+      view.getByText("没有找到 go").closest("[data-failure-screen]") as HTMLElement,
+    );
+    fireEvent.click(pane.getByRole("button", { name: "指定路径…" }));
+    expect((await pane.findByRole("alert")).textContent).toBe(
+      "这个文件不是可用的 go，原来的路径没有改",
+    );
+    expect(calls.map(([method]) => method)).not.toContain("run.start");
   });
 
   it("[DESKTOP-WORKSPACE-18] 版本过低显示当前版本；模板没写安装命令时不放命令和复制按钮", () => {

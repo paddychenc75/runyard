@@ -35,3 +35,12 @@
 .error {
   color: var(--color-status-danger-text);
 }
+
+/* 只给读屏器读的名字：不占版面，但仍在文档里 */
+.hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}

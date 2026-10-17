@@ -4,15 +4,18 @@ import styles from "./SettingsGroup.module.css";
 
 export interface SettingsGroupProps {
   title: Localized;
+  /** 组名行右边的按钮（运行环境的“重新检测”） */
+  action?: ReactNode;
   children: ReactNode;
 }
 
 // 设置里的一组（设计稿 Settings）：组名在卡片上方，卡片里是一行行设置，行与行之间一条细线。
-export function SettingsGroup({ title, children }: SettingsGroupProps) {
+export function SettingsGroup({ title, action, children }: SettingsGroupProps) {
   return (
     <section className={styles.group}>
       <div className={styles.header}>
         <h2 className={styles.title}>{title}</h2>
+        {action}
       </div>
       <div className={styles.card}>{children}</div>
     </section>

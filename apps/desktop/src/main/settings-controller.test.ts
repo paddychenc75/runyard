@@ -13,6 +13,7 @@ const base: Settings = {
   updateCheck: true,
   autoSave: "delay",
   theme: "system",
+  network: { noProxyLocal: true },
   confirmCloseRunningTab: true,
 };
 

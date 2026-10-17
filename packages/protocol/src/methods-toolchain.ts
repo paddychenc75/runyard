@@ -10,7 +10,8 @@ import { toolchainReportSchema } from "./tool-check.ts";
 export const toolchainMethods = {
   "toolchain.check": {
     group: "toolchain",
-    summary: "检查一个项目或一个模板用得到的工具；cachedOnly 为 true 时只读缓存，不触发检测",
+    summary:
+      "检查一个项目或一个模板用得到的工具（都不给时是全部模板用到的工具，设置页的运行环境表）；cachedOnly 为 true 时只读缓存，不触发检测",
     params: z.object({
       playground: playgroundRefSchema.optional(),
       template: z.string().min(1).optional(),
@@ -38,10 +39,11 @@ export const toolchainMethods = {
   },
   "toolchain.setPath": {
     group: "toolchain",
-    summary: "手动指定一个工具的路径，排在所有自动查找之前，并重新检测",
+    summary:
+      "手动指定一个工具的路径，排在所有自动查找之前，并重新检测；执行不了或打印不出版本号时不接受，原来的路径不变",
     params: z.object({ tool: z.string().min(1), path: z.string().min(1) }),
     result: toolchainReportSchema,
-    errors: ["DATA_FROM_NEWER_VERSION"],
+    errors: ["DATA_FROM_NEWER_VERSION", "TOOL_PATH_INVALID"],
     status: "defined",
   },
   "settings.get": {

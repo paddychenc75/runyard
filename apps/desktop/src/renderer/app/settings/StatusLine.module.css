@@ -1,0 +1,9 @@
+.warn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-status-warning-text);
+  font-size: var(--text-secondary-size);
+  font-weight: var(--text-control-weight);
+  white-space: nowrap;
+}

@@ -6,6 +6,8 @@ import styles from "./Field.module.css";
 export interface FieldProps {
   /** 字段的名字（粗体），点它聚焦里面的控件 */
   label: Localized;
+  /** 名字只给读屏器读，不画出来（名字已经由旁边的版面写出，如设置页一行左边的标题） */
+  hideLabel?: boolean;
   /** 名字后面淡色的“可选”之类 */
   optionalLabel?: Localized;
   /** 控件下面的说明 */
@@ -20,6 +22,7 @@ export interface FieldProps {
 // 名字、控件、说明或错误叠在一起（设计稿 CreateDialog）：间距 6，名字 600 粗。
 export function Field({
   label,
+  hideLabel = false,
   optionalLabel,
   description,
   error,
@@ -31,7 +34,7 @@ export function Field({
       invalid={error !== undefined}
       className={className === undefined ? styles.root : `${styles.root} ${className}`}
     >
-      <BaseField.Label className={styles.label}>
+      <BaseField.Label className={hideLabel ? `${styles.label} ${styles.hidden}` : styles.label}>
         {label}
         {optionalLabel === undefined ? null : (
           <span className={styles.optional}>{optionalLabel}</span>

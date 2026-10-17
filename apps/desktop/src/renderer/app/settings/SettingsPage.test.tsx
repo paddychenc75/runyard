@@ -3,113 +3,12 @@
 import type { Settings } from "@runyard/protocol";
 import { cleanup, render, renderHook, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { DesktopBridge, DesktopEvents } from "../../../shared/desktop-bridge.ts";
-import type { LibraryState } from "../../../shared/library-state.ts";
-import type { LibraryRootChoice } from "../../../shared/settings-bridge.ts";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { App } from "../App.tsx";
+import { sampleSettings, type World, world } from "./settings-world.ts";
 import { useAutoSaveReader } from "./use-autosave-reader.ts";
 
 afterEach(cleanup);
-
-(Element.prototype as { getAnimations?: () => unknown[] }).getAnimations = () => [];
-vi.stubGlobal(
-  "ResizeObserver",
-  class {
-    observe() {}
-    disconnect() {}
-  },
-);
-
-const sampleSettings: Settings = {
-  libraryRoot: "/Users/me/Runyard",
-  packageManager: "auto",
-  scriptAutoRun: true,
-  cliIdleStopMinutes: 30,
-  toolPaths: {},
-  ports: { min: 7100, max: 7999 },
-  urlNewSkipConfirmForBuiltin: false,
-  updateCheck: true,
-  autoSave: "delay",
-  theme: "system",
-  confirmCloseRunningTab: true,
-};
-
-const library: LibraryState = {
-  locale: "zh-CN",
-  libraryRoot: "~/Runyard",
-  error: null,
-  closeRequest: null,
-  templates: [],
-  runs: [],
-  loaded: true,
-  recentTemplates: [],
-  tabs: [],
-  activeTab: "library",
-  playgrounds: [],
-};
-
-interface World {
-  bridge: DesktopBridge;
-  calls: { method: string; param: unknown }[];
-  settings: () => Settings;
-}
-
-// 有状态的假接口：settings.set 合并后存起来，并像主进程那样发 settings.changed
-function world(
-  options: {
-    pick?: LibraryRootChoice | null;
-    editors?: string[];
-    initial?: Partial<Settings>;
-  } = {},
-): World {
-  let settings: Settings = { ...sampleSettings, ...options.initial };
-  const calls: World["calls"] = [];
-  const listeners = new Map<string, Set<(payload: never) => void>>();
-  const call = vi.fn(async (method: string, param?: unknown) => {
-    calls.push({ method, param });
-    switch (method) {
-      case "library.get":
-        return library;
-      case "console.get":
-        return [];
-      case "settings.get":
-        return settings;
-      case "settings.set":
-        settings = { ...settings, ...(param as Partial<Settings>) };
-        for (const listener of listeners.get("settings.changed") ?? []) listener(settings as never);
-        return settings;
-      case "settings.editors":
-        return (options.editors ?? ["vscode", "cursor"]).map((id) => ({ id, name: id }));
-      case "settings.pickLibraryRoot":
-        return options.pick ?? null;
-      default:
-        return undefined;
-    }
-  });
-  const bridge = {
-    bootstrap: {
-      platform: "darwin",
-      windowControls: { side: "left", inset: 72 },
-      modKey: "meta",
-      locale: "zh-CN",
-      theme: "system",
-      reducedTransparency: false,
-      highContrast: false,
-    },
-    call,
-    on: <E extends keyof DesktopEvents>(
-      event: E,
-      listener: (payload: DesktopEvents[E]) => void,
-    ) => {
-      const set = listeners.get(event) ?? new Set();
-      set.add(listener as (payload: never) => void);
-      listeners.set(event, set);
-      return () => set.delete(listener as (payload: never) => void);
-    },
-  } as unknown as DesktopBridge;
-  return { bridge, calls, settings: () => settings };
-}
 
 async function openSettings(w: World) {
   const user = userEvent.setup();
@@ -268,11 +167,5 @@ describe("设置页", () => {
     expect(toggle.getAttribute("aria-checked")).toBe("false");
     await user.click(toggle);
     await waitFor(() => expect(sets(w)).toEqual([{ urlNewSkipConfirmForBuiltin: true }]));
-  });
-
-  it("依赖与网络、运行环境、命令行与智能体这几组没做的部分写明随哪个 issue 提供", async () => {
-    await openSettings(world());
-    expect(screen.getAllByText(/#189/)).toHaveLength(2);
-    expect(screen.getByText(/#195/)).toBeTruthy();
   });
 });

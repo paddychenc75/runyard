@@ -1,5 +1,6 @@
 import {
   type AbsPath,
+  absPath,
   type EnvLoadResult,
   joinPath,
   type Platform,
@@ -16,6 +17,7 @@ import {
   type ToolDefinition,
 } from "@runyard/protocol";
 import type { RunClock } from "../run/run-clock.ts";
+import { detectBinaryArch } from "./binary-arch.ts";
 import { type DetectDeps, detectTool } from "./detect-tool.ts";
 import {
   evaluateRequirements,
@@ -23,6 +25,7 @@ import {
   type ToolObservation,
   toolsToDetect,
 } from "./evaluate-requirements.ts";
+import { definitionInstallParams, installHintParams } from "./install-hint-params.ts";
 
 // 工具链检测的门面（技术设计 §4.8；规格 toolchain/detection）。
 // 只检测请求里用得到的工具（-01）；cachedOnly 只读缓存、不起任何进程（-02）；其余每次都实时找、实时跑版本命令，
@@ -145,6 +148,28 @@ export class ToolchainService {
     );
   }
 
+  /**
+   * 手动指定的路径能不能用（规格 DESKTOP-SETTINGS-18）：只试这一个文件，执行版本命令并读出版本号才算数。
+   * 不写缓存、不改设置；调用方决定要不要采用
+   */
+  async verifyPath(tool: string, path: string): Promise<boolean> {
+    const definition = this.#deps.definitions.get(tool);
+    if (definition === undefined) return false;
+    const { platform } = this.#deps;
+    const loaded = await platform.env.load();
+    const probe = await detectTool(
+      { platform, clock: this.#deps.clock, versionTimeoutMs: this.#deps.versionTimeoutMs },
+      definition,
+      {
+        cwd: platform.paths.home,
+        env: { ...loaded.env, ...platform.env.runDefaults() },
+        useKnownLocations: false,
+        manualPath: path,
+      },
+    );
+    return probe.state === "found" && probe.path === path;
+  }
+
   /** 应用启动时调用：在后台刷新环境和缓存，不等待；完成后发 toolchain.changed（界面先用旧值） */
   warmUp(cwd?: AbsPath): void {
     void this.recheck(cwd)
@@ -174,7 +199,37 @@ export class ToolchainService {
     const entry = this.#entries.get(key) ?? this.#entries.get(GLOBAL_KEY);
     const observations = new Map<string, ToolObservation>();
     for (const check of entry?.tools ?? []) observations.set(check.tool, observationOf(check));
-    return evaluateRequirements(request.requires, observations);
+    const evaluation = evaluateRequirements(
+      request.requires,
+      observations,
+      undefined,
+      this.#installFor,
+    );
+    // 芯片架构不参与判定，原样从缓存带出来
+    const archOf = new Map((entry?.tools ?? []).map((check) => [check.tool, check.arch]));
+    return {
+      ...evaluation,
+      tools: evaluation.tools.map((check) => {
+        const arch = archOf.get(check.tool);
+        return arch === undefined || check.status === "missing" ? check : { ...check, arch };
+      }),
+    };
+  }
+
+  /** 缺工具时展示的安装方式：模板写的在前，其余取工具定义里当前系统的（#228） */
+  readonly #installFor = (tool: string, install: Parameters<typeof installHintParams>[0]) => ({
+    ...definitionInstallParams(this.#deps.definitions.get(tool), this.#deps.platform.id),
+    ...installHintParams(install),
+  });
+
+  async #withArch(checks: ToolCheck[]): Promise<ToolCheck[]> {
+    return await Promise.all(
+      checks.map(async (check) => {
+        if (check.path === undefined) return check;
+        const arch = await detectBinaryArch(this.#deps.platform.fs, absPath(check.path));
+        return arch === undefined ? check : { ...check, arch };
+      }),
+    );
   }
 
   async #detectWith(request: ToolchainRequest, loaded: EnvLoadResult): Promise<ToolchainResult> {
@@ -200,11 +255,13 @@ export class ToolchainService {
         });
       }),
     );
-    const evaluation = evaluateRequirements(
+    const evaluated = evaluateRequirements(
       request.requires,
       new Map(probes.map((probe) => [probe.tool, probe])),
       loaded.source,
+      this.#installFor,
     );
+    const evaluation = { ...evaluated, tools: await this.#withArch(evaluated.tools) };
     await this.#store(request.cwd, evaluation.tools);
     this.#watchRefresh(request, loaded);
     const notice = envNotice(loaded);

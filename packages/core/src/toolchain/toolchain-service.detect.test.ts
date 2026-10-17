@@ -74,7 +74,11 @@ describe("只在用到时检查，且不代为安装", () => {
     );
 
     expect(result.errors).toEqual([
-      expect.objectContaining({ code: "TOOL_MISSING", params: { tool: "go", required: ">=1.24" } }),
+      expect.objectContaining({
+        code: "TOOL_MISSING",
+        // 带上工具定义里当前系统的官网（#228）；没有写 homebrew 的定义不带命令
+        params: { tool: "go", required: ">=1.24", installUrl: "https://example.com/go" },
+      }),
     ]);
     // 启动过的进程只有版本命令
     expect(h.spawnedArgv()).toEqual([[fakePath("node"), "--version"]]);

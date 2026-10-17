@@ -106,6 +106,7 @@ export function createFakePlatform(options: FakePlatformOptions = {}): FakePlatf
     fs: {
       readText: async (file) => fs.readText(file),
       readBytes: async (file) => fs.readBytes(file),
+      readHead: async (file, length) => fs.readBytes(file)?.subarray(0, length) ?? null,
       listDirs: async (dir) => fs.listDirs(dir),
       listFiles: async (dir) => fs.listFiles(dir),
       exists: async (path) => fs.exists(path),

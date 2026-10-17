@@ -22,6 +22,7 @@
 | 4 | `TOOL_MISSING` | `{ tool: string; required: string; name?: string; installCommand?: string; installUrl?: string }` |
 | 4 | `TOOL_TOO_OLD` | `{ tool: string; required: string; found: string; name?: string; installCommand?: string; installUrl?: string }` |
 | 4 | `RUNTIME_MISSING` | `{ tool: string }` |
+| 4 | `TOOL_PATH_INVALID` | `{ tool: string; path: string }` |
 | 5 | `SETUP_FAILED` | `{ name: string }` |
 | 5 | `DEPS_OFFLINE` | `{ name: string }` |
 | 6 | `RUN_FAILED` | `{ name: string }` |
@@ -48,7 +49,7 @@
 | 1 | `INTERNAL` |
 | 2 | `USAGE`、`NAME_INVALID`、`NAME_RESERVED`、`VAR_INVALID`、`TEMPLATE_INVALID` |
 | 3 | `PLAYGROUND_NOT_FOUND`、`TEMPLATE_NOT_FOUND`、`FOLDER_MISSING`、`RUN_NOT_FOUND` |
-| 4 | `TOOL_MISSING`、`TOOL_TOO_OLD`、`RUNTIME_MISSING` |
+| 4 | `TOOL_MISSING`、`TOOL_TOO_OLD`、`RUNTIME_MISSING`、`TOOL_PATH_INVALID` |
 | 5 | `SETUP_FAILED`、`DEPS_OFFLINE` |
 | 6 | `RUN_FAILED`、`SCRIPT_ERRORED`、`TEMPLATE_TEST_FAILED` |
 | 7 | `READY_TIMEOUT` |

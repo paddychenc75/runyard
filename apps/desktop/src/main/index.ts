@@ -26,6 +26,7 @@ import { createMainWindow } from "./integration/main-window.ts";
 import { createElectronSettingsHost } from "./integration/settings-host.ts";
 import { claimSingleInstance, focusWindow } from "./integration/single-instance.ts";
 import { ElectronSystemActions } from "./integration/system-actions.ts";
+import { createSystemSettings } from "./integration/system-settings-host.ts";
 import { createTerminalService, runTerminalSmokeFlow } from "./integration/terminal-host.ts";
 import { resolveUserDataDir } from "./integration/user-data.ts";
 import { keepAliveAfterClose } from "./integration/window-lifecycle.ts";
@@ -256,6 +257,7 @@ async function main(args: DesktopArgs): Promise<void> {
     library: controller,
     home,
     fallbackLocale,
+    ...createSystemSettings({ client, runtime: runtime(), home, window }),
     ...(args.theme === undefined ? {} : { fallbackTheme: args.theme }),
     ...(initial === undefined ? {} : { initial }),
   });
