@@ -1,6 +1,7 @@
 import { useLocale, useT } from "@runyard/i18n/react";
 import { Badge, Button, GlassSurface, UserText } from "@runyard/ui";
 import { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { RunningRow } from "../../shared/library-state.ts";
 import { pickLocalizedText } from "../library-view.ts";
@@ -9,9 +10,14 @@ import styles from "./RunningPopover.module.css";
 import { useNow } from "./use-now.ts";
 import { useUptime } from "./use-uptime.ts";
 
+// 弹层和按钮之间的空隙（设计稿 RunningPopover：按钮下沿 58，弹层上沿 66）
+const POPOVER_GAP = 8;
+
 export interface RunningPopoverProps {
   bridge: DesktopBridge;
   runs: readonly RunningRow[];
+  /** “N 个运行中”按钮在窗口里的矩形：弹层贴着它的右下方 */
+  anchor: DOMRect;
   onClose: () => void;
 }
 
@@ -19,7 +25,7 @@ export interface RunningPopoverProps {
 // 每个运行一行：名称、模板、端口、已运行时长、来源（标签页，或命令行加智能体名称）；“停止”只停这一个，
 // “全部停止”停列表里的全部；点一行（不在按钮上）切到它的标签页，没有就打开它（查看）。
 // Esc 和点弹层外都关闭。预览是原生视图，打开期间 useOverlay 让它让位（规格 47，真实窗口里看）。
-export function RunningPopover({ bridge, runs, onClose }: RunningPopoverProps) {
+export function RunningPopover({ bridge, runs, anchor, onClose }: RunningPopoverProps) {
   const t = useT();
   const locale = useLocale();
   const uptime = useUptime();
@@ -49,7 +55,8 @@ export function RunningPopover({ bridge, runs, onClose }: RunningPopoverProps) {
     void bridge.call("tab.open", row.id);
     onClose();
   };
-  return (
+  // 画在 body 下面的浮层层（同菜单、对话框），不在顶栏的层叠上下文里：否则页面内容会盖住它
+  return createPortal(
     <GlassSurface
       material="menu"
       className={styles.root}
@@ -57,6 +64,10 @@ export function RunningPopover({ bridge, runs, onClose }: RunningPopoverProps) {
       aria-label={t("workspace.running.aria")}
       tabIndex={-1}
       ref={root}
+      style={{
+        insetBlockStart: anchor.bottom + POPOVER_GAP,
+        insetInlineEnd: window.innerWidth - anchor.right,
+      }}
       data-running-popover=""
     >
       <div className={styles.head}>
@@ -130,6 +141,7 @@ export function RunningPopover({ bridge, runs, onClose }: RunningPopoverProps) {
         </ul>
       )}
       <p className={styles.footer}>{t("workspace.running.footer.hint")}</p>
-    </GlassSurface>
+    </GlassSurface>,
+    document.body,
   );
 }

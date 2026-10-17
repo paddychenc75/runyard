@@ -189,6 +189,14 @@ describe("运行视图（N 个运行中）", () => {
   });
 });
 
+describe("运行视图的层", () => {
+  it("[DESKTOP-WORKSPACE-47] 弹层画在 body 下的浮层层里，不在顶栏里面（否则页面内容会盖住它），并登记为浮层让原生预览让位", async () => {
+    const { dialog } = await openList(base);
+    expect(dialog.parentElement).toBe(document.body);
+    expect(document.querySelector("[data-run-bar], [role=tablist]")?.contains(dialog)).toBe(false);
+  });
+});
+
 describe("命令行持有的运行的查看画面", () => {
   const attachedTab = sampleTab({
     id: "hono-1",

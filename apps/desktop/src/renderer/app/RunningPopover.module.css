@@ -1,14 +1,14 @@
 /* 设计稿 RunningPopover：宽 420、圆角 20 的玻璃浮层，靠“N 个运行中”右缘对齐，在它下面 8 */
 .root {
-  position: absolute;
-  inset-block-start: calc(100% + var(--space-4));
-  inset-inline-end: 0;
+  position: fixed;
+  z-index: var(--z-popover);
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
   inline-size: var(--size-popover-width);
   padding: var(--space-4);
   outline: none;
+  -webkit-app-region: no-drag;
   white-space: normal;
 }
 

@@ -7,7 +7,7 @@ import {
   type TabStripItem,
   UserText,
 } from "@runyard/ui";
-import { type RefObject, useCallback, useState } from "react";
+import { type RefObject, useCallback, useRef, useState } from "react";
 import type { BootstrapInfo, DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { PlaygroundRow, RunningRow, TabRow } from "../../shared/library-state.ts";
 import { useFlushProject } from "../features/editor/EditorWorkspace.tsx";
@@ -71,6 +71,7 @@ export function TopBar({
   const flushProject = useFlushProject();
   const [listOpen, setListOpen] = useState(false);
   const closeList = useCallback(() => setListOpen(false), []);
+  const runningRef = useRef<HTMLDivElement>(null);
   const items: TabStripItem[] = [
     { id: "library", label: t("library.tab.title"), icon: "grid" },
     ...tabs.map(
@@ -113,7 +114,7 @@ export function TopBar({
       ) : (
         <RunBar bridge={bridge} tab={activeTabRow} playgrounds={playgrounds} />
       )}
-      <div className={styles.runningWrap}>
+      <div className={styles.runningWrap} ref={runningRef}>
         <GlassSurface
           material="toolbar"
           className={styles.running}
@@ -135,7 +136,14 @@ export function TopBar({
             </span>
           </button>
         </GlassSurface>
-        {listOpen ? <RunningPopover bridge={bridge} runs={runs} onClose={closeList} /> : null}
+        {listOpen && runningRef.current !== null ? (
+          <RunningPopover
+            bridge={bridge}
+            runs={runs}
+            anchor={runningRef.current.getBoundingClientRect()}
+            onClose={closeList}
+          />
+        ) : null}
       </div>
       <Button variant="primary" icon="plus" className={styles.new} onClick={onNew}>
         {t("desktop.create.title")}
