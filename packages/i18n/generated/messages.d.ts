@@ -1042,7 +1042,8 @@ export type CatalogMessages = {
   "settings.skills.other.action": Record<never, never>;
   "settings.skills.title": Record<never, never>;
   "settings.supervisor.confirm.body": {
-    count: number;
+    cli: number;
+    tab: number;
   };
   "settings.supervisor.confirm.title": Record<never, never>;
   "settings.supervisor.hint": Record<never, never>;

@@ -29,7 +29,8 @@
     "tool": "工具名，如 Node、Go、pnpm；专有名词，原样显示，不翻译"
   },
   "settings.supervisor.confirm.body": {
-    "count": "命令行持有的运行个数，至少 1"
+    "cli": "命令行持有的运行个数",
+    "tab": "标签页持有的运行个数"
   },
   "settings.supervisor.running.label": {
     "count": "命令行持有的运行个数"

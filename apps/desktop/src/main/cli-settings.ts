@@ -147,9 +147,10 @@ export class CliSettings {
     try {
       await this.#client.call("supervisor.info", {});
       const runs = await this.#client.call("run.list", { running: true });
-      return { running: true, cliRuns: runs.filter((run) => run.owner.kind === "cli").length };
+      const held = (kind: "cli" | "tab") => runs.filter((run) => run.owner.kind === kind).length;
+      return { running: true, cliRuns: held("cli"), tabRuns: held("tab") };
     } catch {
-      return { running: false, cliRuns: 0 };
+      return { running: false, cliRuns: 0, tabRuns: 0 };
     }
   }
 
@@ -161,6 +162,6 @@ export class CliSettings {
     } catch {
       return await this.supervisorStatus();
     }
-    return { running: false, cliRuns: 0 };
+    return { running: false, cliRuns: 0, tabRuns: 0 };
   }
 }

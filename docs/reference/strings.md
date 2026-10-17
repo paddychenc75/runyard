@@ -866,7 +866,7 @@
 | settings.skills.none.label | 未安装 | Not installed | — |
 | settings.skills.other.action | 安装到其他智能体… | Install for another agent… | — |
 | settings.skills.title | 智能体技能包 | Agent skill | — |
-| settings.supervisor.confirm.body | {count, plural, other {这会停止 # 个由命令行启动的运行，然后让管理进程退出。应用需要时会再启动一个新的。}} | {count, plural, one {This stops # run started from the CLI, then quits the supervisor. The app starts a new one when it needs it.} other {This stops # runs started from the CLI, then quits the supervisor. The app starts a new one when it needs it.}} | count：命令行持有的运行个数，至少 1 |
+| settings.supervisor.confirm.body | 这会停止全部运行：{cli, plural, other {# 个由命令行启动}}，{tab, plural, other {# 个在标签页里运行}}；然后让管理进程退出。应用需要时会再启动一个新的。 | This stops every run: {cli, plural, one {# started from the CLI} other {# started from the CLI}} and {tab, plural, one {# running in a tab} other {# running in tabs}}. Then the supervisor quits; the app starts a new one when it needs it. | cli：命令行持有的运行个数；tab：标签页持有的运行个数 |
 | settings.supervisor.confirm.title | 停止后台管理进程？ | Stop the background supervisor? | — |
 | settings.supervisor.hint | 照看所有运行；应用退出后继续照看命令行启动的项目 | Looks after every run; keeps CLI-started playgrounds going after the app quits | — |
 | settings.supervisor.running.label | {count, plural, =0 {运行中} other {运行中 · # 个由命令行启动}} | {count, plural, =0 {Running} one {Running · # started from the CLI} other {Running · # started from the CLI}} | count：命令行持有的运行个数 |

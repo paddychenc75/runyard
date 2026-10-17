@@ -114,7 +114,7 @@
   "settings.skills.none.label": "未安装",
   "settings.skills.other.action": "安装到其他智能体…",
   "settings.skills.title": "智能体技能包",
-  "settings.supervisor.confirm.body": "{count, plural, other {这会停止 # 个由命令行启动的运行，然后让管理进程退出。应用需要时会再启动一个新的。}}",
+  "settings.supervisor.confirm.body": "这会停止全部运行：{cli, plural, other {# 个由命令行启动}}，{tab, plural, other {# 个在标签页里运行}}；然后让管理进程退出。应用需要时会再启动一个新的。",
   "settings.supervisor.confirm.title": "停止后台管理进程？",
   "settings.supervisor.hint": "照看所有运行；应用退出后继续照看命令行启动的项目",
   "settings.supervisor.running.label": "{count, plural, =0 {运行中} other {运行中 · # 个由命令行启动}}",

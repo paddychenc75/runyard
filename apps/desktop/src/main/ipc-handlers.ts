@@ -279,9 +279,9 @@ export function registerBridgeHandlers(
         ? ((await settings?.cli?.installAgentSkill(target)) ?? noSkills)
         : noSkills,
     "supervisor.status": async () =>
-      (await settings?.cli?.supervisorStatus()) ?? { running: false, cliRuns: 0 },
+      (await settings?.cli?.supervisorStatus()) ?? { running: false, cliRuns: 0, tabRuns: 0 },
     "supervisor.stop": async () =>
-      (await settings?.cli?.stopSupervisor()) ?? { running: false, cliRuns: 0 },
+      (await settings?.cli?.stopSupervisor()) ?? { running: false, cliRuns: 0, tabRuns: 0 },
     "playground.edit": async (value) => {
       const request = parseEditRequest(value);
       return request === null ? rejectedEdit : await controller.edits.edit(request);

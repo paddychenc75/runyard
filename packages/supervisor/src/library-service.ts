@@ -66,7 +66,18 @@ export function createLibraryService(ctx: LibraryContext): LibraryService {
       const name =
         params.name ??
         nextDefaultName(params.template, await api.platform.fs.listDirs(absPath(root)));
-      const seed = await catalog.seed({ template: params.template, name, vars: params.vars ?? {} });
+      const seeded = await catalog.seed({
+        template: params.template,
+        name,
+        vars: params.vars ?? {},
+      });
+      // 设置里的包管理器在创建时写进项目，之后安装依赖按它选（规格 DESKTOP-SETTINGS-32）；
+      // “自动”不记录，安装时按运行器声明的顺序找可用的
+      const preferred = (await api.readSettings()).packageManager;
+      const seed =
+        preferred === "auto" || seeded.packageManager !== undefined
+          ? seeded
+          : { ...seeded, packageManager: preferred };
       const result = await library.create(seed, {
         name,
         ...(params.note !== undefined ? { note: params.note } : {}),

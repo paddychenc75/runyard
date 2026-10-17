@@ -115,13 +115,17 @@ describe("命令行与智能体", () => {
     expect(await screen.findByText("导出失败")).toBeTruthy();
   });
 
-  it("[DESKTOP-SETTINGS-23] 有 2 个命令行持有的运行：点“停止”先确认并写明 2 个；取消什么都不变", async () => {
-    const w = world({ on: { "supervisor.status": () => ({ running: true, cliRuns: 2 }) } });
+  it("[DESKTOP-SETTINGS-23] 有 2 个命令行持有、1 个标签页持有的运行：点“停止”先确认，写明两种运行都会停；取消什么都不变", async () => {
+    const w = world({
+      on: { "supervisor.status": () => ({ running: true, cliRuns: 2, tabRuns: 1 }) },
+    });
     const user = await openCli(w);
     expect(await screen.findByText("运行中 · 2 个由命令行启动")).toBeTruthy();
     await user.click(within(group()).getByRole("button", { name: "停止" }));
     const dialog = await screen.findByRole("alertdialog");
-    expect(within(dialog).getByText(/这会停止 2 个由命令行启动的运行/)).toBeTruthy();
+    expect(
+      within(dialog).getByText(/这会停止全部运行：2 个由命令行启动，1 个在标签页里运行/),
+    ).toBeTruthy();
     await user.click(within(dialog).getByRole("button", { name: "取消" }));
     await waitFor(() => expect(screen.queryByRole("alertdialog")).toBeNull());
     expect(w.calls.some((c) => c.method === "supervisor.stop")).toBe(false);
@@ -131,8 +135,8 @@ describe("命令行与智能体", () => {
   it("[DESKTOP-SETTINGS-23] 确认后才停：发 supervisor.stop，状态变成“未运行”", async () => {
     const w = world({
       on: {
-        "supervisor.status": () => ({ running: true, cliRuns: 2 }),
-        "supervisor.stop": () => ({ running: false, cliRuns: 0 }),
+        "supervisor.status": () => ({ running: true, cliRuns: 2, tabRuns: 1 }),
+        "supervisor.stop": () => ({ running: false, cliRuns: 0, tabRuns: 0 }),
       },
     });
     const user = await openCli(w);
@@ -144,11 +148,22 @@ describe("命令行与智能体", () => {
     expect(w.calls.filter((c) => c.method === "supervisor.stop")).toHaveLength(1);
   });
 
-  it("没有命令行持有的运行时不弹确认，直接停", async () => {
+  it("[DESKTOP-SETTINGS-23] 只有标签页持有的运行时也要确认：这些运行同样会停", async () => {
+    const w = world({
+      on: { "supervisor.status": () => ({ running: true, cliRuns: 0, tabRuns: 1 }) },
+    });
+    const user = await openCli(w);
+    await screen.findByText("运行中");
+    await user.click(within(group()).getByRole("button", { name: "停止" }));
+    const dialog = await screen.findByRole("alertdialog");
+    expect(within(dialog).getByText(/0 个由命令行启动，1 个在标签页里运行/)).toBeTruthy();
+  });
+
+  it("一个运行都没有时不弹确认，直接停", async () => {
     const w = world({
       on: {
-        "supervisor.status": () => ({ running: true, cliRuns: 0 }),
-        "supervisor.stop": () => ({ running: false, cliRuns: 0 }),
+        "supervisor.status": () => ({ running: true, cliRuns: 0, tabRuns: 0 }),
+        "supervisor.stop": () => ({ running: false, cliRuns: 0, tabRuns: 0 }),
       },
     });
     const user = await openCli(w);
