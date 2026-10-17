@@ -444,16 +444,24 @@
 | library.retention.kept.label | 已保留 | Kept | — |
 | library.row.autoClean.action | 自动清理… | Auto-clean… | — |
 | library.row.autoCleanNow.hint | 现在：{state} | Now: {state} | state：当前保留状态的文字（已保留，或剩 N 天） |
+| library.row.copyLink.action | 复制链接 | Copy link | — |
 | library.row.copyPath.action | 复制路径 | Copy path | — |
 | library.row.duplicate.action | 创建副本 | Duplicate | — |
 | library.row.editNote.action | 编辑备注… | Edit note… | — |
+| library.row.forget.action | 从资源库移除 | Remove from library | — |
 | library.row.more.aria | {name} 的更多操作 | More actions for {name} | name：项目名（用户自己起的，不翻译） |
 | library.row.open.action | 打开 | Open | — |
 | library.row.openHint.label | 回车 | Enter | — |
+| library.row.openInEditor.action | 在外部编辑器中打开 | Open in external editor | — |
+| library.row.openOnly.action | 打开但不运行 | Open without running | — |
+| library.row.openTerminal.action | 在终端中打开 | Open in Terminal | — |
+| library.row.relocate.action | 重新定位… | Locate… | — |
 | library.row.rename.action | 重命名… | Rename… | — |
 | library.row.renameBusy.hint | 安装或启动完成后才能改名 | Available once install or start finishes | — |
 | library.row.reveal.action | 在{term_fileManager}中显示 | Show in {term_fileManager} | — |
+| library.row.saveAsTemplate.action | 另存为模板… | Save as template… | — |
 | library.row.stop.action | 停止运行 | Stop | — |
+| library.row.trash.action | 移到{term_trash} | Move to {term_trash} | — |
 | library.search.clear.aria | 清除搜索 | Clear search | — |
 | library.search.key.label | {term_searchShortcut} | {term_searchShortcut} | — |
 | library.search.label | 搜索项目 | Search playgrounds | — |
@@ -471,6 +479,10 @@
 | library.table.aria | 项目列表 | Playgrounds | — |
 | library.topbar.idle.label | 没有在运行的项目 | No playground running | — |
 | library.topbar.running.label | {count, plural, other {# 个运行中}} | {count, plural, one {# running} other {# running}} | count：正在运行的项目数（标签页和命令行持有的都算） |
+| library.trash.body | 文件夹会移到{term_trash}，可以在{term_trash}里恢复。{running, select, yes {它正在运行，会先停止运行。} other {它现在没有在运行。}} | The folder moves to the {term_trash}, where you can restore it. {running, select, yes {It is running and will be stopped first.} other {It is not running right now.}} | running：项目现在是否在运行：yes 或 no |
+| library.trash.cancel.action | 取消 | Cancel | — |
+| library.trash.confirm.action | 移到{term_trash} | Move to {term_trash} | — |
+| library.trash.title | 把 {name} 移到{term_trash}？ | Move {name} to the {term_trash}? | name：项目名（用户自己起的，不翻译） |
 | notice.DEPS_FROM_CACHE | 依赖来自本机缓存。 | Dependencies came from the local cache. | — |
 | notice.ENV_DEGRADED | 只读到了非交互的终端环境，工具检测的结果可能不准。 | Only the non-interactive terminal environment could be read, so tool detection may be inaccurate. | — |
 | notice.ENV_UNRESOLVED | 没能读取你终端的环境（{reason, select, timeout {读取超时} other {读取失败}}），工具检测的结果可能不准。先用常用目录的扫描结果，后台会再试一次。 | Could not read your terminal environment ({reason, select, timeout {timed out} other {failed}}), so tool detection may be inaccurate. Runyard is using a scan of common directories for now and will try again in the background. | reason：读取失败的原因：timeout（超时）或 failed（失败）；用 select 选词 |

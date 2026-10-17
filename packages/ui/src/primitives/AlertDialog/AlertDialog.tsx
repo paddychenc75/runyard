@@ -13,6 +13,8 @@ export interface AlertDialogProps {
   description: Localized;
   /** 标题左边的图标块 */
   leading?: ReactNode;
+  /** 图标块的色调：danger 是红色（移到废纸篓这类不可轻易撤销的确认），缺省是强调色 */
+  leadingTone?: "accent" | "danger";
   /** 说明和按钮之间的内容（如勾选项） */
   children?: ReactNode;
   /** 底部按钮，靠右排 */
@@ -30,6 +32,7 @@ export function AlertDialog({
   title,
   description,
   leading,
+  leadingTone = "accent",
   children,
   actions,
   initialFocus,
@@ -45,7 +48,11 @@ export function AlertDialog({
           render={<GlassSurface material="dialog" />}
         >
           <div className={styles.header}>
-            {leading === undefined ? null : <span className={styles.leading}>{leading}</span>}
+            {leading === undefined ? null : (
+              <span className={styles.leading} data-tone={leadingTone}>
+                {leading}
+              </span>
+            )}
             <div className={styles.heading}>
               <BaseAlertDialog.Title className={styles.title}>{title}</BaseAlertDialog.Title>
               <BaseAlertDialog.Description className={styles.description}>

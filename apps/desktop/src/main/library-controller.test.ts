@@ -94,6 +94,13 @@ class FakeSystem implements SystemActions {
   revealInFileManager(path: string) {
     this.revealed.push(path);
   }
+  terminals: string[] = [];
+  openTerminal(path: string) {
+    this.terminals.push(path);
+  }
+  async chooseFolder(): Promise<string | null> {
+    return null;
+  }
   opened: string[] = [];
   openExternal(url: string) {
     this.opened.push(url);
@@ -484,16 +491,16 @@ describe("资源库行的打开、停止与更多菜单", () => {
   it("[DESKTOP-LIBRARY-VIEW-11] 复制路径：剪贴板拿到项目文件夹的绝对路径（管理进程给的那份）", async () => {
     const { controller, system } = setup();
     await controller.start();
-    controller.copyFolderPath("b");
+    controller.system.copyPath("b");
     expect(system.copied).toEqual(["/lib/b"]);
   });
 
   it("[DESKTOP-LIBRARY-VIEW-12] 在访达中显示：向系统发出选中项目文件夹的请求；不认识的项目什么也不做", async () => {
     const { controller, system } = setup();
     await controller.start();
-    controller.revealFolder("a");
-    controller.revealFolder("missing");
-    controller.copyFolderPath("missing");
+    controller.system.reveal("a");
+    controller.system.reveal("missing");
+    controller.system.copyPath("missing");
     expect(system.revealed).toEqual(["/lib/a"]);
     expect(system.copied).toEqual([]);
   });

@@ -55,6 +55,8 @@ export interface DesktopMethods extends EditorFileMethods, SettingsMethods {
   "run.stop": { param: string; result: undefined };
   /** 打开项目：新开标签并启动运行（持有者是这个标签）；已开着的只切换 */
   "tab.open": { param: string; result: undefined };
+  /** “打开但不运行”（规格 DESKTOP-LIBRARY-VIEW-33）：已停止的只开标签页、不启动、不算一次使用；运行中的同 tab.open */
+  "tab.openWithoutRun": { param: string; result: undefined };
   /** 切到资源库（"library"）或已打开的项目标签 */
   "tab.select": { param: string; result: undefined };
   /** 新建弹窗的“创建并运行”：创建项目、打开它的标签页并运行；失败（重名、不合法……）原样交回给弹窗显示在名称下 */
@@ -65,6 +67,14 @@ export interface DesktopMethods extends EditorFileMethods, SettingsMethods {
   "playground.autoClean": { param: { id: string; days: number | null }; result: EditResult };
   /** 创建副本（规格 DESKTOP-LIBRARY-VIEW-42）：不复制依赖目录，不自动运行 */
   "playground.duplicate": { param: string; result: DuplicateResult };
+  /** 移到废纸篓（规格 DESKTOP-LIBRARY-VIEW-43 至 45）：先关标签页、放掉文件监听、停止运行，再移动；失败原样交回，项目留在列表里，从不永久删除 */
+  "playground.trash": { param: string; result: EditResult };
+  /** 找不到文件夹的项目：从资源库移除，不动磁盘 */
+  "playground.forget": { param: string; result: EditResult };
+  /** 找不到文件夹的项目：选一个文件夹重新定位（取消什么都不做） */
+  "playground.relocate": { param: string; result: EditResult };
+  /** 在系统终端里打开一个位于项目文件夹的窗口（规格 DESKTOP-LIBRARY-VIEW-48） */
+  "playground.openTerminal": { param: string; result: undefined };
   /** 请求关闭项目标签（关闭钮、⌘W）：运行中且由标签持有时先出确认（状态里的 closeRequest），否则直接关 */
   "tab.close": { param: string; result: undefined };
   /** 确认关闭并停止；dontAskAgain 为真就记住“不再提示” */
@@ -98,10 +108,15 @@ export const desktopMethodNames: readonly DesktopMethod[] = [
   "run.stop",
   "tab.open",
   "tab.select",
+  "tab.openWithoutRun",
   "playground.create",
   "playground.edit",
   "playground.autoClean",
   "playground.duplicate",
+  "playground.trash",
+  "playground.forget",
+  "playground.relocate",
+  "playground.openTerminal",
   "tab.close",
   "tab.closeConfirm",
   "tab.closeCancel",

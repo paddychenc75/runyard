@@ -62,6 +62,8 @@ function setup() {
       revealInFileManager() {},
       copyText: (text) => void copied.push(text),
       openExternal: (url) => void opened.push(url),
+      openTerminal: () => undefined,
+      chooseFolder: async () => null,
     },
   });
   return { client, preview, controller };
@@ -201,10 +203,10 @@ describe("LibraryController 失败状态的数据", () => {
 describe("缺工具画面的两个系统动作", () => {
   it("[DESKTOP-WORKSPACE-18] 复制命令只放进剪贴板；官网只放行 https 链接", () => {
     const { controller } = setup();
-    controller.copyText("brew install go");
-    controller.openLink("https://go.dev/dl/");
-    controller.openLink("file:///etc/passwd");
-    controller.openLink("javascript:alert(1)");
+    controller.system.copyText("brew install go");
+    controller.system.openLink("https://go.dev/dl/");
+    controller.system.openLink("file:///etc/passwd");
+    controller.system.openLink("javascript:alert(1)");
     expect(copied).toEqual(["brew install go"]);
     expect(opened).toEqual(["https://go.dev/dl/"]);
   });

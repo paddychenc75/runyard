@@ -6,23 +6,20 @@ import type { Bounds } from "../shared/layout.ts";
 import type { DesktopError, LibraryState } from "../shared/library-state.ts";
 import {
   buildLibraryState,
+  isActiveRun,
   latestRunByPlayground,
   needsStopOnClose,
   ownedActiveRun,
   previewUrlFor,
 } from "./build-library-state.ts";
 import { ConsoleLogs } from "./console-logs.ts";
-import type {
-  LibraryClient,
-  LibraryControllerOptions,
-  PreviewHost,
-  SystemActions,
-} from "./controller-hosts.ts";
+import type { LibraryClient, LibraryControllerOptions, PreviewHost } from "./controller-hosts.ts";
 import { createPlayground } from "./create-playground.ts";
 import { toDesktopError } from "./desktop-error.ts";
 import { frameBeforeCrash } from "./last-frame.ts";
 import { readConfirmClose, readLibraryRoot } from "./library-root.ts";
 import { PlaygroundEdits } from "./playground-edits.ts";
+import { ProjectSystem } from "./project-system.ts";
 import { classifyStartError } from "./start-error.ts";
 import { StartTimeline } from "./start-timeline.ts";
 import { LIBRARY_TAB, WorkspaceTabs } from "./workspace-tabs.ts";
@@ -37,7 +34,6 @@ export class LibraryController {
   readonly #clientId: string;
   #locale: Locale;
   readonly #preview: PreviewHost;
-  readonly #system: SystemActions;
   readonly #home: string;
   readonly #now: () => number;
   readonly #timeline = new StartTimeline();
@@ -56,6 +52,7 @@ export class LibraryController {
   /** 崩溃前截下的预览最后一帧 */
   readonly #lastFrames = new Map<string, string>();
   readonly edits: PlaygroundEdits;
+  readonly system: ProjectSystem;
   #refreshing: Promise<void> | undefined;
   #refreshAgain = false;
 
@@ -64,15 +61,18 @@ export class LibraryController {
     this.#clientId = options.clientId;
     this.#locale = options.locale;
     this.#preview = options.preview;
-    this.#system = options.system;
     this.#home = options.home;
     this.#now = options.now ?? Date.now;
     this.#console = new ConsoleLogs(options.client);
+    this.system = new ProjectSystem(options.system, (id) => this.folderOf(id));
     this.edits = new PlaygroundEdits(options.client, {
       busy: this.#busy,
       emit: () => this.#emit(),
       refresh: () => this.refresh(),
       current: (id) => this.#playgrounds.find((playground) => playground.id === id),
+      dropTab: (id) => void this.#dropTab(id),
+      chooseFolder: (defaultPath) => options.system.chooseFolder(defaultPath),
+      folderOf: (id) => this.folderOf(id),
     });
   }
 
@@ -153,6 +153,19 @@ export class LibraryController {
       await this.#console.watch(playgroundId);
       await this.startRun(playgroundId);
     }
+  }
+
+  /** “打开但不运行”（规格 DESKTOP-LIBRARY-VIEW-33）：已停止的只开标签页、不算一次使用；运行中的同“打开” */
+  async openProjectWithoutRun(playgroundId: string): Promise<void> {
+    const run = latestRunByPlayground(this.#runs).get(playgroundId);
+    if (run !== undefined && isActiveRun(run.state)) {
+      await this.openProject(playgroundId);
+      return;
+    }
+    const isNew = this.#workspace.open(playgroundId);
+    this.#applyPreview();
+    this.#emit();
+    if (isNew) await this.#console.watch(playgroundId);
   }
 
   /** 这个项目标签页的控制台已有的全部输出（界面挂载时先取这份，再接后面的推送） */
@@ -246,10 +259,7 @@ export class LibraryController {
   // 先把标签去掉（界面立刻响应），再停它持有的运行；停止的时限由管理进程保证（run/ownership）
   async #closeNow(playgroundId: string): Promise<void> {
     const owned = needsStopOnClose(playgroundId, this.#runs);
-    if (!this.#workspace.close(playgroundId)) return;
-    this.#dropProject(playgroundId);
-    this.#applyPreview();
-    this.#emit();
+    if (!this.#dropTab(playgroundId)) return;
     if (owned) {
       try {
         await this.#client.call("run.stop", { playground: playgroundId });
@@ -260,34 +270,21 @@ export class LibraryController {
     await this.refresh();
   }
 
+  /** 去掉标签并放掉预览和控制台，不碰运行 */
+  #dropTab(playgroundId: string): boolean {
+    if (!this.#workspace.close(playgroundId)) return false;
+    this.#dropProject(playgroundId);
+    this.#applyPreview();
+    this.#emit();
+    return true;
+  }
+
   // 标签关掉或项目没了：预览、控制台和它留下的失败记录都放掉
   #dropProject(id: string): void {
     this.#preview.release(id);
     this.#console.unwatch(id);
     this.#startErrors.delete(id);
     this.#lastFrames.delete(id);
-  }
-
-  /** 更多菜单“在访达中显示”：路径取管理进程给的那份，界面只报项目 id */
-  revealFolder(playgroundId: string): void {
-    const path = this.folderOf(playgroundId);
-    if (path !== null) this.#system.revealInFileManager(path);
-  }
-
-  /** 更多菜单“复制路径”：把项目文件夹的绝对路径放进剪贴板 */
-  copyFolderPath(playgroundId: string): void {
-    const path = this.folderOf(playgroundId);
-    if (path !== null) this.#system.copyText(path);
-  }
-
-  /** 缺工具画面的“复制命令”：只放进剪贴板，从不执行 */
-  copyText(text: string): void {
-    this.#system.copyText(text);
-  }
-
-  /** 安装说明的官网：只放行 https（链接来自模板或工具定义，不可全信） */
-  openLink(url: string): void {
-    if (/^https:\/\/\S+$/.test(url)) this.#system.openExternal(url);
   }
 
   folderOf(playgroundId: string): string | null {

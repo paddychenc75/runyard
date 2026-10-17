@@ -14,6 +14,8 @@ export interface ConfirmDialogProps {
   icon: IconName;
   cancelLabel: Localized;
   confirmLabel: Localized;
+  /** danger：图标块和确认钮用红色，给“移到废纸篓”这类不可轻易撤销的确认；缺省是强调色 */
+  tone?: "default" | "danger";
   /** 勾选项（如“不再提示”）；不传就没有 */
   optOut?: { label: Localized; hint?: Localized };
   /** 点确认；参数是勾选项当时是否勾上（没有勾选项恒为 false） */
@@ -30,6 +32,7 @@ export function ConfirmDialog({
   title,
   description,
   icon,
+  tone = "default",
   cancelLabel,
   confirmLabel,
   optOut,
@@ -51,6 +54,7 @@ export function ConfirmDialog({
       title={title}
       description={description}
       leading={<Icon name={icon} size={20} />}
+      leadingTone={tone === "danger" ? "danger" : "accent"}
       initialFocus={cancelRef}
       container={container}
       actions={
@@ -65,7 +69,8 @@ export function ConfirmDialog({
             {cancelLabel}
           </Button>
           <Button
-            variant="primary"
+            variant={tone === "danger" ? "destructive" : "primary"}
+            size="lg"
             onClick={() => onConfirm(optOut === undefined ? false : checked)}
           >
             {confirmLabel}

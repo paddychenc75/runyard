@@ -552,18 +552,26 @@ export type CatalogMessages = {
   "library.row.autoCleanNow.hint": {
     state: string | number;
   };
+  "library.row.copyLink.action": Record<never, never>;
   "library.row.copyPath.action": Record<never, never>;
   "library.row.duplicate.action": Record<never, never>;
   "library.row.editNote.action": Record<never, never>;
+  "library.row.forget.action": Record<never, never>;
   "library.row.more.aria": {
     name: string | number;
   };
   "library.row.open.action": Record<never, never>;
   "library.row.openHint.label": Record<never, never>;
+  "library.row.openInEditor.action": Record<never, never>;
+  "library.row.openOnly.action": Record<never, never>;
+  "library.row.openTerminal.action": Record<never, never>;
+  "library.row.relocate.action": Record<never, never>;
   "library.row.rename.action": Record<never, never>;
   "library.row.renameBusy.hint": Record<never, never>;
   "library.row.reveal.action": Record<never, never>;
+  "library.row.saveAsTemplate.action": Record<never, never>;
   "library.row.stop.action": Record<never, never>;
+  "library.row.trash.action": Record<never, never>;
   "library.search.clear.aria": Record<never, never>;
   "library.search.key.label": Record<never, never>;
   "library.search.label": Record<never, never>;
@@ -584,6 +592,14 @@ export type CatalogMessages = {
   "library.topbar.idle.label": Record<never, never>;
   "library.topbar.running.label": {
     count: number;
+  };
+  "library.trash.body": {
+    running: string;
+  };
+  "library.trash.cancel.action": Record<never, never>;
+  "library.trash.confirm.action": Record<never, never>;
+  "library.trash.title": {
+    name: string | number;
   };
   "platform.fileManager": Record<never, never>;
   "platform.searchShortcut": Record<never, never>;

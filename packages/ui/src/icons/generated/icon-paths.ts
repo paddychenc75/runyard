@@ -99,6 +99,12 @@ export const iconPaths = {
     viewBox: "0 0 16 16",
     paths: ["M4.5 4.5h7v7h-7z"],
   },
+  trash: {
+    viewBox: "0 0 16 16",
+    paths: [
+      "M2.8 4.4h10.4M6.4 4.4V3h3.2v1.4M4 4.4l.65 8.15a1.2 1.2 0 0 0 1.2 1.05h4.3a1.2 1.2 0 0 0 1.2-1.05L12 4.4M6.8 7.2v4M9.2 7.2v4",
+    ],
+  },
   warning: {
     viewBox: "0 0 16 16",
     paths: ["M8 2.2l6.3 11.3H1.7zM8 6.6v3M8 11.8v.1"],

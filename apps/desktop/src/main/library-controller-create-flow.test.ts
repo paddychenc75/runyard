@@ -55,7 +55,13 @@ function setup() {
     home: "/lib",
     locale: "zh-CN",
     preview,
-    system: { revealInFileManager() {}, copyText() {}, openExternal() {} },
+    system: {
+      revealInFileManager() {},
+      copyText() {},
+      openExternal() {},
+      openTerminal() {},
+      chooseFolder: async () => null,
+    },
     now: () => clock.at,
   });
   return { client, clock, controller };

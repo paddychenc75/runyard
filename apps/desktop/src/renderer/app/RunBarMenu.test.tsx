@@ -67,7 +67,19 @@ describe("工作区的“更多”菜单", () => {
     const labels = within(menu)
       .getAllByRole("menuitem")
       .map((item) => item.textContent);
-    expect(labels).toEqual(["重命名…", "编辑备注…", "自动清理…现在：已保留", "创建副本"]);
+    expect(labels).toEqual([
+      "重命名…",
+      "编辑备注…",
+      "自动清理…现在：已保留",
+      "另存为模板…",
+      "创建副本",
+      "在外部编辑器中打开",
+      "在访达中显示",
+      "在终端中打开",
+      "复制路径",
+      "复制链接",
+      "移到废纸篓",
+    ]);
     await user.click(within(menu).getByRole("menuitem", { name: "重命名…" }));
     const dialog = await screen.findByRole("dialog");
     expect(within(dialog).getByText(/保存后会停止并用新名称重新启动/)).toBeTruthy();
@@ -114,5 +126,45 @@ describe("工作区的“更多”菜单", () => {
     expect(
       (within(dialog).getByRole("button", { name: "保存" }) as HTMLButtonElement).disabled,
     ).toBe(false);
+  });
+
+  it("[DESKTOP-WORKSPACE-28] 点运行条的“更多”：菜单按设计稿的顺序列出全部项，分成四组，“自动清理…”右侧写“现在：已保留”", async () => {
+    const user = userEvent.setup();
+    setup();
+    await user.click(screen.getByRole("button", { name: "react-counter 的更多操作" }));
+    const menu = await screen.findByRole("menu");
+    expect(
+      within(menu)
+        .getAllByRole("menuitem")
+        .map((item) => item.textContent),
+    ).toEqual([
+      "重命名…",
+      "编辑备注…",
+      "自动清理…现在：已保留",
+      "另存为模板…",
+      "创建副本",
+      "在外部编辑器中打开",
+      "在访达中显示",
+      "在终端中打开",
+      "复制路径",
+      "复制链接",
+      "移到废纸篓",
+    ]);
+    expect(within(menu).getAllByRole("separator")).toHaveLength(3);
+  });
+
+  it("[DESKTOP-WORKSPACE-30] 选“移到废纸篓”并确认，向主进程发 playground.trash（停止运行、关标签页由主进程做）", async () => {
+    const user = userEvent.setup();
+    const call = setup();
+    await user.click(screen.getByRole("button", { name: "react-counter 的更多操作" }));
+    await user.click(
+      within(await screen.findByRole("menu")).getByRole("menuitem", { name: "移到废纸篓" }),
+    );
+    const dialog = await screen.findByRole("alertdialog", {
+      name: "把 react-counter 移到废纸篓？",
+    });
+    expect(within(dialog).getByText(/会先停止运行/)).toBeTruthy();
+    await user.click(within(dialog).getByRole("button", { name: "移到废纸篓" }));
+    expect(call).toHaveBeenCalledWith("playground.trash", "a");
   });
 });

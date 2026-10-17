@@ -41,5 +41,11 @@
   },
   "library.topbar.running.label": {
     "count": "正在运行的项目数（标签页和命令行持有的都算）"
+  },
+  "library.trash.body": {
+    "running": "项目现在是否在运行：yes 或 no"
+  },
+  "library.trash.title": {
+    "name": "项目名（用户自己起的，不翻译）"
   }
 }

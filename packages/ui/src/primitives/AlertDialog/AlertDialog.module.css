@@ -57,6 +57,11 @@
   color: var(--color-text-accent);
 }
 
+.leading[data-tone="danger"] {
+  background: var(--color-fill-danger-tint);
+  color: var(--color-status-danger-text);
+}
+
 .heading {
   flex: 1;
   min-inline-size: 0;
