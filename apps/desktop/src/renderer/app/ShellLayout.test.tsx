@@ -59,6 +59,8 @@ const libraryState = (extra: Partial<LibraryState> = {}): LibraryState => ({
   error: null,
   closeRequest: null,
   templates: [],
+  runs: [],
+  loaded: true,
   recentTemplates: [],
   tabs: [],
   activeTab: "library",

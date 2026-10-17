@@ -184,6 +184,7 @@ disagree, `tokens.json` wins.
 | `--size-window-controls` | 72px | Space reserved for the native window buttons in a title bar |
 | `--size-card-gap` | 8px | Gap between cards |
 | `--size-dialog-width` | 580px | Dialog width |
+| `--size-popover-width` | 420px | Width of the running-list popover |
 | `--size-checkbox` | 18px | Checkbox box edge |
 | `--size-switch-width` | 42px | Switch track width |
 | `--size-switch-height` | 26px | Switch track height |

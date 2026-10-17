@@ -11,6 +11,7 @@ export function sampleTab(extra: Partial<TabRow> = {}): TabRow {
     busy: false,
     kind: "server",
     ownedByTab: true,
+    attached: null,
     templateName: null,
     port: 7101,
     startedAt: 1_000,

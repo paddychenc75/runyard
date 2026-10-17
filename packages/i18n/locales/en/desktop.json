@@ -122,6 +122,7 @@
   "desktop.rerun.action": "Run again",
   "desktop.run.action": "Run",
   "desktop.runbar.aria": "Run bar",
+  "desktop.runbar.cliHint.label": "Started from the CLI; closing the tab will not stop it",
   "desktop.runbar.closeHint.label": "Stops when the tab closes",
   "desktop.runbar.missing.label": "{tool} is missing",
   "desktop.runbar.state.label": "{state} :{port}",

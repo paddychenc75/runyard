@@ -47,6 +47,9 @@ export function RunBar({ bridge, tab, playgrounds }: RunBarProps) {
       {tab.active && tab.ownedByTab ? (
         <span className={styles.hint}>{t("desktop.runbar.closeHint.label")}</span>
       ) : null}
+      {tab.attached === null ? null : (
+        <span className={styles.hint}>{t("desktop.runbar.cliHint.label")}</span>
+      )}
       <RunActionButton bridge={bridge} tab={tab} />
       {row === undefined || playgrounds === undefined ? null : (
         <RunBarMenu bridge={bridge} row={row} taken={playgrounds.map((item) => item.name)} />

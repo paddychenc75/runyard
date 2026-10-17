@@ -5,6 +5,7 @@ import type { Bounds } from "../../shared/layout.ts";
 import type { TabRow } from "../../shared/library-state.ts";
 import type { OverlayCounter } from "../shared/overlay-counter.ts";
 import { PreviewSlot } from "../widgets/PreviewSlot.tsx";
+import { AttachedNotice } from "./AttachedNotice.tsx";
 import { CrashedNotice } from "./CrashedNotice.tsx";
 import { previewScreenOf } from "./failure-view.ts";
 import { MissingTool } from "./MissingTool.tsx";
@@ -77,6 +78,9 @@ export function PreviewPane({ bridge, tab, overlays }: PreviewPaneProps) {
       data-ready={tab.previewUrl !== null}
       data-screen={screen}
     >
+      {tab.attached === null ? null : (
+        <AttachedNotice bridge={bridge} tab={tab} attached={tab.attached} />
+      )}
       {portFallback === null || portKey === dismissed ? null : (
         <div className={styles.notice}>
           <PortChanged fallback={portFallback} onDismiss={() => setDismissed(portKey)} />

@@ -43,6 +43,8 @@ function library(names: string[]): LibraryState {
     error: null,
     closeRequest: null,
     templates: [template("html", "page"), template("react19", "frontend")],
+    runs: [],
+    loaded: true,
     recentTemplates: [],
     tabs: [],
     activeTab: "library",

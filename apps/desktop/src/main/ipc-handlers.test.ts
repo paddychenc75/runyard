@@ -25,6 +25,8 @@ function setup() {
     tabs: [],
     activeTab: "library",
     templates: [],
+    runs: [],
+    loaded: true,
     recentTemplates: [],
     closeRequest: null,
     error: null,
@@ -34,6 +36,8 @@ function setup() {
     getState: () => state,
     startRun: async (id: string) => void calls.push(["start", id]),
     stopRun: async (id: string) => void calls.push(["stop", id]),
+    stopAll: async () => void calls.push(["stopAll"]),
+    adoptRun: async (id: string) => void calls.push(["adopt", id]),
     openProject: async (id: string) => void calls.push(["open", id]),
     selectTab: (id: string) => void calls.push(["select", id]),
     create: async (request: unknown) => {
@@ -88,6 +92,9 @@ describe("registerBridgeHandlers", () => {
     expect(call(app, "library.get")).toBe(state);
     await call(app, "run.start", "a");
     await call(app, "run.stop", "a");
+    await call(app, "run.stopAll");
+    await call(app, "run.adopt", "a");
+    await call(app, "run.adopt", 42);
     await call(app, "tab.open", "a");
     await call(app, "tab.select", "library");
     await call(app, "playground.create", validCreate);
@@ -99,6 +106,8 @@ describe("registerBridgeHandlers", () => {
     expect(calls).toEqual([
       ["start", "a"],
       ["stop", "a"],
+      ["stopAll"],
+      ["adopt", "a"],
       ["open", "a"],
       ["select", "library"],
       ["create", validCreate],

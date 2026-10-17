@@ -43,6 +43,7 @@ import {
 import { ElectronPreviewHost } from "./preview-view.ts";
 import { registerQuitFlow } from "./quit-coordinator.ts";
 import { QuitFlushGate } from "./quit-flush-gate.ts";
+import { FileSessionStore } from "./session-store.ts";
 import { SettingsController } from "./settings-controller.ts";
 import { runSmoke } from "./smoke.ts";
 
@@ -119,6 +120,8 @@ async function main(args: DesktopArgs): Promise<void> {
     registerQuitFlow(
       app,
       async () => {
+        // 道别会停掉标签页的运行：先停止记录标签页，下次打开才知道哪些原来在运行
+        controller.freezeSession();
         try {
           await connected.client.call("session.bye", {});
         } finally {
@@ -154,6 +157,7 @@ async function main(args: DesktopArgs): Promise<void> {
     preview,
     system,
     home: args.root ?? homedir(),
+    session: new FileSessionStore(join(app.getPath("userData"), "workspace-session.json")),
   });
   const ipcHost: IpcHost = {
     handle: (channel, handler) =>

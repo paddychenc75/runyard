@@ -107,6 +107,13 @@ export function registerBridgeHandlers(
       const playground = text(id);
       if (playground !== null) await controller.stopRun(playground);
     },
+    "run.stopAll": async () => {
+      await controller.stopAll();
+    },
+    "run.adopt": async (id) => {
+      const playground = text(id);
+      if (playground !== null) await controller.adoptRun(playground);
+    },
     "tab.open": async (id) => {
       const playground = text(id);
       if (playground !== null) await controller.openProject(playground);

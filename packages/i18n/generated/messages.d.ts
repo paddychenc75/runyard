@@ -414,6 +414,7 @@ export type CatalogMessages = {
   "desktop.rerun.action": Record<never, never>;
   "desktop.run.action": Record<never, never>;
   "desktop.runbar.aria": Record<never, never>;
+  "desktop.runbar.cliHint.label": Record<never, never>;
   "desktop.runbar.closeHint.label": Record<never, never>;
   "desktop.runbar.missing.label": {
     tool: string | number;
@@ -662,6 +663,17 @@ export type CatalogMessages = {
   "settings.theme.title": Record<never, never>;
   "settings.updateCheck.hint": Record<never, never>;
   "settings.updateCheck.title": Record<never, never>;
+  "workspace.attached.adopt.action": Record<never, never>;
+  "workspace.attached.aria": Record<never, never>;
+  "workspace.attached.hint": Record<never, never>;
+  "workspace.attached.stop.action": Record<never, never>;
+  "workspace.attached.title": {
+    agent: string | number;
+    ago: string | number;
+  };
+  "workspace.attached.titlePlain.label": {
+    ago: string | number;
+  };
   "workspace.closeConfirm.body": Record<never, never>;
   "workspace.closeConfirm.cancel.action": Record<never, never>;
   "workspace.closeConfirm.confirm.action": Record<never, never>;
@@ -669,6 +681,10 @@ export type CatalogMessages = {
   "workspace.closeConfirm.optOut.label": Record<never, never>;
   "workspace.closeConfirm.title": {
     name: string | number;
+  };
+  "workspace.duration.hoursMinutes.label": {
+    hours: string | number;
+    minutes: string | number;
   };
   "workspace.files.add.aria": Record<never, never>;
   "workspace.files.collapse.label": Record<never, never>;
@@ -708,6 +724,26 @@ export type CatalogMessages = {
   "workspace.resize.hint": Record<never, never>;
   "workspace.resize.preview.label": Record<never, never>;
   "workspace.resize.tree.label": Record<never, never>;
+  "workspace.running.aria": Record<never, never>;
+  "workspace.running.footer.hint": Record<never, never>;
+  "workspace.running.idle.hint": Record<never, never>;
+  "workspace.running.open.aria": {
+    name: string | number;
+  };
+  "workspace.running.sourceCli.label": {
+    agent: string | number;
+  };
+  "workspace.running.sourceCliPlain.label": Record<never, never>;
+  "workspace.running.sourceTab.label": Record<never, never>;
+  "workspace.running.stop.action": Record<never, never>;
+  "workspace.running.stop.aria": {
+    name: string | number;
+  };
+  "workspace.running.stopAll.action": Record<never, never>;
+  "workspace.running.title": Record<never, never>;
+  "workspace.running.uptime.label": {
+    duration: string | number;
+  };
   "workspace.tab.close.label": {
     name: string | number;
   };
