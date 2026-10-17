@@ -25,6 +25,9 @@ export class ElectronPreviewHost implements PreviewHost {
   #bounds: Bounds | null = null;
   #visible = true;
 
+  /** 预览页里点了 runyard:// 链接：第二个参数是发出链接的项目 */
+  onAppLink: ((address: string, playgroundId: string) => void) | undefined;
+
   constructor(window: BrowserWindow) {
     this.#window = window;
   }
@@ -145,7 +148,10 @@ export class ElectronPreviewHost implements PreviewHost {
     contents.session.setPermissionCheckHandler((_contents, permission) =>
       isPermissionAllowed(permission),
     );
-    const guards = createNavigationGuards((address) => void shell.openExternal(address));
+    const guards = createNavigationGuards(
+      (address) => void shell.openExternal(address),
+      (address) => this.onAppLink?.(address, playgroundId),
+    );
     contents.on("will-navigate", (event, target) => {
       if (!guards.onWillNavigate(target)) event.preventDefault();
     });

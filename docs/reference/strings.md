@@ -252,6 +252,15 @@
 | desktop.failure.stepReady.label | 就绪，显示页面 | Ready, show page | — |
 | desktop.failure.stepStart.label | 启动开发服务 | Start dev server | — |
 | desktop.failure.steps.aria | 启动步骤 | Start-up steps | — |
+| desktop.linkNotice.linkInvalid.label | 这个链接无法识别 | This link is not recognized | — |
+| desktop.linkNotice.newBusy.label | 已有一个待确认的新建请求，这个链接已忽略 | A create request is already waiting for confirmation, so this link was ignored | — |
+| desktop.linkNotice.newFailed.label | 没能新建 <user>{value}</user> | Could not create <user>{value}</user> | value：链接里写的项目名称、模板标识或新名称（不翻译）；user：包住用户内容的标签 |
+| desktop.linkNotice.newNameInvalid.label | 链接里的名称 <user>{value}</user> 不合法 | The name <user>{value}</user> in the link is not valid | value：链接里写的项目名称、模板标识或新名称（不翻译）；user：包住用户内容的标签 |
+| desktop.linkNotice.newNameTaken.label | 名称 <user>{value}</user> 已被占用 | The name <user>{value}</user> is already taken | value：链接里写的项目名称、模板标识或新名称（不翻译）；user：包住用户内容的标签 |
+| desktop.linkNotice.newNoTemplate.label | 本机没有模板 <user>{value}</user> | This Mac has no template <user>{value}</user> | value：链接里写的项目名称、模板标识或新名称（不翻译）；user：包住用户内容的标签 |
+| desktop.linkNotice.newThrottled.label | 新建得太频繁，这个链接已忽略 | Too many projects created too fast, so this link was ignored | — |
+| desktop.linkNotice.openInvalid.label | 链接里的项目名称不合法 | The playground name in the link is not valid | — |
+| desktop.linkNotice.openMissing.label | 没有叫 <user>{value}</user> 的项目 | There is no playground named <user>{value}</user> | value：链接里写的项目名称、模板标识或新名称（不翻译）；user：包住用户内容的标签 |
 | desktop.menu.new.label | 新建… | New… | — |
 | desktop.menu.palette.label | 命令面板 | Command Palette | — |
 | desktop.menu.quickOpen.label | 快速打开文件 | Quick Open File | — |
@@ -474,6 +483,22 @@
 | desktop.terminalMenu.paste.hint | {term_pasteShortcut} | {term_pasteShortcut} | — |
 | desktop.terminalMenu.selectAll.action | 全选 | Select all | — |
 | desktop.terminalMenu.selectAll.hint | {term_selectAllShortcut} | {term_selectAllShortcut} | — |
+| desktop.update.banner.label | Runyard {latest} 已发布，你现在用的是 {current}。 | Runyard {latest} is out. You are using {current}. | latest：新版本号，如 0.3.0；current：当前版本号，如 0.2.0 |
+| desktop.update.download.action | 下载 | Download | — |
+| desktop.update.later.action | 以后再说 | Later | — |
+| desktop.update.region.aria | 新版本 | New version | — |
+| desktop.urlConfirm.cancel.action | 取消 | Cancel | — |
+| desktop.urlConfirm.claimed.label | 自称来自 | Claims to be from | — |
+| desktop.urlConfirm.confirm.action | 新建并运行 | Create and run | — |
+| desktop.urlConfirm.folder.label | 文件夹 | Folder | — |
+| desktop.urlConfirm.from.label | 来自一个链接 | From a link | — |
+| desktop.urlConfirm.name.label | 名称 | Name | — |
+| desktop.urlConfirm.preview.label | 来自项目 <user>{name}</user> 的预览页 | From the preview of playground <user>{name}</user> | name：项目名称（不翻译）；user：包住用户内容的标签 |
+| desktop.urlConfirm.source.label | 来源 | Source | — |
+| desktop.urlConfirm.template.label | 模板 | Template | — |
+| desktop.urlConfirm.title | 要新建并运行这个项目吗？ | Create and run this playground? | — |
+| desktop.urlConfirm.unknown.label | 未知来源 | Unknown source | — |
+| desktop.urlConfirm.warning.label | 这个来源是链接自己写的，Runyard 无法核实。新建后会安装依赖并运行模板里的代码，只在你信任它时继续。 | The link wrote this source itself and Runyard cannot verify it. Creating the project installs dependencies and runs the template's code, so continue only if you trust it. | — |
 | desktop.window.title | Runyard | Runyard | — |
 | errors.APP_REQUIRED.body | open 和 screenshot 要由桌面应用来完成，命令行自己做不到。 | The open and screenshot commands are carried out by the desktop app. The command line cannot do them on its own. | — |
 | errors.APP_REQUIRED.hint | 打开 Runyard 应用后重新运行。 | Open the Runyard app, then run it again. | — |

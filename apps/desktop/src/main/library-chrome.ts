@@ -1,5 +1,5 @@
 import type { Notice, Playground, RunSnapshot } from "@runyard/protocol";
-import type { LibraryState } from "../shared/library-state.ts";
+import type { LibraryState, LinkConfirmView, UpdateBannerView } from "../shared/library-state.ts";
 import { AgentNotices } from "./agent-notices.ts";
 import { CleanReminders, type CleanRemindersHooks } from "./clean-reminders.ts";
 import type { DockBadge, LibraryControllerOptions } from "./controller-hosts.ts";
@@ -13,6 +13,9 @@ export class LibraryChrome {
   readonly #options: LibraryControllerOptions;
   readonly #now: () => number;
   readonly #dock: DockBadge | undefined;
+  /** 待确认的 runyard://new 请求和“有新版本”提示（links/、updates/ 设置它们） */
+  linkConfirm: LinkConfirmView | null = null;
+  update: UpdateBannerView | null = null;
   #root = "";
   #synced = false;
   #badge = -1;
@@ -48,6 +51,8 @@ export class LibraryChrome {
       now: this.#now(),
       cleanLater: this.clean.laterIds,
       notices: this.notices.list(),
+      linkConfirm: this.linkConfirm,
+      update: this.update,
     };
   }
 
@@ -61,6 +66,11 @@ export class LibraryChrome {
       if (notice.code === "PATH_NEAR_LIMIT")
         this.notices.addPathNearLimit(name, notice.params.length, notice.params.limit);
     }
+  }
+
+  /** 链接和更新检查改了自己的状态后，把新状态推给界面 */
+  changed(): void {
+    this.#emit();
   }
 
   dismissNotice(id: string): void {

@@ -4,7 +4,12 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { Bounds } from "../../shared/layout.ts";
-import type { AgentRunNotice, AppNotice, PathNearLimitNotice } from "../../shared/library-state.ts";
+import type {
+  AgentRunNotice,
+  AppNotice,
+  LinkNotice,
+  PathNearLimitNotice,
+} from "../../shared/library-state.ts";
 import { useOverlay } from "../shared/overlay-context.tsx";
 import styles from "./NoticeToasts.module.css";
 import { useNow } from "./use-now.ts";
@@ -41,6 +46,8 @@ export function NoticeToasts({ bridge, notices }: NoticeToastsProps) {
       {notices.map((notice) =>
         notice.kind === "agent-run" ? (
           <AgentRunToast key={notice.id} bridge={bridge} notice={notice} />
+        ) : notice.kind === "link" ? (
+          <LinkToast key={notice.id} bridge={bridge} notice={notice} />
         ) : (
           <PathToast key={notice.id} bridge={bridge} notice={notice} />
         ),
@@ -132,4 +139,52 @@ function PathToast({ bridge, notice }: { bridge: DesktopBridge; notice: PathNear
       <Dismiss bridge={bridge} id={notice.id} />
     </GlassSurface>
   );
+}
+
+// 链接没能照做的提示（规格 DESKTOP-LINKS-03、04、10、11、14、16）：一句话，说明原因
+function LinkToast({ bridge, notice }: { bridge: DesktopBridge; notice: LinkNotice }) {
+  return (
+    <GlassSurface material="menu" className={styles.toast} data-notice={notice.id}>
+      <span aria-hidden="true" className={styles.tile} data-kind="warning">
+        <Icon name="info" size={18} />
+      </span>
+      <div className={styles.body}>
+        <p className={styles.title}>
+          <LinkNoticeText notice={notice} />
+        </p>
+      </div>
+      <Dismiss bridge={bridge} id={notice.id} />
+    </GlassSurface>
+  );
+}
+
+function LinkNoticeText({ notice }: { notice: LinkNotice }) {
+  const values = { value: notice.value ?? "" };
+  const components = { user: <UserText /> };
+  switch (notice.code) {
+    case "open-missing":
+      return <T k="desktop.linkNotice.openMissing.label" values={values} components={components} />;
+    case "new-no-template":
+      return (
+        <T k="desktop.linkNotice.newNoTemplate.label" values={values} components={components} />
+      );
+    case "new-name-invalid":
+      return (
+        <T k="desktop.linkNotice.newNameInvalid.label" values={values} components={components} />
+      );
+    case "new-name-taken":
+      return (
+        <T k="desktop.linkNotice.newNameTaken.label" values={values} components={components} />
+      );
+    case "new-failed":
+      return <T k="desktop.linkNotice.newFailed.label" values={values} components={components} />;
+    case "open-invalid":
+      return <T k="desktop.linkNotice.openInvalid.label" />;
+    case "new-busy":
+      return <T k="desktop.linkNotice.newBusy.label" />;
+    case "new-throttled":
+      return <T k="desktop.linkNotice.newThrottled.label" />;
+    case "link-invalid":
+      return <T k="desktop.linkNotice.linkInvalid.label" />;
+  }
 }

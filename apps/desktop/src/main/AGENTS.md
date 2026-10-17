@@ -24,3 +24,12 @@
 ## 测试
 
 `library-controller-notices.test.ts`（场景 49 至 52、54 至 60 的主进程一侧）和 `renderer/app/LibraryNotices.test.tsx`（界面一侧，含 53）；假管理进程是有状态的，用假时钟 `now`。Dock 角标、右下角提示与原生预览的让位、窗口不被提到前面要在真实窗口里看（见 PR 的“怎么验证的”）。
+
+## 链接与检查更新（#190、#191、#192）
+
+规格 DESKTOP-LINKS-01 至 16、DESKTOP-SETTINGS-26 至 31，设计稿 UrlConfirm、UpdateBanner。
+
+- `links/`：`parse-link.ts` 只认 `runyard://open/<名称>` 和 `runyard://new/<模板>`（可选参数只有 `name`、`note`、`clean-after`、`source`，其余丢掉）；`link-handler.ts` 是行为（一次只一个待确认请求、内置模板免确认时每 5 秒最多一个、来自预览页的标明项目），不认识 Electron，宿主接口 `LinkHost`；`link-host.ts` 把它接到资源库控制器；`link-inbox.ts` 是收件箱：`open-url` 事件冷启动时早于 `ready`，入口最前面就挂监听，先排队，资源库读出来后再处理。协议的系统登记只由打包完成（`packaging/builder-config.ts` 的 `protocols`，写进 Info.plist），应用运行时不调用 `setAsDefaultProtocolClient`；冷启动送达（DESKTOP-LINKS-05）只能在打包后的应用上手动验证。
+- 预览页里点的 `runyard://` 链接经 `createNavigationGuards` 的第二个回调交给链接处理（页面本身不跳转，别的协议仍一律拦下）。
+- 待确认请求（`LibraryState.linkConfirm`）、链接没能照做的提示（`notices` 里 `kind: "link"`）和“有新版本”（`LibraryState.update`）都经 `LibraryChrome` 推给界面，界面只发 `link.confirm`、`link.cancel`、`update.download`、`update.later`。
+- `updates/`：`update-checker.ts` 一天最多请求一次 GitHub Releases 的公开接口（`RELEASES_API`），请求不带 Cookie、令牌或任何标识，失败不出声，不下载也不安装；发出请求前就记下“今天查过”（`update-record.ts`，存在应用数据目录的 `update-check.json`）。`canFetch` 为假（从源码运行、冒烟）时只显示记录里已有的，绝不联网；命令行包里没有联网代码（`packages/cli/src/no-update-check.test.ts` 守着）。测试一律用假的 fetch，不碰真实的 GitHub。
