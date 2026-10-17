@@ -208,14 +208,21 @@ describe("命令行持有的运行的查看画面", () => {
   it("[DESKTOP-WORKSPACE-48] 出现说明条和两个按钮，运行条写由命令行启动、关闭标签页不会停止", async () => {
     setup(viewing);
     const notice = await screen.findByRole("region", { name: "命令行启动的运行" }, SLOW);
-    expect(
-      within(notice).getByText("这个项目由 Claude Code 在 31 分钟前 通过命令行启动。"),
-    ).toBeTruthy();
+    expect(within(notice).getByText("Claude Code 通过命令行启动 · 31 分钟前")).toBeTruthy();
     expect(within(notice).getByText(/改为由我管理后，关闭标签页就会停止它/)).toBeTruthy();
     expect(within(notice).getByRole("button", { name: "改为由我管理" })).toBeTruthy();
     expect(within(notice).getByRole("button", { name: "停止" })).toBeTruthy();
     expect(screen.getByText("由命令行启动，关闭标签页不会停止")).toBeTruthy();
     expect(screen.queryByText("关闭标签页即停止")).toBeNull();
+  });
+
+  it("[DESKTOP-WORKSPACE-48] 不知道是哪个智能体时只写“通过命令行启动 · 多久前”，参数不夹在句子中间", async () => {
+    setup({
+      ...viewing,
+      tabs: [{ ...attachedTab, attached: { agent: null, startedAt: NOW - 4 * MIN } }],
+    });
+    const notice = await screen.findByRole("region", { name: "命令行启动的运行" }, SLOW);
+    expect(within(notice).getByText("通过命令行启动 · 4 分钟前")).toBeTruthy();
   });
 
   it("[DESKTOP-WORKSPACE-49] 点“改为由我管理”请求改持有者；改完后说明条消失、运行条写关闭标签页即停止", async () => {

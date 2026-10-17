@@ -884,8 +884,8 @@
 | workspace.attached.aria | 命令行启动的运行 | Run started from the command line | — |
 | workspace.attached.hint | 改为由我管理后，关闭标签页就会停止它。不改的话，它空闲一段时间后会自动停止。 | Once you manage it, closing the tab stops it. Otherwise it stops by itself after a while idle. | — |
 | workspace.attached.stop.action | 停止 | Stop | — |
-| workspace.attached.title | 这个项目由 {agent} 在 {ago} 通过命令行启动。 | {agent} started this playground from the command line {ago}. | agent：智能体的名称，来自命令行的启动记录，原样显示；ago：相对时间，如“31 分钟前”，由格式化函数生成 |
-| workspace.attached.titlePlain.label | 这个项目在 {ago} 通过命令行启动。 | This playground was started from the command line {ago}. | ago：相对时间，如“31 分钟前”，由格式化函数生成 |
+| workspace.attached.title | {agent} 通过命令行启动 · {ago} | Started from the command line by {agent} · {ago} | agent：智能体的名称，来自命令行的启动记录，原样显示；ago：相对时间，如“31 分钟前”，由格式化函数生成 |
+| workspace.attached.titlePlain.label | 通过命令行启动 · {ago} | Started from the command line · {ago} | ago：相对时间，如“31 分钟前”，由格式化函数生成 |
 | workspace.closeConfirm.body | 关闭标签页会停止这个项目。代码和文件不受影响，下次打开会重新运行。 | Closing the tab stops this playground. Your code and files are not affected, and it runs again the next time you open it. | — |
 | workspace.closeConfirm.cancel.action | 取消 | Cancel | — |
 | workspace.closeConfirm.close.action | 关闭 | Close | — |
