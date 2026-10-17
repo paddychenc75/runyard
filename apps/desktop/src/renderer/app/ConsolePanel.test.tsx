@@ -1,7 +1,15 @@
 // @vitest-environment jsdom
 import { desktopCatalogs } from "@runyard/i18n";
 import { I18nProvider } from "@runyard/i18n/react";
-import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  cleanup,
+  configure,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
@@ -26,6 +34,8 @@ vi.setConfig({ testTimeout: 20_000 });
 const SLOW = { timeout: 8000 };
 
 beforeEach(() => FakeTerminal.reset());
+// 慢机器（windows-2025）上整个外壳加弹窗要几秒才画出来：等待条件的期限放宽（用例的时限不变）
+configure({ asyncUtilTimeout: 8000 });
 afterEach(cleanup);
 
 const tab = sampleTab({ id: "a", name: "react-counter" });

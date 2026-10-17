@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
+import { cleanup, configure, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
@@ -17,6 +17,8 @@ vi.stubGlobal(
 );
 vi.setConfig({ testTimeout: 20_000 });
 const SLOW = { timeout: 8000 };
+// 慢机器（windows-2025）上整个外壳加弹窗要几秒才画出来：等待条件的期限放宽（用例的时限不变）
+configure({ asyncUtilTimeout: 8000 });
 afterEach(cleanup);
 
 const state: LibraryState = {

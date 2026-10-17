@@ -8,6 +8,9 @@ import { FakeSearchAddon, FakeTerminal, FakeWebLinksAddon } from "./test-support
 
 // @xterm/* 在 vitest.setup.tsx 里统一换成了假类
 
+// 慢机器上等待条件的期限放宽（用例的时限不变）
+const slowWaitFor = (check: () => void | Promise<void>) => vi.waitFor(check, { timeout: 8000 });
+
 beforeEach(() => FakeTerminal.reset());
 afterEach(() => vi.restoreAllMocks());
 
@@ -48,7 +51,7 @@ describe("终端会话：按键", () => {
     t.term().selection = "hello";
     const withSelection = t.term().press("c", { metaKey: true });
     expect(withSelection).toEqual({ xtermHandles: false, defaultPrevented: true });
-    await vi.waitFor(() => expect(t.named("clipboard.copy")).toEqual(["hello"]));
+    await slowWaitFor(() => expect(t.named("clipboard.copy")).toEqual(["hello"]));
     t.term().selection = "";
     t.term().press("c", { metaKey: true });
     await Promise.resolve();
@@ -69,7 +72,7 @@ describe("终端会话：按键", () => {
     const t = setup({ "clipboard.read": "echo a\necho b" });
     await t.session.start();
     t.term().press("v", { metaKey: true });
-    await vi.waitFor(() => expect(t.term().pastes).toEqual(["echo a\necho b"]));
+    await slowWaitFor(() => expect(t.term().pastes).toEqual(["echo a\necho b"]));
     expect(t.named("terminal.write")).toEqual([]);
   });
 
@@ -77,7 +80,7 @@ describe("终端会话：按键", () => {
     const t = setup();
     await t.session.start();
     t.term().press("k", { metaKey: true });
-    await vi.waitFor(() => expect(t.named("terminal.clear")).toEqual([{ project: "demo" }]));
+    await slowWaitFor(() => expect(t.named("terminal.clear")).toEqual([{ project: "demo" }]));
     expect(t.term().cleared).toBe(1);
     expect(t.named("terminal.write")).toEqual([]);
     expect(t.term().disposed).toBe(false);
@@ -225,10 +228,10 @@ describe("终端会话：结束和重新打开", () => {
     expect(t.named("terminal.write")).toEqual([]);
     expect(t.named("terminal.reopen")).toEqual([]);
     t.term().emitData("\r");
-    await vi.waitFor(() =>
+    await slowWaitFor(() =>
       expect(t.named("terminal.reopen")).toEqual([{ project: "demo", cols: 100, rows: 30 }]),
     );
-    await vi.waitFor(() => expect(t.term().resets).toBe(1));
+    await slowWaitFor(() => expect(t.term().resets).toBe(1));
     expect(t.states.at(-1)?.kind).toBe("running");
   });
 

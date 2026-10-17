@@ -8,6 +8,9 @@ import { TerminalView } from "./TerminalView.tsx";
 import { fakeBridge, runningSnapshot } from "./test-support/fake-bridge.ts";
 import { FakeSearchAddon, FakeTerminal } from "./test-support/fake-xterm.ts";
 
+// 慢机器上等待条件的期限放宽（用例的时限不变）
+const slowWaitFor = (check: () => void | Promise<void>) => vi.waitFor(check, { timeout: 8000 });
+
 beforeEach(() => FakeTerminal.reset());
 afterEach(cleanup);
 
@@ -31,19 +34,19 @@ describe("终端视图：结束后重新打开", () => {
   it("[DESKTOP-TERMINAL-25] 终端结束：保留内容，写“终端已结束（退出码 0）”和“重新打开终端”；点按钮开新的", async () => {
     const user = userEvent.setup();
     const t = setup();
-    await vi.waitFor(() => expect(t.named("terminal.open")).toHaveLength(1));
+    await slowWaitFor(() => expect(t.named("terminal.open")).toHaveLength(1));
     expect(screen.queryByText(/终端已结束/)).toBeNull();
     t.emitState({ project: "demo", state: exited });
     expect(await screen.findByText("终端已结束（退出码 0）")).toBeTruthy();
     expect(FakeTerminal.last().resets).toBe(0);
     await user.click(screen.getByRole("button", { name: "重新打开终端" }));
-    await vi.waitFor(() => expect(t.named("terminal.reopen")).toHaveLength(1));
-    await vi.waitFor(() => expect(screen.queryByText(/终端已结束/)).toBeNull());
+    await slowWaitFor(() => expect(t.named("terminal.reopen")).toHaveLength(1));
+    await slowWaitFor(() => expect(screen.queryByText(/终端已结束/)).toBeNull());
   });
 
   it("[DESKTOP-TERMINAL-25] 英文界面写 Terminal ended (exit code 0) 和 Reopen terminal", async () => {
     const t = setup({}, "en");
-    await vi.waitFor(() => expect(t.named("terminal.open")).toHaveLength(1));
+    await slowWaitFor(() => expect(t.named("terminal.open")).toHaveLength(1));
     t.emitState({ project: "demo", state: exited });
     expect(await screen.findByText("Terminal ended (exit code 0)")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Reopen terminal" })).toBeTruthy();
@@ -51,7 +54,7 @@ describe("终端视图：结束后重新打开", () => {
 
   it("[DESKTOP-TERMINAL-26] 后台进程意外结束：写“终端意外结束”和重新打开按钮；改名写“项目已改名，终端已关闭”", async () => {
     const t = setup();
-    await vi.waitFor(() => expect(t.named("terminal.open")).toHaveLength(1));
+    await slowWaitFor(() => expect(t.named("terminal.open")).toHaveLength(1));
     t.emitState({ project: "demo", state: { kind: "ended", reason: "host-crashed" } });
     expect(await screen.findByText("终端意外结束")).toBeTruthy();
     expect(screen.getByRole("button", { name: "重新打开终端" })).toBeTruthy();
@@ -71,7 +74,7 @@ describe("终端视图：结束后重新打开", () => {
         output: "% ",
       },
     });
-    await vi.waitFor(() => expect(FakeTerminal.last().writes.length).toBe(2));
+    await slowWaitFor(() => expect(FakeTerminal.last().writes.length).toBe(2));
     const [first, second] = FakeTerminal.last().writes;
     expect(first).toBe("没能启动 /usr/local/bin/fish（文件不存在），已改用 /bin/zsh。\r\n");
     expect(second).toBe("% ");
@@ -82,7 +85,7 @@ describe("终端视图：查找栏", () => {
   it("[DESKTOP-TERMINAL-23] ⌘F 打开查找栏；输入后显示“第 1 个，共 3 个”；⌘G 依次往下；Esc 关闭、焦点回终端", async () => {
     const user = userEvent.setup();
     const t = setup();
-    await vi.waitFor(() => expect(t.named("terminal.open")).toHaveLength(1));
+    await slowWaitFor(() => expect(t.named("terminal.open")).toHaveLength(1));
     const term = FakeTerminal.last();
     expect(screen.queryByRole("search")).toBeNull();
     term.press("f", { metaKey: true });
@@ -105,7 +108,7 @@ describe("终端视图：查找栏", () => {
   it("[DESKTOP-TERMINAL-23] 查找栏里回车找下一个、⇧回车找上一个；三个开关改变查找条件", async () => {
     const user = userEvent.setup();
     const t = setup();
-    await vi.waitFor(() => expect(t.named("terminal.open")).toHaveLength(1));
+    await slowWaitFor(() => expect(t.named("terminal.open")).toHaveLength(1));
     FakeTerminal.last().press("f", { metaKey: true });
     const bar = await screen.findByRole("search");
     await user.type(within(bar).getByRole("textbox"), "x");
@@ -131,7 +134,7 @@ describe("终端视图：右键菜单", () => {
 
   it("[DESKTOP-TERMINAL-18] 右键弹出复制、粘贴、全选、清除；没有选中文字时“复制”不可用", async () => {
     const t = setup();
-    await vi.waitFor(() => expect(t.named("terminal.open")).toHaveLength(1));
+    await slowWaitFor(() => expect(t.named("terminal.open")).toHaveLength(1));
     await rightClick();
     const menu = await screen.findByRole("menu", { name: "终端菜单" });
     const items = within(menu).getAllByRole("menuitem");
@@ -148,14 +151,14 @@ describe("终端视图：右键菜单", () => {
   it("[DESKTOP-TERMINAL-18] 有选中文字时“复制”可用，点它复制选中的内容；“清除”清屏", async () => {
     const user = userEvent.setup();
     const t = setup();
-    await vi.waitFor(() => expect(t.named("terminal.open")).toHaveLength(1));
+    await slowWaitFor(() => expect(t.named("terminal.open")).toHaveLength(1));
     FakeTerminal.last().selection = "src/utils.ts";
     await rightClick();
     await user.click(await screen.findByRole("menuitem", { name: /复制/ }));
-    await vi.waitFor(() => expect(t.named("clipboard.copy")).toEqual(["src/utils.ts"]));
+    await slowWaitFor(() => expect(t.named("clipboard.copy")).toEqual(["src/utils.ts"]));
     await rightClick();
     await user.click(await screen.findByRole("menuitem", { name: /清除/ }));
-    await vi.waitFor(() => expect(t.named("terminal.clear")).toEqual([{ project: "demo" }]));
+    await slowWaitFor(() => expect(t.named("terminal.clear")).toEqual([{ project: "demo" }]));
     expect(FakeTerminal.last().cleared).toBe(1);
   });
 });
