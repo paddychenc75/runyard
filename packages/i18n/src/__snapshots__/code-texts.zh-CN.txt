@@ -107,9 +107,9 @@ errors.APP_REQUIRED.body: open 和 screenshot 要由桌面应用来完成，命�
 errors.APP_REQUIRED.hint: 打开 Runyard 应用后重新运行。
 errors.APP_REQUIRED.hintCli: 打开 Runyard 应用后重新运行这条命令。
 errors.SUPERVISOR_UNAVAILABLE.title: 连不上 Runyard 的管理进程
-errors.SUPERVISOR_UNAVAILABLE.body: 没能和后台的管理进程建立可信的连接。
-errors.SUPERVISOR_UNAVAILABLE.hint: 没有发送过任何请求，可以直接重新运行。
-errors.SUPERVISOR_UNAVAILABLE.hintCli: 没有发送过任何请求。运行 runyard doctor 查看原因，再重新运行这条命令。
+errors.SUPERVISOR_UNAVAILABLE.body: 后台的管理进程没能启动：它的连接文件路径超过了系统允许的长度。
+errors.SUPERVISOR_UNAVAILABLE.hint: 把 Runyard 的数据目录换到更短的路径下，再重新运行。
+errors.SUPERVISOR_UNAVAILABLE.hintCli: 没有发送过任何请求。换一个更短的 --root 或主目录路径，再重新运行这条命令；运行 runyard doctor 可以再确认。
 errors.SUPERVISOR_OUTDATED.title: 后台的管理进程版本较旧
 errors.SUPERVISOR_OUTDATED.body: 正在运行的管理进程比当前使用的 Runyard 旧，换成新版本会停掉 3 个运行。命令没有继续执行。
 errors.SUPERVISOR_OUTDATED.hint: 应用会先告诉你会停掉几个运行，你确认后才会更新。

@@ -88,6 +88,15 @@
   "errors.SUPERVISOR_OUTDATED.hintCli": {
     "runs": "升级管理进程会停掉的运行个数，非负整数；0 表示是桌面应用在用它，不是有运行"
   },
+  "errors.SUPERVISOR_UNAVAILABLE.body": {
+    "reason": "管理进程启动失败的原因：PATH_TOO_LONG（连接文件路径超过系统上限）或 STARTUP_FAILED（其他启动失败）；可选，不知道原因时用不带原因的通用说法"
+  },
+  "errors.SUPERVISOR_UNAVAILABLE.hint": {
+    "reason": "管理进程启动失败的原因：PATH_TOO_LONG（连接文件路径超过系统上限）或 STARTUP_FAILED（其他启动失败）；可选，不知道原因时用不带原因的通用说法"
+  },
+  "errors.SUPERVISOR_UNAVAILABLE.hintCli": {
+    "reason": "管理进程启动失败的原因：PATH_TOO_LONG（连接文件路径超过系统上限）或 STARTUP_FAILED（其他启动失败）；可选，不知道原因时用不带原因的通用说法"
+  },
   "errors.TEMPLATE_INVALID.hintCli": { "template": "用户给的模板标识，原样显示" },
   "errors.TEMPLATE_INVALID.title": { "template": "用户给的模板标识，原样显示" },
   "errors.TEMPLATE_NOT_FOUND.title": { "template": "用户给的模板标识，原样显示" },

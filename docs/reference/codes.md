@@ -36,7 +36,7 @@
 | 9 | `TRASH_UNAVAILABLE` | `{ name: string }` |
 | 9 | `PORT_IN_USE` | `{ port: integer }` |
 | 10 | `APP_REQUIRED` | 无 |
-| 10 | `SUPERVISOR_UNAVAILABLE` | 无 |
+| 10 | `SUPERVISOR_UNAVAILABLE` | `{ reason?: 'PATH_TOO_LONG' \| 'STARTUP_FAILED' }` |
 | 10 | `SUPERVISOR_OUTDATED` | `{ runs: integer }` |
 | 10 | `CLIENT_OUTDATED` | 无 |
 | 10 | `NOT_SUPPORTED` | 无 |

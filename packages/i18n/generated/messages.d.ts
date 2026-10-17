@@ -58,6 +58,7 @@ export type CatalogMessages = {
   };
   "cli.doctor.supervisorDown.body": {
     reason: string | number;
+    startFailure: string;
   };
   "cli.doctor.supervisorRunning.body": {
     runs: number;

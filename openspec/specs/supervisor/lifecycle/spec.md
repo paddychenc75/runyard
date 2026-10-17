@@ -41,6 +41,7 @@
 
 ### Requirement: 谁先需要谁启动，并与启动者脱钩
 客户端 MUST 先读发现文件并尝试连接，连不上才启动管理进程。管理进程 MUST 与启动者脱钩：启动者退出后它 MUST 继续存活。启动参数 MUST 只走命令行参数，工作目录 MUST 是状态目录。
+启动超时仍连不上时，客户端 MUST 读这次启动之后写进 `supervisor.log` 的启动失败记录，把原因放进 `SUPERVISOR_UNAVAILABLE` 的参数 `reason`：路径过长是 `PATH_TOO_LONG`，其他启动失败是 `STARTUP_FAILED`；日志里没有这次的启动失败记录时 MUST 不带 `reason`。
 来源：PRD #prd-decided-by-default；PRD #prd-run-ownership；ADR 0005
 
 #### Scenario: [SUPERVISOR-LIFECYCLE-07] 命令行先需要它
@@ -114,6 +115,12 @@
 - 前提：桌面应用刚断开，没有任何运行，命令行连着
 - **WHEN** 命令行发 `supervisor.shutdown { ifIdle: true, reason: 'upgrade' }`
 - **THEN** 管理进程在应用的断开被处理后退出
+- 验证：test
+
+#### Scenario: [SUPERVISOR-LIFECYCLE-22] 启动失败带着原因
+- 前提：管理进程拉起后立即退出，`supervisor.log` 里这次新增了一行 `startup failed: PATH_TOO_LONG: ...`
+- **WHEN** 客户端等到启动超时
+- **THEN** 报 `SUPERVISOR_UNAVAILABLE`，参数 `reason` 是 `PATH_TOO_LONG`；日志里是别的启动失败时 `reason` 是 `STARTUP_FAILED`；日志里只有这次之前的旧记录、或没有记录时不带 `reason`
 - 验证：test
 
 ### Requirement: 崩溃后的清理按身份核对

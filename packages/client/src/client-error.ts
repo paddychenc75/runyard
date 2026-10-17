@@ -2,6 +2,7 @@ import {
   type ErrorCode,
   type ErrorParams,
   type RunyardError,
+  type SupervisorStartFailure,
   toKnownError,
   type WireError,
 } from "@runyard/protocol";
@@ -41,6 +42,6 @@ export function isClientError(value: unknown): value is ClientError {
   return value instanceof ClientError;
 }
 
-export function unavailable(debug: string): ClientError {
-  return clientError("SUPERVISOR_UNAVAILABLE", {}, debug);
+export function unavailable(debug: string, reason?: SupervisorStartFailure): ClientError {
+  return clientError("SUPERVISOR_UNAVAILABLE", reason === undefined ? {} : { reason }, debug);
 }

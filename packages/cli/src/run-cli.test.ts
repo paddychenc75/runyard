@@ -331,6 +331,30 @@ describe("退出码", () => {
     expect(result.code).toBe(10);
   });
 
+  it("[CLI-COMMANDS-89] 启动失败的原因是路径过长：提示写明原因和办法，仍含 runyard doctor；--json 的 params 带 reason，hint 是英文", async () => {
+    const make = () =>
+      harness({
+        connect: async () => {
+          throw clientError("SUPERVISOR_UNAVAILABLE", { reason: "PATH_TOO_LONG" }, "launch failed");
+        },
+        handlers: {
+          status: async (context) => {
+            await context.client();
+          },
+        },
+      });
+    const human = await make().run(["status", "--lang", "zh-CN"]);
+    expect(human.code).toBe(10);
+    expect(human.stderr).toContain("路径超过了系统允许的长度");
+    expect(human.stderr).toContain("更短的 --root");
+    expect(human.stderr).toContain("runyard doctor");
+    const json = await make().run(["status", "--json"]);
+    const error = (JSON.parse(json.stdout) as { error: { data: unknown; hint: string } }).error;
+    expect(error.data).toEqual({ reason: "PATH_TOO_LONG" });
+    expect(error.hint).toContain("shorter --root");
+    expect(error.hint).toContain("runyard doctor");
+  });
+
   it("声明了不需要管理进程的命令去连它，按 INTERNAL 报告而不是真的连", async () => {
     const h = harness({
       handlers: {
