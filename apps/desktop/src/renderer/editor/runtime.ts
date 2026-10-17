@@ -2,6 +2,7 @@ import "./monaco-features.ts";
 import { shikiThemes } from "@runyard/tokens";
 import { shikiToMonaco } from "@shikijs/monaco";
 import * as monaco from "monaco-editor/editor/editor.api.js";
+import * as json from "monaco-editor/languages/features/json/register.js";
 import * as typescript from "monaco-editor/languages/features/typescript/register.js";
 import { createHighlighterCore, type ThemeInput } from "shiki/core";
 import { createJavaScriptRegexEngine } from "shiki/engine/javascript";
@@ -83,10 +84,24 @@ function worker(name: string): Worker {
 function installWorkerEnvironment(): void {
   (globalThis as { MonacoEnvironment?: unknown }).MonacoEnvironment = {
     getWorker(_id: string, label: string): Worker {
-      // 只要着色和 TS 智能提示：CSS、HTML、JSON 没有语言服务线程，落到编辑器线程
-      return label === "typescript" || label === "javascript"
-        ? worker("ts.worker")
-        : worker("editor.worker");
+      // 每种有语言服务的语言一个线程；其余（Markdown、Python、Go、Vue）只有着色，用编辑器线程
+      switch (label) {
+        case "typescript":
+        case "javascript":
+          return worker("ts.worker");
+        case "css":
+        case "scss":
+        case "less":
+          return worker("css.worker");
+        case "html":
+        case "handlebars":
+        case "razor":
+          return worker("html.worker");
+        case "json":
+          return worker("json.worker");
+        default:
+          return worker("editor.worker");
+      }
     },
   };
 }
@@ -116,6 +131,8 @@ export async function createEditorRuntime(): Promise<EditorRuntime> {
     if (!known.has(id)) monaco.languages.register({ id });
   }
   shikiToMonaco(highlighter, monaco);
+  // JSON 的语言服务自带一个着色器，会在第一个 JSON 模型出现时盖掉 Shiki 的；着色一律用 Shiki，所以关掉它的
+  json.jsonDefaults.setModeConfiguration({ ...json.jsonDefaults.modeConfiguration, tokens: false });
   // .tsx 也用 Monaco 的 typescript（TS 的功能只挂在 typescript、javascript 两个 id 上），
   // 着色再建一个只含 TSX 语法、改名为 typescript 的高亮器覆盖它；JS 的语法本身带 JSX
   const tsxGrammar = langTsx[0];

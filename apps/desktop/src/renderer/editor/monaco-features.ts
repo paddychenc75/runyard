@@ -1,7 +1,7 @@
 // Monaco 的功能清单：从 monaco-editor 0.57.0 的 esm/vs/editor/editor.main.js 机械筛出，
 // 不直接引入 editor.main.js（它把 80 多种语言的定义全带上）。保留 editor/contrib、editor/browser 的功能文件，
 // 语言定义只留 typescript、javascript、css、html、markdown、python、go、scss（着色走 Shiki，定义只提供括号、注释等语言配置），
-// TS 的语言服务只要 typescript；CSS/HTML/JSON 的语言服务和后台线程不引入（省约 2.3 MB，证据见 k8-editor-validation.md“装法”）。
+// TS、CSS、HTML、JSON 的语言服务都引入（补全、悬停、校验），各自的后台线程在 workers/ 下（#261 后续：CSS、HTML、JSON 的线程原先为省约 2.3 MB 没带，见 k8-editor-validation.md“装法”）。
 // 升级 Monaco 时要对照新版 editor.main.js 重新生成这份清单。
 // 样式文件不在包的 exports 映射里（"./*" 会加 .js），只能用相对路径指进 node_modules。
 import "monaco-editor/languages/definitions/css/register.js";
@@ -12,6 +12,9 @@ import "monaco-editor/languages/definitions/markdown/register.js";
 import "monaco-editor/languages/definitions/python/register.js";
 import "monaco-editor/languages/definitions/scss/register.js";
 import "monaco-editor/languages/definitions/typescript/register.js";
+import "monaco-editor/languages/features/css/register.js";
+import "monaco-editor/languages/features/html/register.js";
+import "monaco-editor/languages/features/json/register.js";
 import "monaco-editor/languages/features/typescript/register.js";
 import "monaco-editor/editor/contrib/anchorSelect/browser/anchorSelect.js";
 import "monaco-editor/editor/contrib/bracketMatching/browser/bracketMatching.js";

@@ -28,20 +28,33 @@ globalThis.addEventListener = (type, fn) => {
 };
 `;
 
-let built: Promise<string> | undefined;
+let built: Promise<Record<string, string>> | undefined;
 
 /**
- * 打出 ts.worker 的测试版，返回文件路径；同一个进程里只打一次。
+ * 打出各个 worker 的测试版（名字到文件路径）；同一个进程里只打一次。
  * esbuild 在 jsdom 环境里加载不了（TextEncoder 的类型对不上），所以放进 node 的一个线程里打，那里没有 jsdom。
  */
-export function buildTsWorker(): Promise<string> {
-  built ??= new Promise<string>((resolve, reject) => {
+function buildWorkers(): Promise<Record<string, string>> {
+  built ??= new Promise((resolve, reject) => {
     const script = join(dirname(fileURLToPath(import.meta.url)), "monaco-test-worker-build.ts");
     const builder = new NodeWorker(script, { workerData: { desktop: DESKTOP, shim: SHIM } });
-    builder.once("message", (file: string) => resolve(file));
+    builder.once("message", (files: Record<string, string>) => resolve(files));
     builder.once("error", reject);
   });
   return built;
+}
+
+/** 把全局的 Worker 换成 node 线程版：Monaco 按地址里的名字（ts.worker、css.worker……）起对应的真线程 */
+export async function installRealWorkers(): Promise<void> {
+  const files = await buildWorkers();
+  (globalThis as unknown as { Worker: unknown }).Worker = class extends NodeBackedWorker {
+    constructor(url: string | URL) {
+      const name = String(url).split("/").pop()?.replace(/\.js$/, "") ?? "";
+      const file = files[name];
+      if (file === undefined) throw new Error(`没有这个 worker 的测试版：${String(url)}`);
+      super(file);
+    }
+  };
 }
 
 type Listener = (event: { data: unknown }) => void;
