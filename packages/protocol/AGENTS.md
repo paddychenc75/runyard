@@ -45,7 +45,8 @@
 - `src/frame.ts`：四种 `Frame`；线上错误 `WireError` 允许不认识的错误码，`toKnownError` 再收窄
 - `src/handshake.ts`：`challenge` / `hello` / `ready`、nonce 与 proof 的格式、固定前缀、摘要输入 `proofMessage`、注入用的类型 `ComputeProof`。HMAC 的实现不在这里，在 `platform/ipc`
 - `src/version-decision.ts`：握手之后的版本比对纯函数 `decideVersionAction`
-- `src/methods.ts`：方法登记表，由 `methods-session|library|run|logs|toolchain|reserved.ts` 合成；`method-definition.ts` 是登记项的形状
+- `src/request.ts`、`methods-request.ts`：请求面板（规格 desktop/request-panel）的 `request.send|getLast`。入参只有项目和 `RequestSpec`（方法、以 `/` 开头的路径、请求头数组、请求体），**没有主机、协议、端口字段**：目标由管理进程按运行的端口定，这是“只发往自己的 127.0.0.1:端口”的结构性保证。请求体字段叫 `payload`，因为 `body` 是 `PROTOCOL-HANDSHAKE-16` 保留的面向用户文字的字段名。连不上、超时、没就绪是结果 `outcome: "failed"` 里的 `reason`，不是协议错误。上一次请求存进 `playground.json` 的 `lastRequest`。
+- `src/methods.ts`：方法登记表，由 `methods-session|library|run|logs|toolchain|request|reserved.ts` 合成；`method-definition.ts` 是登记项的形状
 - `src/events.ts`：事件登记表。订阅：`events.subscribe` 按主题，`run.log` 只经 `logs.follow`
 - `src/playground.ts`、`run-snapshot.ts`、`settings.ts`、`tool-check.ts`、`created-by.ts`、`primitives.ts`：方法和事件共用的数据形状
 - `src/file-format.ts`：磁盘文件的升级链框架（纯函数，不读写文件）：`defineFileFormat`、`readVersioned` / `readVersionedText`（返回 `ok` / `newer`（只读）/ `corrupt`）、`canWrite`、`serializeVersioned`、`quarantineFileName`。规则全文见 `docs/architecture/storage.md` 第 3 节

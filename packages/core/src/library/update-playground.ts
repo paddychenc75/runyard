@@ -1,5 +1,5 @@
 import type { AbsPath } from "@runyard/platform";
-import type { PlaygroundFile } from "@runyard/protocol";
+import type { PlaygroundFile, RequestSpec } from "@runyard/protocol";
 import { libraryError } from "./library-error.ts";
 import type { OperationContext } from "./library-operations.ts";
 import type { LibraryItem } from "./library-types.ts";
@@ -12,10 +12,12 @@ import {
 export interface PlaygroundEdits {
   readonly note?: string;
   readonly scriptAutoRun?: boolean;
+  /** 请求面板上一次发出的请求（规格 DESKTOP-REQUEST-PANEL-08） */
+  readonly lastRequest?: RequestSpec;
 }
 
 /**
- * 改备注和“脚本保存后自动运行”：只写项目文件夹里的 playground.json，索引不动。
+ * 改备注、“脚本保存后自动运行”和请求面板的上一次请求：只写项目文件夹里的 playground.json，索引不动。
  * 更新版本写的文件只读不写；其余字段（含未知字段）原样带回去
  */
 export async function updatePlaygroundFile(
@@ -41,6 +43,7 @@ export async function updatePlaygroundFile(
     ...(edits.scriptAutoRun !== undefined
       ? { script: { ...read.value.script, autoRun: edits.scriptAutoRun } }
       : {}),
+    ...(edits.lastRequest !== undefined ? { lastRequest: edits.lastRequest } : {}),
   };
   await ctx.platform.fs.writeAtomic(playgroundFilePath(dir), serializePlaygroundFile(next));
 }

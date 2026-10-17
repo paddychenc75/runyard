@@ -2,6 +2,7 @@ import type { z } from "zod";
 import { cleanMethods } from "./methods-clean.ts";
 import { libraryMethods } from "./methods-library.ts";
 import { logsMethods } from "./methods-logs.ts";
+import { requestMethodsRegistry } from "./methods-request.ts";
 import { reservedMethods } from "./methods-reserved.ts";
 import { runMethods } from "./methods-run.ts";
 import { sessionMethods } from "./methods-session.ts";
@@ -20,6 +21,7 @@ export const methodRegistry = {
   ...toolchainMethods,
   ...templateMethods,
   ...cleanMethods,
+  ...requestMethodsRegistry,
   ...reservedMethods,
 } as const;
 

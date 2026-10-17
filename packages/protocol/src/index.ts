@@ -24,6 +24,7 @@ export * from "./owner.ts";
 export * from "./playground.ts";
 export * from "./primitives.ts";
 export * from "./protocol-version.ts";
+export * from "./request.ts";
 export * from "./run-snapshot.ts";
 export * from "./runner-file.ts";
 export * from "./settings.ts";

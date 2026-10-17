@@ -29,6 +29,8 @@ export interface IdleStop {
   /** 填进快照的 `idleStopAt`：最后活动 + 空闲分钟；只有命令行持有、被盯着的运行有（#141，CLI-COMMANDS-51） */
   idleStopAt(runId: string, owner: Owner): number | undefined;
   mentionPlayground(playgroundId: string, session: Session | undefined): void;
+  /** 请求面板发了请求（不论哪个客户端）：这个项目的命令行运行计一次活动（规格 DESKTOP-REQUEST-PANEL-13） */
+  activityOn(playgroundId: string): void;
   /** 管理进程关闭：停掉所有计时和监听 */
   dispose(): void;
 }
@@ -152,6 +154,9 @@ export function createIdleStop(api: SupervisorApi, deps: IdleStopDeps): IdleStop
     },
     mentionPlayground(playgroundId, session) {
       if (!fromCli(session)) return;
+      for (const t of tracked.values()) if (t.playgroundId === playgroundId) t.last = clock.now();
+    },
+    activityOn(playgroundId) {
       for (const t of tracked.values()) if (t.playgroundId === playgroundId) t.last = clock.now();
     },
     dispose() {

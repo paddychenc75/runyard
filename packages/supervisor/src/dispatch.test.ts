@@ -25,7 +25,7 @@ describe("方法分发", () => {
       ok: false,
       error: { code: "NOT_SUPPORTED" },
     });
-    expect(await client.request("request.send", {})).toMatchObject({
+    expect(await client.request("run.disown", {})).toMatchObject({
       ok: false,
       error: { code: "NOT_SUPPORTED" },
     });

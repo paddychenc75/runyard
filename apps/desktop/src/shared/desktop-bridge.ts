@@ -8,6 +8,7 @@ import {
 } from "./editor-files.ts";
 import type { Bounds } from "./layout.ts";
 import type { DesktopError, LibraryState } from "./library-state.ts";
+import { type RequestMethods, requestMethodNames } from "./request-bridge.ts";
 import { type SettingsMethods, settingsMethodNames } from "./settings-bridge.ts";
 import {
   type SaveTemplatePlanResult,
@@ -63,7 +64,11 @@ export interface QuitReply {
 }
 
 /** 界面可以调用的方法：参数类型与返回类型 */
-export interface DesktopMethods extends EditorFileMethods, SettingsMethods, TerminalMethods {
+export interface DesktopMethods
+  extends EditorFileMethods,
+    RequestMethods,
+    SettingsMethods,
+    TerminalMethods {
   "library.get": { param: undefined; result: LibraryState };
   "run.start": { param: string; result: undefined };
   "run.stop": { param: string; result: undefined };
@@ -204,6 +209,7 @@ export const desktopMethodNames: readonly DesktopMethod[] = [
   "console.get",
   ...templateMethodNames,
   ...editorFileMethodNames,
+  ...requestMethodNames,
   ...settingsMethodNames,
   ...terminalMethodNames,
 ];

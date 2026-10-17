@@ -1,4 +1,4 @@
-import type { RunSnapshot } from "@runyard/protocol";
+import type { RequestResult, RequestSpec, RunSnapshot } from "@runyard/protocol";
 import { previewUrlFor } from "./build-library-state.ts";
 import type { ConsoleLogs } from "./console-logs.ts";
 import type { LibraryClient, PreviewHost, SystemActions } from "./controller-hosts.ts";
@@ -53,6 +53,47 @@ export class RunBarActions {
   async clearConsole(playgroundId: string): Promise<void> {
     await this.#hooks.client.call("logs.clear", { playground: playgroundId });
     this.#hooks.console.clear(playgroundId);
+  }
+
+  /**
+   * 请求面板发请求（规格 DESKTOP-REQUEST-PANEL-02）：转给管理进程，目标由它按运行的端口定，
+   * 这里只给路径。管理进程连不上等协议错误折成“断开”，不抛给界面
+   */
+  async sendRequest(playgroundId: string, request: RequestSpec): Promise<RequestResult> {
+    try {
+      return (await this.#hooks.client.call("request.send", {
+        playground: playgroundId,
+        request,
+      })) as RequestResult;
+    } catch {
+      return { outcome: "failed", reason: "disconnected", durationMs: 0 };
+    }
+  }
+
+  async lastRequest(playgroundId: string): Promise<RequestSpec | null> {
+    try {
+      return (await this.#hooks.client.call("request.getLast", {
+        playground: playgroundId,
+      })) as RequestSpec | null;
+    } catch {
+      return null;
+    }
+  }
+
+  /** 请求面板的“在浏览器中打开”（规格 DESKTOP-REQUEST-PANEL-12）：地址由运行的端口拼，路径必须以 / 开头 */
+  openRequestInBrowser(playgroundId: string, path: string): void {
+    const base = previewUrlFor(playgroundId, this.#hooks.runs());
+    if (base === null || !path.startsWith("/")) return;
+    const { port } = new URL(base);
+    const url = `http://127.0.0.1:${port}${path}`;
+    // 路径里的字符再怎么写也不能改变主机和端口：解析后对不上就不打开
+    try {
+      const parsed = new URL(url);
+      if (parsed.hostname !== "127.0.0.1" || parsed.port !== port) return;
+    } catch {
+      return;
+    }
+    this.#hooks.system.openExternal(url);
   }
 
   reloadPreview(playgroundId: string): void {

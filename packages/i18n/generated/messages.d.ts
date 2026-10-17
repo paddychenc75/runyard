@@ -503,6 +503,44 @@ export type CatalogMessages = {
     project: string | number;
   };
   "desktop.quitConfirm.title": Record<never, never>;
+  "desktop.request.aria": Record<never, never>;
+  "desktop.request.autoResend.label": Record<never, never>;
+  "desktop.request.autoResent.label": {
+    time: string | number;
+  };
+  "desktop.request.bodyEmpty.label": Record<never, never>;
+  "desktop.request.copied.label": Record<never, never>;
+  "desktop.request.copyCurl.action": Record<never, never>;
+  "desktop.request.disconnected.label": Record<never, never>;
+  "desktop.request.empty.label": Record<never, never>;
+  "desktop.request.headers.label": Record<never, never>;
+  "desktop.request.headers.placeholder": Record<never, never>;
+  "desktop.request.invalid.label": Record<never, never>;
+  "desktop.request.meta.label": {
+    duration: string | number;
+    size: string | number;
+  };
+  "desktop.request.method.aria": Record<never, never>;
+  "desktop.request.methodOption.label": {
+    method: string | number;
+  };
+  "desktop.request.notReady.label": Record<never, never>;
+  "desktop.request.openInBrowser.action": Record<never, never>;
+  "desktop.request.path.aria": Record<never, never>;
+  "desktop.request.payload.label": Record<never, never>;
+  "desktop.request.payload.placeholder": Record<never, never>;
+  "desktop.request.pending.label": Record<never, never>;
+  "desktop.request.response.title": Record<never, never>;
+  "desktop.request.responseBody.label": Record<never, never>;
+  "desktop.request.responseHeaders.label": Record<never, never>;
+  "desktop.request.responseTabs.aria": Record<never, never>;
+  "desktop.request.send.action": Record<never, never>;
+  "desktop.request.starting.hint": Record<never, never>;
+  "desktop.request.stopped.hint": Record<never, never>;
+  "desktop.request.tabs.aria": Record<never, never>;
+  "desktop.request.timeout.label": Record<never, never>;
+  "desktop.request.tooLarge.label": Record<never, never>;
+  "desktop.request.unreachable.label": Record<never, never>;
   "desktop.rerun.action": Record<never, never>;
   "desktop.restart.action": Record<never, never>;
   "desktop.run.action": Record<never, never>;
