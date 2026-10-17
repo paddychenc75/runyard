@@ -1495,6 +1495,798 @@
    "y": 9850,
    "title": "Finished icon: the current line",
    "page": "specEn"
+  },
+  "EditorTreeMenu.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 10560,
+   "title": "34 文件树的右键菜单",
+   "page": "zh"
+  },
+  "EditorTreeMenuEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 10560,
+   "title": "34 File tree context menu",
+   "page": "en"
+  },
+  "EditorTreeMenuDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 10560,
+   "title": "34 文件树的右键菜单",
+   "page": "zhDark"
+  },
+  "EditorTreeMenuDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 10560,
+   "title": "34 File tree context menu",
+   "page": "enDark"
+  },
+  "EditorNameTaken.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 10560,
+   "title": "35 原处输入名字：已有同名",
+   "page": "zh"
+  },
+  "EditorNameTakenEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 10560,
+   "title": "35 Naming in place: name taken",
+   "page": "en"
+  },
+  "EditorNameTakenDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 10560,
+   "title": "35 原处输入名字：已有同名",
+   "page": "zhDark"
+  },
+  "EditorNameTakenDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 10560,
+   "title": "35 Naming in place: name taken",
+   "page": "enDark"
+  },
+  "EditorTrashNotice.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 10560,
+   "title": "36 移到废纸篓的结果提示",
+   "page": "zh"
+  },
+  "EditorTrashNoticeEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 10560,
+   "title": "36 Move to Trash: result notices",
+   "page": "en"
+  },
+  "EditorTrashNoticeDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 10560,
+   "title": "36 移到废纸篓的结果提示",
+   "page": "zhDark"
+  },
+  "EditorTrashNoticeDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 10560,
+   "title": "36 Move to Trash: result notices",
+   "page": "enDark"
+  },
+  "EditorDeleted.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 10560,
+   "title": "37 文件在磁盘上被删除",
+   "page": "zh"
+  },
+  "EditorDeletedEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 10560,
+   "title": "37 File deleted on disk",
+   "page": "en"
+  },
+  "EditorDeletedDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 10560,
+   "title": "37 文件在磁盘上被删除",
+   "page": "zhDark"
+  },
+  "EditorDeletedDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 10560,
+   "title": "37 File deleted on disk",
+   "page": "enDark"
+  },
+  "EditorAskClose.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 10560,
+   "title": "38 关闭有未保存修改的文件",
+   "page": "zh"
+  },
+  "EditorAskCloseEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 10560,
+   "title": "38 Closing a file with unsaved changes",
+   "page": "en"
+  },
+  "EditorAskCloseDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 10560,
+   "title": "38 关闭有未保存修改的文件",
+   "page": "zhDark"
+  },
+  "EditorAskCloseDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 10560,
+   "title": "38 Closing a file with unsaved changes",
+   "page": "enDark"
+  },
+  "EditorConflict.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 11880,
+   "title": "39 文件被别的程序修改",
+   "page": "zh"
+  },
+  "EditorConflictEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 11880,
+   "title": "39 Changed on disk by another program",
+   "page": "en"
+  },
+  "EditorConflictDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 11880,
+   "title": "39 文件被别的程序修改",
+   "page": "zhDark"
+  },
+  "EditorConflictDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 11880,
+   "title": "39 Changed on disk by another program",
+   "page": "enDark"
+  },
+  "EditorSaveFailed.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 11880,
+   "title": "40 保存失败",
+   "page": "zh"
+  },
+  "EditorSaveFailedEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 11880,
+   "title": "40 Save failed",
+   "page": "en"
+  },
+  "EditorSaveFailedDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 11880,
+   "title": "40 保存失败",
+   "page": "zhDark"
+  },
+  "EditorSaveFailedDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 11880,
+   "title": "40 Save failed",
+   "page": "enDark"
+  },
+  "EditorLineEndings.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 11880,
+   "title": "41 换行符号不统一",
+   "page": "zh"
+  },
+  "EditorLineEndingsEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 11880,
+   "title": "41 Mixed line endings",
+   "page": "en"
+  },
+  "EditorLineEndingsDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 11880,
+   "title": "41 换行符号不统一",
+   "page": "zhDark"
+  },
+  "EditorLineEndingsDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 11880,
+   "title": "41 Mixed line endings",
+   "page": "enDark"
+  },
+  "EditorLargeFile.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 11880,
+   "title": "42 大文件当纯文本",
+   "page": "zh"
+  },
+  "EditorLargeFileEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 11880,
+   "title": "42 Large file as plain text",
+   "page": "en"
+  },
+  "EditorLargeFileDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 11880,
+   "title": "42 大文件当纯文本",
+   "page": "zhDark"
+  },
+  "EditorLargeFileDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 11880,
+   "title": "42 Large file as plain text",
+   "page": "enDark"
+  },
+  "EditorBinary.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 11880,
+   "title": "43 不是文本的文件",
+   "page": "zh"
+  },
+  "EditorBinaryEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 11880,
+   "title": "43 Not a text file",
+   "page": "en"
+  },
+  "EditorBinaryDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 11880,
+   "title": "43 不是文本的文件",
+   "page": "zhDark"
+  },
+  "EditorBinaryDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 11880,
+   "title": "43 Not a text file",
+   "page": "enDark"
+  },
+  "EditorTooLarge.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 7600,
+   "y": 11880,
+   "title": "44 文件太大，没有打开",
+   "page": "zh"
+  },
+  "EditorTooLargeEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 7600,
+   "y": 11880,
+   "title": "44 Too large to open",
+   "page": "en"
+  },
+  "EditorTooLargeDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 7600,
+   "y": 11880,
+   "title": "44 文件太大，没有打开",
+   "page": "zhDark"
+  },
+  "EditorTooLargeDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 7600,
+   "y": 11880,
+   "title": "44 Too large to open",
+   "page": "enDark"
+  },
+  "Terminal.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 13200,
+   "title": "45 终端",
+   "page": "zh"
+  },
+  "TerminalEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 13200,
+   "title": "45 Terminal",
+   "page": "en"
+  },
+  "TerminalDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 13200,
+   "title": "45 终端",
+   "page": "zhDark"
+  },
+  "TerminalDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 13200,
+   "title": "45 Terminal",
+   "page": "enDark"
+  },
+  "TerminalEnded.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 13200,
+   "title": "46 终端已结束",
+   "page": "zh"
+  },
+  "TerminalEndedEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 13200,
+   "title": "46 Terminal ended",
+   "page": "en"
+  },
+  "TerminalEndedDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 13200,
+   "title": "46 终端已结束",
+   "page": "zhDark"
+  },
+  "TerminalEndedDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 13200,
+   "title": "46 Terminal ended",
+   "page": "enDark"
+  },
+  "TerminalFind.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 13200,
+   "title": "47 在终端里查找",
+   "page": "zh"
+  },
+  "TerminalFindEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 13200,
+   "title": "47 Find in the terminal",
+   "page": "en"
+  },
+  "TerminalFindDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 13200,
+   "title": "47 在终端里查找",
+   "page": "zhDark"
+  },
+  "TerminalFindDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 13200,
+   "title": "47 Find in the terminal",
+   "page": "enDark"
+  },
+  "TerminalMenu.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 13200,
+   "title": "48 终端的右键菜单（系统菜单）",
+   "page": "zh"
+  },
+  "TerminalMenuEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 13200,
+   "title": "48 Terminal context menu (system menu)",
+   "page": "en"
+  },
+  "TerminalMenuDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 13200,
+   "title": "48 终端的右键菜单（系统菜单）",
+   "page": "zhDark"
+  },
+  "TerminalMenuDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 13200,
+   "title": "48 Terminal context menu (system menu)",
+   "page": "enDark"
+  },
+  "CommandPalette.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 14520,
+   "title": "49 命令面板（⌘⇧P）",
+   "page": "zh"
+  },
+  "CommandPaletteEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 14520,
+   "title": "49 Command palette (⌘⇧P)",
+   "page": "en"
+  },
+  "CommandPaletteDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 14520,
+   "title": "49 命令面板（⌘⇧P）",
+   "page": "zhDark"
+  },
+  "CommandPaletteDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 14520,
+   "title": "49 Command palette (⌘⇧P)",
+   "page": "enDark"
+  },
+  "CommandPaletteSearch.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 14520,
+   "title": "50 命令面板：中文界面输入英文",
+   "page": "zh"
+  },
+  "CommandPaletteSearchEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 14520,
+   "title": "50 Command palette: searching",
+   "page": "en"
+  },
+  "CommandPaletteSearchDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 14520,
+   "title": "50 命令面板：中文界面输入英文",
+   "page": "zhDark"
+  },
+  "CommandPaletteSearchDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 14520,
+   "title": "50 Command palette: searching",
+   "page": "enDark"
+  },
+  "QuickOpen.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 14520,
+   "title": "51 快速打开（⌘P）",
+   "page": "zh"
+  },
+  "QuickOpenEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 14520,
+   "title": "51 Quick open (⌘P)",
+   "page": "en"
+  },
+  "QuickOpenDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 14520,
+   "title": "51 快速打开（⌘P）",
+   "page": "zhDark"
+  },
+  "QuickOpenDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 14520,
+   "title": "51 Quick open (⌘P)",
+   "page": "enDark"
+  },
+  "QuickOpenSearch.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 14520,
+   "title": "52 快速打开：模糊匹配",
+   "page": "zh"
+  },
+  "QuickOpenSearchEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 14520,
+   "title": "52 Quick open: fuzzy match",
+   "page": "en"
+  },
+  "QuickOpenSearchDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 14520,
+   "title": "52 快速打开：模糊匹配",
+   "page": "zhDark"
+  },
+  "QuickOpenSearchDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 14520,
+   "title": "52 Quick open: fuzzy match",
+   "page": "enDark"
+  },
+  "WorkspaceRename.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 15840,
+   "title": "53 工作区里重命名、编辑备注",
+   "page": "zh"
+  },
+  "WorkspaceRenameEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 15840,
+   "title": "53 Rename and note in the workspace",
+   "page": "en"
+  },
+  "WorkspaceRenameDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 15840,
+   "title": "53 工作区里重命名、编辑备注",
+   "page": "zhDark"
+  },
+  "WorkspaceRenameDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 15840,
+   "title": "53 Rename and note in the workspace",
+   "page": "enDark"
+  },
+  "AutoCleanDialog.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 15840,
+   "title": "54 自动清理",
+   "page": "zh"
+  },
+  "AutoCleanDialogEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 15840,
+   "title": "54 Auto-clean",
+   "page": "en"
+  },
+  "AutoCleanDialogDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 15840,
+   "title": "54 自动清理",
+   "page": "zhDark"
+  },
+  "AutoCleanDialogDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 15840,
+   "title": "54 Auto-clean",
+   "page": "enDark"
+  },
+  "UpdateBanner.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 15840,
+   "title": "55 有新版本",
+   "page": "zh"
+  },
+  "UpdateBannerEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 15840,
+   "title": "55 New version available",
+   "page": "en"
+  },
+  "UpdateBannerDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 15840,
+   "title": "55 有新版本",
+   "page": "zhDark"
+  },
+  "UpdateBannerDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 15840,
+   "title": "55 New version available",
+   "page": "enDark"
   }
  },
  "createdOnFiles": {
@@ -1897,6 +2689,166 @@
    "y": 8980,
    "maxW": 2960,
    "page": "enDark"
+  },
+  "row9zh": {
+   "kind": "title1",
+   "text": "九、编辑器：文件树与文件标签",
+   "x": 0,
+   "y": 10300,
+   "maxW": 7520,
+   "page": "zh"
+  },
+  "row9en": {
+   "kind": "title1",
+   "text": "9 · Editor: file tree and file tabs",
+   "x": 0,
+   "y": 10300,
+   "maxW": 7520,
+   "page": "en"
+  },
+  "row9zhDark": {
+   "kind": "title1",
+   "text": "九、编辑器：文件树与文件标签",
+   "x": 0,
+   "y": 10300,
+   "maxW": 7520,
+   "page": "zhDark"
+  },
+  "row9enDark": {
+   "kind": "title1",
+   "text": "9 · Editor: file tree and file tabs",
+   "x": 0,
+   "y": 10300,
+   "maxW": 7520,
+   "page": "enDark"
+  },
+  "row10zh": {
+   "kind": "title1",
+   "text": "十、编辑器：提示与特殊文件",
+   "x": 0,
+   "y": 11620,
+   "maxW": 9040,
+   "page": "zh"
+  },
+  "row10en": {
+   "kind": "title1",
+   "text": "10 · Editor: notices and special files",
+   "x": 0,
+   "y": 11620,
+   "maxW": 9040,
+   "page": "en"
+  },
+  "row10zhDark": {
+   "kind": "title1",
+   "text": "十、编辑器：提示与特殊文件",
+   "x": 0,
+   "y": 11620,
+   "maxW": 9040,
+   "page": "zhDark"
+  },
+  "row10enDark": {
+   "kind": "title1",
+   "text": "10 · Editor: notices and special files",
+   "x": 0,
+   "y": 11620,
+   "maxW": 9040,
+   "page": "enDark"
+  },
+  "row11zh": {
+   "kind": "title1",
+   "text": "十一、终端",
+   "x": 0,
+   "y": 12940,
+   "maxW": 6000,
+   "page": "zh"
+  },
+  "row11en": {
+   "kind": "title1",
+   "text": "11 · Terminal",
+   "x": 0,
+   "y": 12940,
+   "maxW": 6000,
+   "page": "en"
+  },
+  "row11zhDark": {
+   "kind": "title1",
+   "text": "十一、终端",
+   "x": 0,
+   "y": 12940,
+   "maxW": 6000,
+   "page": "zhDark"
+  },
+  "row11enDark": {
+   "kind": "title1",
+   "text": "11 · Terminal",
+   "x": 0,
+   "y": 12940,
+   "maxW": 6000,
+   "page": "enDark"
+  },
+  "row12zh": {
+   "kind": "title1",
+   "text": "十二、命令面板与快速打开",
+   "x": 0,
+   "y": 14260,
+   "maxW": 6000,
+   "page": "zh"
+  },
+  "row12en": {
+   "kind": "title1",
+   "text": "12 · Command palette and quick open",
+   "x": 0,
+   "y": 14260,
+   "maxW": 6000,
+   "page": "en"
+  },
+  "row12zhDark": {
+   "kind": "title1",
+   "text": "十二、命令面板与快速打开",
+   "x": 0,
+   "y": 14260,
+   "maxW": 6000,
+   "page": "zhDark"
+  },
+  "row12enDark": {
+   "kind": "title1",
+   "text": "12 · Command palette and quick open",
+   "x": 0,
+   "y": 14260,
+   "maxW": 6000,
+   "page": "enDark"
+  },
+  "row13zh": {
+   "kind": "title1",
+   "text": "十三、弹窗与提示条",
+   "x": 0,
+   "y": 15580,
+   "maxW": 4480,
+   "page": "zh"
+  },
+  "row13en": {
+   "kind": "title1",
+   "text": "13 · Dialogs and banners",
+   "x": 0,
+   "y": 15580,
+   "maxW": 4480,
+   "page": "en"
+  },
+  "row13zhDark": {
+   "kind": "title1",
+   "text": "十三、弹窗与提示条",
+   "x": 0,
+   "y": 15580,
+   "maxW": 4480,
+   "page": "zhDark"
+  },
+  "row13enDark": {
+   "kind": "title1",
+   "text": "13 · Dialogs and banners",
+   "x": 0,
+   "y": 15580,
+   "maxW": 4480,
+   "page": "enDark"
   }
  },
  "order": [
@@ -1933,6 +2885,28 @@
   "SaveTemplate.dc.html",
   "Unused.dc.html",
   "Settings.dc.html",
+  "EditorTreeMenu.dc.html",
+  "EditorNameTaken.dc.html",
+  "EditorTrashNotice.dc.html",
+  "EditorDeleted.dc.html",
+  "EditorAskClose.dc.html",
+  "EditorConflict.dc.html",
+  "EditorSaveFailed.dc.html",
+  "EditorLineEndings.dc.html",
+  "EditorLargeFile.dc.html",
+  "EditorBinary.dc.html",
+  "EditorTooLarge.dc.html",
+  "Terminal.dc.html",
+  "TerminalEnded.dc.html",
+  "TerminalFind.dc.html",
+  "TerminalMenu.dc.html",
+  "CommandPalette.dc.html",
+  "CommandPaletteSearch.dc.html",
+  "QuickOpen.dc.html",
+  "QuickOpenSearch.dc.html",
+  "WorkspaceRename.dc.html",
+  "AutoCleanDialog.dc.html",
+  "UpdateBanner.dc.html",
   "MainEn.dc.html",
   "MainNarrowEn.dc.html",
   "EmptyEn.dc.html",
@@ -1966,6 +2940,28 @@
   "SaveTemplateEn.dc.html",
   "UnusedEn.dc.html",
   "SettingsEn.dc.html",
+  "EditorTreeMenuEn.dc.html",
+  "EditorNameTakenEn.dc.html",
+  "EditorTrashNoticeEn.dc.html",
+  "EditorDeletedEn.dc.html",
+  "EditorAskCloseEn.dc.html",
+  "EditorConflictEn.dc.html",
+  "EditorSaveFailedEn.dc.html",
+  "EditorLineEndingsEn.dc.html",
+  "EditorLargeFileEn.dc.html",
+  "EditorBinaryEn.dc.html",
+  "EditorTooLargeEn.dc.html",
+  "TerminalEn.dc.html",
+  "TerminalEndedEn.dc.html",
+  "TerminalFindEn.dc.html",
+  "TerminalMenuEn.dc.html",
+  "CommandPaletteEn.dc.html",
+  "CommandPaletteSearchEn.dc.html",
+  "QuickOpenEn.dc.html",
+  "QuickOpenSearchEn.dc.html",
+  "WorkspaceRenameEn.dc.html",
+  "AutoCleanDialogEn.dc.html",
+  "UpdateBannerEn.dc.html",
   "MainDark.dc.html",
   "MainNarrowDark.dc.html",
   "EmptyDark.dc.html",
@@ -1999,6 +2995,28 @@
   "SaveTemplateDark.dc.html",
   "UnusedDark.dc.html",
   "SettingsDark.dc.html",
+  "EditorTreeMenuDark.dc.html",
+  "EditorNameTakenDark.dc.html",
+  "EditorTrashNoticeDark.dc.html",
+  "EditorDeletedDark.dc.html",
+  "EditorAskCloseDark.dc.html",
+  "EditorConflictDark.dc.html",
+  "EditorSaveFailedDark.dc.html",
+  "EditorLineEndingsDark.dc.html",
+  "EditorLargeFileDark.dc.html",
+  "EditorBinaryDark.dc.html",
+  "EditorTooLargeDark.dc.html",
+  "TerminalDark.dc.html",
+  "TerminalEndedDark.dc.html",
+  "TerminalFindDark.dc.html",
+  "TerminalMenuDark.dc.html",
+  "CommandPaletteDark.dc.html",
+  "CommandPaletteSearchDark.dc.html",
+  "QuickOpenDark.dc.html",
+  "QuickOpenSearchDark.dc.html",
+  "WorkspaceRenameDark.dc.html",
+  "AutoCleanDialogDark.dc.html",
+  "UpdateBannerDark.dc.html",
   "MainDarkEn.dc.html",
   "MainNarrowDarkEn.dc.html",
   "EmptyDarkEn.dc.html",
@@ -2032,6 +3050,28 @@
   "SaveTemplateDarkEn.dc.html",
   "UnusedDarkEn.dc.html",
   "SettingsDarkEn.dc.html",
+  "EditorTreeMenuDarkEn.dc.html",
+  "EditorNameTakenDarkEn.dc.html",
+  "EditorTrashNoticeDarkEn.dc.html",
+  "EditorDeletedDarkEn.dc.html",
+  "EditorAskCloseDarkEn.dc.html",
+  "EditorConflictDarkEn.dc.html",
+  "EditorSaveFailedDarkEn.dc.html",
+  "EditorLineEndingsDarkEn.dc.html",
+  "EditorLargeFileDarkEn.dc.html",
+  "EditorBinaryDarkEn.dc.html",
+  "EditorTooLargeDarkEn.dc.html",
+  "TerminalDarkEn.dc.html",
+  "TerminalEndedDarkEn.dc.html",
+  "TerminalFindDarkEn.dc.html",
+  "TerminalMenuDarkEn.dc.html",
+  "CommandPaletteDarkEn.dc.html",
+  "CommandPaletteSearchDarkEn.dc.html",
+  "QuickOpenDarkEn.dc.html",
+  "QuickOpenSearchDarkEn.dc.html",
+  "WorkspaceRenameDarkEn.dc.html",
+  "AutoCleanDialogDarkEn.dc.html",
+  "UpdateBannerDarkEn.dc.html",
   "Brand.dc.html",
   "BrandEn.dc.html",
   "SpecColor.dc.html",

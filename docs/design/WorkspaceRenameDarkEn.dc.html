@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Runyard Rename and note in the workspace</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:#4DA3FF}a:hover{color:#7DBBFF}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; box-sizing: border-box; position: relative; overflow: hidden; background: #161618; color: #F5F5F7; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 13px; line-height: 1.4">
+<div aria-hidden="true" style="position: absolute; inset: 0">
+<dc-import name="WebEn" hint-size="1440px,900px"></dc-import>
+</div><div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(0,0,0,0.45)"></div><div role="dialog" aria-label="Rename" style="position: absolute; left: 460px; top: 230px; width: 520px; box-sizing: border-box; border-radius: 28px; padding: 26px 28px 22px 28px; display: flex; flex-direction: column; gap: 18px; background: rgba(44,44,48,0.78); backdrop-filter: blur(50px) saturate(190%); border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 0 0 0.5px rgba(255,255,255,0.10), 0 40px 90px rgba(0,0,0,0.60), inset 0 1px 0 rgba(255,255,255,0.14)"><div style="font-size: 20px; font-weight: 700">Rename</div><label style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; font-weight: 600; color: #D1D1D6">Name</span><span style="height: 40px; box-sizing: border-box; padding: 0 12px; border-radius: 12px; background: rgba(0,0,0,0.35); border: 1.5px solid #0A84FF; box-shadow: 0 0 0 3px rgba(10,132,255,0.20); display: flex; align-items: center; font-size: 14px">counter<span aria-hidden="true" style="width: 1.5px; height: 17px; margin-left: 1px; background: #0A84FF"></span></span><div style="font-size: 12px; color: #A1A1A6; line-height: 1.45">The name is also the folder name. This playground is running: saving stops it and restarts it under the new name. Old runyard://open links will stop working. This playground’s terminal will be closed.</div></label><label style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; font-weight: 600; color: #D1D1D6">Note</span><span style="height: 40px; box-sizing: border-box; padding: 0 12px; border-radius: 12px; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.14); display: flex; align-items: center; font-size: 14px">Counter, trying useState batching</span></label><div style="display: flex; justify-content: flex-end; gap: 10px"><button style="height: 40px; padding: 0 16px; border-radius: 20px; border: none; flex: none; white-space: nowrap; display: flex; align-items: center; gap: 6px; font-size: 14px; background: rgba(118,118,128,0.24); color: #F5F5F7; font-weight: 500">Cancel</button><button style="height: 40px; padding: 0 16px; border-radius: 20px; border: none; flex: none; white-space: nowrap; display: flex; align-items: center; gap: 6px; font-size: 14px; background: #0071E3; color: #FFFFFF; font-weight: 600; box-shadow: 0 4px 14px rgba(10,132,255,0.35)">Save</button></div></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
