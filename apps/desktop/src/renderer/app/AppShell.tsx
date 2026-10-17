@@ -86,7 +86,7 @@ export function AppShell({ bridge, library }: AppShellProps) {
           ) : (
             <div className={styles.workspace}>
               <div className={styles.top}>
-                <TabContent tab={activeTabRow} />
+                <TabContent key={activeTabRow.id} bridge={bridge} tab={activeTabRow} />
                 {isScript(activeTabRow) ? (
                   <ScriptOutput bridge={bridge} tab={activeTabRow} />
                 ) : (

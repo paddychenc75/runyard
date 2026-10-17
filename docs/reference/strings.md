@@ -421,5 +421,26 @@
 | workspace.closeConfirm.optOut.hint | 以后关闭标签页直接停止。可以在“设置 › 编辑与运行”里重新打开提示。 | Tabs will then close and stop right away. You can turn the prompt back on in Settings › Editing and running. | — |
 | workspace.closeConfirm.optOut.label | 不再提示 | Don’t ask again | — |
 | workspace.closeConfirm.title | 关闭 {name} 并停止运行？ | Close {name} and stop it? | name：项目名，用户自己起的，不翻译 |
+| workspace.files.add.aria | 在项目根新建 | New at the playground root | — |
+| workspace.files.create.aria | 新文件或文件夹的名称 | Name of the new file or folder | — |
+| workspace.files.empty.hint | 这个项目里还没有文件 | There are no files in this playground yet | — |
+| workspace.files.failed.hint | 文件操作没有成功，请再试一次 | The file action didn’t work. Please try again | — |
+| workspace.files.menu.aria | 文件树的操作 | File tree actions | — |
+| workspace.files.nameExists.hint | 已经有一个叫 {name} 的文件或文件夹 | A file or folder named {name} already exists | name：已存在的名字 |
+| workspace.files.nameInvalid.hint | {reason, select, empty {名字不能是空的} separator {名字里不能有斜杠} dot {名字不能是“.”或“..”} control {名字里不能有控制字符} other {名字太长了}} | {reason, select, empty {The name can’t be empty} separator {The name can’t contain a slash} dot {The name can’t be . or ..} control {The name can’t contain control characters} other {The name is too long}} | reason：名字不可用的原因：empty 空、separator 含斜杠、dot 是 . 或 ..、control 含控制字符、too-long 太长 |
+| workspace.files.newFile.action | 新建文件 | New file | — |
+| workspace.files.newFolder.action | 新建文件夹 | New folder | — |
+| workspace.files.notFound.hint | {name} 已经不在了 | {name} is no longer there | name：文件或文件夹的名字（不含路径） |
+| workspace.files.notice.aria | 文件操作的结果 | Result of the file action | — |
+| workspace.files.outside.hint | 这个位置在项目文件夹之外，不能操作 | That location is outside the playground folder | — |
+| workspace.files.rename.aria | 新名称 | New name | — |
+| workspace.files.renameItem.action | 重命名 | Rename | — |
+| workspace.files.renameItem.hint | F2 | F2 | — |
+| workspace.files.saveFailed.hint | 没能写入 {name}：{reason, select, readOnly {它是只读的} permission {没有权限} other {写入出错了}} | Couldn’t write {name}: {reason, select, readOnly {it is read-only} permission {permission denied} other {the write failed}} | name：文件的名字（不含路径）；reason：写入失败的原因：readOnly 只读、permission 没有权限、other 其他 |
+| workspace.files.title.label | 文件 | Files | — |
+| workspace.files.trashFailed.hint | 没能把 {name} 移到{term_trash}，它还在原处，没有被删除 | Couldn’t move {name} to the {term_trash}. It is still in place and was not deleted | name：文件或文件夹的名字（不含路径） |
+| workspace.files.trashItem.action | 移到{term_trash} | Move to {term_trash} | — |
+| workspace.files.trashed.hint | 已移到{term_trash} | Moved to {term_trash} | — |
+| workspace.files.tree.aria | 文件树 | File tree | — |
 | workspace.tab.close.label | 关闭 {name} | Close {name} | name：项目名，用户自己起的，不翻译 |
 | workspace.tabs.aria | 标签页 | Tabs | — |
