@@ -4,6 +4,7 @@ import { type ReactNode, useState } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { Bounds } from "../../shared/layout.ts";
 import type { TabRow } from "../../shared/library-state.ts";
+import { useCommands } from "../shared/command-host.tsx";
 import type { OverlayCounter } from "../shared/overlay-counter.ts";
 import { PreviewSlot } from "../widgets/PreviewSlot.tsx";
 import { AttachedNotice } from "./AttachedNotice.tsx";
@@ -43,6 +44,15 @@ export function PreviewPane({ bridge, tab, overlays }: PreviewPaneProps) {
   const [dismissed, setDismissed] = useState<string | null>(null);
   const suspended = usePreviewSuspension(bridge, overlays, slot);
   const screen = previewScreenOf(tab);
+  // 命令面板里的刷新预览、在浏览器中打开、打开开发者工具：与地址栏上的按钮同一个条件（有页面可看）
+  const hasPage = tab.previewUrl !== null && screen !== "starting";
+  useCommands({
+    "project.reloadPreview": hasPage ? () => void bridge.call("preview.reload", tab.id) : null,
+    "project.openInBrowser": hasPage
+      ? () => void bridge.call("preview.openExternal", tab.id)
+      : null,
+    "project.openDevtools": hasPage ? () => void bridge.call("preview.devtools", tab.id) : null,
+  });
   let placeholder: ReactNode = null;
   let overlay: ReactNode;
   switch (screen) {

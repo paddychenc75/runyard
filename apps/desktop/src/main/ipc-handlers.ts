@@ -322,3 +322,8 @@ export function requestPicker(host: Pick<IpcHost, "send">): void {
 export function requestSidebarToggle(host: Pick<IpcHost, "send">): void {
   host.send(desktopChannels.event, "sidebar.toggle", undefined);
 }
+
+/** 通知界面打开命令面板或快速打开（应用菜单的 ⌘⇧P、F1、⌘P） */
+export function requestPalette(host: Pick<IpcHost, "send">, mode: "commands" | "files"): void {
+  host.send(desktopChannels.event, "palette.open", { mode });
+}

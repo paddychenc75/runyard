@@ -73,6 +73,8 @@ export interface FileTarget {
 /** 界面可调用的文件方法（桥的白名单见 desktop-bridge.ts） */
 export interface EditorFileMethods {
   "files.list": { param: FileTarget; result: EditorFileResult<FileEntry[]> };
+  /** 项目里全部文件的相对路径（不含内部、依赖和构建产物目录），给快速打开用（规格 DESKTOP-EDITOR-68 至 74） */
+  "files.listAll": { param: { project: string }; result: EditorFileResult<string[]> };
   "files.read": { param: FileTarget; result: EditorFileResult<FileContent> };
   /** eol 缺省按 content 原样写；给 lf 或 crlf 就把全部换行统一成它（保留文件原来的换行） */
   "files.write": {
@@ -105,6 +107,7 @@ export type EditorFileMethod = keyof EditorFileMethods;
 
 export const editorFileMethodNames: readonly EditorFileMethod[] = [
   "files.list",
+  "files.listAll",
   "files.read",
   "files.write",
   "files.create",

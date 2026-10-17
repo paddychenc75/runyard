@@ -13,6 +13,7 @@ import { ChangeFeed } from "./change-feed.ts";
 import { confine } from "./confine.ts";
 import { checkEntryName } from "./entry-name.ts";
 import { errnoOf, fail, isPermissionError, run } from "./failure.ts";
+import { listProjectFiles } from "./list-project-files.ts";
 import { applyLineEnding, decodeText, detectLineEnding } from "./text-file.ts";
 
 // 编辑器的文件服务（技术设计 §2.2 的 fs-host 职责，规格 desktop/editor）。
@@ -91,6 +92,11 @@ export class EditorFileService {
           collator.compare(a.name, b.name),
       );
     });
+  }
+
+  /** 项目里全部文件（快速打开用）：递归、不含内部和依赖和构建产物目录 */
+  listAll(project: string): Promise<EditorFileResult<string[]>> {
+    return run("", async () => listProjectFiles((await confine(this.#folder(project), "")).abs));
   }
 
   read(project: string, path: string): Promise<EditorFileResult<FileContent>> {

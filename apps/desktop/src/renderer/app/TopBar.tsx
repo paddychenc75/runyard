@@ -12,6 +12,7 @@ import { type RefObject, useCallback, useRef, useState } from "react";
 import type { BootstrapInfo, DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { PlaygroundRow, RunningRow, TabRow } from "../../shared/library-state.ts";
 import { useFlushProject } from "../features/editor/EditorWorkspace.tsx";
+import { useCommand } from "../shared/command-host.tsx";
 import { PaneToggleButton } from "./PaneToggleButton.tsx";
 import { RunBar } from "./RunBar.tsx";
 import { RunningPopover } from "./RunningPopover.tsx";
@@ -73,6 +74,8 @@ export function TopBar({
   const [listOpen, setListOpen] = useState(false);
   const closeList = useCallback(() => setListOpen(false), []);
   const runningRef = useRef<HTMLDivElement>(null);
+  // 命令面板的“打开运行视图”：和点“N 个运行中”是同一个面板
+  useCommand("app.openRunning", () => setListOpen(true));
   const items: TabStripItem[] = [
     { id: "library", label: t("library.tab.title"), icon: "grid" },
     ...tabs.map(

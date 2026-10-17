@@ -4,8 +4,10 @@ import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { LibraryState } from "../../shared/library-state.ts";
 import type { SettingsApi } from "../bridge/use-settings.ts";
 import { EditorWorkspace } from "../features/editor/EditorWorkspace.tsx";
+import { PaletteHost } from "../features/palette/PaletteHost.tsx";
 import { defaultQuery, type LibraryQuery, navCounts } from "../library-query.ts";
 import { runningCount } from "../library-view.ts";
+import { CommandContext, CommandHost, useCommands } from "../shared/command-host.tsx";
 import { useLayoutPrefs } from "../shared/layout-prefs.ts";
 import { OverlayContext } from "../shared/overlay-context.tsx";
 import { OverlayCounter } from "../shared/overlay-counter.ts";
@@ -32,7 +34,17 @@ export interface AppShellProps {
 // 主窗口的外壳（设计稿 Main）：悬浮的玻璃侧栏、顶部的标签条，右下是内容区。
 // 资源库标签的内容区是资源库页（整宽的项目表）；项目标签上面是 TabContent 加右边的预览（原生视图）
 // 或脚本输出，下面是控制台（脚本的输出就在右边，不再另开）。
-export function AppShell({ bridge, library, settings }: AppShellProps) {
+export function AppShell(props: AppShellProps) {
+  // 命令宿主在外壳最外面：下面各个部件（顶栏、运行条、编辑器……）显示期间登记自己的命令，命令面板读它
+  const [commands] = useState(() => new CommandHost());
+  return (
+    <CommandContext.Provider value={commands}>
+      <ShellBody {...props} />
+    </CommandContext.Provider>
+  );
+}
+
+function ShellBody({ bridge, library, settings }: AppShellProps) {
   const t = useT();
   const [overlays] = useState(() => new OverlayCounter());
   const title = t("desktop.window.title");
@@ -42,8 +54,11 @@ export function AppShell({ bridge, library, settings }: AppShellProps) {
   // 设置是主窗口里的一页（规格 DESKTOP-SETTINGS-01）：侧栏点“设置”进，点“全部”或打开别的标签回到资源库
   const [page, setPage] = useState<"library" | "settings">("library");
   const activeTabId = library?.activeTab ?? "library";
+  // 命令面板在项目标签页上执行“设置”：先切回资源库标签，标签变了之后落到设置页而不是资源库页
+  const pageAfterSwitch = useRef<"settings" | null>(null);
   useEffect(() => {
-    setPage("library");
+    setPage(pageAfterSwitch.current ?? "library");
+    pageAfterSwitch.current = null;
   }, [activeTabId]);
   // 编辑器按设置里的自动保存档位存（规格 DESKTOP-SETTINGS-11）
   const readAutoSave = useAutoSaveReader(settings.settings);
@@ -118,6 +133,34 @@ export function AppShell({ bridge, library, settings }: AppShellProps) {
   }, [onLibraryPage, layoutPrefs.sidebarCollapsed, layoutPrefs.treeCollapsed, patchLayout]);
   useEffect(() => bridge.on("sidebar.toggle", toggleSidebar), [bridge, toggleSidebar]);
   const selectTab = useCallback((id: string) => void bridge.call("tab.select", id), [bridge]);
+  // 命令面板里的应用命令（规格“命令面板”）：和菜单、按钮里的同名项走同一个动作；
+  // 当前页面上没有意义的不登记（已经在资源库页就没有“打开资源库”，资源库页没有“收起或展开文件树”）
+  const onSettings = page === "settings";
+  useCommands({
+    "app.new": openPicker,
+    "app.openLibrary":
+      onLibraryPage && !onSettings
+        ? null
+        : () => {
+            showLibrary({ activeTab, selectTab });
+            setPage("library");
+          },
+    "app.settings": onSettings
+      ? null
+      : () => {
+          if (activeTab !== "library") pageAfterSwitch.current = "settings";
+          showLibrary({ activeTab, selectTab });
+          setPage("settings");
+        },
+    "app.stopAll": () => void bridge.call("run.stopAll"),
+    "app.toggleSidebar": toggleSidebar,
+    "app.toggleTree": onLibraryPage
+      ? null
+      : () => patchLayout({ treeCollapsed: !layoutPrefs.treeCollapsed }),
+    "app.themeLight": () => settings.update({ theme: "light" }),
+    "app.themeDark": () => settings.update({ theme: "dark" }),
+    "app.themeSystem": () => settings.update({ theme: "system" }),
+  });
   const activeTabRow = tabs.find((tab) => tab.id === activeTab);
   const total = library?.playgrounds.length ?? 0;
   return (
@@ -192,6 +235,7 @@ export function AppShell({ bridge, library, settings }: AppShellProps) {
             </main>
           )}
           <CloseConfirmDialog bridge={bridge} request={library?.closeRequest ?? null} />
+          <PaletteHost bridge={bridge} project={onLibraryPage ? null : activeTab} />
           <NoticeToasts bridge={bridge} notices={library?.notices ?? []} />
           {creating !== null && library !== null ? (
             <CreateDialog

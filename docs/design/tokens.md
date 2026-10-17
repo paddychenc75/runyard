@@ -209,6 +209,12 @@ disagree, `tokens.json` wins.
 | `--size-card-gap` | 8px | Gap between cards |
 | `--size-dialog-width` | 580px | Dialog width |
 | `--size-popover-width` | 420px | Width of the running-list popover |
+| `--size-palette-width` | 680px | Width of the command palette and quick open |
+| `--size-palette-top` | 66px | Distance from the window top to the command palette |
+| `--size-palette-input` | 54px | Height of the command palette input row |
+| `--size-palette-row` | 36px | Height of a command palette result row |
+| `--size-palette-list-max` | 470px | Maximum height of the command palette result list |
+| `--size-palette-footer` | 40px | Height of the command palette key-hint row |
 | `--size-checkbox` | 18px | Checkbox box edge |
 | `--size-switch-width` | 42px | Switch track width |
 | `--size-switch-height` | 26px | Switch track height |

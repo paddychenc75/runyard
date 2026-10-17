@@ -32,6 +32,7 @@ import { keepAliveAfterClose } from "./integration/window-lifecycle.ts";
 import {
   type IpcHost,
   registerBridgeHandlers,
+  requestPalette,
   requestPicker,
   requestSidebarToggle,
 } from "./ipc-handlers.ts";
@@ -215,19 +216,38 @@ async function main(args: DesktopArgs): Promise<void> {
     folderOf: (id) => controller.folderOf(id),
     emit: (event, payload) => ipcHost.send(desktopChannels.event, event, payload),
   });
-  // 应用菜单：⌘N 打开模板选择器（焦点在预览视图里也有效）；语言变了重建
-  const installMenu = (menuLocale: typeof locale): void =>
+  // 应用菜单：⌘N 打开模板选择器、⌘⇧P / F1 命令面板、⌘P 快速打开（焦点在预览视图里也有效）；语言变了、
+  // 切到或离开资源库页（⌘P 在资源库页灰掉，规格 DESKTOP-EDITOR-73）都重建
+  let menuLocale: typeof locale = locale;
+  let quickOpenEnabled = false;
+  // 预览是另一个网页：菜单触发时键盘焦点可能在它里面，先把焦点交回界面，输入框才收得到字
+  const openPalette = (mode: "commands" | "files"): void => {
+    window.webContents.focus();
+    requestPalette(ipcHost, mode);
+  };
+  const installMenu = (nextLocale: typeof locale = menuLocale): void => {
+    menuLocale = nextLocale;
     Menu.setApplicationMenu(
       Menu.buildFromTemplate(
         buildAppMenu({
-          locale: menuLocale,
+          locale: nextLocale,
           platform: currentPlatform(),
           onNew: () => requestPicker(ipcHost),
           onToggleSidebar: () => requestSidebarToggle(ipcHost),
+          onCommandPalette: () => openPalette("commands"),
+          onQuickOpen: () => openPalette("files"),
+          quickOpenEnabled,
         }),
       ),
     );
+  };
   installMenu(locale);
+  controller.onChange((state) => {
+    const onProject = state.activeTab !== "library";
+    if (onProject === quickOpenEnabled) return;
+    quickOpenEnabled = onProject;
+    installMenu();
+  });
   const home = args.root ?? homedir();
   const settings = new SettingsController({
     client,

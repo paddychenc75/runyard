@@ -3,10 +3,11 @@ import { Button, GlassSurface, StatusMark, UserText } from "@runyard/ui";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { PlaygroundRow, TabRow } from "../../shared/library-state.ts";
 import { pickLocalizedText } from "../library-view.ts";
+import { useCommands } from "../shared/command-host.tsx";
 import { RunActionButton } from "./RunActionButton.tsx";
 import styles from "./RunBar.module.css";
 import { RunBarMenu } from "./RunBarMenu.tsx";
-import { isScript } from "./run-view.ts";
+import { isScript, runActionOf } from "./run-view.ts";
 import { useRunStatus } from "./use-run-status.ts";
 
 export interface RunBarProps {
@@ -24,6 +25,18 @@ export function RunBar({ bridge, tab, playgrounds }: RunBarProps) {
   const locale = useLocale();
   const status = useRunStatus(tab);
   const row = playgrounds?.find((item) => item.id === tab.id);
+  // 命令面板里的运行、停止运行、重启：与运行条上的按钮同一个判断，按钮不在命令就不在（规格 DESKTOP-EDITOR-61）
+  const action = runActionOf(tab);
+  const idle = !tab.busy;
+  useCommands({
+    "project.run":
+      idle && action !== "stop" && tab.missing !== true
+        ? () => void bridge.call("run.start", tab.id)
+        : null,
+    "project.stop": idle && action === "stop" ? () => void bridge.call("run.stop", tab.id) : null,
+    "project.restart":
+      idle && tab.active && !isScript(tab) ? () => void bridge.call("run.restart", tab.id) : null,
+  });
   return (
     <GlassSurface
       material="toolbar"

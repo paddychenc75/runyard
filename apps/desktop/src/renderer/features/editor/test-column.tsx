@@ -11,7 +11,7 @@ import type { TabRow } from "../../../shared/library-state.ts";
 import { useWorkspaceFiles } from "../../shared/workspace-files.tsx";
 import { EditorColumn } from "./EditorColumn.tsx";
 import { EditorWorkspace } from "./EditorWorkspace.tsx";
-import type { EditorHost, EditorHostFactory } from "./monaco-host.ts";
+import type { EditorHost, EditorHostFactory, EditorOperation } from "./monaco-host.ts";
 import type { AutosaveMode } from "./session-types.ts";
 import { type FakeDisk, fakeDisk, filesOn } from "./test-files.ts";
 
@@ -61,6 +61,8 @@ interface Harness {
   /** 主进程推来一个事件 */
   emit: <E extends keyof DesktopEvents>(event: E, payload: DesktopEvents[E]) => void;
   calls: [string, unknown][];
+  /** 命令面板触发的编辑器操作（假编辑器只记下来） */
+  runs: EditorOperation[];
   hosts: {
     host: EditorHost;
     syncs: { theme: string; active: string | null }[];
@@ -82,6 +84,7 @@ export function mount(
   const harness: Harness = {
     disk,
     calls: [],
+    runs: [],
     hosts: [],
     emit: (event, payload) => {
       act(() => {
@@ -112,6 +115,7 @@ export function mount(
     const host: EditorHost = {
       sync: (state, theme) => syncs.push({ theme, active: state.active }),
       focus() {},
+      run: (operation) => harness.runs.push(operation),
       dispose() {},
     };
     harness.hosts.push({ host, syncs, edit: handlers.onEdit });

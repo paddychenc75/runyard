@@ -126,6 +126,46 @@
 | desktop.category.page.label | 页面 | Pages | — |
 | desktop.category.script.label | 脚本 | Scripts | — |
 | desktop.category.service.label | 服务 | Services | — |
+| desktop.command.autoClean.label | 自动清理… | Auto-clean… | — |
+| desktop.command.closeTab.label | 关闭文件标签 | Close file tab | — |
+| desktop.command.copyLink.label | 复制链接 | Copy link | — |
+| desktop.command.copyPath.label | 复制路径 | Copy path | — |
+| desktop.command.devtools.label | 打开开发者工具 | Open developer tools | — |
+| desktop.command.duplicate.label | 创建副本 | Duplicate | — |
+| desktop.command.editNote.label | 编辑备注… | Edit note… | — |
+| desktop.command.find.label | 查找 | Find | — |
+| desktop.command.foldAll.label | 折叠全部 | Fold all | — |
+| desktop.command.goToDefinition.label | 跳到定义 | Go to definition | — |
+| desktop.command.goToLine.label | 跳到行… | Go to line… | — |
+| desktop.command.new.label | 新建项目… | New playground… | — |
+| desktop.command.openInBrowser.label | 在浏览器中打开 | Open in browser | — |
+| desktop.command.openInEditor.label | 在外部编辑器中打开 | Open in external editor | — |
+| desktop.command.openLibrary.label | 打开资源库 | Open library | — |
+| desktop.command.openRunning.label | 打开运行视图 | Open running view | — |
+| desktop.command.openTerminal.label | 在终端中打开 | Open in Terminal | — |
+| desktop.command.quickOpen.label | 快速打开文件 | Quick open file | — |
+| desktop.command.reloadPreview.label | 刷新预览 | Reload preview | — |
+| desktop.command.rename.label | 重命名… | Rename… | — |
+| desktop.command.renameSymbol.label | 重命名符号 | Rename symbol | — |
+| desktop.command.replace.label | 替换 | Replace | — |
+| desktop.command.restart.label | 重启 | Restart | — |
+| desktop.command.reveal.label | 在{term_fileManager}中显示 | Show in {term_fileManager} | — |
+| desktop.command.run.label | 运行 | Run | — |
+| desktop.command.save.label | 保存 | Save | — |
+| desktop.command.saveAsTemplate.label | 另存为模板… | Save as template… | — |
+| desktop.command.selectAllOccurrences.label | 选中所有相同内容 | Select all occurrences | — |
+| desktop.command.settings.label | 设置 | Settings | — |
+| desktop.command.showOutput.label | 显示输出 | Show output | — |
+| desktop.command.showTerminal.label | 显示终端 | Show terminal | — |
+| desktop.command.stop.label | 停止运行 | Stop | — |
+| desktop.command.stopAll.label | 全部停止 | Stop all | — |
+| desktop.command.themeDark.label | 主题：深色 | Theme: dark | — |
+| desktop.command.themeLight.label | 主题：浅色 | Theme: light | — |
+| desktop.command.themeSystem.label | 主题：跟随系统 | Theme: match system | — |
+| desktop.command.toggleComment.label | 切换行注释 | Toggle line comment | — |
+| desktop.command.toggleTree.label | 收起或展开文件树 | Collapse or expand file tree | — |
+| desktop.command.trash.label | 移到{term_trash} | Move to {term_trash} | — |
+| desktop.command.unfoldAll.label | 展开全部 | Unfold all | — |
 | desktop.console.clear.action | 清除 | Clear | — |
 | desktop.console.tab.label | 输出 | Output | — |
 | desktop.console.tabs.aria | 底部面板 | Bottom panel | — |
@@ -210,6 +250,8 @@
 | desktop.failure.stepStart.label | 启动开发服务 | Start dev server | — |
 | desktop.failure.steps.aria | 启动步骤 | Start-up steps | — |
 | desktop.menu.new.label | 新建… | New… | — |
+| desktop.menu.palette.label | 命令面板 | Command Palette | — |
+| desktop.menu.quickOpen.label | 快速打开文件 | Quick Open File | — |
 | desktop.menu.sidebar.label | 切换侧栏 | Toggle Sidebar | — |
 | desktop.missing.command.label | 安装命令 | Install command | — |
 | desktop.missing.copied.label | 已复制 | Copied | — |
@@ -226,6 +268,26 @@
 | desktop.output.aria | 进程输出 | Process output | — |
 | desktop.output.empty.label | 还没有输出。 | No output yet. | — |
 | desktop.output.view.action | 查看完整输出 | View full output | — |
+| desktop.palette.commands.aria | 命令面板 | Command palette | — |
+| desktop.palette.commandsEmpty.label | 没有匹配的命令 | No matching commands | — |
+| desktop.palette.commandsHint.label | 删掉 > 查找文件 | Delete > to find files | — |
+| desktop.palette.commandsPlaceholder.label | 输入命令名称 | Type a command | — |
+| desktop.palette.enterKey.label | 回车 | Return | — |
+| desktop.palette.escape.label | esc | esc | — |
+| desktop.palette.execute.label | 执行 | run | — |
+| desktop.palette.files.aria | 快速打开 | Quick open | — |
+| desktop.palette.filesEmpty.label | 没有匹配的文件 | No matching files | — |
+| desktop.palette.filesHint.label | 输入 > 执行命令 | Type > for commands | — |
+| desktop.palette.filesPlaceholder.label | 按名称查找文件 | Find a file by name | — |
+| desktop.palette.groupApp.label | 应用 | App | — |
+| desktop.palette.groupEditor.label | 编辑器 | Editor | — |
+| desktop.palette.groupProject.label | 项目 | Playground | — |
+| desktop.palette.groupRecentCommands.label | 最近使用 | Recently used | — |
+| desktop.palette.groupRecentFiles.label | 最近打开 | Recently opened | — |
+| desktop.palette.move.label | 移动 | move | — |
+| desktop.palette.moveKeys.label | 上下键 | ↑↓ | — |
+| desktop.palette.open.label | 打开 | open | — |
+| desktop.palette.results.aria | 结果 | Results | — |
 | desktop.pathNotice.title.label | <user>{name}</user> 已创建 | <user>{name}</user> was created | name：新建项目的名称（不翻译）；user：包住用户内容的标签 |
 | desktop.picker.arrowsKey.label | 上下键 | Up/Down | — |
 | desktop.picker.choose.action | 选择 | Select | — |

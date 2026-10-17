@@ -2,6 +2,7 @@ import { useT } from "@runyard/i18n/react";
 import { useEffect, useRef, useState } from "react";
 import type { DesktopBridge } from "../../../shared/desktop-bridge.ts";
 import type { TabRow } from "../../../shared/library-state.ts";
+import { useCommands } from "../../shared/command-host.tsx";
 import { ClosePrompt } from "./ClosePrompt.tsx";
 import { EditorBar } from "./EditorBar.tsx";
 import { EditorBreadcrumb } from "./EditorBreadcrumb.tsx";
@@ -10,7 +11,12 @@ import { useActiveEditor } from "./EditorWorkspace.tsx";
 import { FileNotice } from "./FileNotice.tsx";
 import { FileTabs } from "./FileTabs.tsx";
 import { type FileTab, isDirty } from "./file-tab.ts";
-import { createMonacoHost, type EditorHost, type EditorHostFactory } from "./monaco-host.ts";
+import {
+  createMonacoHost,
+  type EditorHost,
+  type EditorHostFactory,
+  type EditorOperation,
+} from "./monaco-host.ts";
 import { baseName } from "./path-names.ts";
 import { bridgeProjectSource } from "./project-source.ts";
 import { SaveStatus, type SaveStatusKind } from "./SaveStatus.tsx";
@@ -123,6 +129,23 @@ export function EditorColumn({ bridge, tab, createHost = createMonacoHost }: Edi
   }, [session]);
 
   const editing = active?.view === "text";
+  // 命令面板里的编辑器命令（规格“命令面板”）：只在有文件标签、编辑器画好了的时候登记，
+  // 没有打开文件就没有这些命令（规格 DESKTOP-EDITOR-61）
+  const operate = (operation: EditorOperation) =>
+    editing && hostReady ? () => hostRef.current?.run(operation) : null;
+  useCommands({
+    "editor.save": editing && active !== null ? () => void session.save(active.path) : null,
+    "editor.closeTab": active === null ? null : () => void session.requestClose(active.path),
+    "editor.find": operate("find"),
+    "editor.replace": operate("replace"),
+    "editor.goToLine": operate("goToLine"),
+    "editor.goToDefinition": operate("goToDefinition"),
+    "editor.renameSymbol": operate("renameSymbol"),
+    "editor.toggleComment": operate("toggleComment"),
+    "editor.foldAll": operate("foldAll"),
+    "editor.unfoldAll": operate("unfoldAll"),
+    "editor.selectAllOccurrences": operate("selectAllOccurrences"),
+  });
   let status: SaveStatusKind | null = null;
   if (editing && active !== null) status = statusOf(active);
   const name = active === null ? "" : baseName(active.path);

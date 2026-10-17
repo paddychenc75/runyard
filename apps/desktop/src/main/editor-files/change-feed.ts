@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import type { AbsPath, Disposable, Platform, WatchEvent } from "@runyard/platform";
 import { joinPath, posixRelPath } from "@runyard/platform";
 import type { FileChange } from "../../shared/editor-files.ts";
+import { IGNORED_ANYWHERE, IGNORED_AT_ROOT_ONLY } from "../../shared/project-ignore.ts";
 
 // 一个项目的文件监听（技术设计 §6.4，规格 DESKTOP-EDITOR-03、36）：
 // 把平台层成批的变化整理成界面要的变化，并认出“是自己保存引起的”。
@@ -9,20 +10,10 @@ import type { FileChange } from "../../shared/editor-files.ts";
 // 否则是外部修改（外部程序紧接着改写成别的内容时，摘要对不上，不会被吞掉）。
 
 /** 根目录下直接忽略的子路径：隐藏的内部文件夹、依赖目录和常见构建产物（不监听，省事件） */
-export const IGNORED_AT_ROOT = [
-  ".git",
-  ".runyard",
-  "node_modules",
-  "dist",
-  "build",
-  ".next",
-  ".nuxt",
-  ".turbo",
-  ".vite",
-] as const;
+export const IGNORED_AT_ROOT = [...IGNORED_ANYWHERE, ...IGNORED_AT_ROOT_ONLY] as const;
 
 /** 任意深度都不报告的目录段：嵌套的依赖目录和内部文件夹 */
-const SILENT_SEGMENTS = new Set([".git", ".runyard", "node_modules"]);
+const SILENT_SEGMENTS = new Set<string>(IGNORED_ANYWHERE);
 
 // 平台层原子写入的临时文件名：`.<名字>.<12 位十六进制>.tmp`（packages/platform 的 write-atomic.ts）。
 // 它们存在不到一眨眼，不是用户的文件，不能让目录树闪一下；命名改了的话，监听测试会发现临时文件漏进了事件

@@ -1,0 +1,50 @@
+import type { Localized, Translate } from "@runyard/i18n";
+import type { CommandId } from "../../../shared/commands.ts";
+
+// 命令的名称（规格 DESKTOP-EDITOR-62、63）：编辑器命令也用应用自己的名字，不用编辑器自带的英文。
+// 每个键都写成 t("字面量")，文案检查才认得出它们被用到；所以这里是一张逐条写开的表，不拼键名。
+export function commandTitles(t: Translate): Record<CommandId, Localized> {
+  return {
+    "app.new": t("desktop.command.new.label"),
+    "app.openLibrary": t("desktop.command.openLibrary.label"),
+    "app.settings": t("desktop.command.settings.label"),
+    "app.quickOpen": t("desktop.command.quickOpen.label"),
+    "app.showTerminal": t("desktop.command.showTerminal.label"),
+    "app.showOutput": t("desktop.command.showOutput.label"),
+    "app.openRunning": t("desktop.command.openRunning.label"),
+    "app.stopAll": t("desktop.command.stopAll.label"),
+    "app.toggleSidebar": t("desktop.menu.sidebar.label"),
+    "app.toggleTree": t("desktop.command.toggleTree.label"),
+    "app.themeLight": t("desktop.command.themeLight.label"),
+    "app.themeDark": t("desktop.command.themeDark.label"),
+    "app.themeSystem": t("desktop.command.themeSystem.label"),
+    "project.run": t("desktop.command.run.label"),
+    "project.stop": t("desktop.command.stop.label"),
+    "project.restart": t("desktop.command.restart.label"),
+    "project.reloadPreview": t("desktop.command.reloadPreview.label"),
+    "project.openInBrowser": t("desktop.command.openInBrowser.label"),
+    "project.openDevtools": t("desktop.command.devtools.label"),
+    "project.rename": t("desktop.command.rename.label"),
+    "project.editNote": t("desktop.command.editNote.label"),
+    "project.autoClean": t("desktop.command.autoClean.label"),
+    "project.saveAsTemplate": t("desktop.command.saveAsTemplate.label"),
+    "project.duplicate": t("desktop.command.duplicate.label"),
+    "project.openInEditor": t("desktop.command.openInEditor.label"),
+    "project.reveal": t("desktop.command.reveal.label"),
+    "project.openTerminal": t("desktop.command.openTerminal.label"),
+    "project.copyPath": t("desktop.command.copyPath.label"),
+    "project.copyLink": t("desktop.command.copyLink.label"),
+    "project.trash": t("desktop.command.trash.label"),
+    "editor.save": t("desktop.command.save.label"),
+    "editor.closeTab": t("desktop.command.closeTab.label"),
+    "editor.find": t("desktop.command.find.label"),
+    "editor.replace": t("desktop.command.replace.label"),
+    "editor.goToLine": t("desktop.command.goToLine.label"),
+    "editor.goToDefinition": t("desktop.command.goToDefinition.label"),
+    "editor.renameSymbol": t("desktop.command.renameSymbol.label"),
+    "editor.toggleComment": t("desktop.command.toggleComment.label"),
+    "editor.foldAll": t("desktop.command.foldAll.label"),
+    "editor.unfoldAll": t("desktop.command.unfoldAll.label"),
+    "editor.selectAllOccurrences": t("desktop.command.selectAllOccurrences.label"),
+  };
+}
