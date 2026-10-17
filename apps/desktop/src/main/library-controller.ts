@@ -1,4 +1,3 @@
-import type { RunyardClient } from "@runyard/client";
 import type { Locale } from "@runyard/i18n";
 import type { Playground, RunSnapshot, TemplateRecord } from "@runyard/protocol";
 import type { ConsoleAppend, ConsoleLine } from "../shared/console-state.ts";
@@ -13,40 +12,34 @@ import {
   previewUrlFor,
 } from "./build-library-state.ts";
 import { ConsoleLogs } from "./console-logs.ts";
-import type { PreviewHost, SystemActions } from "./controller-hosts.ts";
+import type {
+  LibraryClient,
+  LibraryControllerOptions,
+  PreviewHost,
+  SystemActions,
+} from "./controller-hosts.ts";
 import { createPlayground } from "./create-playground.ts";
 import { toDesktopError } from "./desktop-error.ts";
 import { frameBeforeCrash } from "./last-frame.ts";
-import { readLibraryRoot } from "./library-root.ts";
+import { readConfirmClose, readLibraryRoot } from "./library-root.ts";
 import { classifyStartError } from "./start-error.ts";
 import { StartTimeline } from "./start-timeline.ts";
 import { LIBRARY_TAB, WorkspaceTabs } from "./workspace-tabs.ts";
 
-export type { PreviewHost, SystemActions } from "./controller-hosts.ts";
-
 // 窗口背后的逻辑：向管理进程要项目、模板、运行，转成界面看的状态；执行界面发来的动作。
 // 不认识 Electron：预览通过 PreviewHost 这个接口交给外面，所以可以用假客户端整个测。
 
-/** 控制器用到的客户端的那一小部分 */
-export type LibraryClient = Pick<RunyardClient, "call" | "subscribe" | "followLogs">;
-
-export interface LibraryControllerOptions {
-  client: LibraryClient;
-  /** 这个应用实例的连接标识；标签页持有者靠它绑定到本连接（PRD #prd-run-ownership） */
-  clientId: string;
-  locale: Locale;
-  preview: PreviewHost;
-  system: SystemActions;
-  /** 主目录（用来把资源库路径显示成 ~/…）；开发时 --root 给的目录算主目录 */
-  home: string;
-  /** 毫秒时钟；启动清单各步的用时靠它量，测试里换成假的 */
-  now?: () => number;
-}
+export type {
+  LibraryClient,
+  LibraryControllerOptions,
+  PreviewHost,
+  SystemActions,
+} from "./controller-hosts.ts";
 
 export class LibraryController {
   readonly #client: LibraryClient;
   readonly #clientId: string;
-  readonly #locale: Locale;
+  #locale: Locale;
   readonly #preview: PreviewHost;
   readonly #system: SystemActions;
   readonly #home: string;
@@ -90,6 +83,17 @@ export class LibraryController {
     } catch (error) {
       this.#error = toDesktopError(error);
     }
+    await this.refresh();
+  }
+
+  /** 设置页改了语言或资源库位置：按新的重读、推给界面；旧位置的文件一个不碰（规格 DESKTOP-SETTINGS-03、06） */
+  setLocale(locale: Locale): void {
+    this.#locale = locale;
+    this.#emit();
+  }
+
+  async reloadLibraryRoot(): Promise<void> {
+    this.#libraryRoot = await readLibraryRoot(this.#client, this.#home);
     await this.refresh();
   }
 
@@ -213,12 +217,7 @@ export class LibraryController {
       await this.#closeNow(playgroundId);
       return;
     }
-    // 读不到设置就当作要确认：宁可多问一次，不要悄悄停掉用户的运行
-    const confirmNeeded = await this.#client.call("settings.get", {}).then(
-      (settings) => settings.confirmCloseRunningTab,
-      () => true,
-    );
-    if (!confirmNeeded) {
+    if (!(await readConfirmClose(this.#client))) {
       await this.#closeNow(playgroundId);
       return;
     }
@@ -269,13 +268,13 @@ export class LibraryController {
 
   /** 更多菜单“在访达中显示”：路径取管理进程给的那份，界面只报项目 id */
   revealFolder(playgroundId: string): void {
-    const path = this.#folderOf(playgroundId);
+    const path = this.folderOf(playgroundId);
     if (path !== null) this.#system.revealInFileManager(path);
   }
 
   /** 更多菜单“复制路径”：把项目文件夹的绝对路径放进剪贴板 */
   copyFolderPath(playgroundId: string): void {
-    const path = this.#folderOf(playgroundId);
+    const path = this.folderOf(playgroundId);
     if (path !== null) this.#system.copyText(path);
   }
 
@@ -289,7 +288,8 @@ export class LibraryController {
     if (/^https:\/\/\S+$/.test(url)) this.#system.openExternal(url);
   }
 
-  #folderOf(playgroundId: string): string | null {
+  /** 项目文件夹的绝对路径；没有这个项目是 null */
+  folderOf(playgroundId: string): string | null {
     return this.#playgrounds.find((playground) => playground.id === playgroundId)?.path ?? null;
   }
 

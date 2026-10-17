@@ -238,8 +238,8 @@ describe("未知字段", () => {
     expect(result.value.playgrounds[0]).toMatchObject(unknown);
   });
 
-  it("settings.json 里还没定形状的字段（autoSave、network、theme、language）原样往返", () => {
-    const file = { ...settingsFile, autoSave: "onBlur", theme: "dark", language: "zh-CN" };
+  it("settings.json 里还没定形状的字段（network，随 #189）和更新版本多写的字段原样往返", () => {
+    const file = { ...settingsFile, network: { registry: "https://r.example" }, futureField: 1 };
     const result = readVersioned(settingsFileFormat, file);
     expect(result.status === "ok" && result.value).toEqual(file);
   });

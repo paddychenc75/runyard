@@ -21,6 +21,7 @@ import {
   uninstallCliLink,
 } from "./integration/cli-link.ts";
 import { createMainWindow } from "./integration/main-window.ts";
+import { createElectronSettingsHost } from "./integration/settings-host.ts";
 import { claimSingleInstance, focusWindow } from "./integration/single-instance.ts";
 import { ElectronSystemActions } from "./integration/system-actions.ts";
 import { resolveUserDataDir } from "./integration/user-data.ts";
@@ -37,6 +38,7 @@ import {
 import { ElectronPreviewHost } from "./preview-view.ts";
 import { registerQuitFlow } from "./quit-coordinator.ts";
 import { QuitFlushGate } from "./quit-flush-gate.ts";
+import { SettingsController } from "./settings-controller.ts";
 import { runSmoke } from "./smoke.ts";
 
 // 主进程入口（构建后在 apps/desktop/dist/main/index.mjs）。入口是 ES 模块，
@@ -65,11 +67,7 @@ function runtime(): DesktopRuntime {
 }
 
 async function main(args: DesktopArgs): Promise<void> {
-  const locale = resolveDesktopLocale(args.lang, app.getPreferredSystemLanguages());
-  const theme = args.theme ?? "system";
-  // 让系统画的菜单、窗口外框和所有网页（含界面的 prefers-color-scheme）跟着选择走；
-  // system 就是跟随系统（技术设计 §6.7“切换主题”第 3 步）
-  nativeTheme.themeSource = theme;
+  const fallbackLocale = resolveDesktopLocale(args.lang, app.getPreferredSystemLanguages());
 
   protocol.handle(APP_SCHEME, (request) => {
     const file = resolveAppFile(join(distDir, "renderer"), request.url);
@@ -135,6 +133,14 @@ async function main(args: DesktopArgs): Promise<void> {
     );
   }
 
+  // 语言和主题以设置里的为准；设置里没写语言时用启动参数或系统语言，主题选了“跟随系统”时用启动参数（开发用）
+  const initial = await client.call("settings.get", {}).catch(() => undefined);
+  const locale = initial?.language ?? fallbackLocale;
+  const theme =
+    initial === undefined || initial.theme === "system" ? (args.theme ?? "system") : initial.theme;
+  // 让系统画的菜单、窗口外框和所有网页（含界面的 prefers-color-scheme）跟着选择走；
+  // system 就是跟随系统（技术设计 §6.7“切换主题”第 3 步）
+  nativeTheme.themeSource = theme;
   const system = new ElectronSystemActions();
   const controller = new LibraryController({
     client,
@@ -162,6 +168,28 @@ async function main(args: DesktopArgs): Promise<void> {
       if (!window.isDestroyed()) window.webContents.send(channel, name, payload);
     },
   };
+  // 应用菜单：⌘N 打开模板选择器（焦点在预览视图里也有效）；语言变了重建
+  const installMenu = (menuLocale: typeof locale): void =>
+    Menu.setApplicationMenu(
+      Menu.buildFromTemplate(
+        buildAppMenu({
+          locale: menuLocale,
+          platform: currentPlatform(),
+          onNew: () => requestPicker(ipcHost),
+        }),
+      ),
+    );
+  installMenu(locale);
+  const home = args.root ?? homedir();
+  const settings = new SettingsController({
+    client,
+    host: createElectronSettingsHost({ home, window, onLocaleChanged: installMenu }),
+    library: controller,
+    home,
+    fallbackLocale,
+    ...(args.theme === undefined ? {} : { fallbackTheme: args.theme }),
+    ...(initial === undefined ? {} : { initial }),
+  });
   // 编辑器的文件服务：只认项目 id 加项目内相对路径，文件夹每次从当前列表里查
   const files = new EditorFileService({
     platform: getPlatform(args.root === undefined ? {} : { home: absPath(args.root) }),
@@ -183,15 +211,11 @@ async function main(args: DesktopArgs): Promise<void> {
     files,
     { reveal: (path) => system.revealInFileManager(path), open: (path) => system.openPath(path) },
     quitGate,
-  );
-  // 应用菜单：⌘N 打开模板选择器（焦点在预览视图里也有效）
-  Menu.setApplicationMenu(
-    Menu.buildFromTemplate(
-      buildAppMenu({ locale, platform: currentPlatform(), onNew: () => requestPicker(ipcHost) }),
-    ),
+    settings,
   );
   await window.loadURL(`${APP_ORIGIN}/`);
   await controller.start();
+  await settings.start();
 
   if (args.smoke) {
     const code = await runSmoke(controller, window, preview, diagnostic);

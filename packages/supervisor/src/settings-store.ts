@@ -34,6 +34,8 @@ export function defaultSettings(platform: Pick<Platform, "paths">): Settings {
     ports: { min: 7100, max: 7999 },
     urlNewSkipConfirmForBuiltin: false,
     updateCheck: true,
+    autoSave: "delay",
+    theme: "system",
     confirmCloseRunningTab: true,
   };
 }

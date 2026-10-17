@@ -1,0 +1,5 @@
+.segments > button {
+  padding-inline: var(--space-6);
+  font-size: var(--text-secondary-size);
+  font-weight: var(--text-control-weight);
+}

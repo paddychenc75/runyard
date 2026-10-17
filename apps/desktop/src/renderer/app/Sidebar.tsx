@@ -1,6 +1,5 @@
 import { useFormat, useT } from "@runyard/i18n/react";
 import { GlassSurface, NavList, type NavListSection, ScrollArea, TitleBar } from "@runyard/ui";
-import { useState } from "react";
 import type { BootstrapInfo } from "../../shared/desktop-bridge.ts";
 import styles from "./Sidebar.module.css";
 
@@ -8,14 +7,16 @@ export interface SidebarProps {
   windowControls: BootstrapInfo["windowControls"];
   /** 资源库里项目的总数 */
   total: number;
+  /** 当前显示的页：资源库（"all"）或设置（"settings"） */
+  page: "all" | "settings";
+  onNavigate: (page: "all" | "settings") => void;
 }
 
 // 侧栏：顶上给窗口按钮留位置，下面是品牌、资源库的筛选、管理的几个页面，底部是资源库的概况。
-// 只有“全部”有内容可看；其余筛选项和页面随 #169、#170 等，现在列出但点不了（设计稿 Main）。
-export function Sidebar({ windowControls, total }: SidebarProps) {
+// 现在能点的只有“全部”和“设置”（#188）；其余筛选项和页面随后续 issue，列出但点不了（设计稿 Main）。
+export function Sidebar({ windowControls, total, page, onNavigate }: SidebarProps) {
   const t = useT();
   const format = useFormat();
-  const [section, setSection] = useState("all");
   const sections: NavListSection[] = [
     {
       id: "library",
@@ -37,7 +38,6 @@ export function Sidebar({ windowControls, total }: SidebarProps) {
           id: "settings",
           label: t("library.nav.settings.label"),
           icon: "sliders",
-          disabled: true,
         },
       ],
     },
@@ -53,8 +53,10 @@ export function Sidebar({ windowControls, total }: SidebarProps) {
         <NavList
           label={t("library.nav.aria")}
           sections={sections}
-          value={section}
-          onValueChange={setSection}
+          value={page}
+          onValueChange={(id) => {
+            if (id === "all" || id === "settings") onNavigate(id);
+          }}
         />
       </ScrollArea>
       <div className={styles.footer}>{t("library.sidebar.footer.label", { count: total })}</div>

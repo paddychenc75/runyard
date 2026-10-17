@@ -455,6 +455,62 @@
 | runState.starting | 启动中 | Starting | — |
 | runState.stopped | 已停止 | Stopped | — |
 | runState.stopping | 停止中 | Stopping | — |
+| settings.autoSave.blur.label | 失去焦点时 | On focus loss | — |
+| settings.autoSave.delay.label | 延迟 1 秒后 | After 1 s | — |
+| settings.autoSave.hint | 编辑时自动保存修改 | Save changes as you type | — |
+| settings.autoSave.off.label | 关闭 | Off | — |
+| settings.autoSave.title | 自动保存 | Autosave | — |
+| settings.builtinSkip.hint | 默认每次都确认。打开后，链接要新建的是内置模板时不再询问 | Asks every time by default. When on, links that create a built-in template no longer ask | — |
+| settings.builtinSkip.title | 来自链接的新建请求：内置模板免确认 | New-playground links: skip the prompt for built-in templates | — |
+| settings.cli.title | 命令行与智能体 | Command line and agents | — |
+| settings.confirmClose.hint | 关闭标签页会停止项目；关掉这个开关后直接关闭并停止 | Closing a tab stops the playground; with this off, tabs close and stop right away | — |
+| settings.confirmClose.title | 关闭运行中的标签页前询问 | Ask before closing a running tab | — |
+| settings.deps.title | 依赖与网络 | Dependencies and network | — |
+| settings.dialog.cancel.action | 取消 | Cancel | — |
+| settings.editRun.title | 编辑与运行 | Editing and running | — |
+| settings.editor.cursor.label | Cursor | Cursor | — |
+| settings.editor.default.label | 系统默认 | System default | — |
+| settings.editor.hint | 用它打开项目文件夹 | Opens the playground folder | — |
+| settings.editor.sublime.label | Sublime Text | Sublime Text | — |
+| settings.editor.title | 外部编辑器 | External editor | — |
+| settings.editor.vscode.label | VS Code | VS Code | — |
+| settings.editor.webstorm.label | WebStorm | WebStorm | — |
+| settings.editor.zed.label | Zed | Zed | — |
+| settings.general.title | 通用 | General | — |
+| settings.idleStop.hint | 没有请求、也没有输出的时间 | Time with no requests and no output | — |
+| settings.idleStop.hour2.label | 2 小时 | 2 hr | — |
+| settings.idleStop.min15.label | 15 分钟 | 15 min | — |
+| settings.idleStop.min30.label | 30 分钟 | 30 min | — |
+| settings.idleStop.title | 命令行启动的项目，空闲后自动停止 | Stop CLI-started playgrounds when idle | — |
+| settings.language.en.label | English | English | — |
+| settings.language.hint | 立即生效 | Applies immediately | — |
+| settings.language.title | 语言 | Language | — |
+| settings.language.zhCN.label | 简体中文 | Simplified Chinese | — |
+| settings.libraryRoot.change.action | 更改… | Change… | — |
+| settings.libraryRoot.confirm.body | 旧位置里的项目留在原处，不会被移动或删除，也不再出现在列表里。新位置里已有的项目会列出来。 | Playgrounds in the old location stay where they are. They are not moved or deleted, and no longer appear in the list. Playgrounds already in the new location are listed. | — |
+| settings.libraryRoot.confirm.title | 把资源库换到 {path}？ | Move the library to {path}? | path：新位置，主目录缩成 ~；用户选的，不翻译 |
+| settings.libraryRoot.continue.action | 继续 | Continue | — |
+| settings.libraryRoot.move.action | 更改位置 | Change location | — |
+| settings.libraryRoot.protected.body | macOS 在第一次访问“桌面”“文档”“下载”里的文件时，会弹出系统的隐私权限提示。继续的话，之后可能会看到这个提示。 | macOS shows a system privacy prompt the first time an app reads files in Desktop, Documents or Downloads. If you continue, you may see that prompt. | — |
+| settings.libraryRoot.protected.title | 把资源库放在“桌面”“文档”或“下载”里？ | Put the library in Desktop, Documents or Downloads? | — |
+| settings.libraryRoot.reveal.action | 在{term_fileManager}中显示 | Show in {term_fileManager} | — |
+| settings.libraryRoot.title | 资源库位置 | Library location | — |
+| settings.page.aria | 设置 | Settings | — |
+| settings.page.title | 设置 | Settings | — |
+| settings.pending.cli.label | 这一组其余的项还没有做，随 #195 提供 | The rest of this group is not built yet and arrives with #195 | — |
+| settings.pending.deps.label | 这一组还没有做，随 #189 提供 | This group is not built yet and arrives with #189 | — |
+| settings.pending.runtime.label | 这一组还没有做，随 #189 提供 | This group is not built yet and arrives with #189 | — |
+| settings.runNote.label | 在应用里打开标签页即运行，关闭标签页即停止；命令行启动的不受影响，空闲后自动停止。 | Opening a tab in the app runs the playground and closing the tab stops it. Runs started from the CLI are not affected and stop automatically when idle. | — |
+| settings.runtime.title | 运行环境 | Runtime | — |
+| settings.scriptAutoRun.hint | Node、Python、Go 脚本保存后自动重新运行 | Node, Python and Go scripts run again automatically when saved | — |
+| settings.scriptAutoRun.title | 脚本保存后自动运行 | Run scripts on save | — |
+| settings.theme.dark.label | 深色 | Dark | — |
+| settings.theme.hint | 浅色、深色或跟随系统 | Light, dark, or match the system | — |
+| settings.theme.light.label | 浅色 | Light | — |
+| settings.theme.system.label | 跟随系统 | System | — |
+| settings.theme.title | 主题 | Theme | — |
+| settings.updateCheck.hint | 每天一次，只访问 GitHub 的公开发布页，不发送任何标识 | Once a day, reads the public GitHub releases page only and sends no identifier | — |
+| settings.updateCheck.title | 自动检查更新 | Check for updates automatically | — |
 | workspace.closeConfirm.body | 关闭标签页会停止这个项目。代码和文件不受影响，下次打开会重新运行。 | Closing the tab stops this playground. Your code and files are not affected, and it runs again the next time you open it. | — |
 | workspace.closeConfirm.cancel.action | 取消 | Cancel | — |
 | workspace.closeConfirm.confirm.action | 关闭并停止 | Close and stop | — |

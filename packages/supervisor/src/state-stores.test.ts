@@ -67,4 +67,33 @@ describe("settings.json 的读-改-写", () => {
       scriptAutoRun: false,
     });
   });
+
+  it("[DESKTOP-SETTINGS-02] 改了就保存：新开一个存储（重新打开应用）读到改过的值，没改的仍是默认", async () => {
+    const fake = createFakePlatform();
+    const open = () =>
+      createSettingsStore({ platform: fake.platform, now: () => fake.clock.now(), log: () => {} });
+    await open().set({ packageManager: "npm", autoSave: "blur", theme: "dark", language: "en" });
+    expect(await open().get()).toMatchObject({
+      packageManager: "npm",
+      autoSave: "blur",
+      theme: "dark",
+      language: "en",
+      scriptAutoRun: true,
+    });
+  });
+
+  it("[DESKTOP-SETTINGS-25] 第一次读到的默认值：内置模板免确认关、自动保存第一档、主题跟随系统", async () => {
+    const fake = createFakePlatform();
+    const store = createSettingsStore({
+      platform: fake.platform,
+      now: () => fake.clock.now(),
+      log: () => {},
+    });
+    expect(await store.get()).toMatchObject({
+      urlNewSkipConfirmForBuiltin: false,
+      autoSave: "delay",
+      theme: "system",
+      cliIdleStopMinutes: 30,
+    });
+  });
 });

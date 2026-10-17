@@ -1,4 +1,5 @@
 import type { Locale } from "@runyard/i18n";
+import type { Settings } from "@runyard/protocol";
 import type { ConsoleAppend, ConsoleLine } from "./console-state.ts";
 import {
   type EditorFileMethods,
@@ -7,6 +8,7 @@ import {
 } from "./editor-files.ts";
 import type { Bounds } from "./layout.ts";
 import type { DesktopError, LibraryState } from "./library-state.ts";
+import { type SettingsMethods, settingsMethodNames } from "./settings-bridge.ts";
 
 // 预加载脚本交给界面的窄接口，只有三样：同步的启动信息 bootstrap、按名字调用的 call、订阅事件的 on。
 // 方法名和事件名是白名单（下面两张表）；界面发不出表外的消息，也拿不到 ipcRenderer。
@@ -35,7 +37,7 @@ export interface QuitReply {
 }
 
 /** 界面可以调用的方法：参数类型与返回类型 */
-export interface DesktopMethods extends EditorFileMethods {
+export interface DesktopMethods extends EditorFileMethods, SettingsMethods {
   "library.get": { param: undefined; result: LibraryState };
   "run.start": { param: string; result: undefined };
   "run.stop": { param: string; result: undefined };
@@ -92,6 +94,7 @@ export const desktopMethodNames: readonly DesktopMethod[] = [
   "preview.visible",
   "console.get",
   ...editorFileMethodNames,
+  ...settingsMethodNames,
 ];
 
 /** 主进程推给界面的事件 */
@@ -104,6 +107,8 @@ export interface DesktopEvents {
   "app.quitRequested": { id: number };
   /** 项目文件夹里的文件变了（监听由 files.watch 开启）：目录树更新和外部修改提示靠它 */
   "files.changed": FilesChanged;
+  /** 设置变了（设置页、命令行或别处改的）：带改后的全部设置 */
+  "settings.changed": Settings;
 }
 export type DesktopEventName = keyof DesktopEvents;
 
@@ -113,6 +118,7 @@ export const desktopEventNames: readonly DesktopEventName[] = [
   "picker.open",
   "app.quitRequested",
   "files.changed",
+  "settings.changed",
 ];
 
 /** 启动信息：主进程建窗口时算好，预加载脚本同步交给界面（技术设计 §6.7；协议包建好该类型后移过去） */
