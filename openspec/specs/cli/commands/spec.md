@@ -512,3 +512,37 @@
 - **WHEN** 执行 `runyard skill install --target other`
 - **THEN** 报 `USAGE`，退出码 2，没有写任何文件
 - 验证：test
+
+### Requirement: 命令行随应用安装，并能接到 `PATH` 上
+桌面应用的安装包 MUST 自带命令行，它的版本和构建标识 MUST 与应用相同，`runyard doctor` 的 `cli.kind` 是 `app`。“安装命令行工具”MUST 在用户自己的 bin 目录（`~/.local/bin`，不需要管理员权限）建一个名为 `runyard` 的链接，指向应用里的命令行启动脚本；目录不存在时 MUST 先建它。同一位置已有不是指向 Runyard 的文件或链接时 MUST 失败并写明，MUST NOT 覆盖它；已是指向 Runyard 的链接（包括旧位置的应用）时 MUST 改为指向当前应用。“移除”MUST 只删除指向 Runyard 的那个链接，MUST NOT 删其他东西。应用被移动位置后，经链接运行的命令行 MUST 仍能找到应用，找不到时 MUST 报错并提示重新安装命令行工具。
+来源：PRD #prd-cli-distribution；PRD #prd-settings-items
+
+#### Scenario: [CLI-COMMANDS-80] 版本与应用一致
+- 前提：安装的是 0.2.0 版的应用
+- **WHEN** 经链接执行 `runyard doctor --json`
+- **THEN** `cli.version` 是 0.2.0，`cli.kind` 是 `app`，构建标识与应用的相同
+- 验证：test
+
+#### Scenario: [CLI-COMMANDS-81] 建立链接
+- 前提：`~/.local/bin` 不存在
+- **WHEN** 安装命令行工具
+- **THEN** 建出 `~/.local/bin/runyard`，指向应用里的启动脚本；经它执行 `runyard new html demo --run` 成功
+- 验证：test
+
+#### Scenario: [CLI-COMMANDS-82] 不覆盖别人的文件
+- 前提：`~/.local/bin/runyard` 是用户自己的一个脚本
+- **WHEN** 安装命令行工具
+- **THEN** 失败并写明那个位置已有别的文件；那个脚本原样保留
+- 验证：test
+
+#### Scenario: [CLI-COMMANDS-83] 移除只删自己的链接
+- 前提：`~/.local/bin/runyard` 是指向 Runyard 的链接，同目录还有别的文件
+- **WHEN** 移除命令行工具
+- **THEN** 只有这个链接被删除，同目录的其他文件都在
+- 验证：test
+
+#### Scenario: [CLI-COMMANDS-84] 链接指向旧位置的应用
+- 前提：链接指向 `/Volumes/Old/Runyard.app` 里的启动脚本，应用现在在 `/Applications`
+- **WHEN** 在新位置的应用里安装命令行工具
+- **THEN** 链接改为指向 `/Applications/Runyard.app` 里的启动脚本
+- 验证：test
