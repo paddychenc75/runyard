@@ -318,7 +318,7 @@
 | desktop.quitConfirm.item.label | {project}：{command} | {project}: {command} | project：项目名，用户自己起的，不翻译；command：命令名，不翻译 |
 | desktop.quitConfirm.title | 退出 Runyard？ | Quit Runyard? | — |
 | desktop.request.aria | 请求面板 | Request panel | — |
-| desktop.request.autoResend.label | 服务重载后自动重发 | Resend after service reloads | — |
+| desktop.request.autoResend.label | 服务重载后自动重发 | Re-send after reload | — |
 | desktop.request.autoResent.label | {time} 自动重发 | {time} auto-resent | time：自动重发的时刻，时分秒，如 20:11:02，由格式化函数生成 |
 | desktop.request.bodyEmpty.label | 响应体是空的 | The response body is empty | — |
 | desktop.request.copied.label | 已复制 | Copied | — |

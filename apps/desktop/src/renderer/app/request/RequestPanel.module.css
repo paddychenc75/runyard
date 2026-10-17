@@ -115,6 +115,7 @@
 .toolRow {
   flex: none;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--space-4);
   padding: 0 var(--space-6) var(--space-5);

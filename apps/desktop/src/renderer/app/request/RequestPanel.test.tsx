@@ -373,7 +373,7 @@ describe("英文界面", () => {
     expect(utils.getByRole("button", { name: "Send" })).toBeTruthy();
     expect(utils.getByRole("button", { name: "Copy as curl" })).toBeTruthy();
     expect(utils.getByRole("button", { name: "Open in browser" })).toBeTruthy();
-    expect(utils.getByRole("switch", { name: "Resend after service reloads" })).toBeTruthy();
+    expect(utils.getByRole("switch", { name: "Re-send after reload" })).toBeTruthy();
     expect(utils.getByText("The response will show here after you send a request")).toBeTruthy();
   });
 });

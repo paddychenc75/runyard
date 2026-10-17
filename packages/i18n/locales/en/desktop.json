@@ -199,7 +199,7 @@
   "desktop.quitConfirm.item.label": "{project}: {command}",
   "desktop.quitConfirm.title": "Quit Runyard?",
   "desktop.request.aria": "Request panel",
-  "desktop.request.autoResend.label": "Resend after service reloads",
+  "desktop.request.autoResend.label": "Re-send after reload",
   "desktop.request.autoResent.label": "{time} auto-resent",
   "desktop.request.bodyEmpty.label": "The response body is empty",
   "desktop.request.copied.label": "Copied",
