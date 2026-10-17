@@ -104,6 +104,32 @@ describe("语言服务的配置", () => {
   });
 });
 
+describe("改名后的编辑器", () => {
+  it("[DESKTOP-EDITOR-10] 标签改了路径：内容和光标位置不变，之后的编辑交回给新路径", () => {
+    const edits: [string, string][] = [];
+    const container = document.createElement("div");
+    document.body.append(container);
+    const host = buildHost(runtime, container, {
+      onEdit: (path, text) => edits.push([path, text]),
+    });
+    const before = textTab("src/components/Button.tsx", "const a = 1;\nconst b = 2;\n");
+    host.sync({ tabs: [before], active: before.path, closePrompt: null }, "light");
+    const editor = runtime.monaco.editor
+      .getEditors()
+      .find((e) => e.getModel()?.uri.path === `/${before.path}`);
+    if (editor === undefined) throw new Error("editor missing");
+    editor.setPosition({ lineNumber: 2, column: 7 });
+    const after = { ...before, path: "src/ui/Button.tsx" };
+    host.sync({ tabs: [after], active: after.path, closePrompt: null }, "light");
+    expect(editor.getModel()?.uri.path).toBe("/src/ui/Button.tsx");
+    expect(editor.getValue()).toBe("const a = 1;\nconst b = 2;\n");
+    expect(editor.getPosition()).toMatchObject({ lineNumber: 2, column: 7 });
+    editor.trigger("keyboard", "type", { text: "x" });
+    expect(edits.at(-1)?.[0]).toBe("src/ui/Button.tsx");
+    host.dispose();
+  });
+});
+
 describe("编辑器的主题、查找替换和多光标", () => {
   it("[DESKTOP-EDITOR-39] 应用换成深色时编辑器立即换配色，内容和光标位置不变", () => {
     const { host, state, editor, container } = mountHost(

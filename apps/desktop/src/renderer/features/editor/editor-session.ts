@@ -62,6 +62,7 @@ export class EditorSession {
   /** 同一个文件的写入排队，保证后一次写的是更新的内容 */
   readonly #writes = new Map<string, Promise<boolean>>();
   #restoring = true;
+  #nextId = 1;
 
   constructor(options: EditorSessionOptions) {
     this.#options = options;
@@ -73,6 +74,11 @@ export class EditorSession {
     this.#listeners.add(listener);
     return () => this.#listeners.delete(listener);
   };
+
+  #newId(): string {
+    // 不用路径当身份：改名后又打开同名的文件时会撞
+    return `tab-${this.#nextId++}`;
+  }
 
   #set(next: Partial<SessionState>): void {
     this.#state = { ...this.#state, ...next };
@@ -103,7 +109,7 @@ export class EditorSession {
     const remembered = this.#options.memory.load();
     const wanted = remembered?.paths ?? (entry === null ? [] : [entry]);
     this.#set({
-      tabs: wanted.map(loadingTab),
+      tabs: wanted.map((path) => loadingTab(path, this.#newId())),
       active:
         remembered?.active != null && wanted.includes(remembered.active)
           ? remembered.active
@@ -146,7 +152,7 @@ export class EditorSession {
   }
 
   async #add(path: string): Promise<void> {
-    this.#set({ tabs: [...this.#state.tabs, loadingTab(path)], active: path });
+    this.#set({ tabs: [...this.#state.tabs, loadingTab(path, this.#newId())], active: path });
     this.#remember();
     await this.#load(path);
     this.#remember();
@@ -171,6 +177,41 @@ export class EditorSession {
     if (leaving !== undefined && isDirty(leaving) && this.#options.autosave() === "blur") {
       void this.save(leaving.path);
     }
+  }
+
+  /**
+   * 文件或文件夹改名了（文件树调用，规格 DESKTOP-EDITOR-09、10）：路径是它或在它下面的文件标签换成新路径，
+   * 内容、未保存的修改、写回用的换行符和 BOM 都留着，之后的保存写进新路径。
+   */
+  renamePath(from: string, to: string): void {
+    const move = (path: string): string | null => {
+      if (path === from) return to;
+      return path.startsWith(`${from}/`) ? `${to}${path.slice(from.length)}` : null;
+    };
+    const { tabs, active, closePrompt } = this.#state;
+    this.#set({
+      tabs: tabs.map((tab) => {
+        const moved = move(tab.path);
+        return moved === null ? tab : { ...tab, path: moved };
+      }),
+      active: active === null ? null : (move(active) ?? active),
+      closePrompt: closePrompt === null ? null : (move(closePrompt) ?? closePrompt),
+    });
+    this.#remember();
+  }
+
+  /** 文件或文件夹移到废纸篓了（文件树调用，DESKTOP-EDITOR-11）：它和它下面的文件标签直接关闭，不询问——文件树移走前已把未保存的内容写进去 */
+  removePath(path: string): void {
+    for (const tab of this.#state.tabs) {
+      if (tab.path === path || tab.path.startsWith(`${path}/`)) this.#drop(tab.path);
+    }
+  }
+
+  /** 这个文件有没保存的修改就返回要写进磁盘的全部内容（含 BOM），没有是 undefined；文件树移走前用它先保存（DESKTOP-EDITOR-12） */
+  unsavedContent(path: string): string | undefined {
+    const tab = this.#state.tabs.find((candidate) => candidate.path === path);
+    if (tab === undefined || !isDirty(tab)) return undefined;
+    return tab.bom ? `\uFEFF${tab.text}` : tab.text;
   }
 
   /** 编辑器里的内容变了 */

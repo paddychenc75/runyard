@@ -12,6 +12,8 @@ import { type HighlightMode, highlightModeOf } from "./file-language.ts";
 export type FileTabView = "loading" | "text" | "binary" | "too-large" | "failed";
 
 export interface FileTab {
+  /** 标签的身份，打开时定下、改名后不变：编辑器靠它认出“还是这个标签”，带走光标位置 */
+  id: string;
   /** 项目内相对路径 */
   path: string;
   view: FileTabView;
@@ -33,8 +35,9 @@ export interface FileTab {
   failure: EditorFileError | null;
 }
 
-export function loadingTab(path: string): FileTab {
+export function loadingTab(path: string, id: string = path): FileTab {
   return {
+    id,
     path,
     view: "loading",
     text: "",

@@ -66,3 +66,20 @@ export function EditorWorkspace({
     </WorkspaceFilesContext.Provider>
   );
 }
+
+/** 文件树要的三件事（改名、移到废纸篓、未保存的内容）接到当前项目的文件标签上 */
+export function useEditorFileHooks(): {
+  unsavedContent: (path: string) => string | undefined;
+  onRenamed: (from: string, to: string) => void;
+  onTrashed: (path: string) => void;
+} {
+  const { session } = useActiveEditor();
+  return useMemo(
+    () => ({
+      unsavedContent: (path) => session.unsavedContent(path),
+      onRenamed: (from, to) => session.renamePath(from, to),
+      onTrashed: (path) => session.removePath(path),
+    }),
+    [session],
+  );
+}

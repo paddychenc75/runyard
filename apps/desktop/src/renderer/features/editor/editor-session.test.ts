@@ -300,3 +300,63 @@ describe("保存的写法", () => {
     expect(disk.writes).toEqual([{ path: "a.ts", content: "a2", eol: undefined }]);
   });
 });
+
+describe("文件树的改名和移到废纸篓落到文件标签上", () => {
+  it("[DESKTOP-EDITOR-09] 改名：标签换成新路径，未保存的修改还在，保存写进新路径", async () => {
+    const { session, disk } = setup({ "src/App.tsx": "a" });
+    await session.start("src/App.tsx");
+    session.edit("src/App.tsx", "b");
+    session.renamePath("src/App.tsx", "src/Main.tsx");
+    expect(session.getState().tabs[0]).toMatchObject({
+      path: "src/Main.tsx",
+      text: "b",
+      savedText: "a",
+    });
+    expect(session.getState().active).toBe("src/Main.tsx");
+    await session.save("src/Main.tsx");
+    expect(disk.writes).toEqual([{ path: "src/Main.tsx", content: "b", eol: undefined }]);
+  });
+
+  it("[DESKTOP-EDITOR-10] 改名文件夹：它下面打开的标签都指向新路径，标签的身份不变，也记进恢复清单", async () => {
+    const { session, memory } = setup({ "src/components/Button.tsx": "x", "src/other.ts": "y" });
+    await session.start("src/components/Button.tsx");
+    await session.openFile("src/other.ts");
+    const idBefore = session.getState().tabs[0]?.id;
+    session.renamePath("src/components", "src/ui");
+    expect(paths(session)).toEqual(["src/ui/Button.tsx", "src/other.ts"]);
+    expect(session.getState().tabs[0]?.id).toBe(idBefore);
+    expect(memory.saved?.paths).toEqual(["src/ui/Button.tsx", "src/other.ts"]);
+  });
+
+  it("[DESKTOP-EDITOR-11] 移到废纸篓：文件标签直接关闭，不询问；文件夹下面的也一起关", async () => {
+    const { session } = setup({ "src/old.ts": "o", "src/lib/a.ts": "a", "src/lib/b.ts": "b" });
+    await session.start("src/old.ts");
+    await session.openFile("src/lib/a.ts");
+    await session.openFile("src/lib/b.ts");
+    session.removePath("src/old.ts");
+    expect(paths(session)).toEqual(["src/lib/a.ts", "src/lib/b.ts"]);
+    session.removePath("src/lib");
+    expect(paths(session)).toEqual([]);
+    expect(session.getState().closePrompt).toBeNull();
+  });
+
+  it("[DESKTOP-EDITOR-12] 有未保存的修改才返回要先写进去的内容（带 BOM），干净的文件返回 undefined", async () => {
+    const { session } = setup({ "a.txt": "\uFEFFone", "b.txt": "two" });
+    await session.start("a.txt");
+    await session.openFile("b.txt");
+    expect(session.unsavedContent("a.txt")).toBeUndefined();
+    session.edit("a.txt", "one!");
+    expect(session.unsavedContent("a.txt")).toBe("\uFEFFone!");
+    expect(session.unsavedContent("b.txt")).toBeUndefined();
+    expect(session.unsavedContent("missing.txt")).toBeUndefined();
+  });
+
+  it("改名后又打开同名的旧路径，是另一个标签", async () => {
+    const { session } = setup({ "a.ts": "a" });
+    await session.start("a.ts");
+    session.renamePath("a.ts", "b.ts");
+    await session.openFile("a.ts");
+    const ids = session.getState().tabs.map((tab) => tab.id);
+    expect(new Set(ids).size).toBe(2);
+  });
+});

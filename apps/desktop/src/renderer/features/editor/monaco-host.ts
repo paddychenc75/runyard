@@ -4,6 +4,7 @@ import { loadEditorRuntime } from "../../editor/editor-loader.ts";
 import type { EditorRuntime } from "../../editor/runtime-types.ts";
 import type { SessionState } from "./editor-session.ts";
 import { editorLanguageOf } from "./file-language.ts";
+import type { FileTab } from "./file-tab.ts";
 
 // 把编辑会话（EditorSession）摆进 Monaco：每个能编辑的文件标签一个模型，选中的那个放进编辑器。
 // 只给打开的文件建模型——给项目里每个文件都建会让 TS 线程同步慢到第一次补全等几十秒（K8 证据“装法”第 7 条）。
@@ -73,10 +74,16 @@ export function buildHost(
 ): EditorHost {
   const { monaco } = runtime;
   configureTypeScript(runtime);
-  const models = new Map<string, Monaco.editor.ITextModel>();
+  // 以文件标签的 id（不随改名变）为键：改名后 Monaco 的模型地址改不了，要用同样的内容另建一个模型接管，
+  // 光标和滚动位置按 id 带过去（规格 DESKTOP-EDITOR-09、10；K8 证据“没有验证的”一栏）
+  interface Entry {
+    path: string;
+    model: Monaco.editor.ITextModel;
+    subscription: Monaco.IDisposable;
+  }
+  const entries = new Map<string, Entry>();
   const viewStates = new Map<string, Monaco.editor.ICodeEditorViewState | null>();
-  const subscriptions = new Map<string, Monaco.IDisposable>();
-  let shownPath: string | null = null;
+  let shownId: string | null = null;
   const editor = monaco.editor.create(container, {
     model: null,
     automaticLayout: true,
@@ -102,13 +109,11 @@ export function buildHost(
 
   const uriOf = (path: string): Monaco.Uri => monaco.Uri.from({ scheme: "file", path: `/${path}` });
 
-  function ensureModel(path: string, tab: SessionState["tabs"][number]): Monaco.editor.ITextModel {
-    const existing = models.get(path);
-    if (existing !== undefined) return existing;
+  function createEntry(tab: FileTab): Entry {
     const model = monaco.editor.createModel(
       tab.text,
-      editorLanguageOf(path, tab.mode),
-      uriOf(path),
+      editorLanguageOf(tab.path, tab.mode),
+      uriOf(tab.path),
     );
     // 编辑器选项里的关闭不一定传到模型上（实测括号仍按深度着色），设计稿的括号是标点灰，所以模型上也关
     model.updateOptions({
@@ -116,25 +121,23 @@ export function buildHost(
     });
     if (tab.eol === "crlf") model.setEOL(monaco.editor.EndOfLineSequence.CRLF);
     else if (tab.eol === "lf") model.setEOL(monaco.editor.EndOfLineSequence.LF);
-    subscriptions.set(
-      path,
-      model.onDidChangeContent(() => handlers.onEdit(path, model.getValue())),
-    );
-    models.set(path, model);
-    return model;
+    const entry: Entry = {
+      path: tab.path,
+      model,
+      // 路径取调用时的，改名后会话里已是新路径
+      subscription: model.onDidChangeContent(() => handlers.onEdit(entry.path, model.getValue())),
+    };
+    return entry;
   }
 
-  function dropModel(path: string): void {
-    subscriptions.get(path)?.dispose();
-    subscriptions.delete(path);
-    models.get(path)?.dispose();
-    models.delete(path);
-    viewStates.delete(path);
+  function disposeEntry(entry: Entry): void {
+    entry.subscription.dispose();
+    entry.model.dispose();
   }
 
-  function applyLanguageOptions(path: string): void {
+  function applyLanguageOptions(id: string): void {
     // Vue 只有着色：不从文件里已有的词给建议（规格“智能提示”；K8 装法第 9 条）
-    const vue = models.get(path)?.getLanguageId() === "vue";
+    const vue = entries.get(id)?.model.getLanguageId() === "vue";
     editor.updateOptions({
       wordBasedSuggestions: vue ? "off" : "matchingDocuments",
       quickSuggestions: vue ? false : { other: true, comments: false, strings: false },
@@ -145,21 +148,40 @@ export function buildHost(
     sync(state, theme) {
       monaco.editor.setTheme(runtime.themes[theme]);
       const editable = new Map(
-        state.tabs.filter((tab) => tab.view === "text").map((t) => [t.path, t]),
+        state.tabs.filter((tab) => tab.view === "text").map((tab) => [tab.id, tab]),
       );
-      for (const path of [...models.keys()]) if (!editable.has(path)) dropModel(path);
-      for (const [path, tab] of editable) {
-        const model = ensureModel(path, tab);
+      for (const [id, entry] of [...entries]) {
+        if (!editable.has(id)) {
+          disposeEntry(entry);
+          entries.delete(id);
+          viewStates.delete(id);
+        }
+      }
+      for (const [id, tab] of editable) {
+        const existing = entries.get(id);
+        if (existing !== undefined && existing.path !== tab.path) {
+          // 改名：先存下光标位置，换新模型后再放回去
+          if (shownId === id) viewStates.set(id, editor.saveViewState());
+          disposeEntry(existing);
+          entries.delete(id);
+          if (shownId === id) shownId = null;
+        }
+        let entry = entries.get(id);
+        if (entry === undefined) {
+          entry = createEntry(tab);
+          entries.set(id, entry);
+        }
         // 会话是内容的来源：不一致只会是会话里的内容被外部换掉了
-        if (model.getValue() !== tab.text) model.setValue(tab.text);
+        if (entry.model.getValue() !== tab.text) entry.model.setValue(tab.text);
       }
-      const next = state.active !== null && editable.has(state.active) ? state.active : null;
-      if (next === shownPath) return;
-      if (shownPath !== null && models.has(shownPath)) {
-        viewStates.set(shownPath, editor.saveViewState());
+      const activeTab = state.tabs.find((tab) => tab.path === state.active);
+      const next = activeTab !== undefined && editable.has(activeTab.id) ? activeTab.id : null;
+      if (next === shownId) return;
+      if (shownId !== null && entries.has(shownId)) {
+        viewStates.set(shownId, editor.saveViewState());
       }
-      shownPath = next;
-      editor.setModel(next === null ? null : (models.get(next) ?? null));
+      shownId = next;
+      editor.setModel(next === null ? null : (entries.get(next)?.model ?? null));
       if (next !== null) {
         applyLanguageOptions(next);
         const saved = viewStates.get(next);
@@ -169,7 +191,8 @@ export function buildHost(
     },
     focus: () => editor.focus(),
     dispose() {
-      for (const path of [...models.keys()]) dropModel(path);
+      for (const entry of entries.values()) disposeEntry(entry);
+      entries.clear();
       editor.dispose();
     },
   };
