@@ -39,10 +39,14 @@ export interface DiskHost {
  */
 export async function reconcileDisk(host: DiskHost, path: string): Promise<void> {
   await host.settled(path);
+  const savedBefore = host.tab(path)?.savedText;
   const result = await host.read(path);
   // 读的过程中状态可能变了（又输入了、标签关了），以现在的为准
   const tab = host.tab(path);
   if (tab === undefined || tab.view !== "text" || host.gone()) return;
+  // 读的过程中自己又存了一次：读到的是更早的内容，拿它去换编辑器里的内容会把刚输入的倒回去（光标跟着跳）。
+  // 那次保存自己会带来一个“自己写的”事件，不用在这里处理
+  if (tab.savedText !== savedBefore) return;
   if (!result.ok) {
     if (result.error.code === "EDITOR_NOT_FOUND") {
       host.cancelTimer(path);
