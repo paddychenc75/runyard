@@ -2,6 +2,7 @@ import { absPath } from "@runyard/platform";
 import { createCrashRecovery } from "./crash-recovery.ts";
 import { createIdleStop } from "./idle-stop.ts";
 import { createLogModule } from "./log-module.ts";
+import { createRequestHandlers, type RequestDeps } from "./request-handlers.ts";
 import { createRunModule, type RunModule, type RunModuleOptions } from "./run-module.ts";
 import { combineObservers } from "./run-observers.ts";
 import type { SupervisorApi } from "./supervisor-api.ts";
@@ -17,6 +18,8 @@ export interface ComposeOptions {
   readonly log: (line: string) => void;
   /** 运行编排的其余选项（测试换准备阶段、就绪探测、加自己的观察者） */
   readonly run?: Partial<Omit<RunModuleOptions, "templateData" | "appVersion">>;
+  /** 请求面板真正发请求的函数；测试换成替身 */
+  readonly sendRequest?: RequestDeps["send"];
 }
 
 export interface Composition {
@@ -62,7 +65,20 @@ export function composeExtensions(api: SupervisorApi, options: ComposeOptions): 
   });
   const extensions: SupervisorExtensions = {
     ...run,
-    handlers: { ...run.handlers, ...logs.handlers },
+    handlers: {
+      ...run.handlers,
+      ...logs.handlers,
+      ...createRequestHandlers(api, {
+        currentRun: (playgroundId) => {
+          const current = run.engine.current(playgroundId);
+          return current === undefined
+            ? undefined
+            : { state: current.state, port: current.snapshot().port };
+        },
+        touch: idle.activityOn,
+        ...(options.sendRequest === undefined ? {} : { send: options.sendRequest }),
+      }),
+    },
     recoverCrashedRuns: recovery.recover,
     // 运行停完之后最后几行日志和记录的删除才到，所以落盘排在它后面
     onShutdown: async (reason) => {

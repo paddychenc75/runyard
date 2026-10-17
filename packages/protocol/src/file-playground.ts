@@ -3,6 +3,7 @@ import { createdBySchema } from "./created-by.ts";
 import { defineFileFormat } from "./file-format.ts";
 import { autoCleanSchema, packageManagers, playgroundSchema } from "./playground.ts";
 import { relativePathSchema, timestampSchema } from "./primitives.ts";
+import { requestSpecSchema } from "./request.ts";
 import { templateInstallSchema } from "./template-file.ts";
 
 // 项目文件夹里的 .runyard/playground.json（docs/architecture/storage.md 2.1）。
@@ -37,8 +38,8 @@ export const playgroundFileSchema = z.looseObject({
   createdBy: createdBySchema,
   autoClean: autoCleanSchema,
   script: z.object({ autoRun: z.boolean().optional() }).optional(),
-  // 请求面板上一次的请求（M3）。形状等对应规格批准后再定，现在只保证原样往返
-  lastRequest: z.unknown().optional(),
+  // 请求面板上一次发出的请求（规格 DESKTOP-REQUEST-PANEL-08）
+  lastRequest: requestSpecSchema.optional(),
   trust: z.literal("trusted").describe("第一版恒为 trusted"),
 });
 export type PlaygroundFile = z.infer<typeof playgroundFileSchema>;

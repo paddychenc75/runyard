@@ -26,6 +26,7 @@ const cli = { kind: "cli", command: "run demo" };
 const report = { tools: [{ tool: "node", status: "found", version: "24.21.0" }] };
 const subscription = { sub: 3 };
 const empty = {};
+const sampleRequest = { method: "GET", path: "/todos", headers: [], payload: "" };
 
 // Record<MethodName, …>：新增方法而不写样例，类型检查就过不了
 const examples: Record<MethodName, Example> = {
@@ -299,8 +300,18 @@ const examples: Record<MethodName, Example> = {
     result: sampleSettings,
     badResult: { ...sampleSettings, updateCheck: "yes" },
   },
-  "request.send": { params: { method: "GET" }, result: { status: 200 } },
-  "request.getLast": { params: empty, result: null },
+  "request.send": {
+    params: { playground: "p1", request: sampleRequest },
+    badParams: { playground: "p1", request: { ...sampleRequest, path: "http://evil.example/" } },
+    result: { outcome: "failed", reason: "timeout", durationMs: 30000 },
+    badResult: { outcome: "failed", reason: "bogus", durationMs: 1 },
+  },
+  "request.getLast": {
+    params: { playground: "p1" },
+    badParams: {},
+    result: null,
+    badResult: { method: "TRACE" },
+  },
 };
 
 describe("方法登记表", () => {
@@ -436,9 +447,9 @@ describe("方法登记表", () => {
       expect(methodRegistry[readOnly].errors).not.toContain("DATA_FROM_NEWER_VERSION");
   });
 
-  it("只占名字的方法是 run.disown 和请求面板两个，管理进程回 NOT_SUPPORTED", () => {
+  it("只占名字的方法只剩 run.disown，管理进程回 NOT_SUPPORTED", () => {
     const reserved = methodNames.filter((name) => methodRegistry[name].status === "reserved");
-    expect(reserved.sort()).toEqual(["request.getLast", "request.send", "run.disown"]);
+    expect(reserved.sort()).toEqual(["run.disown"]);
     for (const name of reserved) expect(methodRegistry[name].errors).toEqual(["NOT_SUPPORTED"]);
   });
 

@@ -317,6 +317,37 @@
 | desktop.quitConfirm.confirm.action | 退出 | Quit | — |
 | desktop.quitConfirm.item.label | {project}：{command} | {project}: {command} | project：项目名，用户自己起的，不翻译；command：命令名，不翻译 |
 | desktop.quitConfirm.title | 退出 Runyard？ | Quit Runyard? | — |
+| desktop.request.aria | 请求面板 | Request panel | — |
+| desktop.request.autoResend.label | 服务重载后自动重发 | Re-send after reload | — |
+| desktop.request.autoResent.label | {time} 自动重发 | {time} auto-resent | time：自动重发的时刻，时分秒，如 20:11:02，由格式化函数生成 |
+| desktop.request.bodyEmpty.label | 响应体是空的 | The response body is empty | — |
+| desktop.request.copied.label | 已复制 | Copied | — |
+| desktop.request.copyCurl.action | 复制为 curl | Copy as curl | — |
+| desktop.request.disconnected.label | 服务中途断开了连接 | The service closed the connection midway | — |
+| desktop.request.empty.label | 发送请求后，响应显示在这里 | The response will show here after you send a request | — |
+| desktop.request.headers.label | 请求头 | Headers | — |
+| desktop.request.headers.placeholder | 每行一个，如 content-type: application/json | One per line, e.g. content-type: application/json | — |
+| desktop.request.invalid.label | 请求里有不能发送的字符，检查路径和请求头 | The request has characters that can't be sent; check the path and headers | — |
+| desktop.request.meta.label | {duration} · {size} | {duration} · {size} | duration：耗时，如 12 ms，由格式化函数生成；size：响应体大小，如 156 B，由格式化函数生成 |
+| desktop.request.method.aria | 请求方法 | Request method | — |
+| desktop.request.methodOption.label | {method} | {method} | method：HTTP 方法名（GET、POST 等），技术词，不翻译 |
+| desktop.request.notReady.label | 服务还没就绪，请求没有发出 | The service is not ready; the request was not sent | — |
+| desktop.request.openInBrowser.action | 在浏览器中打开 | Open in browser | — |
+| desktop.request.path.aria | 请求路径 | Request path | — |
+| desktop.request.payload.label | 请求体 | Body | — |
+| desktop.request.payload.placeholder | 请求体（GET 不发送） | Request body (not sent with GET) | — |
+| desktop.request.pending.label | 正在等待响应… | Waiting for the response… | — |
+| desktop.request.response.title | 响应 | Response | — |
+| desktop.request.responseBody.label | 响应体 | Body | — |
+| desktop.request.responseHeaders.label | 响应头 | Headers | — |
+| desktop.request.responseTabs.aria | 响应内容 | Response content | — |
+| desktop.request.send.action | 发送 | Send | — |
+| desktop.request.starting.hint | 服务还没就绪，就绪后才能发送 | The service is not ready yet; you can send once it is | — |
+| desktop.request.stopped.hint | 服务没有在运行，运行后才能发送 | The service is not running; run it to send | — |
+| desktop.request.tabs.aria | 请求内容 | Request content | — |
+| desktop.request.timeout.label | 等了 30 秒仍没有响应，已超时 | No response after 30 seconds; timed out | — |
+| desktop.request.tooLarge.label | 响应超过 5 MB，没有显示 | The response is over 5 MB and is not shown | — |
+| desktop.request.unreachable.label | 连不上服务 | Can't reach the service | — |
 | desktop.rerun.action | 重新运行 | Run again | — |
 | desktop.restart.action | 重启 | Restart | — |
 | desktop.run.action | 运行 | Run | — |

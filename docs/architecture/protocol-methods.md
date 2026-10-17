@@ -73,7 +73,7 @@
 
 ### 模板、工具链、请求面板、设置、自动清理
 
-`request.*` 和 `run.disown` 只在登记表里占名字（`status: reserved`），管理进程回 `NOT_SUPPORTED`。
+`run.disown` 只在登记表里占名字（`status: reserved`），管理进程回 `NOT_SUPPORTED`。
 
 | 方法 | 入参 | 出参 | 说明 |
 | --- | --- | --- | --- |
@@ -82,7 +82,8 @@
 | `template.save` | `playground`、`as`、`name?`、`description?`、`replaceName?`、`include?`、`exclude?`（后两个是相对路径数组） | `{ id, name, path, files, source: 'user' }` | `NAME_INVALID` `NAME_EXISTS` `PLAYGROUND_NOT_FOUND` `FOLDER_MISSING`；路径不合法由入参校验拒绝（`USAGE`）。`as` 的入参校验只要求非空，写法由处理函数校验并回 `NAME_INVALID`（参数 `kind: "template"`，缺省是项目），不会先被入参校验变成 `USAGE`。`template lint`、`template test` 在命令行进程里直接跑，不经管理进程，所以没有方法 |
 | `toolchain.check` | `playground?` 或 `template?`、`cachedOnly?` | `{ tools }`，每项 `tool`、`status`（`found` `missing` `too-old` `unknown`）、`path?`、`version?`、`required?`、`untested?`、`source?`、`arch?`（可执行文件的芯片架构）、`installCommand?` `installUrl?`（缺少或过旧时当前系统的安装方式，模板自己写的优先，只展示不执行，#228） | `cachedOnly: true` 只读缓存，不触发检测；都不给时是全部有效模板用到的工具；按 `playground` 查回 `NOT_SUPPORTED`（#291） |
 | `toolchain.doctor` / `.recheck` / `.setPath` | `-` / `-` / `tool`、`path` | 同 `toolchain.check` 的 `{ tools }` | `recheck` 重新解析登录环境、清缓存；`setPath` 的文件执行不了或打印不出版本号时报 `TOOL_PATH_INVALID { tool, path }`，原来的路径不变 |
-| `request.send` / `.getLast` | `playground`、`method`、`path`、`headers?`、`body?` | 状态码、耗时、响应头、响应体 | 属于 M3 的请求面板，M1 不实现 |
+| `request.send` | `playground`、`request { method, path, headers, payload }` | `RequestResult`：`outcome: "response"`（`status` `statusText` `durationMs` `size` `headers` `payload`）或 `outcome: "failed"`（`reason`：`not-ready` `timeout` `unreachable` `disconnected` `too-large` `invalid-request`，`durationMs`） | 只发往项目运行的 `127.0.0.1:<端口>`，目标由管理进程按运行的端口拼，调用方只给路径；30 秒超时；记为上一次请求（写 `playground.json` 的 `lastRequest`）；对命令行持有的运行算一次空闲活动（规格 DESKTOP-REQUEST-PANEL-13）。连不上、超时、服务没就绪是结果里的 `failed`，不是协议错误 |
+| `request.getLast` | `playground` | `RequestSpec` 或 `null`（从没发过） | |
 | `settings.get` / `.set` | `-` / 部分设置 | 设置 | 字段见 storage.md 2.3；协议里现在有 `libraryRoot` `externalEditor?` `packageManager` `scriptAutoRun` `cliIdleStopMinutes` `toolPaths` `ports { min, max }` `urlNewSkipConfirmForBuiltin` `updateCheck` `autoSave` `theme` `language?` `confirmCloseRunningTab` 和 `network { registry?, proxy?, noProxyLocal }`（#189：镜像源只认 http(s)，代理另认 socks5，不合法的 `settings.set` 回 `USAGE`；没写就沿用本机 .npmrc 和环境） |
 | `clean.due` | 无 | `{ remind, clean }`：项目 id 数组，待提醒清单和可清理清单 | 判断在 `core` 的纯函数，调度在桌面应用主进程（§4.7）。清理本身走 `playground.trash`，没有单独的方法 |
 | `clean.ackReminder` / `clean.keep` | `playgroundId` | 空 | 界面确认提醒已显示 / 提醒里的“改为保留”。会写共享文件，可能返回 `DATA_FROM_NEWER_VERSION` |
@@ -106,7 +107,7 @@
 已定的（由 #18 定）：握手帧不用 `req/res` 信封，见 protocol.md 第 2 节；`Playground` 记录的形状和 `playground.list` 的过滤参数（第 1 节）；`logs.read` 出参字段名是 `entries` `cursor` `truncated` `state?`（命令行 `--json` 的 `text` `lines` 由命令行从 `entries` 拼出，不是协议字段）；`run.stopAll` 出参 `{ stopped }`，`supervisor.info` 出参见第 2 节；事件订阅用 `events.subscribe` / `events.unsubscribe`。
 
 1. ~~`toolchain.check` 里工具定义的安装命令如何随出参返回~~ 已定（#228、#189）：`ToolCheck` 和 `TOOL_MISSING` / `TOOL_TOO_OLD` 的参数都带可选的 `installCommand`、`installUrl`。
-2. `request.result` `agent.activity` `supervisor.closing` 的数据形状；请求面板方法（M3）的入参出参。
+2. `request.result` `agent.activity` `supervisor.closing` 的数据形状（请求面板方法已定，结果直接在 `request.send` 的出参里，`request.result` 事件暂不用）。
 3. ~~模板方法和自动清理方法的入参出参、`LocalizedText`~~ 已定（#20）：规格没固定字段名的地方（`template.save` 的 `replaceName` `include` `exclude`，`clean.due` 的 `remind` `clean`，`TemplateRecord` 对无效模板的缺省值）是 #20 选的，见 PR。`clean.due` 怎样知道“有标签页开着”（规格 LIBRARY-AUTO-CLEAN-26）规格没写：方法没有入参，需要负责人或后续 issue 定。
 4. ~~`run.stdin`~~ 已定（#20）。
 5. 设置里 `autoSave` `network` `theme` `language` 的取值，等设置的规格批准。

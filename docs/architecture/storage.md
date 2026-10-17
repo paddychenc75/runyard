@@ -45,7 +45,7 @@
 | `createdAt`、`createdBy` | 创建时间；`{ kind: 'user' \| 'agent' \| 'cli', agent?, command? }` |
 | `autoClean` | 开关和天数；计时不在这里，在 `library.json` |
 | `script.autoRun` | 脚本项目“保存后自动运行”（可无） |
-| `lastRequest` | 请求面板上一次请求（M3，可无） |
+| `lastRequest` | 请求面板上一次发出的请求：`method`、`path`、`headers`（`{name,value}` 数组）、`payload`（可无） |
 | `trust` | 第一版恒为 `trusted` |
 
 名称不存，永远取文件夹名。放在文件夹里是为了文件夹被拷走、改名后仍认得自己，索引丢了能重建。

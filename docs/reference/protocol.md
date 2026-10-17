@@ -759,15 +759,36 @@
 
 #### `request.send`
 
-请求面板发请求（M3）
+对项目自己的服务发一个请求（只发往它运行的 127.0.0.1:端口，30 秒超时），并记为上一次请求；计一次空闲活动
 
-只占名字：形状和行为等对应规格批准后再定，现在回 `NOT_SUPPORTED`。
+入参：
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `playground` | `string` | 是 | 项目的 id 或名称；非空 |
+| `request` | `RequestSpec` | 是 |  |
+
+出参：
+
+类型 `RequestResult`
+
+可能返回的错误码：`PLAYGROUND_NOT_FOUND`
 
 #### `request.getLast`
 
-请求面板取上一次请求（M3）
+取上一次发出的请求；从没发过是 null
 
-只占名字：形状和行为等对应规格批准后再定，现在回 `NOT_SUPPORTED`。
+入参：
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `playground` | `string` | 是 | 项目的 id 或名称；非空 |
+
+出参：
+
+类型 `RequestSpec \| null`
+
+可能返回的错误码：`PLAYGROUND_NOT_FOUND`
 
 ## 事件
 
@@ -968,6 +989,39 @@
 | `lastUsedAt` | `integer` | 是 | ≥ 0 |
 | `lastOpenedAt` | `integer` | 否 | ≥ 0 |
 | `missingSince` | `integer` | 否 | 找不到文件夹的起始时间；≥ 0 |
+
+### `RequestResult`
+
+以下几种之一：
+
+**`outcome = 'response'`**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `outcome` | `'response'` | 是 |  |
+| `status` | `integer` | 是 |  |
+| `statusText` | `string` | 是 |  |
+| `durationMs` | `number` | 是 | ≥ 0 |
+| `size` | `integer` | 是 | 响应体的字节数；≥ 0 |
+| `headers` | `{ name: string; value: string }[]` | 是 |  |
+| `payload` | `string` | 是 | 响应体，按 UTF-8 解出的文字 |
+
+**`outcome = 'failed'`**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `outcome` | `'failed'` | 是 |  |
+| `reason` | `'not-ready' \| 'timeout' \| 'unreachable' \| 'disconnected' \| 'too-large' \| 'invalid-request'` | 是 |  |
+| `durationMs` | `number` | 是 | ≥ 0 |
+
+### `RequestSpec`
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `method` | `'GET' \| 'POST' \| 'PUT' \| 'PATCH' \| 'DELETE'` | 是 |  |
+| `path` | `string` | 是 | 以 / 开头的路径加查询串；写别的主机也只是路径；以 / 开头 |
+| `headers` | `{ name: string; value: string }[]` | 是 | 按填写顺序，允许同名 |
+| `payload` | `string` | 是 | 请求体；GET 不带。字段不叫 body：协议里 body 是面向用户文字的保留名 |
 
 ### `RunSnapshot`
 

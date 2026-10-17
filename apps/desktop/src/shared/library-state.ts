@@ -100,6 +100,8 @@ export interface TabRow {
   folder: string;
   /** 启动清单里各步已用的时间；这一步没跑完或没量到是 null */
   phaseMs: StartPhaseMs;
+  /** 服务类项目（模板类型是“服务”）：右侧是请求面板而不是网页预览（规格 DESKTOP-REQUEST-PANEL-01）；没给就是 false */
+  service?: boolean;
   /** 找不到项目文件夹：标签页不启动，显示“找不到文件夹”的说明（规格 DESKTOP-LIBRARY-VIEW“找不到项目文件夹”）；没给就是 false */
   missing?: boolean;
 }

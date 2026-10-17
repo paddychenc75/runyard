@@ -33,7 +33,7 @@ class FakeClient {
     const results: Record<string, unknown> = {
       "playground.list": this.playgrounds,
       "run.list": this.runs,
-      "template.list": [template("html")],
+      "template.list": this.templates,
       "settings.get": { libraryRoot: this.libraryRoot },
       "run.start": run("a", "starting"),
       "run.stop": run("a", "stopped"),
@@ -44,6 +44,7 @@ class FakeClient {
   };
 
   failCreate: unknown;
+  templates = [template("html")];
   libraryRoot = "/home/u/Runyard";
 
   logEntries: { at: number; kind: "stdout"; text: string }[] = [];
@@ -202,6 +203,16 @@ describe("LibraryController", () => {
       owner: { kind: "tab", clientId: "app-1", tabId: "tab-a" },
       wait: "ready",
     });
+  });
+
+  it("[DESKTOP-REQUEST-PANEL-01] 服务类项目就绪后不显示网页预览（右侧是请求面板）；网页项目照常显示", async () => {
+    const { client, preview, controller } = setup();
+    client.templates = [template("html", { category: "service" })];
+    await controller.start();
+    client.runs = [run("a", "ready", { url: "http://127.0.0.1:7101", startedAt: 5 })];
+    await controller.openProject("a");
+    expect(controller.getState().tabs[0]).toMatchObject({ service: true, state: "ready" });
+    expect(preview.shown).toEqual([]);
   });
 
   it("停止按项目发 run.stop", async () => {
