@@ -31,11 +31,16 @@
 .overlay {
   position: absolute;
   inset: 0;
+}
+
+/* 居中；内容比区域高时从顶部开始、可滚动（safe center），不会把上半截挤出去 */
+.overlayViewport {
+  box-sizing: border-box;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: safe center;
   padding: var(--space-8);
-  overflow: auto;
 }
 
 .overlay[data-framed] {

@@ -1,5 +1,6 @@
 import type { Localized } from "@runyard/i18n";
 import { type ComponentProps, type UIEvent, useLayoutEffect, useRef, useState } from "react";
+import { ScrollArea } from "../../primitives/ScrollArea/index.ts";
 import { UserText } from "../../primitives/UserText/index.ts";
 import styles from "./LogView.module.css";
 
@@ -73,18 +74,21 @@ export function LogView({ lines, label, empty, className, ...rest }: LogViewProp
   const visible = lines.slice(first, last);
 
   return (
-    <div
+    <ScrollArea
       {...rest}
-      ref={scroller}
-      role="log"
-      aria-label={label}
-      // biome-ignore lint/a11y/noNoninteractiveTabindex: #176 可滚动的日志区要能用键盘聚焦，才能用方向键翻看
-      tabIndex={0}
+      orientation="both"
+      viewportRef={scroller}
       className={className === undefined ? styles.root : `${styles.root} ${className}`}
-      onScroll={onScroll}
-      // 长行不折行、横向滚动：这是有意的，不是撑破
-      data-truncate=""
-      data-virtual={measured ? "" : undefined}
+      viewportClassName={styles.viewport}
+      viewportProps={{
+        role: "log",
+        "aria-label": label,
+        // 可滚动的日志区要能用键盘聚焦，才能用方向键翻看（#176）
+        tabIndex: 0,
+        onScroll,
+        // 长行不折行、横向滚动：这是有意的，不是撑破
+        ...{ "data-truncate": "", "data-virtual": measured ? "" : undefined },
+      }}
     >
       {/* 量行高用的探针：一行的高度由样式固定，所以量一行就够 */}
       <div ref={probe} className={styles.probe} aria-hidden="true" />
@@ -106,6 +110,6 @@ export function LogView({ lines, label, empty, className, ...rest }: LogViewProp
       <div
         style={measured ? { paddingBlockStart: (lines.length - last) * rowHeight } : undefined}
       />
-    </div>
+    </ScrollArea>
   );
 }

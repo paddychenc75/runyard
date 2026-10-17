@@ -1,5 +1,5 @@
 import { useT } from "@runyard/i18n/react";
-import { IconButton, UserText } from "@runyard/ui";
+import { IconButton, ScrollArea, UserText } from "@runyard/ui";
 import styles from "./FileTabs.module.css";
 import type { FileTab } from "./file-tab.ts";
 import { isDirty } from "./file-tab.ts";
@@ -18,46 +18,52 @@ export function FileTabs({ tabs, active, onSelect, onClose }: FileTabsProps) {
   const t = useT();
   const names = tabs.map((tab) => baseName(tab.path));
   return (
-    <div role="tablist" aria-label={t("desktop.editor.tabs.aria")} className={styles.root}>
-      {tabs.map((tab, index) => {
-        const name = names[index] ?? tab.path;
-        const dirty = isDirty(tab);
-        const selected = tab.path === active;
-        return (
-          <div key={tab.path} className={styles.item} data-selected={selected ? "" : undefined}>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={selected}
-              aria-label={
-                tab.deleted
-                  ? t("desktop.editor.tabDeleted.label", { name })
-                  : dirty
-                    ? t("desktop.editor.tabUnsaved.label", { name })
-                    : undefined
-              }
-              data-path={tab.path}
-              className={styles.tab}
-              onClick={() => onSelect(tab.path)}
-            >
-              <UserText>{name}</UserText>
-              {tab.deleted ? (
-                <span aria-hidden="true" className={styles.deleted}>
-                  {t("desktop.editor.tabDeletedMark.label")}
-                </span>
-              ) : dirty ? (
-                <span aria-hidden="true" className={styles.dirty} data-dirty="" />
-              ) : null}
-            </button>
-            <IconButton
-              icon="close"
-              size="xs"
-              label={t("desktop.editor.tabClose.label", { name })}
-              onClick={() => onClose(tab.path)}
-            />
-          </div>
-        );
-      })}
-    </div>
+    <ScrollArea
+      orientation="horizontal"
+      className={styles.root}
+      viewportProps={{ role: "tablist", "aria-label": t("desktop.editor.tabs.aria") }}
+    >
+      <div className={styles.strip}>
+        {tabs.map((tab, index) => {
+          const name = names[index] ?? tab.path;
+          const dirty = isDirty(tab);
+          const selected = tab.path === active;
+          return (
+            <div key={tab.path} className={styles.item} data-selected={selected ? "" : undefined}>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={selected}
+                aria-label={
+                  tab.deleted
+                    ? t("desktop.editor.tabDeleted.label", { name })
+                    : dirty
+                      ? t("desktop.editor.tabUnsaved.label", { name })
+                      : undefined
+                }
+                data-path={tab.path}
+                className={styles.tab}
+                onClick={() => onSelect(tab.path)}
+              >
+                <UserText>{name}</UserText>
+                {tab.deleted ? (
+                  <span aria-hidden="true" className={styles.deleted}>
+                    {t("desktop.editor.tabDeletedMark.label")}
+                  </span>
+                ) : dirty ? (
+                  <span aria-hidden="true" className={styles.dirty} data-dirty="" />
+                ) : null}
+              </button>
+              <IconButton
+                icon="close"
+                size="xs"
+                label={t("desktop.editor.tabClose.label", { name })}
+                onClick={() => onClose(tab.path)}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </ScrollArea>
   );
 }

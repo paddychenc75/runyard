@@ -1,9 +1,11 @@
 /* 设置页的版面（设计稿 Settings）：标题在上，下面两列等宽、列间距 20，组与组之间 10 或 12 */
 .root {
-  box-sizing: border-box;
   inline-size: 100%;
   min-inline-size: 0;
-  overflow-y: auto;
+}
+
+.viewport {
+  box-sizing: border-box;
   padding-block-start: calc(var(--space-9) + var(--space-1));
   padding-inline: var(--space-10);
 }

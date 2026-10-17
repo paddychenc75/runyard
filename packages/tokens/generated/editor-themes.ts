@@ -24,6 +24,10 @@ export const monacoThemes = {
       "editor.lineHighlightBackground": "#0071E312",
       "editor.selectionBackground": "#0071E314",
       "editorCursor.foreground": "#0071E3",
+      "scrollbar.shadow": "#00000000",
+      "scrollbarSlider.background": "#1D1D1F59",
+      "scrollbarSlider.hoverBackground": "#1D1D1F8C",
+      "scrollbarSlider.activeBackground": "#1D1D1F8C",
     },
   },
   dark: {
@@ -48,6 +52,10 @@ export const monacoThemes = {
       "editor.lineHighlightBackground": "#FFFFFF0F",
       "editor.selectionBackground": "#0A84FF52",
       "editorCursor.foreground": "#0A84FF",
+      "scrollbar.shadow": "#00000000",
+      "scrollbarSlider.background": "#F5F5F759",
+      "scrollbarSlider.hoverBackground": "#F5F5F78C",
+      "scrollbarSlider.activeBackground": "#F5F5F78C",
     },
   },
 } as const;

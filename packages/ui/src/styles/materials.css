@@ -11,35 +11,35 @@
   background: var(--glass-toolbar-bg);
   backdrop-filter: var(--glass-blur-toolbar);
   border-radius: var(--radius-capsule);
-  box-shadow: var(--shadow-1);
+  box-shadow: var(--shadow-floating);
 }
 
 [data-glass-material="sidebar"] {
   background: var(--glass-sidebar-bg);
   backdrop-filter: var(--glass-blur-sidebar);
   border-radius: var(--radius-sidebar);
-  box-shadow: var(--shadow-2);
+  box-shadow: var(--shadow-floating);
 }
 
 [data-glass-material="filetree"] {
   background: var(--glass-filetree-bg);
   backdrop-filter: var(--glass-blur-toolbar);
   border-radius: var(--radius-sidebar);
-  box-shadow: var(--shadow-2);
+  box-shadow: var(--shadow-floating);
 }
 
 [data-glass-material="dialog"] {
   background: var(--glass-dialog-bg);
   backdrop-filter: var(--glass-blur-dialog);
   border-radius: var(--radius-dialog);
-  box-shadow: var(--shadow-3);
+  box-shadow: var(--shadow-dialog);
 }
 
 [data-glass-material="menu"] {
   background: var(--glass-dialog-bg);
   backdrop-filter: var(--glass-blur-menu);
   border-radius: var(--radius-menu);
-  box-shadow: var(--shadow-menu);
+  box-shadow: var(--shadow-overlay);
 }
 
 @media (prefers-reduced-transparency: reduce) {

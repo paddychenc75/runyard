@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import { MonogramTile, type TechLogo } from "../../primitives/MonogramTile/index.ts";
+import { ScrollArea } from "../../primitives/ScrollArea/index.ts";
 import styles from "./ListPicker.module.css";
 
 export interface ListPickerItem {
@@ -125,7 +126,7 @@ export function ListPicker({
         "aria-controls": listId,
         "aria-activedescendant": count === 0 ? undefined : optionId(current),
       })}
-      <div className={styles.scroll}>
+      <ScrollArea className={styles.scroll}>
         <div ref={listRef} id={listId} role="listbox" aria-label={label} className={styles.list}>
           {groups.map((group) => (
             // biome-ignore lint/a11y/useSemanticElements: #172 listbox 里的分组按 ARIA 规范只能是 role=group，fieldset 不适用
@@ -175,7 +176,7 @@ export function ListPicker({
             </div>
           ))}
         </div>
-      </div>
+      </ScrollArea>
       {footer === undefined ? null : <div className={styles.footer}>{footer}</div>}
     </div>
   );

@@ -90,3 +90,4 @@ import "monaco-editor/editor/contrib/semanticTokens/browser/documentSemanticToke
 import "monaco-editor/editor/contrib/suggest/browser/suggestController.js";
 import "monaco-editor/editor/common/standaloneStrings.js";
 import "../../../node_modules/monaco-editor/esm/vs/base/browser/ui/codicons/codicon/codicon-modifiers.css";
+import "./monaco-scrollbar.css";

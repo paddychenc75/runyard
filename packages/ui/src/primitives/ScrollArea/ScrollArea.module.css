@@ -20,39 +20,81 @@
   min-inline-size: 100%;
 }
 
+/* 只竖向滚动时内容宽度跟着视口走，长文字靠省略号收住（min-width 见 ScrollArea.tsx） */
 .root[data-orientation="vertical"] .content {
   inline-size: 100%;
 }
 
+/* 感应区 14px，比滑块宽，好用鼠标抓住；滑块贴着容器边留 2px。两端离开卡片圆角（取圆角的一半）。
+   轨道永远透明；整条淡入 120ms、淡出 300ms（淡出在“空闲”之后才开始，见 ScrollArea.tsx）。 */
 .scrollbar {
   display: flex;
-  padding: var(--space-1);
+  box-sizing: border-box;
   opacity: 0;
-  transition: opacity var(--motion-duration-base) linear;
+  transition: opacity var(--motion-duration-scrollbar-out) linear;
 }
 
 .scrollbar[data-orientation="vertical"] {
-  inline-size: var(--space-4);
+  inline-size: var(--size-scrollbar-hit);
+  padding-block: var(--space-4);
+  padding-inline-end: var(--size-scrollbar-inset);
+  justify-content: flex-end;
 }
 
 .scrollbar[data-orientation="horizontal"] {
-  block-size: var(--space-4);
+  block-size: var(--size-scrollbar-hit);
+  padding-inline: var(--space-4);
+  padding-block-end: var(--size-scrollbar-inset);
   flex-direction: column;
+  justify-content: flex-end;
 }
 
-.scrollbar[data-hovering],
+.root[data-active] .scrollbar,
+.scrollbar:hover,
+.scrollbar:active,
 .scrollbar[data-scrolling] {
   opacity: 1;
+  transition-duration: var(--motion-duration-fast);
 }
 
+/* 滑块：胶囊；变粗只动 inline-size/block-size（滑块本身，不碰别的元素的版面） */
 .thumb {
-  flex: 1;
   border-radius: var(--radius-capsule);
-  background: var(--color-text-tertiary);
+  background: var(--color-scrollbar-thumb);
+  transition:
+    inline-size var(--motion-duration-fast) var(--motion-easing-standard),
+    block-size var(--motion-duration-fast) var(--motion-easing-standard),
+    background-color var(--motion-duration-fast) var(--motion-easing-standard);
 }
 
+.scrollbar[data-orientation="vertical"] .thumb {
+  inline-size: var(--size-scrollbar-thumb);
+  min-block-size: var(--size-scrollbar-min);
+}
+
+.scrollbar[data-orientation="horizontal"] .thumb {
+  block-size: var(--size-scrollbar-thumb);
+  min-inline-size: var(--size-scrollbar-min);
+}
+
+.scrollbar:hover .thumb,
+.scrollbar:active .thumb {
+  background: var(--color-scrollbar-thumb-hover);
+}
+
+.scrollbar[data-orientation="vertical"]:hover .thumb,
+.scrollbar[data-orientation="vertical"]:active .thumb {
+  inline-size: var(--size-scrollbar-thumb-hover);
+}
+
+.scrollbar[data-orientation="horizontal"]:hover .thumb,
+.scrollbar[data-orientation="horizontal"]:active .thumb {
+  block-size: var(--size-scrollbar-thumb-hover);
+}
+
+/* 减弱动态效果：变粗直接变，淡入淡出保留 */
 @media (prefers-reduced-motion: reduce) {
-  .scrollbar {
-    transition: none;
+  .thumb {
+    transition: background-color var(--motion-duration-fast) linear;
   }
 }

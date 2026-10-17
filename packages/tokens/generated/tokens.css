@@ -85,6 +85,9 @@
   --color-status-danger-mark: light-dark(var(--red-600), var(--red-500));
   --color-status-danger-text: light-dark(var(--red-700), var(--red-300));
   --color-fill-danger-tint: light-dark(rgba(215, 0, 21, 0.1), rgba(255, 69, 58, 0.18));
+  --color-fill-danger: light-dark(var(--red-600), var(--red-500));
+  --color-fill-danger-hover: light-dark(var(--red-700), #f23c31);
+  --color-fill-danger-pressed: light-dark(#a60017, #e0352b);
   --color-fill-accent-hover: light-dark(#0068d1, #0979eb);
   --color-fill-accent-pressed: light-dark(#005fbf, #086fd6);
   --color-fill-neutral-hover: light-dark(rgba(118, 118, 128, 0.22), rgba(118, 118, 128, 0.32));
@@ -95,9 +98,16 @@
   --color-fill-agent-tint: light-dark(rgba(175, 82, 222, 0.12), rgba(191, 90, 242, 0.24));
   --color-fill-switch-on: light-dark(var(--green-600), var(--green-500));
   --color-fill-switch-off: light-dark(rgba(120, 120, 128, 0.32), rgba(120, 120, 128, 0.4));
+  --color-scrollbar-thumb: light-dark(rgba(29, 29, 31, 0.35), rgba(245, 245, 247, 0.35));
+  --color-scrollbar-thumb-hover: light-dark(rgba(29, 29, 31, 0.55), rgba(245, 245, 247, 0.55));
   --color-brand-html5: light-dark(#e34c26, #f06529);
   --color-brand-vue: light-dark(#35495e, #4fc08d);
   --color-brand-python: light-dark(#3776ab, #4b8bbe);
+  --color-brand-python-yellow: light-dark(#ffd43b, #ffd43b);
+  --color-brand-react: light-dark(#087ea4, #61dafb);
+  --color-brand-go: light-dark(#007d9c, #00add8);
+  --color-brand-node: light-dark(#417e38, #5fa04e);
+  --color-brand-hono: light-dark(#d14a00, #ff8a3d);
   --color-code-plain: light-dark(var(--ink-900), var(--gray-50));
   --color-code-keyword: light-dark(var(--magenta-600), var(--pink-400));
   --color-code-string: light-dark(var(--crimson-700), var(--coral-400));
@@ -115,16 +125,15 @@
   --color-tree-other: light-dark(var(--gray-600), var(--gray-400));
   --color-tree-chevron: light-dark(var(--gray-600), var(--gray-400));
   --color-tree-selected-icon: light-dark(var(--white), var(--white));
-  --shadow-1:
+  --shadow-flat: none;
+  --shadow-card: none;
+  --shadow-floating:
     0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(15, 23, 42, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  --shadow-2:
-    0 0 0 0.5px rgba(0, 0, 0, 0.1), 0 12px 36px rgba(15, 23, 42, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 1);
-  --shadow-3:
+  --shadow-dialog:
     0 0 0 0.5px rgba(0, 0, 0, 0.14), 0 40px 90px rgba(15, 23, 42, 0.32),
     inset 0 1px 0 rgba(255, 255, 255, 1);
-  --shadow-menu:
+  --shadow-overlay:
     0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 16px 40px rgba(15, 23, 42, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 1);
   --shadow-accent-button: 0 4px 14px rgba(0, 113, 227, 0.25);
@@ -138,6 +147,12 @@
   --glass-blur-sidebar: blur(40px) saturate(180%);
   --glass-blur-dialog: blur(50px) saturate(190%);
   --glass-blur-menu: blur(40px) saturate(190%);
+  --radius-xs: 6px;
+  --radius-sm: 9px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
   --radius-sidebar: 20px;
   --radius-card: 16px;
   --radius-dialog: 28px;
@@ -171,6 +186,11 @@
   --size-badge: 22px;
   --size-tile: 22px;
   --size-tile-lg: 24px;
+  --size-scrollbar-thumb: 6px;
+  --size-scrollbar-thumb-hover: 10px;
+  --size-scrollbar-hit: 14px;
+  --size-scrollbar-inset: 2px;
+  --size-scrollbar-min: 32px;
   --size-column-icon: 36px;
   --size-column-sm: 84px;
   --size-column-md: 96px;
@@ -223,8 +243,14 @@
   --text-code-line-height: 20px;
   --motion-duration-fast: 120ms;
   --motion-duration-base: 200ms;
+  --motion-duration-slide: 250ms;
+  --motion-duration-crossfade: 120ms;
+  --motion-duration-scrollbar-out: 300ms;
+  --motion-duration-scrollbar-idle: 800ms;
+  --motion-duration-spin: 900ms;
   --motion-duration-popover: 250ms;
   --motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --motion-easing-slide: cubic-bezier(0.32, 0.72, 0, 1);
   --motion-easing-popover: cubic-bezier(0.34, 1.3, 0.64, 1);
   --z-base: 0;
   --z-sticky: 10;
@@ -241,12 +267,13 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --shadow-1: 0 10px 28px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.14);
-  --shadow-2: 0 12px 36px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  --shadow-3:
+  --shadow-flat: none;
+  --shadow-card: none;
+  --shadow-floating: 0 10px 28px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  --shadow-dialog:
     0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 40px 90px rgba(0, 0, 0, 0.6),
     inset 0 1px 0 rgba(255, 255, 255, 0.14);
-  --shadow-menu:
+  --shadow-overlay:
     0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 16px 40px rgba(0, 0, 0, 0.5),
     inset 0 1px 0 rgba(255, 255, 255, 0.14);
   --shadow-accent-button: 0 4px 14px rgba(10, 132, 255, 0.35);
@@ -259,12 +286,13 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --shadow-1: 0 10px 28px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.14);
-    --shadow-2: 0 12px 36px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12);
-    --shadow-3:
+    --shadow-flat: none;
+    --shadow-card: none;
+    --shadow-floating: 0 10px 28px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    --shadow-dialog:
       0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 40px 90px rgba(0, 0, 0, 0.6),
       inset 0 1px 0 rgba(255, 255, 255, 0.14);
-    --shadow-menu:
+    --shadow-overlay:
       0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 16px 40px rgba(0, 0, 0, 0.5),
       inset 0 1px 0 rgba(255, 255, 255, 0.14);
     --shadow-accent-button: 0 4px 14px rgba(10, 132, 255, 0.35);

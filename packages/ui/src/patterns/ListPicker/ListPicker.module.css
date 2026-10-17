@@ -9,9 +9,7 @@
 .scroll {
   flex: 1;
   min-block-size: 0;
-  /* 行里的长文字靠省略号收住，不撑宽；只竖向滚动 */
-  overflow-x: hidden;
-  overflow-y: auto;
+  /* 行里的长文字靠省略号收住，不撑宽；只竖向滚动（滚动条见 ScrollArea） */
   border-block-start: 1px solid var(--color-line-hairline);
 }
 
