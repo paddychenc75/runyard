@@ -2,6 +2,22 @@
   "workspace.closeConfirm.title": {
     "name": "项目名，用户自己起的，不翻译"
   },
+  "workspace.files.nameExists.hint": {
+    "name": "已存在的名字"
+  },
+  "workspace.files.nameInvalid.hint": {
+    "reason": "名字不可用的原因：empty 空、separator 含斜杠、dot 是 . 或 ..、control 含控制字符、too-long 太长"
+  },
+  "workspace.files.notFound.hint": {
+    "name": "文件或文件夹的名字（不含路径）"
+  },
+  "workspace.files.saveFailed.hint": {
+    "name": "文件的名字（不含路径）",
+    "reason": "写入失败的原因：readOnly 只读、permission 没有权限、other 其他"
+  },
+  "workspace.files.trashFailed.hint": {
+    "name": "文件或文件夹的名字（不含路径）"
+  },
   "workspace.tab.close.label": {
     "name": "项目名，用户自己起的，不翻译"
   }

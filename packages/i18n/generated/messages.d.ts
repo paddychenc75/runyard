@@ -466,6 +466,38 @@ export type CatalogMessages = {
   "workspace.closeConfirm.title": {
     name: string | number;
   };
+  "workspace.files.add.aria": Record<never, never>;
+  "workspace.files.create.aria": Record<never, never>;
+  "workspace.files.empty.hint": Record<never, never>;
+  "workspace.files.failed.hint": Record<never, never>;
+  "workspace.files.menu.aria": Record<never, never>;
+  "workspace.files.nameExists.hint": {
+    name: string | number;
+  };
+  "workspace.files.nameInvalid.hint": {
+    reason: string;
+  };
+  "workspace.files.newFile.action": Record<never, never>;
+  "workspace.files.newFolder.action": Record<never, never>;
+  "workspace.files.notFound.hint": {
+    name: string | number;
+  };
+  "workspace.files.notice.aria": Record<never, never>;
+  "workspace.files.outside.hint": Record<never, never>;
+  "workspace.files.rename.aria": Record<never, never>;
+  "workspace.files.renameItem.action": Record<never, never>;
+  "workspace.files.renameItem.hint": Record<never, never>;
+  "workspace.files.saveFailed.hint": {
+    name: string | number;
+    reason: string;
+  };
+  "workspace.files.title.label": Record<never, never>;
+  "workspace.files.trashFailed.hint": {
+    name: string | number;
+  };
+  "workspace.files.trashItem.action": Record<never, never>;
+  "workspace.files.trashed.hint": Record<never, never>;
+  "workspace.files.tree.aria": Record<never, never>;
   "workspace.tab.close.label": {
     name: string | number;
   };
