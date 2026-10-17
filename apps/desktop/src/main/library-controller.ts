@@ -8,7 +8,7 @@ import {
   buildLibraryState,
   isActiveRun,
   latestRunByPlayground,
-  previewUrlFor,
+  previewUrlForTab,
 } from "./build-library-state.ts";
 import { CliView, heldByCli } from "./cli-view.ts";
 import { Coalesced } from "./coalesced.ts";
@@ -379,7 +379,7 @@ export class LibraryController {
       this.#preview.hide();
       return;
     }
-    const url = previewUrlFor(active, this.#runs);
+    const url = previewUrlForTab(this.getState().tabs, active, this.#runs);
     if (url !== null) this.#preview.show(active, url);
     else this.#preview.release(active);
   }

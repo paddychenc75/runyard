@@ -16,6 +16,7 @@ import { editorFileMethods, type FileOpeners } from "./editor-files/editor-ipc.t
 import type { EditorFileService } from "./editor-files/file-service.ts";
 import type { LibraryController } from "./library-controller.ts";
 import type { QuitFlushGate } from "./quit-flush-gate.ts";
+import { requestMethods } from "./request-ipc.ts";
 import type { SettingsController } from "./settings-controller.ts";
 import { templateMethods } from "./template-ipc.ts";
 import type { TemplatesView } from "./templates-view.ts";
@@ -323,6 +324,8 @@ export function registerBridgeHandlers(
       const playground = text(id);
       if (playground !== null) controller.system.openTerminal(playground);
     },
+    // 请求面板（#187）
+    ...requestMethods(controller),
     // 文件服务（#257）；没接线时这些方法不可用
     ...templateMethods(templates),
     ...editorFileMethods(files, openers),
