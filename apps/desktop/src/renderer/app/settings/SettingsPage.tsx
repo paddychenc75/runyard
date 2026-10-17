@@ -4,9 +4,10 @@ import type { DesktopBridge } from "../../../shared/desktop-bridge.ts";
 import type { LibraryState } from "../../../shared/library-state.ts";
 import type { SettingsApi } from "../../bridge/use-settings.ts";
 import { CliGroup } from "./CliGroup.tsx";
+import { DepsGroup } from "./DepsGroup.tsx";
 import { EditRunGroup } from "./EditRunGroup.tsx";
 import { GeneralGroup } from "./GeneralGroup.tsx";
-import { PendingGroup } from "./PendingGroup.tsx";
+import { RuntimeGroup } from "./RuntimeGroup.tsx";
 import styles from "./SettingsPage.module.css";
 
 export interface SettingsPageProps {
@@ -16,7 +17,7 @@ export interface SettingsPageProps {
 }
 
 // 设置页（设计稿 Settings，规格 DESKTOP-SETTINGS-01）：主窗口里的一页，没有顶栏；分两列、五组。
-// 通用、编辑与运行、内置模板免确认这一期做；依赖与网络、运行环境随 #189，命令行与智能体的其余项随 #195。
+// 五组都在：通用、编辑与运行（#188），依赖与网络、运行环境（#189），命令行与智能体（#195）。
 export function SettingsPage({ bridge, api, library }: SettingsPageProps) {
   const t = useT();
   return (
@@ -31,14 +32,11 @@ export function SettingsPage({ bridge, api, library }: SettingsPageProps) {
         <div className={styles.column}>
           <GeneralGroup bridge={bridge} api={api} library={library} />
           <EditRunGroup api={api} />
-          <PendingGroup title={t("settings.deps.title")} note={t("settings.pending.deps.label")} />
+          <DepsGroup bridge={bridge} api={api} />
         </div>
         <div className={styles.column}>
-          <PendingGroup
-            title={t("settings.runtime.title")}
-            note={t("settings.pending.runtime.label")}
-          />
-          <CliGroup api={api} />
+          <RuntimeGroup bridge={bridge} />
+          <CliGroup bridge={bridge} api={api} library={library} />
         </div>
       </div>
     </ScrollArea>

@@ -227,6 +227,8 @@ export interface DesktopEvents extends TerminalEvents {
   "files.changed": FilesChanged;
   /** 设置变了（设置页、命令行或别处改的）：带改后的全部设置 */
   "settings.changed": Settings;
+  /** 工具检测结果变了（后台检测完成、指定了路径）：设置页的运行环境表重读 */
+  "toolchain.changed": undefined;
 }
 export type DesktopEventName = keyof DesktopEvents;
 
@@ -239,6 +241,7 @@ export const desktopEventNames: readonly DesktopEventName[] = [
   "app.quitRequested",
   "files.changed",
   "settings.changed",
+  "toolchain.changed",
   ...terminalEventNames,
 ];
 

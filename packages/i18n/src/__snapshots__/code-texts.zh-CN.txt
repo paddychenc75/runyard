@@ -41,7 +41,7 @@ errors.RUN_NOT_FOUND.hintCli: 运行 runyard status 查看现有的运行。
 errors.TOOL_MISSING.title: 没有找到 go
 errors.TOOL_MISSING.body: 运行这个项目需要 go（版本 >=1.22 <2），但没有在这台电脑上找到它。项目已经创建，代码可以照常编辑。
 errors.TOOL_MISSING.hint: 安装 go 后点“重新检测”，项目就会启动。
-errors.TOOL_MISSING.hintCli: 安装 go（>=1.22 <2），用 runyard doctor 确认后重新运行这条命令。 项目写的安装命令（应用不会替你运行）：`brew install go` 安装说明：https://go.dev/dl/
+errors.TOOL_MISSING.hintCli: 安装 go（>=1.22 <2），用 runyard doctor 确认后重新运行这条命令。 安装命令（应用不会替你运行）：`brew install go` 安装说明：https://go.dev/dl/
 errors.TOOL_TOO_OLD.title: node 的版本过低
 errors.TOOL_TOO_OLD.body: 这个项目需要 node >=22.18，当前是 20.11.0。项目已经创建，代码可以照常编辑。
 errors.TOOL_TOO_OLD.hint: 把 node 升级到 >=22.18 后点“重新检测”。
@@ -50,6 +50,10 @@ errors.RUNTIME_MISSING.title: python 缺少运行所需的系统组件
 errors.RUNTIME_MISSING.body: python 运行时需要的系统组件在这台电脑上找不到。
 errors.RUNTIME_MISSING.hint: 补上缺少的组件后重新运行。
 errors.RUNTIME_MISSING.hintCli: 补上缺少的组件后重新运行这条命令。
+errors.TOOL_PATH_INVALID.title: 这个文件不是可用的 node
+errors.TOOL_PATH_INVALID.body: /tmp/not-node 运行后没有打印出 node 的版本号，所以没有采用它。原来的路径没有改。
+errors.TOOL_PATH_INVALID.hint: 换一个文件，选 node 自己的可执行文件。
+errors.TOOL_PATH_INVALID.hintCli: 换一个文件，选 node 自己的可执行文件。
 errors.SETUP_FAILED.title: 项目 react19-3 的依赖安装失败
 errors.SETUP_FAILED.body: 安装依赖时出错，进度停在“安装依赖”。项目文件原样保留，代码可以照常编辑。
 errors.SETUP_FAILED.hint: 查看完整输出找出原因，改好后点“重试”。

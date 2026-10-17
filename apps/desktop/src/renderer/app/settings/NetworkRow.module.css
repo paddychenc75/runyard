@@ -1,0 +1,18 @@
+/* 设置页里的输入框比对话框里的小一圈（设计稿 Settings：宽 270、高 32、圆角 10、等宽 12） */
+.field {
+  inline-size: calc(var(--space-9) * 11 + var(--space-3));
+  gap: var(--space-2);
+}
+
+.input {
+  block-size: var(--size-control-md);
+  padding-inline: var(--space-6);
+  border-radius: var(--radius-control);
+  font-family: var(--font-mono);
+  font-size: var(--text-code-small-size);
+}
+
+/* 没单独指定、显示的是本机配置的值：淡色，和用户自己填的区分开 */
+.input[data-inherited] {
+  color: var(--color-text-secondary);
+}

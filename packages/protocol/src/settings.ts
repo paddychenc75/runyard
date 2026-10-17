@@ -6,8 +6,26 @@ export const autoSaveModes = ["delay", "blur", "off"] as const;
 export const themeChoices = ["system", "light", "dark"] as const;
 
 // 设置里现在能确定形状的字段（docs/architecture/storage.md 2.3）。
-// 没放进来的：network——依赖与网络一组（#189）才加；加字段不升协议版本。默认值是管理进程设置存储的事，这里不写。
+// network（镜像源、代理）随依赖与网络一组（#189）加入；加字段不升协议版本。默认值是管理进程设置存储的事，这里不写。
 // autoSave、theme、language 随设置页（desktop/settings，#188）加入。
+/** 镜像源和代理的地址：只认 http、https（代理另认 socks5），没有协议或空格的一律不合法（规格 DESKTOP-SETTINGS-14） */
+const urlWith = (schemes: string) =>
+  z
+    .string()
+    .trim()
+    .max(2048)
+    .regex(new RegExp(`^(${schemes})://[^\\s/?#]+[^\\s]*$`, "i"));
+export const registryUrlSchema = urlWith("https?");
+export const proxyUrlSchema = urlWith("https?|socks5h?");
+
+/** 依赖与网络里的网络部分：没写镜像源或代理就沿用本机配置（.npmrc、环境变量） */
+export const networkSettingsSchema = z.object({
+  registry: registryUrlSchema.optional().describe("npm 镜像源；没写沿用本机 .npmrc"),
+  proxy: proxyUrlSchema.optional().describe("访问网络时使用的代理；没写沿用本机环境"),
+  noProxyLocal: z.boolean().describe("检测和访问本机服务（127.0.0.1、localhost）时不走代理"),
+});
+export type NetworkSettings = z.infer<typeof networkSettingsSchema>;
+
 const settingsFields = z.object({
   libraryRoot: z.string().min(1),
   externalEditor: z.string().min(1).optional(),
@@ -24,6 +42,7 @@ const settingsFields = z.object({
     .enum(["en", "zh-CN"])
     .optional()
     .describe("桌面应用界面语言；没写就按系统语言（命令行的语言在 cli.json）"),
+  network: networkSettingsSchema,
   confirmCloseRunningTab: z.boolean().describe("关闭运行中的标签页前是否确认；“不再提示”关掉它"),
 });
 

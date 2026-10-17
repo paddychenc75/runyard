@@ -268,6 +268,7 @@ describe("设置通道", () => {
     })();
     const seen: unknown[][] = [];
     let push: ((settings: unknown) => void) | undefined;
+    let pushToolchain: (() => void) | undefined;
     const settings = {
       get: async () => ({ theme: "system" }),
       set: async (patch: unknown) => {
@@ -278,6 +279,30 @@ describe("设置通道", () => {
       pickLibraryRoot: async () => null,
       revealLibraryRoot: async () => void seen.push(["reveal"]),
       openInEditor: async (id: string) => void seen.push(["editor", id]),
+      toolchain: {
+        localNetwork: async () => ({ registry: "https://a.example" }),
+        check: async (cachedOnly: boolean) => {
+          seen.push(["check", cachedOnly]);
+          return { tools: [] };
+        },
+        recheck: async () => ({ tools: [] }),
+        pickPath: async (tool: string) => {
+          seen.push(["pick", tool]);
+          return { status: "cancelled" };
+        },
+        runInstall: (tool: string) => void seen.push(["install", tool]),
+        onChange: (listener: () => void) => {
+          pushToolchain = listener;
+          return () => {};
+        },
+      },
+      cli: {
+        agentSkills: async () => ({ claude: true, agents: false }),
+        installAgentSkill: async (target: string) => {
+          seen.push(["skill", target]);
+          return { claude: true, agents: true };
+        },
+      },
       onChange: (listener: (settings: unknown) => void) => {
         push = listener;
         return () => {};
@@ -298,7 +323,13 @@ describe("设置通道", () => {
     );
     const call = (sender: IpcSender, method: string, param?: unknown) =>
       handlers.get(desktopChannels.call)?.(sender, method, param);
-    return { call, seen, sent, push: (value: unknown) => push?.(value) };
+    return {
+      call,
+      seen,
+      sent,
+      push: (value: unknown) => push?.(value),
+      pushToolchain: () => pushToolchain?.(),
+    };
   }
 
   it("设置的方法转给设置控制器；项目 id 不是非空字符串时不动", async () => {
@@ -311,6 +342,34 @@ describe("设置通道", () => {
     await call(app, "playground.openInEditor", "demo");
     await call(app, "playground.openInEditor", "");
     expect(seen).toEqual([["set", { theme: "dark" }], ["reveal"], ["editor", "demo"]]);
+  });
+
+  it("依赖与网络、运行环境、命令行与智能体的方法：参数形状不对一律不转给设置控制器", async () => {
+    const { call, seen } = withSettings();
+    expect(await call(app, "settings.localNetwork")).toEqual({ registry: "https://a.example" });
+    await call(app, "toolchain.check", { cachedOnly: true });
+    await call(app, "toolchain.check", { cachedOnly: "yes" });
+    expect(await call(app, "toolchain.pickPath", 7)).toEqual({ status: "failed" });
+    await call(app, "toolchain.pickPath", "node");
+    await call(app, "toolchain.runInstall", "go");
+    await call(app, "toolchain.runInstall", { command: "rm -rf /" });
+    expect(await call(app, "agents.install", "codex")).toEqual({ claude: false, agents: false });
+    expect(await call(app, "agents.install", "agents")).toEqual({ claude: true, agents: true });
+    expect(seen).toEqual([
+      ["check", true],
+      ["check", false],
+      ["pick", "node"],
+      ["install", "go"],
+      ["skill", "agents"],
+    ]);
+  });
+
+  it("检测结果变了作为 toolchain.changed 事件推给界面", () => {
+    const { pushToolchain, sent } = withSettings();
+    pushToolchain();
+    expect(sent).toEqual([
+      { channel: desktopChannels.event, event: "toolchain.changed", payload: undefined },
+    ]);
   });
 
   it("本应用之外的页面调不动设置", () => {

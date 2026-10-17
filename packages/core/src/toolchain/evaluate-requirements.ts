@@ -5,9 +5,10 @@ import type {
   Requires,
   RunyardError,
   ToolCheck,
+  ToolRequirement,
 } from "@runyard/protocol";
 import type { ToolProbe } from "./detect-tool.ts";
-import { installHintParams } from "./install-hint-params.ts";
+import { type InstallHintParams, installHintParams } from "./install-hint-params.ts";
 import { judgeVersion } from "./version-compare.ts";
 
 // 把“找到了什么”对照模板的 requires 判定（规格 TOOLCHAIN-DETECTION-03、08、09、10）。纯函数，不碰平台。
@@ -63,10 +64,16 @@ export function toolsToDetect(requires: Requires): string[] {
   return [...tools];
 }
 
+/** 一个工具缺失或过旧时展示的安装方式：模板写的覆盖工具定义里当前系统的（#228） */
+export type InstallFor = (tool: string, install: ToolRequirement["install"]) => InstallHintParams;
+
+const templateOnly: InstallFor = (_tool, install) => installHintParams(install);
+
 export function evaluateRequirements(
   requires: Requires,
   observations: ReadonlyMap<string, ToolObservation>,
   source?: EnvSource,
+  installFor: InstallFor = templateOnly,
 ): ToolchainEvaluation {
   const observe = (tool: string): ToolObservation =>
     observations.get(tool) ?? { tool, state: "unknown" };
@@ -77,13 +84,16 @@ export function evaluateRequirements(
 
   for (const [tool, requirement] of Object.entries(requires)) {
     const check = checkOf(observe(tool), requirement.version, source);
-    tools.push(check);
+    const install = installFor(tool, requirement.install);
+    tools.push(
+      check.status === "missing" || check.status === "too-old" ? { ...check, ...install } : check,
+    );
     if (check.status === "too-old") {
       const params: ErrorParams<"TOOL_TOO_OLD"> = {
         tool,
         required: requirement.version,
         found: check.version as string,
-        ...installHintParams(requirement.install),
+        ...install,
       };
       errors.push({
         code: "TOOL_TOO_OLD",
@@ -113,7 +123,7 @@ export function evaluateRequirements(
           params: {
             tool,
             required: requirement.version,
-            ...installHintParams(requirement.install),
+            ...install,
           },
           debug: `${tool} was not found (version command failed or printed no version)`,
         });

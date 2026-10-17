@@ -1,13 +1,37 @@
 {
-  "settings.libraryRoot.confirm.title": {
-    "path": "新位置，主目录缩成 ~；用户选的，不翻译"
-  },
   "settings.builtinSkip.title": {
     "glossarySkip": ["项目"],
     "glossarySkipReason": "设计稿 Settings 的中文写“来自链接的新建请求”，英文写 New-playground links，两边的说法本来就不成对"
   },
+  "settings.cli.available.label": {
+    "version": "命令行的版本，与应用相同，如 0.1.0；原样显示"
+  },
+  "settings.cli.notOnPath.body": {
+    "dir": "链接所在目录，主目录缩成 ~，如 ~/.local/bin；原样显示"
+  },
+  "settings.libraryRoot.confirm.title": {
+    "path": "新位置，主目录缩成 ~；用户选的，不翻译"
+  },
   "settings.runNote.label": {
     "glossarySkip": ["项目"],
     "glossarySkipReason": "设计稿 Settings 的中文这句说“标签页即运行”，没有“项目”这个词，英文写 playground"
+  },
+  "settings.runtime.invalidPath.body": {
+    "tool": "工具名，如 Node、Go、pnpm；专有名词，原样显示，不翻译"
+  },
+  "settings.runtime.missing.title": {
+    "tool": "工具名，如 Node、Go、pnpm；专有名词，原样显示，不翻译"
+  },
+  "settings.runtime.tooOld.title": {
+    "tool": "工具名，如 Node、Go、pnpm；专有名词，原样显示，不翻译"
+  },
+  "settings.runtime.toolName.label": {
+    "tool": "工具名，如 Node、Go、pnpm；专有名词，原样显示，不翻译"
+  },
+  "settings.supervisor.confirm.body": {
+    "count": "命令行持有的运行个数，至少 1"
+  },
+  "settings.supervisor.running.label": {
+    "count": "命令行持有的运行个数"
   }
 }

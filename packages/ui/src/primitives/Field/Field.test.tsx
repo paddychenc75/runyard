@@ -37,4 +37,14 @@ describe("Field", () => {
     expect(screen.getByText("taken")).toBeTruthy();
     expect(screen.queryByText("a folder")).toBeNull();
   });
+
+  it("hideLabel：名字不画出来但读屏器仍读得到，输入框的无障碍名字不变", () => {
+    render(
+      <Field label={label} hideLabel>
+        <TextField />
+      </Field>,
+    );
+    expect(screen.getByRole("textbox", { name: "Name" })).toBeTruthy();
+    expect(screen.getByText("Name").className).toContain("hidden");
+  });
 });

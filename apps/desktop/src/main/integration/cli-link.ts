@@ -63,3 +63,24 @@ export async function uninstallCliLink(binDir: string): Promise<CliLinkResult> {
   await unlink(link);
   return { status: "removed", link };
 }
+
+export type CliLinkState =
+  | { status: "absent"; link: string }
+  /** 指向本应用的启动脚本 */
+  | { status: "current"; link: string }
+  /** 指向某个 Runyard 应用，但不是这一个（应用搬过家）：再安装一次就改指过来 */
+  | { status: "stale"; link: string; target: string }
+  /** 那个位置是别的东西：不碰它 */
+  | { status: "conflict"; link: string };
+
+/** 只读：看链接现在是什么状态，设置页据此显示（规格 DESKTOP-SETTINGS-20） */
+export async function readCliLink(binDir: string, launcher: string): Promise<CliLinkState> {
+  const link = join(binDir, "runyard");
+  const current = await readLinkTarget(link);
+  if (current === null) return { status: "absent", link };
+  if (current === "other") return { status: "conflict", link };
+  if (current === launcher) return { status: "current", link };
+  return isRunyardLauncher(current)
+    ? { status: "stale", link, target: current }
+    : { status: "conflict", link };
+}

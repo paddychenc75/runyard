@@ -18,6 +18,18 @@ describe("Settings", () => {
     ).toBe(false);
   });
 
+  it("[DESKTOP-SETTINGS-14] 镜像源和代理必须是带协议的地址，不合法的被拒绝", () => {
+    const network = (patch: Record<string, unknown>) =>
+      settingsPatchSchema.safeParse({ network: { noProxyLocal: true, ...patch } }).success;
+    expect(network({ registry: "https://registry.npmmirror.com" })).toBe(true);
+    expect(network({ proxy: "http://127.0.0.1:7890" })).toBe(true);
+    expect(network({ proxy: "socks5://127.0.0.1:1080" })).toBe(true);
+    expect(network({ proxy: "not a url" })).toBe(false);
+    expect(network({ registry: "registry.npmmirror.com" })).toBe(false);
+    expect(network({ registry: "ftp://mirror.example" })).toBe(false);
+    expect(network({ proxy: "" })).toBe(false);
+  });
+
   it("[RUN-OWNERSHIP-14] 补丁只带要改的字段，其余可以不传", () => {
     expect(settingsPatchSchema.safeParse({ cliIdleStopMinutes: 10 }).success).toBe(true);
     expect(settingsPatchSchema.safeParse({}).success).toBe(true);

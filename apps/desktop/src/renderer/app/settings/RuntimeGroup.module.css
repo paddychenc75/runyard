@@ -1,0 +1,224 @@
+/* 运行环境表（设计稿 Settings）：表头 28、行高 32、左右内边距 16；列宽数字出自设计稿，写成间距变量的组合 */
+.recheck {
+  flex: none;
+}
+
+/* 表头和每一行是同一套栅格：第一行工具、版本、芯片架构、状态、“指定路径…”，路径单独占第二行通栏
+   （设计稿把路径放在版本后面一列，应用里右列只有 400 多像素放不下，长路径会被挤没，所以换行） */
+.table {
+  inline-size: 100%;
+  border-collapse: collapse;
+}
+
+.table tbody,
+.table thead {
+  display: block;
+}
+
+.row {
+  display: grid;
+  grid-template-columns:
+    calc(var(--space-9) * 2 + var(--space-2)) var(--size-column-sm)
+    calc(var(--space-9) * 2 + var(--space-4)) minmax(0, 1fr) max-content;
+  grid-template-areas:
+    "tool version arch status link"
+    "path path path path path";
+  column-gap: var(--space-4);
+  align-items: center;
+  padding-block: var(--space-2);
+  padding-inline: var(--space-7);
+  border-block-start: 1px solid var(--color-line-hairline);
+  font-size: var(--text-body-size);
+}
+
+.row [data-col="tool"] {
+  grid-area: tool;
+}
+
+.row [data-col="version"] {
+  grid-area: version;
+}
+
+.row [data-col="arch"] {
+  grid-area: arch;
+}
+
+.row [data-col="status"] {
+  grid-area: status;
+}
+
+.row [data-col="link"] {
+  grid-area: link;
+}
+
+.row [data-col="path"] {
+  grid-area: path;
+}
+
+.row[data-head] {
+  min-block-size: var(--size-control-sm);
+  padding-block: 0;
+  border-block-start: none;
+  color: var(--color-text-secondary);
+  font-size: var(--text-secondary-size);
+  grid-template-areas: "tool version arch status link";
+}
+
+.row[data-head] th {
+  font-weight: var(--text-secondary-weight);
+  text-align: start;
+}
+
+/* 问题提示和展开的说明占满一整行，不参与上面的栅格 */
+.full {
+  display: block;
+}
+
+.hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.tool {
+  font-weight: var(--text-item-weight);
+  text-align: start;
+}
+
+.toggle {
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: default;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-code-small-size);
+  color: var(--color-text-secondary-strong);
+  white-space: nowrap;
+}
+
+.pathCell {
+  min-inline-size: 0;
+  overflow: hidden;
+}
+
+.path {
+  display: block;
+  overflow: hidden;
+  font-size: var(--text-secondary-size);
+  color: var(--color-text-secondary-strong);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.setPath {
+  font-size: var(--text-secondary-size);
+  text-align: end;
+}
+
+.warnStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-status-warning-text);
+  font-size: var(--text-secondary-size);
+  font-weight: var(--text-control-weight);
+  white-space: nowrap;
+}
+
+.problem {
+  display: block;
+  padding-block: var(--space-2);
+  padding-inline: var(--space-7);
+  color: var(--color-status-danger-text);
+  font-size: var(--text-secondary-size);
+}
+
+.degraded {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding-block: var(--space-4);
+  padding-inline: var(--space-7);
+  color: var(--color-status-warning-text);
+  font-size: var(--text-secondary-size);
+}
+
+.degradedText {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.detailCell {
+  display: block;
+  inline-size: 100%;
+  box-sizing: border-box;
+  padding-block-end: var(--space-4);
+  padding-inline: var(--space-6);
+}
+
+.detail {
+  box-sizing: border-box;
+  inline-size: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-block: var(--space-4);
+  padding-inline: var(--space-6);
+  border: 1px solid var(--color-status-warning-mark);
+  border-radius: var(--radius-md);
+  background: var(--color-fill-warning-tint);
+}
+
+.detailTitle {
+  margin: 0;
+  font-size: var(--text-item-size);
+  font-weight: 700;
+  line-height: var(--text-item-line-height);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: calc(var(--space-9) * 3) minmax(0, 1fr);
+  gap: var(--space-2) var(--space-4);
+  align-items: center;
+  margin: 0;
+  font-size: var(--text-secondary-size);
+}
+
+.facts dt {
+  color: var(--color-text-secondary);
+}
+
+.facts dd {
+  margin: 0;
+  min-inline-size: 0;
+}
+
+.warn {
+  color: var(--color-status-warning-text);
+  font-weight: var(--text-control-weight);
+}
+
+.command {
+  inline-size: 100%;
+}
+
+.detailActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.already {
+  display: flex;
+  gap: var(--space-2);
+  color: var(--color-text-secondary);
+  font-size: var(--text-secondary-size);
+}

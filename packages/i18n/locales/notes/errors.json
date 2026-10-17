@@ -104,10 +104,23 @@
     "tool": "工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译",
     "required": "模板要求的版本范围，例如 >=22.18；原样显示，不翻译",
     "name": "被阻止运行的项目名称（也是文件夹名）；可选，没有时（如只检测工具）提示改为“重新运行这条命令”",
-    "installCommand": "项目（模板 requires 的 install）自带的安装命令，参数用空格连成一行；可选，没有时不显示。只展示，从不运行",
-    "installUrl": "项目自带的安装说明链接；可选，没有时不显示"
+    "installCommand": "安装命令，参数用空格连成一行：模板自己写的优先，否则取工具定义里当前系统的（如 Homebrew）；可选，没有时不显示。只展示，从不运行",
+    "installUrl": "安装说明或官网链接（只放 https）：模板自己写的优先，否则取工具定义里的；可选，没有时不显示"
   },
   "errors.TOOL_MISSING.title": {
+    "tool": "工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译"
+  },
+  "errors.TOOL_PATH_INVALID.body": {
+    "tool": "工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译",
+    "path": "用户指定的可执行文件的绝对路径，原样显示，不翻译"
+  },
+  "errors.TOOL_PATH_INVALID.hint": {
+    "tool": "工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译"
+  },
+  "errors.TOOL_PATH_INVALID.hintCli": {
+    "tool": "工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译"
+  },
+  "errors.TOOL_PATH_INVALID.title": {
     "tool": "工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译"
   },
   "errors.TOOL_TOO_OLD.body": {
@@ -123,8 +136,8 @@
     "tool": "工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译",
     "required": "模板要求的版本范围，例如 >=22.18；原样显示，不翻译",
     "name": "被阻止运行的项目名称（也是文件夹名）；可选，没有时（如只检测工具）提示改为“重新运行这条命令”",
-    "installCommand": "项目（模板 requires 的 install）自带的安装命令，参数用空格连成一行；可选，没有时不显示。只展示，从不运行",
-    "installUrl": "项目自带的安装说明链接；可选，没有时不显示"
+    "installCommand": "安装命令，参数用空格连成一行：模板自己写的优先，否则取工具定义里当前系统的（如 Homebrew）；可选，没有时不显示。只展示，从不运行",
+    "installUrl": "安装说明或官网链接（只放 https）：模板自己写的优先，否则取工具定义里的；可选，没有时不显示"
   },
   "errors.TOOL_TOO_OLD.title": {
     "tool": "工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译"
