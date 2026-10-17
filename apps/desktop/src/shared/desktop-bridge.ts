@@ -1,5 +1,10 @@
 import type { Locale } from "@runyard/i18n";
 import type { ConsoleAppend, ConsoleLine } from "./console-state.ts";
+import {
+  type EditorFileMethods,
+  editorFileMethodNames,
+  type FilesChanged,
+} from "./editor-files.ts";
 import type { Bounds } from "./layout.ts";
 import type { LibraryState } from "./library-state.ts";
 
@@ -14,7 +19,7 @@ export const desktopChannels = {
 } as const;
 
 /** 界面可以调用的方法：参数类型与返回类型 */
-export interface DesktopMethods {
+export interface DesktopMethods extends EditorFileMethods {
   "library.get": { param: undefined; result: LibraryState };
   "run.start": { param: string; result: undefined };
   "run.stop": { param: string; result: undefined };
@@ -66,6 +71,7 @@ export const desktopMethodNames: readonly DesktopMethod[] = [
   "preview.capture",
   "preview.visible",
   "console.get",
+  ...editorFileMethodNames,
 ];
 
 /** 主进程推给界面的事件 */
@@ -74,6 +80,8 @@ export interface DesktopEvents {
   "console.appended": ConsoleAppend;
   /** 应用菜单的“新建…”（⌘N）：焦点在预览视图里时按键到不了界面，所以由主进程通知 */
   "picker.open": undefined;
+  /** 项目文件夹里的文件变了（监听由 files.watch 开启）：目录树更新和外部修改提示靠它 */
+  "files.changed": FilesChanged;
 }
 export type DesktopEventName = keyof DesktopEvents;
 
@@ -81,6 +89,7 @@ export const desktopEventNames: readonly DesktopEventName[] = [
   "library.changed",
   "console.appended",
   "picker.open",
+  "files.changed",
 ];
 
 /** 启动信息：主进程建窗口时算好，预加载脚本同步交给界面（技术设计 §6.7；协议包建好该类型后移过去） */
