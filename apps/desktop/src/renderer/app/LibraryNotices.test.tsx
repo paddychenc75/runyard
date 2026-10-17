@@ -9,6 +9,7 @@ import type { LibraryState, PlaygroundRow, TabRow } from "../../shared/library-s
 import { AppFrame } from "./AppFrame.tsx";
 import { FolderMissing } from "./FolderMissing.tsx";
 import { previewScreenOf } from "./failure-view.ts";
+import { RunActionButton } from "./RunActionButton.tsx";
 import { sampleTab } from "./sample-tab.ts";
 
 afterEach(() => {
@@ -218,6 +219,27 @@ describe("找不到文件夹的行", () => {
   });
 });
 
+describe("找不到文件夹的标签页的“运行”按钮", () => {
+  it("[DESKTOP-LIBRARY-VIEW-49] 文件夹找不到时“运行”不可点，找到后可点", () => {
+    const bridge = {
+      bootstrap: { platform: "darwin" },
+      call: vi.fn(),
+      on: () => () => {},
+    } as unknown as DesktopBridge;
+    const view = (tab: TabRow) => (
+      <I18nProvider locale="zh-CN" platform="darwin" catalogs={desktopCatalogs}>
+        <RunActionButton bridge={bridge} tab={tab} />
+      </I18nProvider>
+    );
+    const { rerender } = render(view(sampleTab({ state: "idle", active: false, missing: true })));
+    expect((screen.getByRole("button", { name: "运行" }) as HTMLButtonElement).disabled).toBe(true);
+    rerender(view(sampleTab({ state: "idle", active: false, missing: false })));
+    expect((screen.getByRole("button", { name: "运行" }) as HTMLButtonElement).disabled).toBe(
+      false,
+    );
+  });
+});
+
 const agentRow = (extra: Partial<PlaygroundRow> = {}) =>
   row("react19-5", {
     createdBy: {
@@ -324,7 +346,7 @@ describe("自动清理的提示条", () => {
   const tomorrow = () =>
     row("node-ts-1", {
       autoClean: { enabled: true, days: 30 },
-      lastUsedAt: NOW - 29 * DAY,
+      lastUsedAt: NOW - 29 * DAY - 60 * MINUTE,
       createdBy: { kind: "agent", agent: "Codex" },
     });
   const remind = (extra: Partial<LibraryState> = {}) =>

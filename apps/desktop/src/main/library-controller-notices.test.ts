@@ -19,7 +19,8 @@ import { playground, run, template } from "./library-fixtures.ts";
 // 资源库的异常与提示（规格 DESKTOP-LIBRARY-VIEW-49 至 56）和自动清理的提醒（57 至 60）的主进程一侧。
 // 假管理进程是有状态的：项目表、运行表、清理清单都能被测试改，调用都记下来。
 
-const DAY = 24 * 60 * 60 * 1000;
+const HOUR = 60 * 60 * 1000;
+const DAY = 24 * HOUR;
 const NOW = 100 * DAY;
 
 class Daemon {
@@ -376,7 +377,7 @@ describe("自动清理的提醒（主进程）", () => {
   const nodeTs = (extra: Partial<Playground> = {}): Playground => ({
     ...playground("n", "node-ts-1"),
     autoClean: { enabled: true, days: 30 },
-    lastUsedAt: NOW - 29 * DAY,
+    lastUsedAt: NOW - 29 * DAY - HOUR,
     ...extra,
   });
 
