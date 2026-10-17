@@ -12,6 +12,8 @@ export interface DesktopArgs {
   theme: ThemeChoice | undefined;
   /** 冒烟自检：窗口不显示，走一遍“运行再预览”后自己退出 */
   smoke: boolean;
+  /** 编辑器冒烟：打开不带管理进程的冒烟页，检查 Monaco、后台线程、Shiki 在新内容安全策略下都起得来，做完自己退出 */
+  editorSmoke: boolean;
   /** 把随应用安装的 runyard 接到 PATH 上或撤掉，做完就退出、不开窗口；设置页里的按钮随后续 issue */
   cliLink: { action: "install" | "uninstall"; binDir: string | undefined } | undefined;
 }
@@ -72,6 +74,7 @@ export function parseDesktopArgs(
       lang: lang === undefined ? undefined : lang,
       theme,
       smoke: argv.includes("--smoke"),
+      editorSmoke: argv.includes("--editor-smoke"),
     },
   };
 }

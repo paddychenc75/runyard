@@ -2,10 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <!-- style-src 里的哈希：Base UI 的滚动区会插入一段固定内容的 <style>（隐藏原生滚动条），按哈希放行，不开 unsafe-inline；升级 Base UI 后内容变了，控制台会报这条 CSP，换哈希即可 -->
+    <!-- 内容安全策略（决策记录 0020，取代 0019 的哈希做法）：脚本严格只许本应用（无 unsafe-eval）；
+         font-src 放行本应用的字体（Monaco 的图标字体）；style-src 用 'unsafe-inline'：Monaco 运行时插入 <style> 元素，
+         行渲染还写了上千个动态的 style 属性，哈希和随机数都管不了属性。有哈希时浏览器会忽略 'unsafe-inline'，所以这里不能再写哈希。
+         default-src 'none' 仍在，注入的样式既不能联网也不能执行脚本。不放开 worker-src、wasm、connect-src、blob:（K8 实测都不需要）。 -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; script-src app://runyard; img-src data:; style-src app://runyard 'sha256-kLmvWqfziFavKtqHqRsb90f006UAK2Dmd0It5Iz2KFA='"
+      content="default-src 'none'; script-src app://runyard; img-src data:; font-src app://runyard; style-src app://runyard 'unsafe-inline'"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title></title>

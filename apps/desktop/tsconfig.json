@@ -11,6 +11,8 @@
     "src/preload/**/*.ts",
     "src/shared/**/*.ts",
     "build.ts",
+    "build-editor.ts",
+    "build-editor.test.ts",
     "pack.ts",
     "packaging/**/*.ts",
     "package.json"

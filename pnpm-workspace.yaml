@@ -13,6 +13,7 @@ catalog:
   "@fission-ai/openspec": 1.14.0
   "@formatjs/icu-messageformat-parser": 3.5.18
   "@playwright/test": 1.63.0
+  "@shikijs/monaco": 4.4.3
   "@testing-library/dom": 10.4.2
   "@testing-library/react": 16.3.3
   "@testing-library/user-event": 14.6.7
@@ -25,8 +26,10 @@ catalog:
   esbuild: 0.28.2
   intl-messageformat: 11.2.15
   jsdom: 29.1.1
+  monaco-editor: 0.57.0
   react: 19.3.0
   react-dom: 19.3.0
+  shiki: 4.4.3
   turbo: 2.11.4
   typescript: 6.0.3
   vitest: 4.1.11
