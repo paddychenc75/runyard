@@ -1,0 +1,11 @@
+{
+  "extends": "../../tooling/tsconfig/node.json",
+  "compilerOptions": {
+    "outDir": "../../.tsbuild/desktop-e2e",
+    "tsBuildInfoFile": "../../.tsbuild/desktop-e2e/tsconfig.tsbuildinfo",
+    "rootDir": ".",
+    // 用例里 page.evaluate 的回调跑在网页里，要 DOM 类型
+    "lib": ["ES2023", "DOM"]
+  },
+  "include": ["e2e/**/*.ts"]
+}

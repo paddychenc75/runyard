@@ -25,6 +25,7 @@
     { "path": "../../packages/tokens" },
     { "path": "../../packages/ui" },
     { "path": "../../packages/client" },
-    { "path": "./tsconfig.renderer.json" }
+    { "path": "./tsconfig.renderer.json" },
+    { "path": "./tsconfig.e2e.json" }
   ]
 }
