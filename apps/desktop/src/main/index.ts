@@ -19,7 +19,7 @@ import { type LibraryClient, LibraryController } from "./library-controller.ts";
 import { buildAppMenu } from "./native-ui/app-menu.ts";
 import { type DesktopArgs, parseDesktopArgs, resolveDesktopLocale } from "./parse-args.ts";
 import { ElectronPreviewHost } from "./preview-view.ts";
-import { QuitCoordinator } from "./quit-coordinator.ts";
+import { registerQuitFlow } from "./quit-coordinator.ts";
 import { runSmoke } from "./smoke.ts";
 
 // 主进程入口（构建后在 apps/desktop/dist/main/index.mjs）。入口是 ES 模块，
@@ -78,15 +78,12 @@ async function main(args: DesktopArgs): Promise<void> {
     clientId = connected.clientId;
     close = () => connected.client.close();
     // 应用正常退出：先向管理进程道别，它会停掉这条连接名下的标签页运行（最多等 5 秒）
-    const quit = new QuitCoordinator(app, async () => {
+    registerQuitFlow(app, async () => {
       try {
         await connected.client.call("session.bye", {});
       } finally {
         close();
       }
-    });
-    app.on("before-quit", (event) => {
-      if (quit.handleBeforeQuit()) event.preventDefault();
     });
   } catch (error) {
     diagnostic(`could not reach the supervisor: ${String(error)}`);
