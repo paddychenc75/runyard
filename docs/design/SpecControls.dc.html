@@ -219,9 +219,9 @@ a{color:#0071E3}a:hover{color:#0058B0}
 
 <section style="display: flex; flex-direction: column; gap: 10px">
 <h3 style="margin: 0; font-size: 13px; font-weight: 600">标签页</h3>
-<div role="tablist" aria-label="窗口标签" style="align-self: flex-start; height: 44px; padding: 4px; box-sizing: border-box; border-radius: 22px; display: flex; align-items: center; gap: 2px; background: {{th.glass0}}; backdrop-filter: blur(28px) saturate(180%); border: {{th.glassEdge}}; box-shadow: {{th.glassShadow}}">
+<div role="tablist" aria-label="窗口标签" style="align-self: flex-start; height: 44px; box-sizing: border-box; display: flex; align-items: center; gap: 2px">
 <sc-for list="{{th.winTabs}}" as="w" hint-placeholder-count="3">
-<button role="tab" aria-selected="{{w.sel}}" style="height: 36px; padding: 0 12px 0 14px; border-radius: 18px; border: none; display: flex; align-items: center; gap: 8px; white-space: nowrap; {{w.css}}">
+<button role="tab" aria-selected="{{w.sel}}" style="height: 32px; padding: 0 10px 0 12px; border-radius: 16px; border: none; display: flex; align-items: center; gap: 8px; white-space: nowrap; {{w.css}}">
 <sc-if value="{{w.dot}}" hint-placeholder-val="{{false}}"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: {{th.run}}"></span></sc-if>{{w.name}}
 <sc-if value="{{w.close}}" hint-placeholder-val="{{false}}"><svg role="img" aria-label="关闭并停止" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="{{th.ink2}}" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l6 6M8 2 2 8"/></svg></sc-if>
 </button>
@@ -230,7 +230,7 @@ a{color:#0071E3}a:hover{color:#0058B0}
 <div role="tablist" aria-label="面板标签" style="align-self: flex-start; display: flex; padding: 2px; border-radius: 11px; background: {{th.fill0}}">
 <sc-for list="{{th.panelTabs}}" as="i" hint-placeholder-count="3"><button role="tab" aria-selected="{{i.cur}}" style="height: 28px; padding: 0 14px; border-radius: 9px; border: none; white-space: nowrap; {{i.css}}">{{i.t}}</button></sc-for>
 </div>
-<div style="font-size: 12px; color: {{th.ink2}}">窗口标签：胶囊 44，标签 36；选中、带运行点、悬停（出现关闭符号）。面板标签：项高 28。</div>
+<div style="font-size: 12px; color: {{th.ink2}}">窗口标签：没有外壳，直接放在窗口背景上；标签 32，选中只有浅底色，没有阴影和描边；带运行点、悬停出现关闭符号；放不下时折进“+N”。面板标签：项高 28。</div>
 </section>
 
 </div>
@@ -384,7 +384,8 @@ const build = (t) => {
   const menuLabels = [
     { t: '默认', h: '32px' }, { t: '高亮', h: '32px' }, { t: '右侧提示', h: '32px' }, { t: '', h: '11px' }, { t: '危险', h: '32px' }
   ];
-  const wt = (name, sel, dot, close) => ({ name: name, sel: sel ? 'true' : 'false', dot: dot, close: close, css: sel ? 'background:' + t.tabSel + ';box-shadow:' + t.tabShadow + ';font-weight:600;color:' + t.ink + ';' : 'background:transparent;color:' + t.ink3 + ';' });
+  t.selFill = t.ink === '#1D1D1F' ? 'rgba(0,0,0,0.065)' : 'rgba(255,255,255,0.10)';
+  const wt = (name, sel, dot, close) => ({ name: name, sel: sel ? 'true' : 'false', dot: dot, close: close, css: sel ? 'background:' + t.selFill + ';font-weight:600;color:' + t.ink + ';' : 'background:transparent;color:' + t.ink3 + ';' });
   const winTabs = [wt('react-app', true, true, true), wt('api', false, true, false), wt('web', false, false, true)];
   const panelTabs = ['输出', '浏览器控制台', '终端'].map((l, k) => ({ t: l, cur: k === 0 ? 'true' : 'false', css: k === 0 ? 'background:' + t.selBg + ';box-shadow:' + t.selShadow + ';font-weight:600;color:' + t.ink + ';' : 'background:transparent;color:' + t.ink3 + ';' }));
   const legend = [
