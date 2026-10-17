@@ -1,0 +1,1 @@
+{"name":"vue-spike","private":true,"type":"module","dependencies":{"@volar/monaco":"2.4.28","@vue/language-service":"3.3.12","@vue/typescript-plugin":"3.3.12","esbuild":"0.28.2","monaco-editor":"0.57.0","typescript":"6.0.3","vue":"3.5.22"}}

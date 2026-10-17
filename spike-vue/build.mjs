@@ -1,0 +1,12 @@
+import { build } from "esbuild";
+import { mkdirSync, copyFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+const out = process.argv[2];
+mkdirSync(join(out, "workers"), { recursive: true });
+const common = { mainFields: ["module", "browser", "main"], bundle: true, minify: process.env.MIN !== "0", sourcemap: false, logLevel: "warning", target: "chrome140", platform: "browser", define: { "process.env.NODE_ENV": '"production"' }, nodePaths: [join(process.cwd(), "node_modules")], metafile: true, loader: { ".ttf": "file", ".json": "json" }, assetNames: "[name]-[hash]" };
+const main = await build({ ...common, entryPoints: { main: "src/main.ts" }, outdir: out, format: "iife" });
+const w = await build({ ...common, entryPoints: { "vue.worker": "src/vue.worker.ts" }, outdir: join(out, "workers"), format: "iife", external: ["fs", "path", "os", "crypto", "inspector", "perf_hooks", "module", "url", "util", "child_process", "source-map-support", "fsevents", "@microsoft/typescript-etw", "worker_threads", "buffer", "stream", "events", "assert", "constants", "tty", "net", "http", "https", "zlib", "readline"] });
+const ew = await build({ ...common, entryPoints: { "editor.worker": "monaco-editor/editor/editor.worker.js" }, outdir: join(out, "workers"), format: "iife" });
+writeFileSync(join(out, "meta.json"), JSON.stringify({ main: main.metafile, w: w.metafile, ew: ew.metafile }));
+writeFileSync(join(out, "index.html"), `<!doctype html><html lang="en"><head><meta charset="utf-8" /><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src app://runyard; img-src data:; style-src app://runyard 'unsafe-inline'; font-src app://runyard" /><title>vue-intellisense</title><link rel="stylesheet" href="app://runyard/main.css" /></head><body><div id="root"></div><script src="app://runyard/main.js"></script></body></html>\n`);
+console.log("built", out);
