@@ -1,4 +1,5 @@
 {
   "platform.fileManager": "{platform, select, other {Finder}}",
+  "platform.searchShortcut": "{platform, select, other {⌘F}}",
   "platform.trash": "{platform, select, other {Trash}}"
 }

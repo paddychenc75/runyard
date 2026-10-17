@@ -1,7 +1,28 @@
 {
+  "library.filter.sort.label": {
+    "value": "当前选中的排序名"
+  },
+  "library.filter.status.label": {
+    "value": "当前选中的状态名"
+  },
+  "library.filter.type.label": {
+    "value": "当前选中的类型名"
+  },
+  "library.noResults.create.action": {
+    "query": "用户输入的搜索文字，同时是新项目的名称"
+  },
+  "library.noResults.title": {
+    "query": "用户输入的搜索文字（原样，不翻译）"
+  },
+  "library.page.results.label": {
+    "count": "搜索和筛选后剩下的项目数",
+    "total": "资源库里项目的总数",
+    "root": "资源库根目录（主目录缩成 ~）"
+  },
   "library.page.summary.label": {
     "total": "资源库里项目的总数",
-    "running": "正在运行的项目数"
+    "running": "正在运行的项目数",
+    "root": "资源库根目录（主目录缩成 ~）"
   },
   "library.retention.autoClean.label": {
     "days": "距离自动清理还剩的天数"

@@ -22,4 +22,10 @@ describe("EmptyState", () => {
     const { container } = render(<EmptyState title={text("none")} />);
     expect(container.querySelector("p")).toBeNull();
   });
+
+  it("线稿可以换成搜索没有结果的那一张", () => {
+    const { container } = render(<EmptyState art="search" title={text("none")} />);
+    expect(container.querySelector("svg circle")).not.toBeNull();
+    expect(container.querySelector("svg rect")).toBeNull();
+  });
 });

@@ -226,6 +226,7 @@
 | desktop.picker.list.aria | 模板列表 | Templates | — |
 | desktop.picker.move.hint | 移动 | move | — |
 | desktop.picker.next.hint | 下一步：填写名称和备注 | next: name and note | — |
+| desktop.picker.noMatch.hint | 没有匹配的模板。 | No matching templates. | — |
 | desktop.picker.recent.label | 最近使用 | Recently used | — |
 | desktop.picker.search.label | 搜索模板 | Search templates | — |
 | desktop.picker.search.placeholder | 搜索模板：名称、框架、语言 | Search templates: name, framework, language | — |
@@ -403,18 +404,32 @@
 | library.empty.cli.label | 也可以让智能体用命令行创建： | Or let an agent create one from the command line: | — |
 | library.empty.hint | 选一个模板，新建你的第一个项目。 | Pick a template to create your first playground. | — |
 | library.empty.title | 还没有项目 | No playgrounds yet | — |
-| library.filter.agent.label | 智能体创建 | Agent-made | — |
+| library.filter.agent.label | 智能体创建 | Created by agents | — |
 | library.filter.all.label | 全部 | All | — |
 | library.filter.autoClean.label | 自动清理 | Auto-clean | — |
 | library.filter.kept.label | 已保留 | Kept | — |
+| library.filter.sort.label | 排序：{value} | Sort: {value} | value：当前选中的排序名 |
+| library.filter.status.label | 状态：{value} | Status: {value} | value：当前选中的状态名 |
+| library.filter.type.label | 类型：{value} | Type: {value} | value：当前选中的类型名 |
+| library.menu.sort.aria | 排序方式 | Sort order | — |
+| library.menu.status.aria | 按状态筛选 | Filter by status | — |
+| library.menu.type.aria | 按类型筛选 | Filter by type | — |
 | library.nav.aria | 资源库导航 | Library navigation | — |
 | library.nav.library.title | 资源库 | Library | — |
 | library.nav.manage.title | 管理 | Manage | — |
 | library.nav.settings.label | 设置 | Settings | — |
 | library.nav.templates.label | 模板 | Templates | — |
 | library.nav.unused.label | 长期未使用 | Unused for a while | — |
+| library.noResults.clear.action | 清除搜索 | Clear search | — |
+| library.noResults.create.action | 新建项目，名称用“{query}” | New playground named “{query}” | query：用户输入的搜索文字，同时是新项目的名称 |
+| library.noResults.filtered.hint | 换一个筛选条件试试。 | Try different filters. | — |
+| library.noResults.filtered.title | 没有符合条件的项目 | No playgrounds match | — |
+| library.noResults.hint | 名称、备注和模板里都没有这个词。 | No name, note, or template contains this word. | — |
+| library.noResults.reset.action | 清除筛选 | Clear filters | — |
+| library.noResults.title | 没有找到“{query}” | No results for “{query}” | query：用户输入的搜索文字（原样，不翻译） |
 | library.note.empty.label | 未填写备注 | No note | — |
-| library.page.summary.label | {total, plural, other {# 个项目}} · {running, plural, other {# 个正在运行}} | {total, plural, one {# playground} other {# playgrounds}} · {running, plural, one {# running} other {# running}} | total：资源库里项目的总数；running：正在运行的项目数 |
+| library.page.results.label | {count, plural, other {# 个结果}} · 共 {total, plural, other {# 个项目}} · 存放在 {root} | {count, plural, one {# result} other {# results}} · {total, plural, one {# playground} other {# playgrounds}} · stored in {root} | count：搜索和筛选后剩下的项目数；total：资源库里项目的总数；root：资源库根目录（主目录缩成 ~） |
+| library.page.summary.label | {total, plural, other {# 个项目}} · {running, plural, other {# 个正在运行}} · 存放在 {root} | {total, plural, one {# playground} other {# playgrounds}} · {running, plural, one {# running} other {# running}} · stored in {root} | total：资源库里项目的总数；running：正在运行的项目数；root：资源库根目录（主目录缩成 ~） |
 | library.retention.autoClean.label | 剩 {days, plural, other {# 天}} | {days, plural, one {# day} other {# days}} left | days：距离自动清理还剩的天数 |
 | library.retention.autoClean.tooltip | {days, plural, other {# 天}}没打开就移到{term_trash}，每次打开重新计时 | Moved to the {term_trash} after {days, plural, one {# day} other {# days}} unopened; the count restarts on every open | days：自动清理设定的天数 |
 | library.retention.kept.label | 已保留 | Kept | — |
@@ -424,7 +439,17 @@
 | library.row.openHint.label | 回车 | Enter | — |
 | library.row.reveal.action | 在{term_fileManager}中显示 | Show in {term_fileManager} | — |
 | library.row.stop.action | 停止运行 | Stop | — |
+| library.search.clear.aria | 清除搜索 | Clear search | — |
+| library.search.key.label | {term_searchShortcut} | {term_searchShortcut} | — |
+| library.search.label | 搜索项目 | Search playgrounds | — |
+| library.search.placeholder | 搜索名称、备注、模板 | Search name, note, template | — |
 | library.sidebar.footer.label | {count, plural, other {# 个项目}} | {count, plural, one {# playground} other {# playgrounds}} | count：资源库里项目的总数 |
+| library.sort.created.label | 创建时间 | Created | — |
+| library.sort.name.label | 名称 | Name | — |
+| library.sort.recent.label | 最近打开 | Recently opened | — |
+| library.status.problem.label | 有问题 | Has a problem | — |
+| library.status.running.label | 运行中 | Running | — |
+| library.status.stopped.label | 已停止 | Stopped | — |
 | library.tab.title | 资源库 | Library | — |
 | library.table.aria | 项目列表 | Playgrounds | — |
 | library.topbar.idle.label | 没有在运行的项目 | No playground running | — |
@@ -442,6 +467,7 @@
 | notice.STOPPED_BY_USER | 你停止了这个项目。 | You stopped this playground. | — |
 | notice.TOOL_VERSION_UNTESTED | {tool} {found} 高于这个模板测试过的范围（{required}）。照常运行，但没有经过测试。 | {tool} {found} is newer than the range this template was tested with ({required}). It runs as usual but is untested. | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译；found：本机检测到的版本，例如 20.11.0；原样显示，不翻译；required：模板要求的版本范围，例如 >=22.18；原样显示，不翻译 |
 | platform.fileManager | {platform, select, other {访达}} | {platform, select, other {Finder}} | — |
+| platform.searchShortcut | {platform, select, other {⌘F}} | {platform, select, other {⌘F}} | — |
 | platform.trash | {platform, select, other {废纸篓}} | {platform, select, other {Trash}} | — |
 | runState.checking | 检查工具 | Checking tools | — |
 | runState.crashed | 已崩溃 | Crashed | — |

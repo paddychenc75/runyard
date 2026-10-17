@@ -125,6 +125,7 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
       lastOpenedAt: playground.lastOpenedAt ?? null,
       createdBy: playground.createdBy,
       createdAt: playground.createdAt,
+      missing: playground.missingSince !== undefined,
     };
   });
   const playgrounds = [...rows].sort(compareRows);

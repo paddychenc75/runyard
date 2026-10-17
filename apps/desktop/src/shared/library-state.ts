@@ -41,6 +41,8 @@ export interface PlaygroundRow {
   lastOpenedAt: number | null;
   createdBy: CreatedBy;
   createdAt: number;
+  /** 找不到项目文件夹（被移走或删除）：资源库的“有问题”筛选要用 */
+  missing: boolean;
 }
 
 /** 标签上的状态小圆点；由最近一次运行的状态归并而来 */
