@@ -4,6 +4,7 @@ import { I18nProvider } from "@runyard/i18n/react";
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { WorkspaceFilesContext } from "../../shared/workspace-files.tsx";
 import { FileTree } from "./FileTree.tsx";
 import { type FakeFiles, fakeFiles } from "./fake-files-bridge.ts";
 import type { FileTreeHost } from "./use-file-tree.ts";
@@ -42,7 +43,9 @@ beforeAll(async () => {
   const user = userEvent.setup();
   render(
     <I18nProvider locale="zh-CN" platform="darwin" catalogs={desktopCatalogs}>
-      <FileTree bridge={files.bridge} project="demo" host={hostOf()} />
+      <WithHost host={hostOf()}>
+        <FileTree bridge={files.bridge} project="demo" />
+      </WithHost>
     </I18nProvider>,
   );
   await user.click(await screen.findByRole("button", { name: "在项目根新建" }));
@@ -51,6 +54,16 @@ beforeAll(async () => {
   await screen.findByRole("treeitem", { name: "warmup" });
   cleanup();
 }, 30_000);
+
+// 打开哪个文件走 WorkspaceFilesContext（#258 与 #259 的接缝）；改名、移走、未保存内容走 hooks
+function WithHost({ host, children }: { host: FileTreeHost; children: React.ReactNode }) {
+  const value = {
+    activePath: host.activePath,
+    openPaths: host.activePath === null ? [] : [host.activePath],
+    openFile: host.openFile,
+  };
+  return <WorkspaceFilesContext.Provider value={value}>{children}</WorkspaceFilesContext.Provider>;
+}
 
 function hostOf(extra: Partial<FileTreeHost> = {}) {
   const host = {
@@ -66,7 +79,9 @@ function hostOf(extra: Partial<FileTreeHost> = {}) {
 function setup(files: FakeFiles, host: FileTreeHost = hostOf(), locale: "zh-CN" | "en" = "zh-CN") {
   const view = (h: FileTreeHost) => (
     <I18nProvider locale={locale} platform="darwin" catalogs={desktopCatalogs}>
-      <FileTree bridge={files.bridge} project="demo" host={h} />
+      <WithHost host={h}>
+        <FileTree bridge={files.bridge} project="demo" hooks={h} />
+      </WithHost>
     </I18nProvider>
   );
   const utils = render(view(host));

@@ -3,6 +3,7 @@ import { GlassSurface, IconButton, ScrollArea } from "@runyard/ui";
 import { type KeyboardEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { DesktopBridge } from "../../../shared/desktop-bridge.ts";
 import type { FileEntry } from "../../../shared/editor-files.ts";
+import { useWorkspaceFiles } from "../../shared/workspace-files.tsx";
 import styles from "./FileTree.module.css";
 import { EntryIcon, toneOf } from "./FileTreeGlyph.tsx";
 import { FileTreeMenu, type MenuTarget } from "./FileTreeMenu.tsx";
@@ -12,11 +13,14 @@ import { createParentFor, type NavKey, navigate, rowPath, visibleRows } from "./
 import { useFileErrorText } from "./use-file-error-text.ts";
 import { type FileTreeHost, useFileTree } from "./use-file-tree.ts";
 
+/** 打开哪个文件走 WorkspaceFilesContext；这三件事是文件树对文件标签的额外要求，编辑器接进来时提供 */
+export type FileTreeHooks = Pick<FileTreeHost, "unsavedContent" | "onRenamed" | "onTrashed">;
+
 export interface FileTreeProps {
   bridge: DesktopBridge;
   /** 项目 id（文件服务按它找项目文件夹） */
   project: string;
-  host: FileTreeHost;
+  hooks?: FileTreeHooks;
 }
 
 // 按路径找行：路径里可能有引号等字符，不拼进选择器
@@ -36,7 +40,12 @@ const NAV_KEYS: readonly string[] = [
 
 // 项目标签页左边的文件树（设计稿 Web、Script 的“文件”面板，规格 desktop/editor 文件树）：
 // 玻璃面板，标题行加“新建”，下面是树；只用键盘就能操作全部动作，焦点所在的行始终画出焦点环。
-export function FileTree({ bridge, project, host }: FileTreeProps) {
+export function FileTree({ bridge, project, hooks }: FileTreeProps) {
+  const workspace = useWorkspaceFiles();
+  const host = useMemo<FileTreeHost>(
+    () => ({ activePath: workspace.activePath, openFile: workspace.openFile, ...hooks }),
+    [workspace.activePath, workspace.openFile, hooks],
+  );
   const t = useT();
   const errorText = useFileErrorText();
   const tree = useFileTree(bridge, project, host);
