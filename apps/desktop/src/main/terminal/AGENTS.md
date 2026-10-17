@@ -2,7 +2,7 @@
 
 ## 用途
 
-规格 desktop/terminal（DESKTOP-TERMINAL-01 至 38 的后台部分），技术设计 §6.3，K5 证据 `docs/architecture/evidence/k5-node-pty.md`，issue #263。界面（xterm 的绘制、复制粘贴、查找、右键菜单、确认弹窗的文字）随设计稿，不在这里。
+规格 desktop/terminal（DESKTOP-TERMINAL-01 至 38 的后台部分），技术设计 §6.3，K5 证据 `docs/architecture/evidence/k5-node-pty.md`，issue #263。界面部分见下面“界面部分”一节（`src/renderer/features/terminal/`）。
 
 ## 对外暴露什么
 不是库。主进程对界面暴露的是桥的 `terminal.*` 方法（打开、接上、断开、写入、改大小、回执、清屏、重新打开、前台命令，白名单在 `src/shared/terminal.ts`）和 `terminal.data`、`terminal.state` 两个事件；对控制器是 `TerminalHooks`（`controller-hosts.ts`）；对管理进程是 `playground.releaseRequested` 的回应。内部消息（`shared/pty-host-messages.ts`）不对外。
@@ -28,3 +28,12 @@
 - 假的：`terminal-service.test.ts`（假 `PtyHostLink`）、`pty-host/host.test.ts`（假伪终端）、`library-controller-terminal.test.ts`（假终端钩子）。
 - 真的（`*.platform-dependent.test.ts`，只在 macOS 有意义：node-pty 没有 Linux 的预编译文件，见 #336）：`terminal-real…`（服务 + pty-host 核心 + 真 node-pty 和 zsh，临时 HOME 和项目文件夹）、`terminal-process…`（pty-host 作为独立 Node 进程，被强制结束、父进程被强制结束）。
 - 打包后的应用：`Runyard --terminal-smoke`（开终端、回显、改大小、中文、`runyard`、前台命令、结束后不留进程）；`--terminal-smoke-hold` 做到一半停住，外面强制结束应用，核对 10 秒内不留进程。
+
+## 界面部分（`src/renderer/features/terminal/`，#263）
+
+- `ConsolePanel`（`renderer/app/`）是底部面板：`SegmentedControl` 在“输出”和“终端”之间切，当前页签记在 `panel-mode.ts`（只在这次运行的内存里，每个项目一份；标签页关了就忘掉，所以恢复标签页和重新打开永远从“输出”开始，不自动创建终端）。⌃`、命令面板的 `app.showTerminal`、`app.showOutput` 也在这里接。
+- `TerminalView` 显示一个项目的终端：`TerminalSession`（`terminal-session.ts`）把 xterm 6 接到桥的 `terminal.*` 上——先订阅 `terminal.data`/`terminal.state`，再 `terminal.open`，快照写完才放行排队的输出；每段输出写完用 `terminal.ack` 回执；卸载只 `terminal.detach`（终端不结束）。按键归属在 `terminal-keys.ts`：⌘C/⌘V/⌘A/⌘K/⌘F/⌘G 终端自己处理，别的 ⌘ 组合和 ⌃` 原样放行给应用，⌃C 等给 shell。粘贴走 `terminal.paste` 不直接写 shell（括号粘贴由 xterm 按 shell 的设置包）。网址 ⌘ 加点击经 `link.openWeb`（只放行 http、https）。
+- 配色、字体、行高在 `terminal-theme.ts`，取自 `@runyard/tokens`（`xtermThemes`、主题表的文字色和滚动条色）；设计稿的行高 21 像素 = 12 号字乘 1.5（xterm 的行高是字高的倍数）。滚动条的胶囊样式在 `TerminalView.module.css` 里覆盖 xterm 的滚动条。
+- `FindBar`（⌘F，设计稿 TerminalFind）、右键菜单（用 `Menu` 的 `align="start"`，锚点是鼠标处零大小的元素，打开期间 `useOverlay` 让原生预览让位）、“终端已结束”一行（位置由光标所在行算出）都在 `TerminalView`。
+- 关标签页确认（`CloseConfirmDialog`）认 `closeRequest.terminalCommand`/`stopsRun`；⌘Q：`EditorWorkspace` 的 `beforeQuit`（编辑器的保存询问之后）经 `terminal.busy` 问主进程，有命令在运行就弹 `QuitTerminalPrompt`。
+- 测试：jsdom 里 xterm 画不出来，`vitest.setup.tsx` 统一把 `@xterm/*` 换成 `test-support/` 里记调用的假类；真实的绘制只在应用里看（对照截图见 PR）。

@@ -120,6 +120,7 @@ function setup(options: { chosen?: string | null; session?: SavedSession; synced
   const system: SystemActions = {
     revealInFileManager: (path) => void reveals.push(path),
     copyText() {},
+    readText: async () => "",
     openExternal() {},
     openTerminal() {},
     chooseFolder: async () => options.chosen ?? null,

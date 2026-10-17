@@ -495,6 +495,14 @@ export type CatalogMessages = {
   "desktop.preview.openExternal.action": Record<never, never>;
   "desktop.preview.reload.action": Record<never, never>;
   "desktop.preview.waiting.label": Record<never, never>;
+  "desktop.quitConfirm.body": Record<never, never>;
+  "desktop.quitConfirm.cancel.action": Record<never, never>;
+  "desktop.quitConfirm.confirm.action": Record<never, never>;
+  "desktop.quitConfirm.item.label": {
+    command: string | number;
+    project: string | number;
+  };
+  "desktop.quitConfirm.title": Record<never, never>;
   "desktop.rerun.action": Record<never, never>;
   "desktop.restart.action": Record<never, never>;
   "desktop.run.action": Record<never, never>;
@@ -628,6 +636,45 @@ export type CatalogMessages = {
   "desktop.templates.title": Record<never, never>;
   "desktop.templates.toolColumn.label": Record<never, never>;
   "desktop.templates.unmaintained.label": Record<never, never>;
+  "desktop.terminal.aria": Record<never, never>;
+  "desktop.terminal.endedExited.label": {
+    exitCode: string | number;
+  };
+  "desktop.terminal.endedHostCrashed.label": Record<never, never>;
+  "desktop.terminal.endedRenamed.label": Record<never, never>;
+  "desktop.terminal.endedSignal.label": Record<never, never>;
+  "desktop.terminal.endedStartFailed.label": Record<never, never>;
+  "desktop.terminal.reopen.action": Record<never, never>;
+  "desktop.terminal.shellFallback.label": {
+    fallback: string | number;
+    reason: string;
+    shell: string | number;
+  };
+  "desktop.terminalFind.aria": Record<never, never>;
+  "desktop.terminalFind.case.aria": Record<never, never>;
+  "desktop.terminalFind.case.label": Record<never, never>;
+  "desktop.terminalFind.close.aria": Record<never, never>;
+  "desktop.terminalFind.count.label": {
+    index: string | number;
+    total: string | number;
+  };
+  "desktop.terminalFind.field.aria": Record<never, never>;
+  "desktop.terminalFind.next.aria": Record<never, never>;
+  "desktop.terminalFind.none.label": Record<never, never>;
+  "desktop.terminalFind.previous.aria": Record<never, never>;
+  "desktop.terminalFind.regex.aria": Record<never, never>;
+  "desktop.terminalFind.regex.label": Record<never, never>;
+  "desktop.terminalFind.word.aria": Record<never, never>;
+  "desktop.terminalFind.word.label": Record<never, never>;
+  "desktop.terminalMenu.aria": Record<never, never>;
+  "desktop.terminalMenu.clear.action": Record<never, never>;
+  "desktop.terminalMenu.clear.hint": Record<never, never>;
+  "desktop.terminalMenu.copy.action": Record<never, never>;
+  "desktop.terminalMenu.copy.hint": Record<never, never>;
+  "desktop.terminalMenu.paste.action": Record<never, never>;
+  "desktop.terminalMenu.paste.hint": Record<never, never>;
+  "desktop.terminalMenu.selectAll.action": Record<never, never>;
+  "desktop.terminalMenu.selectAll.hint": Record<never, never>;
   "desktop.window.title": Record<never, never>;
   "format.duration.days": {
     count: number;
@@ -815,8 +862,12 @@ export type CatalogMessages = {
   "library.trash.title": {
     name: string | number;
   };
+  "platform.clearShortcut": Record<never, never>;
+  "platform.copyShortcut": Record<never, never>;
   "platform.fileManager": Record<never, never>;
+  "platform.pasteShortcut": Record<never, never>;
   "platform.searchShortcut": Record<never, never>;
+  "platform.selectAllShortcut": Record<never, never>;
   "platform.trash": Record<never, never>;
   "settings.autoSave.blur.label": Record<never, never>;
   "settings.autoSave.delay.label": Record<never, never>;
@@ -889,9 +940,17 @@ export type CatalogMessages = {
   };
   "workspace.closeConfirm.body": Record<never, never>;
   "workspace.closeConfirm.cancel.action": Record<never, never>;
+  "workspace.closeConfirm.close.action": Record<never, never>;
   "workspace.closeConfirm.confirm.action": Record<never, never>;
   "workspace.closeConfirm.optOut.hint": Record<never, never>;
   "workspace.closeConfirm.optOut.label": Record<never, never>;
+  "workspace.closeConfirm.terminal.body": {
+    command: string | number;
+    stopsRun: string;
+  };
+  "workspace.closeConfirm.terminal.title": {
+    name: string | number;
+  };
   "workspace.closeConfirm.title": {
     name: string | number;
   };

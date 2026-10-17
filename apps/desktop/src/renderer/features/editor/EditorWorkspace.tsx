@@ -49,6 +49,8 @@ export interface EditorWorkspaceProps {
   activeTab: string;
   /** 自动保存的档位，来自设置页（#188）；不传用默认的“停止输入 1 秒后” */
   autosave?: () => AutosaveMode;
+  /** 退出（⌘Q）时在编辑器的保存询问之后再问一件事：终端里有命令在运行（规格 DESKTOP-TERMINAL-30）；false = 用户取消 */
+  beforeQuit?: () => Promise<boolean>;
   children: ReactNode;
 }
 
@@ -59,6 +61,7 @@ export function EditorWorkspace({
   tabs,
   activeTab,
   autosave = DEFAULT_AUTOSAVE,
+  beforeQuit,
   children,
 }: EditorWorkspaceProps) {
   const [sessions] = useState(() => new EditorSessions(bridge, autosave));
@@ -73,11 +76,12 @@ export function EditorWorkspace({
         void bridge.call("app.quitReply", { id, reply: "ack" });
         void sessions
           .flushAll()
+          .then((proceed) => (proceed && beforeQuit !== undefined ? beforeQuit() : proceed))
           .then((proceed) =>
             bridge.call("app.quitReply", { id, reply: proceed ? "proceed" : "cancel" }),
           );
       }),
-    [bridge, sessions],
+    [bridge, sessions, beforeQuit],
   );
   const flushProject = useCallback((id: string) => sessions.flushProject(id), [sessions]);
   const files = useMemo(

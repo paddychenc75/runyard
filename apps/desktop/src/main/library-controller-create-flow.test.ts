@@ -61,6 +61,7 @@ function setup() {
     system: {
       revealInFileManager() {},
       copyText() {},
+      readText: async () => "",
       openExternal() {},
       openTerminal() {},
       chooseFolder: async () => null,

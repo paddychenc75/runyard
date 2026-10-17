@@ -84,6 +84,7 @@ async function setup() {
       revealInFileManager() {},
       copyText() {},
       openExternal() {},
+      readText: async () => "",
       openTerminal() {},
       chooseFolder: async () => null,
     },

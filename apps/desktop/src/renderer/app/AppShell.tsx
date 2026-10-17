@@ -2,9 +2,11 @@ import { useT } from "@runyard/i18n/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { LibraryState } from "../../shared/library-state.ts";
+import type { TerminalBusy } from "../../shared/terminal.ts";
 import type { SettingsApi } from "../bridge/use-settings.ts";
 import { EditorWorkspace } from "../features/editor/EditorWorkspace.tsx";
 import { PaletteHost } from "../features/palette/PaletteHost.tsx";
+import { forgetPanelMode } from "../features/terminal/panel-mode.ts";
 import { defaultQuery, type LibraryQuery, navCounts } from "../library-query.ts";
 import { runningCount } from "../library-view.ts";
 import { CommandContext, CommandHost, useCommands } from "../shared/command-host.tsx";
@@ -17,6 +19,7 @@ import { CreateDialog } from "./CreateDialog.tsx";
 import { LibraryPage } from "./LibraryPage.tsx";
 import { NoticeToasts } from "./NoticeToasts.tsx";
 import { PickerDialog } from "./PickerDialog.tsx";
+import { QuitTerminalPrompt } from "./QuitTerminalPrompt.tsx";
 import { Sidebar } from "./Sidebar.tsx";
 import { SettingsPage } from "./settings/SettingsPage.tsx";
 import { useAutoSaveReader } from "./settings/use-autosave-reader.ts";
@@ -124,6 +127,31 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
   }, [onLibraryPage, modKey]);
   const tabs = library?.tabs ?? [];
   const activeTab = library?.activeTab ?? "library";
+  // 标签页关了，终端也结束了：再打开这个项目时底部面板从“输出”开始，不自动创建终端（DESKTOP-TERMINAL-06）
+  const openIds = useRef<Set<string>>(new Set());
+  useEffect(() => {
+    const now = new Set(tabs.map((tab) => tab.id));
+    for (const id of openIds.current) if (!now.has(id)) forgetPanelMode(id);
+    openIds.current = now;
+  });
+  // ⌘Q：编辑器的询问之后，终端里有命令在运行就再问一次，列出项目和命令（DESKTOP-TERMINAL-30）
+  const [quitAsk, setQuitAsk] = useState<{
+    busy: TerminalBusy[];
+    answer: (quit: boolean) => void;
+  } | null>(null);
+  const askQuit = useCallback(async (): Promise<boolean> => {
+    const busy = (await bridge.call("terminal.busy").catch(() => [])) ?? [];
+    if (busy.length === 0) return true;
+    return await new Promise<boolean>((resolve) => {
+      setQuitAsk({
+        busy,
+        answer: (quit) => {
+          setQuitAsk(null);
+          resolve(quit);
+        },
+      });
+    });
+  }, [bridge]);
   // 侧栏只在资源库标签上显示（设计稿 WebLight、Script 的项目标签页没有它），并且可以收起
   const sidebarVisible = onLibraryPage && !layoutPrefs.sidebarCollapsed;
   // ⌃⌘S 是主进程的菜单项（原因同 ⌘N）：资源库标签上收起或显示侧栏，项目标签页上收起或展开文件树
@@ -166,7 +194,13 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
   const total = library?.playgrounds.length ?? 0;
   return (
     <OverlayContext.Provider value={overlays}>
-      <EditorWorkspace bridge={bridge} tabs={tabs} activeTab={activeTab} autosave={readAutoSave}>
+      <EditorWorkspace
+        bridge={bridge}
+        tabs={tabs}
+        activeTab={activeTab}
+        autosave={readAutoSave}
+        beforeQuit={askQuit}
+      >
         <div
           className={styles.root}
           data-sidebar={sidebarVisible ? "shown" : "hidden"}
@@ -245,6 +279,11 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
           )}
           <CloseConfirmDialog bridge={bridge} request={library?.closeRequest ?? null} />
           <PaletteHost bridge={bridge} project={onLibraryPage ? null : activeTab} />
+          <QuitTerminalPrompt
+            busy={quitAsk?.busy ?? null}
+            nameOf={(project) => tabs.find((tab) => tab.id === project)?.name ?? project}
+            onAnswer={(quit) => quitAsk?.answer(quit)}
+          />
           <NoticeToasts bridge={bridge} notices={library?.notices ?? []} />
           {creating !== null && library !== null ? (
             <CreateDialog

@@ -41,6 +41,16 @@ export class ProjectSystem {
     this.#system.copyText(text);
   }
 
+  /** 终端的粘贴：读剪贴板里的文字 */
+  readText(): Promise<string> {
+    return this.#system.readText();
+  }
+
+  /** 终端输出里的网址（⌘ 加点击）：只放行 http 和 https，地址来自 shell 输出，不可信 */
+  openWebLink(url: string): void {
+    if (/^https?:\/\/\S+$/.test(url)) this.#system.openExternal(url);
+  }
+
   /** 安装说明的官网：只放行 https（链接来自模板或工具定义，不可全信） */
   openLink(url: string): void {
     if (/^https:\/\/\S+$/.test(url)) this.#system.openExternal(url);

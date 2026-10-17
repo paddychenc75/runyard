@@ -113,6 +113,9 @@ class FakeSystem implements SystemActions {
   copyText(text: string) {
     this.copied.push(text);
   }
+  async readText() {
+    return "";
+  }
 }
 
 function setup(options: { libraryRoot?: string } = {}) {

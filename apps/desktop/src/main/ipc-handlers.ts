@@ -216,6 +216,10 @@ export function registerBridgeHandlers(
     "clipboard.copy": (value) => {
       if (typeof value === "string") controller.system.copyText(value);
     },
+    "clipboard.read": () => controller.system.readText(),
+    "link.openWeb": (value) => {
+      if (typeof value === "string") controller.system.openWebLink(value);
+    },
     "link.open": (value) => {
       if (typeof value === "string") controller.system.openLink(value);
     },
