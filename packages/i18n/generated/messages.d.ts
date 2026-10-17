@@ -235,6 +235,15 @@ export type CatalogMessages = {
   "cli.usage.unknownSetting.body": {
     name: string | number;
   };
+  "desktop.agentNotice.meta.label": {
+    time: string | number;
+    url: string | number;
+  };
+  "desktop.agentNotice.title.label": {
+    agent: string | number;
+    name: string | number;
+    user: (chunks: string[]) => string;
+  };
   "desktop.category.frontend.label": Record<never, never>;
   "desktop.category.fullstack.label": Record<never, never>;
   "desktop.category.mine.label": Record<never, never>;
@@ -278,6 +287,7 @@ export type CatalogMessages = {
   "desktop.create.note.placeholder": Record<never, never>;
   "desktop.create.optional.label": Record<never, never>;
   "desktop.create.submit.action": Record<never, never>;
+  "desktop.create.synced.hint": Record<never, never>;
   "desktop.create.template.label": {
     name: string | number;
   };
@@ -381,9 +391,15 @@ export type CatalogMessages = {
     tool: string | number;
   };
   "desktop.missing.site.label": Record<never, never>;
+  "desktop.notice.dismiss.aria": Record<never, never>;
+  "desktop.notice.region.aria": Record<never, never>;
   "desktop.output.aria": Record<never, never>;
   "desktop.output.empty.label": Record<never, never>;
   "desktop.output.view.action": Record<never, never>;
+  "desktop.pathNotice.title.label": {
+    name: string | number;
+    user: (chunks: string[]) => string;
+  };
   "desktop.picker.arrowsKey.label": Record<never, never>;
   "desktop.picker.choose.action": Record<never, never>;
   "desktop.picker.dialog.aria": Record<never, never>;
@@ -493,6 +509,18 @@ export type CatalogMessages = {
   "library.action.dismiss.action": Record<never, never>;
   "library.action.failed.title": Record<never, never>;
   "library.autoClean.dialog.title": Record<never, never>;
+  "library.clean.keep.action": Record<never, never>;
+  "library.clean.later.action": Record<never, never>;
+  "library.clean.now.action": Record<never, never>;
+  "library.cleanBanner.end.label": Record<never, never>;
+  "library.cleanBanner.idle.label": {
+    days: number;
+  };
+  "library.cleanBanner.lead.label": {
+    count: number;
+  };
+  "library.cleanBanner.region.aria": Record<never, never>;
+  "library.cleanBanner.separator.label": Record<never, never>;
   "library.column.actions.aria": Record<never, never>;
   "library.column.creator.label": Record<never, never>;
   "library.column.lastOpened.label": Record<never, never>;
@@ -503,7 +531,22 @@ export type CatalogMessages = {
   "library.column.template.label": Record<never, never>;
   "library.creator.agent.label": Record<never, never>;
   "library.creator.cli.label": Record<never, never>;
+  "library.creator.collapse.aria": Record<never, never>;
+  "library.creator.details.label": {
+    agent: string | number;
+    code: (chunks: string[]) => string;
+    command: string | number;
+    hasCommand: string;
+    time: string | number;
+    user: (chunks: string[]) => string;
+  };
+  "library.creator.expand.aria": Record<never, never>;
   "library.creator.me.label": Record<never, never>;
+  "library.creator.tooltip.label": {
+    command: string | number;
+    hasCommand: string;
+    time: string | number;
+  };
   "library.empty.cli.label": Record<never, never>;
   "library.empty.hint": Record<never, never>;
   "library.empty.title": Record<never, never>;
@@ -523,6 +566,16 @@ export type CatalogMessages = {
   "library.menu.sort.aria": Record<never, never>;
   "library.menu.status.aria": Record<never, never>;
   "library.menu.type.aria": Record<never, never>;
+  "library.missing.body": {
+    mono: (chunks: string[]) => string;
+    path: string | number;
+  };
+  "library.missing.mismatch.label": {
+    name: string | number;
+    user: (chunks: string[]) => string;
+  };
+  "library.missing.revealParent.action": Record<never, never>;
+  "library.missing.status.label": Record<never, never>;
   "library.nav.aria": Record<never, never>;
   "library.nav.library.title": Record<never, never>;
   "library.nav.manage.title": Record<never, never>;
@@ -563,6 +616,7 @@ export type CatalogMessages = {
     days: number;
   };
   "library.retention.kept.label": Record<never, never>;
+  "library.retention.tomorrow.label": Record<never, never>;
   "library.row.autoClean.action": Record<never, never>;
   "library.row.autoCleanNow.hint": {
     state: string | number;

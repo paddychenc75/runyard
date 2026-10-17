@@ -118,6 +118,8 @@
 | cli.usage.unknownCommand.body | 不认识的命令：{command}。 | Unknown command: {command}. | command：用户输入的命令，原样显示 |
 | cli.usage.unknownOption.body | 不认识的选项：{option}。 | Unknown option: {option}. | option：用户输入的选项，原样显示 |
 | cli.usage.unknownSetting.body | 不认识的设置项：{name}。目前只有 lang。 | Unknown setting: {name}. The only setting is lang. | name：用户输入的设置项，原样显示 |
+| desktop.agentNotice.meta.label | {url} · {time} | {url} · {time} | url：运行的地址，如 http://127.0.0.1:7113/；还没有端口时不显示这一条；time：相对时间，如“刚刚” |
+| desktop.agentNotice.title.label | <user>{agent}</user> 创建并运行了 <user>{name}</user> | <user>{agent}</user> created and ran <user>{name}</user> | agent：智能体名称（用户或命令行给的，不翻译）；name：项目名称（不翻译）；user：包住用户内容的标签 |
 | desktop.category.frontend.label | 前端 | Front end | — |
 | desktop.category.fullstack.label | 全栈 | Full stack | — |
 | desktop.category.mine.label | 我的 | Mine | — |
@@ -152,6 +154,7 @@
 | desktop.create.note.placeholder | 这个项目用来做什么？ | What is this playground for? | — |
 | desktop.create.optional.label | 可选 | optional | — |
 | desktop.create.submit.action | 创建并运行 | Create and run | — |
+| desktop.create.synced.hint | 资源库在网盘同步目录下，同步可能拖慢依赖安装，或让文件被临时锁住。 | The library is inside a cloud-synced folder. Syncing can slow dependency installs or briefly lock files. | — |
 | desktop.create.template.label | 模板：{name} | Template: {name} | name：模板的显示名，已按语言取好 |
 | desktop.create.title | 新建 | New | — |
 | desktop.duration.seconds.label | {seconds} 秒 | {seconds} s | seconds：秒数，已按语言格式化的数字 |
@@ -216,9 +219,12 @@
 | desktop.missing.recheck.action | 重新检测 | Check again | — |
 | desktop.missing.requirement.label | {tool} {required} | {tool} {required} | tool：工具标识，如 go、node；required：需要的版本范围，原样显示 |
 | desktop.missing.site.label | 官网 | Website | — |
+| desktop.notice.dismiss.aria | 关闭提示 | Dismiss notice | — |
+| desktop.notice.region.aria | 提示 | Notices | — |
 | desktop.output.aria | 进程输出 | Process output | — |
 | desktop.output.empty.label | 还没有输出。 | No output yet. | — |
 | desktop.output.view.action | 查看完整输出 | View full output | — |
+| desktop.pathNotice.title.label | <user>{name}</user> 已创建 | <user>{name}</user> was created | name：新建项目的名称（不翻译）；user：包住用户内容的标签 |
 | desktop.picker.arrowsKey.label | 上下键 | Up/Down | — |
 | desktop.picker.choose.action | 选择 | Select | — |
 | desktop.picker.dialog.aria | 选择模板 | Choose a template | — |
@@ -409,6 +415,14 @@
 | library.action.dismiss.action | 知道了 | Got it | — |
 | library.action.failed.title | 操作没有完成 | That did not finish | — |
 | library.autoClean.dialog.title | 自动清理 | Auto-clean | — |
+| library.clean.keep.action | 改为保留 | Keep them | — |
+| library.clean.later.action | 稍后再说 | Remind me later | — |
+| library.clean.now.action | 现在清理 | Clean now | — |
+| library.cleanBanner.end.label | 。 | . | — |
+| library.cleanBanner.idle.label | （已 {days, plural, other {# 天}}没打开） | (not opened for {days, plural, one {# day} other {# days}}) | days：已经几天没打开 |
+| library.cleanBanner.lead.label | {count, plural, other {# 个项目}}明天会被自动清理： | {count, plural, one {# playground} other {# playgrounds}} will be cleaned up tomorrow: | count：明天会被自动清理的项目数 |
+| library.cleanBanner.region.aria | 自动清理提醒 | Auto-clean reminder | — |
+| library.cleanBanner.separator.label | ； | ; | — |
 | library.column.actions.aria | 操作 | Actions | — |
 | library.column.creator.label | 创建者 | Created by | — |
 | library.column.lastOpened.label | 上次打开 | Last opened | — |
@@ -419,7 +433,11 @@
 | library.column.template.label | 模板 | Template | — |
 | library.creator.agent.label | 智能体 | Agent | — |
 | library.creator.cli.label | 命令行 | Command line | — |
+| library.creator.collapse.aria | 收起创建信息 | Hide creation details | — |
+| library.creator.details.label | 由 <user>{agent}</user> 创建 · {time}{hasCommand, select, yes { · 命令：<code>{command}</code>} other {}} | Created by <user>{agent}</user> · {time}{hasCommand, select, yes { · Command: <code>{command}</code>} other {}} | time：创建时间（已格式化）；hasCommand：有创建命令是 yes，否则 no；command：创建时的命令行（用 code 标签包成等宽）；user：包住智能体名称的标签；code：包住命令的标签，显示成等宽字体；agent：智能体名称（不翻译） |
+| library.creator.expand.aria | 展开创建信息 | Show creation details | — |
 | library.creator.me.label | 我 | Me | — |
+| library.creator.tooltip.label | {time} 创建{hasCommand, select, yes { · 命令：{command}} other {}} | Created {time}{hasCommand, select, yes { · Command: {command}} other {}} | time：创建时间（已格式化）；hasCommand：有创建命令是 yes，否则 no；command：创建时的命令行（用 code 标签包成等宽） |
 | library.empty.cli.label | 也可以让智能体用命令行创建： | Or let an agent create one from the command line: | — |
 | library.empty.hint | 选一个模板，新建你的第一个项目。 | Pick a template to create your first playground. | — |
 | library.empty.title | 还没有项目 | No playgrounds yet | — |
@@ -433,6 +451,10 @@
 | library.menu.sort.aria | 排序方式 | Sort order | — |
 | library.menu.status.aria | 按状态筛选 | Filter by status | — |
 | library.menu.type.aria | 按类型筛选 | Filter by type | — |
+| library.missing.body | <mono>{path}</mono> 不在原来的位置了。可能被移动、改名或删除。 | <mono>{path}</mono> is no longer where it was. It may have been moved, renamed or deleted. | path：项目原来的文件夹路径（主目录缩成 ~）；mono：包住路径的标签，显示成等宽字体 |
+| library.missing.mismatch.label | 这个文件夹不是 <user>{name}</user> | This folder is not <user>{name}</user> | name：这个项目的名称（用户自己起的，不翻译）；user：包住用户内容的标签 |
+| library.missing.revealParent.action | 在{term_fileManager}中显示上一级文件夹 | Show the parent folder in {term_fileManager} | — |
+| library.missing.status.label | 找不到文件夹 | Folder not found | — |
 | library.nav.aria | 资源库导航 | Library navigation | — |
 | library.nav.library.title | 资源库 | Library | — |
 | library.nav.manage.title | 管理 | Manage | — |
@@ -457,6 +479,7 @@
 | library.retention.autoClean.label | 剩 {days, plural, other {# 天}} | {days, plural, one {# day} other {# days}} left | days：距离自动清理还剩的天数 |
 | library.retention.autoClean.tooltip | {days, plural, other {# 天}}没打开就移到{term_trash}，每次打开重新计时 | Moved to the {term_trash} after {days, plural, one {# day} other {# days}} unopened; the count restarts on every open | days：自动清理设定的天数 |
 | library.retention.kept.label | 已保留 | Kept | — |
+| library.retention.tomorrow.label | 明天清理 | Tomorrow | — |
 | library.row.autoClean.action | 自动清理… | Auto-clean… | — |
 | library.row.autoCleanNow.hint | 现在：{state} | Now: {state} | state：当前保留状态的文字（已保留，或剩 N 天） |
 | library.row.copyLink.action | 复制链接 | Copy link | — |

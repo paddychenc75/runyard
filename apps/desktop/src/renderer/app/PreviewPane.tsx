@@ -8,6 +8,7 @@ import type { OverlayCounter } from "../shared/overlay-counter.ts";
 import { PreviewSlot } from "../widgets/PreviewSlot.tsx";
 import { AttachedNotice } from "./AttachedNotice.tsx";
 import { CrashedNotice } from "./CrashedNotice.tsx";
+import { FolderMissing } from "./FolderMissing.tsx";
 import { previewScreenOf } from "./failure-view.ts";
 import { MissingTool } from "./MissingTool.tsx";
 import { PortChanged } from "./PortChanged.tsx";
@@ -45,6 +46,9 @@ export function PreviewPane({ bridge, tab, overlays }: PreviewPaneProps) {
   let placeholder: ReactNode = null;
   let overlay: ReactNode;
   switch (screen) {
+    case "folder-missing":
+      placeholder = <FolderMissing bridge={bridge} tab={tab} />;
+      break;
     case "waiting":
       placeholder = t("desktop.preview.waiting.label");
       break;

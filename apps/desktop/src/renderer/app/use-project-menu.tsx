@@ -19,7 +19,12 @@ export interface ProjectMenu {
 
 // 两处“更多”菜单的同名项一份实现：重命名到创建副本来自 usePlaygroundEdits（#182），
 // 这里补上外部编辑器、访达、终端、复制路径、复制链接和移到废纸篓（#183、#290）。
-export function useProjectMenu(options: UsePlaygroundEditsOptions): ProjectMenu {
+export interface UseProjectMenuOptions extends UsePlaygroundEditsOptions {
+  /** “重新定位…”由调用方接管（资源库表格要在行下面写“选错了文件夹”）；不给就走失败弹窗 */
+  onRelocate?: () => void;
+}
+
+export function useProjectMenu(options: UseProjectMenuOptions): ProjectMenu {
   const { bridge, row } = options;
   const t = useT();
   const edits = usePlaygroundEdits(options);
@@ -61,8 +66,10 @@ export function useProjectMenu(options: UsePlaygroundEditsOptions): ProjectMenu 
     else if (id === "copyPath") void bridge.call("playground.copyPath", row.id);
     else if (id === "copyLink") void bridge.call("clipboard.copy", `runyard://open/${row.name}`);
     else if (id === "trash") setConfirmTrash(true);
-    else if (id === "relocate") void bridge.call("playground.relocate", row.id).then(settle);
-    else if (id === "forget") void bridge.call("playground.forget", row.id).then(settle);
+    else if (id === "relocate") {
+      if (options.onRelocate !== undefined) options.onRelocate();
+      else void bridge.call("playground.relocate", row.id).then(settle);
+    } else if (id === "forget") void bridge.call("playground.forget", row.id).then(settle);
     else return false;
     return true;
   }

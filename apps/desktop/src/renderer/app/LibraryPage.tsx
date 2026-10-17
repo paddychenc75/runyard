@@ -12,6 +12,7 @@ import {
   typeFilters,
 } from "../library-query.ts";
 import { logoOf, monogramOf, pickLocalizedText, runningCount } from "../library-view.ts";
+import { CleanBanner } from "./CleanBanner.tsx";
 import { FilterMenu } from "./FilterMenu.tsx";
 import styles from "./LibraryPage.module.css";
 import { LibraryTable } from "./LibraryTable.tsx";
@@ -112,6 +113,7 @@ export function LibraryPage({
           </div>
         )}
       </header>
+      <CleanBanner bridge={bridge} items={library.cleanReminder ?? []} playgrounds={playgrounds} />
       {library.error === null ? null : (
         <p className={styles.error}>
           {t("desktop.error.title.label", { title: errorTitle(library, t) })}

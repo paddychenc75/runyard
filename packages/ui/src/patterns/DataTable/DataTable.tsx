@@ -1,6 +1,7 @@
 import type { Localized } from "@runyard/i18n";
 import {
   type CSSProperties,
+  Fragment,
   type MouseEvent,
   type ReactNode,
   useEffect,
@@ -24,6 +25,13 @@ export interface DataTableColumn<Row> {
   render: (row: Row) => ReactNode;
 }
 
+/** 行下面通栏的一条说明（设计稿 FolderMissing 的“找不到文件夹”说明、AgentActivity 展开的创建信息） */
+export interface DataTableDetail {
+  content: ReactNode;
+  /** warning：警示色淡底；neutral：中性淡底 */
+  tone: "warning" | "neutral";
+}
+
 export interface DataTableProps<Row> {
   /** 表格的名字，读屏器靠它 */
   label: Localized;
@@ -36,6 +44,8 @@ export interface DataTableProps<Row> {
   editingId?: string | null;
   /** 某行的某一格向右占几列（含自己，默认 1）；被占掉的列不画。编辑中的行靠它让输入框横跨几列 */
   cellSpan?: (row: Row, columnId: string) => number;
+  /** 某行下面要不要接一条通栏说明；返回 null 就没有。说明不是数据行，不算在行里（选中、双击都只属于数据行） */
+  renderDetail?: (row: Row) => DataTableDetail | null;
   onRowClick?: (row: Row, event: MouseEvent<HTMLElement>) => void;
   onRowDoubleClick?: (row: Row, event: MouseEvent<HTMLElement>) => void;
   className?: string;
@@ -69,6 +79,7 @@ export function DataTable<Row>({
   selectedId = null,
   editingId = null,
   cellSpan,
+  renderDetail,
   onRowClick,
   onRowDoubleClick,
   className,
@@ -76,12 +87,17 @@ export function DataTable<Row>({
   const rootRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLTableElement>(null);
   const [overflowing, setOverflowing] = useState(false);
+  // 可见宽度：通栏说明按它定宽并钉在左边，窄窗口横向滚动时文字和按钮不被滚走
+  const [viewport, setViewport] = useState<number | null>(null);
   useEffect(() => {
     const root = rootRef.current;
     const table = tableRef.current;
     if (root === null || table === null) return;
     if (typeof ResizeObserver === "undefined") return;
-    const measure = () => setOverflowing(table.offsetWidth > root.clientWidth + 1);
+    const measure = () => {
+      setOverflowing(table.offsetWidth > root.clientWidth + 1);
+      setViewport(root.clientWidth);
+    };
     const observer = new ResizeObserver(measure);
     observer.observe(root);
     observer.observe(table);
@@ -92,6 +108,7 @@ export function DataTable<Row>({
   const vars = {
     "--table-columns": columns.map((column) => TRACK[column.width]).join(" "),
     "--table-min": `calc(${columns.map((column) => MIN[column.width]).join(" + ")})`,
+    ...(viewport === null ? {} : { "--table-viewport": `${viewport}px` }),
   } as CSSProperties;
 
   return (
@@ -118,33 +135,43 @@ export function DataTable<Row>({
         <tbody className={styles.body}>
           {rows.map((row) => {
             const id = getRowId(row);
+            const detail = renderDetail?.(row) ?? null;
             return (
-              // 行本身不是控件：整行点击只是鼠标的便利，键盘用户用行里的按钮
-              <tr
-                key={id}
-                className={styles.row}
-                data-row-id={id}
-                data-selected={id === selectedId ? "" : undefined}
-                data-editing={id === editingId ? "" : undefined}
-                onClick={onRowClick === undefined ? undefined : (event) => onRowClick(row, event)}
-                onDoubleClick={
-                  onRowDoubleClick === undefined
-                    ? undefined
-                    : (event) => onRowDoubleClick(row, event)
-                }
-              >
-                {visibleCells(columns, row, cellSpan).map(({ column, span }) => (
-                  <td
-                    key={column.id}
-                    className={styles.cell}
-                    data-pin={column.pin}
-                    data-column={column.id}
-                    data-span={span > 1 ? span : undefined}
-                  >
-                    {column.render(row)}
-                  </td>
-                ))}
-              </tr>
+              <Fragment key={id}>
+                {/* 行本身不是控件：整行点击只是鼠标的便利，键盘用户用行里的按钮 */}
+                <tr
+                  className={styles.row}
+                  data-row-id={id}
+                  data-has-detail={detail === null ? undefined : ""}
+                  data-selected={id === selectedId ? "" : undefined}
+                  data-editing={id === editingId ? "" : undefined}
+                  onClick={onRowClick === undefined ? undefined : (event) => onRowClick(row, event)}
+                  onDoubleClick={
+                    onRowDoubleClick === undefined
+                      ? undefined
+                      : (event) => onRowDoubleClick(row, event)
+                  }
+                >
+                  {visibleCells(columns, row, cellSpan).map(({ column, span }) => (
+                    <td
+                      key={column.id}
+                      className={styles.cell}
+                      data-pin={column.pin}
+                      data-column={column.id}
+                      data-span={span > 1 ? span : undefined}
+                    >
+                      {column.render(row)}
+                    </td>
+                  ))}
+                </tr>
+                {detail === null ? null : (
+                  <tr className={styles.detail} data-detail-for={id} data-tone={detail.tone}>
+                    <td colSpan={columns.length} className={styles.detailCell}>
+                      {detail.content}
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
             );
           })}
         </tbody>

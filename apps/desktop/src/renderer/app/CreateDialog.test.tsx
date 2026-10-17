@@ -37,7 +37,7 @@ const project = (name: string): PlaygroundRow => ({
   missing: false,
 });
 
-function library(names: string[]): LibraryState {
+function library(names: string[], synced = false): LibraryState {
   return {
     locale: "zh-CN",
     error: null,
@@ -49,6 +49,7 @@ function library(names: string[]): LibraryState {
     tabs: [],
     activeTab: "library",
     libraryRoot: "~/Runyard",
+    libraryRootSynced: synced,
     playgrounds: names.map(project),
   };
 }
@@ -56,8 +57,12 @@ function library(names: string[]): LibraryState {
 const user = userEvent.setup();
 
 // 打开选择器、选 react19，停在新建弹窗上
-async function openCreateDialog(names: string[], result: CreateResult = { ok: true }) {
-  const state = library(names);
+async function openCreateDialog(
+  names: string[],
+  result: CreateResult = { ok: true },
+  synced = false,
+) {
+  const state = library(names, synced);
   const call = vi.fn(async (method: string, ..._args: unknown[]) => {
     if (method === "library.get") return state;
     return method === "playground.create" ? result : undefined;
@@ -103,6 +108,14 @@ describe("新建弹窗", () => {
     expect(nameBox.value).toBe("react19-4");
     expect(document.activeElement).toBe(nameBox);
     expect([nameBox.selectionStart, nameBox.selectionEnd]).toEqual([0, 9]);
+  });
+
+  it("[PRD #prd-create-dialog] 资源库在网盘同步目录下：弹窗里给一条警告；不在就没有", async () => {
+    const { dialog } = await openCreateDialog([], { ok: true }, true);
+    expect(dialog.querySelector("[data-synced-warning]")?.textContent).toContain("网盘同步目录");
+    cleanup();
+    const plain = await openCreateDialog([]);
+    expect(plain.dialog.querySelector("[data-synced-warning]")).toBeNull();
   });
 
   it("名称下提示文件夹：资源库路径加名称", async () => {

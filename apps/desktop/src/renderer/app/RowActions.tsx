@@ -18,6 +18,8 @@ export interface RowActionsProps {
   onInlineRename: (row: PlaygroundRow, focus: RenameFocus) => void;
   /** 创建副本后选中它 */
   onDuplicated: (id: string) => void;
+  /** 找不到文件夹的行菜单里的“重新定位…”：由表格统一处理（选错文件夹的说明显示在行下面） */
+  onRelocate?: () => void;
 }
 
 // 列表一行的操作（规格 desktop/library-view“打开与停止运行”“更多菜单里的访达与路径”）：
@@ -30,6 +32,7 @@ export function RowActions({
   now,
   onInlineRename,
   onDuplicated,
+  onRelocate,
 }: RowActionsProps) {
   const t = useT();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -43,6 +46,7 @@ export function RowActions({
     now,
     onInlineRename: (focus) => onInlineRename(row, focus),
     onDuplicated,
+    ...(onRelocate === undefined ? {} : { onRelocate }),
   });
   const open = () => void bridge.call("tab.open", row.id);
   const openWithoutRun = () => void bridge.call("tab.openWithoutRun", row.id);

@@ -20,7 +20,8 @@ export function RunActionButton({ bridge, tab, size }: RunActionButtonProps) {
       variant={action === "stop" ? "neutral" : "primary"}
       size={size ?? "md"}
       icon={action === "stop" ? "stop" : action === "recheck" ? "refresh" : "play"}
-      disabled={tab.busy}
+      // 找不到文件夹的项目没有东西可运行（主进程也不会启动它）
+      disabled={tab.busy || tab.missing === true}
       onClick={() => void bridge.call(action === "stop" ? "run.stop" : "run.start", tab.id)}
     >
       {action === "stop"

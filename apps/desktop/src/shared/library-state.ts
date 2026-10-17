@@ -43,6 +43,8 @@ export interface PlaygroundRow {
   createdAt: number;
   /** 找不到项目文件夹（被移走或删除）：资源库的“有问题”筛选要用 */
   missing: boolean;
+  /** 文件夹的显示写法（主目录缩成 ~）：找不到文件夹的说明里写原路径；没给就用 path */
+  folder?: string;
 }
 
 /** 标签上的状态小圆点；由最近一次运行的状态归并而来 */
@@ -98,6 +100,8 @@ export interface TabRow {
   folder: string;
   /** 启动清单里各步已用的时间；这一步没跑完或没量到是 null */
   phaseMs: StartPhaseMs;
+  /** 找不到项目文件夹：标签页不启动，显示“找不到文件夹”的说明（规格 DESKTOP-LIBRARY-VIEW“找不到项目文件夹”）；没给就是 false */
+  missing?: boolean;
 }
 
 /** 启动清单里已经走完的步骤各用了多久（毫秒）；时间由主进程按事件到达量出，管理进程不记 */
@@ -144,6 +148,38 @@ export interface DesktopError {
   params: Record<string, unknown>;
 }
 
+/** 自动清理提示条里的一项（规格 DESKTOP-LIBRARY-VIEW-57） */
+export interface CleanReminderItem {
+  id: string;
+  name: string;
+  /** 已经几天没打开 */
+  idleDays: number;
+}
+
+/** 智能体经命令行创建并运行了项目：右下角的提示（规格 DESKTOP-LIBRARY-VIEW-54） */
+export interface AgentRunNotice {
+  kind: "agent-run";
+  id: string;
+  playgroundId: string;
+  name: string;
+  /** 智能体名称；命令行没写是 null */
+  agent: string | null;
+  /** 运行的地址；还没有端口是 null */
+  url: string | null;
+  at: number;
+}
+
+/** 创建成功但路径接近系统上限的提示（规格 LIBRARY-PLAYGROUNDS-05 的界面一侧） */
+export interface PathNearLimitNotice {
+  kind: "path-near-limit";
+  id: string;
+  name: string;
+  length: number;
+  limit: number;
+}
+
+export type AppNotice = AgentRunNotice | PathNearLimitNotice;
+
 export interface LibraryState {
   locale: Locale;
   playgrounds: PlaygroundRow[];
@@ -163,4 +199,12 @@ export interface LibraryState {
   error: DesktopError | null;
   /** 资源库文件夹，主目录缩成 ~（新建弹窗的“文件夹：…”提示）；还没读到是空串 */
   libraryRoot: string;
+  /** 资源库在网盘同步目录下（iCloud、Dropbox 等）：新建弹窗给警告；没给就是 false。下面四项都是主进程新加的，没给按空处理（不破坏手工拼状态的测试） */
+  libraryRootSynced?: boolean;
+  /** 自动清理提示条要列出的项目（离到期不足一天、没点“稍后再说”）；空就不画提示条 */
+  cleanReminder?: CleanReminderItem[];
+  /** 离到期不足一天的项目数：Dock 角标写它，“稍后再说”不影响它 */
+  cleanDueCount?: number;
+  /** 右下角的提示，先来的在前；点关闭或按钮后消失 */
+  notices?: AppNotice[];
 }

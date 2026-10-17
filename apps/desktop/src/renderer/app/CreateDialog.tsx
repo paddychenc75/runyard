@@ -3,6 +3,7 @@ import {
   Button,
   Dialog,
   Field,
+  Icon,
   MonogramTile,
   SegmentedControl,
   Switch,
@@ -165,6 +166,12 @@ export function CreateDialog({
           }}
         />
       </Field>
+      {library.libraryRootSynced === true ? (
+        <p className={styles.synced} role="note" data-synced-warning="">
+          <Icon name="warning" size={14} />
+          {t("desktop.create.synced.hint")}
+        </p>
+      ) : null}
       <Field
         label={t("desktop.create.note.label")}
         optionalLabel={t("desktop.create.optional.label")}

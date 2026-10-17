@@ -1,3 +1,4 @@
+import { dirname } from "node:path";
 import type { SystemActions } from "./controller-hosts.ts";
 
 // 更多菜单和缺工具画面的系统层动作：路径取管理进程给的那份，界面只报项目 id。
@@ -15,6 +16,12 @@ export class ProjectSystem {
   reveal(playgroundId: string): void {
     const path = this.#folderOf(playgroundId);
     if (path !== null) this.#system.revealInFileManager(path);
+  }
+
+  /** 找不到文件夹时的“在访达中显示上一级文件夹”：文件夹自己已经不在，打开它原来所在的目录 */
+  revealParent(playgroundId: string): void {
+    const path = this.#folderOf(playgroundId);
+    if (path !== null) this.#system.revealInFileManager(dirname(path));
   }
 
   /** “复制路径”：项目文件夹的绝对路径 */

@@ -36,6 +36,11 @@ function text(value: unknown): string | null {
   return typeof value === "string" && value !== "" ? value : null;
 }
 
+/** 项目 id 的列表：不是字符串数组就当空（页面发来的数据不可信） */
+function textList(value: unknown): string[] {
+  return Array.isArray(value) ? value.filter((id): id is string => text(id) !== null) : [];
+}
+
 /** 界面发来的新建内容：形状不对一律不要（页面发来的数据不可信）；名称是否合法由管理进程判 */
 function parseCreateRequest(value: unknown): CreateRequest | null {
   if (typeof value !== "object" || value === null) return null;
@@ -250,6 +255,17 @@ export function registerBridgeHandlers(
     "playground.relocate": async (id) => {
       const playground = text(id);
       return playground === null ? rejectedEdit : await controller.edits.relocate(playground);
+    },
+    "playground.revealParent": (id) => {
+      const playground = text(id);
+      if (playground !== null) controller.system.revealParent(playground);
+    },
+    "clean.keep": (ids) => controller.chrome.clean.keep(textList(ids)),
+    "clean.later": (ids) => controller.chrome.clean.later(textList(ids)),
+    "clean.shown": (ids) => controller.chrome.clean.shown(textList(ids)),
+    "notice.dismiss": (id) => {
+      const notice = text(id);
+      if (notice !== null) controller.chrome.dismissNotice(notice);
     },
     "playground.openTerminal": (id) => {
       const playground = text(id);

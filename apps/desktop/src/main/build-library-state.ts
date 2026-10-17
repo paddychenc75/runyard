@@ -6,7 +6,9 @@ import type {
   RunState,
   TemplateRecord,
 } from "@runyard/protocol";
+import { idleDaysOf, isDueTomorrow } from "../shared/clean-due.ts";
 import type {
+  AppNotice,
   DesktopError,
   LibraryState,
   PlaygroundRow,
@@ -59,6 +61,12 @@ export interface LibraryInputs {
   loaded?: boolean;
   /** 启动清单各步的用时（项目 id → 用时） */
   phases?: (playgroundId: string) => StartPhaseMs;
+  /** 此刻（毫秒）：自动清理提醒按它算；不给用系统时钟 */
+  now?: number;
+  /** 点了“稍后再说”的项目：提示条不再列出它们，行标签和角标照旧 */
+  cleanLater?: ReadonlySet<string>;
+  libraryRootSynced?: boolean;
+  notices?: readonly AppNotice[];
 }
 
 /** 每个项目取最近一次运行（startedAt 最大）；它决定列表里显示的状态 */
@@ -129,6 +137,8 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
       createdBy: playground.createdBy,
       createdAt: playground.createdAt,
       missing: playground.missingSince !== undefined,
+      folder:
+        inputs.home === undefined ? playground.path : displayPath(playground.path, inputs.home),
     };
   });
   const rowById = new Map(rows.map((row) => [row.id, row]));
@@ -166,8 +176,9 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
       lastFrame: run?.state === "crashed" ? (inputs.lastFrames?.get(row.id) ?? null) : null,
       attached: attachedOf(run),
       entry: entries.get(row.id) ?? null,
-      folder: inputs.home === undefined ? row.path : displayPath(row.path, inputs.home),
+      folder: row.folder ?? row.path,
       phaseMs: inputs.phases?.(row.id) ?? { copy: null, install: null, start: null },
+      missing: row.missing,
     });
   }
   tabs.sort((a, b) => inputs.tabIds.indexOf(a.id) - inputs.tabIds.indexOf(b.id));
@@ -195,6 +206,25 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
     closeRequest: closeRequestOf(inputs.closeRequestId ?? null, rows),
     error: inputs.error,
     libraryRoot: inputs.libraryRoot ?? "",
+    libraryRootSynced: inputs.libraryRootSynced ?? false,
+    ...cleanReminderOf(rows, inputs.now ?? Date.now(), inputs.cleanLater),
+    notices: [...(inputs.notices ?? [])],
+  };
+}
+
+// 离到期不足一天的项目：数量给 Dock 角标，名单给提示条（点过“稍后再说”的不再列）；按到期先后排
+function cleanReminderOf(
+  rows: readonly PlaygroundRow[],
+  now: number,
+  later: ReadonlySet<string> = new Set(),
+): Pick<LibraryState, "cleanReminder" | "cleanDueCount"> {
+  const due = rows.filter((row) => isDueTomorrow(row, now));
+  return {
+    cleanDueCount: due.length,
+    cleanReminder: due
+      .filter((row) => !later.has(row.id))
+      .map((row) => ({ id: row.id, name: row.name, idleDays: idleDaysOf(row, now) }))
+      .sort((a, b) => b.idleDays - a.idleDays || a.name.localeCompare(b.name)),
   };
 }
 

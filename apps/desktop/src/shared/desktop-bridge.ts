@@ -89,6 +89,16 @@ export interface DesktopMethods extends EditorFileMethods, SettingsMethods {
   "playground.forget": { param: string; result: EditResult };
   /** 找不到文件夹的项目：选一个文件夹重新定位（取消什么都不做） */
   "playground.relocate": { param: string; result: EditResult };
+  /** 找不到文件夹的项目：在访达中显示它原来所在的上一级文件夹 */
+  "playground.revealParent": { param: string; result: undefined };
+  /** 自动清理提示条的“改为保留”（规格 DESKTOP-LIBRARY-VIEW-59）：列出的项目都变为已保留 */
+  "clean.keep": { param: string[]; result: undefined };
+  /** “稍后再说”（规格 DESKTOP-LIBRARY-VIEW-60）：只收起提示条，到下次打开应用前不再出现 */
+  "clean.later": { param: string[]; result: undefined };
+  /** 提示条真的显示出来了（规格 DESKTOP-LIBRARY-VIEW-58）：主进程据此回报“提醒已显示”；窗口看不见时界面不调用 */
+  "clean.shown": { param: string[]; result: undefined };
+  /** 关掉右下角的一条提示 */
+  "notice.dismiss": { param: string; result: undefined };
   /** 在系统终端里打开一个位于项目文件夹的窗口（规格 DESKTOP-LIBRARY-VIEW-48） */
   "playground.openTerminal": { param: string; result: undefined };
   /** 请求关闭项目标签（关闭钮、⌘W）：运行中且由标签持有时先出确认（状态里的 closeRequest），否则直接关 */
@@ -142,6 +152,11 @@ export const desktopMethodNames: readonly DesktopMethod[] = [
   "playground.forget",
   "playground.relocate",
   "playground.openTerminal",
+  "playground.revealParent",
+  "clean.keep",
+  "clean.later",
+  "clean.shown",
+  "notice.dismiss",
   "tab.close",
   "tab.closeConfirm",
   "tab.closeCancel",

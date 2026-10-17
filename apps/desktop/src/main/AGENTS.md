@@ -1,0 +1,26 @@
+# 桌面应用主进程：资源库的异常与提示、自动清理
+
+## 用途
+
+规格 DESKTOP-LIBRARY-VIEW-49 至 60，设计稿 FolderMissing、AgentActivity、CleanReminder（#185、#184）。本文件只讲这一块；主进程的其余部分见上一级 `apps/desktop/AGENTS.md`。
+
+## 对外暴露什么
+
+不是库。主进程对界面暴露的是桥的几个方法：`clean.keep`、`clean.later`、`clean.shown`、`notice.dismiss`、`playground.revealParent`（白名单在 `src/shared/desktop-bridge.ts`），其余是状态里的字段（`notices`、`cleanReminder`、`cleanDueCount`、`libraryRootSynced`、`TabRow.missing`）。
+
+## 本包特有的规则
+
+- 找不到文件夹：行的状态写警示色的“找不到文件夹”，其余列变淡，行下面用 `DataTable` 的 `renderDetail` 接一条通栏 `MissingNote`（原路径加重新定位…、从资源库移除、在访达中显示上一级文件夹，`playground.revealParent`）；`use-relocate.ts` 把管理进程回的“项目不存在”当作“选错了文件夹”，在说明里写“这个文件夹不是 <名称>”，别的失败走失败弹窗。项目标签页也是同一块（`FolderMissing`，`previewScreenOf` 的 `folder-missing`）；主进程对找不到文件夹的项目不启动（`openProject`、恢复标签页、`startRun` 都挡），启动时先 `library.rescan`。
+- 智能体创建并运行的提示（`main/agent-notices.ts`）：`agent.activity` 事件还只是登记表里的名字，所以从项目和运行的变化推——命令行持有的进行中的运行，项目由智能体或命令行创建，创建后 60 秒内开始运行，且不是应用打开之前就在跑的；只创建不运行没有这样的运行，自然不提示。提示是状态里的 `notices`，界面 `NoticeToasts` 画在 body 下的浮层层里并把自己的矩形交给 `useOverlay`（预览让位）；它不拿焦点、不切标签页、不提窗口，“打开”走 `tab.open`（命令行持有的运行只是查看），“停止”走 `run.stop`，`notice.dismiss` 关掉。创建结果带回的 `PATH_NEAR_LIMIT` 也进 `notices`；资源库在同步目录下（`isCloudSynced`，平台层）时新建弹窗给警告（规格没有这两条的桌面场景，见 PR 的“没做或未验证的”）。
+- 自动清理（`shared/clean-due.ts` 主进程和界面共用“离到期不足一天”的整天算法；`main/clean-reminders.ts`）：行保留列写“明天清理”；提示条名单、角标数在 `buildLibraryState` 里按时间算，“稍后再说”只记在本次启动的内存里（下次启动恢复）；Dock 角标走 `integration/dock-badge.ts`（`LibraryChrome.publish`），不发系统通知；“提醒已显示”由界面在窗口真正看得见（`document.visibilityState`）且提示条显示后经 `clean.shown` 回报，主进程再 `clean.ackReminder`（窗口关着只有角标）；“改为保留”走 `clean.keep`，“现在清理”逐个走移到废纸篓的确认；主进程启动时和每 10 分钟问一次 `clean.due`，清单里的走 `edits.trash`（与命令行 rm 同一条路径）。
+- 状态里新增的字段（`PlaygroundRow.folder`、`TabRow.missing`、`LibraryState.libraryRootSynced` 等）都是可选的，没给按空处理，免得手工拼状态的测试被连累。
+
+## 子目录地图
+
+- `agent-notices.ts`：右下角提示的推导；`clean-reminders.ts`：提示条的三个选择、“提醒已显示”的回报和到点的清理检查；`library-chrome.ts`：把资源库文件夹、提醒、提示、Dock 角标从控制器里分出来（控制器文件接近 400 行上限）。
+- `integration/dock-badge.ts`：Dock 角标（Electron 接线）。
+- `src/shared/clean-due.ts`：主进程和界面共用的“明天清理”判断。
+
+## 测试
+
+`library-controller-notices.test.ts`（场景 49 至 52、54 至 60 的主进程一侧）和 `renderer/app/LibraryNotices.test.tsx`（界面一侧，含 53）；假管理进程是有状态的，用假时钟 `now`。Dock 角标、右下角提示与原生预览的让位、窗口不被提到前面要在真实窗口里看（见 PR 的“怎么验证的”）。

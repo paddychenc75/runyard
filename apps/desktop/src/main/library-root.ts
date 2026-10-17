@@ -7,13 +7,16 @@ export function displayPath(path: string, home: string): string {
   return path.startsWith(prefix) ? `~/${path.slice(prefix.length)}` : path;
 }
 
-/** 读设置里的资源库文件夹（新建弹窗的“文件夹：…”提示用）；读不到是空串，界面就不显示这行提示 */
-export async function readLibraryRoot(client: LibraryClient, home: string): Promise<string> {
+/** 读设置里的资源库文件夹：显示写法（新建弹窗的“文件夹：…”提示用）和原样路径（判断是否在同步目录下用）；读不到都是空串，界面就不显示这行提示 */
+export async function readLibraryRoot(
+  client: LibraryClient,
+  home: string,
+): Promise<{ display: string; raw: string }> {
   try {
     const settings = await client.call("settings.get", {});
-    return displayPath(settings.libraryRoot, home);
+    return { display: displayPath(settings.libraryRoot, home), raw: settings.libraryRoot };
   } catch {
-    return "";
+    return { display: "", raw: "" };
   }
 }
 

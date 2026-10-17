@@ -37,6 +37,11 @@ export interface SystemActions {
   openExternal(url: string): void;
 }
 
+/** Dock 图标的角标（macOS）：写待清理的项目数，0 是清掉；接线在 integration/dock-badge.ts */
+export interface DockBadge {
+  set(count: number): void;
+}
+
 /** 上次退出时的标签页（规格 DESKTOP-WORKSPACE-51）：按顺序，running 是当时是否在运行（切过去时是否要启动） */
 export interface SavedSession {
   tabs: { id: string; running: boolean }[];
@@ -66,4 +71,8 @@ export interface LibraryControllerOptions {
   session?: SessionStore;
   /** 毫秒时钟；启动清单各步的用时靠它量，测试里换成假的 */
   now?: () => number;
+  /** Dock 角标；不给就不写（测试和冒烟） */
+  dock?: DockBadge;
+  /** 这个路径在网盘同步目录下吗（平台层 `paths.isCloudSynced`）；不给就当不在 */
+  isCloudSynced?: (path: string) => boolean;
 }
