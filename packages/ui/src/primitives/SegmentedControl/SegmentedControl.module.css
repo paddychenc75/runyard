@@ -1,5 +1,6 @@
 /* 分段选择：轨道内边距 2、圆角 11，每段高 28、圆角 9；选中段浅色是白块带投影，深色是提亮的填充 */
 .root {
+  position: relative;
   display: flex;
   flex: none;
   padding: var(--space-1);
@@ -7,7 +8,16 @@
   background: var(--color-fill-neutral);
 }
 
+/* 选中段是滑动的那一块（SlidingIndicator）：浅色白块带投影，深色提亮的填充 */
+.indicator {
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-raised);
+  box-shadow: var(--shadow-segment-selected);
+}
+
 .segment {
+  position: relative;
+  z-index: var(--z-slide-content);
   box-sizing: border-box;
   block-size: var(--size-control-sm);
   margin: 0;
@@ -17,6 +27,7 @@
   border-radius: var(--radius-control);
   background: transparent;
   color: var(--color-text-secondary-strong);
+  transition: color var(--motion-duration-fast) linear;
   font-family: inherit;
   font-size: var(--text-body-size);
   font-weight: var(--text-body-weight);
@@ -28,8 +39,6 @@
 }
 
 .segment[data-pressed] {
-  background: var(--color-bg-raised);
-  box-shadow: var(--shadow-segment-selected);
   color: var(--color-text-primary);
   font-weight: var(--text-item-weight);
 }

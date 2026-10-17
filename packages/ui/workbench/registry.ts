@@ -24,6 +24,7 @@ import * as monogramTile from "../src/primitives/MonogramTile/MonogramTile.fixtu
 import * as scrollArea from "../src/primitives/ScrollArea/ScrollArea.fixture.tsx";
 import * as searchField from "../src/primitives/SearchField/SearchField.fixture.tsx";
 import * as segmentedControl from "../src/primitives/SegmentedControl/SegmentedControl.fixture.tsx";
+import * as slidingIndicator from "../src/primitives/SlidingIndicator/SlidingIndicator.fixture.tsx";
 import * as statusMark from "../src/primitives/StatusMark/StatusMark.fixture.tsx";
 import * as stepList from "../src/primitives/StepList/StepList.fixture.tsx";
 import * as switchControl from "../src/primitives/Switch/Switch.fixture.tsx";
@@ -55,6 +56,7 @@ export const fixtures: readonly FixtureModule[] = [
   logView,
   navList,
   scrollArea,
+  slidingIndicator,
   searchField,
   segmentedControl,
   statusMark,

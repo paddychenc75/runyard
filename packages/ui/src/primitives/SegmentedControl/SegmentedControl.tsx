@@ -1,6 +1,7 @@
 import { Toggle } from "@base-ui/react/toggle";
 import { ToggleGroup } from "@base-ui/react/toggle-group";
 import type { Localized } from "@runyard/i18n";
+import { SlidingIndicator, useSlidingIndicator } from "../SlidingIndicator/index.ts";
 import styles from "./SegmentedControl.module.css";
 
 export interface SegmentedControlItem {
@@ -29,8 +30,10 @@ export function SegmentedControl({
   onValueChange,
   className,
 }: SegmentedControlProps) {
+  const slide = useSlidingIndicator<HTMLDivElement>(value, { selector: "[data-pressed]" });
   return (
     <ToggleGroup
+      ref={slide.container}
       aria-label={label}
       value={[value]}
       onValueChange={(next) => {
@@ -39,6 +42,7 @@ export function SegmentedControl({
       }}
       className={className === undefined ? styles.root : `${styles.root} ${className}`}
     >
+      <SlidingIndicator indicatorRef={slide.indicator} className={styles.indicator} />
       {items.map((item) => (
         <Toggle
           key={item.value}

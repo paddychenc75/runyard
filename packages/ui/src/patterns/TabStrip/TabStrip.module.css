@@ -1,5 +1,6 @@
 /* 胶囊本身的玻璃配方在 styles/materials.css（toolbar）；这里只排标签 */
 .root {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-1);
@@ -11,6 +12,8 @@
 }
 
 .tab {
+  position: relative;
+  z-index: var(--z-slide-content);
   display: flex;
   flex: 0 1 auto;
   align-items: center;
@@ -18,12 +21,19 @@
   block-size: var(--size-tab);
   border-radius: var(--radius-capsule);
   color: var(--color-text-secondary-strong);
-  transition: background-color var(--motion-duration-fast) linear;
+  transition:
+    background-color var(--motion-duration-fast) linear,
+    color var(--motion-duration-fast) linear;
+}
+
+/* 选中背景是滑动的那一块（SlidingIndicator），格子自己只换字色 */
+.indicator {
+  border-radius: var(--radius-capsule);
+  background: var(--glass-tab-selected-bg);
+  box-shadow: var(--shadow-tab-selected);
 }
 
 .tab[data-selected] {
-  background: var(--glass-tab-selected-bg);
-  box-shadow: var(--shadow-tab-selected);
   color: var(--color-text-primary);
 }
 
@@ -76,6 +86,8 @@
 }
 
 .add {
+  position: relative;
+  z-index: var(--z-slide-content);
   flex: none;
   margin-inline: var(--space-1) var(--space-2);
 }

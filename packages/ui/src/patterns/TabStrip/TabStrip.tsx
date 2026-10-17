@@ -11,6 +11,7 @@ import type { IconName } from "../../icons/generated/icon-paths.ts";
 import { GlassSurface } from "../../primitives/GlassSurface/index.ts";
 import { Icon } from "../../primitives/Icon/index.ts";
 import { IconButton } from "../../primitives/IconButton/index.ts";
+import { SlidingIndicator, useSlidingIndicator } from "../../primitives/SlidingIndicator/index.ts";
 import { Tooltip } from "../../primitives/Tooltip/index.ts";
 import styles from "./TabStrip.module.css";
 
@@ -64,6 +65,7 @@ export function TabStrip({
   const baseId = useId();
   const tabRefs = useRef(new Map<string, HTMLButtonElement>());
   const current = items.find((item) => item.id === value);
+  const slide = useSlidingIndicator<HTMLDivElement>(current?.id ?? null);
 
   // 关闭快捷键在整个窗口里生效，不要求焦点在标签条上；当前标签不能关闭时吞掉按键，什么都不发生
   useEffect(() => {
@@ -99,12 +101,14 @@ export function TabStrip({
   return (
     <GlassSurface
       {...rest}
+      ref={slide.container}
       material="toolbar"
       role="tablist"
       aria-label={label}
       aria-orientation="horizontal"
       className={className === undefined ? styles.root : `${styles.root} ${className}`}
     >
+      <SlidingIndicator indicatorRef={slide.indicator} className={styles.indicator} />
       {items.map((item, index) => {
         const selected = item.id === value;
         return (

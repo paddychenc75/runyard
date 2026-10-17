@@ -5,25 +5,34 @@
 }
 
 .strip {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-2);
 }
 
+/* 选中的文件标签是滑动的那一块背景（SlidingIndicator），中性底色 */
+.indicator {
+  border-radius: var(--radius-sm);
+  background: var(--color-fill-neutral);
+}
+
 .item {
+  position: relative;
+  z-index: var(--z-slide-content);
   flex: none;
   display: flex;
   align-items: center;
   gap: var(--space-3);
   block-size: var(--size-control-sm);
   padding-inline: var(--space-6) var(--space-4);
-  border-radius: var(--radius-control);
+  border-radius: var(--radius-sm);
   color: var(--color-text-secondary);
   font-size: var(--text-body-size);
+  transition: color var(--motion-duration-fast) linear;
 }
 
 .item[data-selected] {
-  background: var(--color-fill-neutral);
   color: var(--color-text-primary);
   font-weight: var(--text-control-weight);
 }
@@ -43,7 +52,7 @@
 
 .tab:focus-visible {
   outline: none;
-  border-radius: var(--radius-control);
+  border-radius: var(--radius-sm);
   box-shadow: var(--shadow-focus-ring);
 }
 
