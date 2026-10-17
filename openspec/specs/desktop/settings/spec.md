@@ -1,0 +1,208 @@
+# desktop/settings Specification
+
+## Purpose
+约定桌面应用的设置页：它是主窗口里的一页，分通用、编辑与运行、依赖与网络、运行环境、命令行与智能体五组；每一项改了立即生效并保存，下次打开应用仍在。另含应用每天一次的更新检查，这是应用唯一的主动联网。命令行自己的设置（语言）不在这里。
+
+## Requirements
+
+### Requirement: 设置是主窗口里的一页
+点侧栏“设置”MUST 在主窗口里打开设置页，MUST NOT 开新窗口；设置页 MUST NOT 有顶栏。页面 MUST 分五组：通用、编辑与运行、依赖与网络、运行环境、命令行与智能体。每一项改了 MUST 立即生效并保存，MUST NOT 有“保存”按钮；重新打开应用后 MUST 仍是改过的值。命令行或别处改了设置时，开着的设置页 MUST 跟着更新。
+来源：PRD #prd-settings-page；PRD #prd-library-list
+
+#### Scenario: [DESKTOP-SETTINGS-01] 打开设置页
+- **WHEN** 点侧栏“设置”
+- **THEN** 主窗口显示设置页，没有新窗口，没有顶栏；五组的标题依次出现
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-02] 改了就保存
+- **WHEN** 把包管理器从“自动”改成“npm”，然后退出并重新打开应用
+- **THEN** 设置页里包管理器仍是“npm”
+- 验证：test
+
+### Requirement: 通用
+“通用”一组 MUST 有：资源库位置（显示路径，“更改…”和“在访达中显示”）；外部编辑器（下拉，列出本机找到的编辑器，说明“用它打开项目文件夹”）；语言（English、简体中文，说明“立即生效”）；主题（跟随系统、浅色、深色）；自动检查更新（开关，说明“每天一次，只访问 GitHub 的公开发布页，不发送任何标识”，默认开）。语言和主题切换 MUST 立即生效，MUST NOT 需要重启。资源库位置选在“桌面”“文档”“下载”之内时 MUST 先警告会触发系统的隐私权限弹窗，用户确认后才改。更改资源库位置 MUST NOT 搬动已有项目：确认框写明旧位置里的项目留在原处、不再出现在列表里；改完后资源库列出新位置里的项目。
+来源：PRD #prd-settings-items；PRD #prd-quality
+
+#### Scenario: [DESKTOP-SETTINGS-03] 语言立即生效
+- 前提：界面是中文
+- **WHEN** 在“语言”里点 English
+- **THEN** 不重启，侧栏、设置页等文字立即变成英文
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-04] 主题立即生效
+- 前提：主题是“跟随系统”，系统是浅色
+- **WHEN** 选“深色”
+- **THEN** 界面立即变为深色；改回“跟随系统”后随系统变化
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-05] 资源库选在“文档”里先警告
+- **WHEN** 点“更改…”，选 `~/Documents/Runyard`
+- **THEN** 先弹出警告，写明会触发系统隐私权限弹窗；点取消则位置不变
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-06] 换资源库位置不搬项目
+- 前提：旧位置有 20 个项目，新位置是一个有 2 个项目的文件夹
+- **WHEN** 确认把资源库位置换到新文件夹
+- **THEN** 资源库列出新位置的 2 个项目；旧位置的文件一个都没有被移动或删除
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-07] 外部编辑器下拉
+- 前提：本机装了 VS Code 和 Cursor
+- **WHEN** 打开“外部编辑器”下拉
+- **THEN** 列出 VS Code 和 Cursor；选 Cursor 后，“在外部编辑器中打开”用 Cursor
+- 验证：test
+
+### Requirement: 编辑与运行
+“编辑与运行”一组 MUST 有：自动保存（延迟 1 秒后、失去焦点时、关闭，默认第一档）；脚本保存后自动运行（开关，默认开，关掉后所有脚本项目都不在保存时重跑）；关闭运行中的标签页前询问（开关，默认开）；命令行启动的项目空闲后自动停止（15 分钟、30 分钟、2 小时，默认 30 分钟，说明“没有请求、也没有输出的时间”）；以及一行说明“在应用里打开标签页即运行，关闭标签页即停止；命令行启动的不受影响，空闲后自动停止。”。在关闭确认里勾选“不再提示”并确认后，“关闭运行中的标签页前询问”MUST 显示为关；把它打开后，关闭运行中的标签页 MUST 重新弹出确认。
+来源：PRD #prd-settings-items；PRD #prd-close-tab-confirm；PRD #prd-decision-table（第 2、3 项）；PRD #prd-idle-stop；PRD #prd-script-projects
+
+#### Scenario: [DESKTOP-SETTINGS-08] 重新打开关闭确认
+- 前提：之前在关闭确认里勾选了“不再提示”
+- **WHEN** 打开设置页
+- **THEN** “关闭运行中的标签页前询问”是关的；打开它，再关闭一个运行中的标签页，确认弹窗重新出现
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-09] 关掉全局的脚本自动运行
+- 前提：一个脚本项目的标签页开着，它自己的开关是开的
+- **WHEN** 在设置里关掉“脚本保存后自动运行”，再保存脚本
+- **THEN** 脚本没有重新运行；它标签页上的开关显示为关
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-10] 改空闲停止的时长
+- **WHEN** 把“命令行启动的项目，空闲后自动停止”改为 2 小时
+- **THEN** 之后命令行持有的运行空闲满 2 小时才停止，30 分钟时不停止
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-11] 自动保存三档
+- **WHEN** 把“自动保存”改为“失去焦点时”
+- **THEN** 编辑器按这一档保存，设置页上这一档被选中
+- 验证：test
+
+### Requirement: 依赖与网络
+“依赖与网络”一组 MUST 有：包管理器（自动、pnpm、npm，说明“安装依赖时使用”）；npm 镜像源（输入框，说明“默认沿用本机 .npmrc 的配置”，没单独指定时显示本机配置的值）；代理（输入框，说明“访问网络时使用”）；“检测本机服务时不走代理”（开关，默认开）。指定了镜像源或代理后，之后的依赖安装 MUST 使用它们；清空输入框 MUST 恢复沿用本机配置。不合法的地址 MUST 行内提示且不保存。
+来源：PRD #prd-network-settings；PRD #prd-settings-items；PRD #prd-decision-table（第 21 项）
+
+#### Scenario: [DESKTOP-SETTINGS-12] 指定镜像源
+- 前提：本机 `.npmrc` 没有配置镜像源
+- **WHEN** 在“npm 镜像源”里填 `https://registry.npmmirror.com`，再新建一个 React 19 项目
+- **THEN** 这次依赖安装使用这个镜像源
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-13] 清空恢复本机配置
+- 前提：本机 `.npmrc` 配置了镜像源 A，设置里单独指定了 B
+- **WHEN** 清空设置里的镜像源
+- **THEN** 输入框显示 A（标为沿用本机配置），之后安装用 A
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-14] 不合法的代理
+- **WHEN** 在“代理”里填 `not a url`
+- **THEN** 行内提示地址不合法，设置没有被改
+- 验证：test
+
+### Requirement: 运行环境
+“运行环境”一组 MUST 有一张表，只列已有模板实际用到的工具（由模板的运行环境要求汇总），列为：工具、版本、路径、芯片架构、状态，每行有“指定路径…”；右上角“重新检测”；表下说明“只有创建或打开项目时才会检查它需要的工具。Runyard 不会替你安装。”。表格 MUST 容纳长路径（中间省略，悬停看全路径）。打开设置页 MUST 先显示已有的检测结果，MUST NOT 等待检测；后台检测完后表格更新。缺少的工具状态写“未安装”，点开 MUST 显示需要的版本、当前情况、本机的安装命令、官网，按钮“复制命令”“在终端中运行”“重新检测”，以及“已经装了？指定路径…”。“指定路径…”MUST 让用户选一个可执行文件，能解析出版本号才接受，否则写明原因。读不到终端环境时 MUST 在表上方写“没能读取你终端的环境，可能不准”，并给“重新检测”和“指定路径…”。
+来源：PRD #prd-settings-toolchain；PRD #prd-missing-runtime-prompt
+
+#### Scenario: [DESKTOP-SETTINGS-15] 只列用到的工具
+- 前提：内置模板用到 node、pnpm、python、go；本机还装了 ruby
+- **WHEN** 打开设置页
+- **THEN** 表里有 node、pnpm、python、go 四行，没有 ruby；每行有版本、路径、芯片架构、状态和“指定路径…”
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-16] 不等检测
+- 前提：上次检测的结果有缓存，后台检测需要 2 秒
+- **WHEN** 打开设置页
+- **THEN** 立即显示缓存的结果；2 秒后表格更新为新结果
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-17] 缺少的工具
+- 前提：本机没有 go
+- **WHEN** 点 go 那一行
+- **THEN** 展开写出需要的版本、“未安装”、本机的安装命令、官网，有“复制命令”“在终端中运行”“重新检测”和“已经装了？指定路径…”
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-18] 指定一个不是 node 的文件
+- **WHEN** 在 node 那一行点“指定路径…”，选一个运行后打印不出版本号的文件
+- **THEN** 写明这个文件不是可用的 node，原来的路径不变
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-19] 读不到终端环境
+- 前提：读取登录 shell 的环境超时
+- **WHEN** 打开设置页
+- **THEN** 表上方写“没能读取你终端的环境，可能不准”，有“重新检测”和“指定路径…”
+- 验证：test
+
+### Requirement: 命令行与智能体
+“命令行与智能体”一组 MUST 有：`runyard` 命令（是否可用、版本、路径；没装时有“安装命令行工具”，装了的有“移除”）；诊断信息（“导出诊断信息…”）；后台管理进程（状态，如“运行中 · N 个由命令行启动”或“未运行”，和“停止”）；智能体技能包（安装在哪些智能体里，“安装到其他智能体…”）；来自链接的新建请求：内置模板免确认（开关，默认关，说明“默认每次都确认。打开后，链接要新建的是内置模板时不再询问”）。“安装命令行工具”MUST 把随应用安装的命令行接到 `PATH` 上（见 cli/commands），完成后这一行显示路径和“可用”；链接所在目录不在 `PATH` 上时 MUST 写明并给出加入 `PATH` 的一行命令。“导出诊断信息…”MUST 做 `runyard doctor --bundle` 做的事，完成后在访达中显示生成的文件。“停止”管理进程：有命令行持有的运行时 MUST 先确认，写明会停止这 N 个运行；确认后停止它们并让管理进程退出，应用之后需要时再启动新的。
+来源：PRD #prd-settings-items；PRD #prd-cli-distribution；PRD #prd-decision-table（第 17 项）；PRD #prd-link-new
+
+#### Scenario: [DESKTOP-SETTINGS-20] 安装命令行工具
+- 前提：用户 bin 目录里没有 `runyard`
+- **WHEN** 点“安装命令行工具”
+- **THEN** 这一行变为“可用”，写出版本（与应用相同）和链接路径
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-21] 链接目录不在 PATH 上
+- 前提：用户 bin 目录不在登录 shell 的 `PATH` 里
+- **WHEN** 安装命令行工具
+- **THEN** 写明这个目录不在 `PATH` 上，并给出一行可复制的加入命令
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-22] 导出诊断信息
+- **WHEN** 点“导出诊断信息…”
+- **THEN** 生成的诊断包与 `runyard doctor --bundle` 内容相同，完成后访达选中这个文件
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-23] 停止管理进程前确认
+- 前提：有 2 个命令行持有的运行
+- **WHEN** 点后台管理进程的“停止”
+- **THEN** 先弹确认，写明会停止 2 个由命令行启动的运行；取消则什么都不变
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-24] 智能体技能包
+- 前提：技能包已装到 Claude Code，没有装到 Codex
+- **WHEN** 查看这一行
+- **THEN** 写“已安装到 Claude Code”；“安装到其他智能体…”可以选 Codex 并安装
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-25] 内置模板免确认默认关
+- **WHEN** 第一次打开设置页
+- **THEN** “内置模板免确认”是关的
+- 验证：test
+
+### Requirement: 每天一次的更新检查
+“自动检查更新”开着时，应用 MUST 每天最多检查一次有没有新版本：只请求 GitHub Releases 的公开接口，MUST NOT 带任何能识别用户或设备的信息。有比当前更新的正式版本时，资源库页顶部 MUST 显示一条提示，写新版本号，按钮“下载”用系统浏览器打开发布页、“以后再说”收起提示；应用 MUST NOT 自己下载或安装更新。检查失败（离线、接口出错）MUST 不提示任何东西。开关关掉后 MUST NOT 发出任何检查请求。命令行 MUST NOT 检查更新。
+来源：PRD #prd-quality；PRD #prd-settings-items
+
+#### Scenario: [DESKTOP-SETTINGS-26] 有新版本
+- 前提：当前版本 0.2.0，发布页上最新正式版 0.3.0，今天还没检查过
+- **WHEN** 打开应用
+- **THEN** 资源库页顶部提示有 0.3.0，“下载”打开发布页；没有自动下载
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-27] 一天最多一次
+- 前提：今天已经检查过
+- **WHEN** 再次打开应用
+- **THEN** 没有发出检查请求
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-28] 请求不带标识
+- **WHEN** 应用发出检查请求
+- **THEN** 请求只去 GitHub Releases 的公开接口，没有 Cookie、没有设备或用户标识
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-29] 离线时不打扰
+- 前提：网络不通
+- **WHEN** 应用检查更新
+- **THEN** 界面上没有任何提示或错误
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-30] 关掉开关就不联网
+- **WHEN** 关掉“自动检查更新”，再打开应用
+- **THEN** 没有发出任何检查请求
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-31] 命令行不检查
+- **WHEN** 运行任何 `runyard` 命令
+- **THEN** 没有发出更新检查的请求
+- 验证：test
