@@ -1,0 +1,114 @@
+# 桌面应用的端到端测试和打包冒烟（issue #180、#196）。只在 macos-26 上跑：第一版只做 macOS，Electron 应用没有别的系统的构建。
+#   e2e     打一个保留 nodeCliInspect 的包（pack --e2e），用 Playwright 驱动这个真正的 .app 走主要用户流程
+#   package 打正式包（开关全部收紧）、codesign 校验，打开窗口冒烟（--editor-smoke、--terminal-smoke），上传 dmg 和 zip 作为产物（不发版）
+# 这两个任务现在不是必过检查：先看一段时间的稳定性，再由负责人决定是否升为必过（决策记录 0012 的流程）。
+name: e2e
+
+on:
+  pull_request:
+    branches: [main]
+    # 只在会影响桌面应用的目录有改动时跑；工作流文件和锁文件自己改了也要跑一次
+    paths:
+      - apps/desktop/**
+      - packages/**
+      - templates/**
+      - tooling/scripts/package-desktop.ts
+      - .github/workflows/e2e.yml
+      - pnpm-lock.yaml
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  e2e:
+    name: e2e（桌面应用端到端）
+    runs-on: macos-26
+    timeout-minutes: 20
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: 安装 pnpm（版本读自 package.json 的 packageManager 字段）
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: 安装 Node（版本读自 .node-version）
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: 安装依赖（锁文件必须与 package.json 一致）
+        run: pnpm install --frozen-lockfile
+
+      # 端到端用的包保留 nodeCliInspect（Playwright 靠它连上应用，决策记录 0011），正式包里这个开关是关的
+      - name: 打端到端用的包（只打 .app）
+        run: pnpm --filter @runyard/desktop package -- --dir --e2e --out "$GITHUB_WORKSPACE/apps/desktop/release/e2e"
+
+      - name: 跑端到端测试（临时主目录，不重试）
+        env:
+          RUNYARD_E2E_APP: ${{ github.workspace }}/apps/desktop/release/e2e/mac-arm64/Runyard.app/Contents/MacOS/Runyard
+        run: pnpm --filter @runyard/desktop e2e:run
+
+      - name: 上传失败截图和报告
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: e2e-output
+          path: apps/desktop/e2e/.output/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  package:
+    name: package（打包并开窗冒烟）
+    runs-on: macos-26
+    timeout-minutes: 20
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: 安装 pnpm（版本读自 package.json 的 packageManager 字段）
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: 安装 Node（版本读自 .node-version）
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: 安装依赖（锁文件必须与 package.json 一致）
+        run: pnpm install --frozen-lockfile
+
+      # 构建、下载 Electron、打包并断言开关、codesign 校验，四步在脚本里分开打印
+      - name: 打正式包（.app、dmg、zip，未签名）
+        run: pnpm --filter @runyard/desktop package
+
+      # 冒烟用临时主目录，--root 也在里面：包里的 --root 参数出过问题，丢了也碰不到真实数据
+      - name: 编辑器冒烟和终端冒烟（打好的 .app）
+        run: |
+          app="$GITHUB_WORKSPACE/apps/desktop/release/mac-arm64/Runyard.app/Contents/MacOS/Runyard"
+          for flag in --editor-smoke --terminal-smoke; do
+            home="$(mktemp -d)"
+            echo "== $flag"
+            HOME="$home" "$app" "$flag" --root "$home/r"
+          done
+
+      - name: 上传安装包（不发版）
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: runyard-macos-unsigned
+          path: |
+            apps/desktop/release/*.dmg
+            apps/desktop/release/*.zip
+          if-no-files-found: error
+          retention-days: 7
