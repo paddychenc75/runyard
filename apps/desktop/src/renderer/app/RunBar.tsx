@@ -1,24 +1,28 @@
 import { useLocale, useT } from "@runyard/i18n/react";
 import { GlassSurface, StatusMark, UserText } from "@runyard/ui";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
-import type { TabRow } from "../../shared/library-state.ts";
+import type { PlaygroundRow, TabRow } from "../../shared/library-state.ts";
 import { pickLocalizedText } from "../library-view.ts";
 import { RunActionButton } from "./RunActionButton.tsx";
 import styles from "./RunBar.module.css";
+import { RunBarMenu } from "./RunBarMenu.tsx";
 import { useRunStatus } from "./use-run-status.ts";
 
 export interface RunBarProps {
   bridge: DesktopBridge;
   tab: TabRow;
+  /** 资源库里的全部项目：“更多”菜单要这个项目的备注、保留状态和重名校验用的名称；不给就没有“更多”菜单 */
+  playgrounds?: readonly PlaygroundRow[];
 }
 
 // 运行条（设计稿 Service、Stopped、Script）：悬浮在顶栏右侧的胶囊，项目名、模板、运行状态
 // （服务带端口，脚本带退出码和耗时）、“关闭标签页即停止”的提示，最右是停止/运行按钮。
-// 重启和“更多”菜单不在 #176 范围（见 PR 的“与设计稿的差异”）。
-export function RunBar({ bridge, tab }: RunBarProps) {
+// 最右是停止/运行和“更多”菜单（#182，现在只有重命名、编辑备注、自动清理、创建副本）；重启不在范围内。
+export function RunBar({ bridge, tab, playgrounds }: RunBarProps) {
   const t = useT();
   const locale = useLocale();
   const status = useRunStatus(tab);
+  const row = playgrounds?.find((item) => item.id === tab.id);
   return (
     <GlassSurface
       material="toolbar"
@@ -44,6 +48,9 @@ export function RunBar({ bridge, tab }: RunBarProps) {
         <span className={styles.hint}>{t("desktop.runbar.closeHint.label")}</span>
       ) : null}
       <RunActionButton bridge={bridge} tab={tab} />
+      {row === undefined || playgrounds === undefined ? null : (
+        <RunBarMenu bridge={bridge} row={row} taken={playgrounds.map((item) => item.name)} />
+      )}
     </GlassSurface>
   );
 }

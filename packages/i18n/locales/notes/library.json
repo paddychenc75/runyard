@@ -30,6 +30,9 @@
   "library.retention.autoClean.tooltip": {
     "days": "自动清理设定的天数"
   },
+  "library.row.autoCleanNow.hint": {
+    "state": "当前保留状态的文字（已保留，或剩 N 天）"
+  },
   "library.row.more.aria": {
     "name": "项目名（用户自己起的，不翻译）"
   },

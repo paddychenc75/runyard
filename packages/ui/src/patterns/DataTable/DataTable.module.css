@@ -65,7 +65,15 @@
   background-image: linear-gradient(var(--color-fill-accent-tint), var(--color-fill-accent-tint));
 }
 
-.body .row:not([data-selected]):hover {
+/* 行内编辑（设计稿 RenameInline）：行高随内容，淡强调底加一圈强调线 */
+.body .row[data-editing] {
+  block-size: auto;
+  padding-block: var(--space-4);
+  background-image: linear-gradient(var(--color-fill-accent-tint), var(--color-fill-accent-tint));
+  box-shadow: inset 0 0 0 1px var(--color-line-accent);
+}
+
+.body .row:not([data-selected]):not([data-editing]):hover {
   background-image: linear-gradient(var(--color-fill-neutral), var(--color-fill-neutral));
 }
 
@@ -131,4 +139,17 @@
 
 .root[data-overflowing] .table [data-when-overflowing] {
   display: inline-flex;
+}
+
+/* 横跨几列的格子（行内编辑的输入框）；最多跨 4 列 */
+.cell[data-span="2"] {
+  grid-column: span 2;
+}
+
+.cell[data-span="3"] {
+  grid-column: span 3;
+}
+
+.cell[data-span="4"] {
+  grid-column: span 4;
 }

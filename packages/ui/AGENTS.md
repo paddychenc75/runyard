@@ -52,7 +52,7 @@
 
 ## 表格组件的约定（#169）
 
-- `DataTable`：列用档位（`fill`、`flex`、`icon`、`sm`、`md`、`lg`、`xl`）说宽度，档位对应设计变量 `size-column-*`；`pin: "start" | "end"` 的列在窗口变窄、整张表横向滚动时固定在两侧。放不下时根元素带 `data-overflowing`，单元格里带 `data-when-overflowing` 的元素只在这时显示（名称列里补的状态圆点）。用的是真正的 `<table>`，版面靠 CSS 网格。
+- `DataTable`：`editingId` 标出行内编辑的行（行高随内容、淡强调底加边），`cellSpan(row, 列 id)` 让某一格向右占几列（最多 4，被占的列不画）；列用档位（`fill`、`flex`、`icon`、`sm`、`md`、`lg`、`xl`）说宽度，档位对应设计变量 `size-column-*`；`pin: "start" | "end"` 的列在窗口变窄、整张表横向滚动时固定在两侧。放不下时根元素带 `data-overflowing`，单元格里带 `data-when-overflowing` 的元素只在这时显示（名称列里补的状态圆点）。用的是真正的 `<table>`，版面靠 CSS 网格。
 - `StatusMark` 的形状随状态变（实心圆、空心圆、方块），不只靠颜色；`Badge` 的 `violet` 变体是“来源”标记，`dashed` 比 `solid` 更轻。
 
 ## 日志视图的约定（#176）

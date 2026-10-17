@@ -11,6 +11,7 @@ export function createLibraryHandlers(ctx: LibraryContext, service: LibraryServi
     "playground.create": (params) => service.create(params),
     "playground.rename": ({ playground, newName }) => service.rename(playground, newName),
     "playground.update": (params) => service.update(params),
+    "playground.duplicate": (params) => service.duplicate(params),
     "playground.trash": ({ playground }) => service.trash(playground),
     "playground.relocate": ({ playground, path }) => service.relocate(playground, path),
     "playground.forget": async ({ playground }) => {

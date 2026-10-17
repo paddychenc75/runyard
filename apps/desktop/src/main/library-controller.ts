@@ -1,4 +1,3 @@
-import type { RunyardClient } from "@runyard/client";
 import type { Locale } from "@runyard/i18n";
 import type { Playground, RunSnapshot, TemplateRecord } from "@runyard/protocol";
 import type { ConsoleAppend, ConsoleLine } from "../shared/console-state.ts";
@@ -13,35 +12,30 @@ import {
   previewUrlFor,
 } from "./build-library-state.ts";
 import { ConsoleLogs } from "./console-logs.ts";
-import type { PreviewHost, SystemActions } from "./controller-hosts.ts";
+import type {
+  LibraryClient,
+  LibraryControllerOptions,
+  PreviewHost,
+  SystemActions,
+} from "./controller-hosts.ts";
 import { createPlayground } from "./create-playground.ts";
 import { toDesktopError } from "./desktop-error.ts";
 import { frameBeforeCrash } from "./last-frame.ts";
 import { readLibraryRoot } from "./library-root.ts";
+import { PlaygroundEdits } from "./playground-edits.ts";
 import { classifyStartError } from "./start-error.ts";
 import { StartTimeline } from "./start-timeline.ts";
 import { LIBRARY_TAB, WorkspaceTabs } from "./workspace-tabs.ts";
 
-export type { PreviewHost, SystemActions } from "./controller-hosts.ts";
-
 // 窗口背后的逻辑：向管理进程要项目、模板、运行，转成界面看的状态；执行界面发来的动作。
 // 不认识 Electron：预览通过 PreviewHost 这个接口交给外面，所以可以用假客户端整个测。
 
-/** 控制器用到的客户端的那一小部分 */
-export type LibraryClient = Pick<RunyardClient, "call" | "subscribe" | "followLogs">;
-
-export interface LibraryControllerOptions {
-  client: LibraryClient;
-  /** 这个应用实例的连接标识；标签页持有者靠它绑定到本连接（PRD #prd-run-ownership） */
-  clientId: string;
-  locale: Locale;
-  preview: PreviewHost;
-  system: SystemActions;
-  /** 主目录（用来把资源库路径显示成 ~/…）；开发时 --root 给的目录算主目录 */
-  home: string;
-  /** 毫秒时钟；启动清单各步的用时靠它量，测试里换成假的 */
-  now?: () => number;
-}
+export type {
+  LibraryClient,
+  LibraryControllerOptions,
+  PreviewHost,
+  SystemActions,
+} from "./controller-hosts.ts";
 
 export class LibraryController {
   readonly #client: LibraryClient;
@@ -66,6 +60,7 @@ export class LibraryController {
   readonly #startErrors = new Map<string, DesktopError>();
   /** 崩溃前截下的预览最后一帧 */
   readonly #lastFrames = new Map<string, string>();
+  readonly edits: PlaygroundEdits;
   #refreshing: Promise<void> | undefined;
   #refreshAgain = false;
 
@@ -78,6 +73,12 @@ export class LibraryController {
     this.#home = options.home;
     this.#now = options.now ?? Date.now;
     this.#console = new ConsoleLogs(options.client);
+    this.edits = new PlaygroundEdits(options.client, {
+      busy: this.#busy,
+      emit: () => this.#emit(),
+      refresh: () => this.refresh(),
+      current: (id) => this.#playgrounds.find((playground) => playground.id === id),
+    });
   }
 
   /** 订阅管理进程的事件并读第一份数据 */
@@ -171,16 +172,14 @@ export class LibraryController {
       const starting = this.#client.call("run.start", {
         playground: playgroundId,
         owner: { kind: "tab", clientId: this.#clientId, tabId: `tab-${playgroundId}` },
-        // 服务等到就绪或失败：失败时错误响应带参数（缺哪个工具、模板写的安装命令），
-        // 运行状态里只有错误码。脚本没有就绪，它的失败只看状态
+        // 服务等到就绪或失败：失败的错误响应带参数（缺哪个工具等）；脚本没有就绪，只看状态
         wait: kind === "oneshot" ? "none" : "ready",
       });
       if (kind === "oneshot") {
         await starting;
         return;
       }
-      // 不等到就绪：运行条要立刻能点“停止”。立刻就有的错误（项目不见了等）赶得上这一轮，
-      // 之后才到的错误由 #startSettled 记下
+      // 不等到就绪：运行条要立刻能点“停止”；立刻就有的错误赶得上这一轮，之后的由 #startSettled 记下
       const settled = starting.then(
         () => this.#startSettled(playgroundId),
         (error: unknown) => this.#startSettled(playgroundId, error),
@@ -251,10 +250,7 @@ export class LibraryController {
   async #closeNow(playgroundId: string): Promise<void> {
     const owned = needsStopOnClose(playgroundId, this.#runs);
     if (!this.#workspace.close(playgroundId)) return;
-    this.#preview.release(playgroundId);
-    this.#console.unwatch(playgroundId);
-    this.#startErrors.delete(playgroundId);
-    this.#lastFrames.delete(playgroundId);
+    this.#dropProject(playgroundId);
     this.#applyPreview();
     this.#emit();
     if (owned) {
@@ -265,6 +261,14 @@ export class LibraryController {
       }
     }
     await this.refresh();
+  }
+
+  // 标签关掉或项目没了：预览、控制台和它留下的失败记录都放掉
+  #dropProject(id: string): void {
+    this.#preview.release(id);
+    this.#console.unwatch(id);
+    this.#startErrors.delete(id);
+    this.#lastFrames.delete(id);
   }
 
   /** 更多菜单“在访达中显示”：路径取管理进程给的那份，界面只报项目 id */
@@ -345,10 +349,7 @@ export class LibraryController {
       );
       for (const id of removed) {
         this.#timeline.forget(id);
-        this.#startErrors.delete(id);
-        this.#lastFrames.delete(id);
-        this.#preview.release(id);
-        this.#console.unwatch(id);
+        this.#dropProject(id);
       }
       if (this.#closeRequestId !== null && !this.#workspace.tabs.includes(this.#closeRequestId)) {
         this.#closeRequestId = null;

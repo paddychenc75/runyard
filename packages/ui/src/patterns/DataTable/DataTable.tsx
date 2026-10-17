@@ -32,6 +32,10 @@ export interface DataTableProps<Row> {
   getRowId: (row: Row) => string;
   /** 被选中的行的 id：行底色变强调色淡底，左边多一条强调线 */
   selectedId?: string | null;
+  /** 正在行内编辑的行：行高随内容，底色和边框换成编辑状态（设计稿 RenameInline） */
+  editingId?: string | null;
+  /** 某行的某一格向右占几列（含自己，默认 1）；被占掉的列不画。编辑中的行靠它让输入框横跨几列 */
+  cellSpan?: (row: Row, columnId: string) => number;
   onRowClick?: (row: Row, event: MouseEvent<HTMLElement>) => void;
   onRowDoubleClick?: (row: Row, event: MouseEvent<HTMLElement>) => void;
   className?: string;
@@ -63,6 +67,8 @@ export function DataTable<Row>({
   rows,
   getRowId,
   selectedId = null,
+  editingId = null,
+  cellSpan,
   onRowClick,
   onRowDoubleClick,
   className,
@@ -119,6 +125,7 @@ export function DataTable<Row>({
                 className={styles.row}
                 data-row-id={id}
                 data-selected={id === selectedId ? "" : undefined}
+                data-editing={id === editingId ? "" : undefined}
                 onClick={onRowClick === undefined ? undefined : (event) => onRowClick(row, event)}
                 onDoubleClick={
                   onRowDoubleClick === undefined
@@ -126,12 +133,13 @@ export function DataTable<Row>({
                     : (event) => onRowDoubleClick(row, event)
                 }
               >
-                {columns.map((column) => (
+                {visibleCells(columns, row, cellSpan).map(({ column, span }) => (
                   <td
                     key={column.id}
                     className={styles.cell}
                     data-pin={column.pin}
                     data-column={column.id}
+                    data-span={span > 1 ? span : undefined}
                   >
                     {column.render(row)}
                   </td>
@@ -143,4 +151,24 @@ export function DataTable<Row>({
       </table>
     </ScrollArea>
   );
+}
+
+// 把“向右占几列”换成要画的格子：被前一格占掉的列跳过
+function visibleCells<Row>(
+  columns: readonly DataTableColumn<Row>[],
+  row: Row,
+  cellSpan: ((row: Row, columnId: string) => number) | undefined,
+): { column: DataTableColumn<Row>; span: number }[] {
+  const cells: { column: DataTableColumn<Row>; span: number }[] = [];
+  let skip = 0;
+  for (const column of columns) {
+    if (skip > 0) {
+      skip -= 1;
+      continue;
+    }
+    const span = Math.max(1, cellSpan?.(row, column.id) ?? 1);
+    skip = span - 1;
+    cells.push({ column, span });
+  }
+  return cells;
 }
