@@ -41,6 +41,10 @@ export function editorFileMethods(
       const t = target(param);
       return t === null ? malformed() : need().list(t.project, t.path);
     },
+    "files.listAll": (param) => {
+      const p = asParams(param);
+      return p === null || typeof p.project !== "string" ? malformed() : need().listAll(p.project);
+    },
     "files.read": (param) => {
       const t = target(param);
       return t === null ? malformed() : need().read(t.project, t.path);

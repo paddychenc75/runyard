@@ -179,6 +179,12 @@
   --size-card-gap: 8px;
   --size-dialog-width: 580px;
   --size-popover-width: 420px;
+  --size-palette-width: 680px;
+  --size-palette-top: 66px;
+  --size-palette-input: 54px;
+  --size-palette-row: 36px;
+  --size-palette-list-max: 470px;
+  --size-palette-footer: 40px;
   --size-checkbox: 18px;
   --size-switch-width: 42px;
   --size-switch-height: 26px;

@@ -2,11 +2,13 @@ import type { Locale } from "@runyard/i18n";
 import type * as Monaco from "monaco-editor/editor/editor.api.js";
 import { loadEditorRuntime } from "../../editor/editor-loader.ts";
 import type { EditorRuntime } from "../../editor/runtime-types.ts";
+import { type EditorOperation, runEditorOperation } from "./editor-operations.ts";
 import { editorLanguageOf } from "./file-language.ts";
 import type { FileTab } from "./file-tab.ts";
 import { scrollbarOptions } from "./monaco-scrollbar-options.ts";
 import type { ProjectSource } from "./project-source.ts";
 import type { SessionState } from "./session-types.ts";
+import { configureTypeScript, IGNORED_DIAGNOSTIC_CODES } from "./typescript-defaults.ts";
 import { TypeScriptDiagnostics } from "./typescript-diagnostics.ts";
 import { type ClosedFile, TypeScriptProject } from "./typescript-project.ts";
 
@@ -28,9 +30,13 @@ export interface EditorHostHandlers {
   onNormalized?(path: string, text: string): void;
 }
 
+export type { EditorOperation };
+
 export interface EditorHost {
   sync(state: SessionState, theme: EditorTheme): void;
   focus(): void;
+  /** 在当前显示的文件上做一个编辑器操作（先把焦点放回编辑器）；这个文件上做不了就什么都不做 */
+  run(operation: EditorOperation): void;
   dispose(): void;
 }
 
@@ -43,46 +49,11 @@ export type EditorHostFactory = (
 ) => Promise<EditorHost>;
 
 /**
- * 项目里没法解析依赖包的类型，“找不到模块”和它的连带误报屏蔽掉（K8 证据“装法”第 6 条；规格 DESKTOP-EDITOR-43）。
- * 前五个是 K8 实测的；后三个（7006、7031、7044：参数隐式 any）是拿真实的 react19 模板过一遍时发现的：
- * `setCount((value) => value + 1)` 因为没有 react 的类型，value 推不出来，开箱就红一条。
- */
-export const IGNORED_DIAGNOSTIC_CODES = [2307, 2792, 7016, 7026, 2875, 7006, 7031, 7044];
-
-const configured = new WeakSet<object>();
-
-/**
  * 每个路径的模型用过的最大版本号（同一个运行时里所有项目共用）。语言服务按“路径加版本号”缓存：
  * 关掉的文件再打开、或者换到另一个项目里同一个相对路径的文件，新模型从版本 1 开始，
  * 撞上缓存里的 1 就拿到旧项目的类型，所以新模型的版本号一律抬到用过的最大值之上。
  */
 const usedVersions = new WeakMap<object, Map<string, number>>();
-
-function configureTypeScript(runtime: EditorRuntime): void {
-  if (configured.has(runtime)) return;
-  configured.add(runtime);
-  const { typescript } = runtime;
-  const { typescriptDefaults, javascriptDefaults } = typescript;
-  const compilerOptions = {
-    allowNonTsExtensions: true,
-    allowJs: true,
-    noEmit: true,
-    target: typescript.ScriptTarget.ESNext,
-    module: typescript.ModuleKind.ESNext,
-    jsx: typescript.JsxEmit.ReactJSX,
-    moduleResolution: typescript.ModuleResolutionKind.NodeJs,
-  };
-  typescriptDefaults.setCompilerOptions(compilerOptions);
-  javascriptDefaults.setCompilerOptions(compilerOptions);
-  // 语义检查（类型错误）由 TypeScriptDiagnostics 自己做：Monaco 自带的只在本文件内容变了时重做，
-  // 别的文件改了不会更新（DESKTOP-EDITOR-44）。语法检查仍用自带的。
-  const diagnostics = {
-    diagnosticCodesToIgnore: IGNORED_DIAGNOSTIC_CODES,
-    noSemanticValidation: true,
-  };
-  typescriptDefaults.setDiagnosticsOptions(diagnostics);
-  javascriptDefaults.setDiagnosticsOptions(diagnostics);
-}
 
 function monoFontFamily(): string {
   const value = getComputedStyle(document.documentElement).getPropertyValue("--font-mono").trim();
@@ -380,6 +351,7 @@ export function buildHost(
       }
     },
     focus: () => editor.focus(),
+    run: (operation) => runEditorOperation(editor, operation),
     dispose() {
       opener.dispose();
       createdListener.dispose();

@@ -188,6 +188,11 @@ export interface DesktopEvents extends TerminalEvents {
   "picker.open": undefined;
   /** 应用菜单的“切换侧栏”（⌃⌘S）：同样因为焦点可能在预览视图里，由主进程通知 */
   "sidebar.toggle": undefined;
+  /**
+   * 打开命令面板（⌘⇧P、F1）或快速打开（⌘P）：这些快捷键是主进程的菜单项，焦点在预览视图里
+   * （那是另一个网页，按键到不了界面）也有效，所以由主进程通知（规格 DESKTOP-EDITOR-65）
+   */
+  "palette.open": { mode: "commands" | "files" };
   /** 应用要退出了：编辑器先把未保存的修改写入（自动保存关着的先问用户），再用 app.quitReply 回话 */
   "app.quitRequested": { id: number };
   /** 项目文件夹里的文件变了（监听由 files.watch 开启）：目录树更新和外部修改提示靠它 */
@@ -202,6 +207,7 @@ export const desktopEventNames: readonly DesktopEventName[] = [
   "console.appended",
   "picker.open",
   "sidebar.toggle",
+  "palette.open",
   "app.quitRequested",
   "files.changed",
   "settings.changed",
