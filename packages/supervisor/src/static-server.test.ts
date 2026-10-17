@@ -170,21 +170,25 @@ describe("静态页面服务", () => {
 
   it("[TEMPLATES-RUNNERS-11] 释放：已建立的连接（含 SSE）全部断开，端口立刻可重新绑定，监听也停了", async () => {
     const port = await start();
+    // 等的是客户端这一侧的 close 事件：服务端销毁连接后，事件何时到达取决于系统调度，
+    // 不能用固定时长的睡眠去赌它已经到了（#286）
+    let onClosed: () => void = () => undefined;
+    const closed = new Promise<void>((resolve) => {
+      onClosed = resolve;
+    });
     const open = new Promise<void>((resolve) => {
       const req = request({ host: "127.0.0.1", port, path: "/__runyard/reload" }, (res) => {
         res.on("data", () => resolve());
-        res.on("close", () => resolved.push("closed"));
+        res.on("close", onClosed);
       });
       req.on("error", () => undefined);
       req.end();
     });
-    const resolved: string[] = [];
     await open;
     await served?.dispose();
     served = undefined;
     expect(watchDisposed).toBe(true);
-    await new Promise((resolve) => setTimeout(resolve, 20));
-    expect(resolved).toEqual(["closed"]);
+    await closed;
     const rebind = createServer();
     await new Promise<void>((resolve, reject) => {
       rebind.once("error", reject);
