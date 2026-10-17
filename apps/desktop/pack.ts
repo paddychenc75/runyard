@@ -6,6 +6,7 @@ import { Arch, build, Platform } from "electron-builder";
 import { builderConfig } from "./packaging/builder-config.ts";
 import { E2E_FUSES, RELEASE_FUSES } from "./packaging/fuses.ts";
 import { syncIcon } from "./packaging/icon.ts";
+import { buildRuntimeBundle } from "./packaging/runtime-bundle.ts";
 import { assertFuses } from "./packaging/verify-fuses.ts";
 
 // 打包本体：拼应用目录、electron-builder 出 .app（加 dmg、zip）、读二进制里的开关并断言（技术设计 §8.2、决策记录 0007）。
@@ -61,7 +62,17 @@ writeFileSync(
   `${JSON.stringify({ name: "runyard", productName: "Runyard", version: source.version, main: source.main, type: "module" }, null, 2)}\n`,
 );
 
+console.log("打包管理进程、命令行和内置模板");
+const runtimeDir = join(outDir, "runtime");
+const manifest = await buildRuntimeBundle({
+  repoRoot,
+  outDir: runtimeDir,
+  version: source.version,
+});
+console.log(`版本 ${manifest.version}，构建标识 ${manifest.build}`);
+
 const config = builderConfig({
+  runtimeDir,
   outDir,
   buildResources: join(here, "build"),
   electronDist: electron.dist,
