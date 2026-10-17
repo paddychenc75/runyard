@@ -1,7 +1,7 @@
 import { existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import type { Locator } from "@playwright/test";
-import { expect, test } from "./support/fixtures.ts";
+import { closePicker, expect, test } from "./support/fixtures.ts";
 
 test("资源库：搜索与筛选、重命名、改备注、移到废纸篓", async ({ launch }) => {
   const runyard = await launch();
@@ -9,7 +9,7 @@ test("资源库：搜索与筛选、重命名、改备注、移到废纸篓", as
   await runyard.cli("new", "html", "alpha");
   await runyard.cli("new", "python", "beta");
   await runyard.cli("run", "alpha");
-  await page.keyboard.press("Escape");
+  await closePicker(page);
   const rows = page.getByRole("table", { name: "Playgrounds" }).getByRole("row");
   await expect(rows.filter({ hasText: "alpha" })).toHaveCount(1);
   await expect(rows.filter({ hasText: "beta" })).toHaveCount(1);
@@ -72,7 +72,7 @@ test("资源库表格：窗口放得下和放不下时，表头与每一行逐�
   const { page, app } = runyard;
   await runyard.cli("new", "html", "alpha");
   await runyard.cli("new", "python", "beta");
-  await page.keyboard.press("Escape");
+  await closePicker(page);
   const table = page.getByRole("table", { name: "Playgrounds" });
   await expect(table.getByRole("row").filter({ hasText: "alpha" })).toHaveCount(1);
 

@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   attachScreenshot,
+  closePicker,
   createWithKeyboard,
   expect,
   pressMenuShortcut,
@@ -29,9 +30,7 @@ test("首次启动：空资源库自动弹出选择器，只用键盘选模板�
 
   // ⌘N 再次打开选择器，Esc 关掉
   await pressMenuShortcut(app, "CmdOrCtrl+N");
-  await expect(page.getByRole("dialog", { name: "Choose a template" })).toBeVisible();
-  await page.keyboard.press("Escape");
-  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await closePicker(page);
 
   // 关闭运行中的标签页要确认；确认后停止，资源库里是“已停止”
   await page.getByRole("button", { name: "Close html-1" }).click();

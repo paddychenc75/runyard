@@ -1,11 +1,10 @@
-import { expect, test } from "./support/fixtures.ts";
+import { closePicker, expect, test } from "./support/fixtures.ts";
 
 test("设置：切换主题和语言立即生效并保存", async ({ launch }) => {
   const runyard = await launch({ lang: "en", theme: "light" });
   const { page } = runyard;
   // 空资源库会自动打开选择器：关掉再进设置
-  await expect(page.getByRole("dialog", { name: "Choose a template" })).toBeVisible();
-  await page.keyboard.press("Escape");
+  await closePicker(page);
   await page.getByRole("button", { name: "Settings" }).click();
   await expect(page.getByRole("heading", { name: "Settings", level: 1 })).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");

@@ -67,3 +67,10 @@ export async function attachScreenshot(
 ): Promise<void> {
   await info.attach(name, { body: await page.screenshot(), contentType: "image/png" });
 }
+
+/** 关掉模板选择器：等输入框拿到焦点再按 Esc，焦点没到位时按键会丢 */
+export async function closePicker(page: Page): Promise<void> {
+  await expect(page.getByRole("combobox", { name: "Search templates" })).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+}
