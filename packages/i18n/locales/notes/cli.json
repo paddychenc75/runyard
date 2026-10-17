@@ -165,5 +165,8 @@
   },
   "cli.usage.unknownSetting.body": {
     "name": "用户输入的设置项，原样显示"
+  },
+  "cli.version.body": {
+    "version": "应用的版本号，如 0.2.0；输出里只有它"
   }
 }

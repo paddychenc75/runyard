@@ -26,6 +26,7 @@ export type CatalogMessages = {
   "cli.command.templateSave.title": Record<never, never>;
   "cli.command.templateShow.title": Record<never, never>;
   "cli.command.templateTest.title": Record<never, never>;
+  "cli.command.version.title": Record<never, never>;
   "cli.config.getLang.body": {
     lang: string | number;
     source: string;
@@ -140,6 +141,7 @@ export type CatalogMessages = {
   "cli.option.timeout.hint": Record<never, never>;
   "cli.option.toolVersion.hint": Record<never, never>;
   "cli.option.var.hint": Record<never, never>;
+  "cli.option.version.hint": Record<never, never>;
   "cli.rm.trashed.body": {
     name: string | number;
     path: string | number;
@@ -234,6 +236,9 @@ export type CatalogMessages = {
   };
   "cli.usage.unknownSetting.body": {
     name: string | number;
+  };
+  "cli.version.body": {
+    version: string | number;
   };
   "desktop.agentNotice.meta.label": {
     time: string | number;

@@ -12,6 +12,7 @@ Commands:
   logs <pg>              Read the log of a playground
   rm <pg>                Stop a playground and move it to the Trash
   doctor                 Check the environment and print diagnostics
+  version                Print the version number
   template <command>     Show, save, lint and test templates
   skill <command>        Install the instructions for agents
   config <command>       Show and change command line settings
@@ -22,6 +23,7 @@ Global options:
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
   --help           Show help
+  --version        Print the version number
 
 Run runyard <command> --help for details of one command.
 
@@ -44,6 +46,7 @@ Global options:
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
   --help           Show help
+  --version        Print the version number
 
 Run runyard template <command> --help for details of one command.
 
@@ -62,6 +65,7 @@ Global options:
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
   --help           Show help
+  --version        Print the version number
 
 Run runyard skill <command> --help for details of one command.
 
@@ -81,6 +85,7 @@ Global options:
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
   --help           Show help
+  --version        Print the version number
 
 Run runyard config <command> --help for details of one command.
 
@@ -109,6 +114,7 @@ Global options:
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
   --help           Show help
+  --version        Print the version number
 
 $ runyard run --help
 runyard run - Run a playground and wait until it is ready or exits
@@ -131,6 +137,7 @@ Global options:
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
   --help           Show help
+  --version        Print the version number
 
 $ runyard stop --help
 runyard stop - Stop the run of a playground
@@ -151,6 +158,7 @@ Global options:
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
   --help           Show help
+  --version        Print the version number
 
 $ runyard status --help
 runyard status - List playgrounds and their run state
@@ -170,6 +178,7 @@ Global options:
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
   --help           Show help
+  --version        Print the version number
 
 $ runyard logs --help
 runyard logs - Read the log of a playground
@@ -192,6 +201,7 @@ Global options:
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
   --help           Show help
+  --version        Print the version number
 
 $ runyard rm --help
 runyard rm - Stop a playground and move it to the Trash
@@ -208,6 +218,7 @@ Global options:
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
   --help           Show help
+  --version        Print the version number
 
 $ runyard doctor --help
 runyard doctor - Check the environment and print diagnostics
@@ -225,6 +236,21 @@ Global options:
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
   --help           Show help
+  --version        Print the version number
+
+$ runyard version --help
+runyard version - Print the version number
+
+Usage:
+  runyard version
+
+Global options:
+  --json           Print one JSON object; not affected by language
+  --quiet          Do not print progress or notices; results and errors are still printed
+  --root <dir>     Use this folder in place of the home folder
+  --lang <locale>  Language for this command only: en or zh-CN
+  --help           Show help
+  --version        Print the version number
 
 $ runyard template list --help
 runyard template list - List templates
@@ -238,6 +264,7 @@ Global options:
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
   --help           Show help
+  --version        Print the version number
 
 $ runyard template show --help
 runyard template show - Show one template
@@ -254,6 +281,7 @@ Global options:
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
   --help           Show help
+  --version        Print the version number
 
 $ runyard template save --help
 runyard template save - Save a playground as a template
@@ -278,6 +306,7 @@ Global options:
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
   --help           Show help
+  --version        Print the version number
 
 $ runyard template lint --help
 runyard template lint - Check the format of a template
@@ -294,6 +323,7 @@ Global options:
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
   --help           Show help
+  --version        Print the version number
 
 $ runyard template test --help
 runyard template test - Smoke-test a template
@@ -314,6 +344,7 @@ Global options:
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
   --help           Show help
+  --version        Print the version number
 
 $ runyard skill install --help
 runyard skill install - Write the instructions to the agent folders
@@ -330,6 +361,7 @@ Global options:
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
   --help           Show help
+  --version        Print the version number
 
 $ runyard config get --help
 runyard config get - Show the current value of a setting and where it comes from
@@ -346,6 +378,7 @@ Global options:
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
   --help           Show help
+  --version        Print the version number
 
 $ runyard config set --help
 runyard config set - Change a setting
@@ -363,3 +396,4 @@ Global options:
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
   --help           Show help
+  --version        Print the version number

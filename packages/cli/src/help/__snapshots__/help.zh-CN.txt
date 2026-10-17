@@ -12,6 +12,7 @@ runyard - 用本地模板新建、运行和管理项目，每个项目是一个�
   logs <pg>              读取项目的日志
   rm <pg>                停止项目并移到废纸篓
   doctor                 检查运行环境并输出诊断信息
+  version                输出版本号
   template <command>     查看、保存、检查和测试模板
   skill <command>        安装给智能体用的说明
   config <command>       查看和修改命令行的设置
@@ -22,6 +23,7 @@ runyard - 用本地模板新建、运行和管理项目，每个项目是一个�
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
   --help           显示说明
+  --version        输出版本号
 
 运行 runyard <command> --help 查看某个命令的说明。
 
@@ -44,6 +46,7 @@ runyard template - 查看、保存、检查和测试模板
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
   --help           显示说明
+  --version        输出版本号
 
 运行 runyard template <command> --help 查看某个命令的说明。
 
@@ -62,6 +65,7 @@ runyard skill - 安装给智能体用的说明
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
   --help           显示说明
+  --version        输出版本号
 
 运行 runyard skill <command> --help 查看某个命令的说明。
 
@@ -81,6 +85,7 @@ runyard config - 查看和修改命令行的设置
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
   --help           显示说明
+  --version        输出版本号
 
 运行 runyard config <command> --help 查看某个命令的说明。
 
@@ -109,6 +114,7 @@ runyard new - 用模板新建项目，可以接着运行
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
   --help           显示说明
+  --version        输出版本号
 
 $ runyard run --help
 runyard run - 运行项目，等到就绪或退出
@@ -131,6 +137,7 @@ runyard run - 运行项目，等到就绪或退出
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
   --help           显示说明
+  --version        输出版本号
 
 $ runyard stop --help
 runyard stop - 停止项目的运行
@@ -151,6 +158,7 @@ runyard stop - 停止项目的运行
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
   --help           显示说明
+  --version        输出版本号
 
 $ runyard status --help
 runyard status - 列出项目和运行状态
@@ -170,6 +178,7 @@ runyard status - 列出项目和运行状态
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
   --help           显示说明
+  --version        输出版本号
 
 $ runyard logs --help
 runyard logs - 读取项目的日志
@@ -192,6 +201,7 @@ runyard logs - 读取项目的日志
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
   --help           显示说明
+  --version        输出版本号
 
 $ runyard rm --help
 runyard rm - 停止项目并移到废纸篓
@@ -208,6 +218,7 @@ runyard rm - 停止项目并移到废纸篓
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
   --help           显示说明
+  --version        输出版本号
 
 $ runyard doctor --help
 runyard doctor - 检查运行环境并输出诊断信息
@@ -225,6 +236,21 @@ runyard doctor - 检查运行环境并输出诊断信息
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
   --help           显示说明
+  --version        输出版本号
+
+$ runyard version --help
+runyard version - 输出版本号
+
+用法：
+  runyard version
+
+全局选项：
+  --json           输出一个 JSON 对象，不受语言影响
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明
+  --version        输出版本号
 
 $ runyard template list --help
 runyard template list - 列出模板
@@ -238,6 +264,7 @@ runyard template list - 列出模板
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
   --help           显示说明
+  --version        输出版本号
 
 $ runyard template show --help
 runyard template show - 查看一个模板
@@ -254,6 +281,7 @@ runyard template show - 查看一个模板
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
   --help           显示说明
+  --version        输出版本号
 
 $ runyard template save --help
 runyard template save - 把项目存为模板
@@ -278,6 +306,7 @@ runyard template save - 把项目存为模板
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
   --help           显示说明
+  --version        输出版本号
 
 $ runyard template lint --help
 runyard template lint - 检查模板的格式
@@ -294,6 +323,7 @@ runyard template lint - 检查模板的格式
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
   --help           显示说明
+  --version        输出版本号
 
 $ runyard template test --help
 runyard template test - 对模板做冒烟测试
@@ -314,6 +344,7 @@ runyard template test - 对模板做冒烟测试
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
   --help           显示说明
+  --version        输出版本号
 
 $ runyard skill install --help
 runyard skill install - 把说明写到智能体的目录
@@ -330,6 +361,7 @@ runyard skill install - 把说明写到智能体的目录
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
   --help           显示说明
+  --version        输出版本号
 
 $ runyard config get --help
 runyard config get - 显示设置的当前值和来源
@@ -346,6 +378,7 @@ runyard config get - 显示设置的当前值和来源
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
   --help           显示说明
+  --version        输出版本号
 
 $ runyard config set --help
 runyard config set - 修改设置
@@ -363,3 +396,4 @@ runyard config set - 修改设置
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
   --help           显示说明
+  --version        输出版本号

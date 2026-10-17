@@ -513,6 +513,22 @@
 - **THEN** 报 `USAGE`，退出码 2，没有写任何文件
 - 验证：test
 
+### Requirement: 命令行能报告自己的版本
+`runyard --version`、`runyard -v` 和 `runyard version` MUST 输出与应用相同的版本号，退出码 0；不连管理进程。人读的输出 MUST 只有版本号一行（中英文相同）；带 `--json` MUST 输出一个对象，字段 `version`，不随语言变。
+来源：PRD #prd-cli-distribution；issue #339
+
+#### Scenario: [CLI-COMMANDS-85] 三种写法输出同一个版本号
+- 前提：命令行随 0.2.0 版的应用安装
+- **WHEN** 分别执行 `runyard --version`、`runyard -v`、`runyard version`
+- **THEN** 三次都只输出一行 `0.2.0`，退出码 0，没有连管理进程
+- 验证：test
+
+#### Scenario: [CLI-COMMANDS-86] --json 的版本不随语言变
+- 前提：同上
+- **WHEN** 分别用 `--lang en` 和 `--lang zh-CN` 执行 `runyard --version --json`
+- **THEN** 两次输出逐字相同，都是只含 `version` 字段（值 `0.2.0`）的一个对象
+- 验证：test
+
 ### Requirement: 命令行随应用安装，并能接到 `PATH` 上
 桌面应用的安装包 MUST 自带命令行，它的版本和构建标识 MUST 与应用相同，`runyard doctor` 的 `cli.kind` 是 `app`。“安装命令行工具”MUST 在用户自己的 bin 目录（`~/.local/bin`，不需要管理员权限）建一个名为 `runyard` 的链接，指向应用里的命令行启动脚本；目录不存在时 MUST 先建它。同一位置已有不是指向 Runyard 的文件或链接时 MUST 失败并写明，MUST NOT 覆盖它；已是指向 Runyard 的链接（包括旧位置的应用）时 MUST 改为指向当前应用。“移除”MUST 只删除指向 Runyard 的那个链接，MUST NOT 删其他东西。应用被移动位置后，经链接运行的命令行 MUST 仍能找到应用，找不到时 MUST 报错并提示重新安装命令行工具。
 来源：PRD #prd-cli-distribution；PRD #prd-settings-items

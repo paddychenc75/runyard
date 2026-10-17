@@ -66,7 +66,7 @@ describe("peekGlobals / globalsOf", () => {
   it("解析失败时也能读出全局选项", () => {
     expect(
       peekGlobals(["run", "--nope", "--json", "--quiet", "--lang", "zh-CN", "--root", "/r"]),
-    ).toEqual({ json: true, quiet: true, help: false, root: "/r", lang: "zh-CN" });
+    ).toEqual({ json: true, quiet: true, help: false, version: false, root: "/r", lang: "zh-CN" });
   });
 
   it("globalsOf 取同名选项最后一次的值", () => {
