@@ -68,6 +68,14 @@ describe("运行条动作", () => {
     ]);
   });
 
+  it("[DESKTOP-REQUEST-PANEL-15] 请求面板的自动重发开关写进 playground.update", async () => {
+    const { actions, calls } = setup();
+    await actions.setRequestAutoResend("a", false);
+    expect(calls).toEqual([
+      { method: "playground.update", params: { playground: "a", requestAutoResend: false } },
+    ]);
+  });
+
   it("[DESKTOP-WORKSPACE-42] 清除：管理进程的日志和界面手里的行都清掉", async () => {
     const { actions, calls, consoleLogs } = setup();
     const appended: unknown[] = [];

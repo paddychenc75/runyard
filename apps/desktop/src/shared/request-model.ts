@@ -116,7 +116,25 @@ export function notReadyReason(tab: Pick<TabRow, "state">): "starting" | "stoppe
   }
 }
 
-/** 服务因为文件变化重启、重新就绪：从 reloading 回到 ready（规格 DESKTOP-REQUEST-PANEL-09） */
-export function reloadedAgain(previous: TabRow["state"], next: TabRow["state"]): boolean {
-  return previous === "reloading" && next === "ready";
+/** 界面看到的服务此刻的样子：状态加进程号 */
+export interface ServiceLook {
+  state: TabRow["state"];
+  pid: number | null;
+}
+
+/**
+ * 服务因为文件变化重启、重新就绪（规格 DESKTOP-REQUEST-PANEL-09、16）：
+ * 看到了从 reloading 回到 ready；或者没来得及看到 reloading（状态更新被合并了），
+ * 只看到前后都是 ready 而进程号换了。重载期间运行 id 和开始时间都不变，所以认进程号。
+ * 前后任何一边不知道进程号时不猜
+ */
+export function reloadedAgain(previous: ServiceLook, next: ServiceLook): boolean {
+  if (next.state !== "ready") return false;
+  if (previous.state === "reloading") return true;
+  return (
+    previous.state === "ready" &&
+    previous.pid !== null &&
+    next.pid !== null &&
+    previous.pid !== next.pid
+  );
 }

@@ -83,12 +83,13 @@ export const libraryMethods = {
   },
   "playground.update": {
     group: "library",
-    summary: "改备注、自动清理（null 关闭）、脚本保存后自动运行",
+    summary: "改备注、自动清理（null 关闭）、脚本保存后自动运行、请求面板的自动重发开关",
     params: z.object({
       playground: playgroundRefSchema,
       note: z.string().optional(),
       autoClean: autoCleanDays.nullable().optional(),
       scriptAutoRun: z.boolean().optional(),
+      requestAutoResend: z.boolean().optional(),
     }),
     result: playgroundSchema,
     errors: ["PLAYGROUND_NOT_FOUND", "DATA_FROM_NEWER_VERSION"],

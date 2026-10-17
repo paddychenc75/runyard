@@ -36,6 +36,10 @@ export const playgroundSchema = z
     createdBy: createdBySchema,
     autoClean: autoCleanSchema,
     scriptAutoRun: z.boolean().optional().describe("脚本项目保存后自动运行"),
+    requestAutoResend: z
+      .boolean()
+      .optional()
+      .describe("请求面板：服务重载后自动重发上一次请求；没写过就是开"),
     port: portSchema.optional().describe("登记的端口；脚本没有"),
     lastUsedAt: timestampSchema,
     lastOpenedAt: timestampSchema.optional(),

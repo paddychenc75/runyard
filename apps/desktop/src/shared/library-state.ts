@@ -102,6 +102,10 @@ export interface TabRow {
   phaseMs: StartPhaseMs;
   /** 服务类项目（模板类型是“服务”）：右侧是请求面板而不是网页预览（规格 DESKTOP-REQUEST-PANEL-01）；没给就是 false */
   service?: boolean;
+  /** 请求面板“服务重载后自动重发”的开合，按项目记住；没给就是开（规格 DESKTOP-REQUEST-PANEL-15） */
+  requestAutoResend?: boolean;
+  /** 最近一次运行此刻的进程号；服务重载会换进程，界面没看到“重新加载中”时靠它发现（规格 DESKTOP-REQUEST-PANEL-16）；没有是 null */
+  pid?: number | null;
   /** 找不到项目文件夹：标签页不启动，显示“找不到文件夹”的说明（规格 DESKTOP-LIBRARY-VIEW“找不到项目文件夹”）；没给就是 false */
   missing?: boolean;
 }

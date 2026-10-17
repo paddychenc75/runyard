@@ -50,6 +50,7 @@ export function toPlayground(
     createdBy: file.createdBy,
     autoClean: file.autoClean,
     ...(file.script?.autoRun !== undefined ? { scriptAutoRun: file.script.autoRun } : {}),
+    ...(file.requestAutoResend !== undefined ? { requestAutoResend: file.requestAutoResend } : {}),
     ...(entry.port !== undefined ? { port: entry.port } : {}),
     lastUsedAt: entry.lastUsedAt,
     ...(entry.lastOpenedAt !== undefined ? { lastOpenedAt: entry.lastOpenedAt } : {}),

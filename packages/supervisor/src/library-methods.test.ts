@@ -179,6 +179,21 @@ describe("更新、忘记与被动过的文件夹", () => {
     expect(app.eventsOf("playground.changed").length).toBeGreaterThanOrEqual(2);
   });
 
+  it("[DESKTOP-REQUEST-PANEL-15] update 的 requestAutoResend 存进项目，读回来是它；没写过的项目没有这个字段（界面按默认开）", async () => {
+    const app = await setup();
+    await lw.create(app, "demo");
+    await lw.create(app, "other");
+    const off = await app.result<Record<string, unknown>>("playground.update", {
+      playground: "demo",
+      requestAutoResend: false,
+    });
+    expect(off.requestAutoResend).toBe(false);
+    const read = (name: string) =>
+      app.result<Record<string, unknown>>("playground.get", { playground: name });
+    expect((await read("demo")).requestAutoResend).toBe(false);
+    expect(await read("other")).not.toHaveProperty("requestAutoResend");
+  });
+
   it("forget 只从资源库移除，磁盘不动，发出 playground.removed", async () => {
     const app = await setup();
     const { playground } = await lw.create(app, "demo");

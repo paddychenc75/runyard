@@ -45,6 +45,7 @@
 | `createdAt`、`createdBy` | 创建时间；`{ kind: 'user' \| 'agent' \| 'cli', agent?, command? }` |
 | `autoClean` | 开关和天数；计时不在这里，在 `library.json` |
 | `script.autoRun` | 脚本项目“保存后自动运行”（可无） |
+| `requestAutoResend` | 请求面板“服务重载后自动重发”的开合（可无，没写过就是开） |
 | `lastRequest` | 请求面板上一次发出的请求：`method`、`path`、`headers`（`{name,value}` 数组）、`payload`（可无） |
 | `trust` | 第一版恒为 `trusted` |
 

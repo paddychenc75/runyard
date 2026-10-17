@@ -73,11 +73,26 @@ describe("请求面板的纯逻辑", () => {
     }
   });
 
-  it("[DESKTOP-REQUEST-PANEL-09] 只有从重载回到就绪算“重载后”，首次启动和重启不算", () => {
-    expect(reloadedAgain("reloading", "ready")).toBe(true);
-    expect(reloadedAgain("starting", "ready")).toBe(false);
-    expect(reloadedAgain("ready", "ready")).toBe(false);
-    expect(reloadedAgain("reloading", "crashed")).toBe(false);
+  it("[DESKTOP-REQUEST-PANEL-09] 从重载回到就绪算“重载后”，首次启动和重启不算", () => {
+    const look = (
+      state: Parameters<typeof reloadedAgain>[0]["state"],
+      pid: number | null = 10,
+    ) => ({
+      state,
+      pid,
+    });
+    expect(reloadedAgain(look("reloading"), look("ready", 11))).toBe(true);
+    expect(reloadedAgain(look("starting"), look("ready", 11))).toBe(false);
+    expect(reloadedAgain(look("ready"), look("ready"))).toBe(false);
+    expect(reloadedAgain(look("reloading"), look("crashed"))).toBe(false);
+  });
+
+  it("[DESKTOP-REQUEST-PANEL-16] 没看到重载中：前后都是就绪而进程号换了也算；没换、或有一边不知道进程号不算", () => {
+    const ready = (pid: number | null) => ({ state: "ready" as const, pid });
+    expect(reloadedAgain(ready(10), ready(11))).toBe(true);
+    expect(reloadedAgain(ready(10), ready(10))).toBe(false);
+    expect(reloadedAgain(ready(null), ready(11))).toBe(false);
+    expect(reloadedAgain(ready(10), ready(null))).toBe(false);
   });
 });
 

@@ -31,6 +31,14 @@ export function requestMethods(
       const playground = text(id);
       return playground === null ? null : await runBar.lastRequest(playground);
     },
+    "request.setAutoResend": async (value) => {
+      if (typeof value !== "object" || value === null) return;
+      const { id, enabled } = value as Record<string, unknown>;
+      const playground = text(id);
+      if (playground !== null && typeof enabled === "boolean") {
+        await runBar.setRequestAutoResend(playground, enabled);
+      }
+    },
     "request.openInBrowser": (value) => {
       if (typeof value !== "object" || value === null) return;
       const { id, path } = value as Record<string, unknown>;

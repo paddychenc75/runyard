@@ -294,6 +294,31 @@ describe("服务重载后自动重发", () => {
     expect(sends()).toHaveLength(0);
   });
 
+  it("[DESKTOP-REQUEST-PANEL-16] 没看到“重新加载中”：就绪状态不变而进程号换了，同样自动重发；进程号没换不重发", async () => {
+    const user = userEvent.setup();
+    const { sends, rerender } = setup(service({ pid: 100 }));
+    await user.click(sendButton());
+    await screen.findByText("200 OK");
+    rerender(service({ pid: 100 }));
+    await act(async () => {});
+    expect(sends()).toHaveLength(1);
+    rerender(service({ pid: 101 }));
+    await waitFor(() => expect(sends()).toHaveLength(2));
+    expect(await screen.findByText(/^\d\d:\d\d:\d\d 自动重发$/)).toBeTruthy();
+  });
+
+  it("[DESKTOP-REQUEST-PANEL-15] 点开关：发 request.setAutoResend 存下来；项目记着是关，重开标签页时开关就是关", async () => {
+    const user = userEvent.setup();
+    const { calls } = setup(service({ requestAutoResend: true }));
+    await user.click(screen.getByRole("switch", { name: "服务重载后自动重发" }));
+    expect(calls).toContainEqual(["request.setAutoResend", { id: "a", enabled: false }]);
+    cleanup();
+    setup(service({ requestAutoResend: false }));
+    expect(
+      screen.getByRole("switch", { name: "服务重载后自动重发" }).getAttribute("aria-checked"),
+    ).toBe("false");
+  });
+
   it("[DESKTOP-REQUEST-PANEL-09] 不是文件变化引起的重新就绪（停止后再运行）不自动重发", async () => {
     const user = userEvent.setup();
     const { sends, rerender } = setup(service());

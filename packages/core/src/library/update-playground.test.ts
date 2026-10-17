@@ -1,3 +1,4 @@
+import type { RequestSpec } from "@runyard/protocol";
 import { describe, expect, it } from "vitest";
 import { isLibraryError } from "./library-error.ts";
 import { createLibraryHarness, seedOf, user } from "./library-harness.test.ts";
@@ -20,6 +21,30 @@ describe("update 与 forget", () => {
     expect(written.script).toEqual({ autoRun: false });
     expect(written.future).toEqual({ a: 1 });
     expect(written.id).toBe(library.find("demo")?.entry.id);
+  });
+
+  it("[DESKTOP-REQUEST-PANEL-17] 同一项目的几个 update 同时发生：上一次请求、备注、自动重发开关都留下，谁也没覆盖谁", async () => {
+    const { h, library } = await setup();
+    const request: RequestSpec = { method: "GET", path: "/todos", headers: [], payload: "" };
+    await Promise.all([
+      library.update("demo", { lastRequest: request }),
+      library.update("demo", { note: "同时写的备注" }),
+      library.update("demo", { requestAutoResend: false }),
+      library.update("demo", { scriptAutoRun: false }),
+    ]);
+    const written = h.readJson(h.at("demo", ".runyard", "playground.json"));
+    expect(written.lastRequest).toEqual(request);
+    expect(written.note).toBe("同时写的备注");
+    expect(written.requestAutoResend).toBe(false);
+    expect(written.script).toEqual({ autoRun: false });
+  });
+
+  it("[DESKTOP-REQUEST-PANEL-15] requestAutoResend 写进 playground.json，其余字段不动", async () => {
+    const { h, library } = await setup();
+    const file = h.at("demo", ".runyard", "playground.json");
+    const before = h.readJson(file);
+    await library.update("demo", { requestAutoResend: false });
+    expect(h.readJson(file)).toEqual({ ...before, requestAutoResend: false });
   });
 
   it("update 遇到更新版本写的 playground.json：DATA_FROM_NEWER_VERSION，文件不动", async () => {

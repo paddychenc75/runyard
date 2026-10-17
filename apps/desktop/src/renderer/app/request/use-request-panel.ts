@@ -8,6 +8,7 @@ import {
   draftToSpec,
   type RequestDraft,
   reloadedAgain,
+  type ServiceLook,
   specToDraft,
 } from "../../../shared/request-model.ts";
 
@@ -42,7 +43,17 @@ export function useRequestPanel(bridge: DesktopBridge, tab: TabRow): RequestPane
   const [draft, setDraft] = useState<RequestDraft>(DEFAULT_DRAFT);
   const [response, setResponse] = useState<ShownResponse | null>(null);
   const [sending, setSending] = useState(false);
-  const [autoResend, setAutoResend] = useState(true);
+  // 开关按项目记在磁盘上（tab.requestAutoResend）；点了立刻翻过来，不等主进程回传新状态
+  const savedAutoResend = tab.requestAutoResend ?? true;
+  const [autoResend, setAutoResendLocal] = useState(savedAutoResend);
+  useEffect(() => setAutoResendLocal(savedAutoResend), [savedAutoResend, tab.id]);
+  const setAutoResend = useCallback(
+    (enabled: boolean) => {
+      setAutoResendLocal(enabled);
+      void bridge.call("request.setAutoResend", { id: tab.id, enabled });
+    },
+    [bridge, tab.id],
+  );
   const [copied, setCopied] = useState(false);
   // 上一次发出的请求：自动重发用它，不用此刻填着的（可能改到一半）
   const lastSent = useRef<RequestSpec | null>(null);
@@ -90,14 +101,16 @@ export function useRequestPanel(bridge: DesktopBridge, tab: TabRow): RequestPane
   );
 
   // 服务因文件变化重启、重新就绪：开关开着、发过请求才自动重发（规格 DESKTOP-REQUEST-PANEL-09、10）
-  const previous = useRef(tab.state);
+  const pid = tab.pid ?? null;
+  const previous = useRef<ServiceLook>({ state: tab.state, pid });
   useEffect(() => {
     const before = previous.current;
-    previous.current = tab.state;
-    if (reloadedAgain(before, tab.state) && autoResendRef.current && lastSent.current !== null) {
+    const now = { state: tab.state, pid };
+    previous.current = now;
+    if (reloadedAgain(before, now) && autoResendRef.current && lastSent.current !== null) {
       void dispatch(lastSent.current, true);
     }
-  }, [tab.state, dispatch]);
+  }, [tab.state, pid, dispatch]);
 
   return {
     draft,

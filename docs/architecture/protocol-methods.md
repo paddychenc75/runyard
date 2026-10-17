@@ -11,7 +11,7 @@
 | 类型 | 形状 | 出处 |
 | --- | --- | --- |
 | `Owner` | `{ kind: 'tab', clientId, tabId }` 或 `{ kind: 'cli', agent?, command }` | §5.1 |
-| `Playground` | 项目记录：合并 `playground.json` 与 `library.json` 里客户端用得到的字段（`id` `name` `path` `kind` `template` `runner` `packageManager?` `entry?` `note?` `createdAt` `createdBy` `autoClean { enabled, days? }` `scriptAutoRun?` `port?` `lastUsedAt` `lastOpenedAt?` `missingSince?`）；“已保留”不是字段，`autoClean.enabled` 为 `false` 即是。磁盘上才有的字段（`requires`、`toolchainAtCreate`、`open`、`trust`、清理提醒状态）不进协议 | storage.md 第 2 节 |
+| `Playground` | 项目记录：合并 `playground.json` 与 `library.json` 里客户端用得到的字段（`id` `name` `path` `kind` `template` `runner` `packageManager?` `entry?` `note?` `createdAt` `createdBy` `autoClean { enabled, days? }` `scriptAutoRun?` `requestAutoResend?` `port?` `lastUsedAt` `lastOpenedAt?` `missingSince?`）；“已保留”不是字段，`autoClean.enabled` 为 `false` 即是。磁盘上才有的字段（`requires`、`toolchainAtCreate`、`open`、`trust`、清理提醒状态）不进协议 | storage.md 第 2 节 |
 | `RunSnapshot` | `runId`、`playgroundId`、`name`、`kind`（`server` `static` `oneshot`）、`state`、`reason?`、`stale?`（脚本：语法错误，保留上次输出）、`owner`、`port?`、`url?`（字面量 `127.0.0.1`）、`portFallback?`（`{ wanted, reason, occupant? }`）、`pid?`、`exitCode?`、`startedAt`、`readyMs?`、`durationMs?`、`idleStopAt?`（只有命令行持有的有）、`cursor`、`alreadyRunning?` | §4.3、§4.5、§5.3 示例 |
 | `LogEntry` | 见 [protocol.md](protocol.md) 第 4 节 | §5.1 |
 | `LocalizedText` | 字符串，或“语言到文字”的对象（`en` 必填）；管理进程原样转发，不挑语言。**还没有代码**：随模板方法加 | §6.8 |
@@ -41,7 +41,7 @@
 | `playground.get` | `playground`（id 或名称） | `Playground` | 找不到：`PLAYGROUND_NOT_FOUND` |
 | `playground.create` | `template`、`name?`、`note?`、`autoClean?`（天数）、`vars?`、`ifExists?`（`reuse` `fail`）、`createdBy`（推，来自 `new` 的参数） | `Playground`、`created` | 名称缺省时取“模板标识加序号”（PRD #prd-naming）；`NAME_INVALID` `NAME_RESERVED` `NAME_EXISTS` `TEMPLATE_NOT_FOUND` |
 | `playground.rename` | `playground`、`newName` | `Playground` | 固定顺序见 run-state-machine.md 第 5 节；安装中、启动中返回 `BUSY`；占用返回 `PATH_LOCKED` |
-| `playground.update` | `playground`、`note?`、`autoClean?`、`scriptAutoRun?` | `Playground` | 改备注、自动清理、脚本保存后自动运行 |
+| `playground.update` | `playground`、`note?`、`autoClean?`、`scriptAutoRun?`、`requestAutoResend?` | `Playground` | 改备注、自动清理、脚本保存后自动运行、请求面板的自动重发开关 |
 | `playground.duplicate` | `playground`、`name?` | `Playground` | 复制出来的新 `id`、新端口 |
 | `playground.trash` | `playground` | `{ trashed, deletedRegenerable }`（推，来自平台层 `fs.trash`；后者是直接删掉的可再生目录的相对路径列表） | 先停止，再走释放顺序；错误 `PATH_LOCKED` `PATH_TOO_LONG` `TRASH_UNAVAILABLE` |
 | `playground.relocate` | `playground`、`path` | `Playground` | 接受任意位置的文件夹，只要里面的 `id` 对得上（推自 PRD #prd-decision-table 第 19 项） |
