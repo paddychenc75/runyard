@@ -335,7 +335,7 @@ describe("智能体创建并运行的提示（主进程）", () => {
 });
 
 describe("创建时的提示（主进程）", () => {
-  it("创建成功带回路径接近上限的提示：给一条提示，创建照常；关掉后消失", async () => {
+  it("[DESKTOP-CREATE-FLOW-21] 创建成功带回路径接近上限的提示：给一条提示，创建照常；关掉后消失", async () => {
     const { daemon, controller } = setup();
     await controller.start();
     const created = { ...playground("n", "long-name"), createdBy: { kind: "user" as const } };
@@ -364,7 +364,7 @@ describe("创建时的提示（主进程）", () => {
     expect(controller.getState().notices).toEqual([]);
   });
 
-  it("资源库在同步目录下：状态里带标记，新建弹窗据此给警告；不在就没有", async () => {
+  it("[DESKTOP-CREATE-FLOW-20] 资源库在同步目录下：状态里带标记，新建弹窗据此给警告；不在就没有", async () => {
     const yes = setup({ synced: true });
     await yes.controller.start();
     expect(yes.controller.getState().libraryRootSynced).toBe(true);

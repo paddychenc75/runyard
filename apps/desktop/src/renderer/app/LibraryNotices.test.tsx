@@ -329,7 +329,7 @@ describe("右下角的提示", () => {
     expect(screen.queryByRole("region", { name: "提示" })).toBeNull();
   });
 
-  it("创建时路径接近上限的提示：写项目名和提示原文，只有关闭按钮", async () => {
+  it("[DESKTOP-CREATE-FLOW-21] 创建时路径接近上限的提示：写项目名和提示原文，只有关闭按钮", async () => {
     setup(
       library([row("long")], {
         notices: [{ kind: "path-near-limit", id: "path-1", name: "long", length: 240, limit: 255 }],
