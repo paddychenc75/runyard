@@ -78,7 +78,14 @@ export function ScrollArea({
           wake();
         }}
       >
-        <BaseScrollArea.Content className={styles.content}>{children}</BaseScrollArea.Content>
+        {/* Base UI 在内容上写了内联的 min-width: fit-content；只竖向滚动时压掉它，
+            否则长行会把内容撑出视口（伪语言下的溢出检查抓到过） */}
+        <BaseScrollArea.Content
+          className={styles.content}
+          style={orientation === "vertical" ? { minWidth: 0 } : undefined}
+        >
+          {children}
+        </BaseScrollArea.Content>
       </BaseScrollArea.Viewport>
       {orientation === "horizontal" ? null : (
         <BaseScrollArea.Scrollbar orientation="vertical" className={styles.scrollbar}>

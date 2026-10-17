@@ -20,6 +20,7 @@
   min-inline-size: 100%;
 }
 
+/* 只竖向滚动时内容宽度跟着视口走，长文字靠省略号收住（min-width 见 ScrollArea.tsx） */
 .root[data-orientation="vertical"] .content {
   inline-size: 100%;
 }
