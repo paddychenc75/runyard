@@ -2,7 +2,7 @@ import http from "node:http";
 import type { AddressInfo } from "node:net";
 import type { RequestSpec } from "@runyard/protocol";
 import { FakeClock } from "@runyard/testing";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { sendLocalRequest } from "./request-send.ts";
 
 // 请求面板的一次请求：对着真实的本机 http 服务，时钟用假的（超时不真等 30 秒）。
@@ -122,6 +122,21 @@ describe("请求面板发请求", () => {
       "/@evil.example/x",
       "/http://example.com/",
     ]);
+  });
+
+  it("[DESKTOP-REQUEST-PANEL-02] 发出去的目标永远是 127.0.0.1 加运行的端口，路径只进 path 选项（不拼进 URL、不改主机）", async () => {
+    const spy = vi.spyOn(http, "request");
+    const { port } = await serve((_req, res) => res.end("ok"));
+    for (const path of ["//example.com/x", "/@evil.example/", "/?host=example.com"]) {
+      await sendLocalRequest({ port, request: get(path), clock: new FakeClock() });
+    }
+    const options = spy.mock.calls.map(([first]) => first as http.RequestOptions);
+    expect(options.map((o) => [o.host, o.port, o.path])).toEqual([
+      ["127.0.0.1", port, "//example.com/x"],
+      ["127.0.0.1", port, "/@evil.example/"],
+      ["127.0.0.1", port, "/?host=example.com"],
+    ]);
+    spy.mockRestore();
   });
 
   it("[DESKTOP-REQUEST-PANEL-02] 路径里夹带换行或空格这类能拆出第二个请求的字符：拒绝发送", async () => {
