@@ -2,6 +2,7 @@ import { Dialog as BaseDialog } from "@base-ui/react/dialog";
 import type { Localized } from "@runyard/i18n";
 import type { FormEvent, KeyboardEvent, ReactNode, RefObject } from "react";
 import { GlassSurface } from "../GlassSurface/index.ts";
+import { ScrollArea } from "../ScrollArea/index.ts";
 import styles from "./Dialog.module.css";
 
 export interface DialogProps {
@@ -63,27 +64,29 @@ export function Dialog({
           initialFocus={initialFocus}
           render={<GlassSurface material="dialog" />}
         >
-          <form className={styles.form} onSubmit={submit} onKeyDown={guardComposition} noValidate>
-            <div className={styles.header}>
-              {leading === undefined ? null : <span className={styles.leading}>{leading}</span>}
-              <div className={styles.heading}>
-                <BaseDialog.Title className={styles.title}>{title}</BaseDialog.Title>
-                {subtitle === undefined ? null : (
-                  <BaseDialog.Description className={styles.subtitle}>
-                    {subtitle}
-                  </BaseDialog.Description>
+          <ScrollArea className={styles.scroll} viewportClassName={styles.scrollViewport}>
+            <form className={styles.form} onSubmit={submit} onKeyDown={guardComposition} noValidate>
+              <div className={styles.header}>
+                {leading === undefined ? null : <span className={styles.leading}>{leading}</span>}
+                <div className={styles.heading}>
+                  <BaseDialog.Title className={styles.title}>{title}</BaseDialog.Title>
+                  {subtitle === undefined ? null : (
+                    <BaseDialog.Description className={styles.subtitle}>
+                      {subtitle}
+                    </BaseDialog.Description>
+                  )}
+                </div>
+                {headerAction === undefined ? null : (
+                  <span className={styles.action}>{headerAction}</span>
                 )}
               </div>
-              {headerAction === undefined ? null : (
-                <span className={styles.action}>{headerAction}</span>
-              )}
-            </div>
-            {children}
-            <div className={styles.footer}>
-              <span className={styles.hint}>{hint}</span>
-              {actions}
-            </div>
-          </form>
+              {children}
+              <div className={styles.footer}>
+                <span className={styles.hint}>{hint}</span>
+                {actions}
+              </div>
+            </form>
+          </ScrollArea>
         </BaseDialog.Popup>
       </BaseDialog.Portal>
     </BaseDialog.Root>

@@ -84,7 +84,7 @@
 /* 当前一步：缺一口的圆环（设计稿 Creating），在转；系统要求减少动效时不转 */
 .step[data-status="current"] .mark {
   border-inline-end-color: transparent;
-  animation: spin 900ms linear infinite;
+  animation: spin var(--motion-duration-spin) linear infinite;
 }
 
 @keyframes spin {

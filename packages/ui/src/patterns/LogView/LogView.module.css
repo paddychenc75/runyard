@@ -1,14 +1,16 @@
 /* 设计稿 Service 的输出区：等宽小字，行首是淡色的时间，命令行蓝色、提示橙色、错误红色 */
 .root {
-  position: relative;
   block-size: 100%;
-  box-sizing: border-box;
-  overflow: auto;
-  padding-inline: var(--space-5);
   font-family: var(--font-mono);
   font-size: var(--text-code-small-size);
   line-height: var(--text-code-line-height);
   color: var(--color-text-primary);
+}
+
+.viewport {
+  position: relative;
+  box-sizing: border-box;
+  padding-inline: var(--space-5);
 }
 
 .probe {

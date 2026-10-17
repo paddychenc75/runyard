@@ -3,6 +3,12 @@ import userEvent from "@testing-library/user-event";
 import type { BootstrapInfo, DesktopBridge } from "./src/shared/desktop-bridge.ts";
 import type { LibraryState } from "./src/shared/library-state.ts";
 
+// jsdom 没有 getAnimations；Base UI 的滚动区在滚动停下的计时器里会调用它，缺了就是一个未捕获的异常
+if (typeof Element !== "undefined") {
+  const proto = Element.prototype as { getAnimations?: () => unknown[] };
+  proto.getAnimations ??= () => [];
+}
+
 // 每个界面测试文件在自己的用例开始前，先把外壳整个画一遍、做一次角色查询。
 //
 // 为什么：一个文件里第一次画外壳、第一次角色查询要付一次冷启动的代价（加载、即时编译、

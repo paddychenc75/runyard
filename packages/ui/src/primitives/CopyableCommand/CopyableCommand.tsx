@@ -1,5 +1,6 @@
 import type { Localized } from "@runyard/i18n";
 import type { ComponentProps } from "react";
+import { ScrollArea } from "../ScrollArea/index.ts";
 import { UserText } from "../UserText/index.ts";
 import styles from "./CopyableCommand.module.css";
 
@@ -19,9 +20,11 @@ export function CopyableCommand({ command, label, className, ...rest }: Copyable
       {...rest}
       className={className === undefined ? styles.root : `${styles.root} ${className}`}
     >
-      <UserText mono className={styles.command}>
-        {command}
-      </UserText>
+      <ScrollArea orientation="horizontal" className={styles.scroll}>
+        <UserText mono className={styles.command}>
+          {command}
+        </UserText>
+      </ScrollArea>
     </fieldset>
   );
 }

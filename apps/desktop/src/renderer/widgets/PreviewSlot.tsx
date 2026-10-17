@@ -1,4 +1,5 @@
 import { useT } from "@runyard/i18n/react";
+import { ScrollArea } from "@runyard/ui";
 import { type ReactNode, useEffect, useRef } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { Bounds } from "../../shared/layout.ts";
@@ -62,9 +63,13 @@ export function PreviewSlot({ bridge, placeholder, frame, overlay, onBounds }: P
         />
       )}
       {overlay === undefined ? null : (
-        <div className={styles.overlay} data-framed={frame !== null ? "" : undefined}>
+        <ScrollArea
+          className={styles.overlay}
+          viewportClassName={styles.overlayViewport}
+          data-framed={frame !== null ? "" : undefined}
+        >
           {overlay}
-        </div>
+        </ScrollArea>
       )}
     </div>
   );

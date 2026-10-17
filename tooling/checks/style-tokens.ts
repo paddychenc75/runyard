@@ -16,13 +16,19 @@ import type { Check } from "./workspace.ts";
 // 5. 四处之外的 [data-platform] 选择器；
 // 6. 基础级变量（--blue-600 一类，名单读自 packages/tokens/generated/tokens.css）；
 // 7. 左右方向的属性（要写逻辑方向）；
-// 8. tsx 里 style={{…}} 的颜色和尺寸（style-attributes.ts），以及 tsx 字符串里的颜色和 backdrop-filter。
+// 8. tsx 里 style={{…}} 的颜色和尺寸（style-attributes.ts），以及 tsx 字符串里的颜色和 backdrop-filter；
+// 9. 写死的动画时长（transition、animation 里的 120ms、0.2s，视觉规范第 6 节，只许 var(--motion-duration-*)）；
+// 10. 浏览器自带滚动条的样式（::-webkit-scrollbar、scrollbar-width、scrollbar-color）和 overflow: auto|scroll：
+//     滚动区域一律用 @runyard/ui 的 ScrollArea（视觉规范第 5 节，#311），只有 ScrollArea 自己的目录可以写。
 // 范围：packages/ui/ 下除测试外的 .css 和 .tsx；apps/desktop/src/renderer/ 下除测试外的 .module.css 和 .tsx
 //（技术设计 §6.7 写的是“*.module.css 和 *.tsx”；全局样式文件只在 packages/ui 里有，那里全查），
 // 另外 renderer 里任何 .css 也查第 4、5 条。packages/tokens/generated/ 豁免（生成物，不在上述范围里）。
 
 const UI_ROOT = "packages/ui/";
 const RENDERER_ROOT = "apps/desktop/src/renderer/";
+const SCROLL_AREA = "packages/ui/src/primitives/ScrollArea/";
+// 组件工作台是开发用的静态页，不是应用界面，里面的 overflow 不算
+const SCROLL_EXEMPT = ["packages/ui/workbench/"];
 const MATERIALS = "packages/ui/src/styles/materials.css";
 const TOKENS_CSS = "packages/tokens/generated/tokens.css";
 const SEMANTIC_PREFIXES = new Set([
@@ -54,6 +60,9 @@ const DIRECT_VALUE_PROPERTY = /^(?:font|font-size|font-family|z-index|box-shadow
 const PHYSICAL_PROPERTY =
   /^(?:margin|padding|scroll-margin|scroll-padding)-(?:left|right)$|^border-(?:left|right)(?:-[a-z]+)?$|^border-(?:top|bottom)-(?:left|right)-radius$|^(?:left|right)$/;
 const PHYSICAL_VALUE_PROPERTY = /^(?:text-align|float|clear)$/;
+const DURATION_PROPERTY = /^(?:transition(?:-duration|-delay)?|animation(?:-duration|-delay)?)$/;
+const NATIVE_SCROLLBAR_PROPERTY = /^scrollbar-(?:width|color|gutter)$/;
+const SCROLLING_OVERFLOW = /\b(?:auto|scroll|overlay)\b/i;
 const COLOR_FUNCTION = /\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\(/i;
 const HEX_COLOR = /(?<![\w&-])#[0-9a-fA-F]{3,8}\b/;
 
@@ -112,9 +121,36 @@ export function checkCssDeclaration(
       `${where} 写了 ${property}，它只许出现在 packages/ui/src/styles/materials.css。组件改用 <GlassSurface material="…">，不自己写模糊；见技术设计 §6.7 规则 7。`,
     );
   }
+  if (NATIVE_SCROLLBAR_PROPERTY.test(property) && !path.startsWith(SCROLL_AREA)) {
+    errors.push(
+      `${where} 写了 ${property}，浏览器自带的滚动条样式只许出现在 ${SCROLL_AREA}。滚动区域改用 @runyard/ui 的 <ScrollArea>；见视觉规范第 5 节。`,
+    );
+  }
   if (!valueRules) return errors;
 
   const value = scrub(decl.value);
+  if (
+    /^overflow(?:-[xy]|-inline|-block)?$/.test(property) &&
+    SCROLLING_OVERFLOW.test(value) &&
+    !path.startsWith(SCROLL_AREA) &&
+    !SCROLL_EXEMPT.some((prefix) => path.startsWith(prefix))
+  ) {
+    errors.push(
+      `${where} 写了 ${property}: ${decl.value.trim()}，会出现浏览器自带的滚动条。滚动区域改用 @runyard/ui 的 <ScrollArea>（内容的内边距用它的 viewportClassName）；见视觉规范第 5 节。`,
+    );
+  }
+  if (DURATION_PROPERTY.test(property)) {
+    const durations = [
+      ...value.replace(/var\([^)]*\)/g, "").matchAll(/(?<![\w.#-])(\d*\.?\d+)(m?s)\b/g),
+    ]
+      .filter((match) => Number(match[1]) !== 0)
+      .map((match) => `${match[1]}${match[2]}`);
+    if (durations.length > 0) {
+      errors.push(
+        `${where} 写死了时长 ${durations.join("、")}（${property}）。${fix("时长只许 var(--motion-duration-*)，缺就先加到 tokens.json")}`,
+      );
+    }
+  }
   const color = colorProblem(property, decl.value);
   if (color !== undefined)
     errors.push(`${where} 写死了颜色 ${color}（${property}）。${fix("颜色不能写死")}`);
@@ -161,6 +197,15 @@ export function checkCssFile(
   const errors = declarations.flatMap((decl) =>
     checkCssDeclaration(path, decl, baseVars, valueRules),
   );
+  if (!path.startsWith(SCROLL_AREA)) {
+    for (const prelude of preludes) {
+      if (/::-webkit-scrollbar/.test(prelude.text)) {
+        errors.push(
+          `${path}:${prelude.line} 写了 ::-webkit-scrollbar，浏览器自带的滚动条样式只许出现在 ${SCROLL_AREA}。滚动区域改用 @runyard/ui 的 <ScrollArea>；见视觉规范第 5 节。`,
+        );
+      }
+    }
+  }
   if (!PLATFORM_ALLOWED.some((prefix) => path.startsWith(prefix))) {
     for (const prelude of preludes) {
       if (/\[\s*data-platform\b/.test(prelude.text)) {

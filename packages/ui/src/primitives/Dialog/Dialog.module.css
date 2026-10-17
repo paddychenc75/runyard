@@ -20,9 +20,10 @@
   inline-size: var(--size-dialog-width);
   max-inline-size: calc(100% - var(--space-10) * 2);
   max-block-size: calc(100% - var(--space-10) * 2);
-  overflow-y: auto;
-  padding-block: calc(var(--space-9) + var(--space-1)) calc(var(--space-8) + var(--space-1));
-  padding-inline: var(--space-10);
+  /* 内容比窗口高时在 ScrollArea 里滚动；单行 1fr 行在 max-block-size 下会被收窄，视口因此有确定的高度 */
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  overflow: hidden;
   border: var(--glass-border-width) solid var(--glass-border-color);
   color: var(--color-text-primary);
   transform: translate(-50%, -50%);
@@ -36,6 +37,16 @@
 .popup[data-starting-style],
 .popup[data-ending-style] {
   opacity: 0;
+}
+
+.scroll {
+  min-block-size: 0;
+}
+
+.scrollViewport {
+  box-sizing: border-box;
+  padding-block: calc(var(--space-9) + var(--space-1)) calc(var(--space-8) + var(--space-1));
+  padding-inline: var(--space-10);
 }
 
 .form {

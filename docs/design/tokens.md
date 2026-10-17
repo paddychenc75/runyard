@@ -43,10 +43,11 @@ disagree, `tokens.json` wins.
 
 | Role | Light | Dark |
 | --- | --- | --- |
-| Glass shadow, toolbar (`--shadow-1`) | 0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(15, 23, 42, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.9) | 0 10px 28px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.14) |
-| Glass shadow, sidebar (`--shadow-2`) | 0 0 0 0.5px rgba(0, 0, 0, 0.1), 0 12px 36px rgba(15, 23, 42, 0.12), inset 0 1px 0 rgba(255, 255, 255, 1) | 0 12px 36px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12) |
-| Glass shadow, dialog (`--shadow-3`) | 0 0 0 0.5px rgba(0, 0, 0, 0.14), 0 40px 90px rgba(15, 23, 42, 0.32), inset 0 1px 0 rgba(255, 255, 255, 1) | 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 40px 90px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.14) |
-| Glass shadow, menu / popover (between sidebar and dialog) (`--shadow-menu`) | 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 16px 40px rgba(15, 23, 42, 0.2), inset 0 1px 0 rgba(255, 255, 255, 1) | 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.14) |
+| Elevation 0: inset blocks, table rows, inputs (no shadow) (`--shadow-flat`) | none | none |
+| Elevation 1: content cards (no shadow, a 1 px hairline border instead) (`--shadow-card`) | none | none |
+| Elevation 2: glass bars, sidebar, file tree (`--shadow-floating`) | 0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(15, 23, 42, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.9) | 0 10px 28px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.14) |
+| Elevation 4: dialogs, template picker (`--shadow-dialog`) | 0 0 0 0.5px rgba(0, 0, 0, 0.14), 0 40px 90px rgba(15, 23, 42, 0.32), inset 0 1px 0 rgba(255, 255, 255, 1) | 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 40px 90px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.14) |
+| Elevation 3: menus, popovers, tooltips (`--shadow-overlay`) | 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 16px 40px rgba(15, 23, 42, 0.2), inset 0 1px 0 rgba(255, 255, 255, 1) | 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.14) |
 | Primary button glow (`--shadow-accent-button`) | 0 4px 14px rgba(0, 113, 227, 0.25) | 0 4px 14px rgba(10, 132, 255, 0.35) |
 | Focus ring: 1.5 px accent line plus 3 px halo (`--shadow-focus-ring`) | 0 0 0 1.5px #0071E3, 0 0 0 4.5px rgba(0, 113, 227, 0.18) | 0 0 0 1.5px #0A84FF, 0 0 0 4.5px rgba(10, 132, 255, 0.32) |
 | Text field focus halo (3 px, beside the 1.5 px accent border) (`--shadow-field-focus`) | 0 0 0 3px rgba(0, 113, 227, 0.18) | 0 0 0 3px rgba(10, 132, 255, 0.2) |
@@ -91,6 +92,9 @@ disagree, `tokens.json` wins.
 | Crashed / destructive: mark (`--color-status-danger-mark`) | #D70015 | #FF453A |
 | Crashed / destructive: text (`--color-status-danger-text`) | #C4001A | #FF9F99 |
 | Destructive tint background (`--color-fill-danger-tint`) | rgba(215, 0, 21, 0.1) | rgba(255, 69, 58, 0.18) |
+| Destructive solid fill (confirm button of a destructive dialog) (`--color-fill-danger`) | #D70015 | #FF453A |
+| Destructive solid fill, hover (`--color-fill-danger-hover`) | #C4001A | #F23C31 |
+| Destructive solid fill, pressed (`--color-fill-danger-pressed`) | #A60017 | #E0352B |
 | Accent fill, hover (`--color-fill-accent-hover`) | #0068D1 | #0979EB |
 | Accent fill, pressed (`--color-fill-accent-pressed`) | #005FBF | #086FD6 |
 | Neutral fill, hover (`--color-fill-neutral-hover`) | rgba(118, 118, 128, 0.22) | rgba(118, 118, 128, 0.32) |
@@ -102,6 +106,13 @@ disagree, `tokens.json` wins.
 | Switch on (`--color-fill-switch-on`) | #28A745 | #30D158 |
 | Switch off track (`--color-fill-switch-off`) | rgba(120, 120, 128, 0.32) | rgba(120, 120, 128, 0.4) |
 
+### Scrollbar
+
+| Role | Light | Dark |
+| --- | --- | --- |
+| Scrollbar thumb at rest (primary text colour at 35%) (`--color-scrollbar-thumb`) | rgba(29, 29, 31, 0.35) | rgba(245, 245, 247, 0.35) |
+| Scrollbar thumb on hover or drag (55%) (`--color-scrollbar-thumb-hover`) | rgba(29, 29, 31, 0.55) | rgba(245, 245, 247, 0.55) |
+
 ### Technology logos
 
 | Role | Light | Dark |
@@ -109,6 +120,11 @@ disagree, `tokens.json` wins.
 | HTML5 logo on a template tile (W3C orange; the lighter official orange in dark) (`--color-brand-html5`) | #E34C26 | #F06529 |
 | Vue logo on a template tile (official navy in light, official green in dark) (`--color-brand-vue`) | #35495E | #4FC08D |
 | Python logo on a template tile (official blue; the lighter official blue in dark) (`--color-brand-python`) | #3776AB | #4B8BBE |
+| Python logo, second official colour (yellow) (`--color-brand-python-yellow`) | #FFD43B | #FFD43B |
+| Letter colour of the React template tile (only borrows the hue) (`--color-brand-react`) | #087EA4 | #61DAFB |
+| Letter colour of the Go template tile (`--color-brand-go`) | #007D9C | #00ADD8 |
+| Letter colour of the Node + TypeScript template tile (`--color-brand-node`) | #417E38 | #5FA04E |
+| Letter colour of the Hono template tile (`--color-brand-hono`) | #D14A00 | #FF8A3D |
 
 ### Code syntax
 
@@ -151,6 +167,12 @@ disagree, `tokens.json` wins.
 
 | Variable | Value | Role |
 | --- | --- | --- |
+| `--radius-xs` | 6px | Tier xs: key caps, small tiles |
+| `--radius-sm` | 9px | Tier sm: 28-32 px rows and controls, menu items, file tabs |
+| `--radius-md` | 12px | Tier md: 40-54 px rows, fields, inset blocks |
+| `--radius-lg` | 16px | Tier lg: content cards, menus, popovers |
+| `--radius-xl` | 20px | Tier xl: floating panels at the window edge |
+| `--radius-2xl` | 28px | Tier 2xl: dialogs |
 | `--radius-sidebar` | 20px | Floating sidebar |
 | `--radius-card` | 16px | Content card |
 | `--radius-dialog` | 28px | Dialog |
@@ -194,6 +216,11 @@ disagree, `tokens.json` wins.
 | `--size-badge` | 22px | Badge (retention, creator) height |
 | `--size-tile` | 22px | Template monogram tile, in a table row |
 | `--size-tile-lg` | 24px | Template monogram tile, on a chip |
+| `--size-scrollbar-thumb` | 6px | Scrollbar thumb thickness at rest |
+| `--size-scrollbar-thumb-hover` | 10px | Scrollbar thumb thickness on hover or drag |
+| `--size-scrollbar-hit` | 14px | Scrollbar hit area width |
+| `--size-scrollbar-inset` | 2px | Scrollbar distance from the container edge |
+| `--size-scrollbar-min` | 32px | Scrollbar thumb minimum length |
 | `--size-column-icon` | 36px | Table column: row actions |
 | `--size-column-sm` | 84px | Table column: port |
 | `--size-column-md` | 96px | Table column: retention |
@@ -276,6 +303,11 @@ disagree, `tokens.json` wins.
 | --- | --- | --- |
 | `--motion-duration-fast` | 120ms | Hover and press feedback |
 | `--motion-duration-base` | 200ms | Colour and layout transitions |
+| `--motion-duration-slide` | 250ms | Sliding selection background |
+| `--motion-duration-crossfade` | 120ms | Selection crossfade when Reduce Motion is on |
+| `--motion-duration-scrollbar-out` | 300ms | Scrollbar fade-out |
+| `--motion-duration-scrollbar-idle` | 800ms | Scrollbar stays visible this long after the last scroll |
+| `--motion-duration-spin` | 900ms | One turn of a loading spinner |
 | `--motion-duration-popover` | 250ms | Floating layers growing from their trigger (about 0.25 s) |
 
 ### Motion easing
@@ -283,6 +315,7 @@ disagree, `tokens.json` wins.
 | Variable | Value | Role |
 | --- | --- | --- |
 | `--motion-easing-standard` | cubic-bezier(0.2, 0, 0, 1) | Default easing |
+| `--motion-easing-slide` | cubic-bezier(0.32, 0.72, 0, 1) | Sliding selection: critically damped spring, no overshoot |
 | `--motion-easing-popover` | cubic-bezier(0.34, 1.3, 0.64, 1) | Floating layers, with a slight bounce |
 
 ### Layers

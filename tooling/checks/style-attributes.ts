@@ -5,7 +5,7 @@ import { lineOf, ts, visit } from "./ts-source.ts";
 // 能写 style 的只有内部元素；写了就必须是 var(--…)，或 0。
 
 const SIZE_PROPERTIES =
-  /^(?:width|height|minWidth|maxWidth|minHeight|maxHeight|top|bottom|gap|rowGap|columnGap|fontSize|borderRadius|zIndex|lineHeight|letterSpacing|margin\w*|padding\w*|inset\w*|border\w*Width|boxShadow|font|fontFamily)$/;
+  /^(?:width|height|minWidth|maxWidth|minHeight|maxHeight|top|bottom|gap|rowGap|columnGap|fontSize|borderRadius|zIndex|lineHeight|letterSpacing|margin\w*|padding\w*|inset\w*|border\w*Width|boxShadow|font|fontFamily|transition\w*|animation\w*)$/;
 const COLOR_PROPERTIES =
   /^(?:color|background\w*|border\w*Color|outline\w*|fill|stroke|caretColor|accentColor)$/;
 const PHYSICAL_PROPERTIES =

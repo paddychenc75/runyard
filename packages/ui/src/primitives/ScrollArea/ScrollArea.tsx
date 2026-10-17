@@ -1,5 +1,14 @@
 import { ScrollArea as BaseScrollArea } from "@base-ui/react/scroll-area";
-import type { ComponentProps } from "react";
+import { numbers } from "@runyard/tokens";
+import {
+  type ComponentProps,
+  type PointerEvent,
+  type Ref,
+  type UIEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import styles from "./ScrollArea.module.css";
 
 export type ScrollAreaOrientation = "vertical" | "horizontal" | "both";
@@ -7,23 +16,68 @@ export type ScrollAreaOrientation = "vertical" | "horizontal" | "both";
 export interface ScrollAreaProps extends ComponentProps<"div"> {
   /** 往哪个方向滚；默认只竖向 */
   orientation?: ScrollAreaOrientation;
+  /** 真正滚动的那个元素（读 scrollTop、跟随到底部、scrollIntoView 都用它） */
+  viewportRef?: Ref<HTMLDivElement>;
+  /** 透传给滚动元素的属性：role、aria-label、tabIndex、onScroll、data-* */
+  viewportProps?: Omit<ComponentProps<"div">, "children" | "ref" | "className">;
+  /** 滚动元素的额外类名（版面上的内边距放这里，滚动条才贴着容器边） */
+  viewportClassName?: string;
 }
 
-// 滚动条是细的悬浮条（macOS 风格），行为（滚动、拖动滑块、键盘）交给 Base UI。
+// 全应用唯一的滚动条（视觉规范第 5 节，#311）：叠加式胶囊滑块，平时 6px，指针移到滚动条
+// 区域或拖动时 10px；滚动、指针在区域内移动时淡入，停下 800ms 后淡出。行为（滚动、拖动滑块、
+// 键盘）交给 Base UI；“多久算空闲”它的 500ms 不合规范，所以自己记一个 data-active。
 // 视口自己是可聚焦的滚动区域，键盘用户能用方向键滚动。
 export function ScrollArea({
   orientation = "vertical",
   className,
   children,
+  viewportRef,
+  viewportProps,
+  viewportClassName,
+  onPointerMove,
+  onPointerLeave,
   ...rest
 }: ScrollAreaProps) {
+  const [active, setActive] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  const wake = () => {
+    setActive(true);
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => setActive(false), numbers["motion-duration-scrollbar-idle"]);
+  };
+  useEffect(() => () => clearTimeout(timer.current), []);
+
+  const { onScroll, ...viewportRest } = viewportProps ?? {};
   return (
     <BaseScrollArea.Root
       {...rest}
       className={className === undefined ? styles.root : `${styles.root} ${className}`}
       data-orientation={orientation}
+      data-active={active ? "" : undefined}
+      onPointerMove={(event: PointerEvent<HTMLDivElement>) => {
+        onPointerMove?.(event);
+        wake();
+      }}
+      onPointerLeave={(event: PointerEvent<HTMLDivElement>) => {
+        onPointerLeave?.(event);
+        wake();
+      }}
     >
-      <BaseScrollArea.Viewport className={styles.viewport}>
+      <BaseScrollArea.Viewport
+        {...viewportRest}
+        ref={viewportRef}
+        className={
+          viewportClassName === undefined
+            ? styles.viewport
+            : `${styles.viewport} ${viewportClassName}`
+        }
+        onScroll={(event: UIEvent<HTMLDivElement>) => {
+          onScroll?.(event);
+          wake();
+        }}
+      >
         <BaseScrollArea.Content className={styles.content}>{children}</BaseScrollArea.Content>
       </BaseScrollArea.Viewport>
       {orientation === "horizontal" ? null : (

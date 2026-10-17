@@ -13,9 +13,12 @@
   color: var(--color-text-primary);
 }
 
+.scroll {
+  flex: 1;
+}
+
 .command {
-  min-inline-size: 0;
-  overflow-x: auto;
+  display: block;
   white-space: pre;
   user-select: all;
 }

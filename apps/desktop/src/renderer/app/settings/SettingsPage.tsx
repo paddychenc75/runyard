@@ -1,4 +1,5 @@
 import { useT } from "@runyard/i18n/react";
+import { ScrollArea } from "@runyard/ui";
 import type { DesktopBridge } from "../../../shared/desktop-bridge.ts";
 import type { LibraryState } from "../../../shared/library-state.ts";
 import type { SettingsApi } from "../../bridge/use-settings.ts";
@@ -19,7 +20,12 @@ export interface SettingsPageProps {
 export function SettingsPage({ bridge, api, library }: SettingsPageProps) {
   const t = useT();
   return (
-    <section className={styles.root} aria-label={t("settings.page.aria")}>
+    <ScrollArea
+      role="region"
+      className={styles.root}
+      viewportClassName={styles.viewport}
+      aria-label={t("settings.page.aria")}
+    >
       <h1 className={styles.title}>{t("settings.page.title")}</h1>
       <div className={styles.columns}>
         <div className={styles.column}>
@@ -35,6 +41,6 @@ export function SettingsPage({ bridge, api, library }: SettingsPageProps) {
           <CliGroup api={api} />
         </div>
       </div>
-    </section>
+    </ScrollArea>
   );
 }

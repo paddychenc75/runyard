@@ -134,6 +134,44 @@ describe("style-tokens：结构规则", () => {
   });
 });
 
+describe("style-tokens：动效和滚动条（视觉规范第 5、6 节）", () => {
+  it("写死的动画时长报错，变量和 0s 放行", () => {
+    for (const body of [
+      `transition: opacity 120ms linear;`,
+      `transition: opacity var(--motion-duration-fast) linear, color 0.2s;`,
+      `animation: spin 900ms linear infinite;`,
+      `transition-duration: .25s;`,
+      `animation-delay: 100ms;`,
+    ]) {
+      expect(css(`  ${body}`), body).toContain("写死了时长");
+    }
+    expect(
+      css(
+        `  transition: opacity var(--motion-duration-fast) var(--motion-easing-standard);\n  animation: none;\n  transition-duration: 0s;`,
+      ),
+    ).toBe("");
+  });
+
+  it("浏览器自带滚动条的样式和 overflow: auto 只许在 ScrollArea 目录", () => {
+    for (const body of [`scrollbar-width: none;`, `scrollbar-color: red blue;`]) {
+      expect(css(`  ${body}`), body).toContain("ScrollArea");
+    }
+    expect(css(`  overflow-y: auto;`)).toContain("ScrollArea");
+    expect(css(`  overflow: scroll;`)).toContain("ScrollArea");
+    expect(css(`  overflow: hidden;\n  overflow-x: clip;`)).toBe("");
+    const inside = "packages/ui/src/primitives/ScrollArea/ScrollArea.module.css";
+    expect(
+      checkCssFile(inside, ".a { overflow: auto; scrollbar-width: none; }", BASE, true),
+    ).toEqual([]);
+    const webkit = ".a::-webkit-scrollbar { width: 0; }";
+    expect(checkCssFile(MODULE, webkit, BASE, true).join("\n")).toContain("::-webkit-scrollbar");
+    expect(
+      checkCssFile("apps/desktop/src/renderer/editor/x.css", webkit, BASE, false),
+    ).toHaveLength(1);
+    expect(checkCssFile(inside, webkit, BASE, true)).toEqual([]);
+  });
+});
+
 describe("style-tokens：tsx", () => {
   const tsx = (code: string) => checkTsxFile("packages/ui/src/primitives/X/X.tsx", code).join("\n");
 

@@ -1,0 +1,41 @@
+/*
+ * Monaco 的滚动条改成和 @runyard/ui 的 ScrollArea 一样（视觉规范第 5 节）：胶囊滑块，平时 6px、
+ * 指针移上去 10px，颜色走 scrollbarSlider.*（tokens 生成的主题），淡入 120ms、淡出 300ms。
+ * 滑块在 Monaco 里是 10px 宽、在 14px 的感应区里居中（见 monaco-host.ts），平时从靠边的一侧缩成 6px，
+ * 所以滑块离容器边始终是 2px。
+ */
+.monaco-scrollable-element > .scrollbar > .slider {
+  border-radius: var(--radius-capsule);
+  transition:
+    transform var(--motion-duration-fast) var(--motion-easing-standard),
+    background-color var(--motion-duration-fast) var(--motion-easing-standard);
+}
+
+.monaco-scrollable-element > .scrollbar.vertical > .slider {
+  transform: scaleX(0.6);
+  transform-origin: right center;
+}
+
+.monaco-scrollable-element > .scrollbar.horizontal > .slider {
+  transform: scaleY(0.6);
+  transform-origin: center bottom;
+}
+
+.monaco-scrollable-element > .scrollbar:hover > .slider,
+.monaco-scrollable-element > .scrollbar > .slider.active {
+  transform: none;
+}
+
+.monaco-scrollable-element > .scrollbar.visible {
+  transition: opacity var(--motion-duration-fast) linear;
+}
+
+.monaco-scrollable-element > .scrollbar.invisible.fade {
+  transition: opacity var(--motion-duration-scrollbar-out) linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .monaco-scrollable-element > .scrollbar > .slider {
+    transition: background-color var(--motion-duration-fast) linear;
+  }
+}

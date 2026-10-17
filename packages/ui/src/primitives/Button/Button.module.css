@@ -89,7 +89,7 @@
   --button-bg-pressed: var(--glass-control-bg-pressed);
   --button-weight: var(--text-control-weight);
   --button-edge: var(--glass-border-width) solid var(--glass-border-color);
-  --button-shadow: var(--shadow-1);
+  --button-shadow: var(--shadow-floating);
 }
 
 .root:hover:not([data-force-state]),
@@ -120,7 +120,7 @@
 }
 
 .spinner {
-  animation: spin 900ms linear infinite;
+  animation: spin var(--motion-duration-spin) linear infinite;
 }
 
 @keyframes spin {

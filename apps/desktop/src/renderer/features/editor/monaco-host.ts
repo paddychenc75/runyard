@@ -4,6 +4,7 @@ import { loadEditorRuntime } from "../../editor/editor-loader.ts";
 import type { EditorRuntime } from "../../editor/runtime-types.ts";
 import { editorLanguageOf } from "./file-language.ts";
 import type { FileTab } from "./file-tab.ts";
+import { scrollbarOptions } from "./monaco-scrollbar-options.ts";
 import type { ProjectSource } from "./project-source.ts";
 import type { SessionState } from "./session-types.ts";
 import { TypeScriptDiagnostics } from "./typescript-diagnostics.ts";
@@ -162,7 +163,7 @@ export function buildHost(
     glyphMargin: false,
     folding: false,
     overviewRulerLanes: 0,
-    scrollbar: { useShadows: false, horizontalScrollbarSize: 8, verticalScrollbarSize: 8 },
+    scrollbar: scrollbarOptions,
   });
   // 输入法组词时模型里已经是没选定的拼音，会话据此暂缓自动保存（#310）
   const composing = [true, false].map((on) =>

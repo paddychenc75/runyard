@@ -3,6 +3,12 @@ import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach } from "vitest";
 
+// jsdom 没有 getAnimations；Base UI 的滚动区在滚动停下的计时器里会调用它，缺了就是一个未捕获的异常
+if (typeof Element !== "undefined") {
+  const proto = Element.prototype as { getAnimations?: () => unknown[] };
+  proto.getAnimations ??= () => [];
+}
+
 // 没开 Vitest 的全局变量，Testing Library 就不会自己在每个测试后卸载组件，这里补上
 afterEach(() => {
   cleanup();

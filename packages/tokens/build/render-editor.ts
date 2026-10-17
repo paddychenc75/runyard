@@ -66,6 +66,16 @@ function editorColors(pick: Pick): [string, string][] {
   ];
 }
 
+// 滚动条滑块：平时与悬停、拖动两档颜色，和 @runyard/ui 的 ScrollArea 一致（视觉规范第 5 节）
+function monacoScrollbarColors(pick: Pick): [string, string][] {
+  return [
+    ["scrollbar.shadow", "#00000000"],
+    ["scrollbarSlider.background", pick("color-scrollbar-thumb")],
+    ["scrollbarSlider.hoverBackground", pick("color-scrollbar-thumb-hover")],
+    ["scrollbarSlider.activeBackground", pick("color-scrollbar-thumb-hover")],
+  ];
+}
+
 const q = quote;
 
 function monaco(theme: Theme, pick: Pick): string[] {
@@ -79,7 +89,9 @@ function monaco(theme: Theme, pick: Pick): string[] {
     ),
     "    ],",
     "    colors: {",
-    ...editorColors(pick).map(([key, value]) => `      ${q(key)}: ${q(value)},`),
+    ...[...editorColors(pick), ...monacoScrollbarColors(pick)].map(
+      ([key, value]) => `      ${q(key)}: ${q(value)},`,
+    ),
     "    },",
     "  },",
   ];
