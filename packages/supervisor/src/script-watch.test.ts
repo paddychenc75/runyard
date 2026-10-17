@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import { cliOwner, RunWorld, tabOwner } from "./run-harness.test.ts";
 
 // 脚本项目保存后自动重新运行的监听何时开始、何时结束（规格 run/scripts 的 RUN-SCRIPTS-27 到 34）。
-// 脚本每次启动打印 v<序号> 然后很快跑完，所以“新内容”就是更大的序号。RUN-SCRIPTS-32（桌面应用的标签页）在 M2。
+// 脚本每次启动打印 v<序号> 然后很快跑完，所以“新内容”就是更大的序号。RUN-SCRIPTS-32（桌面应用的标签页）在 live-results.test.ts（#262）。
 
 const MIN = 60_000;
 
@@ -238,8 +238,9 @@ describe("脚本项目的自动重新运行监听", { timeout: 30_000 }, () => {
     await ctx.w.dispose();
   });
 
-  it("标签页持有的脚本运行不开始监听（桌面应用的监听在 M2）", async () => {
+  it("[RUN-SCRIPTS-32] 标签页持有的脚本运行也开始监听（随标签页，见 live-results.test.ts）；项目开关关闭时不监听", async () => {
     const ctx = await setup();
+    await ctx.cli.result("playground.update", { playground: "demo", scriptAutoRun: false });
     const run = await ctx.w.startRun(ctx.app, ctx.id, tabOwner());
     await ctx.w.until(async () => (await ctx.w.stateOf(ctx.app, run.runId)) === "finished");
     expect(ctx.w.module.scriptWatch.isWatching(ctx.id)).toBe(false);

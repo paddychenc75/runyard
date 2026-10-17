@@ -42,6 +42,8 @@ export interface RunControlDeps {
   readonly mentioned: (run: Run, session: Session | undefined) => void;
   /** 有人明确要求停止这个项目的运行（`runyard stop`）：脚本的自动重跑监听据此结束（#138） */
   readonly stopRequested: (playgroundId: string) => void;
+  /** 应用的某个客户端断开或告别：它的标签页持有的监听随之结束 */
+  readonly tabsGone?: (clientId: string) => void;
   readonly stopWaitLimitMs?: number;
 }
 
@@ -201,6 +203,8 @@ export class RunControl {
   }
 
   async stopTabRunsOf(clientId: string): Promise<void> {
+    // 已经跑完的脚本也还在被监听：客户端没了，监听跟着结束
+    this.#d.tabsGone?.(clientId);
     await Promise.all(this.tabRunsOf(clientId).map((run) => run.stop()));
   }
 }

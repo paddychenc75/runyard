@@ -203,6 +203,28 @@ export function ownedActiveRun(
   return run !== undefined && run.owner.kind === "tab" && isActiveRun(run.state) ? run : null;
 }
 
+/**
+ * 标签页持有的脚本已经跑完（finished、errored）：它还在被监听、保存会重新运行（RUN-SCRIPTS-32），
+ * 关标签页要发一次 run.stop 结束监听。停止的是空操作，运行本身不受影响
+ */
+export function ownedFinishedScript(
+  playgroundId: string,
+  runs: readonly RunSnapshot[],
+): RunSnapshot | null {
+  const run = latestRunByPlayground(runs).get(playgroundId);
+  const finished = run?.state === "finished" || run?.state === "errored";
+  return run !== undefined && run.owner.kind === "tab" && run.kind === "oneshot" && finished
+    ? run
+    : null;
+}
+
+/** 关标签页要不要发 run.stop：进行中的标签页运行，或还在被监听的已跑完的脚本 */
+export function needsStopOnClose(playgroundId: string, runs: readonly RunSnapshot[]): boolean {
+  return (
+    ownedActiveRun(playgroundId, runs) !== null || ownedFinishedScript(playgroundId, runs) !== null
+  );
+}
+
 /** 预览该显示哪个地址：被选中的项目的最近一次运行已就绪且有地址 */
 export function previewUrlFor(
   previewId: string | null,

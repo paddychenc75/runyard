@@ -32,6 +32,8 @@ export class RunWorld extends LibraryWorld {
   readonly ports = new Map<string, number>();
   #nextPort = 7100;
   moduleOptions: Partial<RunModuleOptions> = {};
+  /** 服务运行器的 watch 规则；默认不监听（#262 的测试改成 restart，和 hono 运行器一样） */
+  serverWatch: Record<string, unknown> = { mode: "none" };
 
   portOf(id: string): number {
     let port = this.ports.get(id);
@@ -98,11 +100,11 @@ export class RunWorld extends LibraryWorld {
         needs: [],
         run: { command: ["node", "x"] },
         preview: { type: "web" },
-        // 脚本保存后重跑（#138）：和真实的脚本运行器一样只看 .js；服务不监听
+        // 脚本保存后重跑（#138）：和真实的脚本运行器一样只看 .js；服务默认不监听
         watch:
           kind === "oneshot"
             ? { mode: "rerun", paths: ["**/*.js"], debounceMs: 300 }
-            : { mode: "none" },
+            : this.serverWatch,
         stop: { mode: "graceful", graceMs: 2000 },
       });
     const runners = absPath(join("/app/templates", "runners"));
