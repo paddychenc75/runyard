@@ -27,6 +27,7 @@ export function SearchField({
         {...rest}
         type="text"
         className={styles.input}
+        data-truncate=""
         aria-label={label}
         placeholder={placeholder}
         autoComplete="off"
