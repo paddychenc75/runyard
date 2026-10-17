@@ -85,6 +85,10 @@ class FakeSystem implements SystemActions {
   revealInFileManager(path: string) {
     this.revealed.push(path);
   }
+  opened: string[] = [];
+  openExternal(url: string) {
+    this.opened.push(url);
+  }
   copyText(text: string) {
     this.copied.push(text);
   }
@@ -168,7 +172,7 @@ describe("LibraryController", () => {
     expect(start?.params).toEqual({
       playground: "a",
       owner: { kind: "tab", clientId: "app-1", tabId: "tab-a" },
-      wait: "none",
+      wait: "ready",
     });
   });
 
@@ -271,7 +275,7 @@ describe("LibraryController", () => {
       {
         playground: "a",
         owner: { kind: "tab", clientId: "app-1", tabId: "tab-a" },
-        wait: "none",
+        wait: "ready",
       },
     ]);
     expect(controller.getState().tabs.map((tab) => tab.id)).toEqual(["a"]);

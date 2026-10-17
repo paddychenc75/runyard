@@ -119,21 +119,51 @@
 | cli.usage.unknownOption.body | 不认识的选项：{option}。 | Unknown option: {option}. | option：用户输入的选项，原样显示 |
 | cli.usage.unknownSetting.body | 不认识的设置项：{name}。目前只有 lang。 | Unknown setting: {name}. The only setting is lang. | name：用户输入的设置项，原样显示 |
 | desktop.console.tab.label | 输出 | Output | — |
+| desktop.crashed.log.label | 最后的日志 | Last output | — |
+| desktop.crashed.overlay.aria | 崩溃提示 | Crash notice | — |
+| desktop.crashed.title | 已崩溃 · 退出码 {exitCode} | Crashed · exit code {exitCode} | exitCode：进程的退出码 |
 | desktop.create.title | 新建 | New | — |
 | desktop.duration.seconds.label | {seconds} 秒 | {seconds} s | seconds：秒数，已按语言格式化的数字 |
 | desktop.error.title.label | 出错了：{title} | Error: {title} | title：错误的标题，来自 errors.<代码>.title，已是翻译好的句子 |
+| desktop.failure.log.label | 安装日志 | Install log | — |
+| desktop.failure.retry.action | 重试 | Retry | — |
+| desktop.failure.stepCopy.label | 复制模板文件 | Copy template files | — |
+| desktop.failure.stepInstall.label | 安装依赖 | Install dependencies | — |
+| desktop.failure.stepReady.label | 就绪，显示页面 | Ready, show the page | — |
+| desktop.failure.stepStart.label | 启动开发服务 | Start the dev server | — |
+| desktop.failure.steps.aria | 启动步骤 | Start-up steps | — |
+| desktop.missing.command.label | 安装命令 | Install command | — |
+| desktop.missing.copied.label | 已复制 | Copied | — |
+| desktop.missing.copy.action | 复制命令 | Copy command | — |
+| desktop.missing.current.label | 当前 | Found | — |
+| desktop.missing.need.label | 需要 | Needs | — |
+| desktop.missing.notInstalled.label | 未安装 | Not installed | — |
+| desktop.missing.promise.label | Runyard 不会替你安装任何东西。命令是否执行由你决定。 | Runyard never installs anything for you. Whether to run the command is up to you. | — |
+| desktop.missing.recheck.action | 重新检测 | Check again | — |
+| desktop.missing.requirement.label | {tool} {required} | {tool} {required} | tool：工具标识，如 go、node；required：需要的版本范围，原样显示 |
+| desktop.missing.site.label | 官网 | Website | — |
 | desktop.output.aria | 进程输出 | Process output | — |
 | desktop.output.empty.label | 还没有输出。 | No output yet. | — |
+| desktop.output.view.action | 查看完整输出 | View full output | — |
+| desktop.port.body.label | 已改用 {actual} 端口。 | Switched to port {actual}. | actual：现在实际使用的端口，纯数字字符串 |
+| desktop.port.dismiss.action | 知道了 | Got it | — |
+| desktop.port.occupant.label | 占用者：{name}（PID {pid}） | In use by: {name} (PID {pid}) | name：占用端口的进程名，原样显示；pid：占用者的进程号 |
+| desktop.port.title | {wanted} 端口{reason, select, PORT_RESERVED {被系统保留} other {被占用}} | Port {wanted} is {reason, select, PORT_RESERVED {reserved by the system} other {in use}} | wanted：原来想用的端口，纯数字字符串；reason：PORT_OCCUPIED 或 PORT_RESERVED |
+| desktop.port.untouched.label | 没有结束占用者，它仍在运行。 | The other program was not stopped; it is still running. | — |
 | desktop.preview.frame.label | 页面预览的截图 | Screenshot of the page preview | — |
 | desktop.preview.waiting.label | 页面还没有就绪，就绪后会显示在这里。 | The page isn't ready yet. It shows up here once it is. | — |
 | desktop.rerun.action | 重新运行 | Run again | — |
 | desktop.run.action | 运行 | Run | — |
 | desktop.runbar.aria | 运行条 | Run bar | — |
 | desktop.runbar.closeHint.label | 关闭标签页即停止 | Stops when the tab closes | — |
+| desktop.runbar.missing.label | 缺少 {tool} | {tool} is missing | tool：工具标识，如 go、node |
 | desktop.runbar.state.label | {state} :{port} | {state} :{port} | state：运行状态的名字，来自 runState.<状态>；port：端口号，纯数字字符串（不加千分位） |
+| desktop.runbar.tooOld.label | {tool} 版本过低 | {tool} is too old | tool：工具标识，如 go、node |
 | desktop.script.ended.label | {state} · 退出码 {exitCode} · {duration} | {state} · exit code {exitCode} · {duration} | state：运行状态的名字，来自 runState.<状态>；exitCode：进程的退出码；duration：这次运行的总耗时 |
 | desktop.script.endedNoCode.label | {state} · {duration} | {state} · {duration} | state：运行状态的名字，来自 runState.<状态>；duration：这次运行的总耗时 |
 | desktop.script.running.label | {state} · 已 {duration} | {state} · {duration} | state：运行状态的名字，来自 runState.<状态>；duration：已经运行的时长，如 3.2 秒 |
+| desktop.slow.body | 启动比平时慢，进程还在运行。下面的输出可以看到进度。 | Starting is taking longer than usual, but the process is still running. The output below shows progress. | — |
+| desktop.slow.title | 启动中（较慢） | Starting (slow) | — |
 | desktop.state.idle.label | 未运行 | Not running | — |
 | desktop.stop.action | 停止 | Stop | — |
 | desktop.stopped.body | 你手动停止了它。点“运行”重新启动；关闭标签页后再打开，也会自动运行。 | You stopped it. Choose Run to start it again; closing the tab and opening it again also runs it. | — |

@@ -1,5 +1,12 @@
 import type { Locale } from "@runyard/i18n";
-import type { CreatedBy, ErrorCode, LocalizedText, RunKind, RunState } from "@runyard/protocol";
+import type {
+  CreatedBy,
+  ErrorCode,
+  LocalizedText,
+  PortFallbackReason,
+  RunKind,
+  RunState,
+} from "@runyard/protocol";
 
 // 主进程交给界面的全部数据。只有可序列化的普通对象：界面进程没有 Node，
 // 也拿不到连接管理进程的客户端，只能看到这一份状态和 DesktopBridge 里的几个动作。
@@ -61,6 +68,27 @@ export interface TabRow {
   durationMs: number | null;
   /** 页面已就绪时的预览地址（http://127.0.0.1:<端口>/）；没就绪是 null，预览区显示占位 */
   previewUrl: string | null;
+  /** 启动超过 30 秒仍未就绪：状态不变，只标“较慢”，不是失败（规格 DESKTOP-WORKSPACE-20） */
+  slow: boolean;
+  /**
+   * 启动没成功的原因（代码加参数，文字在界面生成）：缺工具、依赖安装失败等；没有失败是 null。
+   * 缺工具的参数（工具、版本、模板自己写的安装命令和链接）只在启动请求的错误响应里，
+   * 应用重开后拿不到，那时是 null，预览区退回“已停止”加“运行”
+   */
+  failure: DesktopError | null;
+  /** 端口被占用、本次改用了别的端口；没有改用是 null */
+  portFallback: TabPortFallback | null;
+  /** 崩溃前预览的最后一帧（PNG 的 data 地址）；没有是 null */
+  lastFrame: string | null;
+}
+
+/** 预览区上方的“端口已自动改用”说明：原端口为什么用不了、现在用哪个（规格 DESKTOP-WORKSPACE-22） */
+export interface TabPortFallback {
+  wanted: number;
+  actual: number;
+  reason: PortFallbackReason;
+  /** 占用者；查不到是 null */
+  occupant: { pid: number; name: string } | null;
 }
 
 export interface TemplateRow {

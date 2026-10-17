@@ -74,7 +74,7 @@ async function setup(runs: ReturnType<typeof run>[]) {
     clientId: "app-1",
     locale: "zh-CN",
     preview,
-    system: { revealInFileManager() {}, copyText() {} },
+    system: { revealInFileManager() {}, copyText() {}, openExternal() {} },
   });
   await controller.start();
   return { client, controller, preview };

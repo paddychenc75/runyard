@@ -17,6 +17,10 @@ export function sampleTab(extra: Partial<TabRow> = {}): TabRow {
     exitCode: null,
     durationMs: null,
     previewUrl: null,
+    slow: false,
+    failure: null,
+    portFallback: null,
+    lastFrame: null,
     ...extra,
   };
 }

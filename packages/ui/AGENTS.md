@@ -3,7 +3,7 @@
 ## 用途
 
 界面的通用组件包：基础组件、图标、玻璃材质、组件工作台（技术设计 §6.7）。它不认识产品：不导入 `protocol`、`electron`、Node 接口（`src/` 里 Biome 的 `noNodejsModules` 拦），文件名、导出名、标识符里不出现产品词，不自己取数据。
-现状：骨架加组件 `Icon`、`Button`、`GlassSurface`、`UserText`，主窗口外壳用到的 `IconButton`、`Tooltip`、`ScrollArea`、`Menu`（#171，包 Base UI 的菜单，数据驱动：`entries` 加 `onSelect`；开合经 `onOpenChange` 通知，外壳靠它让原生预览让位），资源库列表用到的 `StatusMark`、`Badge`、`MonogramTile`、`Truncate`、`EmptyState`（基础层），以及 `NavList`、`TitleBar`、`TabStrip`、`DataTable`、`LogView`、`ConfirmDialog`（组合层，在 `src/patterns/`），`AlertDialog`、`Checkbox`（基础层，#174 的关闭确认用）；其余组件随第一个用到它的功能 PR 加（§6.7 规则 8），不提前做。截图比对（`ui-visual`，`visual/`）已就位；`Localized` 属性的 React 绑定随 #164。六项组件化检查（`ui-layers`、`ui-purity`、`style-tokens`、`ui-fixtures`、`icons`、`file-size`）已在 `pnpm check` 里（#165），下面的规则就是它们守的。
+现状：骨架加组件 `Icon`、`Button`、`GlassSurface`、`UserText`，主窗口外壳用到的 `IconButton`、`Tooltip`、`ScrollArea`、`Menu`（#171，包 Base UI 的菜单，数据驱动：`entries` 加 `onSelect`；开合经 `onOpenChange` 通知，外壳靠它让原生预览让位），资源库列表用到的 `StatusMark`、`Badge`、`MonogramTile`、`Truncate`、`EmptyState`（基础层），以及 `NavList`、`TitleBar`、`TabStrip`、`DataTable`、`LogView`、`ConfirmDialog`（组合层，在 `src/patterns/`），`AlertDialog`、`Checkbox`（基础层，#174 的关闭确认用），`Banner`、`CopyableCommand`、`StepList`（基础层，#178 的失败画面用）；其余组件随第一个用到它的功能 PR 加（§6.7 规则 8），不提前做。截图比对（`ui-visual`，`visual/`）已就位；`Localized` 属性的 React 绑定随 #164。六项组件化检查（`ui-layers`、`ui-purity`、`style-tokens`、`ui-fixtures`、`icons`、`file-size`）已在 `pnpm check` 里（#165），下面的规则就是它们守的。
 
 ## 对外暴露什么
 
@@ -64,3 +64,10 @@
 - `AlertDialog`：Base UI 的警示对话框，遮罩加 `GlassSurface material="dialog"` 面板，Escape 和点遮罩只请求关闭（`onOpenChange(false)`），不执行任何确认；`initialFocus` 让破坏性的确认框先聚焦“取消”。`container` 把弹窗挂到别处，样例用 `FixtureStage`（带 transform 的舞台，`position: fixed` 以它为参照）并排放几个打开着的弹窗。
 - `ConfirmDialog`（`AlertDialog` 加图标块、可选勾选项、取消和确认两个按钮）：`onConfirm(optedOut)` 把勾选状态在点确认时交出去，`onCancel` 不带勾选；每次重新打开勾选项回到未勾选。
 - `Checkbox`：名字用 `<label htmlFor>` 关联 Base UI 的隐藏 input，`hint` 作为描述。
+
+## 失败画面用的组件（#178）
+
+- `Banner`：带图标块的提示卡（`tone` 是 `warning` 或 `danger`，淡色底），标题加说明，`children` 放详情、`actions` 放按钮；是 `role="status"`。预览区上方的端口说明用它。
+- `CopyableCommand`：一行等宽命令框（`user-select: all`，点三下全选），只显示、从不执行；“复制命令”按钮由调用方放在旁边并接剪贴板。
+- `StepList`：步骤横排，每步的标记形状随状态变（完成对勾、当前转圈、失败红色方块里的叉、未到空心圆），当前步骤带 `aria-current="step"`。
+- 图标新增 `warning`、`refresh`、`exclamation`。

@@ -13,6 +13,11 @@ export function isScript(tab: TabRow): boolean {
 export type RunStatusText =
   /** 只有状态名：已停止、启动中…… */
   | { kind: "plain"; state: RunState | "idle" }
+  /** 启动超过 30 秒仍未就绪：不是失败，只标“较慢” */
+  | { kind: "slow" }
+  /** 缺少运行环境：缺哪个工具，或版本过低 */
+  | { kind: "tool-missing"; tool: string }
+  | { kind: "tool-too-old"; tool: string }
   /** 服务就绪：状态名加端口 */
   | { kind: "port"; state: RunState; port: number }
   /** 脚本运行中：状态名加已运行的时长 */
@@ -50,17 +55,33 @@ export function runStatusOf(tab: TabRow, now: number): RunStatus {
       };
     }
   }
+  const missing = missingToolStatus(tab);
+  if (missing !== null) return { mark, danger: true, text: missing };
+  if (tab.slow) return { mark, danger, text: { kind: "slow" } };
   if ((state === "ready" || state === "running") && tab.port !== null) {
     return { mark, danger, text: { kind: "port", state, port: tab.port } };
   }
   return { mark, danger, text: { kind: "plain", state } };
 }
 
-/** 运行条和脚本输出头部的按钮：运行中是“停止”；没在运行时是“运行”，失败后是“重新运行” */
-export type RunAction = "stop" | "run" | "rerun";
+function missingToolStatus(tab: TabRow): RunStatusText | null {
+  const failure = tab.failure;
+  if (failure === null) return null;
+  const tool = typeof failure.params.tool === "string" ? failure.params.tool : "";
+  if (failure.code === "TOOL_MISSING") return { kind: "tool-missing", tool };
+  if (failure.code === "TOOL_TOO_OLD") return { kind: "tool-too-old", tool };
+  return null;
+}
+
+/**
+ * 运行条和脚本输出头部的按钮：运行中是“停止”；没在运行时是“运行”，失败后是“重新运行”；
+ * 缺运行环境时是“重新检测”（装好之后再启动一次就是重新检测）
+ */
+export type RunAction = "stop" | "run" | "rerun" | "recheck";
 
 export function runActionOf(tab: TabRow): RunAction {
   if (tab.active) return "stop";
+  if (missingToolStatus(tab) !== null) return "recheck";
   const { state } = tab;
   return state !== "idle" && FAILED.includes(state) ? "rerun" : "run";
 }

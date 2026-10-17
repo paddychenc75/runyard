@@ -236,6 +236,11 @@ export type CatalogMessages = {
     name: string | number;
   };
   "desktop.console.tab.label": Record<never, never>;
+  "desktop.crashed.log.label": Record<never, never>;
+  "desktop.crashed.overlay.aria": Record<never, never>;
+  "desktop.crashed.title": {
+    exitCode: string | number;
+  };
   "desktop.create.title": Record<never, never>;
   "desktop.duration.seconds.label": {
     seconds: string | number;
@@ -243,17 +248,57 @@ export type CatalogMessages = {
   "desktop.error.title.label": {
     title: string | number;
   };
+  "desktop.failure.log.label": Record<never, never>;
+  "desktop.failure.retry.action": Record<never, never>;
+  "desktop.failure.stepCopy.label": Record<never, never>;
+  "desktop.failure.stepInstall.label": Record<never, never>;
+  "desktop.failure.stepReady.label": Record<never, never>;
+  "desktop.failure.stepStart.label": Record<never, never>;
+  "desktop.failure.steps.aria": Record<never, never>;
+  "desktop.missing.command.label": Record<never, never>;
+  "desktop.missing.copied.label": Record<never, never>;
+  "desktop.missing.copy.action": Record<never, never>;
+  "desktop.missing.current.label": Record<never, never>;
+  "desktop.missing.need.label": Record<never, never>;
+  "desktop.missing.notInstalled.label": Record<never, never>;
+  "desktop.missing.promise.label": Record<never, never>;
+  "desktop.missing.recheck.action": Record<never, never>;
+  "desktop.missing.requirement.label": {
+    required: string | number;
+    tool: string | number;
+  };
+  "desktop.missing.site.label": Record<never, never>;
   "desktop.output.aria": Record<never, never>;
   "desktop.output.empty.label": Record<never, never>;
+  "desktop.output.view.action": Record<never, never>;
+  "desktop.port.body.label": {
+    actual: string | number;
+  };
+  "desktop.port.dismiss.action": Record<never, never>;
+  "desktop.port.occupant.label": {
+    name: string | number;
+    pid: string | number;
+  };
+  "desktop.port.title": {
+    reason: string;
+    wanted: string | number;
+  };
+  "desktop.port.untouched.label": Record<never, never>;
   "desktop.preview.frame.label": Record<never, never>;
   "desktop.preview.waiting.label": Record<never, never>;
   "desktop.rerun.action": Record<never, never>;
   "desktop.run.action": Record<never, never>;
   "desktop.runbar.aria": Record<never, never>;
   "desktop.runbar.closeHint.label": Record<never, never>;
+  "desktop.runbar.missing.label": {
+    tool: string | number;
+  };
   "desktop.runbar.state.label": {
     port: string | number;
     state: string | number;
+  };
+  "desktop.runbar.tooOld.label": {
+    tool: string | number;
   };
   "desktop.script.ended.label": {
     duration: string | number;
@@ -268,6 +313,8 @@ export type CatalogMessages = {
     duration: string | number;
     state: string | number;
   };
+  "desktop.slow.body": Record<never, never>;
+  "desktop.slow.title": Record<never, never>;
   "desktop.state.idle.label": Record<never, never>;
   "desktop.stop.action": Record<never, never>;
   "desktop.stopped.body": Record<never, never>;

@@ -33,6 +33,10 @@ export interface DesktopMethods {
   "playground.reveal": { param: string; result: undefined };
   /** 把项目文件夹的绝对路径放进剪贴板 */
   "playground.copyPath": { param: string; result: undefined };
+  /** 把一段文字放进剪贴板（缺工具画面的“复制命令”）；命令只展示和复制，应用从不执行 */
+  "clipboard.copy": { param: string; result: undefined };
+  /** 用系统浏览器打开一个 https 链接（安装说明的官网）；别的协议主进程不理 */
+  "link.open": { param: string; result: undefined };
   /** 预览占位区在窗口里的位置和大小（CSS 像素）；占位区卸载时报 null */
   "preview.bounds": { param: Bounds | null; result: undefined };
   /** 截预览当前的一帧（PNG 的 data 地址）；没有预览是 null。浮层打开前先截帧再隐藏（技术设计 §6.1） */
@@ -56,6 +60,8 @@ export const desktopMethodNames: readonly DesktopMethod[] = [
   "tab.closeCancel",
   "playground.reveal",
   "playground.copyPath",
+  "clipboard.copy",
+  "link.open",
   "preview.bounds",
   "preview.capture",
   "preview.visible",
