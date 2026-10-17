@@ -6,6 +6,8 @@ import { closePicker, expect, test } from "./support/fixtures.ts";
 test("资源库：搜索与筛选、重命名、改备注、移到废纸篓", async ({ launch }) => {
   const runyard = await launch();
   const { page, app } = runyard;
+  // 选择器只在应用读到空资源库时弹出：先等它出现并关掉，再让命令行建项目，否则命令行抢先时选择器根本不会出现
+  await closePicker(page);
   // 页头在窄窗口里会把“类型”“状态”合成“筛选”：CI 的屏幕小，窗口会被压窄，先固定成宽窗口
   await app.evaluate(({ BrowserWindow }) => {
     BrowserWindow.getAllWindows()[0]?.setContentSize(1440, 900);
@@ -13,7 +15,6 @@ test("资源库：搜索与筛选、重命名、改备注、移到废纸篓", as
   await runyard.cli("new", "html", "alpha");
   await runyard.cli("new", "python", "beta");
   await runyard.cli("run", "alpha");
-  await closePicker(page);
   const rows = page.getByRole("table", { name: "Playgrounds" }).getByRole("row");
   await expect(rows.filter({ hasText: "alpha" })).toHaveCount(1);
   await expect(rows.filter({ hasText: "beta" })).toHaveCount(1);
@@ -74,9 +75,10 @@ test("资源库表格：窗口放得下和放不下时，表头与每一行逐�
 }) => {
   const runyard = await launch();
   const { page, app } = runyard;
+  // 选择器只在应用读到空资源库时弹出：先等它出现并关掉，再让命令行建项目，否则命令行抢先时选择器根本不会出现
+  await closePicker(page);
   await runyard.cli("new", "html", "alpha");
   await runyard.cli("new", "python", "beta");
-  await closePicker(page);
   const table = page.getByRole("table", { name: "Playgrounds" });
   await expect(table.getByRole("row").filter({ hasText: "alpha" })).toHaveCount(1);
 
@@ -108,10 +110,11 @@ test("[DESKTOP-LIBRARY-VIEW-28][DESKTOP-LIBRARY-VIEW-29] 窗口 1100 宽：横�
 }) => {
   const runyard = await launch();
   const { page, app } = runyard;
+  // 选择器只在应用读到空资源库时弹出：先等它出现并关掉，再让命令行建项目，否则命令行抢先时选择器根本不会出现
+  await closePicker(page);
   await runyard.cli("new", "html", "alpha");
   await runyard.cli("new", "python", "beta");
   await runyard.cli("run", "alpha");
-  await closePicker(page);
   const table = page.getByRole("table", { name: "Playgrounds" });
   await expect(table.getByRole("row").filter({ hasText: "alpha" })).toHaveCount(1);
   await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0]?.setSize(1100, 800));
