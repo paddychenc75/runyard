@@ -56,6 +56,7 @@ const existing: PlaygroundRow = {
   lastOpenedAt: null,
   createdBy: { kind: "user" },
   createdAt: 1,
+  missing: false,
 };
 
 function setup(state: LibraryState) {
@@ -188,5 +189,69 @@ describe("模板选择器", () => {
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog")).toBeNull();
     expect(call).not.toHaveBeenCalledWith("playground.create", expect.anything());
+  });
+});
+
+describe("模板选择器的搜索", () => {
+  const catalog: TemplateRow[] = [
+    row("react19", "frontend", { name: { en: "React 19", "zh-CN": "React 19" } }),
+    row("react18", "frontend", { name: { en: "React 18", "zh-CN": "React 18" } }),
+    row("vue3", "frontend", {
+      name: { en: "Vue 3", "zh-CN": "Vue 3" },
+      description: { en: "Vue 3 with Vite", "zh-CN": "Vue 3 加 Vite" },
+    }),
+    row("hono", "service"),
+    row("python", "script"),
+  ];
+  const withRecent = () => library({ templates: catalog, recentTemplates: ["vue3", "hono"] });
+  const optionNames = () =>
+    screen.getAllByRole("option").map((option) => option.textContent?.replace(/选择$/, ""));
+
+  it("[DESKTOP-CREATE-FLOW-17] 输入 react 只剩两个 React 模板，没有“最近使用”，第一个被选中", async () => {
+    const user = userEvent.setup();
+    setup(withRecent());
+    await screen.findByRole("dialog");
+    expect(screen.getAllByRole("group")[0]?.getAttribute("aria-label")).toBe("最近使用");
+    await user.keyboard("react");
+    const names = optionNames();
+    expect(names).toHaveLength(2);
+    expect(names[0]).toContain("React 19");
+    expect(names[1]).toContain("React 18");
+    expect(screen.getAllByRole("group").map((group) => group.getAttribute("aria-label"))).toEqual([
+      "前端",
+    ]);
+    expect(screen.getAllByRole("option")[0]?.getAttribute("aria-selected")).toBe("true");
+  });
+
+  it("[DESKTOP-CREATE-FLOW-17] 说明里的字也能搜到，不分大小写；高亮从上一次的行回到第一个结果", async () => {
+    const user = userEvent.setup();
+    setup(withRecent());
+    await screen.findByRole("dialog");
+    await user.keyboard("{ArrowDown}{ArrowDown}");
+    await user.keyboard("VITE");
+    expect(optionNames()).toHaveLength(1);
+    expect(optionNames()[0]).toContain("Vue 3");
+    expect(screen.getAllByRole("option")[0]?.getAttribute("aria-selected")).toBe("true");
+  });
+
+  it("[DESKTOP-CREATE-FLOW-18] 搜索 hono 后回车，新建弹窗里的模板是 hono", async () => {
+    const user = userEvent.setup();
+    setup(withRecent());
+    await screen.findByRole("dialog");
+    await user.keyboard("hono{Enter}");
+    const created = await screen.findByRole("dialog", { name: "新建项目" });
+    expect(within(created).getByText("模板：hono")).toBeTruthy();
+  });
+
+  it("[DESKTOP-CREATE-FLOW-19] 搜索 rails 没有匹配并写明；清空后回到带“最近使用”的默认视图", async () => {
+    const user = userEvent.setup();
+    setup(withRecent());
+    await screen.findByRole("dialog");
+    await user.keyboard("rails");
+    expect(screen.queryAllByRole("option")).toHaveLength(0);
+    expect(screen.getByText("没有匹配的模板。")).toBeTruthy();
+    await user.keyboard("{Backspace}{Backspace}{Backspace}{Backspace}{Backspace}");
+    expect(screen.queryByText("没有匹配的模板。")).toBeNull();
+    expect(screen.getAllByRole("group")[0]?.getAttribute("aria-label")).toBe("最近使用");
   });
 });

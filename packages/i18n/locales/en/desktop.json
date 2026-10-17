@@ -107,6 +107,7 @@
   "desktop.picker.list.aria": "Templates",
   "desktop.picker.move.hint": "move",
   "desktop.picker.next.hint": "next: name and note",
+  "desktop.picker.noMatch.hint": "No matching templates.",
   "desktop.picker.recent.label": "Recently used",
   "desktop.picker.search.label": "Search templates",
   "desktop.picker.search.placeholder": "Search templates: name, framework, language",

@@ -1,0 +1,56 @@
+/* 设计稿 Main：和旁边的胶囊同高（44），宽 300，放大镜、输入、末端提示 */
+.root {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-4);
+  box-sizing: border-box;
+  block-size: var(--size-toolbar);
+  inline-size: calc(var(--size-column-xl) * 2 + var(--space-9) + var(--space-6));
+  min-inline-size: 0;
+  padding-inline: var(--space-7);
+}
+
+.icon {
+  flex: none;
+  color: var(--color-text-secondary);
+}
+
+.input {
+  flex: 1;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: var(--text-body-size);
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--color-text-placeholder);
+}
+
+.root:focus-within {
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.clear {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-capsule);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: default;
+  outline: none;
+}
+
+.clear:focus-visible {
+  box-shadow: var(--shadow-focus-ring);
+}

@@ -2,6 +2,7 @@ import { Menu as BaseMenu } from "@base-ui/react/menu";
 import type { Localized } from "@runyard/i18n";
 import type { ReactElement } from "react";
 import { GlassSurface } from "../GlassSurface/index.ts";
+import { Icon } from "../Icon/index.ts";
 import styles from "./Menu.module.css";
 
 export interface MenuItemEntry {
@@ -12,6 +13,8 @@ export interface MenuItemEntry {
   /** danger 用红色字，给“移到废纸篓”这类不可轻易撤销的项 */
   tone?: "default" | "danger";
   disabled?: boolean;
+  /** 单选菜单（如筛选下拉）里标出当前值：前面画对勾，读屏器读成“选中”；不传就是普通菜单项 */
+  checked?: boolean;
 }
 
 export type MenuEntry = ({ type?: "item" } & MenuItemEntry) | { type: "separator" };
@@ -70,8 +73,16 @@ export function Menu({
                   className={styles.item}
                   data-tone={entry.tone ?? "default"}
                   disabled={entry.disabled}
+                  {...(entry.checked === undefined
+                    ? {}
+                    : { role: "menuitemradio", "aria-checked": entry.checked })}
                   onClick={() => onSelect(entry.id)}
                 >
+                  {entry.checked === undefined ? null : (
+                    <span className={styles.check} aria-hidden="true">
+                      {entry.checked ? <Icon name="check" size={14} /> : null}
+                    </span>
+                  )}
                   <span className={styles.label}>{entry.label}</span>
                   {entry.hint === undefined ? null : (
                     <span className={styles.hint}>{entry.hint}</span>

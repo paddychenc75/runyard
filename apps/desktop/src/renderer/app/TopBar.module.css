@@ -24,6 +24,7 @@
   gap: var(--space-4);
   box-sizing: border-box;
   block-size: var(--size-toolbar);
+  margin-inline-start: var(--space-5);
   padding-inline: var(--space-7);
   font-weight: var(--text-control-weight);
   white-space: nowrap;

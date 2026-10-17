@@ -1,0 +1,33 @@
+/* 设计稿 Main：高 32 的胶囊，1px 细线、浅底，右边一个小箭头 */
+.root {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-3);
+  box-sizing: border-box;
+  block-size: var(--size-control-md);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: calc(var(--space-6) + var(--space-1));
+  border: 1px solid var(--color-line-card);
+  border-radius: var(--radius-capsule);
+  background: var(--color-bg-suggestion);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: var(--text-body-size);
+  white-space: nowrap;
+  cursor: default;
+  outline: none;
+}
+
+.root:focus-visible {
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.root[data-popup-open] {
+  background: var(--color-fill-neutral-hover);
+}
+
+.caret {
+  color: var(--color-text-secondary);
+}

@@ -35,3 +35,10 @@
   font-size: var(--text-secondary-size);
   line-height: var(--text-secondary-line-height);
 }
+
+/* 设计稿 Main：第一行是等宽的资源库位置，第二行是项目数 */
+.location {
+  display: block;
+  color: var(--color-text-primary);
+  font-size: var(--text-code-small-size);
+}

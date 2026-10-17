@@ -38,6 +38,16 @@
   stroke-width: 2.4;
 }
 
+.lens {
+  stroke: var(--color-text-secondary);
+  stroke-width: 2.4;
+}
+
+.minus {
+  stroke: var(--color-line-accent);
+  stroke-width: 2.4;
+}
+
 .title {
   margin: var(--space-8) 0 0;
   font-size: var(--text-empty-title-size);
