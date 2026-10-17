@@ -83,7 +83,10 @@
   },
   "errors.SETUP_FAILED.title": { "name": "项目名称（也是文件夹名）；命令行传路径时是用户给的原文" },
   "errors.SUPERVISOR_OUTDATED.body": {
-    "runs": "升级管理进程会停掉的运行个数，非负整数；英文写复数"
+    "runs": "升级管理进程会停掉的运行个数，非负整数；0 表示是桌面应用在用这个旧管理进程，没有运行；英文写复数"
+  },
+  "errors.SUPERVISOR_OUTDATED.hintCli": {
+    "runs": "升级管理进程会停掉的运行个数，非负整数；0 表示是桌面应用在用它，不是有运行"
   },
   "errors.TEMPLATE_INVALID.hintCli": { "template": "用户给的模板标识，原样显示" },
   "errors.TEMPLATE_INVALID.title": { "template": "用户给的模板标识，原样显示" },

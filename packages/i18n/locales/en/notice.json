@@ -10,5 +10,6 @@
   "notice.PROCESS_EXITED": "The process exited{exitCode, select, none {} other { with code {exitCode}}}{signal, select, none {} other { (signal {signal})}}.",
   "notice.RELOADING": "Files changed, reloading.",
   "notice.STOPPED_BY_USER": "You stopped this playground.",
+  "notice.SUPERVISOR_IN_USE_BY_APP": "The Runyard app is using the background process, which is a different build from this command line, so it was not replaced. This command continues with it. After you quit the app, the next command updates it.",
   "notice.TOOL_VERSION_UNTESTED": "{tool} {found} is newer than the range this template was tested with ({required}). It runs as usual but is untested."
 }

@@ -91,6 +91,7 @@ const noticeExamples: { [C in NoticeCode]: NoticeParams<C>[] } = {
     { length: 1, limit: 1024 },
     { length: 1010, limit: 1024 },
   ],
+  SUPERVISOR_IN_USE_BY_APP: [{}],
   TOOL_VERSION_UNTESTED: [{ tool: "node", found: "28.0.0", required: ">=22.18 <26" }],
 };
 

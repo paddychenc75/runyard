@@ -36,6 +36,9 @@ export const noticeRegistry = {
   PATH_NEAR_LIMIT: {
     params: z.object({ length: z.number().int().positive(), limit: z.number().int().positive() }),
   },
+  // 另一个构建的命令行连上时，管理进程被桌面应用占着，没有被换新（规格 CLI-COMMANDS-87）。
+  // 由命令行自己在连接结果里生成，不是管理进程发的
+  SUPERVISOR_IN_USE_BY_APP: { params: none },
   // 停止后端口在上限内仍不能重新绑定，stop 照常返回（规格 RUN-LIFECYCLE-14；技术设计 §5.3）。
   // waitedMs 是实际等了多久，limitMs 是上限（3000）；下次启动若仍被占用，按端口回退规则换一个
   PORT_NOT_RELEASED: {

@@ -199,7 +199,7 @@ describe("真实管理进程：桌面应用连着时不被换掉（#358）", () 
     ...(protocol === undefined ? {} : { protocol }),
   });
 
-  it("应用的管理进程没有运行时，另一个构建的命令行不替换它：沿用同一个进程，应用的连接照常可用", async () => {
+  it("[PROTOCOL-HANDSHAKE-21] 应用的管理进程没有运行时，另一个构建的命令行不替换它：沿用同一个进程，应用的连接照常可用", async () => {
     const appClient = await connect("0.0.0-it+app", app("0.0.0-it+app"));
     const ref = await tracked.current();
     const cli = await connect("0.0.0-it+source");
@@ -237,7 +237,7 @@ describe("真实管理进程：桌面应用连着时不被换掉（#358）", () 
     await tracked.assertNothingLeft();
   });
 
-  it("应用在用的管理进程协议更旧、且低于命令行的最低要求：报 SUPERVISOR_OUTDATED，不替换，应用不受影响", async () => {
+  it("[PROTOCOL-HANDSHAKE-22] 应用在用的管理进程协议更旧、且低于命令行的最低要求：报 SUPERVISOR_OUTDATED，不替换，应用不受影响", async () => {
     const appClient = await connect(
       "0.0.0-it+app",
       app("0.0.0-it+app", { protocol: 1, minProtocol: 1 }),

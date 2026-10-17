@@ -562,3 +562,19 @@
 - **WHEN** 在新位置的应用里安装命令行工具
 - **THEN** 链接改为指向 `/Applications/Runyard.app` 里的启动脚本
 - 验证：test
+
+### Requirement: 管理进程被桌面应用占着时命令行说明原因
+命令行发现管理进程是另一个构建、但桌面应用正在使用它因而没有被换掉时，MUST 继续用它完成命令，并 MUST 说明原因（应用正在使用它，退出应用后下次命令会更新）：不带 `--json` 时写到标准错误，英文为默认、中文随 `--lang`；带 `--json` 时只在结果的 `notices` 里给提示码，不夹带句子；`--quiet` 下不写。管理进程太旧、没法兼容使用时 MUST 报 `SUPERVISOR_OUTDATED`（退出码 10），文字写明是应用在使用它。
+来源：PRD #prd-cli-json；PRD #prd-decided-by-default
+
+#### Scenario: [CLI-COMMANDS-87] 应用占着的旧管理进程，命令照常完成
+- 前提：桌面应用连着另一个构建的管理进程，没有运行，协议仍满足命令行的最低要求
+- **WHEN** 执行 `runyard status`；再执行 `runyard status --json`
+- **THEN** 命令都成功；前者在标准错误写明应用正在使用管理进程、没有换新；后者的 `notices` 里有 `SUPERVISOR_IN_USE_BY_APP`，标准输出仍只有一个对象；管理进程没有被换掉
+- 验证：test
+
+#### Scenario: [CLI-COMMANDS-88] 应用占着、又太旧
+- 前提：桌面应用连着的管理进程协议版本低于命令行要求的最低版本
+- **WHEN** 执行 `runyard status`
+- **THEN** 退出码 10，错误码 `SUPERVISOR_OUTDATED`，提示写明是桌面应用在使用旧的管理进程，退出应用后重试；提示不让用户执行 `runyard stop --all`
+- 验证：test

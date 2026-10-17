@@ -70,6 +70,7 @@
 | `IDLE_STOPPED` | `{ minutes: integer }` |
 | `PACKAGE_MANAGER_FALLBACK` | `{ wanted: string; used: string }` |
 | `PATH_NEAR_LIMIT` | `{ length: integer; limit: integer }` |
+| `SUPERVISOR_IN_USE_BY_APP` | 无 |
 | `PORT_NOT_RELEASED` | `{ port: integer; waitedMs: integer; limitMs: integer }` |
 | `TOOL_VERSION_UNTESTED` | `{ tool: string; found: string; required: string }` |
 

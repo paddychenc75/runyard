@@ -469,3 +469,87 @@ describe("语言", () => {
     expect(other?.fs.exists(joinPath(stateDir as never, posixRelPath("cli.json")))).toBe(true);
   });
 });
+
+describe("管理进程被桌面应用占着", () => {
+  const blocked = {
+    close: () => undefined,
+    outcome: {
+      kind: "outdated",
+      reason: "build-differs",
+      runs: 0,
+      blockedByApp: true,
+    },
+  } as never;
+  const useClient: CommandHandler = async (context) => {
+    await context.client();
+    context.out.result({ running: 0 });
+  };
+
+  it("[CLI-COMMANDS-87] 没换新：命令照常成功，标准错误说明原因（默认英文，--lang zh-CN 中文）；--quiet 不写", async () => {
+    const h = harness({ connect: async () => blocked, handlers: { status: useClient } });
+    const english = await h.run(["status"]);
+    expect(english.code).toBe(0);
+    expect(english.stderr).toContain("Runyard app is using the background process");
+    expect(CJK.test(english.stderr)).toBe(false);
+    const chinese = await h.run(["status", "--lang", "zh-CN"]);
+    expect(chinese.code).toBe(0);
+    expect(chinese.stderr).toContain("没有换新");
+    expect((await h.run(["status", "--quiet"])).stderr).toBe("");
+  });
+
+  it("[CLI-COMMANDS-87] --json：notices 里只有提示码，标准输出仍是一个对象，没有句子", async () => {
+    const h = harness({ connect: async () => blocked, handlers: { status: useClient } });
+    const result = await h.run(["status", "--json"]);
+    expect(h.json(result)).toEqual({
+      running: 0,
+      notices: [{ code: "SUPERVISOR_IN_USE_BY_APP", params: {} }],
+    });
+    expect(result.stderr).toBe("");
+  });
+
+  it("[CLI-COMMANDS-87] 没被应用挡住时（换过、直接用、有运行的旧版）什么都不说", async () => {
+    for (const outcome of [
+      { kind: "current" },
+      { kind: "replaced" },
+      { kind: "outdated", reason: "build-differs", runs: 2 },
+    ]) {
+      const h = harness({
+        connect: async () => ({ close: () => undefined, outcome }) as never,
+        handlers: { status: useClient },
+      });
+      const result = await h.run(["status"]);
+      expect(result.code).toBe(0);
+      expect(result.stderr).toBe("");
+    }
+  });
+
+  it("[CLI-COMMANDS-88] 应用占着、又太旧：SUPERVISOR_OUTDATED，退出码 10，提示让退出应用，不是 stop --all", async () => {
+    const h = harness({
+      connect: async () => {
+        throw clientError(
+          "SUPERVISOR_OUTDATED",
+          { runs: 0 },
+          "an app is using an incompatible supervisor",
+        );
+      },
+      handlers: { status: useClient },
+    });
+    const result = await h.run(["status", "--json"]);
+    const error = h.json(result).error as { code: string; hint: string };
+    expect(result.code).toBe(10);
+    expect(error.code).toBe("SUPERVISOR_OUTDATED");
+    const text = await h.run(["status"]);
+    expect(text.stderr).toContain("Runyard app is using an older background process");
+    expect(error.hint).toContain("Quit the Runyard app");
+    expect(error.hint).not.toContain("stop --all");
+    // 有运行时仍是原来的提示
+    const withRuns = harness({
+      connect: async () => {
+        throw clientError("SUPERVISOR_OUTDATED", { runs: 2 }, "runs");
+      },
+      handlers: { status: useClient },
+    });
+    const old = withRuns.json(await withRuns.run(["status", "--json"])).error as { hint: string };
+    expect(old.hint).toContain("runyard stop --all");
+  });
+});

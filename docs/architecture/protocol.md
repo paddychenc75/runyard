@@ -128,10 +128,10 @@ type LogEntry =
 | 情况 | 处理 |
 | --- | --- |
 | 协议版本相同、构建标识相同 | 直接用 |
-| 协议版本相同、构建标识不同 | 没有运行：`supervisor.shutdown { ifIdle: true, reason: 'upgrade' }` 后启动自己带的。有运行：沿用，应用提示“停止全部运行后会自动更新”。发现文件里的可执行文件路径不存在是这行的特例 |
+| 协议版本相同、构建标识不同 | 没有运行：`supervisor.shutdown { ifIdle: true, reason: 'upgrade' }` 后启动自己带的；但桌面应用连着它时管理进程拒绝（`closing: false`），命令行沿用并说明（`SUPERVISOR_IN_USE_BY_APP`，#358）。有运行：沿用，应用提示“停止全部运行后会自动更新”。发现文件里的可执行文件路径不存在是这行的特例 |
 | 管理进程较旧，没有运行 | 同上，换新 |
 | 管理进程较旧，有运行，且满足客户端要求的最低协议版本 | 兼容使用，应用提示 |
-| 管理进程较旧，不满足 | 命令行报 `SUPERVISOR_OUTDATED`，提示 `runyard stop --all`；应用弹窗写明会停掉几个运行，用户确认才做 |
+| 管理进程较旧，不满足 | 命令行报 `SUPERVISOR_OUTDATED`，提示 `runyard stop --all`（桌面应用在用、没有运行时 `runs` 为 0，提示改为退出应用）；应用弹窗写明会停掉几个运行，用户确认才做 |
 | 管理进程较新，客户端低于它要求的最低版本 | `CLIENT_OUTDATED` |
 
 这张表由纯函数 `decideVersionAction`（`packages/protocol/src/version-decision.ts`）实现，输入是双方的 `protocol`、`minProtocol`、`build`，管理进程的运行个数，发现文件里的可执行文件是否还在；输出 `use`、`replace`、`use-outdated`（`reason` 为 `build-differs` 或 `protocol-older`，应用据此提示）或 `reject`（带 `SUPERVISOR_OUTDATED { runs }` 或 `CLIENT_OUTDATED`）。表里没有写的一种情况：管理进程较新、但客户端仍满足它的最低版本，按 `use` 处理。`CLIENT_OUTDATED` 的判断最先做，与有无运行无关。
