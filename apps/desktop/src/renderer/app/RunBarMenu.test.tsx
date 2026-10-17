@@ -36,7 +36,7 @@ function playground(id: string, name: string): PlaygroundRow {
   };
 }
 
-function setup(reply: unknown = { ok: true }) {
+function setup(reply: unknown = { ok: true }, tab = sampleTab()) {
   const call = vi.fn(async () => reply);
   const bridge = {
     bootstrap: { platform: "darwin" },
@@ -46,7 +46,7 @@ function setup(reply: unknown = { ok: true }) {
   const playgrounds = [playground("a", "react-counter"), playground("b", "counter-2")];
   render(
     <I18nProvider locale="zh-CN" platform="darwin" catalogs={desktopCatalogs}>
-      <RunBar bridge={bridge} tab={sampleTab()} playgrounds={playgrounds} />
+      <RunBar bridge={bridge} tab={tab} playgrounds={playgrounds} />
     </I18nProvider>,
   );
   return call;
@@ -96,6 +96,28 @@ describe("工作区的“更多”菜单", () => {
       note: "计数器",
     });
     await vi.waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+  });
+
+  it("[DESKTOP-WORKSPACE-25] “更多”菜单最上面一行是模板名加“关闭标签页即停止”，不能点", async () => {
+    const user = userEvent.setup();
+    setup({ ok: true }, sampleTab({ templateName: { en: "Hono", "zh-CN": "Hono" } }));
+    await user.click(screen.getByRole("button", { name: "react-counter 的更多操作" }));
+    const first = within(await screen.findByRole("menu")).getAllByRole("menuitem")[0];
+    expect(first?.textContent).toBe("Hono · 关闭标签页即停止");
+    expect(
+      first?.getAttribute("aria-disabled") ?? first?.getAttribute("data-disabled"),
+    ).not.toBeNull();
+  });
+
+  it("[DESKTOP-WORKSPACE-26] 命令行持有的运行：“更多”菜单最上面一行写“通过命令行启动…”的说明", async () => {
+    const user = userEvent.setup();
+    setup(
+      { ok: true },
+      sampleTab({ ownedByTab: false, attached: { agent: "Claude Code", startedAt: 1 } }),
+    );
+    await user.click(screen.getByRole("button", { name: "react-counter 的更多操作" }));
+    const first = within(await screen.findByRole("menu")).getAllByRole("menuitem")[0];
+    expect(first?.textContent).toContain("命令行启动");
   });
 
   it("[DESKTOP-WORKSPACE-29] 弹窗里同样校验：重名时写“这个名字已被占用”，保存不可点", async () => {

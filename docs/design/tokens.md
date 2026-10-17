@@ -31,7 +31,7 @@ disagree, `tokens.json` wins.
 | --- | --- | --- |
 | Toolbar / capsule background (`--glass-toolbar-bg`) | rgba(255, 255, 255, 0.66) | rgba(72, 72, 78, 0.55) |
 | Sidebar background (library) (`--glass-sidebar-bg`) | rgba(240, 241, 245, 0.92) | rgba(44, 44, 48, 0.92) |
-| File tree panel background (`--glass-filetree-bg`) | rgba(255, 255, 255, 0.62) | rgba(58, 58, 62, 0.55) |
+| File tree panel background (`--glass-filetree-bg`) | rgba(255, 255, 255, 0.72) | rgba(40, 40, 44, 0.92) |
 | Dialog / menu background (`--glass-dialog-bg`) | rgba(250, 250, 252, 0.82) | rgba(44, 44, 48, 0.78) |
 | Control on glass (secondary button), rest (`--glass-control-bg`) | rgba(255, 255, 255, 0.66) | rgba(72, 72, 78, 0.55) |
 | Control on glass, hover (one more fill layer) (`--glass-control-bg-hover`) | rgba(255, 255, 255, 0.78) | rgba(72, 72, 78, 0.68) |
