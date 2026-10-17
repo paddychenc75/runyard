@@ -1,0 +1,88 @@
+/* “依赖的运行环境”表（设计稿 Templates）：圆角 12 的内嵌块，表头淡色，行之间细线 */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--text-body-size);
+  font-weight: var(--text-section-title-weight);
+  line-height: var(--text-body-line-height);
+}
+
+.none,
+.fallback {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line-height);
+}
+
+.table {
+  inline-size: 100%;
+  border: 1px solid var(--color-line-hairline);
+  border-radius: var(--radius-md);
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  font-size: var(--text-body-size);
+  text-align: start;
+}
+
+.table th,
+.table td {
+  padding-block: var(--space-5);
+  padding-inline: var(--space-6);
+  text-align: start;
+  font-weight: var(--text-body-weight);
+}
+
+.table thead th {
+  background: var(--color-bg-inset);
+  color: var(--color-text-secondary);
+  font-size: var(--text-secondary-size);
+}
+
+.table tbody tr + tr > * {
+  border-block-start: 1px solid var(--color-line-hairline);
+}
+
+.table thead + tbody tr:first-child > * {
+  border-block-start: 1px solid var(--color-line-hairline);
+}
+
+.tool {
+  font-weight: var(--text-section-title-weight);
+}
+
+.version {
+  font-size: var(--text-code-size);
+}
+
+.and {
+  margin-inline: var(--space-3);
+  font-family: var(--font-sans);
+}
+
+.status {
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.status[data-verdict="met"] {
+  color: var(--color-status-running-text);
+  font-weight: var(--text-control-weight);
+}
+
+.status[data-verdict="tooOld"],
+.status[data-verdict="missing"] {
+  color: var(--color-status-warning-text);
+  font-weight: var(--text-control-weight);
+}
+
+.status svg {
+  margin-inline-end: var(--space-2);
+  vertical-align: middle;
+}

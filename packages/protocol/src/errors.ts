@@ -35,8 +35,8 @@ export const errorRegistry = {
 
   // name 是被阻止运行的项目：命令行的提示要写出重跑命令 runyard run <名称>（规格 CLI-COMMANDS-03）。
   // 可选：只检测工具、不针对某个项目时（如 doctor）没有项目名
-  // installCommand / installUrl：项目自己（模板 requires 里的 install）写的安装方式，只展示、从不执行
-  //（规格 TEMPLATES-CUSTOM-21）。命令是给人看的一行（参数用空格连起来），--json 原样给出
+  // installCommand / installUrl：安装方式，只展示、从不执行：模板 requires 里的 install（规格 TEMPLATES-CUSTOM-21）
+  // 优先，没有就取工具定义里当前系统的（#228）。命令是给人看的一行（参数用空格连起来），--json 原样给出
   TOOL_MISSING: {
     exit: 4,
     params: z.object({
@@ -59,6 +59,8 @@ export const errorRegistry = {
     }),
   },
   RUNTIME_MISSING: { exit: 4, params: z.object({ tool: toolId }) },
+  // 手动指定的路径不是可用的工具：执行不了或打印不出版本号；原来的路径没有改（规格 DESKTOP-SETTINGS-18）
+  TOOL_PATH_INVALID: { exit: 4, params: z.object({ tool: toolId, path: z.string().min(1) }) },
 
   // 原始输出的末尾放在 cause.outputTail，不进参数
   SETUP_FAILED: { exit: 5, params: z.object({ name }) },

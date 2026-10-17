@@ -181,6 +181,8 @@ export interface Platform {
     readText(file: AbsPath): Promise<string | null>;
     /** 文件不存在或不是文件返回 null。原样的字节，不做解码 */
     readBytes(file: AbsPath): Promise<Uint8Array | null>;
+    /** 只读文件开头最多 length 个字节（认可执行文件的头部，不必把几十兆读进来）；不存在或不是文件返回 null */
+    readHead(file: AbsPath, length: number): Promise<Uint8Array | null>;
     /** 目录下一层的子目录名，排好序；目录不存在返回空数组 */
     listDirs(dir: AbsPath): Promise<string[]>;
     /** 目录下一层的普通文件名，排好序；不含子目录和符号链接；目录不存在返回空数组 */

@@ -26,6 +26,8 @@ export interface DialogProps {
   onSubmit: () => void;
   /** 打开时先聚焦谁；缺省聚焦第一个可聚焦的控件 */
   initialFocus?: RefObject<HTMLElement | null>;
+  /** 宽版（720）：内容是带树或表的表单时用（另存为模板，设计稿 SaveTemplate） */
+  wide?: boolean;
   /** 弹窗挂到哪个元素下，缺省是 body；组件样例用它把弹窗限制在舞台里 */
   container?: HTMLElement | null;
 }
@@ -43,6 +45,7 @@ export function Dialog({
   actions,
   onSubmit,
   initialFocus,
+  wide = false,
   container,
 }: DialogProps) {
   function submit(event: FormEvent) {
@@ -55,38 +58,63 @@ export function Dialog({
       event.preventDefault();
     }
   }
+  const header = (
+    <div className={styles.header}>
+      {leading === undefined ? null : <span className={styles.leading}>{leading}</span>}
+      <div className={styles.heading}>
+        <BaseDialog.Title className={styles.title}>{title}</BaseDialog.Title>
+        {subtitle === undefined ? null : (
+          <BaseDialog.Description className={styles.subtitle}>{subtitle}</BaseDialog.Description>
+        )}
+      </div>
+      {headerAction === undefined ? null : <span className={styles.action}>{headerAction}</span>}
+    </div>
+  );
+  const footer = (
+    <>
+      <span className={styles.hint}>{hint}</span>
+      {actions}
+    </>
+  );
   return (
     <BaseDialog.Root open={open} onOpenChange={(next) => onOpenChange(next)}>
       <BaseDialog.Portal container={container}>
         <BaseDialog.Backdrop className={styles.backdrop} />
         <BaseDialog.Popup
-          className={styles.popup}
+          className={wide ? `${styles.popup} ${styles.wide}` : styles.popup}
           initialFocus={initialFocus}
           render={<GlassSurface material="dialog" />}
         >
-          <ScrollArea className={styles.scroll} viewportClassName={styles.scrollViewport}>
-            <form className={styles.form} onSubmit={submit} onKeyDown={guardComposition} noValidate>
-              <div className={styles.header}>
-                {leading === undefined ? null : <span className={styles.leading}>{leading}</span>}
-                <div className={styles.heading}>
-                  <BaseDialog.Title className={styles.title}>{title}</BaseDialog.Title>
-                  {subtitle === undefined ? null : (
-                    <BaseDialog.Description className={styles.subtitle}>
-                      {subtitle}
-                    </BaseDialog.Description>
-                  )}
+          {wide ? (
+            // 宽版：底栏钉在弹窗底部，只有上面的表单区滚动（设计稿 SaveTemplate 的底栏有分隔线）
+            <form
+              className={styles.pinned}
+              onSubmit={submit}
+              onKeyDown={guardComposition}
+              noValidate
+            >
+              <ScrollArea className={styles.scroll} viewportClassName={styles.scrollViewport}>
+                <div className={styles.form}>
+                  {header}
+                  {children}
                 </div>
-                {headerAction === undefined ? null : (
-                  <span className={styles.action}>{headerAction}</span>
-                )}
-              </div>
-              {children}
-              <div className={styles.footer}>
-                <span className={styles.hint}>{hint}</span>
-                {actions}
-              </div>
+              </ScrollArea>
+              <div className={`${styles.footer} ${styles.pinnedFooter}`}>{footer}</div>
             </form>
-          </ScrollArea>
+          ) : (
+            <ScrollArea className={styles.scroll} viewportClassName={styles.scrollViewport}>
+              <form
+                className={styles.form}
+                onSubmit={submit}
+                onKeyDown={guardComposition}
+                noValidate
+              >
+                {header}
+                {children}
+                <div className={styles.footer}>{footer}</div>
+              </form>
+            </ScrollArea>
+          )}
         </BaseDialog.Popup>
       </BaseDialog.Portal>
     </BaseDialog.Root>

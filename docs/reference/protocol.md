@@ -534,7 +534,7 @@
 
 #### `toolchain.check`
 
-检查一个项目或一个模板用得到的工具；cachedOnly 为 true 时只读缓存，不触发检测
+检查一个项目或一个模板用得到的工具（都不给时是全部模板用到的工具，设置页的运行环境表）；cachedOnly 为 true 时只读缓存，不触发检测
 
 入参：
 
@@ -548,7 +548,7 @@
 
 | 字段 | 类型 | 必填 | 说明 |
 | --- | --- | --- | --- |
-| `tools` | `({ tool: string; status: 'found' \| 'missing' \| 'too-old' \| 'unknown'; path?: string; version?: string; required?: string; untested?: boolean; source?: 'login-shell' \| 'login-shell-degraded' \| 'path-only' \| 'fallback' })[]` | 是 |  |
+| `tools` | `({ tool: string; status: 'found' \| 'missing' \| 'too-old' \| 'unknown'; path?: string; version?: string; required?: string; untested?: boolean; source?: 'login-shell' \| 'login-shell-degraded' \| 'path-only' \| 'fallback'; arch?: string; installCommand?: string; installUrl?: string })[]` | 是 |  |
 
 可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`TEMPLATE_NOT_FOUND`
 
@@ -564,7 +564,7 @@
 
 | 字段 | 类型 | 必填 | 说明 |
 | --- | --- | --- | --- |
-| `tools` | `({ tool: string; status: 'found' \| 'missing' \| 'too-old' \| 'unknown'; path?: string; version?: string; required?: string; untested?: boolean; source?: 'login-shell' \| 'login-shell-degraded' \| 'path-only' \| 'fallback' })[]` | 是 |  |
+| `tools` | `({ tool: string; status: 'found' \| 'missing' \| 'too-old' \| 'unknown'; path?: string; version?: string; required?: string; untested?: boolean; source?: 'login-shell' \| 'login-shell-degraded' \| 'path-only' \| 'fallback'; arch?: string; installCommand?: string; installUrl?: string })[]` | 是 |  |
 
 #### `toolchain.recheck`
 
@@ -578,11 +578,11 @@
 
 | 字段 | 类型 | 必填 | 说明 |
 | --- | --- | --- | --- |
-| `tools` | `({ tool: string; status: 'found' \| 'missing' \| 'too-old' \| 'unknown'; path?: string; version?: string; required?: string; untested?: boolean; source?: 'login-shell' \| 'login-shell-degraded' \| 'path-only' \| 'fallback' })[]` | 是 |  |
+| `tools` | `({ tool: string; status: 'found' \| 'missing' \| 'too-old' \| 'unknown'; path?: string; version?: string; required?: string; untested?: boolean; source?: 'login-shell' \| 'login-shell-degraded' \| 'path-only' \| 'fallback'; arch?: string; installCommand?: string; installUrl?: string })[]` | 是 |  |
 
 #### `toolchain.setPath`
 
-手动指定一个工具的路径，排在所有自动查找之前，并重新检测
+手动指定一个工具的路径，排在所有自动查找之前，并重新检测；执行不了或打印不出版本号时不接受，原来的路径不变
 
 入参：
 
@@ -595,9 +595,9 @@
 
 | 字段 | 类型 | 必填 | 说明 |
 | --- | --- | --- | --- |
-| `tools` | `({ tool: string; status: 'found' \| 'missing' \| 'too-old' \| 'unknown'; path?: string; version?: string; required?: string; untested?: boolean; source?: 'login-shell' \| 'login-shell-degraded' \| 'path-only' \| 'fallback' })[]` | 是 |  |
+| `tools` | `({ tool: string; status: 'found' \| 'missing' \| 'too-old' \| 'unknown'; path?: string; version?: string; required?: string; untested?: boolean; source?: 'login-shell' \| 'login-shell-degraded' \| 'path-only' \| 'fallback'; arch?: string; installCommand?: string; installUrl?: string })[]` | 是 |  |
 
-可能返回的错误码：`DATA_FROM_NEWER_VERSION`
+可能返回的错误码：`DATA_FROM_NEWER_VERSION`、`TOOL_PATH_INVALID`
 
 ### 模板
 
@@ -630,6 +630,8 @@
 | `template` | `TemplateRecord` | 是 |  |
 | `path` | `string` | 是 | 模板文件夹的绝对路径；非空 |
 | `files` | `string[]` | 是 | 模板里文件的相对路径，用 / 分隔 |
+| `runner` | `{ setup: Record<string, string[]>; run: string[] \| null; ready: { http: { path: string }; slowAfterMs: integer } \| { port: {}; slowAfterMs: integer } \| { log: { match: string }; slowAfterMs: integer } \| null } \| null` | 是 |  |
+| `problems` | `({ rule: 'template-json-invalid' \| 'runner-invalid' \| 'name-missing-en' \| 'format-version-unsupported' \| 'path-escape' \| 'variable-undeclared' \| 'entry-missing' \| 'maintainer-missing' \| 'command-shell-syntax' \| 'stop-signal-name' \| 'bind-address' \| 'port-hardcoded' \| 'requires-missing' \| 'range-invalid' \| 'range-no-upper' \| 'tool-unknown' \| 'runner-not-found' \| 'template-id-reserved' \| 'allow-builds-missing' \| 'lockfile-missing' \| 'version-not-exact'; path: string })[]` | 是 |  |
 
 可能返回的错误码：`TEMPLATE_NOT_FOUND`
 
@@ -744,6 +746,7 @@
 | `autoSave` | `'delay' \| 'blur' \| 'off'` | 否 | 编辑器自动保存：停止输入后、失去焦点时、关闭 |
 | `theme` | `'system' \| 'light' \| 'dark'` | 否 | 界面明暗：跟随系统、浅色、深色 |
 | `language` | `'en' \| 'zh-CN'` | 否 | 桌面应用界面语言；没写就按系统语言（命令行的语言在 cli.json） |
+| `network` | `{ registry?: string; proxy?: string; noProxyLocal: boolean }` | 否 |  |
 | `confirmCloseRunningTab` | `boolean` | 否 | 关闭运行中的标签页前是否确认；“不再提示”关掉它 |
 
 出参：
@@ -1007,6 +1010,7 @@
 | `autoSave` | `'delay' \| 'blur' \| 'off'` | 是 | 编辑器自动保存：停止输入后、失去焦点时、关闭 |
 | `theme` | `'system' \| 'light' \| 'dark'` | 是 | 界面明暗：跟随系统、浅色、深色 |
 | `language` | `'en' \| 'zh-CN'` | 否 | 桌面应用界面语言；没写就按系统语言（命令行的语言在 cli.json） |
+| `network` | `{ registry?: string; proxy?: string; noProxyLocal: boolean }` | 是 |  |
 | `confirmCloseRunningTab` | `boolean` | 是 | 关闭运行中的标签页前是否确认；“不再提示”关掉它 |
 
 ### `TemplateRecord`

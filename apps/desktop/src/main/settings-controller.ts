@@ -1,8 +1,10 @@
 import type { Locale } from "@runyard/i18n";
 import { type Settings, type SettingsPatch, settingsPatchSchema } from "@runyard/protocol";
 import type { ExternalEditorOption, LibraryRootChoice } from "../shared/settings-bridge.ts";
+import type { CliSettings } from "./cli-settings.ts";
 import type { LibraryClient } from "./library-controller.ts";
 import { displayPath } from "./library-root.ts";
+import type { ToolchainSettings } from "./toolchain-settings.ts";
 
 // 设置页背后的逻辑（规格 desktop/settings）：读写管理进程的设置，把需要主进程动手的几项落实——
 // 主题（系统外观）、语言（菜单和资源库文字）、资源库位置（重读项目），并把变化推给界面。
@@ -44,6 +46,9 @@ export interface SettingsControllerOptions {
   fallbackTheme?: Settings["theme"];
   /** 启动时已经落实过的设置（主进程启动时读到的）；之后只落实相对它的变化 */
   initial?: Settings;
+  /** 依赖与网络、运行环境（#189）和命令行与智能体（#195）背后的两块；没接线时这些项读不到 */
+  toolchain?: ToolchainSettings;
+  cli?: CliSettings;
 }
 
 export class SettingsController {
@@ -54,6 +59,8 @@ export class SettingsController {
   readonly #fallbackLocale: Locale;
   readonly #fallbackTheme: Settings["theme"];
   #last: Settings | undefined;
+  readonly toolchain: ToolchainSettings | undefined;
+  readonly cli: CliSettings | undefined;
   readonly #listeners = new Set<(settings: Settings) => void>();
 
   constructor(options: SettingsControllerOptions) {
@@ -64,6 +71,8 @@ export class SettingsController {
     this.#fallbackLocale = options.fallbackLocale;
     this.#fallbackTheme = options.fallbackTheme ?? "system";
     this.#last = options.initial;
+    this.toolchain = options.toolchain;
+    this.cli = options.cli;
   }
 
   /** 读第一份设置并订阅变化（命令行或别处改了设置，开着的设置页要跟着更新） */
@@ -74,6 +83,7 @@ export class SettingsController {
       // 订阅不上就只在本应用里改的时候更新
     }
     await this.#reread();
+    await this.toolchain?.start();
   }
 
   /** 设置里选的语言；没选就是启动时定下的语言 */

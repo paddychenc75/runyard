@@ -7,7 +7,7 @@ import {
   type PosixRelPath,
   posixRelPath,
 } from "@runyard/platform";
-import { templateIdPattern } from "@runyard/protocol";
+import { templateDefaultExclusion, templateIdPattern } from "@runyard/protocol";
 import { libraryError } from "../library/library-error.ts";
 import { decodeText, listFolderFiles } from "./read-template-folder.ts";
 
@@ -45,21 +45,10 @@ export interface SavedTemplate {
   readonly source: "user";
 }
 
-// 默认不进模板的东西。依赖目录、.git、__pycache__ 在任何深度都不进；构建产物只看项目根
-// （src/build/ 这类源码目录不能被误伤）。.runyard/ 只在根，永远不进，include 也加不进来
-const ANYWHERE_DIRS = new Set(["node_modules", ".venv", ".git", "__pycache__"]);
-const ROOT_DIRS = new Set(["dist", "build", ".next", ".nuxt", ".output"]);
-const ENV_FILE = /^\.env(\..+)?$/;
-
-function lastSegment(path: string): string {
-  return path.slice(path.lastIndexOf("/") + 1);
-}
-
-function excludedByDefault(path: string, isDirectory: boolean): boolean {
-  const base = lastSegment(path);
-  if (isDirectory) return ANYWHERE_DIRS.has(base) || (!path.includes("/") && ROOT_DIRS.has(base));
-  return ENV_FILE.test(base);
-}
+// 默认不进模板的规则在协议包（templateDefaultExclusion），桌面应用的另存弹窗用同一份。
+// .runyard/ 只在根，永远不进，include 也加不进来
+const excludedByDefault = (path: string, isDirectory: boolean): boolean =>
+  templateDefaultExclusion(path, isDirectory) !== null;
 
 const covers = (list: readonly string[], path: string): boolean =>
   list.some((entry) => path === entry || path.startsWith(`${entry}/`));

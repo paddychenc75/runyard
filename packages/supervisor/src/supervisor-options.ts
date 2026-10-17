@@ -1,4 +1,4 @@
-import type { TemplateLocations } from "@runyard/core";
+import type { TemplateLocations, ToolchainService } from "@runyard/core";
 import type { Platform } from "@runyard/platform";
 import type { ClientKind, ShutdownReason, SupervisorFile } from "@runyard/protocol";
 import type { DiscoveryStore } from "./discovery-file.ts";
@@ -43,6 +43,10 @@ export interface SupervisorExtensions {
    * 在拿到锁、写发现文件之前调用且只调用一次，所以客户端此时还连不上
    */
   recoverCrashedRuns?: () => Promise<void>;
+  /** 工具检测服务（运行模块创建；toolchain.check 用它）；没有时该方法回 NOT_SUPPORTED */
+  toolchain?: () => Promise<ToolchainService>;
+  /** 让检测服务读到最新的设置（手动指定的工具路径）；toolchain.* 方法每次用之前调它 */
+  refreshSettings?: () => Promise<void>;
   /** 退出前先做的事（#40：停掉所有运行）；在关闭会话之前等它完成 */
   onShutdown?: (reason: ShutdownReason) => Promise<void>;
   /** 会话的生命周期（#40：持有者、重连宽限期） */

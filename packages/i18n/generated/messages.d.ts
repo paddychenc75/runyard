@@ -519,6 +519,38 @@ export type CatalogMessages = {
   "desktop.runbar.tooOld.label": {
     tool: string | number;
   };
+  "desktop.saveTemplate.cancel.action": Record<never, never>;
+  "desktop.saveTemplate.description.label": Record<never, never>;
+  "desktop.saveTemplate.description.placeholder": Record<never, never>;
+  "desktop.saveTemplate.excluded.label": Record<never, never>;
+  "desktop.saveTemplate.files.aria": Record<never, never>;
+  "desktop.saveTemplate.files.label": Record<never, never>;
+  "desktop.saveTemplate.footer.hint": {
+    path: string | number;
+  };
+  "desktop.saveTemplate.id.hint": {
+    code: (chunks: string[]) => string;
+    id: string | number;
+  };
+  "desktop.saveTemplate.id.label": Record<never, never>;
+  "desktop.saveTemplate.idInvalid.hint": Record<never, never>;
+  "desktop.saveTemplate.idPlaceholder.label": Record<never, never>;
+  "desktop.saveTemplate.idTaken.hint": Record<never, never>;
+  "desktop.saveTemplate.listComma.label": Record<never, never>;
+  "desktop.saveTemplate.name.label": Record<never, never>;
+  "desktop.saveTemplate.reasonBuild.label": Record<never, never>;
+  "desktop.saveTemplate.reasonDeps.label": Record<never, never>;
+  "desktop.saveTemplate.reasonSecret.label": Record<never, never>;
+  "desktop.saveTemplate.replaceName.label": Record<never, never>;
+  "desktop.saveTemplate.requires.label": Record<never, never>;
+  "desktop.saveTemplate.requiresFrom.body": {
+    template: string | number;
+  };
+  "desktop.saveTemplate.submit.action": Record<never, never>;
+  "desktop.saveTemplate.subtitle.body": {
+    name: string | number;
+  };
+  "desktop.saveTemplate.title": Record<never, never>;
   "desktop.script.autoRun.label": Record<never, never>;
   "desktop.script.autoRunGlobalOff.hint": Record<never, never>;
   "desktop.script.ended.label": {
@@ -555,6 +587,55 @@ export type CatalogMessages = {
   "desktop.stop.action": Record<never, never>;
   "desktop.stopped.body": Record<never, never>;
   "desktop.tab.cli.label": Record<never, never>;
+  "desktop.templates.create.action": Record<never, never>;
+  "desktop.templates.detail.aria": Record<never, never>;
+  "desktop.templates.detailGone.hint": Record<never, never>;
+  "desktop.templates.edit.hint": Record<never, never>;
+  "desktop.templates.empty.hint": Record<never, never>;
+  "desktop.templates.fallback.hint": {
+    fallback: string | number;
+    tool: string | number;
+  };
+  "desktop.templates.files.title": Record<never, never>;
+  "desktop.templates.filesEmpty.hint": Record<never, never>;
+  "desktop.templates.hereColumn.label": Record<never, never>;
+  "desktop.templates.invalid.label": Record<never, never>;
+  "desktop.templates.list.aria": Record<never, never>;
+  "desktop.templates.loadFailed.hint": Record<never, never>;
+  "desktop.templates.problemEntry.label": Record<never, never>;
+  "desktop.templates.problemFormat.label": Record<never, never>;
+  "desktop.templates.problemName.label": Record<never, never>;
+  "desktop.templates.problemOther.label": {
+    rule: string | number;
+  };
+  "desktop.templates.problemReserved.label": Record<never, never>;
+  "desktop.templates.problemRunner.label": Record<never, never>;
+  "desktop.templates.problemTemplateJson.label": Record<never, never>;
+  "desktop.templates.rangeAnd.label": Record<never, never>;
+  "desktop.templates.readyLog.label": {
+    match: string | number;
+  };
+  "desktop.templates.readyPort.label": Record<never, never>;
+  "desktop.templates.requiredColumn.label": Record<never, never>;
+  "desktop.templates.requires.title": Record<never, never>;
+  "desktop.templates.requiresNone.hint": Record<never, never>;
+  "desktop.templates.run.title": Record<never, never>;
+  "desktop.templates.runInstall.label": Record<never, never>;
+  "desktop.templates.runReady.label": Record<never, never>;
+  "desktop.templates.runStart.label": Record<never, never>;
+  "desktop.templates.sourceBuiltin.label": Record<never, never>;
+  "desktop.templates.sourceUser.label": Record<never, never>;
+  "desktop.templates.statusColumn.label": Record<never, never>;
+  "desktop.templates.statusMet.label": Record<never, never>;
+  "desktop.templates.statusMissing.label": Record<never, never>;
+  "desktop.templates.statusTooOld.label": Record<never, never>;
+  "desktop.templates.summary.label": {
+    builtin: number;
+    user: number;
+  };
+  "desktop.templates.title": Record<never, never>;
+  "desktop.templates.toolColumn.label": Record<never, never>;
+  "desktop.templates.unmaintained.label": Record<never, never>;
   "desktop.terminal.aria": Record<never, never>;
   "desktop.terminal.endedExited.label": {
     exitCode: string | number;
@@ -795,7 +876,28 @@ export type CatalogMessages = {
   "settings.autoSave.title": Record<never, never>;
   "settings.builtinSkip.hint": Record<never, never>;
   "settings.builtinSkip.title": Record<never, never>;
+  "settings.cli.available.label": {
+    version: string | number;
+  };
+  "settings.cli.command.title": Record<never, never>;
+  "settings.cli.conflict.hint": Record<never, never>;
+  "settings.cli.conflict.label": Record<never, never>;
+  "settings.cli.copyCommand.action": Record<never, never>;
+  "settings.cli.diagnostics.action": Record<never, never>;
+  "settings.cli.diagnostics.title": Record<never, never>;
+  "settings.cli.exportDone.label": Record<never, never>;
+  "settings.cli.exportFailed.label": Record<never, never>;
+  "settings.cli.failed.body": Record<never, never>;
+  "settings.cli.install.action": Record<never, never>;
+  "settings.cli.missing.label": Record<never, never>;
+  "settings.cli.notOnPath.body": {
+    dir: string | number;
+  };
+  "settings.cli.remove.action": Record<never, never>;
+  "settings.cli.stale.label": Record<never, never>;
   "settings.cli.title": Record<never, never>;
+  "settings.cli.unavailable.hint": Record<never, never>;
+  "settings.cli.unavailable.label": Record<never, never>;
   "settings.confirmClose.hint": Record<never, never>;
   "settings.confirmClose.title": Record<never, never>;
   "settings.deps.title": Record<never, never>;
@@ -830,15 +932,83 @@ export type CatalogMessages = {
   "settings.libraryRoot.protected.title": Record<never, never>;
   "settings.libraryRoot.reveal.action": Record<never, never>;
   "settings.libraryRoot.title": Record<never, never>;
+  "settings.noProxyLocal.title": Record<never, never>;
   "settings.page.aria": Record<never, never>;
   "settings.page.title": Record<never, never>;
-  "settings.pending.cli.label": Record<never, never>;
-  "settings.pending.deps.label": Record<never, never>;
-  "settings.pending.runtime.label": Record<never, never>;
+  "settings.pm.auto.label": Record<never, never>;
+  "settings.pm.hint": Record<never, never>;
+  "settings.pm.npm.label": Record<never, never>;
+  "settings.pm.pnpm.label": Record<never, never>;
+  "settings.pm.title": Record<never, never>;
+  "settings.proxy.example.placeholder": Record<never, never>;
+  "settings.proxy.hint": Record<never, never>;
+  "settings.proxy.inherited.hint": Record<never, never>;
+  "settings.proxy.invalid.body": Record<never, never>;
+  "settings.proxy.title": Record<never, never>;
+  "settings.registry.example.placeholder": Record<never, never>;
+  "settings.registry.hint": Record<never, never>;
+  "settings.registry.inherited.hint": Record<never, never>;
+  "settings.registry.invalid.body": Record<never, never>;
+  "settings.registry.title": Record<never, never>;
   "settings.runNote.label": Record<never, never>;
+  "settings.runtime.and.label": Record<never, never>;
+  "settings.runtime.arch.label": Record<never, never>;
+  "settings.runtime.command.label": Record<never, never>;
+  "settings.runtime.copy.action": Record<never, never>;
+  "settings.runtime.current.label": Record<never, never>;
+  "settings.runtime.envFailed.body": Record<never, never>;
+  "settings.runtime.found.label": Record<never, never>;
+  "settings.runtime.installed.label": Record<never, never>;
+  "settings.runtime.invalidPath.body": {
+    tool: string | number;
+  };
+  "settings.runtime.missing.label": Record<never, never>;
+  "settings.runtime.missing.title": {
+    tool: string | number;
+  };
+  "settings.runtime.need.label": Record<never, never>;
+  "settings.runtime.note.label": Record<never, never>;
+  "settings.runtime.path.label": Record<never, never>;
+  "settings.runtime.pathFailed.body": Record<never, never>;
+  "settings.runtime.recheck.action": Record<never, never>;
+  "settings.runtime.runInstall.action": Record<never, never>;
+  "settings.runtime.setPath.action": Record<never, never>;
+  "settings.runtime.site.label": Record<never, never>;
+  "settings.runtime.status.label": Record<never, never>;
+  "settings.runtime.table.aria": Record<never, never>;
   "settings.runtime.title": Record<never, never>;
+  "settings.runtime.tooOld.label": Record<never, never>;
+  "settings.runtime.tooOld.title": {
+    tool: string | number;
+  };
+  "settings.runtime.tool.label": Record<never, never>;
+  "settings.runtime.toolName.label": {
+    tool: string | number;
+  };
+  "settings.runtime.unknown.label": Record<never, never>;
+  "settings.runtime.version.label": Record<never, never>;
   "settings.scriptAutoRun.hint": Record<never, never>;
   "settings.scriptAutoRun.title": Record<never, never>;
+  "settings.skills.agents.label": Record<never, never>;
+  "settings.skills.agentsName.label": Record<never, never>;
+  "settings.skills.both.label": Record<never, never>;
+  "settings.skills.claude.label": Record<never, never>;
+  "settings.skills.claudeName.label": Record<never, never>;
+  "settings.skills.hint": Record<never, never>;
+  "settings.skills.none.label": Record<never, never>;
+  "settings.skills.other.action": Record<never, never>;
+  "settings.skills.title": Record<never, never>;
+  "settings.supervisor.confirm.body": {
+    count: number;
+  };
+  "settings.supervisor.confirm.title": Record<never, never>;
+  "settings.supervisor.hint": Record<never, never>;
+  "settings.supervisor.running.label": {
+    count: number;
+  };
+  "settings.supervisor.stop.action": Record<never, never>;
+  "settings.supervisor.stopped.label": Record<never, never>;
+  "settings.supervisor.title": Record<never, never>;
   "settings.theme.dark.label": Record<never, never>;
   "settings.theme.hint": Record<never, never>;
   "settings.theme.light.label": Record<never, never>;

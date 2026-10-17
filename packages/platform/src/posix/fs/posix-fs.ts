@@ -1,8 +1,10 @@
 import type { Dirent } from "node:fs";
 import {
   appendFile,
+  type FileHandle,
   lstat,
   mkdir,
+  open,
   readdir,
   readFile,
   stat,
@@ -48,6 +50,23 @@ export function createPosixFs(options: PosixFsOptions = {}): Omit<Platform["fs"]
         const code = errnoOf(error);
         if (code === "ENOENT" || code === "ENOTDIR" || code === "EISDIR") return null;
         throw fsError(error, file, "read");
+      }
+    },
+
+    async readHead(file, length) {
+      let handle: FileHandle | undefined;
+      try {
+        handle = await open(file, "r");
+        if (!(await handle.stat()).isFile()) return null;
+        const buffer = new Uint8Array(length);
+        const { bytesRead } = await handle.read(buffer, 0, length, 0);
+        return buffer.subarray(0, bytesRead);
+      } catch (error) {
+        const code = errnoOf(error);
+        if (code === "ENOENT" || code === "ENOTDIR" || code === "EISDIR") return null;
+        throw fsError(error, file, "read");
+      } finally {
+        await handle?.close();
       }
     },
 

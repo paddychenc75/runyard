@@ -25,6 +25,7 @@ import {
 } from "./supervisor-options.ts";
 import { createTemplateHandlers } from "./template-handlers.ts";
 import { createTemplateLibrary } from "./template-library.ts";
+import { createToolchainHandlers } from "./toolchain-handlers.ts";
 
 const hex = (bytes: Uint8Array) => Buffer.from(bytes).toString("hex");
 
@@ -112,6 +113,11 @@ export function createSupervisorRuntime(options: StartSupervisorOptions) {
     readySessions: () => manager.ready(),
     openLibrary: async () => (await library.open()).library,
     readSettings: () => library.settings.get(),
+    updateSettings: async (patch) => {
+      const settings = await library.settings.set(patch);
+      manager.publish("settings.changed", {});
+      return settings;
+    },
     shutdown(reason: ShutdownReason) {
       shutdownPromise ??= (async () => {
         idle.stop();
@@ -163,6 +169,14 @@ export function createSupervisorRuntime(options: StartSupervisorOptions) {
       ...builtin,
       ...createLibraryHandlers(library, libraryService),
       ...createTemplateHandlers(library, templates),
+      ...createToolchainHandlers({
+        api,
+        toolchain: () => extensions.toolchain?.(),
+        templates,
+        ...(extensions.refreshSettings === undefined
+          ? {}
+          : { refreshSettings: extensions.refreshSettings }),
+      }),
     };
     dispatch = createDispatcher(mergeHandlers(own, extensions.handlers), api);
     await store.remove();

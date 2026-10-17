@@ -11,6 +11,7 @@ import type { BootstrapInfo } from "../../shared/desktop-bridge.ts";
 import { type NavFilter, navFilters } from "../library-query.ts";
 import { navLabel } from "./library-labels.ts";
 import styles from "./Sidebar.module.css";
+import type { ShellPage } from "./sidebar-navigation.ts";
 
 export interface SidebarProps {
   windowControls: BootstrapInfo["windowControls"];
@@ -25,13 +26,13 @@ export interface SidebarProps {
   templateCount: number;
   /** 资源库文件夹，主目录缩成 ~；还没读到是空串 */
   libraryRoot: string;
-  /** 当前显示的页：资源库或设置（规格 DESKTOP-SETTINGS-01） */
-  page: "library" | "settings";
-  onNavigate: (page: "library" | "settings") => void;
+  /** 当前显示的页：资源库、模板或设置（规格 DESKTOP-SETTINGS-01、DESKTOP-TEMPLATES-VIEW-01） */
+  page: ShellPage;
+  onNavigate: (page: ShellPage) => void;
 }
 
 // 侧栏：顶上给窗口按钮留位置，下面是品牌、资源库的筛选、管理的几个页面，底部是资源库的概况。
-// 资源库的四个固定筛选可点，右边是符合的项目数（#181）；管理里“设置”可点（#188），其余页面随 #169、#170 等，现在列出但点不了（设计稿 Main）。
+// 资源库的四个固定筛选可点，右边是符合的项目数（#181）；管理里“设置”（#188）和“模板”（#291）可点，“长期未使用”随后续 issue，现在列出但点不了（设计稿 Main）。
 export function Sidebar({
   windowControls,
   total,
@@ -64,7 +65,6 @@ export function Sidebar({
           label: t("library.nav.templates.label"),
           icon: "cube",
           count: format.number(templateCount),
-          disabled: true,
         },
         { id: "unused", label: t("library.nav.unused.label"), icon: "clock", disabled: true },
         {
@@ -86,10 +86,10 @@ export function Sidebar({
         <NavList
           label={t("library.nav.aria")}
           sections={sections}
-          value={page === "settings" ? "settings" : nav}
+          value={page === "library" ? nav : page}
           onValueChange={(id) => {
-            if (id === "settings") {
-              onNavigate("settings");
+            if (id === "settings" || id === "templates") {
+              onNavigate(id);
               return;
             }
             onNavChange(id as NavFilter);

@@ -125,6 +125,20 @@
   line-height: var(--text-caption-line-height);
 }
 
+.already {
+  display: flex;
+  gap: var(--space-2);
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-secondary-size);
+}
+
+.invalid {
+  margin: 0;
+  color: var(--color-status-danger-text);
+  font-size: var(--text-secondary-size);
+}
+
 /* 缺运行环境的卡片是玻璃材质（设计稿 Missing）；材质自带圆角、描边和背景 */
 .card {
   padding: var(--space-9);

@@ -36,6 +36,7 @@ const sampleParams: { [C in ErrorCode]: ErrorParams<C> } = {
   TOOL_MISSING: { tool: "go", required: ">=1.26", name: "demo" },
   TOOL_TOO_OLD: { tool: "go", required: ">=1.26", found: "1.20.1", name: "demo" },
   RUNTIME_MISSING: { tool: "node" },
+  TOOL_PATH_INVALID: { tool: "node", path: "/tmp/not-node" },
   SETUP_FAILED: { name: "demo" },
   DEPS_OFFLINE: { name: "demo" },
   RUN_FAILED: { name: "demo" },

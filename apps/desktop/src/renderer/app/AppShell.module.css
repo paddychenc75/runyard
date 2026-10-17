@@ -14,7 +14,7 @@
   min-block-size: 0;
 }
 
-/* 设置页：没有顶栏，内容从窗口顶边起（设计稿 Settings） */
+/* 设置页和模板页：没有顶栏，内容从窗口顶边起（设计稿 Settings、Templates） */
 .settings {
   position: absolute;
   inset-block: 0;

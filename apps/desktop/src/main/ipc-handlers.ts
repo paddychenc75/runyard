@@ -10,12 +10,15 @@ import {
   type QuitReply,
 } from "../shared/desktop-bridge.ts";
 import type { Bounds } from "../shared/layout.ts";
+import type { AgentSkillStatus, CliCommandStatus } from "../shared/settings-bridge.ts";
 import { isAppUrl } from "./app-protocol.ts";
 import { editorFileMethods, type FileOpeners } from "./editor-files/editor-ipc.ts";
 import type { EditorFileService } from "./editor-files/file-service.ts";
 import type { LibraryController } from "./library-controller.ts";
 import type { QuitFlushGate } from "./quit-flush-gate.ts";
 import type { SettingsController } from "./settings-controller.ts";
+import { templateMethods } from "./template-ipc.ts";
+import type { TemplatesView } from "./templates-view.ts";
 import { terminalMethods } from "./terminal/terminal-ipc.ts";
 import type { TerminalService } from "./terminal/terminal-service.ts";
 
@@ -80,6 +83,13 @@ function parseEditRequest(value: unknown): EditRequest | null {
   return { id: id as string, name: name as string, note };
 }
 
+const unavailableCli: CliCommandStatus = {
+  state: "unavailable",
+  version: "",
+  onPath: false,
+  pathCommand: "",
+};
+const noSkills: AgentSkillStatus = { claude: false, agents: false };
 const rejectedEdit: EditResult = { ok: false, error: { code: "INTERNAL", params: {} } };
 const rejectedCreate: CreateResult = { ok: false, error: { code: "INTERNAL", params: {} } };
 
@@ -103,6 +113,7 @@ export function registerBridgeHandlers(
   quitGate?: QuitFlushGate,
   settings?: SettingsController,
   terminals?: TerminalService,
+  templates?: TemplatesView,
 ): () => void {
   // 方法名到控制器的映射；参数不是预期类型时不调用控制器
   const methods: Record<DesktopMethod, (param: unknown) => unknown> = {
@@ -236,6 +247,40 @@ export function registerBridgeHandlers(
       const playground = text(id);
       if (playground !== null) await settings?.openInEditor(playground);
     },
+    // 依赖与网络、运行环境、命令行与智能体（#189、#195）；没接线时这些项读到空
+    "settings.localNetwork": async () => (await settings?.toolchain?.localNetwork()) ?? {},
+    "toolchain.check": async (value) => {
+      const cachedOnly =
+        typeof value === "object" &&
+        value !== null &&
+        (value as { cachedOnly?: unknown }).cachedOnly === true;
+      return (await settings?.toolchain?.check(cachedOnly)) ?? { tools: [] };
+    },
+    "toolchain.recheck": async () => (await settings?.toolchain?.recheck()) ?? { tools: [] },
+    "toolchain.pickPath": async (tool) => {
+      const id = text(tool);
+      if (id === null) return { status: "failed" };
+      return (await settings?.toolchain?.pickPath(id)) ?? { status: "failed" };
+    },
+    "toolchain.runInstall": (tool) => {
+      const id = text(tool);
+      if (id !== null) settings?.toolchain?.runInstall(id);
+    },
+    "cli.status": async () => (await settings?.cli?.status()) ?? unavailableCli,
+    "cli.install": async () =>
+      (await settings?.cli?.install()) ?? { result: "failed", status: unavailableCli },
+    "cli.remove": async () =>
+      (await settings?.cli?.remove()) ?? { result: "failed", status: unavailableCli },
+    "diagnostics.export": async () => (await settings?.cli?.exportDiagnostics()) ?? { ok: false },
+    "agents.status": async () => (await settings?.cli?.agentSkills()) ?? noSkills,
+    "agents.install": async (target) =>
+      target === "claude" || target === "agents"
+        ? ((await settings?.cli?.installAgentSkill(target)) ?? noSkills)
+        : noSkills,
+    "supervisor.status": async () =>
+      (await settings?.cli?.supervisorStatus()) ?? { running: false, cliRuns: 0 },
+    "supervisor.stop": async () =>
+      (await settings?.cli?.stopSupervisor()) ?? { running: false, cliRuns: 0 },
     "playground.edit": async (value) => {
       const request = parseEditRequest(value);
       return request === null ? rejectedEdit : await controller.edits.edit(request);
@@ -279,6 +324,7 @@ export function registerBridgeHandlers(
       if (playground !== null) controller.system.openTerminal(playground);
     },
     // 文件服务（#257）；没接线时这些方法不可用
+    ...templateMethods(templates),
     ...editorFileMethods(files, openers),
     // 集成终端（#263）；没接线时这些方法不可用
     ...terminalMethods(terminals),
@@ -310,10 +356,14 @@ export function registerBridgeHandlers(
   const stopSettings = settings?.onChange((changed) =>
     host.send(desktopChannels.event, "settings.changed", changed),
   );
+  const stopToolchain = settings?.toolchain?.onChange(() =>
+    host.send(desktopChannels.event, "toolchain.changed", undefined),
+  );
   return () => {
     stopState();
     stopConsole();
     stopSettings?.();
+    stopToolchain?.();
   };
 }
 

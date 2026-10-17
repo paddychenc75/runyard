@@ -55,6 +55,33 @@ describe("settings.get / settings.set", () => {
     expect(readSettings()).toMatchObject({ formatVersion: 1, confirmCloseRunningTab: false });
   });
 
+  it("[DESKTOP-SETTINGS-12] 镜像源和代理存进 settings.json 的 network，读回来一样；没设置过时默认只勾着“本机服务不走代理”", async () => {
+    const app = await setup();
+    expect(await app.result("settings.get", {})).toMatchObject({ network: { noProxyLocal: true } });
+    const network = { registry: "https://registry.npmmirror.com", noProxyLocal: true };
+    await app.result("settings.set", { network });
+    expect(readSettings()).toMatchObject({ network });
+    expect(await app.result("settings.get", {})).toMatchObject({ network });
+  });
+
+  it("[DESKTOP-SETTINGS-13] 清空镜像源就是把 registry 去掉，之后读到的没有 registry（沿用本机配置）", async () => {
+    const app = await setup();
+    await app.result("settings.set", {
+      network: { registry: "https://b.example", noProxyLocal: true },
+    });
+    await app.result("settings.set", { network: { noProxyLocal: true } });
+    const after = await app.result<{ network: Record<string, unknown> }>("settings.get", {});
+    expect(after.network).toEqual({ noProxyLocal: true });
+  });
+
+  it("[DESKTOP-SETTINGS-14] 不合法的代理报 USAGE，文件不动", async () => {
+    const app = await setup();
+    expect(
+      await app.errorCode("settings.set", { network: { proxy: "not a url", noProxyLocal: true } }),
+    ).toBe("USAGE");
+    expect(lw.fs.exists(lw.settingsPath())).toBe(false);
+  });
+
   it("ports.min 大于 ports.max 报 USAGE，文件不动", async () => {
     const app = await setup();
     expect(await app.errorCode("settings.set", { ports: { min: 8000, max: 7100 } })).toBe("USAGE");

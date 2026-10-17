@@ -234,8 +234,20 @@ const examples: Record<MethodName, Example> = {
       template: sampleTemplateRecord,
       path: "/Applications/Runyard.app/templates/react19",
       files: ["package.json", "src/App.tsx"],
+      runner: {
+        setup: { pnpm: ["pnpm", "install"] },
+        run: ["node", "server.js", "{port}"],
+        ready: { http: { path: "/" }, slowAfterMs: 30000 },
+      },
+      problems: [],
     },
-    badResult: { template: sampleTemplateRecord, path: "/x", files: ["../escape"] },
+    badResult: {
+      template: sampleTemplateRecord,
+      path: "/x",
+      files: ["../escape"],
+      runner: null,
+      problems: [],
+    },
   },
   "template.save": {
     params: {

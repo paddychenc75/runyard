@@ -1,6 +1,12 @@
 import type { PlaygroundLibrary } from "@runyard/core";
 import type { Platform } from "@runyard/platform";
-import type { EventData, EventName, Settings, ShutdownReason } from "@runyard/protocol";
+import type {
+  EventData,
+  EventName,
+  Settings,
+  SettingsPatch,
+  ShutdownReason,
+} from "@runyard/protocol";
 import type { Session } from "./session.ts";
 import type { SupervisorClock } from "./supervisor-clock.ts";
 
@@ -20,6 +26,8 @@ export interface SupervisorApi {
   openLibrary(): Promise<PlaygroundLibrary>;
   /** 当前设置（端口范围、工具路径等运行时要用的几项） */
   readSettings(): Promise<Settings>;
+  /** 改设置（只传要改的字段）并发 settings.changed；和 settings.set 方法同一条路径 */
+  updateSettings(patch: SettingsPatch): Promise<Settings>;
   /** 握手完成的会话 */
   readySessions(): readonly Session[];
   /** 请管理进程退出（也是 supervisor.shutdown 走的路径）；重复调用返回同一个 Promise */

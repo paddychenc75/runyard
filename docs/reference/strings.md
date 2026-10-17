@@ -326,6 +326,29 @@
 | desktop.runbar.missing.label | 缺少 {tool} | {tool} is missing | tool：工具标识，如 go、node |
 | desktop.runbar.state.label | {state} :{port} | {state} :{port} | state：运行状态的名字，来自 runState.<状态>；port：端口号，纯数字字符串（不加千分位） |
 | desktop.runbar.tooOld.label | {tool} 版本过低 | {tool} is too old | tool：工具标识，如 go、node |
+| desktop.saveTemplate.cancel.action | 取消 | Cancel | — |
+| desktop.saveTemplate.description.label | 说明 | Description | — |
+| desktop.saveTemplate.description.placeholder | 一句话说明这个模板是做什么的 | One line about what this template is for | — |
+| desktop.saveTemplate.excluded.label | 默认不包含 | Not included by default | — |
+| desktop.saveTemplate.files.aria | 选择要放进模板的文件 | Choose the files to put in the template | — |
+| desktop.saveTemplate.files.label | 包含的文件 | Included files | — |
+| desktop.saveTemplate.footer.hint | 保存后出现在新建时的“我的”分组 · {path} | Appears under Mine when creating · {path} | path：新模板文件夹的显示路径，如 ~/.runyard/templates/todo-api |
+| desktop.saveTemplate.id.hint | 只能用小写字母、数字和连字符，命令行里用它：<code>runyard new {id}</code> | Lowercase letters, numbers and hyphens only. Used on the command line: <code>runyard new {id}</code> | id：模板标识；还没填时是“<标识>”这样的占位；code：包住命令的标签，显示成等宽字体 |
+| desktop.saveTemplate.id.label | 模板标识 | Template id | — |
+| desktop.saveTemplate.idInvalid.hint | 标识只能用小写字母、数字和连字符，首尾不能是连字符 | Use lowercase letters, digits and hyphens only, and no hyphen at either end | — |
+| desktop.saveTemplate.idPlaceholder.label | '<'标识'>' | '<'id'>' | — |
+| desktop.saveTemplate.idTaken.hint | 这个标识已经被占用，换一个 | This id is already taken. Pick another one | — |
+| desktop.saveTemplate.listComma.label | ， | , | — |
+| desktop.saveTemplate.name.label | 模板名称 | Template name | — |
+| desktop.saveTemplate.reasonBuild.label | 构建产物，不包含 | build output, not included | — |
+| desktop.saveTemplate.reasonDeps.label | 依赖，不包含 | dependencies, not included | — |
+| desktop.saveTemplate.reasonSecret.label | 可能含密钥，默认不包含 | may contain secrets, off by default | — |
+| desktop.saveTemplate.replaceName.label | 把项目名替换成变量，新建时自动换成新项目的名字 | Replace the playground name with a variable so new playgrounds get their own name | — |
+| desktop.saveTemplate.requires.label | 依赖的运行环境 | Required tools | — |
+| desktop.saveTemplate.requiresFrom.body | 沿用原模板 {template}： | Same as the original template {template}: | template：原模板的显示名，已按语言取好 |
+| desktop.saveTemplate.submit.action | 保存模板 | Save template | — |
+| desktop.saveTemplate.subtitle.body | 把 {name} 现在的样子存成模板，以后新建时可以直接用。 | Save {name} as it is now, so you can start from it later. | name：项目名称（用户的内容，不翻译） |
+| desktop.saveTemplate.title | 另存为模板 | Save as template | — |
 | desktop.script.autoRun.label | 保存后自动运行 | Run on save | — |
 | desktop.script.autoRunGlobalOff.hint | 全局设置已关闭 | Turned off in settings | — |
 | desktop.script.ended.label | {state} · 退出码 {exitCode} · {duration} | {state} · exit code {exitCode} · {duration} | state：运行状态的名字，来自 runState.<状态>；exitCode：进程的退出码；duration：这次运行的总耗时 |
@@ -348,6 +371,45 @@
 | desktop.stop.action | 停止 | Stop | — |
 | desktop.stopped.body | 你手动停止了它。点“运行”重新启动；关闭标签页后再打开，也会自动运行。 | You stopped it. Choose Run to start it again; closing the tab and opening it again also runs it. | — |
 | desktop.tab.cli.label | 命令行 | CLI | — |
+| desktop.templates.create.action | 用它新建 | Create from it | — |
+| desktop.templates.detail.aria | 模板详情 | Template details | — |
+| desktop.templates.detailGone.hint | 这个模板不见了 | This template is gone | — |
+| desktop.templates.edit.hint | 想改内置模板：先用它新建一个项目，改好后“另存为模板”。 | To change a built-in template, create a playground from it, edit it, then use “Save as template”. | — |
+| desktop.templates.empty.hint | 还没有模板 | No templates yet | — |
+| desktop.templates.fallback.hint | 没有 {tool} 时会改用 {fallback} | Falls back to {fallback} when {tool} is missing | tool：首选的工具名，如 pnpm；fallback：缺它时改用的工具名，如 npm |
+| desktop.templates.files.title | 包含的文件 | Included files | — |
+| desktop.templates.filesEmpty.hint | 没有文件 | No files | — |
+| desktop.templates.hereColumn.label | 这台电脑 | This Mac | — |
+| desktop.templates.invalid.label | 无效 | Invalid | — |
+| desktop.templates.list.aria | 模板列表 | Templates | — |
+| desktop.templates.loadFailed.hint | 读取模板失败，请稍后再试 | Could not read the templates. Try again in a moment. | — |
+| desktop.templates.problemEntry.label | 入口文件不存在 | The entry file does not exist | — |
+| desktop.templates.problemFormat.label | 模板格式比这个版本新 | The template format is newer than this version | — |
+| desktop.templates.problemName.label | 缺少英文名称 | The English name is missing | — |
+| desktop.templates.problemOther.label | 没有通过格式检查：{rule} | Failed the format check: {rule} | rule：检查规则的标识，如 entry-missing（给开发者看，不翻译） |
+| desktop.templates.problemReserved.label | 标识和内置模板重名 | The id is already used by a built-in template | — |
+| desktop.templates.problemRunner.label | 找不到它指定的运行器 | The runner it names was not found | — |
+| desktop.templates.problemTemplateJson.label | 模板文件有问题 | The template file has a problem | — |
+| desktop.templates.rangeAnd.label | 且 | and | — |
+| desktop.templates.readyLog.label | 日志里出现 {match} | The log shows {match} | match：日志里要匹配的特征（正则文本，用 code 的等宽样式显示，不翻译） |
+| desktop.templates.readyPort.label | 端口可以连上 | The port accepts connections | — |
+| desktop.templates.requiredColumn.label | 需要的版本 | Required | — |
+| desktop.templates.requires.title | 依赖的运行环境 | Runtime requirements | — |
+| desktop.templates.requiresNone.hint | 不依赖任何工具 | Needs no tools | — |
+| desktop.templates.run.title | 运行方式 | How it runs | — |
+| desktop.templates.runInstall.label | 安装依赖 | Install | — |
+| desktop.templates.runReady.label | 就绪判断 | Ready when | — |
+| desktop.templates.runStart.label | 启动 | Start | — |
+| desktop.templates.sourceBuiltin.label | 内置 | Built-in | — |
+| desktop.templates.sourceUser.label | 我的 | Mine | — |
+| desktop.templates.statusColumn.label | 状态 | Status | — |
+| desktop.templates.statusMet.label | 满足 | Met | — |
+| desktop.templates.statusMissing.label | 没找到 | Not found | — |
+| desktop.templates.statusTooOld.label | 版本过低 | Too old | — |
+| desktop.templates.summary.label | {builtin, plural, other {# 个内置}} · {user, plural, other {# 个我的}} | {builtin, plural, one {# built-in} other {# built-in}} · {user, plural, one {# mine} other {# mine}} | builtin：内置模板的个数；user：用户自己的模板的个数 |
+| desktop.templates.title | 模板 | Templates | — |
+| desktop.templates.toolColumn.label | 工具 | Tool | — |
+| desktop.templates.unmaintained.label | 不再维护 | Unmaintained | — |
 | desktop.terminal.aria | 终端 | Terminal | — |
 | desktop.terminal.endedExited.label | 终端已结束（退出码 {exitCode}） | Terminal ended (exit code {exitCode}) | exitCode：shell 的退出码，数字 |
 | desktop.terminal.endedHostCrashed.label | 终端意外结束 | Terminal ended unexpectedly | — |
@@ -485,11 +547,15 @@
 | errors.TEMPLATE_TEST_FAILED.title | 模板「{template}」的冒烟测试在 {step} 这一步失败 | Smoke test of template "{template}" failed at step {step} | template：用户给的模板标识，原样显示；step：失败的冒烟测试步骤：create、install、start、ready、reload、stop、leftovers 之一；原样显示，不翻译 |
 | errors.TOOL_MISSING.body | 运行这个项目需要 {tool}（版本 {required}），但没有在这台电脑上找到它。项目已经创建，代码可以照常编辑。 | This playground needs {tool} ({required}), but it was not found on this computer. The playground is created and you can still edit the code. | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译；required：模板要求的版本范围，例如 >=22.18；原样显示，不翻译 |
 | errors.TOOL_MISSING.hint | 安装 {tool} 后点“重新检测”，项目就会启动。 | Install {tool}, then click "Check again" and the playground will start. | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译 |
-| errors.TOOL_MISSING.hintCli | 安装 {tool}（{required}），用 runyard doctor 确认后{name, select, none {重新运行这条命令。} other {运行 runyard run {name}。}}{installCommand, select, none {} other { 项目写的安装命令（应用不会替你运行）：`{installCommand}`}}{installUrl, select, none {} other { 安装说明：{installUrl}}} | Install {tool} ({required}), check it with runyard doctor, then {name, select, none {run the command again.} other {run runyard run {name}.}}{installCommand, select, none {} other { Install command from the playground (Runyard will not run it): `{installCommand}`}}{installUrl, select, none {} other { Install instructions: {installUrl}}} | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译；required：模板要求的版本范围，例如 >=22.18；原样显示，不翻译；name：被阻止运行的项目名称（也是文件夹名）；可选，没有时（如只检测工具）提示改为“重新运行这条命令”；installCommand：项目（模板 requires 的 install）自带的安装命令，参数用空格连成一行；可选，没有时不显示。只展示，从不运行；installUrl：项目自带的安装说明链接；可选，没有时不显示 |
+| errors.TOOL_MISSING.hintCli | 安装 {tool}（{required}），用 runyard doctor 确认后{name, select, none {重新运行这条命令。} other {运行 runyard run {name}。}}{installCommand, select, none {} other { 安装命令（应用不会替你运行）：`{installCommand}`}}{installUrl, select, none {} other { 安装说明：{installUrl}}} | Install {tool} ({required}), check it with runyard doctor, then {name, select, none {run the command again.} other {run runyard run {name}.}}{installCommand, select, none {} other { Install command (Runyard will not run it): `{installCommand}`}}{installUrl, select, none {} other { Install instructions: {installUrl}}} | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译；required：模板要求的版本范围，例如 >=22.18；原样显示，不翻译；name：被阻止运行的项目名称（也是文件夹名）；可选，没有时（如只检测工具）提示改为“重新运行这条命令”；installCommand：安装命令，参数用空格连成一行：模板自己写的优先，否则取工具定义里当前系统的（如 Homebrew）；可选，没有时不显示。只展示，从不运行；installUrl：安装说明或官网链接（只放 https）：模板自己写的优先，否则取工具定义里的；可选，没有时不显示 |
 | errors.TOOL_MISSING.title | 没有找到 {tool} | Cannot find {tool} | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译 |
+| errors.TOOL_PATH_INVALID.body | {path} 运行后没有打印出 {tool} 的版本号，所以没有采用它。原来的路径没有改。 | Running {path} did not print a {tool} version, so it was not used. The previous path is unchanged. | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译；path：用户指定的可执行文件的绝对路径，原样显示，不翻译 |
+| errors.TOOL_PATH_INVALID.hint | 换一个文件，选 {tool} 自己的可执行文件。 | Choose the {tool} executable itself. | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译 |
+| errors.TOOL_PATH_INVALID.hintCli | 换一个文件，选 {tool} 自己的可执行文件。 | Choose the {tool} executable itself. | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译 |
+| errors.TOOL_PATH_INVALID.title | 这个文件不是可用的 {tool} | This file is not a usable {tool} | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译 |
 | errors.TOOL_TOO_OLD.body | 这个项目需要 {tool} {required}，当前是 {found}。项目已经创建，代码可以照常编辑。 | This playground needs {tool} {required}, but {found} is installed. The playground is created and you can still edit the code. | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译；required：模板要求的版本范围，例如 >=22.18；原样显示，不翻译；found：本机检测到的版本，例如 20.11.0；原样显示，不翻译 |
 | errors.TOOL_TOO_OLD.hint | 把 {tool} 升级到 {required} 后点“重新检测”。 | Upgrade {tool} to {required}, then click "Check again". | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译；required：模板要求的版本范围，例如 >=22.18；原样显示，不翻译 |
-| errors.TOOL_TOO_OLD.hintCli | 把 {tool} 升级到 {required}，用 runyard doctor 确认后{name, select, none {重新运行这条命令。} other {运行 runyard run {name}。}}{installCommand, select, none {} other { 项目写的安装命令（应用不会替你运行）：`{installCommand}`}}{installUrl, select, none {} other { 安装说明：{installUrl}}} | Upgrade {tool} to {required}, check it with runyard doctor, then {name, select, none {run the command again.} other {run runyard run {name}.}}{installCommand, select, none {} other { Install command from the playground (Runyard will not run it): `{installCommand}`}}{installUrl, select, none {} other { Install instructions: {installUrl}}} | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译；required：模板要求的版本范围，例如 >=22.18；原样显示，不翻译；name：被阻止运行的项目名称（也是文件夹名）；可选，没有时（如只检测工具）提示改为“重新运行这条命令”；installCommand：项目（模板 requires 的 install）自带的安装命令，参数用空格连成一行；可选，没有时不显示。只展示，从不运行；installUrl：项目自带的安装说明链接；可选，没有时不显示 |
+| errors.TOOL_TOO_OLD.hintCli | 把 {tool} 升级到 {required}，用 runyard doctor 确认后{name, select, none {重新运行这条命令。} other {运行 runyard run {name}。}}{installCommand, select, none {} other { 安装命令（应用不会替你运行）：`{installCommand}`}}{installUrl, select, none {} other { 安装说明：{installUrl}}} | Upgrade {tool} to {required}, check it with runyard doctor, then {name, select, none {run the command again.} other {run runyard run {name}.}}{installCommand, select, none {} other { Install command (Runyard will not run it): `{installCommand}`}}{installUrl, select, none {} other { Install instructions: {installUrl}}} | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译；required：模板要求的版本范围，例如 >=22.18；原样显示，不翻译；name：被阻止运行的项目名称（也是文件夹名）；可选，没有时（如只检测工具）提示改为“重新运行这条命令”；installCommand：安装命令，参数用空格连成一行：模板自己写的优先，否则取工具定义里当前系统的（如 Homebrew）；可选，没有时不显示。只展示，从不运行；installUrl：安装说明或官网链接（只放 https）：模板自己写的优先，否则取工具定义里的；可选，没有时不显示 |
 | errors.TOOL_TOO_OLD.title | {tool} 的版本过低 | The installed {tool} is too old | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译 |
 | errors.TRASH_UNAVAILABLE.body | {term_trash}现在不能用。项目文件夹没有动，也没有被永久删除。 | The {term_trash} is not available right now. The playground folder was not moved and nothing was permanently deleted. | — |
 | errors.TRASH_UNAVAILABLE.hint | 项目仍在资源库里，可以稍后再试。 | The playground is still in the library. You can try again later. | — |
@@ -658,7 +724,24 @@
 | settings.autoSave.title | 自动保存 | Autosave | — |
 | settings.builtinSkip.hint | 默认每次都确认。打开后，链接要新建的是内置模板时不再询问 | Asks every time by default. When on, links that create a built-in template no longer ask | — |
 | settings.builtinSkip.title | 来自链接的新建请求：内置模板免确认 | New-playground links: skip the prompt for built-in templates | — |
+| settings.cli.available.label | 可用 · {version} | Available · {version} | version：命令行的版本，与应用相同，如 0.1.0；原样显示 |
+| settings.cli.command.title | runyard 命令 | runyard command | — |
+| settings.cli.conflict.hint | 那个位置已经有别的文件，没有动它 | Another file is already at that path. It was left untouched. | — |
+| settings.cli.conflict.label | 位置被占用 | Path in use | — |
+| settings.cli.copyCommand.action | 复制命令 | Copy command | — |
+| settings.cli.diagnostics.action | 导出诊断信息… | Export diagnostics… | — |
+| settings.cli.diagnostics.title | 诊断信息 | Diagnostics | — |
+| settings.cli.exportDone.label | 已导出 | Exported | — |
+| settings.cli.exportFailed.label | 导出失败 | Export failed | — |
+| settings.cli.failed.body | 没能完成，请重试 | That didn't work. Try again. | — |
+| settings.cli.install.action | 安装命令行工具 | Install command-line tool | — |
+| settings.cli.missing.label | 未安装 | Not installed | — |
+| settings.cli.notOnPath.body | {dir} 不在 PATH 上。把下面这行加进你的 shell 配置，再重新打开终端： | {dir} is not on your PATH. Add this line to your shell profile, then reopen the terminal: | dir：链接所在目录，主目录缩成 ~，如 ~/.local/bin；原样显示 |
+| settings.cli.remove.action | 移除 | Remove | — |
+| settings.cli.stale.label | 指向旧位置 | Linked to an old location | — |
 | settings.cli.title | 命令行与智能体 | Command line and agents | — |
+| settings.cli.unavailable.hint | 从源码运行时没有随包的命令行 | The command line is bundled with the installed app only | — |
+| settings.cli.unavailable.label | 仅安装版可用 | Installed app only | — |
 | settings.confirmClose.hint | 关闭标签页会停止项目；关掉这个开关后直接关闭并停止 | Closing a tab stops the playground; with this off, tabs close and stop right away | — |
 | settings.confirmClose.title | 关闭运行中的标签页前询问 | Ask before closing a running tab | — |
 | settings.deps.title | 依赖与网络 | Dependencies and network | — |
@@ -691,15 +774,71 @@
 | settings.libraryRoot.protected.title | 把资源库放在“桌面”“文档”或“下载”里？ | Put the library in Desktop, Documents or Downloads? | — |
 | settings.libraryRoot.reveal.action | 在{term_fileManager}中显示 | Show in {term_fileManager} | — |
 | settings.libraryRoot.title | 资源库位置 | Library location | — |
+| settings.noProxyLocal.title | 检测本机服务时不走代理 | Bypass the proxy when checking local services | — |
 | settings.page.aria | 设置 | Settings | — |
 | settings.page.title | 设置 | Settings | — |
-| settings.pending.cli.label | 这一组其余的项还没有做，随 #195 提供 | The rest of this group is not built yet and arrives with #195 | — |
-| settings.pending.deps.label | 这一组还没有做，随 #189 提供 | This group is not built yet and arrives with #189 | — |
-| settings.pending.runtime.label | 这一组还没有做，随 #189 提供 | This group is not built yet and arrives with #189 | — |
+| settings.pm.auto.label | 自动 | Auto | — |
+| settings.pm.hint | 安装依赖时使用 | Used to install dependencies | — |
+| settings.pm.npm.label | npm | npm | — |
+| settings.pm.pnpm.label | pnpm | pnpm | — |
+| settings.pm.title | 包管理器 | Package manager | — |
+| settings.proxy.example.placeholder | http://127.0.0.1:7890 | http://127.0.0.1:7890 | — |
+| settings.proxy.hint | 访问网络时使用 | Used for network requests | — |
+| settings.proxy.inherited.hint | 正在沿用本机的配置 | Using your local setup | — |
+| settings.proxy.invalid.body | 地址不合法，例如 http://127.0.0.1:7890 | Not a valid address, for example http://127.0.0.1:7890 | — |
+| settings.proxy.title | 代理 | Proxy | — |
+| settings.registry.example.placeholder | https://registry.npmjs.org | https://registry.npmjs.org | — |
+| settings.registry.hint | 默认沿用本机 .npmrc 的配置 | Defaults to your local .npmrc | — |
+| settings.registry.inherited.hint | 正在沿用本机 .npmrc 的配置 | Using your local .npmrc | — |
+| settings.registry.invalid.body | 地址不合法，要以 http:// 或 https:// 开头 | Not a valid address. Start with http:// or https:// | — |
+| settings.registry.title | npm 镜像源 | npm registry | — |
 | settings.runNote.label | 在应用里打开标签页即运行，关闭标签页即停止；命令行启动的不受影响，空闲后自动停止。 | Opening a tab in the app runs the playground and closing the tab stops it. Runs started from the CLI are not affected and stop automatically when idle. | — |
+| settings.runtime.and.label | 且 | and | — |
+| settings.runtime.arch.label | 芯片架构 | Chip | — |
+| settings.runtime.command.label | 安装命令 | Command | — |
+| settings.runtime.copy.action | 复制命令 | Copy command | — |
+| settings.runtime.current.label | 当前 | Current | — |
+| settings.runtime.envFailed.body | 没能读取你终端的环境，可能不准 | Couldn't read your terminal's environment, so these results may be off | — |
+| settings.runtime.found.label | 已找到 | Found | — |
+| settings.runtime.installed.label | 已经装了？ | Already installed? | — |
+| settings.runtime.invalidPath.body | 这个文件不是可用的 {tool}，原来的路径没有改 | That file isn't a usable {tool}. The previous path is unchanged. | tool：工具名，如 Node、Go、pnpm；专有名词，原样显示，不翻译 |
+| settings.runtime.missing.label | 未安装 | Not installed | — |
+| settings.runtime.missing.title | 没有找到 {tool} | {tool} not found | tool：工具名，如 Node、Go、pnpm；专有名词，原样显示，不翻译 |
+| settings.runtime.need.label | 需要 | Required | — |
+| settings.runtime.note.label | 只有创建或打开项目时才会检查它需要的工具。Runyard 不会替你安装。 | Runyard only checks for the tools a playground needs when you create or open it. It never installs anything for you. | — |
+| settings.runtime.path.label | 路径 | Path | — |
+| settings.runtime.pathFailed.body | 没能指定这个路径 | Couldn't set that path | — |
+| settings.runtime.recheck.action | 重新检测 | Check again | — |
+| settings.runtime.runInstall.action | 在终端中运行 | Run in Terminal | — |
+| settings.runtime.setPath.action | 指定路径… | Set path… | — |
+| settings.runtime.site.label | 官网 | Website | — |
+| settings.runtime.status.label | 状态 | Status | — |
+| settings.runtime.table.aria | 运行环境 | Runtime | — |
 | settings.runtime.title | 运行环境 | Runtime | — |
+| settings.runtime.tooOld.label | 版本过低 | Too old | — |
+| settings.runtime.tooOld.title | {tool} 的版本过低 | {tool} is too old | tool：工具名，如 Node、Go、pnpm；专有名词，原样显示，不翻译 |
+| settings.runtime.tool.label | 工具 | Tool | — |
+| settings.runtime.toolName.label | {tool} | {tool} | tool：工具名，如 Node、Go、pnpm；专有名词，原样显示，不翻译 |
+| settings.runtime.unknown.label | 检测中 | Checking | — |
+| settings.runtime.version.label | 版本 | Version | — |
 | settings.scriptAutoRun.hint | Node、Python、Go 脚本保存后自动重新运行 | Node, Python and Go scripts run again automatically when saved | — |
 | settings.scriptAutoRun.title | 脚本保存后自动运行 | Run scripts on save | — |
+| settings.skills.agents.label | 已安装到 Codex | Installed for Codex | — |
+| settings.skills.agentsName.label | Codex | Codex | — |
+| settings.skills.both.label | 已安装到 Claude Code 和 Codex | Installed for Claude Code and Codex | — |
+| settings.skills.claude.label | 已安装到 Claude Code | Installed for Claude Code | — |
+| settings.skills.claudeName.label | Claude Code | Claude Code | — |
+| settings.skills.hint | 让 Claude Code、Codex 等知道怎么用 runyard 新建和运行项目 | Lets Claude Code, Codex and others create and run playgrounds | — |
+| settings.skills.none.label | 未安装 | Not installed | — |
+| settings.skills.other.action | 安装到其他智能体… | Install for another agent… | — |
+| settings.skills.title | 智能体技能包 | Agent skill | — |
+| settings.supervisor.confirm.body | {count, plural, other {这会停止 # 个由命令行启动的运行，然后让管理进程退出。应用需要时会再启动一个新的。}} | {count, plural, one {This stops # run started from the CLI, then quits the supervisor. The app starts a new one when it needs it.} other {This stops # runs started from the CLI, then quits the supervisor. The app starts a new one when it needs it.}} | count：命令行持有的运行个数，至少 1 |
+| settings.supervisor.confirm.title | 停止后台管理进程？ | Stop the background supervisor? | — |
+| settings.supervisor.hint | 照看所有运行；应用退出后继续照看命令行启动的项目 | Looks after every run; keeps CLI-started playgrounds going after the app quits | — |
+| settings.supervisor.running.label | {count, plural, =0 {运行中} other {运行中 · # 个由命令行启动}} | {count, plural, =0 {Running} one {Running · # started from the CLI} other {Running · # started from the CLI}} | count：命令行持有的运行个数 |
+| settings.supervisor.stop.action | 停止 | Stop | — |
+| settings.supervisor.stopped.label | 未运行 | Not running | — |
+| settings.supervisor.title | 后台管理进程 | Background supervisor | — |
 | settings.theme.dark.label | 深色 | Dark | — |
 | settings.theme.hint | 浅色、深色或跟随系统 | Light, dark, or match the system | — |
 | settings.theme.light.label | 浅色 | Light | — |

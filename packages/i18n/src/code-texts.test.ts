@@ -42,6 +42,7 @@ const errorExamples: { [C in ErrorCode]: ErrorParams<C> } = {
   },
   TOOL_TOO_OLD: { tool: "node", required: ">=22.18", found: "20.11.0" },
   RUNTIME_MISSING: { tool: "python" },
+  TOOL_PATH_INVALID: { tool: "node", path: "/tmp/not-node" },
   SETUP_FAILED: { name: "react19-3" },
   DEPS_OFFLINE: { name: "react19-3" },
   RUN_FAILED: { name: "next16-1" },

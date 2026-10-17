@@ -10,6 +10,14 @@ import type { Bounds } from "./layout.ts";
 import type { DesktopError, LibraryState } from "./library-state.ts";
 import { type SettingsMethods, settingsMethodNames } from "./settings-bridge.ts";
 import {
+  type SaveTemplatePlanResult,
+  type SaveTemplateRequest,
+  type SaveTemplateResult,
+  type TemplateDetailView,
+  type TemplatePageRow,
+  templateMethodNames,
+} from "./templates-view.ts";
+import {
   type TerminalEvents,
   type TerminalMethods,
   terminalEventNames,
@@ -133,6 +141,19 @@ export interface DesktopMethods extends EditorFileMethods, SettingsMethods, Term
   "preview.capture": { param: undefined; result: string | null };
   /** 显示或隐藏预览视图；浮层关闭后恢复 */
   "preview.visible": { param: boolean; result: undefined };
+  /** 模板页的列表（规格 DESKTOP-TEMPLATES-VIEW-01、02）：每次打开页面都重读磁盘，手写的模板不用重启就看得到 */
+  "template.list": { param: undefined; result: TemplatePageRow[] };
+  /** 模板详情（规格 DESKTOP-TEMPLATES-VIEW-03、04）：本机版本只用已有的检测结果，不触发检测；模板没了是 null */
+  "template.detail": {
+    param: { id: string; source: "builtin" | "user" };
+    result: TemplateDetailView | null;
+  };
+  /** 模板详情的“在访达中显示”（规格 DESKTOP-TEMPLATES-VIEW-06）：只发请求 */
+  "template.reveal": { param: { id: string; source: "builtin" | "user" }; result: undefined };
+  /** 另存为模板弹窗要的数据（规格 DESKTOP-TEMPLATES-VIEW-07） */
+  "template.savePlan": { param: string; result: SaveTemplatePlanResult };
+  /** 另存为模板（规格 DESKTOP-TEMPLATES-VIEW-09、10）；失败原样交回弹窗，保存成功后选择器立即有它 */
+  "template.save": { param: SaveTemplateRequest; result: SaveTemplateResult };
   /** 项目标签页控制台已有的全部输出；界面挂载时取一份，后面的新输出走 console.appended */
   "console.get": { param: string; result: ConsoleLine[] };
 }
@@ -181,6 +202,7 @@ export const desktopMethodNames: readonly DesktopMethod[] = [
   "preview.capture",
   "preview.visible",
   "console.get",
+  ...templateMethodNames,
   ...editorFileMethodNames,
   ...settingsMethodNames,
   ...terminalMethodNames,
@@ -205,6 +227,8 @@ export interface DesktopEvents extends TerminalEvents {
   "files.changed": FilesChanged;
   /** 设置变了（设置页、命令行或别处改的）：带改后的全部设置 */
   "settings.changed": Settings;
+  /** 工具检测结果变了（后台检测完成、指定了路径）：设置页的运行环境表重读 */
+  "toolchain.changed": undefined;
 }
 export type DesktopEventName = keyof DesktopEvents;
 
@@ -217,6 +241,7 @@ export const desktopEventNames: readonly DesktopEventName[] = [
   "app.quitRequested",
   "files.changed",
   "settings.changed",
+  "toolchain.changed",
   ...terminalEventNames,
 ];
 

@@ -23,8 +23,9 @@ import { QuitTerminalPrompt } from "./QuitTerminalPrompt.tsx";
 import { Sidebar } from "./Sidebar.tsx";
 import { SettingsPage } from "./settings/SettingsPage.tsx";
 import { useAutoSaveReader } from "./settings/use-autosave-reader.ts";
-import { chooseNavFilter, showLibrary } from "./sidebar-navigation.ts";
+import { chooseNavFilter, type ShellPage, showLibrary } from "./sidebar-navigation.ts";
 import { TopBar } from "./TopBar.tsx";
+import { TemplatesPage } from "./templates/TemplatesPage.tsx";
 import { WorkspaceLayout } from "./WorkspaceLayout.tsx";
 
 export interface AppShellProps {
@@ -54,8 +55,8 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
   useEffect(() => {
     document.title = title;
   }, [title]);
-  // 设置是主窗口里的一页（规格 DESKTOP-SETTINGS-01）：侧栏点“设置”进，点“全部”或打开别的标签回到资源库
-  const [page, setPage] = useState<"library" | "settings">("library");
+  // 设置和模板是主窗口里的两页（规格 DESKTOP-SETTINGS-01、DESKTOP-TEMPLATES-VIEW-01）：侧栏点“设置”或“模板”进，点“全部”或打开别的标签回到资源库
+  const [page, setPage] = useState<ShellPage>("library");
   const activeTabId = library?.activeTab ?? "library";
   // 命令面板在项目标签页上执行“设置”：先切回资源库标签，标签变了之后落到设置页而不是资源库页
   const pageAfterSwitch = useRef<"settings" | null>(null);
@@ -167,7 +168,7 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
   useCommands({
     "app.new": openPicker,
     "app.openLibrary":
-      onLibraryPage && !onSettings
+      onLibraryPage && page === "library"
         ? null
         : () => {
             showLibrary({ activeTab, selectTab });
@@ -212,7 +213,7 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
               counts={navCounts(library?.playgrounds ?? [])}
               nav={query.nav}
               onNavChange={(nav) => chooseNavFilter(nav, { activeTab, patchQuery, selectTab })}
-              templateCount={library?.templates.length ?? 0}
+              templateCount={library?.templateCount ?? library?.templates.length ?? 0}
               libraryRoot={library?.libraryRoot ?? ""}
               page={page}
               onNavigate={(next) => {
@@ -221,7 +222,7 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
               }}
             />
           ) : null}
-          {page === "settings" ? null : (
+          {page === "library" ? (
             <TopBar
               bridge={bridge}
               modKey={modKey}
@@ -240,10 +241,18 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
               onSelect={selectTab}
               onClose={(id) => void bridge.call("tab.close", id)}
             />
-          )}
+          ) : null}
           {page === "settings" ? (
             <main className={styles.settings}>
               <SettingsPage bridge={bridge} api={settings} library={library} />
+            </main>
+          ) : page === "templates" ? (
+            <main className={styles.settings}>
+              <TemplatesPage
+                bridge={bridge}
+                locale={library?.locale ?? bridge.bootstrap.locale}
+                onCreate={onPick}
+              />
             </main>
           ) : (
             <main className={styles.content}>

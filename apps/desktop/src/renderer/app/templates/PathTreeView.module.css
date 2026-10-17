@@ -1,0 +1,76 @@
+/* 只读文件树（设计稿 Templates 的“包含的文件”）：内嵌块、等宽名字、文件夹名加粗 */
+.list {
+  margin: 0;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-inset);
+  list-style: none;
+}
+
+.children {
+  margin: 0;
+  padding: 0;
+  padding-inline-start: var(--space-7);
+  list-style: none;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  block-size: var(--size-tree-row);
+  font-size: var(--text-code-size);
+}
+
+.chevron {
+  flex: none;
+  display: inline-flex;
+  inline-size: var(--space-4);
+  margin-inline-end: var(--space-2);
+  color: var(--color-tree-chevron);
+}
+
+.chevron svg[data-chevron="none"] {
+  visibility: hidden;
+}
+
+.icon {
+  flex: none;
+  display: inline-flex;
+  margin-inline-end: var(--space-4);
+  color: var(--color-tree-other);
+}
+
+.icon[data-tone="folder"] {
+  color: var(--color-tree-folder);
+}
+
+.icon[data-tone="typescript"] {
+  color: var(--color-tree-typescript);
+}
+
+.icon[data-tone="css"] {
+  color: var(--color-tree-css);
+}
+
+.icon[data-tone="html"] {
+  color: var(--color-tree-html);
+}
+
+.icon[data-tone="data"] {
+  color: var(--color-tree-data);
+}
+
+.name {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.name[data-directory] {
+  font-weight: var(--text-code-weight);
+}
+
+.name[data-directory]::after {
+  content: "/";
+}

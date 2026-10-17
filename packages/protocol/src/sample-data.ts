@@ -49,6 +49,7 @@ export const sampleSettings: Settings = {
   updateCheck: true,
   autoSave: "delay",
   theme: "system",
+  network: { noProxyLocal: true },
   confirmCloseRunningTab: true,
 };
 

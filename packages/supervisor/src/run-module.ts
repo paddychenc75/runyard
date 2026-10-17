@@ -22,6 +22,7 @@ import {
 import { absPath, joinPath, posixRelPath } from "@runyard/platform";
 import type { FailureReason, LogEntry, Owner, RunyardError, Settings } from "@runyard/protocol";
 import { TOOLCHAIN_FILE_VERSION } from "@runyard/protocol";
+import { runNetworkOf } from "./network-settings.ts";
 import { RunControl, STOP_WAIT_LIMIT_MS } from "./run-control.ts";
 import { createRunHandlers, RunViewers } from "./run-handlers.ts";
 import { OwnerBindings } from "./run-owners.ts";
@@ -139,6 +140,8 @@ export function createRunModule(api: SupervisorApi, options: RunModuleOptions): 
       resolve: subjects.subjectOf,
       definitions,
       portRange: () => settings?.ports ?? DEFAULT_PORT_RANGE,
+      // 镜像源和代理是设置里的，安装前现读（规格 DESKTOP-SETTINGS-12、13）；没设置过就什么都不加
+      network: () => (settings === undefined ? undefined : runNetworkOf(settings.network)),
       serveStatic: options.serveStatic ?? createStaticServer({ platform }),
     });
     return { toolchain, preparer };
@@ -300,6 +303,7 @@ export function createRunModule(api: SupervisorApi, options: RunModuleOptions): 
     installHintFor: async (request, failure) =>
       (await tools()).preparer.installHintFor(request, failure),
     handlers: createRunHandlers({ api, control, owners, viewers, mentioned, scriptWatch }),
+    refreshSettings,
     runCount: () => engine.runningCount(),
     library: {
       runs,

@@ -88,6 +88,18 @@ export function fsContract(ctx: ContractContext): void {
     });
   });
 
+  describe("fs.readHead", () => {
+    it('"fs.readHead" 只读开头的几个字节；文件比要求的短就给全部；不存在或是目录返回 null', async () => {
+      const at = await fresh();
+      await fs.writeFile(at("a.bin"), new Uint8Array([1, 2, 3, 4, 5]));
+      await fs.makeDir(at("dir"));
+      expect([...((await fs.readHead(at("a.bin"), 3)) ?? [])]).toEqual([1, 2, 3]);
+      expect([...((await fs.readHead(at("a.bin"), 99)) ?? [])]).toEqual([1, 2, 3, 4, 5]);
+      expect(await fs.readHead(at("nope.bin"), 3)).toBeNull();
+      expect(await fs.readHead(at("dir"), 3)).toBeNull();
+    });
+  });
+
   describe("fs.appendFile", () => {
     it('"fs.appendFile" 文件不存在就建，已有的接在末尾，不覆盖', async () => {
       const at = await fresh();

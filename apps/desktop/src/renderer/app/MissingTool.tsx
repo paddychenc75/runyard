@@ -16,12 +16,14 @@ export interface MissingToolProps {
 // 缺少运行环境（设计稿 Missing、MissingLight，规格 DESKTOP-WORKSPACE-18）：缺哪个工具、需要什么版本、
 // 当前是什么、安装命令和官网（来自错误参数：模板自己写的 installCommand / installUrl）。
 // 命令只展示和复制，应用从不执行；“重新检测”就是再启动一次，通过了项目就启动。
-// “已经装了？指定路径…”要接设置里的同一个入口，设置页做完前先不放（见 PR 的“与设计稿的差异”）。
+// “已经装了？指定路径…”和设置页“运行环境”里的是同一个入口（toolchain.pickPath）：选的文件能读出版本号才接受，
+// 接受后再启动一次；不是可用的工具就写明，原来的路径不变。
 export function MissingTool({ bridge, tab, failure }: MissingToolProps) {
   const t = useT();
   const errorText = useErrorText();
   const fields = missingToolOf(failure.params);
   const [copied, setCopied] = useState(false);
+  const [invalidPath, setInvalidPath] = useState(false);
   useEffect(() => {
     if (!copied) return;
     const timer = setTimeout(() => setCopied(false), 2000);
@@ -30,6 +32,11 @@ export function MissingTool({ bridge, tab, failure }: MissingToolProps) {
   const copy = (command: string) => {
     void bridge.call("clipboard.copy", command);
     setCopied(true);
+  };
+  const setPath = async () => {
+    const outcome = await bridge.call("toolchain.pickPath", fields.tool);
+    setInvalidPath(outcome.status === "invalid" || outcome.status === "failed");
+    if (outcome.status === "set") void bridge.call("run.start", tab.id);
   };
   return (
     <GlassSurface
@@ -95,6 +102,17 @@ export function MissingTool({ bridge, tab, failure }: MissingToolProps) {
           {t("desktop.missing.recheck.action")}
         </Button>
       </div>
+      <p className={styles.already}>
+        <span>{t("settings.runtime.installed.label")}</span>
+        <button type="button" className={styles.link} onClick={() => void setPath()}>
+          {t("settings.runtime.setPath.action")}
+        </button>
+      </p>
+      {invalidPath ? (
+        <p className={styles.invalid} role="alert">
+          {t("settings.runtime.invalidPath.body", { tool: fields.tool })}
+        </p>
+      ) : null}
       <p className={styles.note}>{t("desktop.missing.promise.label")}</p>
     </GlassSurface>
   );
