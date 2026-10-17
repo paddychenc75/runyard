@@ -37,6 +37,14 @@ export interface SystemActions {
   openExternal(url: string): void;
 }
 
+/** 控制器对终端服务的要求（实现在 terminal/terminal-service.ts，这里只列用到的） */
+export interface TerminalHooks {
+  /** 结束项目的终端和里面的命令；做完才兑现 */
+  end(id: string, reason: "closed" | "renamed" | "trashed"): Promise<void>;
+  /** 终端里正在运行的命令名；空闲或没有终端是 null */
+  runningCommand(id: string): Promise<string | null>;
+}
+
 /** Dock 图标的角标（macOS）：写待清理的项目数，0 是清掉；接线在 integration/dock-badge.ts */
 export interface DockBadge {
   set(count: number): void;
@@ -69,6 +77,8 @@ export interface LibraryControllerOptions {
   home: string;
   /** 恢复和记住标签页；不给就不恢复（测试和冒烟） */
   session?: SessionStore;
+  /** 集成终端；不给就当没有终端（测试和冒烟） */
+  terminals?: TerminalHooks;
   /** 毫秒时钟；启动清单各步的用时靠它量，测试里换成假的 */
   now?: () => number;
   /** Dock 角标；不给就不写（测试和冒烟） */

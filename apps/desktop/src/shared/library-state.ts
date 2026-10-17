@@ -195,7 +195,14 @@ export interface LibraryState {
   /** 最近用来创建过项目的模板 id，最近的在前、不重复；只含此刻仍在 templates 里的 */
   recentTemplates: string[];
   /** 正在等用户确认的“关闭运行中的标签页”；没有是 null（规格 DESKTOP-WORKSPACE-04） */
-  closeRequest: { id: string; name: string } | null;
+  closeRequest: {
+    id: string;
+    name: string;
+    /** 这个项目的终端里还在运行的命令名（规格 DESKTOP-TERMINAL-29）；终端空闲或没开时没有这一项 */
+    terminalCommand?: string;
+    /** 关闭会不会停止运行：只有终端在运行命令而运行本身没人持有时是 false；有 terminalCommand 时才给 */
+    stopsRun?: boolean;
+  } | null;
   error: DesktopError | null;
   /** 资源库文件夹，主目录缩成 ~（新建弹窗的“文件夹：…”提示）；还没读到是空串 */
   libraryRoot: string;

@@ -11,6 +11,7 @@ import {
   previewUrlFor,
 } from "./build-library-state.ts";
 import { CliView, heldByCli } from "./cli-view.ts";
+import { Coalesced } from "./coalesced.ts";
 import { ConsoleLogs } from "./console-logs.ts";
 import type { LibraryClient, LibraryControllerOptions, PreviewHost } from "./controller-hosts.ts";
 import { createPlayground } from "./create-playground.ts";
@@ -18,6 +19,7 @@ import { toDesktopError } from "./desktop-error.ts";
 import { frameBeforeCrash } from "./last-frame.ts";
 import { LibraryChrome } from "./library-chrome.ts";
 import { PlaygroundEdits } from "./playground-edits.ts";
+import { ProjectRelease } from "./project-release.ts";
 import { ProjectSystem } from "./project-system.ts";
 import { RunActions } from "./run-actions.ts";
 import { RunBarActions } from "./run-bar-actions.ts";
@@ -51,6 +53,7 @@ export class LibraryController {
   readonly #pendingStart = new Set<string>();
   #loaded = false;
   readonly #close: TabClose;
+  readonly #release: ProjectRelease;
   readonly #runActions: RunActions;
   readonly #console: ConsoleLogs;
   #error: DesktopError | null = null;
@@ -59,14 +62,14 @@ export class LibraryController {
   readonly edits: PlaygroundEdits;
   readonly system: ProjectSystem;
   readonly runBar: RunBarActions;
-  #refreshing: Promise<void> | undefined;
-  #refreshAgain = false;
+  readonly #reading = new Coalesced(() => this.#readAll());
   constructor(options: LibraryControllerOptions) {
     this.#client = options.client;
     this.#locale = options.locale;
     this.#preview = options.preview;
     this.#home = options.home;
     this.#now = options.now ?? Date.now;
+    this.#release = new ProjectRelease(options.client, options.terminals);
     const setError = (error: DesktopError | null): void => {
       this.#error = error;
     };
@@ -94,6 +97,7 @@ export class LibraryController {
       refresh: () => this.refresh(),
       emit: () => this.#emit(),
       fail: setError,
+      terminalCommand: (id) => this.#release.runningCommand(id),
     });
     this.#console = new ConsoleLogs(options.client);
     this.system = new ProjectSystem(options.system, (id) => this.folderOf(id));
@@ -111,6 +115,7 @@ export class LibraryController {
       dropTab: (id) => void this.#dropTab(id),
       chooseFolder: (defaultPath) => options.system.chooseFolder(defaultPath),
       folderOf: (id) => this.folderOf(id),
+      releaseProject: (id, reason) => this.#release.release(id, reason),
     });
     this.runBar = new RunBarActions({
       ...options,
@@ -120,11 +125,19 @@ export class LibraryController {
     });
   }
 
+  /** 放掉终端以外的句柄（编辑器的文件监听）；比控制器晚建，所以事后接 */
+  onProjectRelease = (release: Parameters<ProjectRelease["onExtras"]>[0]): void =>
+    this.#release.onExtras(release);
+
   /** 订阅管理进程的事件并读第一份数据 */
   async start(): Promise<void> {
     await this.chrome.readRoot();
     try {
-      await this.#client.subscribe(["run", "playground"], () => {
+      await this.#client.subscribe(["run", "playground"], (event) => {
+        // 管理进程要改名或移走某个项目：先放掉终端等句柄，再回报（技术设计 §4.3 第 2、3 步）
+        if (event.event === "playground.releaseRequested") {
+          void this.#release.answer(event.data.playgroundId, event.data.reason);
+        }
         void this.refresh();
       });
     } catch (error) {
@@ -184,6 +197,7 @@ export class LibraryController {
       activeTab: this.#workspace.active,
       busyIds: this.#busy,
       closeRequestId: this.#close.requestId,
+      closeTerminal: this.#close.requestTerminal,
       error: this.#error,
       ...this.chrome.inputs(),
       startErrors: this.#startErrors,
@@ -200,22 +214,7 @@ export class LibraryController {
   }
 
   /** 重读全部数据。并发的调用合并：正在读时再来请求，读完后补读一次 */
-  refresh(): Promise<void> {
-    if (this.#refreshing !== undefined) {
-      this.#refreshAgain = true;
-      return this.#refreshing;
-    }
-    const reading = (async () => {
-      do {
-        this.#refreshAgain = false;
-        await this.#readAll();
-      } while (this.#refreshAgain);
-    })().finally(() => {
-      this.#refreshing = undefined;
-    });
-    this.#refreshing = reading;
-    return reading;
-  }
+  refresh = (): Promise<void> => this.#reading.run();
 
   /**
    * 打开项目（规格 DESKTOP-WORKSPACE-01、02）：新开标签并启动运行；
@@ -300,6 +299,7 @@ export class LibraryController {
     this.#lastFrames.delete(id);
     this.#pendingStart.delete(id);
     this.#cliView.forget(id);
+    this.#release.tabClosed(id);
   }
 
   folderOf = (id: string): string | null =>

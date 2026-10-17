@@ -48,6 +48,8 @@ export interface LibraryInputs {
   busyIds: ReadonlySet<string>;
   /** 等确认关闭的标签（项目 id） */
   closeRequestId?: string | null;
+  /** 等确认的标签页里，终端还在运行的命令；没有是 null */
+  closeTerminal?: { command: string; stopsRun: boolean } | null;
   error: DesktopError | null;
   /** 资源库文件夹的显示写法（主目录缩成 ~）；还没读到是空串 */
   libraryRoot?: string;
@@ -203,7 +205,7 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
     runs: runningRows(inputs.runs, (id) => rowById.get(id)?.templateName ?? null),
     loaded: inputs.loaded ?? true,
     recentTemplates: recentTemplateIds(inputs.playgrounds, templates),
-    closeRequest: closeRequestOf(inputs.closeRequestId ?? null, rows),
+    closeRequest: closeRequestOf(inputs.closeRequestId ?? null, rows, inputs.closeTerminal ?? null),
     error: inputs.error,
     libraryRoot: inputs.libraryRoot ?? "",
     libraryRootSynced: inputs.libraryRootSynced ?? false,
@@ -261,10 +263,14 @@ export function runningRows(
 function closeRequestOf(
   id: string | null,
   rows: readonly PlaygroundRow[],
+  terminal: { command: string; stopsRun: boolean } | null,
 ): LibraryState["closeRequest"] {
   if (id === null) return null;
   const row = rows.find((candidate) => candidate.id === id);
-  return row === undefined ? null : { id, name: row.name };
+  if (row === undefined) return null;
+  return terminal === null
+    ? { id, name: row.name }
+    : { id, name: row.name, terminalCommand: terminal.command, stopsRun: terminal.stopsRun };
 }
 
 /** 这个项目最近一次运行是否由标签页持有且仍在进行：关闭标签页要停它（命令行持有的和已停止的不用） */

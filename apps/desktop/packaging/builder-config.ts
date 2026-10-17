@@ -29,8 +29,10 @@ export function builderConfig(inputs: BuilderInputs): Configuration {
     },
     electronVersion: inputs.electronVersion,
     electronDist: inputs.electronDist,
-    files: ["dist/**/*", "package.json", "!**/*.map"],
+    files: ["dist/**/*", "package.json", "node_modules/node-pty/**/*", "!**/*.map"],
     asar: true,
+    // node-pty 带要单独执行的 spawn-helper 和 .node 文件，放在 asar 之外；明写，不依赖 electron-builder 的自动规则（K5 证据第 3 条）
+    asarUnpack: ["**/node_modules/node-pty/**"],
     electronFuses: electronFusesOption(inputs.fuses),
     // 管理进程、命令行、模板数据和启动脚本放在 asar 之外：应用的可执行文件要把它们当 Node 脚本直接运行
     extraResources: [

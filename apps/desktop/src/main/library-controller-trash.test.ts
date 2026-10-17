@@ -81,7 +81,7 @@ async function setup(chosen: string | null = null) {
     },
   });
   client.controller = controller;
-  controller.edits.onReleaseWatchers(async (id) => {
+  controller.onProjectRelease(async (id) => {
     client.timeline.push(`release(${id},tabs=${controller.getState().tabs.length})`);
   });
   await controller.start();

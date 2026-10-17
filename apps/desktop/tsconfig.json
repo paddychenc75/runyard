@@ -9,6 +9,7 @@
   "include": [
     "src/main/**/*.ts",
     "src/preload/**/*.ts",
+    "src/pty-host/**/*.ts",
     "src/shared/**/*.ts",
     "build.ts",
     "build-editor.ts",

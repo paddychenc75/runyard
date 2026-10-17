@@ -11,6 +11,8 @@ describe("parseDesktopArgs", () => {
         theme: undefined,
         smoke: false,
         editorSmoke: false,
+        terminalSmoke: false,
+        terminalSmokeHold: false,
         cliLink: undefined,
       },
     });
@@ -34,6 +36,23 @@ describe("parseDesktopArgs", () => {
     expect(parseDesktopArgs(["--editor-smoke"], {})).toMatchObject({
       ok: true,
       args: { editorSmoke: true, smoke: false },
+    });
+  });
+
+  it("认识 --terminal-smoke", () => {
+    expect(parseDesktopArgs(["--terminal-smoke"], {})).toMatchObject({
+      ok: true,
+      args: { terminalSmoke: true, editorSmoke: false, smoke: false },
+    });
+  });
+
+  it("--terminal-smoke-hold 也是终端冒烟，另外要求做到一半停住", () => {
+    expect(parseDesktopArgs(["--terminal-smoke-hold"], {})).toMatchObject({
+      ok: true,
+      args: { terminalSmoke: true, terminalSmokeHold: true },
+    });
+    expect(parseDesktopArgs(["--terminal-smoke"], {})).toMatchObject({
+      args: { terminalSmoke: true, terminalSmokeHold: false },
     });
   });
 

@@ -15,6 +15,8 @@ export interface TabCloseHost {
   refresh(): Promise<void>;
   emit(): void;
   fail(error: DesktopError): void;
+  /** 这个项目的终端里正在运行的命令名；空闲或没开终端是 null（规格 DESKTOP-TERMINAL-28、29） */
+  terminalCommand(id: string): Promise<string | null>;
 }
 
 /**
@@ -25,6 +27,8 @@ export class TabClose {
   readonly #host: TabCloseHost;
   /** 正在等确认的标签（项目 id） */
   requestId: string | null = null;
+  /** 等确认的标签页里终端在运行的命令；确认里要写出来 */
+  requestTerminal: { command: string; stopsRun: boolean } | null = null;
 
   constructor(host: TabCloseHost) {
     this.#host = host;
@@ -33,15 +37,17 @@ export class TabClose {
   async request(playgroundId: string): Promise<void> {
     const host = this.#host;
     if (!host.hasTab(playgroundId)) return;
-    if (ownedActiveRun(playgroundId, host.runs()) === null) {
-      await this.#closeNow(playgroundId);
-      return;
-    }
-    if (!(await readConfirmClose(host.client))) {
-      await this.#closeNow(playgroundId);
-      return;
+    const command = await host.terminalCommand(playgroundId);
+    const stopsRun = ownedActiveRun(playgroundId, host.runs()) !== null;
+    // 终端里有命令在运行时一定确认：“不再提示”只管运行那一句（规格 DESKTOP-TERMINAL-29）
+    if (command === null) {
+      if (!stopsRun || !(await readConfirmClose(host.client))) {
+        await this.#closeNow(playgroundId);
+        return;
+      }
     }
     this.requestId = playgroundId;
+    this.requestTerminal = command === null ? null : { command, stopsRun };
     host.emit();
   }
 
@@ -49,6 +55,7 @@ export class TabClose {
   async confirm(playgroundId: string, dontAskAgain: boolean): Promise<void> {
     if (this.requestId !== playgroundId) return;
     this.requestId = null;
+    this.requestTerminal = null;
     if (dontAskAgain) {
       try {
         await this.#host.client.call("settings.set", { confirmCloseRunningTab: false });
@@ -63,6 +70,7 @@ export class TabClose {
   cancel(): void {
     if (this.requestId === null) return;
     this.requestId = null;
+    this.requestTerminal = null;
     this.#host.emit();
   }
 

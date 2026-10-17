@@ -6,6 +6,7 @@ import { Arch, build, Platform } from "electron-builder";
 import { builderConfig } from "./packaging/builder-config.ts";
 import { E2E_FUSES, RELEASE_FUSES } from "./packaging/fuses.ts";
 import { syncIcon } from "./packaging/icon.ts";
+import { assertNodePty, stageNodePty } from "./packaging/node-pty.ts";
 import { buildRuntimeBundle } from "./packaging/runtime-bundle.ts";
 import { assertFuses } from "./packaging/verify-fuses.ts";
 
@@ -57,9 +58,15 @@ const source = JSON.parse(readFileSync(join(here, "package.json"), "utf8")) as {
   version: string;
   main: string;
 };
+// node-pty 带原生文件，不能打进单文件：拷成真实目录，写进最小 package.json 的 dependencies（K5 证据）
+const nodePtyDir = dirname(require.resolve("node-pty/package.json"));
+const nodePtyVersion = (
+  JSON.parse(readFileSync(join(nodePtyDir, "package.json"), "utf8")) as { version: string }
+).version;
+stageNodePty(appDir, nodePtyDir);
 writeFileSync(
   join(appDir, "package.json"),
-  `${JSON.stringify({ name: "runyard", productName: "Runyard", version: source.version, main: source.main, type: "module" }, null, 2)}\n`,
+  `${JSON.stringify({ name: "runyard", productName: "Runyard", version: source.version, main: source.main, type: "module", dependencies: { "node-pty": nodePtyVersion } }, null, 2)}\n`,
 );
 
 console.log("打包管理进程、命令行和内置模板");
@@ -86,6 +93,9 @@ await build({
   config,
   publish: "never",
 });
+
+console.log("校验终端的原生模块");
+assertNodePty(join(outDir, "mac-arm64", "Runyard.app", "Contents", "Resources"));
 
 console.log("校验打包开关");
 const app = join(outDir, "mac-arm64", "Runyard.app");
