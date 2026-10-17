@@ -81,6 +81,17 @@ export interface TabRow {
   portFallback: TabPortFallback | null;
   /** 崩溃前预览的最后一帧（PNG 的 data 地址）；没有是 null */
   lastFrame: string | null;
+  /** 项目文件夹的显示写法（主目录缩成 ~），启动进度画面的说明里用 */
+  folder: string;
+  /** 启动清单里各步已用的时间；这一步没跑完或没量到是 null */
+  phaseMs: StartPhaseMs;
+}
+
+/** 启动清单里已经走完的步骤各用了多久（毫秒）；时间由主进程按事件到达量出，管理进程不记 */
+export interface StartPhaseMs {
+  copy: number | null;
+  install: number | null;
+  start: number | null;
 }
 
 /** 预览区上方的“端口已自动改用”说明：原端口为什么用不了、现在用哪个（规格 DESKTOP-WORKSPACE-22） */

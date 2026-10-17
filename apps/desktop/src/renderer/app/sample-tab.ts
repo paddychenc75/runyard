@@ -21,6 +21,8 @@ export function sampleTab(extra: Partial<TabRow> = {}): TabRow {
     failure: null,
     portFallback: null,
     lastFrame: null,
+    folder: "~/Runyard/react-counter",
+    phaseMs: { copy: null, install: null, start: null },
     ...extra,
   };
 }

@@ -1,4 +1,4 @@
-import { isClientError, type RunyardClient } from "@runyard/client";
+import type { RunyardClient } from "@runyard/client";
 import type { Locale } from "@runyard/i18n";
 import type { Playground, RunSnapshot, TemplateRecord } from "@runyard/protocol";
 import type { ConsoleAppend, ConsoleLine } from "../shared/console-state.ts";
@@ -7,7 +7,6 @@ import type { Bounds } from "../shared/layout.ts";
 import type { DesktopError, LibraryState } from "../shared/library-state.ts";
 import {
   buildLibraryState,
-  FAILURE_CODES,
   latestRunByPlayground,
   ownedActiveRun,
   previewUrlFor,
@@ -16,7 +15,10 @@ import { ConsoleLogs } from "./console-logs.ts";
 import type { PreviewHost, SystemActions } from "./controller-hosts.ts";
 import { createPlayground } from "./create-playground.ts";
 import { toDesktopError } from "./desktop-error.ts";
+import { frameBeforeCrash } from "./last-frame.ts";
 import { readLibraryRoot } from "./library-root.ts";
+import { classifyStartError } from "./start-error.ts";
+import { StartTimeline } from "./start-timeline.ts";
 import { LIBRARY_TAB, WorkspaceTabs } from "./workspace-tabs.ts";
 
 export type { PreviewHost, SystemActions } from "./controller-hosts.ts";
@@ -36,6 +38,8 @@ export interface LibraryControllerOptions {
   system: SystemActions;
   /** 主目录（用来把资源库路径显示成 ~/…）；开发时 --root 给的目录算主目录 */
   home: string;
+  /** 毫秒时钟；启动清单各步的用时靠它量，测试里换成假的 */
+  now?: () => number;
 }
 
 export class LibraryController {
@@ -45,6 +49,8 @@ export class LibraryController {
   readonly #preview: PreviewHost;
   readonly #system: SystemActions;
   readonly #home: string;
+  readonly #now: () => number;
+  readonly #timeline = new StartTimeline();
   #libraryRoot = "";
   readonly #listeners = new Set<(state: LibraryState) => void>();
   readonly #busy = new Set<string>();
@@ -69,6 +75,7 @@ export class LibraryController {
     this.#preview = options.preview;
     this.#system = options.system;
     this.#home = options.home;
+    this.#now = options.now ?? Date.now;
     this.#console = new ConsoleLogs(options.client);
   }
 
@@ -99,6 +106,8 @@ export class LibraryController {
       libraryRoot: this.#libraryRoot,
       startErrors: this.#startErrors,
       lastFrames: this.#lastFrames,
+      home: this.#home,
+      phases: (id) => this.#timeline.phases(id),
     });
   }
 
@@ -181,17 +190,9 @@ export class LibraryController {
 
   // 启动请求有了结果：失败的原因留给预览区的专门画面，其余错误照旧报在 error 里
   async #startSettled(playgroundId: string, error?: unknown): Promise<void> {
-    if (error !== undefined) {
-      const known = isClientError(error) ? error.known : undefined;
-      if (known !== undefined && FAILURE_CODES.includes(known.code)) {
-        this.#startErrors.set(playgroundId, {
-          code: known.code,
-          params: known.params as Record<string, unknown>,
-        });
-      } else if (known?.code !== "READY_TIMEOUT") {
-        this.#error = toDesktopError(error);
-      }
-    }
+    const outcome = error === undefined ? null : classifyStartError(error);
+    if (outcome?.kind === "failure") this.#startErrors.set(playgroundId, outcome.error);
+    else if (outcome?.kind === "other") this.#error = outcome.error;
     await this.refresh();
   }
 
@@ -299,9 +300,11 @@ export class LibraryController {
 
   /** 新建弹窗的“创建并运行”（规格 DESKTOP-CREATE-FLOW-11）：创建失败原样交回弹窗，不动全局错误；运行失败不算创建失败 */
   async create(request: CreateRequest): Promise<CreateResult> {
+    const began = this.#now();
     const created = await createPlayground(this.#client, request);
     if (!created.ok) return created;
     const id = created.id;
+    this.#timeline.noteCopy(id, this.#now() - began);
     await this.refresh();
     await this.openProject(id);
     return { ok: true };
@@ -332,6 +335,7 @@ export class LibraryController {
         this.#client.call("template.list", {}),
       ]);
       await this.#keepLastFrame(runs);
+      this.#timeline.observe(latestRunByPlayground(runs), this.#now());
       this.#playgrounds = playgrounds;
       this.#runs = runs;
       this.#templates = templates;
@@ -339,6 +343,7 @@ export class LibraryController {
         new Set(playgrounds.map((playground) => playground.id)),
       );
       for (const id of removed) {
+        this.#timeline.forget(id);
         this.#startErrors.delete(id);
         this.#lastFrames.delete(id);
         this.#preview.release(id);
@@ -354,13 +359,10 @@ export class LibraryController {
     this.#emit();
   }
 
-  // 正显示着的页面所属的服务崩溃了：预览视图马上要销毁，先截下最后一帧留给“崩溃”画面（规格 DESKTOP-WORKSPACE-21）
   async #keepLastFrame(next: readonly RunSnapshot[]): Promise<void> {
     const active = this.#workspace.active;
-    if (active === LIBRARY_TAB || previewUrlFor(active, this.#runs) === null) return;
-    if (previewUrlFor(active, next) !== null) return;
-    if (latestRunByPlayground(next).get(active)?.state !== "crashed") return;
-    const frame = await this.#preview.capture().catch(() => null);
+    if (active === LIBRARY_TAB) return;
+    const frame = await frameBeforeCrash(this.#preview, active, this.#runs, next);
     if (frame !== null) this.#lastFrames.set(active, frame);
   }
 

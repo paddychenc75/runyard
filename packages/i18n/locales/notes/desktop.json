@@ -58,5 +58,11 @@
   "desktop.script.running.label": {
     "state": "运行状态的名字，来自 runState.<状态>",
     "duration": "已经运行的时长，如 3.2 秒"
+  },
+  "desktop.start.body": {
+    "folder": "项目文件夹的显示路径，主目录缩成 ~"
+  },
+  "desktop.start.title": {
+    "name": "项目名"
   }
 }

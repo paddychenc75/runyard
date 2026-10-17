@@ -160,8 +160,8 @@
 | desktop.failure.retry.action | 重试 | Retry | — |
 | desktop.failure.stepCopy.label | 复制模板文件 | Copy template files | — |
 | desktop.failure.stepInstall.label | 安装依赖 | Install dependencies | — |
-| desktop.failure.stepReady.label | 就绪，显示页面 | Ready, show the page | — |
-| desktop.failure.stepStart.label | 启动开发服务 | Start the dev server | — |
+| desktop.failure.stepReady.label | 就绪，显示页面 | Ready, show page | — |
+| desktop.failure.stepStart.label | 启动开发服务 | Start dev server | — |
 | desktop.failure.steps.aria | 启动步骤 | Start-up steps | — |
 | desktop.menu.new.label | 新建… | New… | — |
 | desktop.missing.command.label | 安装命令 | Install command | — |
@@ -208,6 +208,11 @@
 | desktop.script.running.label | {state} · 已 {duration} | {state} · {duration} | state：运行状态的名字，来自 runState.<状态>；duration：已经运行的时长，如 3.2 秒 |
 | desktop.slow.body | 启动比平时慢，进程还在运行。下面的输出可以看到进度。 | Starting is taking longer than usual, but the process is still running. The output below shows progress. | — |
 | desktop.slow.title | 启动中（较慢） | Starting (slow) | — |
+| desktop.start.body | 项目已经建好，放在 {folder}。页面准备好后会自动显示在这里。 | The playground is ready in {folder}. The page will appear here automatically once it is up. | folder：项目文件夹的显示路径，主目录缩成 ~ |
+| desktop.start.hint | 通常不到 2 秒 | Usually under 2 s | — |
+| desktop.start.running.label | 进行中 | In progress | — |
+| desktop.start.stop.action | 停止启动 | Stop | — |
+| desktop.start.title | 正在启动 {name} | Starting {name} | name：项目名 |
 | desktop.state.idle.label | 未运行 | Not running | — |
 | desktop.stop.action | 停止 | Stop | — |
 | desktop.stopped.body | 你手动停止了它。点“运行”重新启动；关闭标签页后再打开，也会自动运行。 | You stopped it. Choose Run to start it again; closing the tab and opening it again also runs it. | — |

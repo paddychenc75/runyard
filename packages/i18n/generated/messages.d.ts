@@ -368,6 +368,15 @@ export type CatalogMessages = {
   };
   "desktop.slow.body": Record<never, never>;
   "desktop.slow.title": Record<never, never>;
+  "desktop.start.body": {
+    folder: string | number;
+  };
+  "desktop.start.hint": Record<never, never>;
+  "desktop.start.running.label": Record<never, never>;
+  "desktop.start.stop.action": Record<never, never>;
+  "desktop.start.title": {
+    name: string | number;
+  };
   "desktop.state.idle.label": Record<never, never>;
   "desktop.stop.action": Record<never, never>;
   "desktop.stopped.body": Record<never, never>;
