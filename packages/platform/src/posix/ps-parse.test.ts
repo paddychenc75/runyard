@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { hasEnvToken, parseLstart, parsePsList, parsePsWithEnv } from "./ps-parse.ts";
+import {
+  hasEnvToken,
+  parseLstart,
+  parsePsList,
+  parsePsTerminalPeers,
+  parsePsWithEnv,
+} from "./ps-parse.ts";
 
 describe("parseLstart", () => {
   it("把 ps 的 lstart（UTC）转成毫秒", () => {
@@ -67,5 +73,30 @@ describe("parsePsWithEnv", () => {
     expect(parsePsWithEnv(out, "RUNYARD_RUN_ID", "run-3")).toEqual([
       { pid: 100, pgid: 100, startTime: Date.UTC(2026, 9, 12, 3, 38, 34) },
     ]);
+  });
+});
+
+describe("parsePsTerminalPeers", () => {
+  // 真机上量到的形状（macOS，pty 里 `nohup sleep 1234 &` 之后）：后台作业自成进程组，终端设备号仍和 shell 相同
+  const table = [
+    "    1     1 ??    Sat Oct 17 20:00:00 2026",
+    "37479 37479 16/12 Sun Oct 18 03:54:46 2026",
+    "37522 37522 16/12 Sun Oct 18 03:54:48 2026",
+    "40000 40000 16/13 Sun Oct 18 03:55:00 2026",
+    "41000 41000 ??    Sun Oct 18 03:56:00 2026",
+  ].join("\n");
+
+  it("只返回与 pid 共用同一终端设备号的进程（含 pid 自己），不管进程组", () => {
+    expect(parsePsTerminalPeers(table, 37479).map((e) => e.pid)).toEqual([37479, 37522]);
+    expect(parsePsTerminalPeers(table, 37522).map((e) => e.pgid)).toEqual([37479, 37522]);
+  });
+
+  it("pid 没有控制终端（??）、不在表里时为空：没有终端的进程之间不算同一个终端", () => {
+    expect(parsePsTerminalPeers(table, 41000)).toEqual([]);
+    expect(parsePsTerminalPeers(table, 999)).toEqual([]);
+  });
+
+  it("读不懂的行跳过", () => {
+    expect(parsePsTerminalPeers(`garbage\n${table}`, 37479)).toHaveLength(2);
   });
 });

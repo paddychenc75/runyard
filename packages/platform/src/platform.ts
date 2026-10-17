@@ -167,6 +167,13 @@ export interface Platform {
      * 结果不含本进程。用来在改名、删除之前等脱离进程组的后代走掉（规格 RUN-LIFECYCLE-20）
      */
     findByMarker(marker: ProcMarker): Promise<ProcRef[]>;
+    /**
+     * 与 p 共用同一个控制终端的活进程（含 p 自己；不含本进程）：集成终端里 shell 起的一切命令，
+     * 包括 `nohup … &` 这种忽略挂断、自成进程组、读不到环境的程序。
+     * p 已退出、身份（pid 加启动时间）对不上或没有控制终端时返回空数组。
+     * 终端的会话首进程（shell）一退出，其余进程就不再属于这个终端，所以必须在结束 shell 之前问
+     */
+    terminalMembers(p: ProcRef): Promise<ProcRef[]>;
     /** 取一个 pid 现在的启动时间；进程不存在返回 null */
     identity(pid: number): Promise<{ startTime: number } | null>;
   };

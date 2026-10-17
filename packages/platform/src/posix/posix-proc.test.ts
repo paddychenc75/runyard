@@ -10,7 +10,11 @@ const ME: ProcessEntry = { pid: process.pid, pgid: process.pid, startTime: 1 };
 
 function setup(
   initial: ProcessEntry[],
-  opts: { dies?: "on-term" | "on-kill" | "never"; withEnv?: ProcessEntry[] } = {},
+  opts: {
+    dies?: "on-term" | "on-kill" | "never";
+    withEnv?: ProcessEntry[];
+    onTerminal?: ProcessEntry[];
+  } = {},
 ) {
   let table = initial.some((e) => e.pid === ME.pid) ? initial : [ME, ...initial];
   let clock = 0;
@@ -20,6 +24,7 @@ function setup(
     startTime: async (pid) => table.find((e) => e.pid === pid)?.startTime ?? null,
     startTimeSync: () => null,
     findByEnv: async () => opts.withEnv ?? [],
+    terminalPeers: async () => opts.onTerminal ?? [],
   };
   const proc = createPosixProc({
     source,
@@ -162,5 +167,35 @@ describe("proc.findByMarker", () => {
     expect(await proc.findByMarker({ name: "A", value: "b" })).toEqual([
       { pid: 400, startTime: 80_000 },
     ]);
+  });
+});
+
+describe("proc.terminalMembers", () => {
+  const shell = { pid: 500, pgid: 500, startTime: 90_000 };
+  const job = { pid: 520, pgid: 520, startTime: 91_000 };
+
+  it("返回与终端会话首进程共用控制终端的全部进程（含自成进程组的后台作业），按 pid 排序，只给 pid 和启动时间", async () => {
+    const { proc } = setup([], { onTerminal: [job, shell] });
+    expect(await proc.terminalMembers({ pid: 500, startTime: 90_000 })).toEqual([
+      { pid: 500, startTime: 90_000 },
+      { pid: 520, startTime: 91_000 },
+    ]);
+  });
+
+  it("pid 被别的进程复用（启动时间对不上）时什么也不返回", async () => {
+    const { proc } = setup([], { onTerminal: [shell, job] });
+    expect(await proc.terminalMembers({ pid: 500, startTime: 1 })).toEqual([]);
+  });
+
+  it("没有控制终端或进程已不在时为空；本进程、pid 0 和 1 不在结果里", async () => {
+    const { proc } = setup([], { onTerminal: [] });
+    expect(await proc.terminalMembers({ pid: 500, startTime: 90_000 })).toEqual([]);
+    const { proc: withMe } = setup([], {
+      onTerminal: [shell, ME, { pid: 1, pgid: 1, startTime: 0 }],
+    });
+    expect(await withMe.terminalMembers({ pid: 500, startTime: 90_000 })).toEqual([
+      { pid: 500, startTime: 90_000 },
+    ]);
+    expect(await withMe.terminalMembers({ pid: 1, startTime: 0 })).toEqual([]);
   });
 });

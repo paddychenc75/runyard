@@ -11,6 +11,8 @@ const TICK_MS = 10;
 interface StatFields {
   readonly pgid: number;
   readonly startTime: number;
+  /** 第 7 项 tty_nr：控制终端的设备号，0 是没有 */
+  readonly tty: number;
 }
 
 /** /proc/<pid>/stat 的一行。进程名（第 2 项）可能含空格和括号，所以从最后一个 `)` 之后切 */
@@ -25,7 +27,8 @@ export function parseProcStat(text: string): StatFields | null {
   const pgid = Number(rest[2]);
   const ticks = Number(rest[19]);
   if (!Number.isInteger(pgid) || !Number.isFinite(ticks)) return null;
-  return { pgid, startTime: ticks * TICK_MS };
+  const tty = Number(rest[4]);
+  return { pgid, startTime: ticks * TICK_MS, tty: Number.isInteger(tty) ? tty : 0 };
 }
 
 const statPath = (pid: number) => `/proc/${pid}/stat`;
@@ -37,7 +40,7 @@ async function snapshot(): Promise<ProcessEntry[]> {
     pids.map(async (pid): Promise<ProcessEntry | null> => {
       try {
         const fields = parseProcStat(await readFile(statPath(pid), "utf8"));
-        return fields ? { pid, ...fields } : null;
+        return fields ? { pid, pgid: fields.pgid, startTime: fields.startTime } : null;
       } catch {
         // 读的时候进程刚好退出，当它不存在
         return null;
@@ -64,10 +67,32 @@ async function findByEnv(name: string, value: string): Promise<ProcessEntry[]> {
   return hits.filter((entry): entry is ProcessEntry => entry !== null);
 }
 
+// 与 pid 共用控制终端的进程：tty_nr 相同且不为 0
+async function terminalPeers(pid: number): Promise<ProcessEntry[]> {
+  const read = async (id: number): Promise<(StatFields & { pid: number }) | null> => {
+    try {
+      const fields = parseProcStat(await readFile(statPath(id), "utf8"));
+      return fields ? { pid: id, ...fields } : null;
+    } catch {
+      return null;
+    }
+  };
+  const mine = await read(pid);
+  if (mine === null || mine.tty === 0) return [];
+  const pids = (await readdir("/proc")).filter((name) => /^\d+$/.test(name)).map(Number);
+  const all = await Promise.all(pids.map(read));
+  return all
+    .filter(
+      (entry): entry is StatFields & { pid: number } => entry !== null && entry.tty === mine.tty,
+    )
+    .map((entry) => ({ pid: entry.pid, pgid: entry.pgid, startTime: entry.startTime }));
+}
+
 export function createProcSource(): ProcessSource {
   return {
     snapshot,
     findByEnv,
+    terminalPeers,
     async startTime(pid) {
       try {
         return parseProcStat(await readFile(statPath(pid), "utf8"))?.startTime ?? null;

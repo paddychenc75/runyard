@@ -19,6 +19,11 @@ export interface ProcessSource {
    * 好让调用方核对身份。macOS 与 Linux 读环境的办法不同，精度也不同，见各自的实现
    */
   findByEnv(name: string, value: string): Promise<ProcessEntry[]>;
+  /**
+   * 与 pid 共用同一个控制终端的进程（含 pid 自己）。pid 不存在或没有控制终端返回空数组。
+   * 控制终端一旦随会话首进程退出就不再认这些进程，所以只能在会话首进程还活着时问
+   */
+  terminalPeers(pid: number): Promise<ProcessEntry[]>;
   /** 同步版本：只给 spawn 用，因为 ManagedProcess.ref 是同步返回的 */
   startTimeSync(pid: number): number | null;
 }

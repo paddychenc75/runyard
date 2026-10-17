@@ -203,6 +203,20 @@ describe("pty-host：结束和退出", () => {
     ]);
   });
 
+  it("#340 结束时按 shell 结束之前取到的终端成员，逐个结束与 shell 共用终端的进程（nohup 起的后台作业，自成进程组、读不到环境）", async () => {
+    const h = harness();
+    h.terminalPeers.push(8001);
+    const host = new PtyHost(h.deps);
+    await started(h, host);
+    host.handle({ type: "end", project: "demo", id: 1 });
+    await vi.waitFor(() => expect(of(h.events, "closed")).toHaveLength(1));
+    // 后台作业用强制方式；shell 自己已被整组结束，不重复
+    expect(h.terminated.map((t) => [t.pid, t.mode])).toEqual([
+      [1000, "graceful"],
+      [8001, "kill"],
+    ]);
+  });
+
   it("结束一个没有的终端：直接回 closed", async () => {
     const h = harness();
     const host = new PtyHost(h.deps);

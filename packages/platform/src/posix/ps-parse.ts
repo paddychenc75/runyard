@@ -69,3 +69,27 @@ export function parsePsWithEnv(output: string, name: string, value: string): Pro
   }
   return entries;
 }
+
+const PS_TTY_LINE = /^\s*(\d+)\s+(\d+)\s+(\S+)\s+(.+?)\s*$/;
+
+/**
+ * `ps -A -o pid=,pgid=,tdev=,lstart=` 的输出里与 pid 共用控制终端的进程（含 pid 自己）。
+ * tdev 是终端设备号（macOS 上形如 `16/12`），没有控制终端是 `??`（或 `-`）。
+ * macOS 的 ps 没有可用的会话号（sess 恒为 0），所以按终端设备号认同一个终端会话里的进程
+ */
+export function parsePsTerminalPeers(output: string, pid: number): ProcessEntry[] {
+  const rows: { entry: ProcessEntry; tdev: string }[] = [];
+  for (const line of output.split("\n")) {
+    const match = PS_TTY_LINE.exec(line);
+    if (!match) continue;
+    const startTime = parseLstart(match[4] ?? "");
+    if (startTime === null) continue;
+    rows.push({
+      entry: { pid: Number(match[1]), pgid: Number(match[2]), startTime },
+      tdev: match[3] ?? "",
+    });
+  }
+  const mine = rows.find((row) => row.entry.pid === pid)?.tdev;
+  if (mine === undefined || mine === "??" || mine === "-") return [];
+  return rows.filter((row) => row.tdev === mine).map((row) => row.entry);
+}

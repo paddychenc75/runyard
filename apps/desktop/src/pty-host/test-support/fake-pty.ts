@@ -68,6 +68,8 @@ export interface Harness {
   markersAsked: { name: string; value: string }[];
   /** findByMarker 会返回的脱离进程组的残余进程 */
   strays: number[];
+  /** terminalMembers 会返回的、与 shell 共用终端的其他进程（shell 还活着时才有，随 shell 的 kill 消失） */
+  terminalPeers: number[];
 }
 
 /** 每次 spawn 依次取 behaviors 里的一项；没有就是普通能起来的 shell（起来后马上有一段输出） */
@@ -86,6 +88,7 @@ export function harness(
   const terminated: Harness["terminated"] = [];
   const markersAsked: Harness["markersAsked"] = [];
   const strays: number[] = [];
+  const terminalPeers: number[] = [];
   const behaviors = [...(options.behaviors ?? [])];
   let nextPid = 1000;
   const deps: HostDeps = {
@@ -105,6 +108,10 @@ export function harness(
         markersAsked.push(marker);
         return strays.map((pid) => ({ pid, startTime: pid * 10 }));
       },
+      terminalMembers: async (ref) => [
+        ref,
+        ...terminalPeers.map((pid) => ({ pid, startTime: pid * 10 })),
+      ],
       terminate: async (ref, o) => {
         terminated.push({ pid: ref.pid, startTime: ref.startTime, mode: o.mode });
       },
@@ -119,5 +126,5 @@ export function harness(
     earlyExitMs: 20,
     graceMs: 50,
   };
-  return { deps, events, spawns, terminated, markersAsked, strays };
+  return { deps, events, spawns, terminated, markersAsked, strays, terminalPeers };
 }

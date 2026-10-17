@@ -38,7 +38,7 @@ export type PtySpawner = (file: string, args: string[], options: PtySpawnOptions
 export interface HostDeps {
   spawn: PtySpawner;
   send(event: HostEvent): void;
-  proc: Pick<Platform["proc"], "terminate" | "identity" | "findByMarker">;
+  proc: Pick<Platform["proc"], "terminate" | "identity" | "findByMarker" | "terminalMembers">;
   /** 用户的登录 shell（取自系统的用户记录，不看环境变量）；查不到是 undefined */
   loginShell(): Promise<string | undefined>;
   /** shell 文件能不能执行 */
@@ -268,6 +268,13 @@ export class PtyHost {
     const session = this.#sessions.get(project);
     if (session === undefined) return;
     session.ending = true;
+    // 必须在 shell 退出之前取：会话首进程一退出，其余进程就不再属于这个终端。
+    // nohup 起的、自成进程组、读不到环境的程序（Apple 自带的 sleep）只有这样才找得到（#340）
+    const members =
+      session.ref === null
+        ? []
+        : await this.#deps.proc.terminalMembers(session.ref).catch(() => []);
+    const shellPid = session.ref?.pid;
     try {
       session.pty.kill();
     } catch {
@@ -281,7 +288,11 @@ export class PtyHost {
         .catch(() => undefined);
     }
     await Promise.race([session.exitSettled, delay(EXIT_WAIT_MS)]);
-    // 脱离了进程组的后代（nohup、setsid 起的）：它们仍带着这个终端的标记，找出来逐个结束
+    // 共用这个终端、但不在 shell 那一组里的进程（`nohup … &` 之类）：按事先取到的名单逐个结束
+    for (const member of members.filter((m) => m.pid !== shellPid)) {
+      await this.#deps.proc.terminate(member, { mode: "kill", graceMs: 0 }).catch(() => undefined);
+    }
+    // 脱离了终端和进程组的后代（setsid 起的）：它们仍带着这个终端的标记，找出来逐个结束
     await this.#killStrays(session.marker);
     if (this.#sessions.get(project) === session) this.#sessions.delete(project);
   }
