@@ -111,6 +111,10 @@ export function registerBridgeHandlers(
       const playground = text(id);
       if (playground !== null) await controller.openProject(playground);
     },
+    "tab.openWithoutRun": async (id) => {
+      const playground = text(id);
+      if (playground !== null) await controller.openProjectWithoutRun(playground);
+    },
     "tab.select": async (id) => {
       const tab = text(id);
       if (tab !== null) controller.selectTab(tab);
@@ -149,17 +153,17 @@ export function registerBridgeHandlers(
     },
     "playground.reveal": (id) => {
       const playground = text(id);
-      if (playground !== null) controller.revealFolder(playground);
+      if (playground !== null) controller.system.reveal(playground);
     },
     "playground.copyPath": (id) => {
       const playground = text(id);
-      if (playground !== null) controller.copyFolderPath(playground);
+      if (playground !== null) controller.system.copyPath(playground);
     },
     "clipboard.copy": (value) => {
-      if (typeof value === "string") controller.copyText(value);
+      if (typeof value === "string") controller.system.copyText(value);
     },
     "link.open": (value) => {
-      if (typeof value === "string") controller.openLink(value);
+      if (typeof value === "string") controller.system.openLink(value);
     },
     "playground.create": async (value) => {
       const request = parseCreateRequest(value);
@@ -191,6 +195,22 @@ export function registerBridgeHandlers(
     "playground.duplicate": async (id) => {
       const playground = text(id);
       return playground === null ? rejectedEdit : await controller.edits.duplicate(playground);
+    },
+    "playground.trash": async (id) => {
+      const playground = text(id);
+      return playground === null ? rejectedEdit : await controller.edits.trash(playground);
+    },
+    "playground.forget": async (id) => {
+      const playground = text(id);
+      return playground === null ? rejectedEdit : await controller.edits.forget(playground);
+    },
+    "playground.relocate": async (id) => {
+      const playground = text(id);
+      return playground === null ? rejectedEdit : await controller.edits.relocate(playground);
+    },
+    "playground.openTerminal": (id) => {
+      const playground = text(id);
+      if (playground !== null) controller.system.openTerminal(playground);
     },
     // 文件服务（#257）；没接线时这些方法不可用
     ...editorFileMethods(files, openers),

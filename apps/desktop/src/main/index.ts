@@ -205,6 +205,8 @@ async function main(args: DesktopArgs): Promise<void> {
       ipcHost.send(desktopChannels.event, "files.changed", { project, changes }),
   });
   app.once("will-quit", () => void files.dispose());
+  // 移到废纸篓前先放掉项目的文件监听（#265 的先后顺序）
+  controller.edits.onReleaseWatchers((id) => files.unwatch(id));
   registerBridgeHandlers(
     ipcHost,
     controller,

@@ -62,7 +62,7 @@
 ## 弹窗组件的约定（#174）
 
 - `AlertDialog`：Base UI 的警示对话框，遮罩加 `GlassSurface material="dialog"` 面板，Escape 和点遮罩只请求关闭（`onOpenChange(false)`），不执行任何确认；`initialFocus` 让破坏性的确认框先聚焦“取消”。`container` 把弹窗挂到别处，样例用 `FixtureStage`（带 transform 的舞台，`position: fixed` 以它为参照）并排放几个打开着的弹窗。
-- `ConfirmDialog`（`AlertDialog` 加图标块、可选勾选项、取消和确认两个按钮）：`onConfirm(optedOut)` 把勾选状态在点确认时交出去，`onCancel` 不带勾选；每次重新打开勾选项回到未勾选。
+- `ConfirmDialog`（`AlertDialog` 加图标块、可选勾选项、取消和确认两个按钮；`tone="danger"` 时图标块和确认钮用红色，给“移到废纸篓”，确认钮是已有的 destructive 浅红底，设计稿的实心红待 #320 的视觉规范）：`onConfirm(optedOut)` 把勾选状态在点确认时交出去，`onCancel` 不带勾选；每次重新打开勾选项回到未勾选。
 - `Checkbox`：名字用 `<label htmlFor>` 关联 Base UI 的隐藏 input，`hint` 作为描述。
 
 ## 失败画面用的组件（#178）

@@ -10,7 +10,7 @@ import { RenameDialog } from "./RenameDialog.tsx";
 import type { RenameFocus } from "./use-rename-draft.ts";
 
 export interface PlaygroundEdits {
-  /** 重命名、编辑备注、自动清理、分隔线、创建副本：资源库行菜单和工作区“更多”菜单共用这一份（规格 DESKTOP-WORKSPACE“更多菜单”） */
+  /** 重命名、编辑备注、自动清理、分隔线、另存为模板（占位）、创建副本：资源库行菜单和工作区“更多”菜单共用这一份（规格 DESKTOP-WORKSPACE“更多菜单”） */
   entries: MenuEntry[];
   /** 菜单选中了某项；不是这里的项返回 false，由调用方处理 */
   select: (id: string) => boolean;
@@ -63,6 +63,8 @@ export function usePlaygroundEdits(options: UsePlaygroundEditsOptions): Playgrou
       hint: t("library.row.autoCleanNow.hint", { state }),
     },
     { type: "separator" },
+    // 另存为模板由 #292 做；菜单里先按设计稿占位，不可点
+    { id: "saveAsTemplate", label: t("library.row.saveAsTemplate.action"), disabled: true },
     { id: "duplicate", label: t("library.row.duplicate.action"), disabled: row.busy },
   ];
 

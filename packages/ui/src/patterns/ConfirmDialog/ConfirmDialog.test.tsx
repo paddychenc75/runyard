@@ -27,6 +27,17 @@ function setup(props: Partial<ConfirmDialogProps> = {}) {
 }
 
 describe("ConfirmDialog", () => {
+  it("tone 为 danger 时确认钮和图标块用红色，缺省仍是强调色", async () => {
+    const { unmount } = setup({ tone: "danger" });
+    const confirm = await screen.findByRole("button", { name: "Close and stop" });
+    expect(confirm.getAttribute("data-variant")).toBe("destructive");
+    expect(document.querySelector('[data-tone="danger"]')).not.toBeNull();
+    unmount();
+    setup();
+    const plain = await screen.findByRole("button", { name: "Close and stop" });
+    expect(plain.getAttribute("data-variant")).toBe("primary");
+  });
+
   it("是带标题和说明的警示对话框，焦点先落在取消上", async () => {
     setup();
     const dialog = await screen.findByRole("alertdialog", { name: "Close it?" });
