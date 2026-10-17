@@ -36,7 +36,7 @@
 .tree {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: 1px;
   /* 列表短的时候下面的空白处也能右键 */
   min-block-size: 100%;
   outline: none;

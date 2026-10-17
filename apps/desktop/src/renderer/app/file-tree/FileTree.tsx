@@ -118,85 +118,88 @@ export function FileTree({ bridge, project, host }: FileTreeProps) {
   const problem = tree.draftError === null ? null : errorText(tree.draftError);
   const empty = tree.rootLoaded && rows.length === 0;
   return (
-    <GlassSurface material="filetree" className={styles.root}>
-      <div className={styles.head}>
-        <span className={styles.title}>{t("workspace.files.title.label")}</span>
-        <IconButton
-          icon="plus"
-          size="sm"
-          label={t("workspace.files.add.aria")}
-          onClick={(event) => {
-            const box = event.currentTarget.getBoundingClientRect();
-            setMenu({ x: box.right, y: box.bottom, path: null });
-          }}
-        />
-      </div>
-      <ScrollArea className={styles.scroll}>
-        <div
-          ref={treeRef}
-          role="tree"
-          aria-label={t("workspace.files.tree.aria")}
-          className={styles.tree}
-          onKeyDown={onKeyDown}
-          onContextMenu={(event) => {
-            // 空白处：菜单作用在项目根（落在行上的事件由行自己处理并阻止冒泡前的默认行为）
-            if (event.defaultPrevented) return;
-            event.preventDefault();
-            openMenu(null, event.clientX, event.clientY);
-          }}
-        >
-          {rows.map((row) =>
-            row.type === "entry" ? (
-              <FileTreeRow
-                key={row.entry.path}
-                row={row}
-                active={host.activePath === row.entry.path}
-                selected={tree.selected === row.entry.path}
-                tabbable={tabbable === row.entry.path}
-                onActivate={(target) => activate(target.entry)}
-                onFocus={tree.setFocused}
-                onContextMenu={(target, x, y) => openMenu(target.entry.path, x, y)}
-              />
-            ) : (
-              <div
-                key={`draft-${row.draft.mode}`}
-                role="treeitem"
-                aria-selected="true"
-                tabIndex={-1}
-                aria-level={row.depth + 1}
-                className={styles.draft}
-                data-has-problem={problem === null ? undefined : ""}
-                style={{ "--tree-depth": row.depth } as React.CSSProperties}
-              >
-                <span className={styles.chevron} />
-                <span className={styles.icon} data-tone={toneOf({ name: "", kind: row.kind })}>
-                  <EntryIcon kind={row.kind} tone={toneOf({ name: "", kind: row.kind })} />
-                </span>
-                <FileTreeNameInput
-                  draft={row.draft}
-                  problem={problem === null ? null : String(problem)}
-                  onSubmit={(name) => void tree.commitDraft(name)}
-                  onCancel={tree.cancelDraft}
+    <>
+      <GlassSurface material="filetree" className={styles.root}>
+        <div className={styles.head}>
+          <span className={styles.title}>{t("workspace.files.title.label")}</span>
+          <IconButton
+            icon="plus"
+            size="sm"
+            label={t("workspace.files.add.aria")}
+            onClick={(event) => {
+              const box = event.currentTarget.getBoundingClientRect();
+              setMenu({ x: box.right, y: box.bottom, path: null });
+            }}
+          />
+        </div>
+        <ScrollArea className={styles.scroll}>
+          <div
+            ref={treeRef}
+            role="tree"
+            aria-label={t("workspace.files.tree.aria")}
+            className={styles.tree}
+            onKeyDown={onKeyDown}
+            onContextMenu={(event) => {
+              // 空白处：菜单作用在项目根（落在行上的事件由行自己处理并阻止冒泡前的默认行为）
+              if (event.defaultPrevented) return;
+              event.preventDefault();
+              openMenu(null, event.clientX, event.clientY);
+            }}
+          >
+            {rows.map((row) =>
+              row.type === "entry" ? (
+                <FileTreeRow
+                  key={row.entry.path}
+                  row={row}
+                  active={host.activePath === row.entry.path}
+                  selected={tree.selected === row.entry.path}
+                  tabbable={tabbable === row.entry.path}
+                  onActivate={(target) => activate(target.entry)}
+                  onFocus={tree.setFocused}
+                  onContextMenu={(target, x, y) => openMenu(target.entry.path, x, y)}
                 />
-              </div>
-            ),
-          )}
-          {empty ? <p className={styles.empty}>{t("workspace.files.empty.hint")}</p> : null}
-        </div>
-      </ScrollArea>
-      {tree.notice === null ? null : (
-        <div
-          role="status"
-          aria-label={t("workspace.files.notice.aria")}
-          className={styles.notice}
-          data-tone={tree.notice.type === "error" ? "danger" : "neutral"}
-        >
-          {tree.notice.type === "trashed"
-            ? t("workspace.files.trashed.hint")
-            : errorText(tree.notice.error)}
-        </div>
-      )}
+              ) : (
+                <div
+                  key={`draft-${row.draft.mode}`}
+                  role="treeitem"
+                  aria-selected="true"
+                  tabIndex={-1}
+                  aria-level={row.depth + 1}
+                  className={styles.draft}
+                  data-has-problem={problem === null ? undefined : ""}
+                  style={{ "--tree-depth": row.depth } as React.CSSProperties}
+                >
+                  <span className={styles.chevron} />
+                  <span className={styles.icon} data-tone={toneOf({ name: "", kind: row.kind })}>
+                    <EntryIcon kind={row.kind} tone={toneOf({ name: "", kind: row.kind })} />
+                  </span>
+                  <FileTreeNameInput
+                    draft={row.draft}
+                    problem={problem === null ? null : String(problem)}
+                    onSubmit={(name) => void tree.commitDraft(name)}
+                    onCancel={tree.cancelDraft}
+                  />
+                </div>
+              ),
+            )}
+            {empty ? <p className={styles.empty}>{t("workspace.files.empty.hint")}</p> : null}
+          </div>
+        </ScrollArea>
+        {tree.notice === null ? null : (
+          <div
+            role="status"
+            aria-label={t("workspace.files.notice.aria")}
+            className={styles.notice}
+            data-tone={tree.notice.type === "error" ? "danger" : "neutral"}
+          >
+            {tree.notice.type === "trashed"
+              ? t("workspace.files.trashed.hint")
+              : errorText(tree.notice.error)}
+          </div>
+        )}
+      </GlassSurface>
+      {/* 菜单锚点用 fixed 定位；玻璃面板有 backdrop-filter，会成为 fixed 的参照，所以菜单要放在面板外面 */}
       <FileTreeMenu target={menu} onSelect={onMenuSelect} onClose={() => setMenu(null)} />
-    </GlassSurface>
+    </>
   );
 }

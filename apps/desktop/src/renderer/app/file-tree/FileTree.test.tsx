@@ -125,7 +125,7 @@ describe("文件树：显示", () => {
     await waitFor(() => expect(screen.queryByRole("treeitem", { name: "old.ts" })).toBeNull());
   });
 
-  it("监听随树开始，随树结束；别的项目的变化不理", async () => {
+  it("监听随树开始、随树结束，外部新增的文件自动出现", async () => {
     const files = fakeFiles(PROJECT);
     const { user } = setup(files);
     await screen.findByRole("treeitem", { name: "src" });
