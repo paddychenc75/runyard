@@ -193,6 +193,67 @@ describe("真实管理进程：版本表", () => {
   });
 });
 
+describe("真实管理进程：桌面应用连着时不被换掉（#358）", () => {
+  const app = (build: string, protocol?: { protocol: number; minProtocol: number }) => ({
+    client: { kind: "app" as const, version: "0.0.0-it", build },
+    ...(protocol === undefined ? {} : { protocol }),
+  });
+
+  it("应用的管理进程没有运行时，另一个构建的命令行不替换它：沿用同一个进程，应用的连接照常可用", async () => {
+    const appClient = await connect("0.0.0-it+app", app("0.0.0-it+app"));
+    const ref = await tracked.current();
+    const cli = await connect("0.0.0-it+source");
+    expect(cli.outcome).toEqual({
+      kind: "outdated",
+      reason: "build-differs",
+      runs: 0,
+      blockedByApp: true,
+    });
+    expect(cli.launched).toBe(false);
+    expect(cli.supervisor.build).toBe("0.0.0-it+app");
+    // 同一个进程：应用的连接没断，两边共用同一份状态
+    expect((await tracked.current()).pid).toBe(ref.pid);
+    expect(await tracked.isAlive(ref)).toBe(true);
+    await expect(appClient.call("ping", {})).resolves.toEqual({});
+    await expect(cli.call("ping", {})).resolves.toEqual({});
+    cli.close();
+    await tracked.stop(appClient, ref);
+    await tracked.assertNothingLeft();
+  });
+
+  it("应用断开之后，另一个构建的命令行照常换新", async () => {
+    const appClient = await connect("0.0.0-it+app", app("0.0.0-it+app"));
+    const oldRef = await tracked.current();
+    appClient.close();
+    // 管理进程要过一小会儿才收到应用的断开；被挡的那几次无副作用，重连到不再被挡为止
+    let cli = await connect("0.0.0-it+source");
+    for (let tries = 0; tries < 100 && cli.outcome.kind !== "replaced"; tries++) {
+      cli.close();
+      cli = await connect("0.0.0-it+source");
+    }
+    expect(cli.outcome).toEqual({ kind: "replaced" });
+    expect(await tracked.isAlive(oldRef)).toBe(false);
+    await tracked.stop(cli, await tracked.current());
+    await tracked.assertNothingLeft();
+  });
+
+  it("应用在用的管理进程协议更旧、且低于命令行的最低要求：报 SUPERVISOR_OUTDATED，不替换，应用不受影响", async () => {
+    const appClient = await connect(
+      "0.0.0-it+app",
+      app("0.0.0-it+app", { protocol: 1, minProtocol: 1 }),
+    );
+    const ref = await tracked.current();
+    const failure = await connect("0.0.0-it+source", {
+      protocol: { protocol: 2, minProtocol: 2 },
+    }).catch((error: unknown) => error);
+    expect(isClientError(failure) && failure.code).toBe("SUPERVISOR_OUTDATED");
+    expect(await tracked.isAlive(ref)).toBe(true);
+    await expect(appClient.call("ping", {})).resolves.toEqual({});
+    await tracked.stop(appClient, ref);
+    await tracked.assertNothingLeft();
+  });
+});
+
 describe("真实管理进程：连不上、冒充与已知空白", () => {
   it("[SUPERVISOR-LIFECYCLE-18] 发现文件被删而管理进程仍活着：不握手，用不了它（已知空白）；它没被打扰", async () => {
     const client = await connect();

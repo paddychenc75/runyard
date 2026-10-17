@@ -33,3 +33,8 @@
 - 预览页里点的 `runyard://` 链接经 `createNavigationGuards` 的第二个回调交给链接处理（页面本身不跳转，别的协议仍一律拦下）。
 - 待确认请求（`LibraryState.linkConfirm`）、链接没能照做的提示（`notices` 里 `kind: "link"`）和“有新版本”（`LibraryState.update`）都经 `LibraryChrome` 推给界面，界面只发 `link.confirm`、`link.cancel`、`update.download`、`update.later`。
 - `updates/`：`update-checker.ts` 一天最多请求一次 GitHub Releases 的公开接口（`RELEASES_API`），请求不带 Cookie、令牌或任何标识，失败不出声，不下载也不安装；发出请求前就记下“今天查过”（`update-record.ts`，存在应用数据目录的 `update-check.json`）。`canFetch` 为假（从源码运行、冒烟）时只显示记录里已有的，绝不联网；命令行包里没有联网代码（`packages/cli/src/no-update-check.test.ts` 守着）。测试一律用假的 fetch，不碰真实的 GitHub。
+
+## 管理进程被换掉后的重连（#358）
+
+- `reconnecting-client.ts`：控制器拿到的 `LibraryClient` 是它。底层连接断开（管理进程被换掉、重启、意外退出）就按 0.2、0.5、1、2、4 秒的间隔重连并重新订阅（新连接的第一条事件标 `gap`），连上后让管理进程重扫资源库再重读全部数据（接线在 `composition-root.ts` 的 `withReconnect`）；重试用完调用报 `SUPERVISOR_UNAVAILABLE`，下一次调用再起一轮。退出道别前先 `stopReconnecting()`，道别后的断开不重连。
+- 管理进程一侧：有桌面应用连着时，别的客户端的 `supervisor.shutdown { ifIdle: true, reason: 'upgrade' }` 被拒绝，所以不同版本的命令行不会再把应用在用的管理进程换掉。

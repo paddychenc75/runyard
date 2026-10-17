@@ -19,7 +19,7 @@
 - 握手只在 `handshake-client.ts`：口令只当 HMAC 的密钥，是发现文件里十六进制口令解出的 32 个原始字节；证明函数用 `platform.ipc.computeProof / verifyProof`，不自己实现。质询不合格式（含 nonce 不是 32 字节、空的）就不发 hello；服务端证明不对就断开，之后一个请求都不发。
 - 没有发现文件（或内容不合法）：根本不连接、不发握手消息，按“管理进程不存在”去拉起。有发现文件但握手不过：直接 `SUPERVISOR_UNAVAILABLE`，不拉起；只有“拉起之后”的等待窗口里，发现文件换了新内容才重试一次。
 - 重连间隔 50、100、200 毫秒，之后每次 200，总共最多 3 秒；超时 `SUPERVISOR_UNAVAILABLE`。每次重试重新读发现文件（新进程换了口令）。
-- 版本表只用 `decideVersionAction`（`packages/protocol`），本包不自己比版本。客户端低于管理进程最低版本时一个请求都不发（`CLIENT_OUTDATED`）。要换新时：`supervisor.shutdown { ifIdle: true, reason: 'upgrade' }`，等旧进程真的退出（内核锁随进程退出才释放），再拉起；只换一次。回 `closing: false`（刚好有了运行）就沿用旧的。
+- 版本表只用 `decideVersionAction`（`packages/protocol`），本包不自己比版本。客户端低于管理进程最低版本时一个请求都不发（`CLIENT_OUTDATED`）。要换新时：`supervisor.shutdown { ifIdle: true, reason: 'upgrade' }`，等旧进程真的退出（内核锁随进程退出才释放），再拉起；只换一次。回 `closing: false`（刚好有了运行，或桌面应用连着它——管理进程拒绝把正被应用使用的进程换掉，#358）就沿用旧的；没有运行却被拒时 `outcome` 带 `blockedByApp: true`，旧的协议低于自己的最低要求时报 `SUPERVISOR_OUTDATED`（`runs: 0`）。
 - 订阅的登记发生在 `events.subscribe` 响应到达的那一刻（`onResult`），晚一拍会丢紧跟在响应后面的事件。seq 跳号标 `gap`，调用方应重读快照。
 - 时间、平台、随机数都从 `options` 注入，测试里不真的等。
 

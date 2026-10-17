@@ -160,6 +160,10 @@ export function createSupervisorRuntime(options: StartSupervisorOptions) {
     const builtin = createBuiltinHandlers({
       identity,
       runCount,
+      otherAppConnected: (sessionId) =>
+        manager
+          .ready()
+          .some((candidate) => candidate.info?.kind === "app" && candidate.id !== sessionId),
       onBye: async (sessionId) => {
         const session = manager.ready().find((candidate) => candidate.id === sessionId);
         if (session !== undefined) await extensions.sessions?.onBye?.(session);

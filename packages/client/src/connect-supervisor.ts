@@ -127,7 +127,8 @@ async function decide(
   }
 }
 
-// 没有运行时请旧的退出，等它真的退出（锁释放）后拉起自己带的（规格 PROTOCOL-HANDSHAKE-08、11）
+// 没有运行时请旧的退出，等它真的退出（锁释放）后拉起自己带的（规格 PROTOCOL-HANDSHAKE-08、11）。
+// 管理进程有桌面应用连着时会拒绝退出（#358），这里就沿用它
 async function replace(
   ctx: ResolvedOptions,
   ready: Ready,
@@ -140,14 +141,24 @@ async function replace(
     reason: "upgrade",
   });
   if (!answer.closing) {
-    // 刚好在这一刻有了运行：沿用旧的，不停任何运行。重新问一次运行个数
+    // 刚好在这一刻有了运行，或有桌面应用连着（管理进程拒绝被换，#358）：沿用旧的，不停任何运行。重新问一次运行个数
     const info = await callMethod(connection, "supervisor.info", {});
+    const blockedByApp = info.runs === 0;
+    // 被应用挡住、而旧的又低于自己要求的最低协议版本：没法兼容使用，也不能换，如实报错
+    if (blockedByApp && peer.protocol < ctx.minProtocol) {
+      throw clientError(
+        "SUPERVISOR_OUTDATED",
+        { runs: 0 },
+        "an app is using an incompatible supervisor",
+      );
+    }
     return new RunyardClient(connection, {
       supervisor: { ...peerSummary(peer, info), runs: info.runs },
       outcome: {
         kind: "outdated",
         reason: peer.protocol < ctx.protocol ? "protocol-older" : "build-differs",
         runs: Math.max(info.runs, runs),
+        ...(blockedByApp ? { blockedByApp: true as const } : {}),
       },
       launched: state.launched,
       diagnostic: ctx.onDiagnostic,

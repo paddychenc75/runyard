@@ -23,6 +23,49 @@ describe("有条件关闭", () => {
     expect(await (await world.session(handle)).request("ping")).toMatchObject({ ok: true });
   });
 
+  it("桌面应用连着时，别的客户端的 upgrade 有条件关闭被拒绝（没有运行也不退出），应用的连接不受影响（#358）", async () => {
+    world = new World();
+    const handle = await world.start();
+    const app = await world.session(handle, { kind: "app" });
+    const cli = await world.session(handle, { kind: "cli" });
+    expect(await cli.request("supervisor.shutdown", UPGRADE)).toMatchObject({
+      ok: true,
+      result: { closing: false },
+    });
+    expect(await app.request("ping")).toMatchObject({ ok: true });
+    expect(world.discovery.file).toBeDefined();
+  });
+
+  it("只有应用自己连着时，它自己的 upgrade 有条件关闭不被自己挡住（#358）", async () => {
+    world = new World();
+    const handle = await world.start();
+    const app = await world.session(handle, { kind: "app" });
+    expect(await app.request("supervisor.shutdown", UPGRADE)).toMatchObject({
+      ok: true,
+      result: { closing: true },
+    });
+    await handle.closed;
+  });
+
+  it("应用断开之后，命令行的 upgrade 有条件关闭照常生效（#358）", async () => {
+    world = new World();
+    const handle = await world.start();
+    const app = await world.session(handle, { kind: "app" });
+    const cli = await world.session(handle, { kind: "cli" });
+    app.destroy();
+    await app.closed;
+    // 管理进程要过一小会儿才收到断开；被挡的请求无副作用，轮询到它不再挡为止（上限 100 次）
+    const closing = (reply: Awaited<ReturnType<typeof cli.request>>): boolean =>
+      reply.ok === true && (reply.result as { closing: boolean }).closing === true;
+    let answer = await cli.request("supervisor.shutdown", UPGRADE);
+    for (let tries = 0; tries < 100 && !closing(answer); tries++) {
+      await new Promise((resolve) => setImmediate(resolve));
+      answer = await cli.request("supervisor.shutdown", UPGRADE);
+    }
+    expect(answer).toMatchObject({ ok: true, result: { closing: true } });
+    await handle.closed;
+  });
+
   it("没有运行时 ifIdle 关闭会退出：响应先到，连接再关，发现文件和连接点释放", async () => {
     world = new World();
     const handle = await world.start();
