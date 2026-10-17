@@ -144,6 +144,7 @@ notice.IDLE_STOPPED (minutes=30): 空闲 30 分钟，已自动停止。
 notice.PACKAGE_MANAGER_FALLBACK (wanted=pnpm, used=npm): 没有找到 pnpm，已改用 npm。
 notice.PATH_NEAR_LIMIT (length=1, limit=1024): 项目路径有 1 个字符，接近系统允许的上限（1,024 个字符）。创建照常进行；缩短名称或换一个更短的资源库位置可以避开这个问题。
 notice.PATH_NEAR_LIMIT (length=1010, limit=1024): 项目路径有 1,010 个字符，接近系统允许的上限（1,024 个字符）。创建照常进行；缩短名称或换一个更短的资源库位置可以避开这个问题。
+notice.SUPERVISOR_IN_USE_BY_APP (): Runyard 应用正在使用后台的管理进程，它和这个命令行不是同一个构建，所以没有换新，本次命令继续使用它。退出应用后，下一条命令会把它更新。
 notice.PORT_NOT_RELEASED (port=7111, waitedMs=3000, limitMs=3000): 停止后 7111 端口等了 3,000 毫秒（上限 3,000 毫秒）仍没有释放。下次启动时如果它还被占用，这个项目那一次会改用另一个端口，登记的端口不变。
 notice.PORT_NOT_RELEASED (port=7111, waitedMs=1, limitMs=1): 停止后 7111 端口等了 1 毫秒（上限 1 毫秒）仍没有释放。下次启动时如果它还被占用，这个项目那一次会改用另一个端口，登记的端口不变。
 notice.TOOL_VERSION_UNTESTED (tool=node, found=28.0.0, required=>=22.18 <26): node 28.0.0 高于这个模板测试过的范围（>=22.18 <26）。照常运行，但没有经过测试。

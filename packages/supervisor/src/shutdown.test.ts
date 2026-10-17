@@ -23,7 +23,7 @@ describe("有条件关闭", () => {
     expect(await (await world.session(handle)).request("ping")).toMatchObject({ ok: true });
   });
 
-  it("桌面应用连着时，别的客户端的 upgrade 有条件关闭被拒绝（没有运行也不退出），应用的连接不受影响（#358）", async () => {
+  it("[SUPERVISOR-LIFECYCLE-19] 桌面应用连着时，别的客户端的 upgrade 有条件关闭被拒绝（没有运行也不退出），应用的连接不受影响（#358）", async () => {
     world = new World();
     const handle = await world.start();
     const app = await world.session(handle, { kind: "app" });
@@ -36,7 +36,7 @@ describe("有条件关闭", () => {
     expect(world.discovery.file).toBeDefined();
   });
 
-  it("只有应用自己连着时，它自己的 upgrade 有条件关闭不被自己挡住（#358）", async () => {
+  it("[SUPERVISOR-LIFECYCLE-20] 只有应用自己连着时，它自己的 upgrade 有条件关闭不被自己挡住（#358）", async () => {
     world = new World();
     const handle = await world.start();
     const app = await world.session(handle, { kind: "app" });
@@ -47,7 +47,7 @@ describe("有条件关闭", () => {
     await handle.closed;
   });
 
-  it("应用断开之后，命令行的 upgrade 有条件关闭照常生效（#358）", async () => {
+  it("[SUPERVISOR-LIFECYCLE-21] 应用断开之后，命令行的 upgrade 有条件关闭照常生效（#358）", async () => {
     world = new World();
     const handle = await world.start();
     const app = await world.session(handle, { kind: "app" });

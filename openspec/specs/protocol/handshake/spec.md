@@ -45,7 +45,7 @@
 - 验证：test
 
 ### Requirement: 按协议版本和构建标识决定怎么用管理进程
-握手消息 MUST 携带协议版本和最低版本要求，客户端 MUST 在握手之后立即按版本比对结果处理，且 MUST NOT 在版本不兼容时继续发请求。有运行时 MUST NOT 自动换掉管理进程。
+握手消息 MUST 携带协议版本和最低版本要求，客户端 MUST 在握手之后立即按版本比对结果处理，且 MUST NOT 在版本不兼容时继续发请求。有运行时、或桌面应用正连着它时，MUST NOT 自动换掉管理进程。
 来源：ADR 0005；PRD #prd-decided-by-default
 
 #### Scenario: [PROTOCOL-HANDSHAKE-07] 版本和构建标识都相同
@@ -54,7 +54,7 @@
 - 验证：test
 
 #### Scenario: [PROTOCOL-HANDSHAKE-08] 构建标识不同且没有运行
-- 前提：协议版本相同，构建标识不同（例如应用文件被原地替换），管理进程没有任何运行
+- 前提：协议版本相同，构建标识不同（例如应用文件被原地替换），管理进程没有任何运行，也没有桌面应用连着它
 - **WHEN** 客户端比对版本
 - **THEN** 客户端发 `supervisor.shutdown { ifIdle: true, reason: 'upgrade' }`，等它退出后启动自己带的管理进程
 - 验证：test
@@ -72,6 +72,7 @@
 - 验证：test
 
 #### Scenario: [PROTOCOL-HANDSHAKE-11] 管理进程较旧且没有运行
+- 前提：没有桌面应用连着管理进程
 - **WHEN** 管理进程的协议版本低于客户端，且没有任何运行
 - **THEN** 客户端发 `supervisor.shutdown { ifIdle: true, reason: 'upgrade' }`，等它退出后启动自己带的新版
 - 验证：test
@@ -89,6 +90,18 @@
 #### Scenario: [PROTOCOL-HANDSHAKE-14] 管理进程较新、客户端低于它的最低要求
 - **WHEN** 客户端的协议版本低于管理进程要求的最低版本
 - **THEN** 客户端报 `CLIENT_OUTDATED`，命令行退出码为 10，不继续发请求
+- 验证：test
+
+#### Scenario: [PROTOCOL-HANDSHAKE-21] 桌面应用连着，管理进程没有运行，仍满足最低要求
+- 前提：桌面应用连着管理进程，管理进程没有任何运行；命令行的构建标识与管理进程的不同，协议版本满足命令行要求的最低版本
+- **WHEN** 命令行比对版本，并发 `supervisor.shutdown { ifIdle: true, reason: 'upgrade' }`
+- **THEN** 管理进程回 `closing: false`、不退出，应用的连接照常可用；命令行沿用这个管理进程，向用户说明“应用正在使用它，没有换新”，不报错
+- 验证：test
+
+#### Scenario: [PROTOCOL-HANDSHAKE-22] 桌面应用连着，管理进程没有运行，不满足最低要求
+- 前提：桌面应用连着管理进程，管理进程没有任何运行，它的协议版本低于命令行要求的最低版本
+- **WHEN** 命令行比对版本，管理进程拒绝被换新
+- **THEN** 命令行报 `SUPERVISOR_OUTDATED`，参数 `runs` 为 0，退出码 10，不继续发请求；提示写明是桌面应用在使用旧的管理进程，退出应用后重试，不是 `runyard stop --all`
 - 验证：test
 
 ### Requirement: 错误只有代码加参数

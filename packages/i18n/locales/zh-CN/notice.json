@@ -10,5 +10,6 @@
   "notice.PROCESS_EXITED": "进程已退出{exitCode, select, none {} other {，退出码 {exitCode}}}{signal, select, none {} other {，信号 {signal}}}。",
   "notice.RELOADING": "文件有改动，正在重载。",
   "notice.STOPPED_BY_USER": "你停止了这个项目。",
+  "notice.SUPERVISOR_IN_USE_BY_APP": "Runyard 应用正在使用后台的管理进程，它和这个命令行不是同一个构建，所以没有换新，本次命令继续使用它。退出应用后，下一条命令会把它更新。",
   "notice.TOOL_VERSION_UNTESTED": "{tool} {found} 高于这个模板测试过的范围（{required}）。照常运行，但没有经过测试。"
 }

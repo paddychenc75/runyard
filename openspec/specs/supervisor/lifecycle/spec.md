@@ -89,13 +89,31 @@
 - 验证：test
 
 ### Requirement: 只在空闲时才响应“有条件关闭”
-收到 `supervisor.shutdown { ifIdle: true }` 时，管理进程 MUST 只在没有运行时退出；有运行时 MUST 拒绝退出并保持服务。
+收到 `supervisor.shutdown { ifIdle: true }` 时，管理进程 MUST 只在没有运行时退出；有运行时 MUST 拒绝退出并保持服务。原因是 `upgrade` 且另一个客户端是桌面应用时，管理进程 MUST 同样拒绝退出：换掉后应用连着的是已退出的进程，会看不到命令行新建的项目。桌面应用自己发的 `upgrade` MUST NOT 被自己挡住。
 来源：ADR 0005
 
 #### Scenario: [SUPERVISOR-LIFECYCLE-15] 有运行时拒绝关闭
 - 前提：有一个运行
 - **WHEN** 收到 `supervisor.shutdown { ifIdle: true, reason: 'upgrade' }`
 - **THEN** 管理进程不退出，运行不受影响，响应说明未关闭
+- 验证：test
+
+#### Scenario: [SUPERVISOR-LIFECYCLE-19] 桌面应用连着时拒绝别的客户端的换新
+- 前提：桌面应用连着管理进程，没有任何运行，命令行也连着
+- **WHEN** 命令行发 `supervisor.shutdown { ifIdle: true, reason: 'upgrade' }`
+- **THEN** 管理进程不退出，响应说明未关闭，应用的连接不受影响
+- 验证：test
+
+#### Scenario: [SUPERVISOR-LIFECYCLE-20] 应用自己的换新不被自己挡住
+- 前提：只有桌面应用连着管理进程，没有任何运行
+- **WHEN** 应用发 `supervisor.shutdown { ifIdle: true, reason: 'upgrade' }`
+- **THEN** 管理进程退出
+- 验证：test
+
+#### Scenario: [SUPERVISOR-LIFECYCLE-21] 应用断开之后照常换新
+- 前提：桌面应用刚断开，没有任何运行，命令行连着
+- **WHEN** 命令行发 `supervisor.shutdown { ifIdle: true, reason: 'upgrade' }`
+- **THEN** 管理进程在应用的断开被处理后退出
 - 验证：test
 
 ### Requirement: 崩溃后的清理按身份核对

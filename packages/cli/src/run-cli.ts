@@ -82,7 +82,10 @@ export async function runCli(io: CliIo, deps: CliDeps): Promise<number> {
       io,
       deps,
       getClient: () => {
-        client ??= deps.connect(base.platform);
+        client ??= deps.connect(base.platform).then((connected) => {
+          explainBlockedByApp(connected, base.out);
+          return connected;
+        });
         return client;
       },
     };
@@ -92,6 +95,15 @@ export async function runCli(io: CliIo, deps: CliDeps): Promise<number> {
     return (out ?? fallbackOutput(io, parsed.globals)).error(toCliError(error));
   } finally {
     await closeQuietly(client);
+  }
+}
+
+// 管理进程是另一个构建、却被桌面应用占着没换新：命令照常用它，但要让用户知道为什么没换（规格 CLI-COMMANDS-87）。
+// 测试里的假 client 可以没有 outcome
+function explainBlockedByApp(client: RunyardClient, out: Output): void {
+  const outcome = (client as { outcome?: RunyardClient["outcome"] }).outcome;
+  if (outcome?.kind === "outdated" && outcome.blockedByApp === true) {
+    out.notice({ code: "SUPERVISOR_IN_USE_BY_APP", params: {} });
   }
 }
 
