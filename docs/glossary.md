@@ -29,6 +29,7 @@
 | 访达 | `fileManager`（文案里写 `{term_fileManager}`） | Finder | — | — | 负责人 2026-10-12 决定；技术设计 §6.8 |
 | 命令面板 | `commandPalette` | Command Palette | — | — | PRD #prd-editor；规格 desktop/editor「命令面板」 |
 | 快速打开 | `quickOpen` | Quick Open | — | — | PRD #prd-editor；规格 desktop/editor「快速打开」 |
+| 终端 | `terminal` | Terminal | — | — | PRD #prd-terminal；规格 desktop/terminal |
 
 ## 说明
 

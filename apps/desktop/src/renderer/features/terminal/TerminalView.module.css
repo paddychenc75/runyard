@@ -1,0 +1,103 @@
+/* 设计稿 Terminal：卡片里整块的终端，等宽 12 像素、行高 21 像素，内边距 2 / 18 / 12 */
+.root {
+  position: relative;
+  flex: 1;
+  display: flex;
+  min-block-size: 0;
+  min-inline-size: 0;
+  overflow: hidden;
+  --terminal-line-height: calc(var(--text-code-small-size) * 1.75);
+}
+
+.pad {
+  flex: 1;
+  display: flex;
+  min-inline-size: 0;
+  padding: var(--space-1) calc(var(--space-7) + var(--space-1)) var(--space-6);
+}
+
+.host {
+  flex: 1;
+  min-inline-size: 0;
+  min-block-size: 0;
+}
+
+/* xterm 自己的背景透出卡片的颜色；它的滚动条换成统一的胶囊样式（视觉规范第 5 节） */
+.host :global(.xterm),
+.host :global(.xterm) :global(.xterm-viewport) {
+  background: transparent;
+}
+
+.host :global(.xterm-scrollable-element > .scrollbar) {
+  inline-size: var(--size-scrollbar-hit) !important;
+}
+
+.host :global(.xterm-scrollable-element > .scrollbar > .slider) {
+  inset-inline-start: calc(
+    var(--size-scrollbar-hit) -
+    var(--size-scrollbar-thumb) -
+    var(--size-scrollbar-inset)
+  ) !important;
+  inline-size: var(--size-scrollbar-thumb) !important;
+  border-radius: var(--radius-capsule);
+  transition: inline-size var(--motion-duration-fast) linear;
+}
+
+.host :global(.xterm-scrollable-element > .scrollbar:hover > .slider) {
+  inline-size: var(--size-scrollbar-thumb-hover) !important;
+  inset-inline-start: calc(
+    var(--size-scrollbar-hit) -
+    var(--size-scrollbar-thumb-hover) -
+    var(--size-scrollbar-inset)
+  ) !important;
+}
+
+/* 网址只有按住 ⌘ 时才有下划线和手形指针（规格 DESKTOP-TERMINAL-19）；JS 在按住时给 host 加 data-mod-held */
+.host:not([data-mod-held]) :global(.xterm-underline-5),
+.host:not([data-mod-held]) :global(.xterm-underline-5 *) {
+  text-decoration: none !important;
+}
+
+.host:not([data-mod-held]) :global(.xterm-cursor-pointer),
+.host:not([data-mod-held]) :global(.xterm-cursor-pointer *) {
+  cursor: text !important;
+}
+
+/* “终端已结束（退出码 0）  [重新打开终端]”：跟在最后一行输出后面，位置由光标所在行算出 */
+.ended {
+  position: absolute;
+  inset-inline-start: calc(var(--space-7) + var(--space-1));
+  inset-block-start: calc(
+    var(--space-1) +
+    var(--terminal-ended-row, 0) *
+    var(--terminal-line-height) +
+    var(--space-1)
+  );
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  font-family: var(--font-sans);
+  font-size: var(--text-body-size);
+}
+
+.endedText {
+  color: var(--color-text-secondary);
+}
+
+.reopen {
+  border-radius: var(--radius-capsule);
+}
+
+/* 右键菜单的锚点：零大小的元素放在鼠标处 */
+.menuAnchor {
+  position: fixed;
+  inset-inline-start: var(--menu-x);
+  inset-block-start: var(--menu-y);
+  inline-size: 0;
+  block-size: 0;
+}
+
+/* 设计稿 TerminalMenu：右键菜单约 200 宽，比“更多”菜单宽一些 */
+.menu {
+  min-inline-size: calc(2 * var(--size-column-md) + var(--space-4));
+}

@@ -98,6 +98,7 @@ const quietSystem: SystemActions = {
     return null;
   },
   openExternal() {},
+  readText: async () => "",
 };
 
 class MemoryStore implements SessionStore {

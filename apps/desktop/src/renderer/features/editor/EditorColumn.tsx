@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import type { DesktopBridge } from "../../../shared/desktop-bridge.ts";
 import type { TabRow } from "../../../shared/library-state.ts";
 import { useCommands } from "../../shared/command-host.tsx";
+import { onEditorFocusRequest } from "../../shared/editor-focus.ts";
 import { ClosePrompt } from "./ClosePrompt.tsx";
 import { EditorBar } from "./EditorBar.tsx";
 import { EditorBreadcrumb } from "./EditorBreadcrumb.tsx";
@@ -112,6 +113,9 @@ export function EditorColumn({ bridge, tab, createHost = createMonacoHost }: Edi
     window.addEventListener("keydown", onKeyDown, true);
     return () => window.removeEventListener("keydown", onKeyDown, true);
   }, [session, modKey]);
+
+  // 终端按 ⌃` 把焦点还给编辑器（DESKTOP-TERMINAL-05）：光标留在原来的位置
+  useEffect(() => onEditorFocusRequest(() => hostRef.current?.focus()), []);
 
   // 失去焦点（DESKTOP-EDITOR-24）：焦点移出编辑器区域（点了预览、控制台或别处），或者切到别的应用、关窗口
   useEffect(() => {

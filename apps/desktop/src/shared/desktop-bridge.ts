@@ -121,6 +121,10 @@ export interface DesktopMethods extends EditorFileMethods, SettingsMethods, Term
   "playground.copyPath": { param: string; result: undefined };
   /** 把一段文字放进剪贴板（缺工具画面的“复制命令”）；命令只展示和复制，应用从不执行 */
   "clipboard.copy": { param: string; result: undefined };
+  /** 读剪贴板里的文字（终端的 ⌘V、右键粘贴） */
+  "clipboard.read": { param: undefined; result: string };
+  /** 终端输出里的网址：按住 ⌘ 点击用系统浏览器打开；只放行 http 和 https */
+  "link.openWeb": { param: string; result: undefined };
   /** 用系统浏览器打开一个 https 链接（安装说明的官网）；别的协议主进程不理 */
   "link.open": { param: string; result: undefined };
   /** 预览占位区在窗口里的位置和大小（CSS 像素）；占位区卸载时报 null */
@@ -170,6 +174,8 @@ export const desktopMethodNames: readonly DesktopMethod[] = [
   "playground.reveal",
   "playground.copyPath",
   "clipboard.copy",
+  "clipboard.read",
+  "link.openWeb",
   "link.open",
   "preview.bounds",
   "preview.capture",

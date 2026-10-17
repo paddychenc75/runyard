@@ -85,6 +85,7 @@ async function setup(runs: ReturnType<typeof run>[]) {
     system: {
       revealInFileManager() {},
       copyText() {},
+      readText: async () => "",
       openExternal() {},
       openTerminal() {},
       chooseFolder: async () => null,

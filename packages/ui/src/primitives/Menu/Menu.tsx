@@ -31,6 +31,10 @@ export interface MenuProps {
   defaultOpen?: boolean;
   /** 开合变化；外壳要靠它在菜单打开时让原生预览让位（技术设计 §6.1） */
   onOpenChange?: (open: boolean) => void;
+  /** 菜单与触发元素哪一边对齐；缺省是右边（更多按钮）。右键菜单把一个零大小的元素放在鼠标处，用 start 让菜单向右下展开 */
+  align?: "start" | "end";
+  /** 追加到菜单面板上的类名：只许调宽度（如右键菜单比“更多”菜单宽） */
+  className?: string;
 }
 
 const SIDE_OFFSET = 6;
@@ -43,6 +47,8 @@ export function Menu({
   open,
   defaultOpen,
   onOpenChange,
+  align = "end",
+  className,
 }: MenuProps) {
   return (
     <BaseMenu.Root
@@ -54,13 +60,13 @@ export function Menu({
       <BaseMenu.Portal>
         <BaseMenu.Positioner
           side="bottom"
-          align="end"
+          align={align}
           sideOffset={SIDE_OFFSET}
           className={styles.positioner}
         >
           <BaseMenu.Popup
             render={<GlassSurface material="menu" />}
-            className={styles.popup}
+            className={className === undefined ? styles.popup : `${styles.popup} ${className}`}
             aria-label={label}
             aria-labelledby={undefined}
           >

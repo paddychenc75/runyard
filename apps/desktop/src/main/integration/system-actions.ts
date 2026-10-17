@@ -17,6 +17,10 @@ export class ElectronSystemActions implements SystemActions {
     clipboard.writeText(text);
   }
 
+  async readText(): Promise<string> {
+    return clipboard.readText();
+  }
+
   // 终端是系统程序：只能发出请求。参数是数组、不经 shell（规格 DESKTOP-LIBRARY-VIEW-48 是手动验证）
   openTerminal(path: string): void {
     execFile("open", ["-a", "Terminal", path], () => {});

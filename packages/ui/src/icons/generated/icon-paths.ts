@@ -72,6 +72,12 @@ export const iconPaths = {
     viewBox: "0 0 16 16",
     paths: ["M8 3.25v9.5M3.25 8h9.5"],
   },
+  prompt: {
+    viewBox: "0 0 16 16",
+    paths: [
+      "M3.5 2.5h9a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2ZM4.5 6l2 2-2 2M8.5 10.5h3",
+    ],
+  },
   refresh: {
     viewBox: "0 0 16 16",
     paths: ["M13.3 8a5.3 5.3 0 1 1-1.6-3.8M13.3 2.7v2.9h-2.9"],

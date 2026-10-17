@@ -1,5 +1,5 @@
 import type { Localized } from "@runyard/i18n";
-import { useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import type { IconName } from "../../icons/generated/icon-paths.ts";
 import { AlertDialog } from "../../primitives/AlertDialog/index.ts";
 import { Button } from "../../primitives/Button/index.ts";
@@ -23,6 +23,8 @@ export interface ConfirmDialogProps {
   /** 点取消、按 Escape、点遮罩都走这里，勾选项的状态一律丢弃 */
   onCancel: () => void;
   container?: HTMLElement | null;
+  /** 描述和勾选项之间的补充内容（如退出时列出还在运行命令的终端）；没有就不画 */
+  children?: ReactNode;
 }
 
 // 确认弹窗：取消在左、确认在右，打开时焦点在“取消”（确认通常是破坏性的，误按回车不该直接执行）。
@@ -39,6 +41,7 @@ export function ConfirmDialog({
   onConfirm,
   onCancel,
   container,
+  children,
 }: ConfirmDialogProps) {
   const [checked, setChecked] = useState(false);
   const cancelRef = useRef<HTMLButtonElement>(null);
@@ -78,6 +81,7 @@ export function ConfirmDialog({
         </>
       }
     >
+      {children}
       {optOut === undefined ? null : (
         <Checkbox
           label={optOut.label}

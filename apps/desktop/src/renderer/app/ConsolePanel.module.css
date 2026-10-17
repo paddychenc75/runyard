@@ -1,4 +1,4 @@
-/* 设计稿 Service：整宽的圆角卡片，顶上是“输出”页签（选中的胶囊），下面是输出 */
+/* 设计稿 WebLight、Script：整宽的圆角卡片，顶上是“输出 / 终端”分段切换，下面是输出或终端 */
 .root {
   flex: none;
   display: flex;
@@ -17,6 +17,12 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--space-3) var(--space-4);
+}
+
+/* 终端铺满卡片（设计稿 Terminal：没有内嵌块，字直接写在卡片上） */
+.body {
+  flex: 1;
+  min-block-size: 0;
 }
 
 /* 输出内容放在一块内嵌块里（视觉规范：内嵌块 md 12），不贴卡片边 */

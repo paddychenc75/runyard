@@ -128,4 +128,37 @@ describe("关闭标签页的确认对话框", () => {
     expect(call).toHaveBeenCalledWith("tab.closeCancel");
     expect(call.mock.calls.map((args) => args[0])).not.toContain("tab.closeConfirm");
   });
+
+  it("[DESKTOP-TERMINAL-29] 终端里有命令在运行：写明 pnpm 还在运行、关闭会结束它，也写明会停止运行；“不再提示”仍可勾", async () => {
+    const user = userEvent.setup();
+    const call = setup({
+      ...base,
+      closeRequest: { id: "a", name: "hono-todo-api", terminalCommand: "pnpm", stopsRun: true },
+    });
+    const dialog = await screen.findByRole(
+      "alertdialog",
+      { name: "关闭 hono-todo-api 并停止运行？" },
+      SLOW,
+    );
+    expect(within(dialog).getByText(/终端里还在运行 pnpm/)).toBeTruthy();
+    expect(within(dialog).getByText(/停止这个项目/)).toBeTruthy();
+    expect(within(dialog).getByRole("checkbox", { name: "不再提示" })).toBeTruthy();
+    await user.click(within(dialog).getByRole("button", { name: "取消" }));
+    expect(call).toHaveBeenCalledWith("tab.closeCancel");
+    await user.click(within(dialog).getByRole("button", { name: "关闭并停止" }));
+    expect(call).toHaveBeenCalledWith("tab.closeConfirm", { id: "a", dontAskAgain: false });
+  });
+
+  it("[DESKTOP-TERMINAL-29] 只有终端里的命令会被结束（运行没人持有）：标题不说停止运行，按钮是“取消”和“关闭”，没有“不再提示”", async () => {
+    const user = userEvent.setup();
+    const call = setup({
+      ...base,
+      closeRequest: { id: "a", name: "hono-todo-api", terminalCommand: "tail", stopsRun: false },
+    });
+    const dialog = await screen.findByRole("alertdialog", { name: "关闭 hono-todo-api？" }, SLOW);
+    expect(within(dialog).getByText("终端里还在运行 tail，关闭会结束它。")).toBeTruthy();
+    expect(within(dialog).queryByRole("checkbox")).toBeNull();
+    await user.click(within(dialog).getByRole("button", { name: "关闭" }));
+    expect(call).toHaveBeenCalledWith("tab.closeConfirm", { id: "a", dontAskAgain: false });
+  });
 });

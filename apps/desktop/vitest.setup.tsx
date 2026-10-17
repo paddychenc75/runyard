@@ -1,7 +1,31 @@
 import { act, cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 import type { BootstrapInfo, DesktopBridge } from "./src/shared/desktop-bridge.ts";
 import type { LibraryState } from "./src/shared/library-state.ts";
+
+// xterm 在 jsdom 里画不出来（没有 matchMedia、没有 canvas）：所有界面测试里的 @xterm/* 都换成记录调用的假类
+// （src/renderer/features/terminal/test-support/）。下面的热身会画整个外壳，所以要在它之前登记。
+vi.mock(
+  "@xterm/xterm",
+  async () =>
+    (await import("./src/renderer/features/terminal/test-support/mock-xterm.ts")).xtermModule,
+);
+vi.mock(
+  "@xterm/addon-fit",
+  async () =>
+    (await import("./src/renderer/features/terminal/test-support/mock-xterm.ts")).fitModule,
+);
+vi.mock(
+  "@xterm/addon-search",
+  async () =>
+    (await import("./src/renderer/features/terminal/test-support/mock-xterm.ts")).searchModule,
+);
+vi.mock(
+  "@xterm/addon-web-links",
+  async () =>
+    (await import("./src/renderer/features/terminal/test-support/mock-xterm.ts")).webLinksModule,
+);
 
 // jsdom 没有 getAnimations；Base UI 的滚动区在滚动停下的计时器里会调用它，缺了就是一个未捕获的异常
 if (typeof Element !== "undefined") {

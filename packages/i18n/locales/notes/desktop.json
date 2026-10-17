@@ -92,6 +92,10 @@
     "wanted": "原来想用的端口，纯数字字符串",
     "reason": "PORT_OCCUPIED 或 PORT_RESERVED"
   },
+  "desktop.quitConfirm.item.label": {
+    "project": "项目名，用户自己起的，不翻译",
+    "command": "命令名，不翻译"
+  },
   "desktop.runbar.missing.label": {
     "tool": "工具标识，如 go、node"
   },
@@ -120,5 +124,17 @@
   },
   "desktop.start.title": {
     "name": "项目名"
+  },
+  "desktop.terminal.endedExited.label": {
+    "exitCode": "shell 的退出码，数字"
+  },
+  "desktop.terminal.shellFallback.label": {
+    "shell": "没能启动的 shell 的路径，不翻译",
+    "fallback": "改用的 shell 的路径，不翻译",
+    "reason": "原因代码：notFound、notExecutable、spawnFailed，其余都当“启动后立刻退出”"
+  },
+  "desktop.terminalFind.count.label": {
+    "index": "当前是第几个，从 1 开始",
+    "total": "一共几个"
   }
 }

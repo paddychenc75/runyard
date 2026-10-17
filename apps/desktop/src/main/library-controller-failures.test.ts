@@ -64,6 +64,7 @@ function setup() {
     system: {
       revealInFileManager() {},
       copyText: (text) => void copied.push(text),
+      readText: async () => "",
       openExternal: (url) => void opened.push(url),
       openTerminal: () => undefined,
       chooseFolder: async () => null,
@@ -212,5 +213,16 @@ describe("缺工具画面的两个系统动作", () => {
     controller.system.openLink("javascript:alert(1)");
     expect(copied).toEqual(["brew install go"]);
     expect(opened).toEqual(["https://go.dev/dl/"]);
+  });
+
+  it("[DESKTOP-TERMINAL-19] 终端输出里的网址只放行 http 和 https（⌘ 加点击），别的协议不理", () => {
+    const { controller } = setup();
+    controller.system.openWebLink("http://127.0.0.1:5173/");
+    controller.system.openWebLink("https://example.com/a?b=1");
+    controller.system.openWebLink("file:///etc/passwd");
+    controller.system.openWebLink("javascript:alert(1)");
+    controller.system.openWebLink("http://a b");
+    expect(opened.slice(-2)).toEqual(["http://127.0.0.1:5173/", "https://example.com/a?b=1"]);
+    expect(opened).not.toContain("file:///etc/passwd");
   });
 });
