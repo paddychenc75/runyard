@@ -12,7 +12,7 @@ import {
   Truncate,
   UserText,
 } from "@runyard/ui";
-import { type ReactNode, useMemo, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { isDueTomorrow } from "../../shared/clean-due.ts";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { PlaygroundRow } from "../../shared/library-state.ts";
@@ -56,6 +56,13 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
   const draft = useRenameDraft(bridge, taken);
   const editingId = draft.session?.target.id ?? null;
   const relocating = useRelocate(bridge);
+  useRowKeyboard(
+    rows,
+    selectedId,
+    setSelectedId,
+    editingId,
+    (id) => void bridge.call("tab.open", id),
+  );
   // 展开了创建信息的智能体项目（规格 DESKTOP-LIBRARY-VIEW“智能体创建的项目”）
   const [expanded, setExpanded] = useState<ReadonlySet<string>>(new Set());
   const toggleExpanded = (id: string) =>
@@ -177,7 +184,7 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
     {
       id: "creator",
       header: t("library.column.creator.label"),
-      width: "lg",
+      width: "xxl",
       render: (row) =>
         dim(
           row,
@@ -283,4 +290,49 @@ function retentionCell(row: PlaygroundRow, now: number, t: ReturnType<typeof use
       </Badge>
     </Tooltip>
   );
+}
+
+// 选中行的键盘（规格 DESKTOP-LIBRARY-VIEW-30）：上下方向键移动选中行，回车等同“打开”。
+// 行本身不是控件，所以挂在文档上；焦点在输入框、按钮、菜单或弹窗里时让给它们。
+function useRowKeyboard(
+  rows: readonly PlaygroundRow[],
+  selectedId: string | null,
+  select: (id: string) => void,
+  editingId: string | null,
+  open: (id: string) => void,
+) {
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return;
+      if (editingId !== null || rows.length === 0) return;
+      const target = event.target as Element | null;
+      if (
+        target !== null &&
+        target.closest(
+          "input, textarea, select, button, a, [role='menu'], [role='dialog'], [role='alertdialog'], [contenteditable]",
+        ) !== null
+      )
+        return;
+      if (document.querySelector("[role='dialog'], [role='alertdialog'], [role='menu']") !== null)
+        return;
+      const index = rows.findIndex((row) => row.id === selectedId);
+      if (event.key === "Enter") {
+        if (index < 0) return;
+        event.preventDefault();
+        open(rows[index]?.id ?? "");
+      } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        const next = event.key === "ArrowDown" ? index + 1 : index < 0 ? 0 : index - 1;
+        const row = rows[Math.min(Math.max(next, 0), rows.length - 1)];
+        if (row === undefined) return;
+        event.preventDefault();
+        select(row.id);
+        // 行 id 是用户起的名字，不拼进选择器
+        for (const line of document.querySelectorAll("tr[data-row-id]"))
+          if (line.getAttribute("data-row-id") === row.id)
+            line.scrollIntoView?.({ block: "nearest" });
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [rows, selectedId, select, editingId, open]);
 }
