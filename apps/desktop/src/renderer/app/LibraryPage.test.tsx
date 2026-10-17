@@ -278,17 +278,26 @@ describe("资源库一行的操作", () => {
       .getAllByRole("menuitem")
       .map((item) => item.textContent);
     expect(names.some((name) => name?.includes("停止运行"))).toBe(false);
-    expect(names).toHaveLength(3);
+    expect(names).toHaveLength(7);
   });
 
-  it("更多菜单只有批准的几项：运行中的行是打开、停止运行、在访达中显示、复制路径", async () => {
+  it("更多菜单现有的项按设计稿的顺序：打开、停止运行，重命名到创建副本，在访达中显示、复制路径", async () => {
     const user = userEvent.setup();
     setup(library([row("demo", { state: "ready", active: true, port: 7101 })]));
     const menu = await openMenu(user, "demo");
     const names = within(menu)
       .getAllByRole("menuitem")
       .map((item) => item.textContent);
-    expect(names).toEqual(["打开回车", "停止运行", "在访达中显示", "复制路径"]);
+    expect(names).toEqual([
+      "打开回车",
+      "停止运行",
+      "重命名…",
+      "编辑备注…",
+      "自动清理…现在：已保留",
+      "创建副本",
+      "在访达中显示",
+      "复制路径",
+    ]);
   });
 
   it("[DESKTOP-LIBRARY-VIEW-11] 更多菜单里选“复制路径”，向主进程发 playground.copyPath", async () => {

@@ -31,6 +31,18 @@ export interface CreateRequest {
 }
 export type CreateResult = { ok: true } | { ok: false; error: DesktopError };
 
+/** 重命名与编辑备注交上来的内容：名称没改就只改备注（不停止运行）；主进程不信任它，逐项校验 */
+export interface EditRequest {
+  id: string;
+  name: string;
+  /** 没写是空串；可以清空 */
+  note: string;
+}
+/** 失败（重名、不合法、文件夹被占用……）原样交回，由界面显示在表单里 */
+export type EditResult = { ok: true } | { ok: false; error: DesktopError };
+/** 创建副本的结果：成功时带副本的项目 id（界面据此选中它） */
+export type DuplicateResult = { ok: true; id: string } | { ok: false; error: DesktopError };
+
 export interface QuitReply {
   id: number;
   reply: "ack" | "proceed" | "cancel";
@@ -47,6 +59,12 @@ export interface DesktopMethods extends EditorFileMethods, SettingsMethods {
   "tab.select": { param: string; result: undefined };
   /** 新建弹窗的“创建并运行”：创建项目、打开它的标签页并运行；失败（重名、不合法……）原样交回给弹窗显示在名称下 */
   "playground.create": { param: CreateRequest; result: CreateResult };
+  /** 重命名与编辑备注（规格 DESKTOP-LIBRARY-VIEW-34 至 39）：名称变了先停止、改名、再用新名称启动，持有者和端口不变 */
+  "playground.edit": { param: EditRequest; result: EditResult };
+  /** 自动清理的开关与天数（规格 DESKTOP-LIBRARY-VIEW-40）：null 是“已保留” */
+  "playground.autoClean": { param: { id: string; days: number | null }; result: EditResult };
+  /** 创建副本（规格 DESKTOP-LIBRARY-VIEW-42）：不复制依赖目录，不自动运行 */
+  "playground.duplicate": { param: string; result: DuplicateResult };
   /** 请求关闭项目标签（关闭钮、⌘W）：运行中且由标签持有时先出确认（状态里的 closeRequest），否则直接关 */
   "tab.close": { param: string; result: undefined };
   /** 确认关闭并停止；dontAskAgain 为真就记住“不再提示” */
@@ -81,6 +99,9 @@ export const desktopMethodNames: readonly DesktopMethod[] = [
   "tab.open",
   "tab.select",
   "playground.create",
+  "playground.edit",
+  "playground.autoClean",
+  "playground.duplicate",
   "tab.close",
   "tab.closeConfirm",
   "tab.closeCancel",

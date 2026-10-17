@@ -51,8 +51,7 @@ function setup(
     localeChanged: vi.fn(),
   } satisfies SettingsHost;
   const library = {
-    setLocale: vi.fn(),
-    reloadLibraryRoot: vi.fn(async () => {}),
+    applySettings: vi.fn(async () => {}),
     folderOf: vi.fn((id: string) => (id === "demo" ? "/Users/me/Runyard/demo" : null)),
   };
   const controller = new SettingsController({
@@ -101,7 +100,7 @@ describe("设置控制器", () => {
     const { controller, host, library } = setup();
     expect(controller.localeOf(base)).toBe("zh-CN");
     await controller.set({ language: "en" });
-    expect(library.setLocale).toHaveBeenCalledWith("en");
+    expect(library.applySettings).toHaveBeenCalledWith("en");
     expect(host.localeChanged).toHaveBeenCalledWith("en");
   });
 
@@ -109,7 +108,7 @@ describe("设置控制器", () => {
     const { controller, host, library } = setup();
     await controller.set({ autoSave: "blur" });
     expect(host.setTheme).not.toHaveBeenCalled();
-    expect(library.setLocale).not.toHaveBeenCalled();
+    expect(library.applySettings).not.toHaveBeenCalled();
     expect(host.localeChanged).not.toHaveBeenCalled();
   });
 
@@ -131,7 +130,8 @@ describe("设置控制器", () => {
   it("[DESKTOP-SETTINGS-06] 换资源库位置：只写设置并让资源库重读新位置，不碰旧位置的文件", async () => {
     const { controller, library, calls } = setup();
     await controller.set({ libraryRoot: "/Users/me/Work/lib" });
-    expect(library.reloadLibraryRoot).toHaveBeenCalledTimes(1);
+    expect(library.applySettings).toHaveBeenCalledTimes(1);
+    expect(library.applySettings).toHaveBeenCalledWith("zh-CN");
     expect(calls.map((call) => call.method)).toEqual(["settings.set"]);
   });
 

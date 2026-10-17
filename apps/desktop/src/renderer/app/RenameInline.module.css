@@ -1,0 +1,70 @@
+/* 设计稿 RenameInline：名称框 34 高、1.5 的强调边加光环；说明 12 的次要色；备注框 30 高 */
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-inline-size: 0;
+}
+
+.name,
+.note {
+  box-sizing: border-box;
+  inline-size: 100%;
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--space-5);
+  border-radius: var(--radius-control);
+  background: var(--color-bg-field);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  outline: none;
+}
+
+.name {
+  block-size: calc(var(--size-control-md) + var(--space-1));
+  border: calc(var(--space-1) * 0.75) solid var(--color-line-accent);
+  box-shadow: var(--shadow-field-focus);
+  font-size: var(--text-item-size);
+  font-weight: var(--text-item-weight);
+}
+
+.note {
+  block-size: calc(var(--size-control-md) - var(--space-1));
+  border: 1px solid var(--color-line-field);
+  font-size: var(--text-body-size);
+  font-weight: var(--text-body-weight);
+}
+
+.note::placeholder {
+  color: var(--color-text-placeholder);
+}
+
+.note:focus-visible {
+  border: calc(var(--space-1) * 0.75) solid var(--color-line-accent);
+  box-shadow: var(--shadow-field-focus);
+}
+
+.name[aria-invalid="true"] {
+  border-color: var(--color-status-danger-mark);
+}
+
+.hint {
+  color: var(--color-text-secondary);
+  font-size: var(--text-secondary-size);
+  line-height: var(--text-secondary-line-height);
+}
+
+.hint[data-invalid] {
+  color: var(--color-status-danger-text);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-4);
+}
+
+/* 设计稿的按钮 30 高，比普通次要按钮（32）矮 2 */
+.actions > button.button {
+  block-size: calc(var(--size-control-md) - var(--space-1));
+}

@@ -9,3 +9,6 @@ declare module "monaco-editor/platform/commands/common/commands.js" {
 declare module "monaco-editor/platform/configuration/common/configuration.js" {
   export const IConfigurationService: unknown;
 }
+declare module "monaco-editor/editor/common/services/languageFeatures.js" {
+  export const ILanguageFeaturesService: unknown;
+}

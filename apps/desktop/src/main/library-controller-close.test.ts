@@ -155,7 +155,7 @@ describe("LibraryController 关闭标签页", () => {
     expect(controller.getState().playgrounds).toHaveLength(20);
     client.libraryRoot = "/home/u/Work/lib";
     client.playgrounds = [playground("new-1"), playground("new-2")];
-    await controller.reloadLibraryRoot();
+    await controller.applySettings("zh-CN");
     expect(controller.getState().libraryRoot).toBe("~/Work/lib");
     expect(
       controller

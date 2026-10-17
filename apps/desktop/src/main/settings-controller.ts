@@ -28,8 +28,8 @@ export interface SettingsHost {
 
 /** 控制器用到的资源库控制器的那一小部分 */
 export interface SettingsLibrary {
-  setLocale(locale: Locale): void;
-  reloadLibraryRoot(): Promise<void>;
+  /** 语言或资源库位置变了：按新的重读并推给界面 */
+  applySettings(locale: Locale): Promise<void>;
   folderOf(playgroundId: string): string | null;
 }
 
@@ -153,13 +153,11 @@ export class SettingsController {
     if (before === undefined || this.themeOf(before) !== this.themeOf(next)) {
       this.#host.setTheme(this.themeOf(next));
     }
-    if (before === undefined || this.localeOf(before) !== this.localeOf(next)) {
-      this.#library.setLocale(this.localeOf(next));
-      this.#host.localeChanged(this.localeOf(next));
+    const localeChanged = before === undefined || this.localeOf(before) !== this.localeOf(next);
+    if (localeChanged || before.libraryRoot !== next.libraryRoot) {
+      await this.#library.applySettings(this.localeOf(next));
     }
-    if (before !== undefined && before.libraryRoot !== next.libraryRoot) {
-      await this.#library.reloadLibraryRoot();
-    }
+    if (localeChanged) this.#host.localeChanged(this.localeOf(next));
     for (const listener of this.#listeners) listener(next);
   }
 }

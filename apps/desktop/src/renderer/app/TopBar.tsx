@@ -9,7 +9,7 @@ import {
 } from "@runyard/ui";
 import type { RefObject } from "react";
 import type { BootstrapInfo, DesktopBridge } from "../../shared/desktop-bridge.ts";
-import type { TabRow } from "../../shared/library-state.ts";
+import type { PlaygroundRow, TabRow } from "../../shared/library-state.ts";
 import { useFlushProject } from "../features/editor/EditorWorkspace.tsx";
 import { RunBar } from "./RunBar.tsx";
 import { SearchBox } from "./SearchBox.tsx";
@@ -23,6 +23,8 @@ export interface TopBarProps {
   activeTab: string;
   /** 正在运行的项目数：标签页持有的和命令行持有的都算 */
   running: number;
+  /** 资源库里的全部项目：运行条的“更多”菜单用 */
+  playgrounds: readonly PlaygroundRow[];
   /** 当前的项目标签；在资源库时是 undefined，不显示运行条 */
   activeTabRow: TabRow | undefined;
   /** 顶栏右端的“新建”：打开模板选择器 */
@@ -46,6 +48,7 @@ export function TopBar({
   tabs,
   activeTab,
   running,
+  playgrounds,
   activeTabRow,
   onNew,
   search,
@@ -83,7 +86,7 @@ export function TopBar({
       {activeTabRow === undefined ? (
         <SearchBox value={search} onValueChange={onSearchChange} inputRef={searchRef} />
       ) : (
-        <RunBar bridge={bridge} tab={activeTabRow} />
+        <RunBar bridge={bridge} tab={activeTabRow} playgrounds={playgrounds} />
       )}
       <GlassSurface material="toolbar" className={styles.running}>
         <StatusMark status={running > 0 ? "running" : "stopped"} />

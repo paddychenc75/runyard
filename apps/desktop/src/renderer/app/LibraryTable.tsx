@@ -10,7 +10,7 @@ import {
   Truncate,
   UserText,
 } from "@runyard/ui";
-import type { ReactNode } from "react";
+import { type ReactNode, useMemo, useState } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { PlaygroundRow } from "../../shared/library-state.ts";
 import {
@@ -23,7 +23,9 @@ import {
   statusMarkOf,
 } from "../library-view.ts";
 import styles from "./LibraryTable.module.css";
+import { RenameInlineActions, RenameInlineFields } from "./RenameInline.tsx";
 import { RowActions } from "./RowActions.tsx";
+import { useRenameDraft } from "./use-rename-draft.ts";
 
 export interface LibraryTableProps {
   bridge: DesktopBridge;
@@ -37,10 +39,15 @@ const NONE = "—";
 
 // 资源库列表（设计稿 Main、MainNarrow；PRD #prd-library-list）：依次是名称与备注、状态、模板、
 // 端口、保留、上次打开、创建者、操作。窗口变窄时名称与备注固定在左，圆点补进名称列。
-// 操作列是“打开”或“停止运行”加“更多”菜单（RowActions，#171）。
+// 操作列是“打开”或“停止运行”加“更多”菜单（RowActions，#171）；重命名和编辑备注就地变成行内编辑（#182）。
 export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
   const t = useT();
   const format = useFormat();
+  // 创建副本后选中它（规格 DESKTOP-LIBRARY-VIEW-42）
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const taken = useMemo(() => rows.map((row) => row.name), [rows]);
+  const draft = useRenameDraft(bridge, taken);
+  const editingId = draft.session?.target.id ?? null;
 
   const columns: DataTableColumn<PlaygroundRow>[] = [
     {
@@ -48,27 +55,30 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
       header: t("library.column.name.label"),
       width: "fill",
       pin: "start",
-      render: (row) => (
-        <div className={styles.nameCell}>
-          <StatusMark
-            status={statusMarkOf(row.state)}
-            markLabel={t(stateLabelKey(row.state))}
-            data-when-overflowing=""
-          />
-          <div className={styles.nameText}>
-            <Truncate className={styles.name}>
-              <UserText>{row.name}</UserText>
-            </Truncate>
-            {row.note === "" ? (
-              <Truncate className={styles.noteEmpty}>{t("library.note.empty.label")}</Truncate>
-            ) : (
-              <Truncate className={styles.note}>
-                <UserText>{row.note}</UserText>
+      render: (row) =>
+        row.id === editingId ? (
+          <RenameInlineFields draft={draft} />
+        ) : (
+          <div className={styles.nameCell}>
+            <StatusMark
+              status={statusMarkOf(row.state)}
+              markLabel={t(stateLabelKey(row.state))}
+              data-when-overflowing=""
+            />
+            <div className={styles.nameText}>
+              <Truncate className={styles.name}>
+                <UserText>{row.name}</UserText>
               </Truncate>
-            )}
+              {row.note === "" ? (
+                <Truncate className={styles.noteEmpty}>{t("library.note.empty.label")}</Truncate>
+              ) : (
+                <Truncate className={styles.note}>
+                  <UserText>{row.note}</UserText>
+                </Truncate>
+              )}
+            </div>
           </div>
-        </div>
-      ),
+        ),
     },
     {
       id: "status",
@@ -118,11 +128,14 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
       id: "lastOpened",
       header: t("library.column.lastOpened.label"),
       width: "lg",
-      render: (row) => (
-        <span className={styles.secondary}>
-          {row.lastOpenedAt === null ? NONE : format.relativeTime(row.lastOpenedAt, now)}
-        </span>
-      ),
+      render: (row) =>
+        row.id === editingId ? (
+          <RenameInlineActions draft={draft} />
+        ) : (
+          <span className={styles.secondary}>
+            {row.lastOpenedAt === null ? NONE : format.relativeTime(row.lastOpenedAt, now)}
+          </span>
+        ),
     },
     {
       id: "creator",
@@ -150,7 +163,21 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
       hiddenHeader: t("library.column.actions.aria"),
       width: "lg",
       pin: "end",
-      render: (row) => <RowActions bridge={bridge} row={row} />,
+      render: (row) => (
+        <RowActions
+          bridge={bridge}
+          row={row}
+          taken={taken}
+          now={now}
+          onInlineRename={(target, focus) =>
+            draft.begin(
+              { id: target.id, name: target.name, note: target.note, running: target.active },
+              focus,
+            )
+          }
+          onDuplicated={setSelectedId}
+        />
+      ),
     },
   ];
 
@@ -160,7 +187,19 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
       columns={columns}
       rows={rows}
       getRowId={(row) => row.id}
-      onRowDoubleClick={(row) => void bridge.call("tab.open", row.id)}
+      selectedId={selectedId}
+      editingId={editingId}
+      // 编辑中的行：名称框占名称到模板三列，取消和保存占最后三列（设计稿 RenameInline）
+      cellSpan={(row, columnId) =>
+        row.id !== editingId ? 1 : columnId === "name" || columnId === "lastOpened" ? 3 : 1
+      }
+      onRowClick={(row) => setSelectedId(row.id)}
+      // 弹窗经 React 事件冒泡到行上：只有双击发生在这一行自己里面才打开
+      onRowDoubleClick={(row, event) => {
+        if (event.currentTarget.contains(event.target as Node) && row.id !== editingId) {
+          void bridge.call("tab.open", row.id);
+        }
+      }}
       className={styles.table}
     />
   );
@@ -175,7 +214,7 @@ function retentionCell(row: PlaygroundRow, now: number, t: ReturnType<typeof use
   if (retention.kind === "autoCleanUnknown")
     return <Badge variant="dashed">{t("library.filter.autoClean.label")}</Badge>;
   return (
-    <Tooltip content={t("library.retention.autoClean.tooltip", { days: row.autoClean.days ?? 0 })}>
+    <Tooltip content={t("library.retention.autoClean.tooltip", { days: retention.daysLeft })}>
       <Badge variant="dashed">
         {t("library.retention.autoClean.label", { days: retention.daysLeft })}
       </Badge>

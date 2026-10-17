@@ -5,31 +5,59 @@ import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { PlaygroundRow } from "../../shared/library-state.ts";
 import { useOverlay } from "../shared/overlay-context.tsx";
 import styles from "./RowActions.module.css";
+import { usePlaygroundEdits } from "./use-playground-edits.tsx";
+import type { RenameFocus } from "./use-rename-draft.ts";
 
 export interface RowActionsProps {
   bridge: DesktopBridge;
   row: PlaygroundRow;
+  /** 资源库里全部项目的名称（重名校验） */
+  taken: readonly string[];
+  now: number;
+  /** 菜单的“重命名…”“编辑备注…”：这一行就地变成编辑状态 */
+  onInlineRename: (row: PlaygroundRow, focus: RenameFocus) => void;
+  /** 创建副本后选中它 */
+  onDuplicated: (id: string) => void;
 }
 
 // 列表一行的操作（规格 desktop/library-view“打开与停止运行”“更多菜单里的访达与路径”）：
 // 主操作随状态变，已停止是“打开”（打开即运行，没有“运行但不打开”），运行中是“停止运行”；
-// 后面是“更多”菜单。菜单项只有规格批准的几项，设计稿里其余的（重命名、编辑备注、移到废纸篓等）随后续 issue。
-export function RowActions({ bridge, row }: RowActionsProps) {
+// 后面是“更多”菜单：打开、停止运行，重命名、编辑备注、自动清理、创建副本（#182，与工作区共用 usePlaygroundEdits），
+// 在访达中显示、复制路径；设计稿里其余的项（打开但不运行、另存为模板、移到废纸篓等）随 #290、#183 等。
+export function RowActions({
+  bridge,
+  row,
+  taken,
+  now,
+  onInlineRename,
+  onDuplicated,
+}: RowActionsProps) {
   const t = useT();
   const [menuOpen, setMenuOpen] = useState(false);
   // 菜单是网页层，盖在原生预览之上，打开期间预览要让位（技术设计 §6.1）
   useOverlay(menuOpen);
 
+  const edits = usePlaygroundEdits({
+    bridge,
+    row,
+    taken,
+    now,
+    onInlineRename: (focus) => onInlineRename(row, focus),
+    onDuplicated,
+  });
   const open = () => void bridge.call("tab.open", row.id);
   const stop = () => void bridge.call("run.stop", row.id);
   const entries: MenuEntry[] = [
     { id: "open", label: t("library.row.open.action"), hint: t("library.row.openHint.label") },
     ...(row.active ? [{ id: "stop", label: t("library.row.stop.action") }] : []),
     { type: "separator" },
+    ...edits.entries,
+    { type: "separator" },
     { id: "reveal", label: t("library.row.reveal.action") },
     { id: "copyPath", label: t("library.row.copyPath.action") },
   ];
   const onSelect = (id: string) => {
+    if (edits.select(id)) return;
     if (id === "open") open();
     else if (id === "stop") stop();
     else if (id === "reveal") void bridge.call("playground.reveal", row.id);
@@ -48,6 +76,7 @@ export function RowActions({ bridge, row }: RowActionsProps) {
         onSelect={onSelect}
         onOpenChange={setMenuOpen}
       />
+      {edits.dialogs}
     </div>
   );
 }

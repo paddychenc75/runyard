@@ -474,6 +474,9 @@ export type CatalogMessages = {
   "format.relative.minutes": {
     count: number;
   };
+  "library.action.dismiss.action": Record<never, never>;
+  "library.action.failed.title": Record<never, never>;
+  "library.autoClean.dialog.title": Record<never, never>;
   "library.column.actions.aria": Record<never, never>;
   "library.column.creator.label": Record<never, never>;
   "library.column.lastOpened.label": Record<never, never>;
@@ -521,6 +524,7 @@ export type CatalogMessages = {
   "library.noResults.title": {
     query: string | number;
   };
+  "library.note.dialog.title": Record<never, never>;
   "library.note.empty.label": Record<never, never>;
   "library.page.results.label": {
     count: number;
@@ -532,6 +536,10 @@ export type CatalogMessages = {
     running: number;
     total: number;
   };
+  "library.rename.dialog.title": Record<never, never>;
+  "library.rename.nameFolder.hint": Record<never, never>;
+  "library.rename.nameRunning.hint": Record<never, never>;
+  "library.rename.save.action": Record<never, never>;
   "library.retention.autoClean.label": {
     days: number;
   };
@@ -539,12 +547,20 @@ export type CatalogMessages = {
     days: number;
   };
   "library.retention.kept.label": Record<never, never>;
+  "library.row.autoClean.action": Record<never, never>;
+  "library.row.autoCleanNow.hint": {
+    state: string | number;
+  };
   "library.row.copyPath.action": Record<never, never>;
+  "library.row.duplicate.action": Record<never, never>;
+  "library.row.editNote.action": Record<never, never>;
   "library.row.more.aria": {
     name: string | number;
   };
   "library.row.open.action": Record<never, never>;
   "library.row.openHint.label": Record<never, never>;
+  "library.row.rename.action": Record<never, never>;
+  "library.row.renameBusy.hint": Record<never, never>;
   "library.row.reveal.action": Record<never, never>;
   "library.row.stop.action": Record<never, never>;
   "library.search.clear.aria": Record<never, never>;

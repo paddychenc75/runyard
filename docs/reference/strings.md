@@ -390,6 +390,9 @@
 | format.relative.hours | {count, plural, other {# 小时前}} | {count, plural, one {# hr ago} other {# hr ago}} | count：距现在的整数小时数，1 到 23 |
 | format.relative.justNow | 刚刚 | just now | — |
 | format.relative.minutes | {count, plural, other {# 分钟前}} | {count, plural, one {# min ago} other {# min ago}} | count：距现在的整数分钟数，1 到 59 |
+| library.action.dismiss.action | 知道了 | Got it | — |
+| library.action.failed.title | 操作没有完成 | That did not finish | — |
+| library.autoClean.dialog.title | 自动清理 | Auto-clean | — |
 | library.column.actions.aria | 操作 | Actions | — |
 | library.column.creator.label | 创建者 | Created by | — |
 | library.column.lastOpened.label | 上次打开 | Last opened | — |
@@ -427,16 +430,27 @@
 | library.noResults.hint | 名称、备注和模板里都没有这个词。 | No name, note, or template contains this word. | — |
 | library.noResults.reset.action | 清除筛选 | Clear filters | — |
 | library.noResults.title | 没有找到“{query}” | No results for “{query}” | query：用户输入的搜索文字（原样，不翻译） |
+| library.note.dialog.title | 编辑备注 | Edit note | — |
 | library.note.empty.label | 未填写备注 | No note | — |
 | library.page.results.label | {count, plural, other {# 个结果}} · 共 {total, plural, other {# 个项目}} · 存放在 {root} | {count, plural, one {# result} other {# results}} · {total, plural, one {# playground} other {# playgrounds}} · stored in {root} | count：搜索和筛选后剩下的项目数；total：资源库里项目的总数；root：资源库根目录（主目录缩成 ~） |
 | library.page.summary.label | {total, plural, other {# 个项目}} · {running, plural, other {# 个正在运行}} · 存放在 {root} | {total, plural, one {# playground} other {# playgrounds}} · {running, plural, one {# running} other {# running}} · stored in {root} | total：资源库里项目的总数；running：正在运行的项目数；root：资源库根目录（主目录缩成 ~） |
+| library.rename.dialog.title | 重命名 | Rename | — |
+| library.rename.nameFolder.hint | 名称同时是文件夹名；改名后旧的 runyard://open 链接会失效。 | The name is also the folder name; renaming breaks old runyard://open links. | — |
+| library.rename.nameRunning.hint | 名称同时是文件夹名；这个项目正在运行，保存后会停止并用新名称重新启动；旧的 runyard://open 链接会失效。 | The name is also the folder name. This playground is running: saving stops it and restarts it under the new name. Old runyard://open links will stop working. | — |
+| library.rename.save.action | 保存 | Save | — |
 | library.retention.autoClean.label | 剩 {days, plural, other {# 天}} | {days, plural, one {# day} other {# days}} left | days：距离自动清理还剩的天数 |
 | library.retention.autoClean.tooltip | {days, plural, other {# 天}}没打开就移到{term_trash}，每次打开重新计时 | Moved to the {term_trash} after {days, plural, one {# day} other {# days}} unopened; the count restarts on every open | days：自动清理设定的天数 |
 | library.retention.kept.label | 已保留 | Kept | — |
+| library.row.autoClean.action | 自动清理… | Auto-clean… | — |
+| library.row.autoCleanNow.hint | 现在：{state} | Now: {state} | state：当前保留状态的文字（已保留，或剩 N 天） |
 | library.row.copyPath.action | 复制路径 | Copy path | — |
+| library.row.duplicate.action | 创建副本 | Duplicate | — |
+| library.row.editNote.action | 编辑备注… | Edit note… | — |
 | library.row.more.aria | {name} 的更多操作 | More actions for {name} | name：项目名（用户自己起的，不翻译） |
 | library.row.open.action | 打开 | Open | — |
 | library.row.openHint.label | 回车 | Enter | — |
+| library.row.rename.action | 重命名… | Rename… | — |
+| library.row.renameBusy.hint | 安装或启动完成后才能改名 | Available once install or start finishes | — |
 | library.row.reveal.action | 在{term_fileManager}中显示 | Show in {term_fileManager} | — |
 | library.row.stop.action | 停止运行 | Stop | — |
 | library.search.clear.aria | 清除搜索 | Clear search | — |
