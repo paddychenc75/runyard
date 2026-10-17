@@ -6,6 +6,8 @@ export interface TrashConfirmDialogProps {
   open: boolean;
   name: string;
   running: boolean;
+  /** 这个项目的终端里正在运行的命令名（规格 DESKTOP-TERMINAL-36）；没有或终端空闲不给 */
+  terminalCommand?: string | null;
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -16,6 +18,7 @@ export function TrashConfirmDialog({
   open,
   name,
   running,
+  terminalCommand,
   onConfirm,
   onCancel,
 }: TrashConfirmDialogProps) {
@@ -27,7 +30,10 @@ export function TrashConfirmDialog({
       tone="danger"
       icon="trash"
       title={t("library.trash.title", { name })}
-      description={t("library.trash.body", { running: running ? "yes" : "no" })}
+      description={t("library.trash.body", {
+        running: running ? "yes" : "no",
+        terminalCommand: terminalCommand ?? "none",
+      })}
       cancelLabel={t("library.trash.cancel.action")}
       confirmLabel={t("library.trash.confirm.action")}
       onConfirm={onConfirm}

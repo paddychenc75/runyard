@@ -282,6 +282,10 @@ export class EditorFileService {
     });
   }
 
+  isWatching(project: string): boolean {
+    return this.#feeds.has(project);
+  }
+
   /** 停止监听；项目改名、移到废纸篓前要先停（技术设计 §6.4） */
   async unwatch(project: string): Promise<void> {
     const feed = this.#feeds.get(project);

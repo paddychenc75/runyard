@@ -7,16 +7,15 @@ import {
   desktopMethodNames,
   type EditRequest,
   type EditResult,
-  type QuitReply,
 } from "../shared/desktop-bridge.ts";
-import type { Bounds } from "../shared/layout.ts";
 import type { AgentSkillStatus, CliCommandStatus } from "../shared/settings-bridge.ts";
 import { isAppUrl } from "./app-protocol.ts";
 import { editorFileMethods, type FileOpeners } from "./editor-files/editor-ipc.ts";
 import type { EditorFileService } from "./editor-files/file-service.ts";
+import type { FlushGates } from "./flush-gates.ts";
+import { parseBounds, parseQuitReply } from "./ipc-parsers.ts";
 import type { LibraryController } from "./library-controller.ts";
 import type { LinkHandler } from "./links/link-handler.ts";
-import type { QuitFlushGate } from "./quit-flush-gate.ts";
 import { requestMethods } from "./request-ipc.ts";
 import type { SettingsController } from "./settings-controller.ts";
 import { templateMethods } from "./template-ipc.ts";
@@ -69,15 +68,6 @@ function parseCreateRequest(value: unknown): CreateRequest | null {
   };
 }
 
-/** 退出回执：形状不对一律不要（页面发来的数据不可信） */
-function parseQuitReply(value: unknown): QuitReply | null {
-  if (typeof value !== "object" || value === null) return null;
-  const { id, reply } = value as Record<string, unknown>;
-  if (typeof id !== "number" || !Number.isInteger(id)) return null;
-  if (reply !== "ack" && reply !== "proceed" && reply !== "cancel") return null;
-  return { id, reply };
-}
-
 /** 重命名和备注：形状不对一律不要；名称是否合法由管理进程判 */
 function parseEditRequest(value: unknown): EditRequest | null {
   if (typeof value !== "object" || value === null) return null;
@@ -97,15 +87,6 @@ const rejectedEdit: EditResult = { ok: false, error: { code: "INTERNAL", params:
 const rejectedCreate: CreateResult = { ok: false, error: { code: "INTERNAL", params: {} } };
 
 /** 占位区的矩形：四个有限的数，宽高不为负；其他形状一律不要（页面发来的数据不可信） */
-function parseBounds(value: unknown): Bounds | null {
-  if (typeof value !== "object" || value === null) return null;
-  const { x, y, width, height } = value as Record<string, unknown>;
-  const numbers = [x, y, width, height];
-  if (!numbers.every((n) => typeof n === "number" && Number.isFinite(n))) return null;
-  if ((width as number) < 0 || (height as number) < 0) return null;
-  return { x: x as number, y: y as number, width: width as number, height: height as number };
-}
-
 /** 链接和更新检查（它们的状态经控制器的 chrome 推给界面，界面只发这几个操作） */
 export interface AppLinks {
   links: Pick<LinkHandler, "confirm" | "cancel">;
@@ -119,7 +100,7 @@ export function registerBridgeHandlers(
   bootstrap: BootstrapInfo,
   files?: EditorFileService,
   openers?: FileOpeners,
-  quitGate?: QuitFlushGate,
+  gates?: FlushGates,
   settings?: SettingsController,
   terminals?: TerminalService,
   templates?: TemplatesView,
@@ -206,7 +187,11 @@ export function registerBridgeHandlers(
     "tab.closeCancel": () => controller.cancelClose(),
     "app.quitReply": (value) => {
       const reply = parseQuitReply(value);
-      if (reply !== null) quitGate?.reply(reply);
+      if (reply !== null) gates?.quit.reply(reply);
+    },
+    "project.flushReply": (value) => {
+      const reply = parseQuitReply(value);
+      if (reply !== null) gates?.project.reply(reply);
     },
     "preview.bounds": (value) => {
       if (value === null) controller.setPreviewBounds(null);

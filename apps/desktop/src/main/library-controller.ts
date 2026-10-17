@@ -69,7 +69,9 @@ export class LibraryController {
     this.#preview = options.preview;
     this.#home = options.home;
     this.#now = options.now ?? Date.now;
-    this.#release = new ProjectRelease(options.client, options.terminals);
+    this.#release = new ProjectRelease(options.client, options.terminals, (id) =>
+      this.folderOf(id),
+    );
     const setError = (error: DesktopError | null): void => {
       this.#error = error;
     };
@@ -115,7 +117,9 @@ export class LibraryController {
       dropTab: (id) => void this.#dropTab(id),
       chooseFolder: (defaultPath) => options.system.chooseFolder(defaultPath),
       folderOf: (id) => this.folderOf(id),
+      flushProject: (id) => this.#release.flush(id),
       releaseProject: (id, reason) => this.#release.release(id, reason),
+      restoreProject: (id) => this.#release.restore(id),
     });
     this.runBar = new RunBarActions({
       ...options,
@@ -133,13 +137,9 @@ export class LibraryController {
   async start(): Promise<void> {
     await this.chrome.readRoot();
     try {
-      await this.#client.subscribe(["run", "playground"], (event) => {
-        // 管理进程要改名或移走某个项目：先放掉终端等句柄，再回报（技术设计 §4.3 第 2、3 步）
-        if (event.event === "playground.releaseRequested") {
-          void this.#release.answer(event.data.playgroundId, event.data.reason);
-        }
-        void this.refresh();
-      });
+      await this.#client.subscribe(["run", "playground"], (event) =>
+        this.#release.onEvent(event, () => this.refresh()),
+      );
     } catch (error) {
       this.#error = toDesktopError(error);
     }

@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { cliOwner, LibraryWorld } from "./library-harness.test.ts";
 
 let lw = new LibraryWorld();
@@ -64,6 +64,22 @@ describe("改名与移到废纸篓的释放顺序", () => {
     await lw.clock.advance(0);
     expect(await pending).toMatchObject({ ok: true });
     expect(lw.logs.some((line) => line.startsWith("release timeout"))).toBe(false);
+  });
+
+  it("[DESKTOP-TERMINAL-38] 在项目自己的终端里 runyard rm：释放时应用结束终端，请求的命令行进程跟着没了，移到废纸篓照样完整做完", async () => {
+    const { app, id } = await setup();
+    const cli = await lw.client(false);
+    void cli.call("playground.trash", { playground: "demo" }).catch(() => undefined);
+    await app.waitForEvent("playground.releaseRequested");
+    // 应用结束 demo 的终端，里面正在等结果的 runyard rm 随终端一起被结束，连接断开
+    cli.client.destroy();
+    await app.call("playground.released", { playgroundId: id });
+    await lw.clock.advance(0);
+    // 项目完整地进了废纸篓、也不在资源库里：没有半途而废
+    await vi.waitFor(() =>
+      expect(lw.fs.trashed.map((entry) => entry.path)).toEqual([lw.at("demo")]),
+    );
+    expect(await app.result("playground.list", {})).toEqual([]);
   });
 
   it("[LIBRARY-PLAYGROUNDS-14] 改名正在运行的项目：先停止，再请释放，改名后用同一个持有者重新启动", async () => {

@@ -29,6 +29,7 @@ export function useProjectMenu(options: UseProjectMenuOptions): ProjectMenu {
   const t = useT();
   const edits = usePlaygroundEdits(options);
   const [confirmTrash, setConfirmTrash] = useState(false);
+  const [terminalCommand, setTerminalCommand] = useState<string | null>(null);
   const [failed, setFailed] = useState<DesktopError | null>(null);
 
   const entries: MenuEntry[] = [
@@ -58,6 +59,13 @@ export function useProjectMenu(options: UseProjectMenuOptions): ProjectMenu {
     settle(await bridge.call("playground.trash", row.id));
   };
 
+  // 终端里有命令在运行的，确认里要写明它会被结束（规格 DESKTOP-TERMINAL-36）；查不到当作没有
+  const askTrash = async () => {
+    const status = await bridge.call("terminal.status", { project: row.id }).catch(() => null);
+    setTerminalCommand(status?.command ?? null);
+    setConfirmTrash(true);
+  };
+
   function select(id: string): boolean {
     if (edits.select(id)) return true;
     if (id === "openInEditor") void bridge.call("playground.openInEditor", row.id);
@@ -65,7 +73,7 @@ export function useProjectMenu(options: UseProjectMenuOptions): ProjectMenu {
     else if (id === "openTerminal") void bridge.call("playground.openTerminal", row.id);
     else if (id === "copyPath") void bridge.call("playground.copyPath", row.id);
     else if (id === "copyLink") void bridge.call("clipboard.copy", `runyard://open/${row.name}`);
-    else if (id === "trash") setConfirmTrash(true);
+    else if (id === "trash") void askTrash();
     else if (id === "relocate") {
       if (options.onRelocate !== undefined) options.onRelocate();
       else void bridge.call("playground.relocate", row.id).then(settle);
@@ -81,6 +89,7 @@ export function useProjectMenu(options: UseProjectMenuOptions): ProjectMenu {
         open={confirmTrash}
         name={row.name}
         running={row.active}
+        terminalCommand={terminalCommand}
         onConfirm={() => void trash()}
         onCancel={() => setConfirmTrash(false)}
       />

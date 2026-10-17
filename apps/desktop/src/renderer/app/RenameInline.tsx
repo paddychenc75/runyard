@@ -2,6 +2,7 @@ import { useT } from "@runyard/i18n/react";
 import { Button } from "@runyard/ui";
 import { useEffect, useRef } from "react";
 import styles from "./RenameInline.module.css";
+import { renameTerminalNote } from "./rename-terminal-note.ts";
 import type { RenameDraft } from "./use-rename-draft.ts";
 
 // 资源库行的行内编辑（设计稿 RenameInline）：名称框、说明、备注框占住名称到模板那几列，
@@ -27,6 +28,7 @@ export function RenameInlineFields({ draft }: { draft: RenameDraft }) {
   const hint = session.target.running
     ? t("library.rename.nameRunning.hint")
     : t("library.rename.nameFolder.hint");
+  const terminalNote = renameTerminalNote(t, session.terminal);
   return (
     <div className={styles.fields}>
       <input
@@ -42,7 +44,7 @@ export function RenameInlineFields({ draft }: { draft: RenameDraft }) {
         onChange={(event) => draft.setName(event.target.value)}
       />
       <div className={styles.hint} data-invalid={error === undefined ? undefined : ""}>
-        {error ?? hint}
+        {error ?? (terminalNote === null ? hint : `${hint}${terminalNote}`)}
       </div>
       <input
         ref={noteRef}

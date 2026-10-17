@@ -83,6 +83,11 @@ export class EditorSessions {
     return session.flushForClose();
   }
 
+  /** 命令行、自动清理移走项目前：直接写入，不问。项目没有会话（没打开过）就没有要写的 */
+  async flushProjectQuietly(id: string): Promise<boolean> {
+    return (await this.#sessions.get(id)?.flushQuietly()) ?? true;
+  }
+
   /** 退出应用之前：每个项目依次来，要问用户的先切到那个项目标签页让询问看得见。false = 中止退出 */
   async flushAll(): Promise<boolean> {
     for (const [id, session] of [...this.#sessions]) {

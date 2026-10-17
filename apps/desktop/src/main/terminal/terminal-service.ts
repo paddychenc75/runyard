@@ -9,6 +9,7 @@ import {
   type TerminalSize,
   type TerminalSnapshot,
   type TerminalState,
+  type TerminalStatus,
 } from "../../shared/terminal.ts";
 import { OutputBuffer } from "./output-buffer.ts";
 import { PendingReplies } from "./pending-replies.ts";
@@ -166,6 +167,12 @@ export class TerminalService {
       link.post({ type: "foreground", project, id }),
     );
     return { command };
+  }
+
+  /** 有没有开着的终端、里面在运行的命令（改名、移到废纸篓前的说明） */
+  async status(project: string): Promise<TerminalStatus> {
+    const open = this.#entries.get(project)?.state.kind === "running";
+    return { open, command: open ? (await this.foreground(project)).command : null };
   }
 
   /** 所有终端里在运行命令的：⌘Q 的确认要列出来（规格 DESKTOP-TERMINAL-30） */

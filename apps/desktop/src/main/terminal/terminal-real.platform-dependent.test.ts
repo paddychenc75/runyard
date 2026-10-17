@@ -1,4 +1,4 @@
-import { writeFileSync } from "node:fs";
+import { renameSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { getPlatform } from "@runyard/platform";
 import { afterEach, describe, expect, it } from "vitest";
@@ -179,6 +179,48 @@ describe.skipIf(!onMac)("终端服务与真伪终端", () => {
       throw new Error("not running");
     expect(fresh.state.pid).not.toBe(first.state.pid);
     await run(t, "demo", "pwd", `${t.folders.demo}\r\n`);
+  });
+
+  it("[DESKTOP-TERMINAL-34] 改名：先结束终端（状态写“已改名”），文件夹改名后重新打开，pwd 是新文件夹", async () => {
+    const t = setup();
+    const first = await t.open("demo", size);
+    if (first.state.kind !== "running") throw new Error("not running");
+    await t.service.end("demo", "renamed");
+    expect(await waitGone(t.platform, first.state.pid, 3000)).not.toBeNull();
+    expect((await t.service.attach("demo")).state).toEqual({ kind: "ended", reason: "renamed" });
+
+    const renamed = `${t.folders.demo as string}2`;
+    renameSync(t.folders.demo as string, renamed);
+    t.folders.demo = renamed;
+    const fresh = await t.reopen("demo", size);
+    expect(fresh.state.kind).toBe("running");
+    await run(t, "demo", "pwd", `${renamed}\r\n`);
+  });
+
+  it("[DESKTOP-TERMINAL-35] 终端里正在运行 tail -f：改名保存时 tail 和 shell 都已不在，文件夹照常改名", async () => {
+    const t = setup();
+    const snapshot = await t.open("demo", size);
+    if (snapshot.state.kind !== "running") throw new Error("not running");
+    writeFileSync(join(t.folders.demo as string, "log.txt"), "line\n");
+    const out = await run(t, "demo", "tail -f log.txt & echo TAIL=$!=", /TAIL=(\d+)=\r?$/m);
+    const tail = Number(/TAIL=(\d+)=\r?$/m.exec(out)?.[1]);
+    expect(await t.platform.proc.identity(tail)).not.toBeNull();
+    await t.service.end("demo", "renamed");
+    expect(await allGone(t, [snapshot.state.pid, tail], 3000)).toBe(true);
+    renameSync(t.folders.demo as string, `${t.folders.demo as string}2`);
+  });
+
+  it("[DESKTOP-TERMINAL-36] 终端里有命令在运行：结束终端之后文件夹才移走，命令和 shell 都已不在，没有因占用而失败", async () => {
+    const t = setup();
+    const snapshot = await t.open("demo", size);
+    if (snapshot.state.kind !== "running") throw new Error("not running");
+    t.service.write("demo", "sleep 1000\r");
+    await waitForeground(t, "demo", "sleep");
+    expect(await t.service.status("demo")).toEqual({ open: true, command: "sleep" });
+    await t.service.end("demo", "trashed");
+    expect(await t.service.status("demo")).toEqual({ open: false, command: null });
+    expect(await waitGone(t.platform, snapshot.state.pid, 3000)).not.toBeNull();
+    renameSync(t.folders.demo as string, `${t.folders.demo as string}-trashed`);
   });
 
   it("shell 带非零退出码退出：如实报告退出码", async () => {

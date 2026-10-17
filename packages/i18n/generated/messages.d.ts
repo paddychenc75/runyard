@@ -895,6 +895,10 @@ export type CatalogMessages = {
   "library.rename.nameFolder.hint": Record<never, never>;
   "library.rename.nameRunning.hint": Record<never, never>;
   "library.rename.save.action": Record<never, never>;
+  "library.rename.terminalClose.hint": Record<never, never>;
+  "library.rename.terminalCommand.hint": {
+    command: string | number;
+  };
   "library.retention.autoClean.label": {
     days: number;
   };
@@ -952,6 +956,7 @@ export type CatalogMessages = {
   };
   "library.trash.body": {
     running: string;
+    terminalCommand: string;
   };
   "library.trash.cancel.action": Record<never, never>;
   "library.trash.confirm.action": Record<never, never>;

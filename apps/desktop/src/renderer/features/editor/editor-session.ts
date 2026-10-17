@@ -347,6 +347,14 @@ export class EditorSession {
     return true;
   }
 
+  /** 命令行、自动清理移走项目前（没有地方询问）：任何一档都直接把未保存的修改写入（DESKTOP-EDITOR-78）。false = 有写失败的 */
+  async flushQuietly(): Promise<boolean> {
+    this.#timers.cancelAll();
+    const dirty = this.#state.tabs.filter((tab) => isDirty(tab));
+    const done = await Promise.all(dirty.map((tab) => this.#saveForClose(tab.path)));
+    return done.every(Boolean);
+  }
+
   #showFailure(path: string): false {
     this.#set({ active: path });
     return false;

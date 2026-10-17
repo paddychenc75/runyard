@@ -51,6 +51,9 @@
     "running": "正在运行的项目数",
     "root": "资源库根目录（主目录缩成 ~）"
   },
+  "library.rename.terminalCommand.hint": {
+    "command": "终端里正在运行的命令名（程序名，不翻译）"
+  },
   "library.retention.autoClean.label": {
     "days": "距离自动清理还剩的天数"
   },
@@ -70,7 +73,8 @@
     "count": "正在运行的项目数（标签页和命令行持有的都算）"
   },
   "library.trash.body": {
-    "running": "项目现在是否在运行：yes 或 no"
+    "running": "项目现在是否在运行：yes 或 no",
+    "terminalCommand": "终端里正在运行的命令名（程序名，不翻译）；终端空闲或没开时是 none"
   },
   "library.trash.title": {
     "name": "项目名（用户自己起的，不翻译）"

@@ -107,7 +107,7 @@ describe("重命名与编辑备注（主进程）", () => {
     expect(result).toEqual({ ok: true });
     expect(
       client.calls.filter((c) => c.method.startsWith("playground.")).map((c) => c.method),
-    ).toEqual(["playground.rename", "playground.list"]);
+    ).toEqual(["playground.rename", "playground.list", "playground.list"]);
     expect(client.calls[0]?.params).toEqual({ playground: "b", newName: "todo-api" });
     // 改名不另外发 run.stop / run.start：编排在管理进程里，端口和持有者不变
     expect(client.calls.some((c) => c.method === "run.stop" || c.method === "run.start")).toBe(

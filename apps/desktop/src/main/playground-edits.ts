@@ -16,6 +16,10 @@ export interface EditHooks {
   dropTab: (id: string) => void;
   chooseFolder: (defaultPath: string) => Promise<string | null>;
   folderOf: (id: string) => string | null;
+  /** 改名、移到废纸篓之前先写入编辑器未保存的修改（自动保存关着的先问用户）；false = 用户取消，什么都不要做 */
+  flushProject: (id: string) => Promise<boolean>;
+  /** 改名或移走没做成、或改名做完之后，把放掉的文件监听接回来（项目在新文件夹里） */
+  restoreProject: (id: string) => Promise<void>;
   /** 改名、移到废纸篓之前放掉项目的句柄：终端结束、文件监听放掉（技术设计 §4.3）；做完才兑现 */
   releaseProject: (id: string, reason: "rename" | "trash") => Promise<void>;
 }
@@ -48,12 +52,20 @@ export class PlaygroundEdits {
       return { ok: false, error: { code: "PLAYGROUND_NOT_FOUND", params: {} } };
     return this.#guard(request.id, async () => {
       if (request.name !== before.name) {
+        // 先写入编辑器里的修改；自动保存关着时会问，取消就整个中止，什么都没动（规格 DESKTOP-EDITOR-75、76）
+        if (!(await this.#hooks.flushProject(request.id))) return;
         // 终端要先结束再改名：它的工作目录不能停在一个已不存在的文件夹里（规格 DESKTOP-TERMINAL-34）
         await this.#hooks.releaseProject(request.id, "rename");
-        await this.#client.call("playground.rename", {
-          playground: request.id,
-          newName: request.name,
-        });
+        try {
+          await this.#client.call("playground.rename", {
+            playground: request.id,
+            newName: request.name,
+          });
+        } finally {
+          // 成败都要把监听接回来；先重读，接监听要查项目现在的文件夹
+          await this.#hooks.refresh();
+          await this.#hooks.restoreProject(request.id);
+        }
       }
       if (request.note !== (before.note ?? "")) {
         await this.#client.call("playground.update", {
@@ -88,10 +100,20 @@ export class PlaygroundEdits {
     if (before === undefined)
       return { ok: false, error: { code: "PLAYGROUND_NOT_FOUND", params: {} } };
     return this.#guard(id, async () => {
+      // 先写入，再关标签页（关了标签页编辑会话就丢了）；取消就什么都不动（规格 DESKTOP-EDITOR-77）
+      if (!(await this.#hooks.flushProject(id))) return;
       this.#hooks.dropTab(id);
       await this.#hooks.releaseProject(id, "trash");
-      const outcome = await this.#client.call("playground.trash", { playground: id });
-      if (!outcome.trashed) throw new TrashRefused(before.name);
+      const outcome = await this.#client
+        .call("playground.trash", { playground: id })
+        .catch(async (error: unknown) => {
+          await this.#hooks.restoreProject(id);
+          throw error;
+        });
+      if (!outcome.trashed) {
+        await this.#hooks.restoreProject(id);
+        throw new TrashRefused(before.name);
+      }
     });
   }
 
