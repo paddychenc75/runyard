@@ -10,6 +10,7 @@ describe("parseDesktopArgs", () => {
         lang: undefined,
         theme: undefined,
         smoke: false,
+        editorSmoke: false,
         cliLink: undefined,
       },
     });
@@ -27,6 +28,13 @@ describe("parseDesktopArgs", () => {
     expect(parseDesktopArgs(["--root"], {}).ok).toBe(false);
     expect(parseDesktopArgs(["--root", "--smoke"], {}).ok).toBe(false);
     expect(parseDesktopArgs(["--lang", "fr"], {}).ok).toBe(false);
+  });
+
+  it("认识 --editor-smoke", () => {
+    expect(parseDesktopArgs(["--editor-smoke"], {})).toMatchObject({
+      ok: true,
+      args: { editorSmoke: true, smoke: false },
+    });
   });
 
   it("认识 --lang 和 --smoke，忽略不认识的参数", () => {

@@ -9,6 +9,7 @@
     "build": "node build.ts",
     "dev": "node build.ts && electron dist/main/index.mjs",
     "smoke": "node build.ts && electron dist/main/index.mjs --smoke",
+    "smoke:editor": "node build.ts && electron dist/main/index.mjs --editor-smoke",
     "test": "vitest run --project unit",
     "test:process": "vitest run --project process --passWithNoTests",
     "package": "node ../../tooling/scripts/package-desktop.ts",
@@ -21,8 +22,11 @@
     "@runyard/protocol": "workspace:*",
     "@runyard/tokens": "workspace:*",
     "@runyard/ui": "workspace:*",
+    "@shikijs/monaco": "catalog:",
+    "monaco-editor": "catalog:",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "shiki": "catalog:"
   },
   "devDependencies": {
     "@electron/fuses": "catalog:",

@@ -1,5 +1,6 @@
 import { cpSync, mkdirSync } from "node:fs";
 import { build } from "esbuild";
+import { buildEditor } from "./build-editor.ts";
 
 // 把主进程、预加载脚本、界面三部分打包到 dist/。不用 electron-vite：它要 Vite 7，
 // 而 Vite 7.3.7 属于安全修复例外、需要放宽安装的年龄限制，改用已批准的 esbuild（docs/architecture/dependencies.md）。
@@ -45,6 +46,8 @@ await Promise.all([
     format: "iife",
     target: "chrome140",
   }),
+  // 编辑器（Monaco、Shiki）：单独的脚本、样式、字体、后台线程文件，见 build-editor.ts
+  buildEditor("dist/renderer"),
 ]);
 
 cpSync("src/renderer/index.html", "dist/renderer/index.html");

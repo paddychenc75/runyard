@@ -8,6 +8,7 @@ import { desktopChannels } from "../shared/desktop-bridge.ts";
 import { APP_ORIGIN, APP_SCHEME, resolveAppFile } from "./app-protocol.ts";
 import { connectToSupervisor, type DesktopRuntime, unavailableClient } from "./composition-root.ts";
 import { EditorFileService } from "./editor-files/file-service.ts";
+import { runEditorSmoke } from "./editor-smoke.ts";
 import {
   buildBootstrapInfo,
   closeKeepsAppAlive,
@@ -76,10 +77,10 @@ async function main(args: DesktopArgs): Promise<void> {
   });
 
   // 冒烟自检不要在屏幕上出现任何东西
-  if (args.smoke) app.dock?.hide();
+  if (args.smoke || args.editorSmoke) app.dock?.hide();
   const window = createMainWindow({
     preloadPath: join(distDir, "preload", "index.cjs"),
-    show: !args.smoke,
+    show: !(args.smoke || args.editorSmoke),
     backgroundColor: (nativeTheme.shouldUseDarkColors
       ? windowBackground.dark
       : windowBackground.light
@@ -87,6 +88,11 @@ async function main(args: DesktopArgs): Promise<void> {
     platform: currentPlatform(),
   });
   mainWindow = window;
+  if (args.editorSmoke) {
+    // 编辑器冒烟不连管理进程、不注册界面通道，只检查编辑器资源在新策略下能加载
+    app.exit(await runEditorSmoke(window, diagnostic));
+    return;
+  }
   keepAliveAfterClose(app, window, closeKeepsAppAlive(currentPlatform()));
   const preview = new ElectronPreviewHost(window);
 
