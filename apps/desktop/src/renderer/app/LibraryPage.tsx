@@ -44,7 +44,7 @@ export interface LibraryPageProps {
 const CLOCK_INTERVAL_MS = 30_000;
 
 /** 页头比它窄就收紧：搜索框 240 缩到 180、类型和状态合成“筛选”；比 COMPACT 还窄，搜索框缩成放大镜（规格 DESKTOP-LIBRARY-VIEW-67、68） */
-export const HEADER_WIDE_PX = 900;
+export const HEADER_WIDE_PX = 800;
 export const HEADER_COMPACT_PX = 560;
 
 /** 页头宽度（0 是还没量到，当作宽）对应的收紧档 */
