@@ -12,6 +12,11 @@ Early development. Nothing is usable yet. The product requirements, the technica
 - The first version supports macOS only. Windows support is planned for later (no date).
 - Builds are not code-signed for now.
 
+<!-- sec: first-open -->
+## Opening the unsigned app for the first time
+
+The macOS build is neither signed nor notarized, so macOS blocks the first launch. Drag Runyard into Applications first, then open it, then go to System Settings > Privacy & Security and click "Open Anyway" (or run `xattr -dr com.apple.quarantine /Applications/Runyard.app`). The steps in full (in Chinese): [docs/guides/first-open-unsigned-app.md](docs/guides/first-open-unsigned-app.md).
+
 <!-- sec: contents -->
 ## What is in this repository
 

@@ -30,7 +30,7 @@
 - 由应用拉起的管理进程启动的运行，在 macOS 看来是 Runyard 在访问文件；项目放在桌面、文稿、下载里会被问一次授权，更新后是否重问未验证。
 - `runAsNode` 是硬依赖：关掉它，管理进程和内置命令行都起不来（实测）；升级 Electron 时要核对这个开关。
 - 桌面应用包的 `package.json` 的 `name` 决定 Windows 安装目录名；`allowBuilds` 要加 `electron-winstaller: false`。
-- electron-builder 的间接依赖 `http-cache-semantics` 4.2.0 有高危公告，修复版 2026-10-18 才满 14 天，在那之前带它的锁文件过不了审计。
+- electron-builder 的间接依赖 `http-cache-semantics` 4.2.0 有高危公告，修复版 4.3.0 2026-10-18 才满 14 天；负责人 2026-10-17 批准按安全修复例外（技术设计 §8.6.1 规则 3）提前取它，不用等该日期。
 - 未验证、留给真机和 K14：Gatekeeper 与 SmartScreen 的实际画面、真实浏览器里点链接、普通 Windows 用户、Defender 实时防护下的耗时、黑窗口、钩子里“5 秒后强行结束”一支。
 
 ## 被否的方案

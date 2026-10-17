@@ -6,6 +6,11 @@
     },
     "test:process": {
       "outputs": []
+    },
+    "package": {
+      "dependsOn": [],
+      "outputs": ["release/**"],
+      "cache": false
     }
   }
 }
