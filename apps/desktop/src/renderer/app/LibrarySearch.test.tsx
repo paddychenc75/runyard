@@ -178,8 +178,7 @@ describe("资源库搜索", () => {
   });
 });
 
-// 每条用例要多次打开下拉浮层，Windows 的 CI 机器上浮层挂载很慢（同 Menu.test 的做法，PR #224）
-describe("类型、状态筛选与排序", { timeout: 20_000 }, () => {
+describe("类型、状态筛选与排序", () => {
   const mixed = () =>
     library([
       row("site", { templateId: "html" }),
@@ -309,7 +308,7 @@ describe("侧栏固定筛选与计数", () => {
   });
 });
 
-describe("搜索没有结果", { timeout: 20_000 }, () => {
+describe("搜索没有结果", () => {
   const twenty = () => library(Array.from({ length: 20 }, (_, index) => row(`p-${index}`)));
 
   it("[DESKTOP-LIBRARY-VIEW-24] 搜 websocket：标题、说明、清除搜索、新建按钮，概况写“0 个结果 · 共 20 个项目”", async () => {

@@ -11,7 +11,6 @@ afterEach(cleanup);
 
 // 整个外壳加浮层在慢机器上要一两秒才画出来，默认的 1 秒等待不够
 const SLOW = { timeout: 8000 };
-vi.setConfig({ testTimeout: 20_000 });
 
 (Element.prototype as { getAnimations?: () => unknown[] }).getAnimations = () => [];
 vi.stubGlobal(
@@ -246,8 +245,9 @@ describe("首次启动的选择器", () => {
     await screen.findByText(/没有在运行的项目/, undefined, SLOW);
     expect(screen.queryByRole("dialog")).toBeNull();
     // 读到的资源库有项目：始终不弹
+    // push 在 act 里：读到状态后的判断（AppShell 的 effect）已经跑完，此刻没有弹窗就是不弹。
+    // 原来这里等一个永远不会出现的文字等满 8 秒再吞掉超时，白占一个工作进程（#300）
     push({ ...empty, loaded: true, playgrounds: withRunning(base).playgrounds.slice(0, 1) });
-    await screen.findByText("hono-1", undefined, SLOW).catch(() => undefined);
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
