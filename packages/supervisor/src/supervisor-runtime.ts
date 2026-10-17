@@ -25,6 +25,7 @@ import {
 } from "./supervisor-options.ts";
 import { createTemplateHandlers } from "./template-handlers.ts";
 import { createTemplateLibrary } from "./template-library.ts";
+import { createToolchainHandlers } from "./toolchain-handlers.ts";
 
 const hex = (bytes: Uint8Array) => Buffer.from(bytes).toString("hex");
 
@@ -163,6 +164,7 @@ export function createSupervisorRuntime(options: StartSupervisorOptions) {
       ...builtin,
       ...createLibraryHandlers(library, libraryService),
       ...createTemplateHandlers(library, templates),
+      ...createToolchainHandlers(templates, () => extensions.toolchain?.()),
     };
     dispatch = createDispatcher(mergeHandlers(own, extensions.handlers), api);
     await store.remove();

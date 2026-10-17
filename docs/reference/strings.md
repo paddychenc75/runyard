@@ -326,6 +326,29 @@
 | desktop.runbar.missing.label | 缺少 {tool} | {tool} is missing | tool：工具标识，如 go、node |
 | desktop.runbar.state.label | {state} :{port} | {state} :{port} | state：运行状态的名字，来自 runState.<状态>；port：端口号，纯数字字符串（不加千分位） |
 | desktop.runbar.tooOld.label | {tool} 版本过低 | {tool} is too old | tool：工具标识，如 go、node |
+| desktop.saveTemplate.cancel.action | 取消 | Cancel | — |
+| desktop.saveTemplate.description.label | 说明 | Description | — |
+| desktop.saveTemplate.description.placeholder | 一句话说明这个模板是做什么的 | One line about what this template is for | — |
+| desktop.saveTemplate.excluded.label | 默认不包含 | Not included by default | — |
+| desktop.saveTemplate.files.aria | 选择要放进模板的文件 | Choose the files to put in the template | — |
+| desktop.saveTemplate.files.label | 包含的文件 | Included files | — |
+| desktop.saveTemplate.footer.hint | 保存后出现在新建时的“我的”分组 · {path} | Appears under Mine when creating · {path} | path：新模板文件夹的显示路径，如 ~/.runyard/templates/todo-api |
+| desktop.saveTemplate.id.hint | 只能用小写字母、数字和连字符，命令行里用它：<code>runyard new {id}</code> | Lowercase letters, numbers and hyphens only. Used on the command line: <code>runyard new {id}</code> | id：模板标识；还没填时是“<标识>”这样的占位；code：包住命令的标签，显示成等宽字体 |
+| desktop.saveTemplate.id.label | 模板标识 | Template id | — |
+| desktop.saveTemplate.idInvalid.hint | 标识只能用小写字母、数字和连字符，首尾不能是连字符 | Use lowercase letters, digits and hyphens only, and no hyphen at either end | — |
+| desktop.saveTemplate.idPlaceholder.label | '<'标识'>' | '<'id'>' | — |
+| desktop.saveTemplate.idTaken.hint | 这个标识已经被占用，换一个 | This id is already taken. Pick another one | — |
+| desktop.saveTemplate.listComma.label | ， | , | — |
+| desktop.saveTemplate.name.label | 模板名称 | Template name | — |
+| desktop.saveTemplate.reasonBuild.label | 构建产物，不包含 | build output, not included | — |
+| desktop.saveTemplate.reasonDeps.label | 依赖，不包含 | dependencies, not included | — |
+| desktop.saveTemplate.reasonSecret.label | 可能含密钥，默认不包含 | may contain secrets, off by default | — |
+| desktop.saveTemplate.replaceName.label | 把项目名替换成变量，新建时自动换成新项目的名字 | Replace the playground name with a variable so new playgrounds get their own name | — |
+| desktop.saveTemplate.requires.label | 依赖的运行环境 | Required tools | — |
+| desktop.saveTemplate.requiresFrom.body | 沿用原模板 {template}： | Same as the original template {template}: | template：原模板的显示名，已按语言取好 |
+| desktop.saveTemplate.submit.action | 保存模板 | Save template | — |
+| desktop.saveTemplate.subtitle.body | 把 {name} 现在的样子存成模板，以后新建时可以直接用。 | Save {name} as it is now, so you can start from it later. | name：项目名称（用户的内容，不翻译） |
+| desktop.saveTemplate.title | 另存为模板 | Save as template | — |
 | desktop.script.autoRun.label | 保存后自动运行 | Run on save | — |
 | desktop.script.autoRunGlobalOff.hint | 全局设置已关闭 | Turned off in settings | — |
 | desktop.script.ended.label | {state} · 退出码 {exitCode} · {duration} | {state} · exit code {exitCode} · {duration} | state：运行状态的名字，来自 runState.<状态>；exitCode：进程的退出码；duration：这次运行的总耗时 |
@@ -348,6 +371,45 @@
 | desktop.stop.action | 停止 | Stop | — |
 | desktop.stopped.body | 你手动停止了它。点“运行”重新启动；关闭标签页后再打开，也会自动运行。 | You stopped it. Choose Run to start it again; closing the tab and opening it again also runs it. | — |
 | desktop.tab.cli.label | 命令行 | CLI | — |
+| desktop.templates.create.action | 用它新建 | Create from it | — |
+| desktop.templates.detail.aria | 模板详情 | Template details | — |
+| desktop.templates.detailGone.hint | 这个模板不见了 | This template is gone | — |
+| desktop.templates.edit.hint | 想改内置模板：先用它新建一个项目，改好后“另存为模板”。 | To change a built-in template, create a playground from it, edit it, then use “Save as template”. | — |
+| desktop.templates.empty.hint | 还没有模板 | No templates yet | — |
+| desktop.templates.fallback.hint | 没有 {tool} 时会改用 {fallback} | Falls back to {fallback} when {tool} is missing | tool：首选的工具名，如 pnpm；fallback：缺它时改用的工具名，如 npm |
+| desktop.templates.files.title | 包含的文件 | Included files | — |
+| desktop.templates.filesEmpty.hint | 没有文件 | No files | — |
+| desktop.templates.hereColumn.label | 这台电脑 | This Mac | — |
+| desktop.templates.invalid.label | 无效 | Invalid | — |
+| desktop.templates.list.aria | 模板列表 | Templates | — |
+| desktop.templates.loadFailed.hint | 读取模板失败，请稍后再试 | Could not read the templates. Try again in a moment. | — |
+| desktop.templates.problemEntry.label | 入口文件不存在 | The entry file does not exist | — |
+| desktop.templates.problemFormat.label | 模板格式比这个版本新 | The template format is newer than this version | — |
+| desktop.templates.problemName.label | 缺少英文名称 | The English name is missing | — |
+| desktop.templates.problemOther.label | 没有通过格式检查：{rule} | Failed the format check: {rule} | rule：检查规则的标识，如 entry-missing（给开发者看，不翻译） |
+| desktop.templates.problemReserved.label | 标识和内置模板重名 | The id is already used by a built-in template | — |
+| desktop.templates.problemRunner.label | 找不到它指定的运行器 | The runner it names was not found | — |
+| desktop.templates.problemTemplateJson.label | 模板文件有问题 | The template file has a problem | — |
+| desktop.templates.rangeAnd.label | 且 | and | — |
+| desktop.templates.readyLog.label | 日志里出现 {match} | The log shows {match} | match：日志里要匹配的特征（正则文本，用 code 的等宽样式显示，不翻译） |
+| desktop.templates.readyPort.label | 端口可以连上 | The port accepts connections | — |
+| desktop.templates.requiredColumn.label | 需要的版本 | Required | — |
+| desktop.templates.requires.title | 依赖的运行环境 | Runtime requirements | — |
+| desktop.templates.requiresNone.hint | 不依赖任何工具 | Needs no tools | — |
+| desktop.templates.run.title | 运行方式 | How it runs | — |
+| desktop.templates.runInstall.label | 安装依赖 | Install | — |
+| desktop.templates.runReady.label | 就绪判断 | Ready when | — |
+| desktop.templates.runStart.label | 启动 | Start | — |
+| desktop.templates.sourceBuiltin.label | 内置 | Built-in | — |
+| desktop.templates.sourceUser.label | 我的 | Mine | — |
+| desktop.templates.statusColumn.label | 状态 | Status | — |
+| desktop.templates.statusMet.label | 满足 | Met | — |
+| desktop.templates.statusMissing.label | 没找到 | Not found | — |
+| desktop.templates.statusTooOld.label | 版本过低 | Too old | — |
+| desktop.templates.summary.label | {builtin, plural, other {# 个内置}} · {user, plural, other {# 个我的}} | {builtin, plural, one {# built-in} other {# built-in}} · {user, plural, one {# mine} other {# mine}} | builtin：内置模板的个数；user：用户自己的模板的个数 |
+| desktop.templates.title | 模板 | Templates | — |
+| desktop.templates.toolColumn.label | 工具 | Tool | — |
+| desktop.templates.unmaintained.label | 不再维护 | Unmaintained | — |
 | desktop.terminal.aria | 终端 | Terminal | — |
 | desktop.terminal.endedExited.label | 终端已结束（退出码 {exitCode}） | Terminal ended (exit code {exitCode}) | exitCode：shell 的退出码，数字 |
 | desktop.terminal.endedHostCrashed.label | 终端意外结束 | Terminal ended unexpectedly | — |

@@ -1,0 +1,97 @@
+/* 模板列表（设计稿 Templates）：行同模板选择器的行，选中是强调色细边加淡底；右端是“内置”或“我的” */
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-inline: var(--space-1);
+  outline: none;
+}
+
+.root:focus-visible {
+  border-radius: var(--radius-row);
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.groupTitle {
+  padding-block: var(--space-5) var(--space-2);
+  padding-inline: var(--space-5);
+  color: var(--color-text-secondary);
+  font-size: var(--text-secondary-size);
+  font-weight: var(--text-section-title-weight);
+  line-height: var(--text-secondary-line-height);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  min-inline-size: 0;
+  padding-block: var(--space-2);
+  padding-inline: var(--space-5);
+  border: 1px solid transparent;
+  border-radius: var(--radius-row);
+  cursor: default;
+  user-select: none;
+}
+
+.row[data-active] {
+  border-color: var(--color-line-accent);
+  background: var(--color-fill-accent-tint);
+}
+
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+.name {
+  display: flex;
+  color: var(--color-text-primary);
+  font-size: var(--text-item-size);
+  font-weight: var(--text-item-weight);
+  line-height: 1.25;
+}
+
+.description {
+  display: flex;
+  color: var(--color-text-secondary);
+  font-size: var(--text-secondary-size);
+  line-height: 1.25;
+}
+
+.description[data-warning] {
+  color: var(--color-status-warning-text);
+}
+
+.invalid {
+  margin-inline-end: var(--space-3);
+  font-weight: var(--text-control-weight);
+}
+
+.invalid::after {
+  content: "·";
+  margin-inline-start: var(--space-3);
+}
+
+/* “我的”：强调色的淡底胶囊，和灰色的“内置”分开 */
+.mine {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  block-size: var(--size-badge);
+  padding-inline: var(--space-4);
+  border-radius: var(--radius-capsule);
+  background: var(--color-fill-accent-tint);
+  color: var(--color-text-accent);
+  font-size: var(--text-secondary-size);
+  line-height: var(--text-secondary-line-height);
+  white-space: nowrap;
+}

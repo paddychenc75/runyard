@@ -42,7 +42,7 @@ describe("buildLibraryState", () => {
     }
   });
 
-  it("只列内置的、格式有效的、运行器可用的模板", () => {
+  it("[DESKTOP-TEMPLATES-VIEW-09] 选择器只列格式有效的、运行器可用的模板；用户自己的有效模板归在“我的”，总数含无效的", () => {
     const state = buildLibraryState({
       ...base,
       playgrounds: [],
@@ -54,7 +54,11 @@ describe("buildLibraryState", () => {
         template("norunner", { kind: null }),
       ],
     });
-    expect(state.templates.map((row) => row.id)).toEqual(["html"]);
+    expect(state.templates.map((row) => [row.id, row.category])).toEqual([
+      ["html", "frontend"],
+      ["mine", "mine"],
+    ]);
+    expect(state.templateCount).toBe(4);
   });
 
   it("标出预览中的项目和正在等待的项目", () => {

@@ -1,0 +1,110 @@
+/* 另存弹窗里的文件树（设计稿 SaveTemplate）：圆角 12 的内嵌块，勾选框、折叠箭头、图标、等宽名字；
+   “默认不包含”在细线下面，原因靠右 */
+.root {
+  margin: 0;
+  list-style: none;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-4);
+  border: 1px solid var(--color-line-hairline);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-field);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  block-size: var(--size-tree-row);
+  padding-inline: var(--space-5);
+  font-size: var(--text-code-size);
+}
+
+/* 缩进只作用在箭头和图标上：勾选框永远排成左边的一列（设计稿 SaveTemplate） */
+.chevron {
+  flex: none;
+  display: inline-flex;
+  inline-size: var(--space-6);
+  margin-inline-start: calc(var(--depth) * var(--space-9));
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-tree-chevron);
+}
+
+.chevron svg[data-chevron="none"] {
+  visibility: hidden;
+}
+
+.chevron svg[data-chevron="closed"] {
+  transform: rotate(-90deg);
+}
+
+.icon {
+  flex: none;
+  display: inline-flex;
+  color: var(--color-tree-other);
+}
+
+.icon[data-tone="folder"] {
+  color: var(--color-tree-folder);
+}
+
+.icon[data-tone="typescript"] {
+  color: var(--color-tree-typescript);
+}
+
+.icon[data-tone="css"] {
+  color: var(--color-tree-css);
+}
+
+.icon[data-tone="html"] {
+  color: var(--color-tree-html);
+}
+
+.icon[data-tone="data"] {
+  color: var(--color-tree-data);
+}
+
+.name {
+  flex: 1;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.name[data-directory] {
+  font-weight: var(--text-code-weight);
+}
+
+.name[data-directory]::after {
+  content: "/";
+}
+
+.divider {
+  margin-block: var(--space-3);
+  margin-inline: var(--space-5);
+  border-block-start: 1px solid var(--color-line-hairline);
+}
+
+.excludedTitle {
+  padding-block: var(--space-2);
+  padding-inline: var(--space-5);
+  color: var(--color-text-secondary);
+  font-size: var(--text-secondary-size);
+  line-height: var(--text-secondary-line-height);
+}
+
+.row[data-excluded] .name {
+  color: var(--color-text-secondary);
+}
+
+.reason {
+  flex: none;
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--text-secondary-size);
+}

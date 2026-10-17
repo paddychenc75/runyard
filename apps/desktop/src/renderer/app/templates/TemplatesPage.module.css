@@ -1,0 +1,50 @@
+/* 模板页的版面（设计稿 Templates）：左边列表、右边详情卡片，两列之间隔 24；页面没有顶栏，内容从窗口顶边起 */
+.root {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  column-gap: var(--space-9);
+  inline-size: 100%;
+  min-inline-size: 0;
+  min-block-size: 0;
+  padding-block: calc(var(--space-9) + var(--space-7)) var(--space-9);
+  padding-inline: var(--space-10);
+}
+
+.listColumn {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+  min-block-size: 0;
+}
+
+.header {
+  padding-block-start: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--text-page-title-size);
+  font-weight: var(--text-page-title-weight);
+  letter-spacing: calc(var(--space-1) * -0.15);
+  line-height: 1.4;
+}
+
+.summary {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line-height);
+}
+
+.listScroll {
+  flex: 1;
+  min-block-size: 0;
+  margin-block-start: var(--space-4);
+}
+
+.detailColumn {
+  display: flex;
+  min-inline-size: 0;
+  min-block-size: 0;
+}

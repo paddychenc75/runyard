@@ -29,6 +29,7 @@ export * from "./runner-file.ts";
 export * from "./settings.ts";
 export * from "./template-file.ts";
 export * from "./template-record.ts";
+export * from "./template-save-rules.ts";
 export * from "./template-test-steps.ts";
 export * from "./tool-check.ts";
 export * from "./tool-definition.ts";

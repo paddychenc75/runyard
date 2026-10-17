@@ -1,5 +1,8 @@
 import type { LibraryQuery, NavFilter } from "../library-query.ts";
 
+/** 主窗口资源库标签里能显示的页面（设置和模板页没有顶栏） */
+export type ShellPage = "library" | "templates" | "settings";
+
 // 点侧栏的一项（规格 DESKTOP-LIBRARY-VIEW-64）：筛选生效，并且一定回到资源库标签显示结果；
 // 在项目标签页里点了却停在项目页，看起来就像没反应。
 export interface SidebarNavigation {

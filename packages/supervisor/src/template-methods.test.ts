@@ -1,7 +1,12 @@
 import { join } from "node:path";
 import { lintTemplateRef } from "@runyard/core";
 import { type AbsPath, absPath } from "@runyard/platform";
-import { type ErrorCode, errorRegistry, type TemplateRecord } from "@runyard/protocol";
+import {
+  type ErrorCode,
+  errorRegistry,
+  type TemplateDetail,
+  type TemplateRecord,
+} from "@runyard/protocol";
 import { afterEach, describe, expect, it } from "vitest";
 import { LibraryWorld, type Pump } from "./library-harness.test.ts";
 
@@ -120,6 +125,28 @@ describe("template.list 与 template.get", () => {
     expect(detail.path).toBe(app("builtin", "react19"));
     expect(detail.files).toEqual(["src/components/App.tsx", "src/main.ts"]);
     expect(detail.files.some((file) => file.startsWith("/") || file.includes("\\"))).toBe(false);
+  });
+
+  it("[DESKTOP-TEMPLATES-VIEW-03] get 带运行方式摘要：安装命令按包管理器、启动命令、就绪判断；运行器不存在时是 null", async () => {
+    const pump = await setup();
+    put(app("builtin", "react19"), template("react19"));
+    put(app("builtin", "ghost"), template("ghost", { runner: "missing-runner" }));
+    const detail = await pump.result<TemplateDetail>("template.get", { id: "react19" });
+    expect(detail.runner).toEqual({
+      setup: {},
+      run: ["node", "server.js", "--port", "{port}", "--host", "127.0.0.1"],
+      ready: { http: { path: "/" }, slowAfterMs: 30000 },
+    });
+    expect(detail.problems).toEqual([]);
+    expect((await pump.result<TemplateDetail>("template.get", { id: "ghost" })).runner).toBeNull();
+  });
+
+  it("[DESKTOP-TEMPLATES-VIEW-02] 无效的用户模板：get 带 lint 的错误，模板页据此写原因", async () => {
+    const pump = await setup();
+    put(userDir("hello"), template("hi", { maintainer: undefined }));
+    const detail = await pump.result<TemplateDetail>("template.get", { id: "hello" });
+    expect(detail.template.valid).toBe(false);
+    expect(detail.problems.map((issue) => issue.rule)).toContain("template-json-invalid");
   });
 
   it("不存在的标识报 TEMPLATE_NOT_FOUND；路径形状的入参不能用来读任意文件夹", async () => {

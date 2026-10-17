@@ -9,10 +9,13 @@ import {
   isRecord,
   localizedTextSchema,
   type RunKind,
+  readVersionedText,
   requiresSchema,
   runKindSchema,
+  runnerFileFormat,
   type TemplateDetail,
   type TemplateRecord,
+  type TemplateRunnerSummary,
   templateCategorySchema,
   templateIdPattern,
   templateTagSchema,
@@ -53,11 +56,11 @@ export function createTemplateLibrary(
   }
 
   // dir 用绝对路径定位：同标识的内置和用户模板才分得开
-  async function recordOf(
+  async function inspect(
     id: string,
     dir: AbsPath,
     source: TemplateRecord["source"],
-  ): Promise<TemplateRecord | undefined> {
+  ): Promise<{ record: TemplateRecord; problems: TemplateDetail["problems"] } | undefined> {
     const text = await platform.fs.readText(joinPath(dir, posixRelPath("template.json")));
     if (text === null) return undefined;
     const fields = parseRecord(text);
@@ -73,7 +76,7 @@ export function createTemplateLibrary(
         })
       : [];
     const outcome = await lintTemplateRef(platform, locations, source === "builtin" ? id : dir);
-    return {
+    const record: TemplateRecord = {
       id,
       name: name.success ? name.data : id,
       description: description.success ? description.data : "",
@@ -84,6 +87,37 @@ export function createTemplateLibrary(
       kind: await runnerKind(runner),
       requires: requires.success ? requires.data : {},
       valid: outcome.kind === "linted" && outcome.result.ok,
+    };
+    const errors = outcome.kind === "linted" ? outcome.result.errors : [];
+    return { record, problems: errors.map(({ rule, path }) => ({ rule, path })) };
+  }
+
+  async function recordOf(
+    id: string,
+    dir: AbsPath,
+    source: TemplateRecord["source"],
+  ): Promise<TemplateRecord | undefined> {
+    return (await inspect(id, dir, source))?.record;
+  }
+
+  // 运行方式的展示摘要：运行器不存在或读不出就是 null（模板页写“没有”，不是错误）
+  async function runnerSummary(runner: string): Promise<TemplateRunnerSummary | null> {
+    if (!templateIdPattern.test(runner)) return null;
+    const text = await platform.fs.readText(
+      joinPath(locations.runnersDir, posixRelPath(`${runner}/runner.json`)),
+    );
+    if (text === null) return null;
+    const read = readVersionedText(runnerFileFormat, text);
+    if (read.status !== "ok") return null;
+    return {
+      setup: Object.fromEntries(
+        Object.entries(read.value.setup?.variants ?? {}).map(([tool, variant]) => [
+          tool,
+          variant.command,
+        ]),
+      ),
+      run: read.value.run?.command ?? null,
+      ready: read.value.ready ?? null,
     };
   }
 
@@ -115,10 +149,16 @@ export function createTemplateLibrary(
       if (!templateIdPattern.test(id)) return undefined;
       const target = await locateTemplate(platform, locations, id);
       if (target === null) return undefined;
-      const template = await recordOf(id, target.dir, target.builtin ? "builtin" : "user");
-      if (template === undefined) return undefined;
+      const inspected = await inspect(id, target.dir, target.builtin ? "builtin" : "user");
+      if (inspected === undefined) return undefined;
       const files = await listFolderFiles(platform, joinPath(target.dir, posixRelPath("files")));
-      return { template, path: target.dir, files };
+      return {
+        template: inspected.record,
+        path: target.dir,
+        files,
+        runner: await runnerSummary(inspected.record.runner),
+        problems: inspected.problems,
+      };
     },
     async builtinIds() {
       const ids = new Set<string>();

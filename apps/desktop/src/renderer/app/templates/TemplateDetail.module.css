@@ -1,0 +1,100 @@
+/* 详情卡片（设计稿 Templates 右半）：不透明卡片，圆角 16，细线；内容在 ScrollArea 里滚，底部的按钮钉在卡片底 */
+.root {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  inline-size: 100%;
+  min-inline-size: 0;
+  min-block-size: 0;
+  border: 1px solid var(--color-line-hairline);
+  border-radius: var(--radius-card);
+  background: var(--color-bg-card);
+  overflow: hidden;
+}
+
+.scroll {
+  flex: 1;
+  min-block-size: 0;
+}
+
+.viewport {
+  box-sizing: border-box;
+  padding-block: var(--space-9) var(--space-7);
+  padding-inline: var(--space-10);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+.name {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: var(--text-dialog-title-size);
+  font-weight: var(--text-dialog-title-weight);
+  line-height: var(--text-dialog-title-line-height);
+}
+
+.id {
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: var(--text-body-size);
+  font-weight: var(--text-section-title-weight);
+  line-height: var(--text-body-line-height);
+}
+
+.note {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-secondary-size);
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding-block: var(--space-6) var(--space-7);
+  padding-inline: var(--space-10);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.hint {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-secondary-size);
+  line-height: var(--text-secondary-line-height);
+}
