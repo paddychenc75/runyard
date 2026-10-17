@@ -1,5 +1,5 @@
 import { useT } from "@runyard/i18n/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { LibraryState } from "../../shared/library-state.ts";
 import { runningCount } from "../library-view.ts";
@@ -9,6 +9,7 @@ import styles from "./AppShell.module.css";
 import { CloseConfirmDialog } from "./CloseConfirmDialog.tsx";
 import { ConsolePanel } from "./ConsolePanel.tsx";
 import { LibraryPage } from "./LibraryPage.tsx";
+import { PickerDialog } from "./PickerDialog.tsx";
 import { PreviewPane } from "./PreviewPane.tsx";
 import { isScript } from "./run-view.ts";
 import { ScriptOutput } from "./ScriptOutput.tsx";
@@ -32,6 +33,26 @@ export function AppShell({ bridge, library }: AppShellProps) {
   useEffect(() => {
     document.title = title;
   }, [title]);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  // 空资源库的首次启动直接进选择器（PRD #prd-first-run）：只在第一次读到状态时判断一次，
+  // 用户关掉之后不再自动弹出
+  const firstLoadHandled = useRef(false);
+  useEffect(() => {
+    if (library === null || firstLoadHandled.current) return;
+    firstLoadHandled.current = true;
+    if (library.playgrounds.length === 0 && library.error === null) setPickerOpen(true);
+  }, [library]);
+  // ⌘N 是主进程的菜单项（焦点在预览视图里时按键到不了这里），经事件通知
+  useEffect(() => bridge.on("picker.open", () => setPickerOpen(true)), [bridge]);
+  // 选好模板后的下一步是新建弹窗（#173，规格 DESKTOP-CREATE-FLOW-05）。在它做好之前，
+  // 直接用默认名称创建，这样选择器选出来的模板还能用；#173 把这里换成“打开新建弹窗”。
+  const onPick = useCallback(
+    (templateId: string) => {
+      setPickerOpen(false);
+      void bridge.call("playground.create", templateId);
+    },
+    [bridge],
+  );
   const { windowControls, modKey } = bridge.bootstrap;
   const tabs = library?.tabs ?? [];
   const activeTab = library?.activeTab ?? "library";
@@ -69,6 +90,9 @@ export function AppShell({ bridge, library }: AppShellProps) {
           )}
         </main>
         <CloseConfirmDialog bridge={bridge} request={library?.closeRequest ?? null} />
+        {pickerOpen && library !== null ? (
+          <PickerDialog library={library} onPick={onPick} onClose={() => setPickerOpen(false)} />
+        ) : null}
       </div>
     </OverlayContext.Provider>
   );

@@ -1,7 +1,7 @@
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { windowBackground } from "@runyard/tokens";
-import { app, type BrowserWindow, ipcMain, nativeTheme, net, protocol } from "electron";
+import { app, type BrowserWindow, ipcMain, Menu, nativeTheme, net, protocol } from "electron";
 import { APP_ORIGIN, APP_SCHEME, resolveAppFile } from "./app-protocol.ts";
 import { connectToSupervisor, type DesktopRuntime, unavailableClient } from "./composition-root.ts";
 import {
@@ -20,8 +20,9 @@ import { claimSingleInstance, focusWindow } from "./integration/single-instance.
 import { ElectronSystemActions } from "./integration/system-actions.ts";
 import { resolveUserDataDir } from "./integration/user-data.ts";
 import { keepAliveAfterClose } from "./integration/window-lifecycle.ts";
-import { registerBridgeHandlers } from "./ipc-handlers.ts";
+import { type IpcHost, registerBridgeHandlers, requestPicker } from "./ipc-handlers.ts";
 import { type LibraryClient, LibraryController } from "./library-controller.ts";
+import { buildAppMenu } from "./native-ui/app-menu.ts";
 import {
   type DesktopArgs,
   parseDesktopArgs,
@@ -116,25 +117,26 @@ async function main(args: DesktopArgs): Promise<void> {
     preview,
     system: new ElectronSystemActions(),
   });
-  registerBridgeHandlers(
-    {
-      handle: (channel, handler) =>
-        ipcMain.handle(channel, (event, ...rest) =>
-          handler({ url: event.senderFrame?.url ?? "" }, ...rest),
-        ),
-      handleSync: (channel, handler) =>
-        ipcMain.on(channel, (event) => {
-          try {
-            event.returnValue = handler({ url: event.senderFrame?.url ?? "" });
-          } catch {
-            // 发送者不可信：返回 null，界面拿不到启动信息
-            event.returnValue = null;
-          }
-        }),
-      send: (channel, name, payload) => {
-        if (!window.isDestroyed()) window.webContents.send(channel, name, payload);
-      },
+  const ipcHost: IpcHost = {
+    handle: (channel, handler) =>
+      ipcMain.handle(channel, (event, ...rest) =>
+        handler({ url: event.senderFrame?.url ?? "" }, ...rest),
+      ),
+    handleSync: (channel, handler) =>
+      ipcMain.on(channel, (event) => {
+        try {
+          event.returnValue = handler({ url: event.senderFrame?.url ?? "" });
+        } catch {
+          // 发送者不可信：返回 null，界面拿不到启动信息
+          event.returnValue = null;
+        }
+      }),
+    send: (channel, name, payload) => {
+      if (!window.isDestroyed()) window.webContents.send(channel, name, payload);
     },
+  };
+  registerBridgeHandlers(
+    ipcHost,
     controller,
     buildBootstrapInfo(currentPlatform(), {
       locale,
@@ -142,6 +144,12 @@ async function main(args: DesktopArgs): Promise<void> {
       reducedTransparency: nativeTheme.prefersReducedTransparency,
       highContrast: nativeTheme.shouldUseHighContrastColors,
     }),
+  );
+  // 应用菜单：⌘N 打开模板选择器（焦点在预览视图里也有效）
+  Menu.setApplicationMenu(
+    Menu.buildFromTemplate(
+      buildAppMenu({ locale, platform: currentPlatform(), onNew: () => requestPicker(ipcHost) }),
+    ),
   );
   await window.loadURL(`${APP_ORIGIN}/`);
   await controller.start();

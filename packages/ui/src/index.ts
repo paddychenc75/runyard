@@ -18,6 +18,13 @@ export {
   type DataTableProps,
 } from "./patterns/DataTable/index.ts";
 export {
+  ListPicker,
+  type ListPickerGroup,
+  type ListPickerItem,
+  type ListPickerProps,
+  type ListPickerSearchProps,
+} from "./patterns/ListPicker/index.ts";
+export {
   LogView,
   type LogViewLine,
   type LogViewProps,
@@ -60,6 +67,7 @@ export {
   type IconButtonSize,
   type IconButtonVariant,
 } from "./primitives/IconButton/index.ts";
+export { Kbd, type KbdProps } from "./primitives/Kbd/index.ts";
 export {
   Menu,
   type MenuEntry,
@@ -76,6 +84,7 @@ export {
   type ScrollAreaOrientation,
   type ScrollAreaProps,
 } from "./primitives/ScrollArea/index.ts";
+export { SearchField, type SearchFieldProps } from "./primitives/SearchField/index.ts";
 export {
   StatusMark,
   type StatusMarkProps,

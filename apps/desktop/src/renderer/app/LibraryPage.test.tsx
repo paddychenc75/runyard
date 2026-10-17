@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { act, cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import type { BootstrapInfo, DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { LibraryState, PlaygroundRow } from "../../shared/library-state.ts";
 import { AppFrame } from "./AppFrame.tsx";
@@ -44,6 +44,7 @@ function library(playgrounds: PlaygroundRow[], locale: "zh-CN" | "en" = "zh-CN")
     error: null,
     closeRequest: null,
     templates: [],
+    recentTemplates: [],
     tabs: [],
     activeTab: "library",
     playgrounds,
@@ -76,16 +77,6 @@ function setup(state: LibraryState, locale: "zh-CN" | "en" = "zh-CN") {
   const view = render(<AppFrame bridge={bridge} locale={locale} theme="light" />);
   return { ...view, call, bridge, push };
 }
-
-// 整个文件第一次画外壳和第一次做角色查询要付一次冷启动的代价（加载、即时编译、jsdom 的样式计算），
-// 本机约 0.1 秒，CI 的 macOS 虚拟机上被拖慢几十倍，落在第一个用例里就逼近 5 秒上限（#219）。
-// 这里提前热身，让冷启动不算在任何一个用例的时限里；用例本身的断言和时限都不变。
-beforeAll(async () => {
-  setup(library([row("warmup", { state: "ready", active: true, port: 7100 })]));
-  within(await table()).getAllByRole("row");
-  cleanup();
-  vi.useRealTimers();
-});
 
 async function table() {
   return await screen.findByRole("table", { name: /项目列表|Playgrounds/ });

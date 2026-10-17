@@ -1,0 +1,38 @@
+/* 搜索框：放大镜、无框输入、末端提示。设计稿选择器顶部（Picker）；聚焦环画在整条上 */
+.root {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  min-inline-size: 0;
+  padding-block: var(--space-5);
+  padding-inline: var(--space-8);
+  color: var(--color-text-secondary);
+}
+
+.icon {
+  flex: none;
+}
+
+.input {
+  flex: 1;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: var(--text-section-title-size);
+  font-weight: var(--text-body-weight);
+  line-height: var(--text-section-title-line-height);
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--color-text-placeholder);
+}
+
+.trailing {
+  display: inline-flex;
+  flex: none;
+}

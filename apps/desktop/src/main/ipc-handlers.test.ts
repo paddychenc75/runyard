@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { type BootstrapInfo, desktopChannels } from "../shared/desktop-bridge.ts";
 import type { LibraryState } from "../shared/library-state.ts";
-import { type IpcHost, type IpcSender, registerBridgeHandlers } from "./ipc-handlers.ts";
+import {
+  type IpcHost,
+  type IpcSender,
+  registerBridgeHandlers,
+  requestPicker,
+} from "./ipc-handlers.ts";
 import type { LibraryController } from "./library-controller.ts";
 
 type Handler = (sender: IpcSender, ...args: unknown[]) => unknown;
@@ -19,6 +24,7 @@ function setup() {
     tabs: [],
     activeTab: "library",
     templates: [],
+    recentTemplates: [],
     closeRequest: null,
     error: null,
   } as LibraryState;
@@ -168,5 +174,17 @@ describe("registerBridgeHandlers", () => {
     expect(sent).toEqual([
       { channel: desktopChannels.event, event: "console.appended", state: append },
     ]);
+  });
+
+  it("[DESKTOP-CREATE-FLOW-03] 菜单的“新建…”经 picker.open 事件通知界面", () => {
+    const { sent } = setup();
+    requestPicker({
+      send: (channel, event, next) => void sent.push({ channel, event, state: next }),
+    });
+    expect(sent.at(-1)).toEqual({
+      channel: desktopChannels.event,
+      event: "picker.open",
+      state: undefined,
+    });
   });
 });

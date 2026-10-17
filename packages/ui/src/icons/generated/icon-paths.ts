@@ -45,6 +45,10 @@ export const iconPaths = {
     viewBox: "0 0 16 16",
     paths: ["M13.3 8a5.3 5.3 0 1 1-1.6-3.8M13.3 2.7v2.9h-2.9"],
   },
+  search: {
+    viewBox: "0 0 16 16",
+    paths: ["M7 12.25a5.25 5.25 0 1 0 0-10.5 5.25 5.25 0 0 0 0 10.5ZM14.25 14.25l-3.5-3.5"],
+  },
   sliders: {
     viewBox: "0 0 16 16",
     paths: [

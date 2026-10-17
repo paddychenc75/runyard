@@ -72,12 +72,15 @@ export const desktopMethodNames: readonly DesktopMethod[] = [
 export interface DesktopEvents {
   "library.changed": LibraryState;
   "console.appended": ConsoleAppend;
+  /** 应用菜单的“新建…”（⌘N）：焦点在预览视图里时按键到不了界面，所以由主进程通知 */
+  "picker.open": undefined;
 }
 export type DesktopEventName = keyof DesktopEvents;
 
 export const desktopEventNames: readonly DesktopEventName[] = [
   "library.changed",
   "console.appended",
+  "picker.open",
 ];
 
 /** 启动信息：主进程建窗口时算好，预加载脚本同步交给界面（技术设计 §6.7；协议包建好该类型后移过去） */

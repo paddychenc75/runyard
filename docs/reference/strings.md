@@ -118,6 +118,12 @@
 | cli.usage.unknownCommand.body | 不认识的命令：{command}。 | Unknown command: {command}. | command：用户输入的命令，原样显示 |
 | cli.usage.unknownOption.body | 不认识的选项：{option}。 | Unknown option: {option}. | option：用户输入的选项，原样显示 |
 | cli.usage.unknownSetting.body | 不认识的设置项：{name}。目前只有 lang。 | Unknown setting: {name}. The only setting is lang. | name：用户输入的设置项，原样显示 |
+| desktop.category.frontend.label | 前端 | Front end | — |
+| desktop.category.fullstack.label | 全栈 | Full stack | — |
+| desktop.category.mine.label | 我的 | Mine | — |
+| desktop.category.page.label | 页面 | Pages | — |
+| desktop.category.script.label | 脚本 | Scripts | — |
+| desktop.category.service.label | 服务 | Services | — |
 | desktop.console.tab.label | 输出 | Output | — |
 | desktop.crashed.log.label | 最后的日志 | Last output | — |
 | desktop.crashed.overlay.aria | 崩溃提示 | Crash notice | — |
@@ -132,6 +138,7 @@
 | desktop.failure.stepReady.label | 就绪，显示页面 | Ready, show the page | — |
 | desktop.failure.stepStart.label | 启动开发服务 | Start the dev server | — |
 | desktop.failure.steps.aria | 启动步骤 | Start-up steps | — |
+| desktop.menu.new.label | 新建… | New… | — |
 | desktop.missing.command.label | 安装命令 | Install command | — |
 | desktop.missing.copied.label | 已复制 | Copied | — |
 | desktop.missing.copy.action | 复制命令 | Copy command | — |
@@ -145,6 +152,18 @@
 | desktop.output.aria | 进程输出 | Process output | — |
 | desktop.output.empty.label | 还没有输出。 | No output yet. | — |
 | desktop.output.view.action | 查看完整输出 | View full output | — |
+| desktop.picker.arrowsKey.label | 上下键 | Up/Down | — |
+| desktop.picker.choose.action | 选择 | Select | — |
+| desktop.picker.dialog.aria | 选择模板 | Choose a template | — |
+| desktop.picker.empty.hint | 没有可用的模板。 | No templates available. | — |
+| desktop.picker.enterKey.label | 回车 | Return | — |
+| desktop.picker.escKey.label | esc | esc | — |
+| desktop.picker.list.aria | 模板列表 | Templates | — |
+| desktop.picker.move.hint | 移动 | move | — |
+| desktop.picker.next.hint | 下一步：填写名称和备注 | next: name and note | — |
+| desktop.picker.recent.label | 最近使用 | Recently used | — |
+| desktop.picker.search.label | 搜索模板 | Search templates | — |
+| desktop.picker.search.placeholder | 搜索模板：名称、框架、语言 | Search templates: name, framework, language | — |
 | desktop.port.body.label | 已改用 {actual} 端口。 | Switched to port {actual}. | actual：现在实际使用的端口，纯数字字符串 |
 | desktop.port.dismiss.action | 知道了 | Got it | — |
 | desktop.port.occupant.label | 占用者：{name}（PID {pid}） | In use by: {name} (PID {pid}) | name：占用端口的进程名，原样显示；pid：占用者的进程号 |
