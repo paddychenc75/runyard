@@ -274,3 +274,21 @@ describe("假进程：按运行标记找进程", () => {
     expect(await fake.platform.proc.findByMarker(marker)).toEqual([]);
   });
 });
+
+describe("假进程：同一个控制终端里的进程", () => {
+  it("会话首进程的全部活后代（含脱离进程组的）都算终端成员；会话首进程退出后就没有了", async () => {
+    const fake = createFakePlatform();
+    fake.processes.when(["shell"], {
+      children: [
+        { atMs: 0, detached: true, behavior: {} },
+        { atMs: 0, behavior: {} },
+      ],
+    });
+    const shell = fake.platform.exec.spawn({ argv: ["shell"], cwd, env: {}, stdin: false });
+    expect(await fake.platform.proc.terminalMembers(shell.ref)).toEqual([]);
+    fake.processes.attachTerminal(shell.ref);
+    expect(await fake.platform.proc.terminalMembers(shell.ref)).toHaveLength(3);
+    fake.processes.exit(shell.ref);
+    expect(await fake.platform.proc.terminalMembers(shell.ref)).toEqual([]);
+  });
+});

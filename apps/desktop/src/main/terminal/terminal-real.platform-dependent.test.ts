@@ -209,6 +209,25 @@ describe.skipIf(!onMac)("终端服务与真伪终端", () => {
     expect(await t.service.attach("demo")).toEqual({ state: { kind: "none" }, output: "" });
   });
 
+  it("#340 关闭终端：nohup 起的后台 sleep（忽略挂断、自成进程组、读不到环境）也在 3 秒内结束", async () => {
+    const t = setup();
+    const snapshot = await t.open("demo", size);
+    if (snapshot.state.kind !== "running") throw new Error("not running");
+    const out = await run(
+      t,
+      "demo",
+      "nohup sleep 1000 >/dev/null 2>&1 & echo BG=$!=",
+      /BG=(\d+)=\r?$/m,
+    );
+    const background = Number(/BG=(\d+)=\r?$/m.exec(out)?.[1]);
+    expect(await t.platform.proc.identity(background)).not.toBeNull();
+
+    const began = Date.now();
+    await t.service.end("demo", "closed");
+    expect(Date.now() - began).toBeLessThan(3000);
+    expect(await allGone(t, [snapshot.state.pid, background], 1000)).toBe(true);
+  });
+
   it("结束一个前台正在运行命令的终端，命令也一起结束", async () => {
     const t = setup();
     const snapshot = await t.open("demo", size);

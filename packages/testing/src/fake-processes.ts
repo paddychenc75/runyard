@@ -36,6 +36,8 @@ export class FakeProcesses {
   readonly #all: Proc[] = [];
   readonly #scripts: { match: ProcessMatcher; source: BehaviorSource }[] = [];
   readonly #deathListeners = new Set<() => void>();
+  /** 被当作“终端会话首进程”的进程（见 attachTerminal） */
+  readonly #terminalLeaders = new Set<Proc>();
   #nextPid = 4000;
   #lastStart = 0;
   readonly spawned: SpawnRecord[] = [];
@@ -159,6 +161,23 @@ export class FakeProcesses {
     return this.#all
       .filter((proc) => proc.alive && proc.env[marker.name] === marker.value)
       .map((proc) => proc.ref);
+  }
+
+  /**
+   * 测试用：把这个进程当作某个终端的会话首进程（集成终端里的 shell）。之后它的全部后代，
+   * 包括脱离进程组的，都共用这个控制终端，terminalMembers 找得到它们。真实的控制终端由 pty 带来
+   */
+  attachTerminal(ref: ProcRef): void {
+    const proc = this.#find(ref);
+    if (proc === undefined) throw new Error("没有这个进程");
+    this.#terminalLeaders.add(proc);
+  }
+
+  /** 与 ref 共用控制终端的活进程（含它自己）；它不是会话首进程、已退出或身份对不上时为空 */
+  terminalMembers(ref: ProcRef): ProcRef[] {
+    const root = this.#find(ref);
+    if (root === undefined || !root.alive || !this.#terminalLeaders.has(root)) return [];
+    return [root, ...this.#descendants(root)].filter((proc) => proc.alive).map((proc) => proc.ref);
   }
 
   identity(pid: number): { startTime: number } | null {

@@ -116,6 +116,17 @@ export function createPosixProc(deps: PosixProcDeps): Platform["proc"] {
         .map((entry) => ({ pid: entry.pid, startTime: entry.startTime }))
         .sort((a, b) => a.pid - b.pid);
     },
+    async terminalMembers(p) {
+      if (!Number.isSafeInteger(p.pid) || p.pid <= 1 || p.pid === process.pid) return [];
+      const peers = await source.terminalPeers(p.pid);
+      // 先核对身份：pid 可能已被别的进程用上，那就不是我们要找的终端
+      const root = peers.find((entry) => entry.pid === p.pid);
+      if (root === undefined || root.startTime !== p.startTime) return [];
+      return peers
+        .filter((entry) => entry.pid > 1 && entry.pid !== process.pid)
+        .map((entry) => ({ pid: entry.pid, startTime: entry.startTime }))
+        .sort((a, b) => a.pid - b.pid);
+    },
     async identity(pid) {
       const startTime = await source.startTime(pid);
       return startTime === null ? null : { startTime };

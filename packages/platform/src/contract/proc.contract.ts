@@ -112,6 +112,17 @@ export function procContract(ctx: ContractContext): void {
     });
   });
 
+  describe("proc.terminalMembers", () => {
+    it("没有控制终端的进程（不是终端会话首进程）返回空数组；pid 对不上、进程已退出也一样", async () => {
+      const tree = await startTree(platform, ledger, { children: [{}] }, cwd);
+      expect(await platform.proc.terminalMembers(tree.proc.ref)).toEqual([]);
+      const wrongTime = { pid: tree.proc.ref.pid, startTime: tree.proc.ref.startTime + 60_000 };
+      expect(await platform.proc.terminalMembers(wrongTime)).toEqual([]);
+      await platform.proc.terminate(tree.proc.ref, { mode: "kill", graceMs: 0 });
+      expect(await platform.proc.terminalMembers(tree.proc.ref)).toEqual([]);
+    });
+  });
+
   describe("proc.findByMarker", () => {
     const marker = () => ({ name: "RUNYARD_CONTRACT_MARKER", value: randomUUID() });
     const environment = (m: { name: string; value: string }) => ({ [m.name]: m.value });

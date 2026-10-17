@@ -2,7 +2,12 @@ import { execFile, execFileSync } from "node:child_process";
 import { promisify } from "node:util";
 import { platformError } from "../platform-error.ts";
 import type { ProcessSource } from "../posix/process-source.ts";
-import { parseLstart, parsePsList, parsePsWithEnv } from "../posix/ps-parse.ts";
+import {
+  parseLstart,
+  parsePsList,
+  parsePsTerminalPeers,
+  parsePsWithEnv,
+} from "../posix/ps-parse.ts";
 
 // macOS 没有 /proc，不用原生模块就读不到别的进程的启动时间，只能问 ps。
 // 代价（负责人的 Mac 上量的）：单个进程 `ps -o lstart= -p` 约 3 毫秒；整张表 `ps -A` 约 20 毫秒（一千个进程）。
@@ -40,6 +45,17 @@ export function createPsSource(): ProcessSource {
         return parsePsWithEnv(stdout, name, value);
       } catch (error) {
         throw platformError("INTERNAL", {}, `ps eww failed: ${String(error)}`);
+      }
+    },
+    async terminalPeers(pid) {
+      try {
+        const { stdout } = await execFileAsync(PS, ["-A", "-o", "pid=,pgid=,tdev=,lstart="], {
+          env: psEnv(),
+          maxBuffer: 16 * 1024 * 1024,
+        });
+        return parsePsTerminalPeers(stdout, pid);
+      } catch (error) {
+        throw platformError("INTERNAL", {}, `ps -A (tdev) failed: ${String(error)}`);
       }
     },
     async startTime(pid) {
