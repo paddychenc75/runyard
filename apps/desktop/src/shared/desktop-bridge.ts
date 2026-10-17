@@ -57,6 +57,18 @@ export interface DesktopMethods extends EditorFileMethods, SettingsMethods {
   "run.stopAll": { param: undefined; result: undefined };
   /** “改为由我管理”（规格 DESKTOP-WORKSPACE-49）：命令行持有的运行改由这个项目的标签页持有，不重启 */
   "run.adopt": { param: string; result: undefined };
+  /** 运行条的“重启”（规格 DESKTOP-WORKSPACE-27）：先停止再启动，端口和持有者不变 */
+  "run.restart": { param: string; result: undefined };
+  /** 脚本输出区输入行的回车（规格 DESKTOP-WORKSPACE-37）：这一行加换行写给运行中的脚本；没在运行时不理 */
+  "run.stdin": { param: { id: string; line: string }; result: undefined };
+  /** 这个脚本项目自己的“保存后自动运行”开关（规格 DESKTOP-WORKSPACE-34） */
+  "playground.scriptAutoRun": { param: { id: string; enabled: boolean }; result: undefined };
+  /** 控制台的“清除”（规格 DESKTOP-WORKSPACE-42） */
+  "console.clear": { param: string; result: undefined };
+  /** 预览地址栏的“刷新”“在浏览器中打开”“开发者工具”（规格 DESKTOP-WORKSPACE-31 至 33），参数是项目 id */
+  "preview.reload": { param: string; result: undefined };
+  "preview.openExternal": { param: string; result: undefined };
+  "preview.devtools": { param: string; result: undefined };
   /** 打开项目：新开标签并启动运行（持有者是这个标签）；已开着的只切换 */
   "tab.open": { param: string; result: undefined };
   /** “打开但不运行”（规格 DESKTOP-LIBRARY-VIEW-33）：已停止的只开标签页、不启动、不算一次使用；运行中的同 tab.open */
@@ -112,6 +124,13 @@ export const desktopMethodNames: readonly DesktopMethod[] = [
   "run.stop",
   "run.stopAll",
   "run.adopt",
+  "run.restart",
+  "run.stdin",
+  "playground.scriptAutoRun",
+  "console.clear",
+  "preview.reload",
+  "preview.openExternal",
+  "preview.devtools",
   "tab.open",
   "tab.select",
   "tab.openWithoutRun",

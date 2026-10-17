@@ -6,7 +6,7 @@
   "runState.finished": "Finished",
   "runState.installing": "Installing dependencies",
   "runState.ready": "Ready",
-  "runState.reloading": "Reloading",
+  "runState.reloading": "Restarting",
   "runState.running": "Running",
   "runState.starting": "Starting",
   "runState.stopped": "Stopped",

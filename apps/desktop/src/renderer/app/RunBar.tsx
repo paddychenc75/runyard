@@ -1,11 +1,12 @@
 import { useLocale, useT } from "@runyard/i18n/react";
-import { GlassSurface, StatusMark, UserText } from "@runyard/ui";
+import { Button, GlassSurface, StatusMark, UserText } from "@runyard/ui";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { PlaygroundRow, TabRow } from "../../shared/library-state.ts";
 import { pickLocalizedText } from "../library-view.ts";
 import { RunActionButton } from "./RunActionButton.tsx";
 import styles from "./RunBar.module.css";
 import { RunBarMenu } from "./RunBarMenu.tsx";
+import { isScript } from "./run-view.ts";
 import { useRunStatus } from "./use-run-status.ts";
 
 export interface RunBarProps {
@@ -17,7 +18,7 @@ export interface RunBarProps {
 
 // 运行条（设计稿 Service、Stopped、Script）：悬浮在顶栏右侧的胶囊，项目名、模板、运行状态
 // （服务带端口，脚本带退出码和耗时）、“关闭标签页即停止”的提示，最右是停止/运行按钮。
-// 最右是停止/运行和“更多”菜单（#182，现在只有重命名、编辑备注、自动清理、创建副本）；重启不在范围内。
+// 服务运行中是“重启”和“停止”（规格 DESKTOP-WORKSPACE-25），最右是“更多”菜单（#182）。
 export function RunBar({ bridge, tab, playgrounds }: RunBarProps) {
   const t = useT();
   const locale = useLocale();
@@ -50,6 +51,15 @@ export function RunBar({ bridge, tab, playgrounds }: RunBarProps) {
       {tab.attached === null ? null : (
         <span className={styles.hint}>{t("desktop.runbar.cliHint.label")}</span>
       )}
+      {tab.active && !isScript(tab) ? (
+        <Button
+          icon="refresh"
+          disabled={tab.busy}
+          onClick={() => void bridge.call("run.restart", tab.id)}
+        >
+          {t("desktop.restart.action")}
+        </Button>
+      ) : null}
       <RunActionButton bridge={bridge} tab={tab} />
       {row === undefined || playgrounds === undefined ? null : (
         <RunBarMenu bridge={bridge} row={row} taken={playgrounds.map((item) => item.name)} />

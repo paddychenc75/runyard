@@ -37,7 +37,7 @@ export class RunActions {
     host.startErrors.delete(playgroundId);
     host.lastFrames.delete(playgroundId);
     const oneshot = host.kindOf(playgroundId) === "oneshot";
-    await this.#act(playgroundId, async () => {
+    await this.act(playgroundId, async () => {
       // 标签页持有者：这个项目在本应用里的“标签页”就是它自己，运行随本连接的生死
       const starting = host.client.call("run.start", {
         playground: playgroundId,
@@ -67,24 +67,25 @@ export class RunActions {
   }
 
   async stop(playgroundId: string): Promise<void> {
-    await this.#act(playgroundId, async () => {
+    await this.act(playgroundId, async () => {
       await this.#host.client.call("run.stop", { playground: playgroundId });
     });
   }
 
   /** 运行视图的“全部停止”（规格 DESKTOP-WORKSPACE-45）：标签页都还开着，显示已停止 */
   async stopAll(): Promise<void> {
-    await this.#act(undefined, async () => {
+    await this.act(undefined, async () => {
       await this.#host.client.call("run.stopAll", {});
     });
   }
 
   /** “改为由我管理”（规格 DESKTOP-WORKSPACE-49） */
   async adopt(run: RunSnapshot): Promise<void> {
-    await this.#act(run.playgroundId, () => this.#cliView.adopt(run));
+    await this.act(run.playgroundId, () => this.#cliView.adopt(run));
   }
 
-  async #act(busyId: string | undefined, action: () => Promise<void>): Promise<void> {
+  /** 带“忙”标记执行一个动作：按钮在等待期间不可点，失败记进全局错误，结束后重读（运行条的动作也走这里） */
+  async act(busyId: string | undefined, action: () => Promise<void>): Promise<void> {
     const host = this.#host;
     if (busyId !== undefined) {
       if (host.busy.has(busyId)) return;

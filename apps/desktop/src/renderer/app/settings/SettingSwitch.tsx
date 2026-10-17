@@ -6,6 +6,7 @@ import styles from "./SettingSwitch.module.css";
 export function SettingSwitch(props: {
   label: Localized;
   checked: boolean;
+  disabled?: boolean;
   onCheckedChange: (checked: boolean) => void;
 }) {
   return <Switch {...props} className={styles.compact} />;

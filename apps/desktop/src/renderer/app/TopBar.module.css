@@ -72,3 +72,8 @@
   block-size: var(--size-toolbar);
   margin-inline-end: var(--space-5);
 }
+
+/* 命令行持有的运行：名字后面跟智能体名称的徽标（规格 DESKTOP-WORKSPACE-26） */
+.agent {
+  margin-inline-start: var(--space-3);
+}

@@ -1,0 +1,50 @@
+/* 设计稿 Script：输出下面一条圆角的输入行，左边是 > 提示符，不可用时右边写说明 */
+.root {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  box-sizing: border-box;
+  block-size: var(--size-control-md);
+  margin: var(--space-4);
+  padding-inline: var(--space-5);
+  border-radius: var(--radius-control);
+  border: 1px solid var(--color-line-hairline);
+  background: var(--color-bg-inset);
+  font-family: var(--font-mono);
+  font-size: var(--text-code-small-size);
+}
+
+.root::before {
+  content: ">";
+  flex: none;
+  color: var(--color-text-secondary);
+}
+
+.root:focus-within {
+  border-color: var(--color-line-accent);
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.input {
+  flex: 1;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  font: inherit;
+}
+
+.input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.hint {
+  flex: none;
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--text-item-size);
+}

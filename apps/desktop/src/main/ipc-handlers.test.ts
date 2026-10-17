@@ -52,6 +52,15 @@ function setup() {
       pushConsole = listener;
       return () => {};
     },
+    runBar: {
+      restart: async (id: string) => void calls.push(["restart", id]),
+      sendInput: async (id: string, line: string) => void calls.push(["stdin", id, line]),
+      setScriptAutoRun: async (id: string, on: boolean) => void calls.push(["autorun", id, on]),
+      clearConsole: async (id: string) => void calls.push(["clear", id]),
+      reloadPreview: (id: string) => void calls.push(["reload", id]),
+      openPreviewInBrowser: (id: string) => void calls.push(["external", id]),
+      openPreviewDevTools: (id: string) => void calls.push(["devtools", id]),
+    },
     setPreviewBounds: (bounds: unknown) => void calls.push(["bounds", bounds]),
     capturePreview: async () => "data:image/png;base64,AAAA",
     setPreviewVisible: (visible: boolean) => void calls.push(["visible", visible]),
@@ -191,6 +200,32 @@ describe("registerBridgeHandlers", () => {
       ["bounds", null],
       ["visible", false],
     ]);
+  });
+
+  it("运行条通道：重启、输入、开关、清除、刷新、在浏览器中打开、开发者工具都转给控制器，形状不对不转", async () => {
+    const { call, calls } = setup();
+    await call(app, "run.restart", "a");
+    await call(app, "run.stdin", { id: "a", line: "Ada" });
+    await call(app, "playground.scriptAutoRun", { id: "a", enabled: false });
+    await call(app, "console.clear", "a");
+    await call(app, "preview.reload", "a");
+    await call(app, "preview.openExternal", "a");
+    await call(app, "preview.devtools", "a");
+    expect(calls).toEqual([
+      ["restart", "a"],
+      ["stdin", "a", "Ada"],
+      ["autorun", "a", false],
+      ["clear", "a"],
+      ["reload", "a"],
+      ["external", "a"],
+      ["devtools", "a"],
+    ]);
+    calls.length = 0;
+    await call(app, "run.restart", "");
+    await call(app, "run.stdin", { id: "a", line: 1 });
+    await call(app, "playground.scriptAutoRun", { id: "a", enabled: "no" });
+    await call(app, "preview.devtools", 7);
+    expect(calls).toEqual([]);
   });
 
   it("控制台通道：console.get 取已有的行，新输出作为 console.appended 推给界面", async () => {

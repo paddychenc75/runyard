@@ -114,6 +114,42 @@ export function registerBridgeHandlers(
       const playground = text(id);
       if (playground !== null) await controller.adoptRun(playground);
     },
+    "run.restart": async (id) => {
+      const playground = text(id);
+      if (playground !== null) await controller.runBar.restart(playground);
+    },
+    "run.stdin": async (value) => {
+      if (typeof value !== "object" || value === null) return;
+      const { id, line } = value as Record<string, unknown>;
+      const playground = text(id);
+      if (playground !== null && typeof line === "string") {
+        await controller.runBar.sendInput(playground, line);
+      }
+    },
+    "playground.scriptAutoRun": async (value) => {
+      if (typeof value !== "object" || value === null) return;
+      const { id, enabled } = value as Record<string, unknown>;
+      const playground = text(id);
+      if (playground !== null && typeof enabled === "boolean") {
+        await controller.runBar.setScriptAutoRun(playground, enabled);
+      }
+    },
+    "console.clear": async (id) => {
+      const playground = text(id);
+      if (playground !== null) await controller.runBar.clearConsole(playground);
+    },
+    "preview.reload": (id) => {
+      const playground = text(id);
+      if (playground !== null) controller.runBar.reloadPreview(playground);
+    },
+    "preview.openExternal": (id) => {
+      const playground = text(id);
+      if (playground !== null) controller.runBar.openPreviewInBrowser(playground);
+    },
+    "preview.devtools": (id) => {
+      const playground = text(id);
+      if (playground !== null) controller.runBar.openPreviewDevTools(playground);
+    },
     "tab.open": async (id) => {
       const playground = text(id);
       if (playground !== null) await controller.openProject(playground);

@@ -241,6 +241,7 @@ export type CatalogMessages = {
   "desktop.category.page.label": Record<never, never>;
   "desktop.category.script.label": Record<never, never>;
   "desktop.category.service.label": Record<never, never>;
+  "desktop.console.clear.action": Record<never, never>;
   "desktop.console.tab.label": Record<never, never>;
   "desktop.crashed.log.label": Record<never, never>;
   "desktop.crashed.overlay.aria": Record<never, never>;
@@ -409,9 +410,13 @@ export type CatalogMessages = {
     wanted: string | number;
   };
   "desktop.port.untouched.label": Record<never, never>;
+  "desktop.preview.devtools.action": Record<never, never>;
   "desktop.preview.frame.label": Record<never, never>;
+  "desktop.preview.openExternal.action": Record<never, never>;
+  "desktop.preview.reload.action": Record<never, never>;
   "desktop.preview.waiting.label": Record<never, never>;
   "desktop.rerun.action": Record<never, never>;
+  "desktop.restart.action": Record<never, never>;
   "desktop.run.action": Record<never, never>;
   "desktop.runbar.aria": Record<never, never>;
   "desktop.runbar.cliHint.label": Record<never, never>;
@@ -426,6 +431,8 @@ export type CatalogMessages = {
   "desktop.runbar.tooOld.label": {
     tool: string | number;
   };
+  "desktop.script.autoRun.label": Record<never, never>;
+  "desktop.script.autoRunGlobalOff.hint": Record<never, never>;
   "desktop.script.ended.label": {
     duration: string | number;
     exitCode: string | number;
@@ -435,10 +442,16 @@ export type CatalogMessages = {
     duration: string | number;
     state: string | number;
   };
+  "desktop.script.failedTail.label": Record<never, never>;
+  "desktop.script.input.aria": Record<never, never>;
+  "desktop.script.input.placeholder": Record<never, never>;
+  "desktop.script.inputDisabled.hint": Record<never, never>;
   "desktop.script.running.label": {
     duration: string | number;
     state: string | number;
   };
+  "desktop.script.stale.label": Record<never, never>;
+  "desktop.script.staleNotice.label": Record<never, never>;
   "desktop.slow.body": Record<never, never>;
   "desktop.slow.title": Record<never, never>;
   "desktop.start.body": {
@@ -453,6 +466,7 @@ export type CatalogMessages = {
   "desktop.state.idle.label": Record<never, never>;
   "desktop.stop.action": Record<never, never>;
   "desktop.stopped.body": Record<never, never>;
+  "desktop.tab.cli.label": Record<never, never>;
   "desktop.window.title": Record<never, never>;
   "format.duration.days": {
     count: number;

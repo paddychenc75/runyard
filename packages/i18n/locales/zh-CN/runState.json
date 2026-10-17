@@ -6,7 +6,7 @@
   "runState.finished": "已结束",
   "runState.installing": "安装依赖",
   "runState.ready": "就绪",
-  "runState.reloading": "重载中",
+  "runState.reloading": "重新启动中",
   "runState.running": "运行中",
   "runState.starting": "启动中",
   "runState.stopped": "已停止",

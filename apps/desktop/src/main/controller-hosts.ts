@@ -16,6 +16,12 @@ export interface PreviewHost {
   /** 截当前预览的一帧；没有预览是 null */
   capture(): Promise<string | null>;
   setVisible(visible: boolean): void;
+  /** 重新加载这个项目预览里的当前页面（规格 DESKTOP-WORKSPACE-31） */
+  reload(playgroundId: string): void;
+  /** 这个项目预览此刻加载着的地址；没有预览是 undefined（规格 DESKTOP-WORKSPACE-32） */
+  currentUrl(playgroundId: string): string | undefined;
+  /** 打开这个项目预览页面自己的开发者工具，不是应用界面的（规格 DESKTOP-WORKSPACE-33） */
+  openDevTools(playgroundId: string): void;
 }
 
 /** 系统层的两个动作（Electron 的 shell 和剪贴板在 integration/system-actions.ts，这里不认识 Electron） */

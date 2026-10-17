@@ -212,6 +212,31 @@ describe("设置页", () => {
     expect(sets(w)).toEqual([{ confirmCloseRunningTab: true }]);
   });
 
+  it("[DESKTOP-SETTINGS-09] 在设置里关掉“脚本保存后自动运行”：写进全局设置", async () => {
+    const w = world();
+    const user = await openSettings(w);
+    const toggle = screen.getByRole("switch", { name: "脚本保存后自动运行" });
+    await waitFor(() => expect(toggle.getAttribute("aria-checked")).toBe("true"));
+    await user.click(toggle);
+    await waitFor(() => expect(w.settings().scriptAutoRun).toBe(false));
+    expect(sets(w)).toEqual([{ scriptAutoRun: false }]);
+  });
+
+  it("[DESKTOP-SETTINGS-10] 空闲停止有 15 分钟、30 分钟、2 小时三档，选“2 小时”写进 120 分钟", async () => {
+    const w = world();
+    const user = await openSettings(w);
+    for (const name of ["15 分钟", "30 分钟", "2 小时"]) {
+      expect(screen.getByRole("button", { name })).toBeTruthy();
+    }
+    expect(screen.queryByRole("button", { name: "从不" })).toBeNull();
+    const half = screen.getByRole("button", { name: "30 分钟" });
+    await waitFor(() => expect(half.getAttribute("aria-pressed")).toBe("true"));
+    const two = screen.getByRole("button", { name: "2 小时" });
+    await user.click(two);
+    await waitFor(() => expect(two.getAttribute("aria-pressed")).toBe("true"));
+    expect(sets(w)).toEqual([{ cliIdleStopMinutes: 120 }]);
+  });
+
   it("[DESKTOP-SETTINGS-11] 自动保存改为“失去焦点时”：设置页选中这一档并写进设置", async () => {
     const w = world();
     const user = await openSettings(w);

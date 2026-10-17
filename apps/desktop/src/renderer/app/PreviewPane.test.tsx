@@ -2,6 +2,7 @@
 import { desktopCatalogs } from "@runyard/i18n";
 import { I18nProvider } from "@runyard/i18n/react";
 import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { TabRow } from "../../shared/library-state.ts";
@@ -86,6 +87,32 @@ describe("预览区", () => {
     expect(screen.queryByRole("heading", { name: "正在启动 react-counter" })).toBeNull();
     expect(screen.getByText("127.0.0.1:7101/")).toBeTruthy();
     expect(addressLabel("http://127.0.0.1:7101/")).toBe("127.0.0.1:7101/");
+  });
+
+  it("[DESKTOP-WORKSPACE-31] 点地址栏的“刷新”：请求重新加载这个项目的预览，地址不变", async () => {
+    const { calls } = setup(tab("http://127.0.0.1:7101/"));
+    await userEvent.setup().click(screen.getByRole("button", { name: "刷新" }));
+    expect(calls).toContainEqual(["preview.reload", "a"]);
+    expect(screen.getByText("127.0.0.1:7101/")).toBeTruthy();
+  });
+
+  it("[DESKTOP-WORKSPACE-32] 点“在浏览器中打开”：请求用系统浏览器打开这个项目预览的地址", async () => {
+    const { calls } = setup(tab("http://127.0.0.1:7101/"));
+    await userEvent.setup().click(screen.getByRole("button", { name: "在浏览器中打开" }));
+    expect(calls).toContainEqual(["preview.openExternal", "a"]);
+  });
+
+  it("[DESKTOP-WORKSPACE-33] 点“开发者工具”：请求打开预览页面的开发者工具", async () => {
+    const { calls } = setup(tab("http://127.0.0.1:7101/"));
+    await userEvent.setup().click(screen.getByRole("button", { name: "开发者工具" }));
+    expect(calls).toContainEqual(["preview.devtools", "a"]);
+  });
+
+  it("页面没就绪时地址栏的三个按钮不可点", () => {
+    setup(sampleTab({ state: "stopped", active: false, status: "stopped", previewUrl: null }));
+    for (const name of ["刷新", "在浏览器中打开", "开发者工具"]) {
+      expect((screen.getByRole("button", { name }) as HTMLButtonElement).disabled).toBe(true);
+    }
   });
 
   it("占位区卸载时告诉主进程它不在了", () => {

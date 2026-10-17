@@ -180,6 +180,26 @@ describe("命令行持有的运行空闲后自动停止", { timeout: 30_000 }, (
     await w.dispose();
   });
 
+  it("[DESKTOP-SETTINGS-10] 设置里把空闲停止改为 2 小时：30 分钟时不停止，空闲满 2 小时才停止", async () => {
+    const ctx = await setup();
+    const { w, cli, app, id } = ctx;
+    // 设置页选“2 小时”写进去的就是这个值（120 分钟）
+    await app.result("settings.set", { cliIdleStopMinutes: 120 });
+    const { run, origin } = await startServer(ctx);
+
+    await advanceTo(w, origin, 31 * MIN);
+    expect(await stateOf(ctx, run.runId)).toBe("ready");
+    await advanceTo(w, origin, 120 * MIN - 5_000);
+    expect(await stateOf(ctx, run.runId)).toBe("ready");
+    await advanceTo(w, origin, 120 * MIN + 5_000);
+    await w.until(async () => (await stateOf(ctx, run.runId)) === "stopped");
+    const read = await cli.result<{ entries: LogEntry[] }>("logs.read", { playground: id });
+    expect(read.entries).toContainEqual(
+      expect.objectContaining({ notice: { code: "IDLE_STOPPED", params: { minutes: 120 } } }),
+    );
+    await w.dispose();
+  });
+
   it("[RUN-OWNERSHIP-15] 标签页持有的运行没有任何活动：满 30 分钟仍然 ready", async () => {
     const ctx = await setup();
     const { w, app, id } = ctx;

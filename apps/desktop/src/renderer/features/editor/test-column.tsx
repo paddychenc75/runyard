@@ -38,6 +38,8 @@ function projectTab(entry: string | null): TabRow {
     kind: "server",
     ownedByTab: true,
     attached: null,
+    stale: false,
+    scriptAutoRun: true,
     templateName: null,
     port: 7101,
     startedAt: 1_000,
