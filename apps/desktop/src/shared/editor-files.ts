@@ -93,6 +93,10 @@ export interface EditorFileMethods {
     param: FileTarget & { unsaved?: string };
     result: EditorFileResult<{ restorable: boolean }>;
   };
+  /** 在访达里选中这个文件（不是文本、不能在编辑器里打开时的出路） */
+  "files.reveal": { param: FileTarget; result: undefined };
+  /** 用系统默认程序打开这个文件（太大、不在编辑器里打开时的出路；设置里的“外部编辑器”随设置页） */
+  "files.openExternal": { param: FileTarget; result: undefined };
   /** 开始监听项目文件夹，变化经事件 files.changed 推来；重复调用无副作用 */
   "files.watch": { param: { project: string }; result: EditorFileResult<null> };
   "files.unwatch": { param: { project: string }; result: undefined };
@@ -106,6 +110,8 @@ export const editorFileMethodNames: readonly EditorFileMethod[] = [
   "files.create",
   "files.rename",
   "files.trash",
+  "files.reveal",
+  "files.openExternal",
   "files.watch",
   "files.unwatch",
 ];

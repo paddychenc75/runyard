@@ -128,6 +128,9 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
     };
   });
   const playgrounds = [...rows].sort(compareRows);
+  const entries = new Map(
+    inputs.playgrounds.map((playground) => [playground.id, playground.entry]),
+  );
   const tabs: TabRow[] = [];
   for (const row of rows) {
     if (!inputs.tabIds.includes(row.id)) continue;
@@ -151,6 +154,7 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
       failure: failureOf(row, run, inputs.startErrors?.get(row.id)),
       portFallback: portFallbackOf(row.active ? run : undefined),
       lastFrame: run?.state === "crashed" ? (inputs.lastFrames?.get(row.id) ?? null) : null,
+      entry: entries.get(row.id) ?? null,
       folder: inputs.home === undefined ? row.path : displayPath(row.path, inputs.home),
       phaseMs: inputs.phases?.(row.id) ?? { copy: null, install: null, start: null },
     });

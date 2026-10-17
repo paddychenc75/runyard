@@ -2,6 +2,7 @@ import { useT } from "@runyard/i18n/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { LibraryState } from "../../shared/library-state.ts";
+import { EditorWorkspace } from "../features/editor/EditorWorkspace.tsx";
 import { runningCount } from "../library-view.ts";
 import { OverlayContext } from "../shared/overlay-context.tsx";
 import { OverlayCounter } from "../shared/overlay-counter.ts";
@@ -62,56 +63,60 @@ export function AppShell({ bridge, library }: AppShellProps) {
   const total = library?.playgrounds.length ?? 0;
   return (
     <OverlayContext.Provider value={overlays}>
-      <div className={styles.root}>
-        <Sidebar windowControls={windowControls} total={total} />
-        <TopBar
-          bridge={bridge}
-          modKey={modKey}
-          tabs={tabs}
-          activeTab={activeTab}
-          running={runningCount(library?.playgrounds ?? [])}
-          activeTabRow={activeTabRow}
-          onNew={openPicker}
-          onSelect={(id) => void bridge.call("tab.select", id)}
-          onClose={(id) => void bridge.call("tab.close", id)}
-        />
-        <main className={styles.content}>
-          {activeTabRow === undefined ? (
-            <LibraryPage
-              bridge={bridge}
-              library={library}
-              onNew={openPicker}
-              onCreateFrom={onPick}
-            />
-          ) : (
-            <div className={styles.workspace}>
-              <div className={styles.top}>
-                <TabContent key={activeTabRow.id} bridge={bridge} tab={activeTabRow} />
-                {isScript(activeTabRow) ? (
-                  <ScriptOutput bridge={bridge} tab={activeTabRow} />
-                ) : (
-                  <PreviewPane bridge={bridge} tab={activeTabRow} overlays={overlays} />
+      <EditorWorkspace bridge={bridge} tabs={tabs} activeTab={activeTab}>
+        <div className={styles.root}>
+          <Sidebar windowControls={windowControls} total={total} />
+          <TopBar
+            bridge={bridge}
+            modKey={modKey}
+            tabs={tabs}
+            activeTab={activeTab}
+            running={runningCount(library?.playgrounds ?? [])}
+            activeTabRow={activeTabRow}
+            onNew={openPicker}
+            onSelect={(id) => void bridge.call("tab.select", id)}
+            onClose={(id) => void bridge.call("tab.close", id)}
+          />
+          <main className={styles.content}>
+            {activeTabRow === undefined ? (
+              <LibraryPage
+                bridge={bridge}
+                library={library}
+                onNew={openPicker}
+                onCreateFrom={onPick}
+              />
+            ) : (
+              <div className={styles.workspace}>
+                <div className={styles.top}>
+                  <TabContent key={activeTabRow.id} bridge={bridge} tab={activeTabRow} />
+                  {isScript(activeTabRow) ? (
+                    <ScriptOutput bridge={bridge} tab={activeTabRow} />
+                  ) : (
+                    <PreviewPane bridge={bridge} tab={activeTabRow} overlays={overlays} />
+                  )}
+                </div>
+                {isScript(activeTabRow) ? null : (
+                  <ConsolePanel bridge={bridge} tab={activeTabRow} />
                 )}
               </div>
-              {isScript(activeTabRow) ? null : <ConsolePanel bridge={bridge} tab={activeTabRow} />}
-            </div>
-          )}
-        </main>
-        <CloseConfirmDialog bridge={bridge} request={library?.closeRequest ?? null} />
-        {creating !== null && library !== null ? (
-          <CreateDialog
-            key={creating}
-            bridge={bridge}
-            library={library}
-            templateId={creating}
-            onClose={() => setCreating(null)}
-            onChangeTemplate={openPicker}
-          />
-        ) : null}
-        {pickerOpen && library !== null ? (
-          <PickerDialog library={library} onPick={onPick} onClose={() => setPickerOpen(false)} />
-        ) : null}
-      </div>
+            )}
+          </main>
+          <CloseConfirmDialog bridge={bridge} request={library?.closeRequest ?? null} />
+          {creating !== null && library !== null ? (
+            <CreateDialog
+              key={creating}
+              bridge={bridge}
+              library={library}
+              templateId={creating}
+              onClose={() => setCreating(null)}
+              onChangeTemplate={openPicker}
+            />
+          ) : null}
+          {pickerOpen && library !== null ? (
+            <PickerDialog library={library} onPick={onPick} onClose={() => setPickerOpen(false)} />
+          ) : null}
+        </div>
+      </EditorWorkspace>
     </OverlayContext.Provider>
   );
 }

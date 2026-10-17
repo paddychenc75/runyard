@@ -284,6 +284,57 @@ export type CatalogMessages = {
   "desktop.duration.seconds.label": {
     seconds: string | number;
   };
+  "desktop.editor.binary.body": {
+    name: string | number;
+    size: string | number;
+  };
+  "desktop.editor.binary.title": Record<never, never>;
+  "desktop.editor.breadcrumb.aria": Record<never, never>;
+  "desktop.editor.closeCancel.action": Record<never, never>;
+  "desktop.editor.closeDiscard.action": Record<never, never>;
+  "desktop.editor.closePrompt.body": Record<never, never>;
+  "desktop.editor.closePrompt.title": {
+    name: string | number;
+  };
+  "desktop.editor.closeSave.action": Record<never, never>;
+  "desktop.editor.empty.body": Record<never, never>;
+  "desktop.editor.empty.title": Record<never, never>;
+  "desktop.editor.failed.body": {
+    name: string | number;
+  };
+  "desktop.editor.failed.title": Record<never, never>;
+  "desktop.editor.loading.label": Record<never, never>;
+  "desktop.editor.openExternal.action": Record<never, never>;
+  "desktop.editor.plainLargeNotice.body": Record<never, never>;
+  "desktop.editor.plainNotice.body": Record<never, never>;
+  "desktop.editor.reveal.action": Record<never, never>;
+  "desktop.editor.saveFailed.title": Record<never, never>;
+  "desktop.editor.saveFailedOther.body": {
+    name: string | number;
+  };
+  "desktop.editor.saveFailedPermission.body": {
+    name: string | number;
+  };
+  "desktop.editor.saveFailedReadOnly.body": {
+    name: string | number;
+  };
+  "desktop.editor.saveFailedRetry.action": Record<never, never>;
+  "desktop.editor.statusFailed.label": Record<never, never>;
+  "desktop.editor.statusSaved.label": Record<never, never>;
+  "desktop.editor.statusUnsaved.label": Record<never, never>;
+  "desktop.editor.tabClose.label": {
+    name: string | number;
+  };
+  "desktop.editor.tabUnsaved.label": {
+    name: string | number;
+  };
+  "desktop.editor.tabs.aria": Record<never, never>;
+  "desktop.editor.tooLarge.body": {
+    limit: string | number;
+    name: string | number;
+    size: string | number;
+  };
+  "desktop.editor.tooLarge.title": Record<never, never>;
   "desktop.empty.templates.hint": Record<never, never>;
   "desktop.error.title.label": {
     title: string | number;

@@ -1,0 +1,27 @@
+.root {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-7);
+  border-block-end: 1px solid var(--color-line-hairline);
+  background: var(--color-fill-warning-tint);
+  color: var(--color-status-warning-text);
+  font-size: var(--text-secondary-size);
+  line-height: var(--text-secondary-line-height);
+}
+
+.root[data-tone="danger"] {
+  background: var(--color-fill-danger-tint);
+  color: var(--color-status-danger-text);
+}
+
+.text {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.title {
+  margin-inline-end: var(--space-3);
+  font-weight: var(--text-section-title-weight);
+}

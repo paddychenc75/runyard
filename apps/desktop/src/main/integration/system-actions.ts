@@ -8,6 +8,10 @@ export class ElectronSystemActions implements SystemActions {
     shell.showItemInFolder(path);
   }
 
+  openPath(path: string): void {
+    void shell.openPath(path);
+  }
+
   copyText(text: string): void {
     clipboard.writeText(text);
   }

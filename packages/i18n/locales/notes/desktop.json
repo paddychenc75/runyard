@@ -18,6 +18,36 @@
   "desktop.duration.seconds.label": {
     "seconds": "秒数，已按语言格式化的数字"
   },
+  "desktop.editor.binary.body": {
+    "name": "文件名",
+    "size": "已格式化的文件大小"
+  },
+  "desktop.editor.closePrompt.title": {
+    "name": "文件名"
+  },
+  "desktop.editor.failed.body": {
+    "name": "文件名"
+  },
+  "desktop.editor.saveFailedOther.body": {
+    "name": "文件名"
+  },
+  "desktop.editor.saveFailedPermission.body": {
+    "name": "文件名"
+  },
+  "desktop.editor.saveFailedReadOnly.body": {
+    "name": "文件名"
+  },
+  "desktop.editor.tabClose.label": {
+    "name": "文件名（用户的内容）"
+  },
+  "desktop.editor.tabUnsaved.label": {
+    "name": "文件名（用户的内容）"
+  },
+  "desktop.editor.tooLarge.body": {
+    "name": "文件名",
+    "size": "已格式化的文件大小",
+    "limit": "已格式化的上限大小"
+  },
   "desktop.error.title.label": {
     "title": "错误的标题，来自 errors.<代码>.title，已是翻译好的句子"
   },

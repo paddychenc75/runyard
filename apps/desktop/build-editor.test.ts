@@ -13,6 +13,7 @@ describe("buildEditor", () => {
     for (const file of [
       "editor/editor.js",
       "editor/editor.css",
+      "editor/nls-zh-cn.js",
       "workers/editor.worker.js",
       "workers/ts.worker.js",
       "editor-smoke.js",

@@ -81,6 +81,8 @@ export interface TabRow {
   portFallback: TabPortFallback | null;
   /** 崩溃前预览的最后一帧（PNG 的 data 地址）；没有是 null */
   lastFrame: string | null;
+  /** 入口文件（项目内相对路径）：第一次打开项目时编辑器先打开它；项目没有记录是 null */
+  entry: string | null;
   /** 项目文件夹的显示写法（主目录缩成 ~），启动进度画面的说明里用 */
   folder: string;
   /** 启动清单里各步已用的时间；这一步没跑完或没量到是 null */

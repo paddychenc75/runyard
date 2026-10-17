@@ -19,3 +19,6 @@ export const RUNTIME_GLOBAL = "__runyardEditorRuntime";
 export const EDITOR_SCRIPT_URL = "app://runyard/editor/editor.js";
 export const EDITOR_STYLE_URL = "app://runyard/editor/editor.css";
 export const WORKER_BASE_URL = "app://runyard/workers/";
+
+/** Monaco 的中文界面文字（查找框、操作名）。必须在编辑器脚本之前加载，英文界面不加载 */
+export const EDITOR_NLS_ZH_SCRIPT_URL = "app://runyard/editor/nls-zh-cn.js";

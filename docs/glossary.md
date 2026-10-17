@@ -21,6 +21,7 @@
 | 工具链 | `toolchain` | — | — | — | PRD #prd-glossary；技术设计 §3.1 |
 | 平台层 | `platform` | — | — | — | 技术设计 §3.2、§7.1 |
 | 标签页 | `tab` | — | — | — | PRD #prd-run-ownership；技术设计 §4.1 |
+| 文件标签 | `fileTab` | file tab | — | — | PRD #prd-editor；规格 desktop/editor「文件标签」 |
 | 预览 | `preview` | — | — | — | 技术设计 §2.1、§4.4 |
 | 命令行 | `cli` | — | — | — | PRD #prd-cli；技术设计 §3.2 |
 | 智能体 | `agent` | — | — | — | PRD #prd-glossary；技术设计 §5.1 |

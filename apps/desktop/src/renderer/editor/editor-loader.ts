@@ -1,4 +1,6 @@
+import type { Locale } from "@runyard/i18n";
 import {
+  EDITOR_NLS_ZH_SCRIPT_URL,
   EDITOR_SCRIPT_URL,
   EDITOR_STYLE_URL,
   type EditorRuntime,
@@ -10,12 +12,14 @@ import {
 
 let loading: Promise<EditorRuntime> | undefined;
 
-function appendScript(doc: Document): Promise<void> {
+function appendScript(doc: Document, src: string): Promise<void> {
   return new Promise((resolve, reject) => {
     const script = doc.createElement("script");
-    script.src = EDITOR_SCRIPT_URL;
+    script.src = src;
     script.addEventListener("load", () => resolve());
-    script.addEventListener("error", () => reject(new Error("editor script failed to load")));
+    script.addEventListener("error", () =>
+      reject(new Error(`editor script failed to load: ${src}`)),
+    );
     doc.head.append(script);
   });
 }
@@ -27,11 +31,17 @@ function appendStyle(doc: Document): void {
   doc.head.append(link);
 }
 
-export function loadEditorRuntime(doc: Document = document): Promise<EditorRuntime> {
+// 中文界面：Monaco 在载入时就取好界面文字，所以中文文字包要先于编辑器脚本载入（K8 证据“装法”第 11 条）；
+// 语言以第一次调用为准，运行中切换语言要重新加载界面。
+export function loadEditorRuntime(
+  doc: Document = document,
+  locale?: Locale,
+): Promise<EditorRuntime> {
   if (loading !== undefined) return loading;
   const attempt = (async () => {
     appendStyle(doc);
-    await appendScript(doc);
+    if (locale === "zh-CN") await appendScript(doc, EDITOR_NLS_ZH_SCRIPT_URL);
+    await appendScript(doc, EDITOR_SCRIPT_URL);
     const pending = (doc.defaultView as unknown as Record<string, unknown> | null)?.[
       RUNTIME_GLOBAL
     ];
@@ -46,9 +56,13 @@ export function loadEditorRuntime(doc: Document = document): Promise<EditorRunti
 }
 
 /** 应用启动后空闲时预加载，让第一次打开文件时编辑器已经就绪（规格 desktop/editor 场景 04 的 150 ms 目标，负责人决定预加载，K8） */
-export function preloadEditorWhenIdle(win: Window = window, doc: Document = document): void {
+export function preloadEditorWhenIdle(
+  win: Window = window,
+  doc: Document = document,
+  locale?: Locale,
+): void {
   const start = (): void => {
-    loadEditorRuntime(doc).catch((error: unknown) => {
+    loadEditorRuntime(doc, locale).catch((error: unknown) => {
       // 预加载失败不打扰界面；真正打开编辑器时 loadEditorRuntime 会重试并把错误交给调用方
       console.error("editor preload failed", error);
     });

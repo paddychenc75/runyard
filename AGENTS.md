@@ -25,7 +25,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `docs/guides/` | 操作手册和命令表。有手册的任务按手册做，不要临场发挥 |
 | `docs/releases/` | 每个版本给负责人看的白话说明（`<版本>.md`）。更新日志 `CHANGELOG.md` 在根目录，自动生成，不要手改 |
 | `docs/glossary.md` | 术语表：中文术语、唯一的英文标识符、禁用的同义词 |
-| `apps/desktop/` | 桌面应用（Electron）：主进程、预加载脚本、界面三部分。React 界面，主窗口外壳（悬浮侧栏、顶栏标签条、主题与语言）已有；内容区是资源库列表（列、运行中排最前、实时更新、“N 个运行中”），操作列是“打开”或“停止运行”加更多菜单（打开、停止运行、在访达中显示、复制路径）、新建（模板选择器加新建弹窗）和页面预览；从源码 `pnpm dev` 打开。关闭标签页（运行中先确认）已有；打开与更多菜单、标签页内容、编辑器、终端等随 M2 后续 PR |
+| `apps/desktop/` | 桌面应用（Electron）：主进程、预加载脚本、界面三部分。React 界面，主窗口外壳（悬浮侧栏、顶栏标签条、主题与语言）已有；内容区是资源库列表（列、运行中排最前、实时更新、“N 个运行中”），操作列是“打开”或“停止运行”加更多菜单（打开、停止运行、在访达中显示、复制路径）、新建（模板选择器加新建弹窗）和页面预览；从源码 `pnpm dev` 打开。关闭标签页（运行中先确认）已有；项目标签页里有代码编辑器和文件标签（Monaco，`renderer/features/editor/`，打开、切换、关闭、⌘S 保存、恢复上次的文件标签）；文件树、自动保存三档与外部修改、智能提示、实时结果、终端等随 M3 后续 PR |
 | `packages/platform/` | 平台层：`Platform` 接口、`getPlatform()`、路径与名称校验、`darwin` 和薄 `linux` 实现、契约测试（目前有接口、paths、ipc、spawnDetached、exec、proc、ports、fs（含 macOS 废纸篓、`readBytes` / `listFiles` / `appendFile` / `removeFile`）、system（版本串）、watch、env（登录 shell 解析）、tools、shell 的实现，其余是占位，随后续 issue 加入） |
 | `packages/protocol/` | 所有跨进程约定（目前有错误码、提示码、枚举、`RunyardError` / `Notice` / `LogEntry` / `Owner`、分帧、`Frame`、握手消息、版本比对、方法与事件的登记表、`Playground` / `RunSnapshot`、磁盘文件格式与升级链、`template.json` / `runner.json` / 工具定义的格式与校验） |
 | `packages/tokens/` | 设计变量：`src/tokens.json` 是唯一来源，`pnpm tokens:build` 生成 `generated/` 下的 CSS 变量、TS 常量、编辑器配色，并重写 `docs/design/tokens.md` 的表；不导入任何包 |
