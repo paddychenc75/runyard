@@ -1,5 +1,6 @@
 import { existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import type { Locator } from "@playwright/test";
 import { expect, test } from "./support/fixtures.ts";
 
 test("资源库：搜索与筛选、重命名、改备注、移到废纸篓", async ({ launch }) => {
@@ -62,4 +63,36 @@ test("资源库：搜索与筛选、重命名、改备注、移到废纸篓", as
   expect(existsSync(join(runyard.library, "alpha-renamed"))).toBe(false);
   const trash = join(runyard.root, ".Trash");
   expect(readdirSync(trash).some((name) => name.startsWith("alpha-renamed"))).toBe(true);
+});
+
+test("资源库表格：窗口放得下和放不下时，表头与每一行逐列的 x 位置和宽度一致（#348）", async ({
+  launch,
+}) => {
+  const runyard = await launch();
+  const { page, app } = runyard;
+  await runyard.cli("new", "html", "alpha");
+  await runyard.cli("new", "python", "beta");
+  await page.keyboard.press("Escape");
+  const table = page.getByRole("table", { name: "Playgrounds" });
+  await expect(table.getByRole("row").filter({ hasText: "alpha" })).toHaveCount(1);
+
+  for (const width of [1600, 1200, 900]) {
+    await app.evaluate(
+      ({ BrowserWindow }, w) => BrowserWindow.getAllWindows()[0]?.setSize(w, 800),
+      width,
+    );
+    await expect.poll(() => page.evaluate(() => window.innerWidth)).toBeLessThanOrEqual(width);
+    const boxes = async (cells: Locator): Promise<{ left: number; width: number }[]> => {
+      const out: { left: number; width: number }[] = [];
+      for (const cell of await cells.all()) {
+        const box = await cell.boundingBox();
+        out.push({ left: Math.round(box?.x ?? -1), width: Math.round(box?.width ?? -1) });
+      }
+      return out;
+    };
+    const header = await boxes(table.getByRole("columnheader"));
+    const firstRow = await boxes(table.getByRole("row").nth(1).getByRole("cell"));
+    expect(header.length).toBe(8);
+    expect(firstRow.slice(0, 8)).toEqual(header);
+  }
 });
