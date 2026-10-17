@@ -1,6 +1,7 @@
 import { isLocale, type Locale } from "@runyard/i18n";
 
-// 开发时的启动参数和环境变量。用法：pnpm dev [--root <目录>] [--lang en|zh-CN] [--theme system|light|dark]
+// 启动参数和环境变量。用法：pnpm dev [--root <目录>] [--lang en|zh-CN] [--theme system|light|dark]
+// 另有 --install-cli / --uninstall-cli [--cli-bin-dir <目录>]：命令行接到 PATH 或撤掉（打包后的应用）
 // 不认识的参数原样忽略（Chromium 自己也会收到一些）。
 
 export interface DesktopArgs {
@@ -11,6 +12,16 @@ export interface DesktopArgs {
   theme: ThemeChoice | undefined;
   /** 冒烟自检：窗口不显示，走一遍“运行再预览”后自己退出 */
   smoke: boolean;
+  /** 把随应用安装的 runyard 接到 PATH 上或撤掉，做完就退出、不开窗口；设置页里的按钮随后续 issue */
+  cliLink: { action: "install" | "uninstall"; binDir: string | undefined } | undefined;
+}
+
+/**
+ * 用户给的参数。源码运行（electron dist/main/index.mjs）时 argv 是 [electron, 脚本, ...参数]，
+ * 打好的包里是 [可执行文件, ...参数]，没有脚本这一项：按 2 切会把包里的第一个参数（如 --root）吞掉。
+ */
+export function userArgv(argv: readonly string[], defaultApp: boolean | undefined): string[] {
+  return argv.slice(defaultApp === true ? 2 : 1);
 }
 
 export type ThemeChoice = "system" | "light" | "dark";
@@ -44,9 +55,19 @@ export function parseDesktopArgs(
   if (theme !== undefined && !isThemeChoice(theme)) {
     return { ok: false, problem: `unsupported theme ${theme}` };
   }
+  const binDir = takeValue(argv, "--cli-bin-dir");
+  if (binDir === "missing") return { ok: false, problem: "--cli-bin-dir needs a directory" };
+  const install = argv.includes("--install-cli");
+  if (install && argv.includes("--uninstall-cli")) {
+    return { ok: false, problem: "--install-cli and --uninstall-cli cannot be combined" };
+  }
   return {
     ok: true,
     args: {
+      cliLink:
+        install || argv.includes("--uninstall-cli")
+          ? { action: install ? "install" : "uninstall", binDir }
+          : undefined,
       root: root === undefined || root === "" ? undefined : root,
       lang: lang === undefined ? undefined : lang,
       theme,

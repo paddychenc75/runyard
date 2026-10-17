@@ -40,7 +40,7 @@ pnpm --filter @runyard/desktop smoke             # 冒烟自检：窗口不显�
 - 窗口底色取自 `@runyard/tokens` 的 `windowBackground`（随系统深浅色），界面画出来之前显示，避免启动白闪；`tokens` 只为这一件事导入（技术设计 §3.2）。
 - 标签页状态在主进程（`main/workspace-tabs.ts`，只记打开的项目标签的顺序和当前标签，资源库固定在最前不在表里），随 `library.changed` 一起推给界面（`tabs`、`activeTab`）。项目被删时它的标签随之去掉。
 - 模板选择器（#172，规格 desktop/create-flow 的 01 至 05）：`renderer/app/PickerDialog.tsx`（浮层，用 `@runyard/ui` 的 `ListPicker`、`SearchField`、`Kbd`；打开期间 `useOverlay(true)`，预览区据此换成截图），分组数据在 `renderer/picker-view.ts`（顶部“最近使用”最多三个，其后按类型）。打开方式两种：空资源库的首次启动（`AppShell` 第一次读到状态时判断一次，不做环境检查）和应用菜单的“新建…”（⌘N，`main/native-ui/app-menu.ts`，焦点在预览视图里也有效，经 `picker.open` 事件通知界面）。“最近使用”由主进程按项目的创建时间推出（`LibraryState.recentTemplates`），不另存。选择器只用已有的模板列表，不触发工具检测；缺工具的模板照常可选。**接缝**：选好模板后 `AppShell.onPick(templateId)` 是交给下一步的唯一出口，新建弹窗（#173）把它换成“打开新建弹窗”；在那之前先用默认名称直接创建。搜索框现在只拿焦点，过滤是后续切片。
-- 还没有：`runyard://` 链接、标签页恢复、设置里的语言和主题切换、应用菜单里 ⌘N 以外的项（其余用 Electron 的系统角色）、关窗口时的提示、安装包里随带管理进程、命令行和内置模板（#194：现在打出的包能开窗，但连不上管理进程，列表区显示“连不上管理进程”）、命令行装到 PATH、签名与公证（第一版不做）。
+- 还没有：`runyard://` 链接、标签页恢复、设置里的语言和主题切换、应用菜单里 ⌘N 以外的项（其余用 Electron 的系统角色）、关窗口时的提示、设置页里“安装命令行工具”的按钮（现在只有 `--install-cli` 参数，见“随包的运行时”）、签名与公证（第一版不做）。
 
 ## 打包（#193）
 
@@ -49,6 +49,13 @@ pnpm --filter @runyard/desktop smoke             # 冒烟自检：窗口不显�
 - 签名：`mac.identity: "-"`（ad-hoc）加 `resetAdHocDarwinSignature`，打包后 `codesign --verify --deep --strict`，不过就失败。electron-builder 会警告 hardened runtime 与 ad-hoc 签名要 `disable-library-validation`；实测包能正常启动，真机 Gatekeeper 的画面未验证。
 - 图标：`build/icon.png` 是 `docs/design/logo/final/png/icon-dock-1024.png` 的副本，`packaging/icon.test.ts` 核对没有脱节；electron-builder 自己转 `.icns`。
 - 用户第一次打开的步骤：`docs/guides/first-open-unsigned-app.md`。
+
+## 随包的运行时（#194）
+
+- 打包时 `packaging/runtime-bundle.ts` 用 esbuild 把 `packages/supervisor/src/main-packaged.ts` 和 `packages/cli/src/main-packaged.ts` 各打成单个文件，连同模板数据（`templates/` 的 builtin、runners、tools）、清单 `manifest.json`（`version`、`build` = 版本加随机串、模板数据的 sha256）放进 `Contents/Resources/runyard/`，启动脚本 `packaging/bin/runyard` 放进 `Contents/Resources/bin/`（electron-builder 的 `extraResources`，在 asar 之外：应用的可执行文件要把它们当 Node 脚本直接运行）。模板没有打成压缩包：资源目录本身只读且随应用签名，现成的目录直接给管理进程读；清单里的校验和供以后核对。
+- 管理进程和命令行都由应用的可执行文件以 `ELECTRON_RUN_AS_NODE=1` 运行（`runAsNode` 开关必须开，`package` 任务断言）。命令行的版本和构建标识取清单，与应用一致；`runyard doctor` 的 `cli.kind` 是 `app`。
+- 应用主进程按 `app.isPackaged` 选 `DesktopRuntime`（`composition-root.ts`）：源码时管理进程入口在仓库里，打包后是 `runyard/supervisor.mjs`；客户端的版本与构建标识也取清单。注意打好的包里 `process.argv` 没有脚本这一项，用户参数用 `userArgv`（`parse-args.ts`）取，不要自己 `slice(2)`。
+- 命令行接到 PATH（macOS，技术设计 §5.4）：`integration/cli-link.ts` 在 `~/.local/bin`（可用 `--cli-bin-dir` 指定）建指向 `Contents/Resources/bin/runyard` 的符号链接，只替换或删除指向某个 Runyard 应用启动脚本的链接，别人的 `runyard` 不碰（返回 `conflict`）。入口是应用的 `--install-cli` / `--uninstall-cli` 参数（做完退出，不开窗口，退出码 0，冲突 9）；设置页的按钮随设置页 issue，`~/.local/bin` 是否在 PATH 上也由那时提示。
 
 ## 子目录地图
 

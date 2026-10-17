@@ -1,0 +1,15 @@
+#!/bin/sh
+# 随应用安装的命令行入口（技术设计 §5.4）。PATH 上的 runyard 是指向本文件的符号链接，
+# 所以先顺着链接找到本文件真实所在的 Contents/Resources/bin，再用应用自带的可执行文件
+# 当 Node 运行同目录树里的 runyard/cli.mjs。macOS 的 readlink 没有可靠的 -f，用循环展开。
+self="$0"
+while [ -h "$self" ]; do
+  dir=$(cd "$(dirname "$self")" && pwd)
+  link=$(readlink "$self")
+  case "$link" in
+    /*) self="$link" ;;
+    *) self="$dir/$link" ;;
+  esac
+done
+resources=$(cd "$(dirname "$self")/.." && pwd)
+ELECTRON_RUN_AS_NODE=1 exec "$resources/../MacOS/Runyard" "$resources/runyard/cli.mjs" "$@"

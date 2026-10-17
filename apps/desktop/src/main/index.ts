@@ -5,13 +5,19 @@ import { windowBackground } from "@runyard/tokens";
 import { app, type BrowserWindow, ipcMain, Menu, nativeTheme, net, protocol } from "electron";
 import { desktopChannels } from "../shared/desktop-bridge.ts";
 import { APP_ORIGIN, APP_SCHEME, resolveAppFile } from "./app-protocol.ts";
-import { connectToSupervisor, unavailableClient } from "./composition-root.ts";
+import { connectToSupervisor, type DesktopRuntime, unavailableClient } from "./composition-root.ts";
 import { EditorFileService } from "./editor-files/file-service.ts";
 import {
   buildBootstrapInfo,
   closeKeepsAppAlive,
   currentPlatform,
 } from "./integration/bootstrap-info.ts";
+import {
+  cliLauncherPath,
+  defaultCliBinDir,
+  installCliLink,
+  uninstallCliLink,
+} from "./integration/cli-link.ts";
 import { createMainWindow } from "./integration/main-window.ts";
 import { claimSingleInstance, focusWindow } from "./integration/single-instance.ts";
 import { ElectronSystemActions } from "./integration/system-actions.ts";
@@ -20,7 +26,12 @@ import { keepAliveAfterClose } from "./integration/window-lifecycle.ts";
 import { type IpcHost, registerBridgeHandlers, requestPicker } from "./ipc-handlers.ts";
 import { type LibraryClient, LibraryController } from "./library-controller.ts";
 import { buildAppMenu } from "./native-ui/app-menu.ts";
-import { type DesktopArgs, parseDesktopArgs, resolveDesktopLocale } from "./parse-args.ts";
+import {
+  type DesktopArgs,
+  parseDesktopArgs,
+  resolveDesktopLocale,
+  userArgv,
+} from "./parse-args.ts";
 import { ElectronPreviewHost } from "./preview-view.ts";
 import { registerQuitFlow } from "./quit-coordinator.ts";
 import { runSmoke } from "./smoke.ts";
@@ -43,6 +54,12 @@ protocol.registerSchemesAsPrivileged([
 ]);
 
 let mainWindow: BrowserWindow | null = null;
+
+function runtime(): DesktopRuntime {
+  return app.isPackaged
+    ? { kind: "packaged", resourcesPath: process.resourcesPath }
+    : { kind: "source", moduleUrl: import.meta.url };
+}
 
 async function main(args: DesktopArgs): Promise<void> {
   const locale = resolveDesktopLocale(args.lang, app.getPreferredSystemLanguages());
@@ -76,7 +93,7 @@ async function main(args: DesktopArgs): Promise<void> {
   let clientId = "";
   let close = (): void => {};
   try {
-    const connected = await connectToSupervisor(import.meta.url, args.root);
+    const connected = await connectToSupervisor(runtime(), args.root);
     client = connected.client;
     clientId = connected.clientId;
     close = () => connected.client.close();
@@ -153,7 +170,23 @@ async function main(args: DesktopArgs): Promise<void> {
   }
 }
 
-const parsed = parseDesktopArgs(process.argv.slice(2), process.env);
+// 命令行装到 PATH 或撤掉：在终端里做完就退出，不开窗口、不占单实例锁
+async function runCliLink(request: NonNullable<DesktopArgs["cliLink"]>): Promise<number> {
+  if (!app.isPackaged) {
+    diagnostic("the command line can only be linked from an installed app");
+    return 2;
+  }
+  const binDir = request.binDir ?? defaultCliBinDir();
+  const result =
+    request.action === "install"
+      ? await installCliLink(binDir, cliLauncherPath(process.resourcesPath))
+      : await uninstallCliLink(binDir);
+  // i18n-allow: 终端里给开发者和脚本看的一行，--install-cli 没有界面
+  await new Promise((done) => process.stdout.write(`${result.status} ${result.link}\n`, done));
+  return result.status === "conflict" ? 9 : 0;
+}
+
+const parsed = parseDesktopArgs(userArgv(process.argv, process.defaultApp), process.env);
 if (!parsed.ok) {
   diagnostic(`usage error: ${parsed.problem}`);
   app.exit(2);
@@ -168,7 +201,9 @@ if (!parsed.ok) {
       root: args.root,
     }),
   );
-  if (claimSingleInstance(app, () => focusWindow(mainWindow))) {
+  if (args.cliLink !== undefined) {
+    void runCliLink(args.cliLink).then((code) => app.exit(code));
+  } else if (claimSingleInstance(app, () => focusWindow(mainWindow))) {
     void app.whenReady().then(() => main(args));
   }
 }

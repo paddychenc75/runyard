@@ -1,3 +1,4 @@
+import { join } from "node:path";
 import type { Configuration } from "electron-builder";
 import { electronFusesOption, type FuseSettings } from "./fuses.ts";
 
@@ -14,6 +15,8 @@ export interface BuilderInputs {
   electronDist: string;
   electronVersion: string;
   fuses: Readonly<FuseSettings>;
+  /** runtime-bundle.ts 的输出目录：里面的 runyard/ 和 bin/ 作为额外资源放进 Contents/Resources */
+  runtimeDir: string;
 }
 
 export function builderConfig(inputs: BuilderInputs): Configuration {
@@ -29,6 +32,11 @@ export function builderConfig(inputs: BuilderInputs): Configuration {
     files: ["dist/**/*", "package.json", "!**/*.map"],
     asar: true,
     electronFuses: electronFusesOption(inputs.fuses),
+    // 管理进程、命令行、模板数据和启动脚本放在 asar 之外：应用的可执行文件要把它们当 Node 脚本直接运行
+    extraResources: [
+      { from: join(inputs.runtimeDir, "runyard"), to: "runyard" },
+      { from: join(inputs.runtimeDir, "bin"), to: "bin" },
+    ],
     npmRebuild: false,
     mac: {
       category: "public.app-category.developer-tools",
