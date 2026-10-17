@@ -36,6 +36,8 @@ test("链接：open 打开已有项目，不存在的项目给提示", async ({ 
   // 选择器只在应用读到空资源库时弹出：先等它出现并关掉，再让命令行建项目，否则命令行抢先时选择器根本不会出现
   await closePicker(page);
   await runyard.cli("new", "html", "demo");
+  // 应用的资源库视图要先看到新项目，链接才找得到它
+  await expect(page.getByRole("row", { name: /demo/ })).toBeVisible();
   await openLink(runyard, "runyard://open/nope");
   await expect(page.getByRole("region", { name: "Notices" })).toContainText(
     "There is no playground named nope",
