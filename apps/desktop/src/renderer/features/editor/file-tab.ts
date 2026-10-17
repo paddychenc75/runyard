@@ -25,7 +25,7 @@ export interface FileTab {
   eol: "lf" | "crlf" | "none";
   /** 原文件开头有 BOM：编辑器里不显示，写回时补上 */
   bom: boolean;
-  /** 原文件的换行符不统一（保存时统一成多数那种）；提示由自动保存那个 issue 做 */
+  /** 原文件的换行符不统一（保存时统一成多数那种）；界面据此提示，第一次保存成功后清掉，不重复提示 */
   mixedEol: boolean;
   size: number;
   mode: HighlightMode;
@@ -33,6 +33,12 @@ export interface FileTab {
   saveError: SaveProblem | null;
   /** view 为 failed 时的原因 */
   failure: EditorFileError | null;
+  /** 有未保存修改时磁盘上的文件被外部改了：等用户选“用磁盘上的版本”或“保留我的修改”，期间这个文件不自动保存 */
+  conflict: boolean;
+  /** 文件在磁盘上被外部删了：标签和内容留着，只有 ⌘S 重新创建，自动保存不会 */
+  deleted: boolean;
+  /** 正在写入 */
+  saving: boolean;
 }
 
 export function loadingTab(path: string, id: string = path): FileTab {
@@ -49,6 +55,9 @@ export function loadingTab(path: string, id: string = path): FileTab {
     mode: "full",
     saveError: null,
     failure: null,
+    conflict: false,
+    deleted: false,
+    saving: false,
   };
 }
 
@@ -100,5 +109,7 @@ export function withContent(tab: FileTab, content: FileContent): FileTab {
     mode: highlightModeOf(content.size),
     saveError: null,
     failure: null,
+    conflict: false,
+    deleted: false,
   };
 }

@@ -1,11 +1,13 @@
 import type { DesktopBridge } from "../../../shared/desktop-bridge.ts";
 import type { EditorFileResult } from "../../../shared/editor-files.ts";
 import type { TabRow } from "../../../shared/library-state.ts";
-import { type AutosaveMode, EditorSession, type SessionFiles } from "./editor-session.ts";
+import { watchProject } from "../../shared/project-watch.ts";
+import { EditorSession } from "./editor-session.ts";
 import { localOpenFilesMemory } from "./local-open-files-memory.ts";
+import type { AutosaveMode, SessionFiles } from "./session-types.ts";
 
 // 每个打开着的项目标签一个编辑会话：切到别的标签再切回来，未保存的修改和选中的文件都还在。
-// 项目标签被关掉，它的会话随之丢弃（未保存修改的处理随 #260 的“关闭前先写入”）。
+// 项目标签被关掉，它的会话随之丢弃；关之前先 flushProject 写入或询问（DESKTOP-EDITOR-27），退出前 flushAll（DESKTOP-EDITOR-28）。
 
 const ioFailed = (path: string): EditorFileResult<never> => ({
   ok: false,
@@ -24,6 +26,7 @@ async function guarded<T>(path: string, call: () => Promise<EditorFileResult<T>>
 
 export function sessionFilesFor(bridge: DesktopBridge, project: string): SessionFiles {
   return {
+    watch: (listener) => watchProject(bridge, project, (payload) => listener(payload.changes)),
     read: (path) => guarded(path, () => bridge.call("files.read", { project, path })),
     write: (path, content, eol) =>
       guarded(path, () =>
@@ -65,6 +68,27 @@ export class EditorSessions {
 
   /** 只保留还开着的项目标签的会话 */
   retain(open: ReadonlySet<string>): void {
-    for (const id of [...this.#sessions.keys()]) if (!open.has(id)) this.#sessions.delete(id);
+    for (const [id, session] of [...this.#sessions]) {
+      if (open.has(id)) continue;
+      session.dispose();
+      this.#sessions.delete(id);
+    }
+  }
+
+  /** 关闭这个项目标签页之前：未保存的修改先写入（自动保存关着的先问）。false = 中止关闭 */
+  async flushProject(id: string): Promise<boolean> {
+    const session = this.#sessions.get(id);
+    if (session === undefined) return true;
+    if (session.mayAsk()) await this.#bridge.call("tab.select", id);
+    return session.flushForClose();
+  }
+
+  /** 退出应用之前：每个项目依次来，要问用户的先切到那个项目标签页让询问看得见。false = 中止退出 */
+  async flushAll(): Promise<boolean> {
+    for (const [id, session] of [...this.#sessions]) {
+      if (session.mayAsk()) await this.#bridge.call("tab.select", id);
+      if (!(await session.flushForClose())) return false;
+    }
+    return true;
   }
 }

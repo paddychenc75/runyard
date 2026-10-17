@@ -29,13 +29,25 @@ export function FileTabs({ tabs, active, onSelect, onClose }: FileTabsProps) {
               type="button"
               role="tab"
               aria-selected={selected}
-              aria-label={dirty ? t("desktop.editor.tabUnsaved.label", { name }) : undefined}
+              aria-label={
+                tab.deleted
+                  ? t("desktop.editor.tabDeleted.label", { name })
+                  : dirty
+                    ? t("desktop.editor.tabUnsaved.label", { name })
+                    : undefined
+              }
               data-path={tab.path}
               className={styles.tab}
               onClick={() => onSelect(tab.path)}
             >
               <UserText>{name}</UserText>
-              {dirty ? <span aria-hidden="true" className={styles.dirty} data-dirty="" /> : null}
+              {tab.deleted ? (
+                <span aria-hidden="true" className={styles.deleted}>
+                  {t("desktop.editor.tabDeletedMark.label")}
+                </span>
+              ) : dirty ? (
+                <span aria-hidden="true" className={styles.dirty} data-dirty="" />
+              ) : null}
             </button>
             <IconButton
               icon="close"

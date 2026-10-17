@@ -191,7 +191,7 @@ describe("写", () => {
     }
   });
 
-  it("文件被外部删掉后保存会重新创建；上级文件夹也没了就失败，不替用户建文件夹", async () => {
+  it("[DESKTOP-EDITOR-35] 文件被外部删掉后保存会重新创建；上级文件夹也没了就失败，不替用户建文件夹", async () => {
     const p = makeTestProject();
     mkdirSync(p.at("src"));
     ok(await p.service.write(PROJECT, "src/old.ts", "again"));

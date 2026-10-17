@@ -1,11 +1,11 @@
 // @vitest-environment jsdom
 import { beforeAll, describe, expect, it } from "vitest";
 import type { EditorRuntime } from "../../editor/runtime-types.ts";
-import type { SessionState } from "./editor-session.ts";
 import { languageOf } from "./file-language.ts";
 import { type FileTab, loadingTab, withContent } from "./file-tab.ts";
 import { buildHost } from "./monaco-host.ts";
 import { installMonacoTestEnv } from "./monaco-test-env.ts";
+import type { SessionState } from "./session-types.ts";
 
 // 用真的 Monaco 和 Shiki（jsdom 里没有版面和后台线程，只测内容、选区、着色和主题这些不靠它们的行为）
 
@@ -126,6 +126,33 @@ describe("改名后的编辑器", () => {
     expect(editor.getPosition()).toMatchObject({ lineNumber: 2, column: 7 });
     editor.trigger("keyboard", "type", { text: "x" });
     expect(edits.at(-1)?.[0]).toBe("src/ui/Button.tsx");
+    host.dispose();
+  });
+});
+
+describe("外部修改后的编辑器", () => {
+  const tenLines = Array.from({ length: 10 }, (_, i) => `row ${i + 1} abcdef`).join("\n");
+  const twentyLines = Array.from({ length: 20 }, (_, i) => `new ${i + 1} abcdef`).join("\n");
+
+  it("[DESKTOP-EDITOR-31] 内容被磁盘上的新内容换掉后，光标仍在原来的第 5 行第 3 列", () => {
+    const edits: string[] = [];
+    const { host, state, editor } = mountHost("src/App.tsx", tenLines, edits);
+    editor.setPosition({ lineNumber: 5, column: 3 });
+    const tab = state.tabs[0];
+    if (tab === undefined) throw new Error("tab missing");
+    host.sync({ ...state, tabs: [{ ...tab, text: twentyLines, savedText: twentyLines }] }, "light");
+    expect(editor.getValue()).toBe(twentyLines);
+    expect(editor.getPosition()).toMatchObject({ lineNumber: 5, column: 3 });
+    host.dispose();
+  });
+
+  it("[DESKTOP-EDITOR-31] 新内容比光标位置短：光标放在最后", () => {
+    const { host, state, editor } = mountHost("src/App.tsx", tenLines);
+    editor.setPosition({ lineNumber: 9, column: 8 });
+    const tab = state.tabs[0];
+    if (tab === undefined) throw new Error("tab missing");
+    host.sync({ ...state, tabs: [{ ...tab, text: "ab\ncd", savedText: "ab\ncd" }] }, "light");
+    expect(editor.getPosition()).toMatchObject({ lineNumber: 2, column: 3 });
     host.dispose();
   });
 });

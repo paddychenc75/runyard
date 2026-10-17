@@ -7,10 +7,12 @@ export interface EditorBarProps {
   title?: Localized;
   message: Localized;
   action?: { label: Localized; onClick: () => void };
+  /** 第二个选择（外部修改提示的“保留我的修改”）；有它时 action 是主选择 */
+  secondary?: { label: Localized; onClick: () => void };
 }
 
 // 编辑器上方的一条提示（文件较大不做高亮、保存失败）：一行字加一个可选的按钮
-export function EditorBar({ tone, title, message, action }: EditorBarProps) {
+export function EditorBar({ tone, title, message, action, secondary }: EditorBarProps) {
   return (
     <div className={styles.root} data-tone={tone} role="status">
       <Icon name={tone === "danger" ? "warning" : "exclamation"} size={14} />
@@ -21,6 +23,11 @@ export function EditorBar({ tone, title, message, action }: EditorBarProps) {
       {action === undefined ? null : (
         <Button variant="neutral" size="sm" onClick={action.onClick}>
           {action.label}
+        </Button>
+      )}
+      {secondary === undefined ? null : (
+        <Button variant="neutral" size="sm" onClick={secondary.onClick}>
+          {secondary.label}
         </Button>
       )}
     </div>

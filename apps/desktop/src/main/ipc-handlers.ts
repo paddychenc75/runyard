@@ -5,12 +5,14 @@ import {
   type DesktopMethod,
   desktopChannels,
   desktopMethodNames,
+  type QuitReply,
 } from "../shared/desktop-bridge.ts";
 import type { Bounds } from "../shared/layout.ts";
 import { isAppUrl } from "./app-protocol.ts";
 import { editorFileMethods, type FileOpeners } from "./editor-files/editor-ipc.ts";
 import type { EditorFileService } from "./editor-files/file-service.ts";
 import type { LibraryController } from "./library-controller.ts";
+import type { QuitFlushGate } from "./quit-flush-gate.ts";
 
 // 把界面发来的消息接到控制器上。Electron 的 ipcMain 通过 IpcHost 这个接口传进来，测试里换成假的。
 
@@ -51,6 +53,15 @@ function parseCreateRequest(value: unknown): CreateRequest | null {
   };
 }
 
+/** 退出回执：形状不对一律不要（页面发来的数据不可信） */
+function parseQuitReply(value: unknown): QuitReply | null {
+  if (typeof value !== "object" || value === null) return null;
+  const { id, reply } = value as Record<string, unknown>;
+  if (typeof id !== "number" || !Number.isInteger(id)) return null;
+  if (reply !== "ack" && reply !== "proceed" && reply !== "cancel") return null;
+  return { id, reply };
+}
+
 const rejectedCreate: CreateResult = { ok: false, error: { code: "INTERNAL", params: {} } };
 
 /** 占位区的矩形：四个有限的数，宽高不为负；其他形状一律不要（页面发来的数据不可信） */
@@ -70,6 +81,7 @@ export function registerBridgeHandlers(
   bootstrap: BootstrapInfo,
   files?: EditorFileService,
   openers?: FileOpeners,
+  quitGate?: QuitFlushGate,
 ): () => void {
   // 方法名到控制器的映射；参数不是预期类型时不调用控制器
   const methods: Record<DesktopMethod, (param: unknown) => unknown> = {
@@ -103,6 +115,10 @@ export function registerBridgeHandlers(
       }
     },
     "tab.closeCancel": () => controller.cancelClose(),
+    "app.quitReply": (value) => {
+      const reply = parseQuitReply(value);
+      if (reply !== null) quitGate?.reply(reply);
+    },
     "preview.bounds": (value) => {
       if (value === null) controller.setPreviewBounds(null);
       else {

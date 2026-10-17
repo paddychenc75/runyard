@@ -1,4 +1,4 @@
-import type { OpenFilesMemory, RememberedFiles } from "./editor-session.ts";
+import type { OpenFilesMemory, RememberedFiles } from "./session-types.ts";
 
 // 把“上次打开的文件标签”记在界面自己的本地存储里（按项目 id 一份，规格 DESKTOP-EDITOR-20）。
 // 存储可能读不出来（隐私窗口、被清、被禁），那就当作从没存过，也不报错：恢复文件标签是便利，不是必须。

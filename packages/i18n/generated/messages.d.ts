@@ -297,13 +297,24 @@ export type CatalogMessages = {
     name: string | number;
   };
   "desktop.editor.closeSave.action": Record<never, never>;
+  "desktop.editor.deletedNotice.body": {
+    keys: string | number;
+    name: string | number;
+  };
+  "desktop.editor.diskChanged.body": {
+    name: string | number;
+  };
   "desktop.editor.empty.body": Record<never, never>;
   "desktop.editor.empty.title": Record<never, never>;
   "desktop.editor.failed.body": {
     name: string | number;
   };
   "desktop.editor.failed.title": Record<never, never>;
+  "desktop.editor.keepMine.action": Record<never, never>;
   "desktop.editor.loading.label": Record<never, never>;
+  "desktop.editor.mixedEolNotice.body": {
+    eol: string | number;
+  };
   "desktop.editor.openExternal.action": Record<never, never>;
   "desktop.editor.plainLargeNotice.body": Record<never, never>;
   "desktop.editor.plainNotice.body": Record<never, never>;
@@ -319,12 +330,19 @@ export type CatalogMessages = {
     name: string | number;
   };
   "desktop.editor.saveFailedRetry.action": Record<never, never>;
+  "desktop.editor.statusConflict.label": Record<never, never>;
+  "desktop.editor.statusDeleted.label": Record<never, never>;
   "desktop.editor.statusFailed.label": Record<never, never>;
   "desktop.editor.statusSaved.label": Record<never, never>;
+  "desktop.editor.statusSaving.label": Record<never, never>;
   "desktop.editor.statusUnsaved.label": Record<never, never>;
   "desktop.editor.tabClose.label": {
     name: string | number;
   };
+  "desktop.editor.tabDeleted.label": {
+    name: string | number;
+  };
+  "desktop.editor.tabDeletedMark.label": Record<never, never>;
   "desktop.editor.tabUnsaved.label": {
     name: string | number;
   };
@@ -335,6 +353,7 @@ export type CatalogMessages = {
     size: string | number;
   };
   "desktop.editor.tooLarge.title": Record<never, never>;
+  "desktop.editor.useDisk.action": Record<never, never>;
   "desktop.empty.templates.hint": Record<never, never>;
   "desktop.error.title.label": {
     title: string | number;

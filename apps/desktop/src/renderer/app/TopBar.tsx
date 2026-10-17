@@ -9,6 +9,7 @@ import {
 } from "@runyard/ui";
 import type { BootstrapInfo, DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { TabRow } from "../../shared/library-state.ts";
+import { useFlushProject } from "../features/editor/EditorWorkspace.tsx";
 import { RunBar } from "./RunBar.tsx";
 import styles from "./TopBar.module.css";
 
@@ -45,6 +46,7 @@ export function TopBar({
   onClose,
 }: TopBarProps) {
   const t = useT();
+  const flushProject = useFlushProject();
   const items: TabStripItem[] = [
     { id: "library", label: t("library.tab.title"), icon: "grid" },
     ...tabs.map(
@@ -65,7 +67,7 @@ export function TopBar({
         items={items}
         value={activeTab}
         onValueChange={onSelect}
-        onClose={onClose}
+        onClose={(id) => void flushProject(id).then((proceed) => proceed && onClose(id))}
         modKey={modKey}
       />
       <div className={styles.spacer} />

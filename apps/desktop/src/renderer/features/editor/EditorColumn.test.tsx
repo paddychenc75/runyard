@@ -1,16 +1,8 @@
 // @vitest-environment jsdom
-import { desktopCatalogs } from "@runyard/i18n";
-import { I18nProvider } from "@runyard/i18n/react";
-import { act, cleanup, render, screen, waitFor, within } from "@testing-library/react";
+import { act, cleanup, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { BootstrapInfo, DesktopBridge } from "../../../shared/desktop-bridge.ts";
-import type { TabRow } from "../../../shared/library-state.ts";
-import { useWorkspaceFiles } from "../../shared/workspace-files.tsx";
-import { EditorColumn } from "./EditorColumn.tsx";
-import { EditorWorkspace } from "./EditorWorkspace.tsx";
-import type { EditorHost, EditorHostFactory } from "./monaco-host.ts";
-import { type FakeDisk, fakeDisk, filesOn } from "./test-files.ts";
+import { mount, tabNames } from "./test-column.tsx";
 
 afterEach(() => {
   cleanup();
@@ -20,98 +12,6 @@ afterEach(() => {
 
 // Base UI 的弹窗和按钮在 jsdom 里要 getAnimations
 (Element.prototype as { getAnimations?: () => unknown[] }).getAnimations = () => [];
-
-const bootstrap: BootstrapInfo = {
-  platform: "darwin",
-  windowControls: { side: "left", inset: 72 },
-  modKey: "meta",
-  locale: "zh-CN",
-  theme: "light",
-  reducedTransparency: false,
-  highContrast: false,
-};
-
-function projectTab(entry: string | null): TabRow {
-  return {
-    id: "demo",
-    name: "demo",
-    status: "running",
-    state: "ready",
-    active: true,
-    busy: false,
-    kind: "server",
-    ownedByTab: true,
-    templateName: null,
-    port: 7101,
-    startedAt: 1_000,
-    exitCode: null,
-    durationMs: null,
-    previewUrl: null,
-    slow: false,
-    failure: null,
-    portFallback: null,
-    lastFrame: null,
-    entry,
-    folder: "~/Runyard/demo",
-    phaseMs: { copy: null, install: null, start: null },
-  };
-}
-
-interface Harness {
-  disk: FakeDisk;
-  calls: [string, unknown][];
-  hosts: {
-    host: EditorHost;
-    syncs: { theme: string; active: string | null }[];
-    edit: (path: string, text: string) => void;
-  }[];
-}
-
-function mount(files: Parameters<typeof fakeDisk>[0], entry: string | null = "src/App.tsx") {
-  const disk = fakeDisk(files);
-  const real = filesOn(disk);
-  const harness: Harness = { disk, calls: [], hosts: [] };
-  const bridge = {
-    bootstrap,
-    call: async (
-      method: string,
-      param: { path: string; content?: string; eol?: "lf" | "crlf" },
-    ) => {
-      harness.calls.push([method, param]);
-      if (method === "files.read") return real.read(param.path);
-      if (method === "files.write") return real.write(param.path, param.content ?? "", param.eol);
-      return undefined;
-    },
-    on: () => () => {},
-  } as unknown as DesktopBridge;
-  const createHost: EditorHostFactory = async (_container, handlers) => {
-    const syncs: { theme: string; active: string | null }[] = [];
-    const host: EditorHost = {
-      sync: (state, theme) => syncs.push({ theme, active: state.active }),
-      focus() {},
-      dispose() {},
-    };
-    harness.hosts.push({ host, syncs, edit: handlers.onEdit });
-    return host;
-  };
-  const tab = projectTab(entry);
-  let opener: (path: string) => void = () => {};
-  function Tree() {
-    opener = useWorkspaceFiles().openFile;
-    return null;
-  }
-  const view = render(
-    <I18nProvider locale="zh-CN" platform="darwin" catalogs={desktopCatalogs}>
-      <EditorWorkspace bridge={bridge} tabs={[tab]} activeTab="demo">
-        <Tree />
-        <EditorColumn bridge={bridge} tab={tab} createHost={createHost} />
-      </EditorWorkspace>
-    </I18nProvider>,
-  );
-  return { ...harness, view, openFile: (path: string) => act(() => opener(path)) };
-}
-
-const tabNames = () => screen.getAllByRole("tab").map((node) => node.textContent);
 
 describe("编辑器列", () => {
   it("[DESKTOP-EDITOR-15] 文件树经 openFile 打开文件：同一个文件只开一个标签，再开只是切过去", async () => {

@@ -1,55 +1,19 @@
-import type {
-  EditorFileError,
-  EditorFileResult,
-  FileContent,
-  SaveProblem,
-} from "../../../shared/editor-files.ts";
+import type { EditorFileError, FileChange, SaveProblem } from "../../../shared/editor-files.ts";
+import { type DiskHost, reconcileDisk, useDiskVersion } from "./disk-change.ts";
 import { type FileTab, isDirty, loadingTab, withContent } from "./file-tab.ts";
+import { PathTimers } from "./path-timers.ts";
+import {
+  AUTOSAVE_DELAY_MS,
+  type ClosePromptAnswer,
+  type EditorSessionOptions,
+  type SessionState,
+} from "./session-types.ts";
 
 // 一个项目的编辑器会话（规格 desktop/editor「文件标签」）：打开的文件标签、选中的是哪个、保存、关闭、恢复上次的标签。
 // 不认识 Monaco 和界面——内容由界面把编辑器里的变化经 edit() 交进来，文件读写经注入的 files——所以用假的文件接口就能测。
-// 接缝（后续 issue 往这里接，不要另起一套状态）：
-// - 自动保存三档的计时和“失去焦点”（#260）：autosave() 现在只决定关闭有未保存修改的标签时先写入还是先询问，计时器没有；
-// - 磁盘上的外部修改（#260）：需要“用磁盘内容替换某个标签”的入口，加在这里；
-// - 重命名、移到废纸篓后标签跟着变（#258 的文件树）：加 renameFile/removeFile 入口，保留未保存的内容。
-
-export type AutosaveMode = "delay" | "blur" | "off";
-
-export interface SessionFiles {
-  read(path: string): Promise<EditorFileResult<FileContent>>;
-  write(
-    path: string,
-    content: string,
-    eol: "lf" | "crlf" | undefined,
-  ): Promise<EditorFileResult<{ size: number }>>;
-}
-
-/** 上次关闭项目时打开的文件标签（规格 DESKTOP-EDITOR-20）；存取由调用方决定放在哪 */
-export interface RememberedFiles {
-  paths: string[];
-  active: string | null;
-}
-export interface OpenFilesMemory {
-  /** 从没存过是 null（第一次打开，要打开入口文件）；存过空列表是用户把标签都关了 */
-  load(): RememberedFiles | null;
-  save(state: RememberedFiles): void;
-}
-
-export interface SessionState {
-  tabs: readonly FileTab[];
-  active: string | null;
-  /** 正在等用户回答“保存、不保存、取消”的文件标签；没有是 null（规格 DESKTOP-EDITOR-19） */
-  closePrompt: string | null;
-}
-
-export type ClosePromptAnswer = "save" | "discard" | "cancel";
-
-export interface EditorSessionOptions {
-  files: SessionFiles;
-  memory: OpenFilesMemory;
-  /** 当前的自动保存档位；默认值和设置页随 #260，现在由调用方给 */
-  autosave: () => AutosaveMode;
-}
+// 自动保存三档（#260）：delay 档在 edit() 里为每个文件各自计时，blur 档由 select() 和 blur() 触发，off 档只有 save()。
+// 磁盘上的外部修改（#260）经 files.watch() 的变化推送进来：没有未保存修改就换成磁盘内容，
+// 有就标 conflict 并暂停这个文件的自动保存，等 useDisk() / keepMine()；被删除的标 deleted，只有 save() 重新创建。
 
 function saveReason(error: EditorFileError): SaveProblem {
   return error.code === "EDITOR_SAVE_FAILED" ? error.params.reason : "other";
@@ -61,11 +25,25 @@ export class EditorSession {
   readonly #listeners = new Set<() => void>();
   /** 同一个文件的写入排队，保证后一次写的是更新的内容 */
   readonly #writes = new Map<string, Promise<boolean>>();
+  /** delay 档每个文件一个计时器 */
+  readonly #timers = new PathTimers();
+  /** 回答“保存、不保存、取消”的人在等：关项目标签页和退出时用，回答不关文件标签 */
+  #answer: ((answer: ClosePromptAnswer) => void) | null = null;
+  #stopWatching: (() => void) | null = null;
   #restoring = true;
+  #disposed = false;
   #nextId = 1;
 
   constructor(options: EditorSessionOptions) {
     this.#options = options;
+  }
+
+  /** 项目标签页关掉时丢弃会话：停掉计时和监听 */
+  dispose(): void {
+    this.#disposed = true;
+    this.#timers.cancelAll();
+    this.#stopWatching?.();
+    this.#stopWatching = null;
   }
 
   getState = (): SessionState => this.#state;
@@ -115,6 +93,11 @@ export class EditorSession {
           ? remembered.active
           : (wanted[0] ?? null),
     });
+    // 先开始监听再读：读之后发生的变化不会漏
+    if (!this.#disposed) {
+      this.#stopWatching =
+        this.#options.files.watch?.((changes) => this.#onDiskChanges(changes)) ?? null;
+    }
     await Promise.all(wanted.map((path) => this.#load(path)));
     // 记着的文件全不在了：退回入口文件，免得打开一个空编辑器
     if (this.#state.tabs.length === 0 && remembered !== null && remembered.paths.length > 0) {
@@ -174,7 +157,11 @@ export class EditorSession {
     this.#set({ active: path });
     this.#remember();
     // “失去焦点时”档：切到别的文件标签就写入（DESKTOP-EDITOR-24）
-    if (leaving !== undefined && isDirty(leaving) && this.#options.autosave() === "blur") {
+    if (
+      leaving !== undefined &&
+      this.#options.autosave() === "blur" &&
+      this.#canAutosave(leaving.path)
+    ) {
       void this.save(leaving.path);
     }
   }
@@ -207,6 +194,11 @@ export class EditorSession {
     }
   }
 
+  /** 关闭或退出时会不会要问用户（界面要先把这个项目标签页切到前面） */
+  mayAsk(): boolean {
+    return this.#state.tabs.some((tab) => this.#needsAsking(tab));
+  }
+
   /** 这个文件有没保存的修改就返回要写进磁盘的全部内容（含 BOM），没有是 undefined；文件树移走前用它先保存（DESKTOP-EDITOR-12） */
   unsavedContent(path: string): string | undefined {
     const tab = this.#state.tabs.find((candidate) => candidate.path === path);
@@ -219,10 +211,47 @@ export class EditorSession {
     const tab = this.#state.tabs.find((candidate) => candidate.path === path);
     if (tab === undefined || tab.view !== "text" || tab.text === text) return;
     this.#patch(path, { text });
+    this.#schedule(path);
   }
 
-  /** 写入磁盘；返回有没有成功。失败时内容和未保存标记保留，原因记在 saveError（DESKTOP-EDITOR-29） */
+  #cancelTimer(path: string): void {
+    this.#timers.cancel(path);
+  }
+
+  /** delay 档：每次输入都重新计时，停下满 1 秒才写（DESKTOP-EDITOR-23）；等用户选择的和已删除的文件不自动写 */
+  #schedule(path: string): void {
+    this.#cancelTimer(path);
+    if (this.#disposed || this.#options.autosave() !== "delay") return;
+    this.#timers.restart(path, AUTOSAVE_DELAY_MS, () => {
+      if (this.#canAutosave(path)) void this.save(path);
+    });
+  }
+
+  #canAutosave(path: string): boolean {
+    const tab = this.#state.tabs.find((candidate) => candidate.path === path);
+    return tab !== undefined && isDirty(tab) && !tab.conflict && !tab.deleted;
+  }
+
+  /** 失去焦点（点了预览或别的区域、切到别的应用、关窗口）：blur 档把所有有修改的文件写入（DESKTOP-EDITOR-24） */
+  blur(): void {
+    if (this.#options.autosave() !== "blur") return;
+    for (const tab of this.#state.tabs) if (this.#canAutosave(tab.path)) void this.save(tab.path);
+  }
+
+  /**
+   * ⌘S 和各种自动保存都走这里：立即写入磁盘，任何一档都一样（DESKTOP-EDITOR-26）；返回有没有成功。
+   * 失败时内容和未保存标记保留，原因记在 saveError（DESKTOP-EDITOR-29）。
+   * 磁盘上的新内容在等用户选择时不写，免得盖掉它（DESKTOP-EDITOR-32）；已删除的文件在这里重新创建（DESKTOP-EDITOR-35）。
+   */
   save(path: string): Promise<boolean> {
+    if (this.#state.tabs.find((candidate) => candidate.path === path)?.conflict) {
+      return Promise.resolve(false);
+    }
+    return this.#enqueueWrite(path);
+  }
+
+  #enqueueWrite(path: string): Promise<boolean> {
+    this.#cancelTimer(path);
     const previous = this.#writes.get(path) ?? Promise.resolve(true);
     const next = previous.then(() => this.#write(path));
     this.#writes.set(path, next);
@@ -235,21 +264,34 @@ export class EditorSession {
   async #write(path: string): Promise<boolean> {
     const tab = this.#state.tabs.find((candidate) => candidate.path === path);
     if (tab === undefined || tab.view !== "text") return true;
-    if (!isDirty(tab) && tab.saveError === null) return true;
+    if (!isDirty(tab) && tab.saveError === null && !tab.deleted) return true;
     const snapshot = tab.text;
     const content = tab.bom ? `﻿${snapshot}` : snapshot;
+    this.#patch(path, { saving: true });
     const result = await this.#options.files.write(
       path,
       content,
       tab.eol === "none" ? undefined : tab.eol,
     );
     if (result.ok) {
-      // 写的过程中又输入了的话 text 已经变了，只记下写进去的那一份，未保存标记留着
-      this.#patch(path, { savedText: snapshot, saveError: null });
+      // 写的过程中又输入了的话 text 已经变了，只记下写进去的那一份，未保存标记留着。
+      // 换行不统一的提示只给一次：写过一次，磁盘上就已经统一了（DESKTOP-EDITOR-55）
+      this.#patch(path, {
+        savedText: snapshot,
+        saveError: null,
+        deleted: false,
+        mixedEol: false,
+        saving: false,
+      });
       return true;
     }
-    this.#patch(path, { saveError: saveReason(result.error) });
+    this.#patch(path, { saveError: saveReason(result.error), saving: false });
     return false;
+  }
+
+  /** 关闭或退出时这个文件要不要先问：“关闭”档，以及自动保存帮不上的（等用户选择的、已删除的） */
+  #needsAsking(tab: FileTab): boolean {
+    return isDirty(tab) && (this.#options.autosave() === "off" || tab.conflict || tab.deleted);
   }
 
   /** 关闭文件标签。有未保存修改：自动保存开着先写入再关，不问；“关闭”档要问（DESKTOP-EDITOR-18、DESKTOP-EDITOR-19） */
@@ -260,7 +302,7 @@ export class EditorSession {
       this.#drop(path);
       return;
     }
-    if (this.#options.autosave() === "off") {
+    if (this.#needsAsking(tab)) {
       this.#set({ closePrompt: path });
       return;
     }
@@ -272,8 +314,79 @@ export class EditorSession {
     const path = this.#state.closePrompt;
     if (path === null) return;
     this.#set({ closePrompt: null });
+    // 关项目标签页、退出时的询问：回答交给等着的流程，文件标签留着
+    if (this.#answer !== null) {
+      const resolve = this.#answer;
+      this.#answer = null;
+      resolve(answer);
+      return;
+    }
     if (answer === "cancel") return;
-    if (answer === "discard" || (await this.save(path))) this.#drop(path);
+    if (answer === "discard" || (await this.#saveForClose(path))) this.#drop(path);
+  }
+
+  /** 询问的保存：等用户选择的文件是用户明确要覆盖，所以绕开 save() 对它的保护 */
+  #saveForClose(path: string): Promise<boolean> {
+    this.#patch(path, { conflict: false });
+    return this.#enqueueWrite(path);
+  }
+
+  /**
+   * 关闭项目标签页和退出应用之前调用（DESKTOP-EDITOR-27、28）：有未保存修改的文件先写入，
+   * 自动保存帮不上的（“关闭”档、等用户选择的、已删除的）先问。返回 false 表示要中止这次关闭或退出
+   * （选了取消，或写入失败——此时回到那个文件，修改还在）。
+   */
+  async flushForClose(): Promise<boolean> {
+    this.#timers.cancelAll();
+    for (const { path } of [...this.#state.tabs]) {
+      const tab = this.#state.tabs.find((candidate) => candidate.path === path);
+      if (tab === undefined || !isDirty(tab)) continue;
+      if (this.#needsAsking(tab)) {
+        this.#set({ active: path, closePrompt: path });
+        const answer = await new Promise<ClosePromptAnswer>((resolve) => {
+          this.#answer = resolve;
+        });
+        if (answer === "cancel") return false;
+        if (answer === "discard") continue;
+        if (!(await this.#saveForClose(path))) return this.#showFailure(path);
+      } else if (!(await this.save(path))) {
+        return this.#showFailure(path);
+      }
+    }
+    return true;
+  }
+
+  #showFailure(path: string): false {
+    this.#set({ active: path });
+    return false;
+  }
+
+  #onDiskChanges(changes: FileChange[]): void {
+    for (const change of changes) {
+      // 自己保存引起的变化不算外部修改（DESKTOP-EDITOR-36）
+      if (change.self) continue;
+      const tab = this.#state.tabs.find((candidate) => candidate.path === change.path);
+      if (tab?.view === "text") void reconcileDisk(this.#diskHost, change.path);
+    }
+  }
+
+  readonly #diskHost: DiskHost = {
+    tab: (path) => this.#state.tabs.find((candidate) => candidate.path === path),
+    patch: (path, change) => this.#patch(path, change),
+    read: (path) => this.#options.files.read(path),
+    settled: (path) => this.#writes.get(path) ?? Promise.resolve(true),
+    cancelTimer: (path) => this.#cancelTimer(path),
+    gone: () => this.#disposed,
+  };
+
+  /** 提示里的“用磁盘上的版本”：丢掉我的修改，换成磁盘现在的内容，之后自动保存照常（DESKTOP-EDITOR-33） */
+  useDisk(path: string): Promise<void> {
+    return useDiskVersion(this.#diskHost, path);
+  }
+
+  /** 提示里的“保留我的修改”：把我的内容写进磁盘（DESKTOP-EDITOR-34） */
+  async keepMine(path: string): Promise<void> {
+    await this.#saveForClose(path);
   }
 
   /** ⌘W：先关当前的文件标签；没有文件标签返回 false，交给调用方关项目标签页（DESKTOP-EDITOR-17） */

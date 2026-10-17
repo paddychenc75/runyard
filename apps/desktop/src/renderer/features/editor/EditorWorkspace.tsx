@@ -1,9 +1,18 @@
-import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import type { DesktopBridge } from "../../../shared/desktop-bridge.ts";
 import type { TabRow } from "../../../shared/library-state.ts";
 import { WorkspaceFilesContext } from "../../shared/workspace-files.tsx";
-import type { AutosaveMode, EditorSession, SessionState } from "./editor-session.ts";
+import type { EditorSession } from "./editor-session.ts";
 import { EditorSessions } from "./editor-sessions.ts";
+import type { AutosaveMode, SessionState } from "./session-types.ts";
 import { useSessionState } from "./use-session-state.ts";
 
 // 外壳最外面包一层：为每个打开的项目标签管着一个编辑会话，并把当前项目的会话交给
@@ -15,6 +24,15 @@ export interface ActiveEditor {
   state: SessionState;
 }
 const EditorSessionContext = createContext<ActiveEditor | null>(null);
+
+const FlushProjectContext = createContext<(id: string) => Promise<boolean>>(() =>
+  Promise.resolve(true),
+);
+
+/** 关闭项目标签页之前调用：未保存的修改先写入或询问，false = 中止关闭（DESKTOP-EDITOR-27） */
+export function useFlushProject(): (id: string) => Promise<boolean> {
+  return useContext(FlushProjectContext);
+}
 
 export function useActiveEditor(): ActiveEditor {
   const value = useContext(EditorSessionContext);
@@ -29,12 +47,12 @@ export interface EditorWorkspaceProps {
   tabs: readonly TabRow[];
   /** 当前标签：资源库是 "library"，项目标签是项目 id */
   activeTab: string;
-  /** 自动保存的档位（设置页随 #260）；现在由外壳给，默认“关闭”只靠 ⌘S 写入 */
+  /** 自动保存的档位；设置页（#188）做出来之前不传，用默认的“停止输入 1 秒后” */
   autosave?: () => AutosaveMode;
   children: ReactNode;
 }
 
-const DEFAULT_AUTOSAVE: () => AutosaveMode = () => "off";
+const DEFAULT_AUTOSAVE: () => AutosaveMode = () => "delay";
 
 export function EditorWorkspace({
   bridge,
@@ -48,6 +66,20 @@ export function EditorWorkspace({
   const session = activeRow === undefined ? undefined : sessions.ensure(activeRow);
   useEffect(() => sessions.retain(new Set(tabs.map((tab) => tab.id))), [sessions, tabs]);
   const state = useSessionState(session);
+  // 退出前（⌘Q）：先回 ack，再把所有项目的未保存修改写入或询问，最后告诉主进程能不能退
+  useEffect(
+    () =>
+      bridge.on("app.quitRequested", ({ id }) => {
+        void bridge.call("app.quitReply", { id, reply: "ack" });
+        void sessions
+          .flushAll()
+          .then((proceed) =>
+            bridge.call("app.quitReply", { id, reply: proceed ? "proceed" : "cancel" }),
+          );
+      }),
+    [bridge, sessions],
+  );
+  const flushProject = useCallback((id: string) => sessions.flushProject(id), [sessions]);
   const files = useMemo(
     () => ({
       activePath: state.active,
@@ -62,7 +94,9 @@ export function EditorWorkspace({
   );
   return (
     <WorkspaceFilesContext.Provider value={files}>
-      <EditorSessionContext.Provider value={active}>{children}</EditorSessionContext.Provider>
+      <FlushProjectContext.Provider value={flushProject}>
+        <EditorSessionContext.Provider value={active}>{children}</EditorSessionContext.Provider>
+      </FlushProjectContext.Provider>
     </WorkspaceFilesContext.Provider>
   );
 }

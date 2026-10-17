@@ -2,9 +2,9 @@ import type { Locale } from "@runyard/i18n";
 import type * as Monaco from "monaco-editor/editor/editor.api.js";
 import { loadEditorRuntime } from "../../editor/editor-loader.ts";
 import type { EditorRuntime } from "../../editor/runtime-types.ts";
-import type { SessionState } from "./editor-session.ts";
 import { editorLanguageOf } from "./file-language.ts";
 import type { FileTab } from "./file-tab.ts";
+import type { SessionState } from "./session-types.ts";
 
 // 把编辑会话（EditorSession）摆进 Monaco：每个能编辑的文件标签一个模型，选中的那个放进编辑器。
 // 只给打开的文件建模型——给项目里每个文件都建会让 TS 线程同步慢到第一次补全等几十秒（K8 证据“装法”第 7 条）。
@@ -130,6 +130,14 @@ export function buildHost(
     return entry;
   }
 
+  function replaceText(model: Monaco.editor.ITextModel, tab: FileTab, shown: boolean): void {
+    const position = shown ? editor.getPosition() : null;
+    model.setValue(tab.text);
+    if (tab.eol === "crlf") model.setEOL(monaco.editor.EndOfLineSequence.CRLF);
+    else if (tab.eol === "lf") model.setEOL(monaco.editor.EndOfLineSequence.LF);
+    if (position !== null) editor.setPosition(model.validatePosition(position));
+  }
+
   function disposeEntry(entry: Entry): void {
     entry.subscription.dispose();
     entry.model.dispose();
@@ -171,8 +179,9 @@ export function buildHost(
           entry = createEntry(tab);
           entries.set(id, entry);
         }
-        // 会话是内容的来源：不一致只会是会话里的内容被外部换掉了
-        if (entry.model.getValue() !== tab.text) entry.model.setValue(tab.text);
+        // 会话是内容的来源：不一致只会是会话里的内容被外部换掉了。换内容时光标留在原来的行和列，
+        // 超出新内容就放在最后（DESKTOP-EDITOR-31）
+        if (entry.model.getValue() !== tab.text) replaceText(entry.model, tab, id === shownId);
       }
       const activeTab = state.tabs.find((tab) => tab.path === state.active);
       const next = activeTab !== undefined && editable.has(activeTab.id) ? activeTab.id : null;

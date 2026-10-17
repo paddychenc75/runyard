@@ -53,3 +53,9 @@
   border-radius: var(--radius-capsule);
   background: var(--color-line-accent);
 }
+
+/* 被外部删除：名字后面写“已删除”（设计稿没有这个状态） */
+.deleted {
+  color: var(--color-status-warning-text);
+  font-size: var(--text-secondary-size);
+}
