@@ -138,3 +138,8 @@ export function registerBridgeHandlers(
     stopConsole();
   };
 }
+
+/** 通知界面打开模板选择器（应用菜单的“新建…”） */
+export function requestPicker(host: Pick<IpcHost, "send">): void {
+  host.send(desktopChannels.event, "picker.open", undefined);
+}

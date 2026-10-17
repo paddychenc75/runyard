@@ -1,0 +1,31 @@
+/* 选择器浮层：幕布盖满窗口，对话框玻璃靠上居中（设计稿 Picker） */
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-dialog);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-block-start: var(--space-10);
+  background: var(--color-scrim);
+}
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+  inline-size: var(--size-dialog-width);
+  max-inline-size: calc(100% - var(--space-10));
+  max-block-size: calc(100vh - var(--space-10) * 2);
+  overflow: hidden;
+}
+
+.picker {
+  flex: 1;
+}
+
+.empty {
+  margin: 0;
+  padding: var(--space-8);
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+}

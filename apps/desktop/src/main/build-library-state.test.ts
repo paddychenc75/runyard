@@ -175,3 +175,25 @@ describe("buildLibraryState 的列和顺序", () => {
     expect(missing.playgrounds[0]?.templateName).toBeNull();
   });
 });
+
+describe("recentTemplateIds", () => {
+  it("[DESKTOP-CREATE-FLOW-04] 按创建时间从新到旧取用过的模板，同一个只算一次，不在列表里的略过", () => {
+    const made = (id: string, templateId: string, createdAt: number) => ({
+      ...playground(id),
+      template: { id: templateId, source: "builtin" as const, appVersion: "0" },
+      createdAt,
+    });
+    const state = buildLibraryState({
+      ...base,
+      templates: [template("html"), template("vue3"), template("react19")],
+      playgrounds: [
+        made("a", "html", 1),
+        made("b", "vue3", 9),
+        made("c", "html", 5),
+        made("d", "gone", 20),
+      ],
+      runs: [],
+    });
+    expect(state.recentTemplates).toEqual(["vue3", "html"]);
+  });
+});

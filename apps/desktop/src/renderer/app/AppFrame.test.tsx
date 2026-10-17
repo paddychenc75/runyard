@@ -45,7 +45,16 @@ const state: LibraryState = {
   locale: "zh-CN",
   error: null,
   closeRequest: null,
-  templates: [{ id: "html", name: { en: "Plain HTML", "zh-CN": "纯 HTML" } }],
+  templates: [
+    {
+      id: "html",
+      name: { en: "Plain HTML", "zh-CN": "纯 HTML" },
+      description: "page",
+      category: "page",
+      unmaintained: false,
+    },
+  ],
+  recentTemplates: [],
   tabs: [],
   activeTab: "library",
   playgrounds: [

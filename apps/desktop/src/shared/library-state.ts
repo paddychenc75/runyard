@@ -6,6 +6,7 @@ import type {
   PortFallbackReason,
   RunKind,
   RunState,
+  TemplateCategory,
 } from "@runyard/protocol";
 
 // 主进程交给界面的全部数据。只有可序列化的普通对象：界面进程没有 Node，
@@ -94,6 +95,10 @@ export interface TabPortFallback {
 export interface TemplateRow {
   id: string;
   name: LocalizedText;
+  description: LocalizedText;
+  category: TemplateCategory;
+  /** 带 unmaintained 标签：选择器里第二行画成警示色（TEMPLATES-FORMAT-54） */
+  unmaintained: boolean;
 }
 
 /** 错误只带“代码加参数”，句子由界面用文案包生成 */
@@ -110,6 +115,8 @@ export interface LibraryState {
   /** 当前标签："library" 或项目 id */
   activeTab: string;
   templates: TemplateRow[];
+  /** 最近用来创建过项目的模板 id，最近的在前、不重复；只含此刻仍在 templates 里的 */
+  recentTemplates: string[];
   /** 正在等用户确认的“关闭运行中的标签页”；没有是 null（规格 DESKTOP-WORKSPACE-04） */
   closeRequest: { id: string; name: string } | null;
   error: DesktopError | null;

@@ -19,7 +19,7 @@ pnpm --filter @runyard/desktop smoke             # 冒烟自检：窗口不显�
 - `--lang en|zh-CN` 或 `RUNYARD_LANG`：界面语言；缺省看系统语言（中文系统用中文，其余英文）。
 - `--theme system|light|dark` 或 `RUNYARD_THEME`：窗口明暗；缺省跟随系统。主进程据此设 `nativeTheme.themeSource`，预加载脚本在页面脚本之前写 `<html data-theme>`；设置页里的切换随后续 PR。
 - 第一次运行会下载 Electron 的二进制（约 100 MB）。
-- 界面拿到的唯一接口是预加载脚本交出的 `window.runyard`（`src/shared/desktop-bridge.ts`），只有三样：同步的 `bootstrap`（平台、窗口按钮位置、语言、主题等，技术设计 §6.7）、`call(方法名, 参数)`、`on(事件名, 监听)`。方法和事件是白名单（`library.get`、`run.start`、`run.stop`、`tab.open`、`tab.select`、`playground.create`、`playground.reveal`、`playground.copyPath`、`preview.*`、`console.get`、`clipboard.copy`、`link.open`；事件 `library.changed`、`console.appended`），表外的名字预加载脚本和主进程都拒绝；动作失败不抛，折进状态里的 `error`（代码加参数）。预加载脚本在页面脚本运行前把 `data-platform`、`data-theme`、`lang` 写到 `<html>`。
+- 界面拿到的唯一接口是预加载脚本交出的 `window.runyard`（`src/shared/desktop-bridge.ts`），只有三样：同步的 `bootstrap`（平台、窗口按钮位置、语言、主题等，技术设计 §6.7）、`call(方法名, 参数)`、`on(事件名, 监听)`。方法和事件是白名单（`library.get`、`run.start`、`run.stop`、`tab.open`、`tab.select`、`playground.create`、`playground.reveal`、`playground.copyPath`、`preview.*`、`console.get`、`clipboard.copy`、`link.open`；事件 `library.changed`、`picker.open`、`console.appended`），表外的名字预加载脚本和主进程都拒绝；动作失败不抛，折进状态里的 `error`（代码加参数）。预加载脚本在页面脚本运行前把 `data-platform`、`data-theme`、`lang` 写到 `<html>`。
 
 ## 本包特有的规则
 
@@ -38,7 +38,8 @@ pnpm --filter @runyard/desktop smoke             # 冒烟自检：窗口不显�
 - 应用拉起的管理进程是脱离的后台进程（从源码运行时用 Electron 自己当 Node 跑 `packages/supervisor/src/main.ts`）。退出时先 `session.bye`；管理进程空闲后自己退出，试验后要立刻清理时，按进程号加启动时间确认后再结束它。
 - 窗口底色取自 `@runyard/tokens` 的 `windowBackground`（随系统深浅色），界面画出来之前显示，避免启动白闪；`tokens` 只为这一件事导入（技术设计 §3.2）。
 - 标签页状态在主进程（`main/workspace-tabs.ts`，只记打开的项目标签的顺序和当前标签，资源库固定在最前不在表里），随 `library.changed` 一起推给界面（`tabs`、`activeTab`）。项目被删时它的标签随之去掉。
-- 还没有：`runyard://` 链接、标签页恢复、设置里的语言和主题切换、应用菜单（⌘W 等应用级快捷键注册成菜单项，现在靠 Electron 默认菜单）、关窗口时的提示、安装包里随带管理进程、命令行和内置模板（#194：现在打出的包能开窗，但连不上管理进程，列表区显示“连不上管理进程”）、命令行装到 PATH、签名与公证（第一版不做）。
+- 模板选择器（#172，规格 desktop/create-flow 的 01 至 05）：`renderer/app/PickerDialog.tsx`（浮层，用 `@runyard/ui` 的 `ListPicker`、`SearchField`、`Kbd`；打开期间 `useOverlay(true)`，预览区据此换成截图），分组数据在 `renderer/picker-view.ts`（顶部“最近使用”最多三个，其后按类型）。打开方式两种：空资源库的首次启动（`AppShell` 第一次读到状态时判断一次，不做环境检查）和应用菜单的“新建…”（⌘N，`main/native-ui/app-menu.ts`，焦点在预览视图里也有效，经 `picker.open` 事件通知界面）。“最近使用”由主进程按项目的创建时间推出（`LibraryState.recentTemplates`），不另存。选择器只用已有的模板列表，不触发工具检测；缺工具的模板照常可选。**接缝**：选好模板后 `AppShell.onPick(templateId)` 是交给下一步的唯一出口，新建弹窗（#173）把它换成“打开新建弹窗”；在那之前先用默认名称直接创建。搜索框现在只拿焦点，过滤是后续切片。
+- 还没有：`runyard://` 链接、标签页恢复、设置里的语言和主题切换、应用菜单里 ⌘N 以外的项（其余用 Electron 的系统角色）、关窗口时的提示、安装包里随带管理进程、命令行和内置模板（#194：现在打出的包能开窗，但连不上管理进程，列表区显示“连不上管理进程”）、命令行装到 PATH、签名与公证（第一版不做）。
 
 ## 打包（#193）
 
