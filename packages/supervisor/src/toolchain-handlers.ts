@@ -79,7 +79,6 @@ export function createToolchainHandlers(deps: ToolchainHandlerDeps): HandlerMap 
         }),
       );
     },
-    "toolchain.doctor": async () => report(await (await service()).doctor()),
     "toolchain.recheck": async () => {
       const result = report(await (await service()).recheck());
       api.publish("toolchain.changed", {});
