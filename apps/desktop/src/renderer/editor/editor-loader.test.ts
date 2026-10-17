@@ -30,6 +30,27 @@ describe("loadEditorRuntime", () => {
     expect(document.head.querySelectorAll("script")).toHaveLength(1);
   });
 
+  it("中文界面先载入 Monaco 的中文文字包，等它载完才载入编辑器脚本；英文界面不载入文字包", async () => {
+    const zh = await freshLoader();
+    const pending = zh.loadEditorRuntime(document, "zh-CN");
+    pending.catch(() => {});
+    const first = document.head.querySelector("script");
+    expect(first?.src).toBe("app://runyard/editor/nls-zh-cn.js");
+    expect(document.head.querySelectorAll("script")).toHaveLength(1);
+    first?.dispatchEvent(new Event("load"));
+    await Promise.resolve();
+    await Promise.resolve();
+    const scripts = [...document.head.querySelectorAll("script")].map((script) => script.src);
+    expect(scripts).toEqual([
+      "app://runyard/editor/nls-zh-cn.js",
+      "app://runyard/editor/editor.js",
+    ]);
+
+    const en = await freshLoader();
+    en.loadEditorRuntime(document, "en").catch(() => {});
+    expect(document.head.querySelector("script")?.src).toBe("app://runyard/editor/editor.js");
+  });
+
   it("脚本加载失败时报错，下一次调用重新尝试", async () => {
     const { loadEditorRuntime } = await freshLoader();
     const failing = loadEditorRuntime(document);

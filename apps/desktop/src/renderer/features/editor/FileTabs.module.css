@@ -1,0 +1,55 @@
+/* 设计稿 WebLight：标签条高 40，标签高 28、圆角 9、左右内边距 12，选中的是中性底色 */
+.root {
+  flex: 1;
+  min-inline-size: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.item {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  block-size: var(--size-control-sm);
+  padding-inline: var(--space-6) var(--space-4);
+  border-radius: var(--radius-control);
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-size);
+}
+
+.item[data-selected] {
+  background: var(--color-fill-neutral);
+  color: var(--color-text-primary);
+  font-weight: var(--text-control-weight);
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  block-size: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.tab:focus-visible {
+  outline: none;
+  border-radius: var(--radius-control);
+  box-shadow: var(--shadow-focus-ring);
+}
+
+/* 未保存：名字后面的一个点；设计稿没有这个状态，用强调色的线 */
+.dirty {
+  inline-size: var(--space-3);
+  block-size: var(--space-3);
+  border-radius: var(--radius-capsule);
+  background: var(--color-line-accent);
+}

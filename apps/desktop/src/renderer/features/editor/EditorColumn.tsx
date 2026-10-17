@@ -1,0 +1,147 @@
+import { useT } from "@runyard/i18n/react";
+import { useEffect, useRef, useState } from "react";
+import type { DesktopBridge } from "../../../shared/desktop-bridge.ts";
+import type { TabRow } from "../../../shared/library-state.ts";
+import { ClosePrompt } from "./ClosePrompt.tsx";
+import { EditorBar } from "./EditorBar.tsx";
+import { EditorBreadcrumb } from "./EditorBreadcrumb.tsx";
+import styles from "./EditorColumn.module.css";
+import { useActiveEditor } from "./EditorWorkspace.tsx";
+import { FileNotice } from "./FileNotice.tsx";
+import { FileTabs } from "./FileTabs.tsx";
+import { isDirty } from "./file-tab.ts";
+import { createMonacoHost, type EditorHost, type EditorHostFactory } from "./monaco-host.ts";
+import { baseName } from "./path-names.ts";
+import { SaveStatus, type SaveStatusKind } from "./SaveStatus.tsx";
+import { useAppliedTheme } from "./use-applied-theme.ts";
+
+export interface EditorColumnProps {
+  bridge: DesktopBridge;
+  tab: TabRow;
+  /** 编辑器的装配，测试里换成假的（Monaco 在 jsdom 里画不出来） */
+  createHost?: EditorHostFactory;
+}
+
+// 项目标签页里的编辑器卡片（设计稿 WebLight、Script）：文件标签条加保存状态、面包屑、代码区。
+// ⌘S 和 ⌘W 在整个窗口层面接（捕获阶段），所以焦点在不在编辑器里都一样；⌘W 先关文件标签，
+// 没有文件标签了才放行给标签条去关项目标签页（规格 DESKTOP-EDITOR-17）。
+export function EditorColumn({ bridge, tab, createHost = createMonacoHost }: EditorColumnProps) {
+  const t = useT();
+  const { session, state } = useActiveEditor();
+  const theme = useAppliedTheme();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const hostRef = useRef<EditorHost | null>(null);
+  const [hostReady, setHostReady] = useState(false);
+  const active = state.tabs.find((candidate) => candidate.path === state.active) ?? null;
+  const { modKey, locale } = bridge.bootstrap;
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container === null) return;
+    let disposed = false;
+    let host: EditorHost | undefined;
+    createHost(container, { onEdit: (path, text) => session.edit(path, text) }, locale)
+      .then((created) => {
+        if (disposed) {
+          created.dispose();
+          return;
+        }
+        host = created;
+        hostRef.current = created;
+        setHostReady(true);
+      })
+      .catch((error: unknown) => {
+        // 编辑器脚本没加载起来：文件标签和说明照常显示，只是没有代码区；不打扰用户
+        console.error("editor host failed", error);
+      });
+    return () => {
+      disposed = true;
+      host?.dispose();
+      hostRef.current = null;
+      setHostReady(false);
+    };
+  }, [createHost, session, locale]);
+
+  useEffect(() => {
+    if (hostReady) hostRef.current?.sync(state, theme);
+  }, [hostReady, state, theme]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      const pressed = modKey === "meta" ? event.metaKey : event.ctrlKey;
+      if (!pressed || event.altKey || event.shiftKey) return;
+      const key = event.key.toLowerCase();
+      if (key === "w") {
+        if (!session.closeCurrent()) return;
+        event.preventDefault();
+        event.stopPropagation();
+      } else if (key === "s") {
+        event.preventDefault();
+        event.stopPropagation();
+        const path = session.getState().active;
+        if (path !== null) void session.save(path);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown, true);
+    return () => window.removeEventListener("keydown", onKeyDown, true);
+  }, [session, modKey]);
+
+  const editing = active?.view === "text";
+  let status: SaveStatusKind | null = null;
+  if (editing && active !== null) {
+    status = active.saveError !== null ? "failed" : isDirty(active) ? "unsaved" : "saved";
+  }
+  const name = active === null ? "" : baseName(active.path);
+  const saveFailedMessage =
+    active?.saveError === "read-only"
+      ? t("desktop.editor.saveFailedReadOnly.body", { name })
+      : active?.saveError === "permission"
+        ? t("desktop.editor.saveFailedPermission.body", { name })
+        : t("desktop.editor.saveFailedOther.body", { name });
+  const promptTab = state.tabs.find((candidate) => candidate.path === state.closePrompt);
+  return (
+    <section className={styles.root} data-editor={tab.id}>
+      <div className={styles.bar}>
+        <FileTabs
+          tabs={state.tabs}
+          active={state.active}
+          onSelect={(path) => session.select(path)}
+          onClose={(path) => void session.requestClose(path)}
+        />
+        {status === null ? null : <SaveStatus kind={status} />}
+      </div>
+      {active === null ? null : <EditorBreadcrumb project={tab.name} path={active.path} />}
+      {editing && active?.saveError ? (
+        <EditorBar
+          tone="danger"
+          title={t("desktop.editor.saveFailed.title")}
+          message={saveFailedMessage}
+          action={{
+            label: t("desktop.editor.saveFailedRetry.action"),
+            onClick: () => void session.save(active.path),
+          }}
+        />
+      ) : null}
+      {editing && active?.mode === "plain" ? (
+        <EditorBar tone="info" message={t("desktop.editor.plainNotice.body")} />
+      ) : null}
+      {editing && active?.mode === "plain-large" ? (
+        <EditorBar tone="info" message={t("desktop.editor.plainLargeNotice.body")} />
+      ) : null}
+      <div ref={containerRef} className={styles.code} hidden={!editing} data-code="" />
+      {editing ? null : (
+        <FileNotice
+          tab={active}
+          onReveal={(path) => void bridge.call("files.reveal", { project: tab.id, path })}
+          onOpenExternal={(path) =>
+            void bridge.call("files.openExternal", { project: tab.id, path })
+          }
+        />
+      )}
+      <ClosePrompt
+        name={promptTab === undefined ? null : baseName(promptTab.path)}
+        onAnswer={(answer) => void session.answerClose(answer)}
+      />
+    </section>
+  );
+}

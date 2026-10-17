@@ -117,12 +117,13 @@ async function main(args: DesktopArgs): Promise<void> {
     client = unavailableClient(error);
   }
 
+  const system = new ElectronSystemActions();
   const controller = new LibraryController({
     client,
     clientId,
     locale,
     preview,
-    system: new ElectronSystemActions(),
+    system,
     home: args.root ?? homedir(),
   });
   const ipcHost: IpcHost = {
@@ -162,6 +163,7 @@ async function main(args: DesktopArgs): Promise<void> {
       highContrast: nativeTheme.shouldUseHighContrastColors,
     }),
     files,
+    { reveal: (path) => system.revealInFileManager(path), open: (path) => system.openPath(path) },
   );
   // 应用菜单：⌘N 打开模板选择器（焦点在预览视图里也有效）
   Menu.setApplicationMenu(

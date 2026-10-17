@@ -154,6 +154,36 @@
 | desktop.create.template.label | 模板：{name} | Template: {name} | name：模板的显示名，已按语言取好 |
 | desktop.create.title | 新建 | New | — |
 | desktop.duration.seconds.label | {seconds} 秒 | {seconds} s | seconds：秒数，已按语言格式化的数字 |
+| desktop.editor.binary.body | {name}（{size}）不能在编辑器里打开，它的内容也不会当作文字显示。 | {name} ({size}) can't be opened in the editor, and its contents aren't shown as text. | name：文件名；size：已格式化的文件大小 |
+| desktop.editor.binary.title | 这个文件不是文本 | This file is not text | — |
+| desktop.editor.breadcrumb.aria | 文件位置 | File path | — |
+| desktop.editor.closeCancel.action | 取消 | Cancel | — |
+| desktop.editor.closeDiscard.action | 不保存 | Don't save | — |
+| desktop.editor.closePrompt.body | 不保存的话，这些修改会丢失。 | If you don't save, these changes will be lost. | — |
+| desktop.editor.closePrompt.title | 保存对 {name} 的修改吗？ | Save changes to {name}? | name：文件名 |
+| desktop.editor.closeSave.action | 保存 | Save | — |
+| desktop.editor.empty.body | 在左边的文件树里选一个文件，就能在这里编辑。 | Pick a file in the file tree on the left to edit it here. | — |
+| desktop.editor.empty.title | 还没有打开的文件 | No file is open | — |
+| desktop.editor.failed.body | 读取 {name} 时出了错。文件可能刚被移走或没有读取权限。 | Something went wrong reading {name}. It may have just been moved, or you may not have permission to read it. | name：文件名 |
+| desktop.editor.failed.title | 打不开这个文件 | Can't open this file | — |
+| desktop.editor.loading.label | 正在打开… | Opening… | — |
+| desktop.editor.openExternal.action | 在外部编辑器中打开 | Open in external editor | — |
+| desktop.editor.plainLargeNotice.body | 文件很大，已关闭语法高亮和智能提示。 | This file is very large, so syntax highlighting and suggestions are off. | — |
+| desktop.editor.plainNotice.body | 文件较大，不做语法高亮。 | This file is large, so syntax highlighting is off. | — |
+| desktop.editor.reveal.action | 在{term_fileManager}中显示 | Show in {term_fileManager} | — |
+| desktop.editor.saveFailed.title | 没有保存成功 | Couldn't save | — |
+| desktop.editor.saveFailedOther.body | 写入 {name} 时出了错（磁盘已满或文件夹不见了）。你的修改还在编辑器里，稍后再保存一次。 | Something went wrong writing {name} (the disk may be full or the folder is gone). Your changes are still in the editor; try saving again later. | name：文件名 |
+| desktop.editor.saveFailedPermission.body | 没有写入 {name} 的权限。你的修改还在编辑器里，处理权限后再保存一次。 | No permission to write {name}. Your changes are still in the editor; fix the permission and save again. | name：文件名 |
+| desktop.editor.saveFailedReadOnly.body | {name} 是只读的。你的修改还在编辑器里，改回可写后再保存一次。 | {name} is read-only. Your changes are still in the editor; make it writable and save again. | name：文件名 |
+| desktop.editor.saveFailedRetry.action | 再保存一次 | Save again | — |
+| desktop.editor.statusFailed.label | 保存失败 | Save failed | — |
+| desktop.editor.statusSaved.label | 已保存 | Saved | — |
+| desktop.editor.statusUnsaved.label | 未保存 | Unsaved | — |
+| desktop.editor.tabClose.label | 关闭 {name} | Close {name} | name：文件名（用户的内容） |
+| desktop.editor.tabUnsaved.label | {name}（未保存） | {name} (unsaved) | name：文件名（用户的内容） |
+| desktop.editor.tabs.aria | 文件标签 | File tabs | — |
+| desktop.editor.tooLarge.body | {name} 有 {size}，超过了编辑器能打开的上限（{limit}）。 | {name} is {size}, over the {limit} the editor can open. | name：文件名；size：已格式化的文件大小；limit：已格式化的上限大小 |
+| desktop.editor.tooLarge.title | 文件太大，没有打开 | This file is too large to open | — |
 | desktop.empty.templates.hint | 或者直接用常用模板开始，点一下进入填写名称那一步： | Or start from a common template; one click takes you to the naming step: | — |
 | desktop.error.title.label | 出错了：{title} | Error: {title} | title：错误的标题，来自 errors.<代码>.title，已是翻译好的句子 |
 | desktop.failure.log.label | 安装日志 | Install log | — |

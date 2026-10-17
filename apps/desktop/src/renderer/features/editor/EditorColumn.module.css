@@ -1,0 +1,32 @@
+/* 设计稿 WebLight、Script：圆角 16 的内容卡片，顶上 40 高的标签条，下面是面包屑和代码；与右边的预览 1.05 比 1 */
+.root {
+  flex: 1.05;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-line-hairline);
+  background: var(--color-bg-card);
+}
+
+.bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  block-size: var(--size-control-lg);
+  box-sizing: border-box;
+  padding-inline: var(--space-4);
+  border-block-end: 1px solid var(--color-line-hairline);
+}
+
+.code {
+  flex: 1;
+  min-block-size: 0;
+  min-inline-size: 0;
+}
+
+.code[hidden] {
+  display: none;
+}

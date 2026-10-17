@@ -21,8 +21,15 @@ const malformed = (path = ""): EditorFileResult<never> => ({
   error: { code: "EDITOR_IO_FAILED", params: { path } },
 });
 
+/** 访达和系统默认程序是 Electron 的事，由接线的一方传进来 */
+export interface FileOpeners {
+  reveal(absolutePath: string): void;
+  open(absolutePath: string): void;
+}
+
 export function editorFileMethods(
   maybeService: EditorFileService | undefined,
+  openers?: FileOpeners,
 ): Record<EditorFileMethod, (param: unknown) => unknown> {
   // 没接线（测试里的最小装配）时调用才失败，注册本身不失败
   const need = (): EditorFileService => {
@@ -64,6 +71,16 @@ export function editorFileMethods(
       if (t === null || p === null) return malformed();
       const unsaved = typeof p.unsaved === "string" ? p.unsaved : undefined;
       return need().trash(t.project, t.path, unsaved);
+    },
+    "files.reveal": async (param) => {
+      const t = target(param);
+      const abs = t === null ? null : await need().absolutePath(t.project, t.path);
+      if (abs !== null) openers?.reveal(abs);
+    },
+    "files.openExternal": async (param) => {
+      const t = target(param);
+      const abs = t === null ? null : await need().absolutePath(t.project, t.path);
+      if (abs !== null) openers?.open(abs);
     },
     "files.watch": (param) => {
       const p = asParams(param);

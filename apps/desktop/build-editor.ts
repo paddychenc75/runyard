@@ -22,7 +22,11 @@ export async function buildEditor(rendererDir: string): Promise<void> {
   await Promise.all([
     build({
       ...browser,
-      entryPoints: { "editor/editor": "src/renderer/editor/entry.ts" },
+      entryPoints: {
+        "editor/editor": "src/renderer/editor/entry.ts",
+        // 中文界面文字包：一个只给全局变量赋值的脚本，中文界面才在编辑器脚本之前加载
+        "editor/nls-zh-cn": "monaco-editor/nls/lang/zh-cn.js",
+      },
       outdir: rendererDir,
       // 字体放在 editor/ 下，样式里用相对地址引用
       loader: { ".ttf": "file" },

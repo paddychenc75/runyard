@@ -54,6 +54,15 @@ export class EditorFileService {
     return folder;
   }
 
+  /** 项目内相对路径对应的绝对路径（已限定在项目文件夹内）；不存在或越界是 null。给“在访达中显示”用 */
+  async absolutePath(project: string, path: string): Promise<string | null> {
+    try {
+      return (await confine(this.#folder(project), path)).abs;
+    } catch {
+      return null;
+    }
+  }
+
   /** 目录的直接子项：文件夹在前，同类按名称排序；不递归，所以 node_modules 点开才读 */
   list(project: string, path: string): Promise<EditorFileResult<FileEntry[]>> {
     return run(path, async () => {

@@ -28,6 +28,8 @@ function fakeService(calls: Call[]): EditorFileService {
     trash: record("trash"),
     watch: record("watch"),
     unwatch: record("unwatch"),
+    absolutePath: async (project: string, path: string) =>
+      path === "gone" ? null : `/lib/${project}/${path}`,
   } as unknown as EditorFileService;
 }
 
@@ -67,7 +69,8 @@ describe("文件方法的消息接线", () => {
     for (const name of editorFileMethodNames) {
       for (const param of bad) {
         const result = await methods[name](param);
-        if (name !== "files.unwatch") {
+        // 这三个动作没有返回值（取消监听、在访达中显示、用系统程序打开）
+        if (!["files.unwatch", "files.reveal", "files.openExternal"].includes(name)) {
           expect(result).toMatchObject({ ok: false, error: { code: "EDITOR_IO_FAILED" } });
         }
       }
@@ -76,6 +79,21 @@ describe("文件方法的消息接线", () => {
     await methods["files.create"]({ project: "d", path: "", name: "x", kind: "symlink" });
     await methods["files.rename"]({ project: "d", path: "a", name: 5 });
     expect(calls).toEqual([]);
+  });
+
+  it("在访达中显示、用系统程序打开：只把限定在项目内的绝对路径交给 Electron 那一侧；找不到或形状不对时什么都不做", async () => {
+    const reveal: string[] = [];
+    const open: string[] = [];
+    const methods = editorFileMethods(fakeService([]), {
+      reveal: (path) => void reveal.push(path),
+      open: (path) => void open.push(path),
+    });
+    await methods["files.reveal"]({ project: "demo", path: "public/logo.png" });
+    await methods["files.openExternal"]({ project: "demo", path: "dump.json" });
+    await methods["files.reveal"]({ project: "demo", path: "gone" });
+    await methods["files.openExternal"]({ path: "dump.json" });
+    expect(reveal).toEqual(["/lib/demo/public/logo.png"]);
+    expect(open).toEqual(["/lib/demo/dump.json"]);
   });
 });
 
