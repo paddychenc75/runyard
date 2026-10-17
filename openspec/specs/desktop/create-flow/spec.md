@@ -125,3 +125,24 @@
 - **WHEN** 创建并运行
 - **THEN** 没有任何关于 python 的提示
 - 验证：test
+
+### Requirement: 模板选择器里的搜索
+模板选择器的搜索框输入文字后 MUST 只留下名称、标识或说明里含有这段文字的模板（不分大小写），仍按类型分组，“最近使用”分组在搜索时 MUST 不显示；第一个结果 MUST 自动选中，上下方向键移动，回车进入新建弹窗。一个也没有时 MUST 写明没有匹配的模板。清空搜索 MUST 回到默认视图。
+来源：PRD #prd-template-picker；PRD #prd-search-filter
+
+#### Scenario: [DESKTOP-CREATE-FLOW-17] 按名称和说明匹配
+- 前提：本机有内置的 `react19`、`react18`、`vue3`、`hono` 等模板
+- **WHEN** 在选择器的搜索框输入 `react`
+- **THEN** 只剩 React 19 和 React 18 两个模板，没有“最近使用”分组，第一个被选中
+- 验证：test
+
+#### Scenario: [DESKTOP-CREATE-FLOW-18] 搜索后回车
+- 前提：搜索 `hono` 后只剩 Hono
+- **WHEN** 按回车
+- **THEN** 出现新建弹窗，模板是 `hono`
+- 验证：test
+
+#### Scenario: [DESKTOP-CREATE-FLOW-19] 没有匹配
+- **WHEN** 搜索 `rails`
+- **THEN** 列表为空并写明没有匹配的模板；清空搜索后回到带“最近使用”的默认视图
+- 验证：test
