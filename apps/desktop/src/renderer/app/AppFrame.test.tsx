@@ -97,7 +97,8 @@ describe("主窗口外壳", () => {
     const tabs = screen.getAllByRole("tab");
     expect(tabs).toHaveLength(1);
     expect(tabs[0]?.textContent).toBe("资源库");
-    expect(within(screen.getByRole("tablist")).queryByRole("button")).toBeNull();
+    // 标签条末尾有一个“新建项目”的 ＋ 按钮（设计稿 Web），但资源库标签自己没有关闭按钮
+    expect(within(screen.getByRole("tablist")).queryByRole("button", { name: /关闭/ })).toBeNull();
     const event = new KeyboardEvent("keydown", { key: "w", metaKey: true, cancelable: true });
     document.dispatchEvent(event);
     expect(event.defaultPrevented).toBe(true);

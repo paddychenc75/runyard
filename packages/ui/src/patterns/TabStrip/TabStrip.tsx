@@ -44,6 +44,8 @@ export interface TabStripProps extends Omit<ComponentProps<"div">, "aria-label" 
   onClose?: (id: string) => void;
   /** 关闭快捷键用 ⌘ 还是 Ctrl，来自主进程算好的启动信息；默认 meta */
   modKey?: "meta" | "ctrl";
+  /** 标签条末尾的“＋”新建按钮（设计稿 Web）；不传就没有 */
+  add?: { label: Localized; onClick: () => void };
 }
 
 // 标签条：玻璃胶囊里一排标签。键盘遵循 W3C 的 Tabs 规范（手动激活）：
@@ -55,6 +57,7 @@ export function TabStrip({
   onValueChange,
   onClose,
   modKey = "meta",
+  add,
   className,
   ...rest
 }: TabStripProps) {
@@ -157,6 +160,17 @@ export function TabStrip({
           </div>
         );
       })}
+      {add === undefined ? null : (
+        <Tooltip content={add.label}>
+          <IconButton
+            icon="plus"
+            size="sm"
+            label={add.label}
+            className={styles.add}
+            onClick={add.onClick}
+          />
+        </Tooltip>
+      )}
     </GlassSurface>
   );
 }

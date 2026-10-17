@@ -7,7 +7,7 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  min-inline-size: var(--size-column-xl);
+  min-inline-size: var(--size-menu-min);
   padding: var(--space-3);
   font-size: var(--text-body-size);
   line-height: var(--text-body-line-height);
@@ -30,7 +30,7 @@
   inline-size: 100%;
   block-size: var(--size-menu-item);
   padding-inline: var(--space-5);
-  border-radius: var(--radius-row);
+  border-radius: var(--radius-sm);
   color: var(--color-text-primary);
   cursor: default;
   user-select: none;

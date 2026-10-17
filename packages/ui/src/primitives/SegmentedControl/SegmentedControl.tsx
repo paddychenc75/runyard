@@ -6,6 +6,8 @@ import styles from "./SegmentedControl.module.css";
 export interface SegmentedControlItem {
   value: string;
   label: Localized;
+  /** 灰着、点不了（功能还没做的页签） */
+  disabled?: boolean;
 }
 
 export interface SegmentedControlProps {
@@ -38,7 +40,12 @@ export function SegmentedControl({
       className={className === undefined ? styles.root : `${styles.root} ${className}`}
     >
       {items.map((item) => (
-        <Toggle key={item.value} value={item.value} className={styles.segment}>
+        <Toggle
+          key={item.value}
+          value={item.value}
+          disabled={item.disabled}
+          className={styles.segment}
+        >
           {item.label}
         </Toggle>
       ))}

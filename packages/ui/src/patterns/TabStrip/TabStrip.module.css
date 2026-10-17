@@ -75,6 +75,11 @@
   white-space: nowrap;
 }
 
+.add {
+  flex: none;
+  margin-inline: var(--space-1) var(--space-2);
+}
+
 .close {
   margin-inline: var(--space-1) var(--space-5);
 }

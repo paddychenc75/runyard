@@ -54,6 +54,7 @@ disagree, `tokens.json` wins.
 | Selected segment in a segmented control (`--shadow-segment-selected`) | 0 1px 3px rgba(0, 0, 0, 0.14), 0 0 0 0.5px rgba(0, 0, 0, 0.05) | none |
 | Switch thumb (`--shadow-thumb`) | 0 1px 3px rgba(0, 0, 0, 0.25) | 0 1px 3px rgba(0, 0, 0, 0.25) |
 | Selected tab inside a glass capsule (`--shadow-tab-selected`) | 0 1px 3px rgba(0, 0, 0, 0.12) | inset 0 1px 0 rgba(255, 255, 255, 0.18) |
+| Template tile: a very faint top highlight (`--shadow-tile`) | inset 0 1px 0 rgba(255, 255, 255, 0.7) | inset 0 1px 0 rgba(255, 255, 255, 0.06) |
 
 ### Text
 
@@ -199,6 +200,7 @@ disagree, `tokens.json` wins.
 | `--size-control-padding-lg` | 18px | Primary button inline padding |
 | `--size-control-padding-md` | 14px | Secondary button inline padding |
 | `--size-tree-row` | 28px | File tree row height |
+| `--size-menu-min` | 252px | Menu minimum width (RowMenu board: 252) |
 | `--size-menu-item` | 32px | Menu item height |
 | `--size-window-inset` | 8px | Window inset for floating panels |
 | `--size-nav-item` | 36px | Sidebar navigation item height |
@@ -263,7 +265,8 @@ disagree, `tokens.json` wins.
 | `--text-body-size` | 13px | Body (weight 400) |
 | `--text-secondary-size` | 12px | Secondary and column headers |
 | `--text-caption-size` | 11px | Key caps, small captions |
-| `--text-micro-size` | 10px | Template tile letters |
+| `--text-micro-size` | 10px | Template tile letters, small tile |
+| `--text-tile-large-size` | 17px | Template tile letters, large tile |
 | `--text-code-size` | 13px | Code, ports, commands |
 | `--text-code-small-size` | 12px | Small code |
 

@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 import { CONTENT_LEFT_PX, LIST_WIDTH_PX, layoutCssVariables, TOPBAR_HEIGHT_PX } from "./layout.ts";
 
 describe("外壳尺寸", () => {
-  it("尺寸与设计稿 Main 一致：内容区从 256 开始，顶栏高 68", () => {
+  it("尺寸与设计稿 Main 一致：内容区从 256 开始，顶栏高 70", () => {
     expect(CONTENT_LEFT_PX).toBe(256);
-    expect(TOPBAR_HEIGHT_PX).toBe(68);
+    expect(TOPBAR_HEIGHT_PX).toBe(70);
   });
 });
 

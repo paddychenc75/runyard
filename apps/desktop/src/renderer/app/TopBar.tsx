@@ -121,6 +121,7 @@ export function TopBar({
         onValueChange={onSelect}
         onClose={(id) => void flushProject(id).then((proceed) => proceed && onClose(id))}
         modKey={modKey}
+        add={{ label: t("desktop.create.newProject.action"), onClick: onNew }}
       />
       <div className={styles.spacer} />
       {activeTabRow === undefined ? (

@@ -1,6 +1,6 @@
 import type { Locale } from "@runyard/i18n";
 import type { LocalizedText, RunState } from "@runyard/protocol";
-import type { StatusMarkStatus, TechLogo } from "@runyard/ui";
+import type { StatusMarkStatus, TechLogo, TileBrand } from "@runyard/ui";
 import type { PlaygroundRow } from "../shared/library-state.ts";
 
 // 资源库列表里每一格“显示什么”的纯判断，不碰 DOM、不生成文字（文字在组件里经文案包），所以可以直接测。
@@ -62,6 +62,23 @@ export function logoOf(templateId: string): TechLogo | undefined {
       return "vue";
     case "python":
       return "python";
+    default:
+      return undefined;
+  }
+}
+
+/** 没有标志的内置模板，字母借用的代表色（视觉规范第 7 节）；自定义模板返回 undefined，字母用中性色 */
+export function brandOf(templateId: string): TileBrand | undefined {
+  switch (templateId) {
+    case "react18":
+    case "react19":
+      return "react";
+    case "go":
+      return "go";
+    case "node-ts":
+      return "node";
+    case "hono":
+      return "hono";
     default:
       return undefined;
   }

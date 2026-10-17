@@ -24,4 +24,15 @@ describe("MonogramTile", () => {
     expect(container.querySelector("svg")).toBeNull();
     expect(container.firstElementChild?.textContent).toBe("Go");
   });
+
+  it("没有标志的内置模板，字母带代表色标记；Python 用双色原图（两条路径）", () => {
+    const { container } = render(
+      <>
+        <MonogramTile letters="Re" brand="react" />
+        <MonogramTile letters="Py" logo="python" />
+      </>,
+    );
+    expect(container.querySelector("[data-brand='react']")?.textContent).toBe("Re");
+    expect(container.querySelectorAll("svg[data-icon='logo-python'] path")).toHaveLength(2);
+  });
 });

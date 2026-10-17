@@ -82,6 +82,7 @@ export {
   type MonogramTileProps,
   type MonogramTileSize,
   type TechLogo,
+  type TileBrand,
 } from "./primitives/MonogramTile/index.ts";
 export {
   ScrollArea,
