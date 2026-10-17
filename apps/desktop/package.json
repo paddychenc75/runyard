@@ -12,6 +12,8 @@
     "smoke:editor": "node build.ts && electron dist/main/index.mjs --editor-smoke",
     "smoke:terminal": "node build.ts && electron dist/main/index.mjs --terminal-smoke",
     "test": "vitest run --project unit",
+    "e2e": "node build.ts && playwright test --config e2e/playwright.config.ts",
+    "e2e:run": "playwright test --config e2e/playwright.config.ts",
     "test:process": "vitest run --project process --passWithNoTests",
     "package": "node ../../tooling/scripts/package-desktop.ts",
     "electron:download": "install-electron"
@@ -36,6 +38,7 @@
   },
   "devDependencies": {
     "@electron/fuses": "catalog:",
+    "@playwright/test": "catalog:",
     "@testing-library/dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@testing-library/user-event": "catalog:",

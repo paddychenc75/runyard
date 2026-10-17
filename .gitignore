@@ -27,3 +27,6 @@ coverage/
 
 # ui-visual 的本地输出（对照页、失败截图）
 /packages/ui/visual/.output/
+
+# 端到端测试的本地输出（失败截图、报告）
+/apps/desktop/e2e/.output/

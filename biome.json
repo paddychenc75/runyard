@@ -7,6 +7,7 @@
       "!**/.tsbuild",
       "!**/.turbo",
       "!packages/ui/visual/.output",
+      "!apps/desktop/e2e/.output",
       "!**/dist",
       "!pnpm-lock.yaml",
       "!.release-please-manifest.json",
