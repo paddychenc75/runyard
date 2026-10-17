@@ -4,6 +4,8 @@ node_modules/
 .tsbuild/
 dist/
 coverage/
+# 桌面应用的打包输出（.app、dmg、zip 不进仓库）
+/apps/desktop/release/
 *.tsbuildinfo
 
 # 过程产物不进仓库（负责人 2026-10-12 决定，技术设计 §11.4）：万一还有残留，这些保险也不会被误提交

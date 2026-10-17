@@ -12,6 +12,11 @@ Runyard 是一个用来存放和运行代码示例的桌面应用：选一个模
 - 第一版只支持 macOS；以后计划支持 Windows（暂无日期）。
 - 安装包暂时不做代码签名。
 
+<!-- sec: first-open -->
+## 首次打开未签名的应用
+
+macOS 安装包没有签名也没有公证，系统会拦下第一次打开。先把 Runyard 拖进“应用程序”再打开，然后到“系统设置 → 隐私与安全性”点“仍要打开”（或执行 `xattr -dr com.apple.quarantine /Applications/Runyard.app`）。完整步骤见 [docs/guides/first-open-unsigned-app.md](docs/guides/first-open-unsigned-app.md)。
+
 <!-- sec: contents -->
 ## 仓库里有什么
 

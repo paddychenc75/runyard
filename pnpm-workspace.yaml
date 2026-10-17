@@ -9,6 +9,7 @@ packages:
 catalog:
   "@base-ui/react": 1.8.0
   "@biomejs/biome": 2.5.14
+  "@electron/fuses": 2.1.3
   "@fission-ai/openspec": 1.14.0
   "@formatjs/icu-messageformat-parser": 3.5.18
   "@playwright/test": 1.63.0
@@ -20,6 +21,7 @@ catalog:
   "@types/react-dom": 19.3.0
   chokidar: 5.0.0
   electron: 44.5.1
+  electron-builder: 26.17.0
   esbuild: 0.28.2
   intl-messageformat: 11.2.15
   jsdom: 29.1.1
@@ -33,6 +35,11 @@ catalog:
 
 # 发布不满 14 天的版本不装（单位：分钟，20160 = 14 天）
 minimumReleaseAge: 20160
+minimumReleaseAgeExclude:
+  # 安全修复例外（技术设计 §8.6.1 规则 3）：electron-builder 26.17.0 的间接依赖 http-cache-semantics
+  # 4.2.0 有 GHSA-ch52-4w7c-c8xp，4.3.0 修复（2026-10-04 发布，已满 72 小时）；负责人 2026-10-17 批准。
+  # 2026-10-18 02:56Z 满 14 天后删掉这一条（#193）。
+  - http-cache-semantics@4.3.0
 # 清掉锁文件已不再使用的例外条目（与年龄无关；满 14 天后要手动删，决策记录 0011）
 minimumReleaseAgeExcludePrune: true
 # 写入 package.json 时不加 ^ 或 ~
@@ -40,6 +47,8 @@ savePrefix: ""
 # 安装脚本白名单：只放行 electron 和 esbuild；strictDepBuilds 保持默认（true）
 allowBuilds:
   electron: true
+  # 只给 Windows 的 NSIS 安装包用，第一版不打 Windows（决策记录 0007）
+  electron-winstaller: false
   esbuild: true
 # Node 版本不符直接拒绝安装
 engineStrict: true
