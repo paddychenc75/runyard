@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import type { Localized } from "@runyard/i18n";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -96,5 +98,35 @@ describe("DataTable", () => {
     expect(detail?.previousElementSibling?.getAttribute("data-row-id")).toBe("a");
     expect(container.querySelector("[data-detail-for=b]")).toBeNull();
     expect(container.querySelectorAll("[data-row-id]")).toHaveLength(2);
+  });
+
+  it("[#348] 表头和每一行用同一套列定义：列数、顺序、固定方式逐列一致，共用一个 grid-template-columns", () => {
+    const { container } = setup();
+    const heads = [...container.querySelectorAll("thead th")];
+    expect(heads).toHaveLength(columns.length);
+    expect(heads.map((th) => th.getAttribute("data-pin"))).toEqual(
+      columns.map((column) => column.pin ?? null),
+    );
+    for (const tr of container.querySelectorAll("tbody tr[data-row-id]")) {
+      const cells = [...tr.querySelectorAll("td")];
+      expect(cells.map((td) => td.getAttribute("data-column"))).toEqual(
+        columns.map((column) => column.id),
+      );
+      expect(cells.map((td) => td.getAttribute("data-pin"))).toEqual(
+        heads.map((th) => th.getAttribute("data-pin")),
+      );
+    }
+    // 版面轨道只在 table 上定义一次，表头行和数据行的 .row 都读它（jsdom 不排版，位置由真实窗口里的检查看）
+    const table = container.querySelector("table") as HTMLElement;
+    expect(table.style.getPropertyValue("--table-columns").split(" ").length).toBeGreaterThan(
+      columns.length - 1,
+    );
+    const css = readFileSync(join(import.meta.dirname, "DataTable.module.css"), "utf8");
+    expect(css).toMatch(/\.row \{[^}]*grid-template-columns: var\(--table-columns\)/);
+  });
+
+  it("[#348] 窗口放不下时固定列的圆角收成直角，不漏出底下滚过去的列", () => {
+    const css = readFileSync(join(import.meta.dirname, "DataTable.module.css"), "utf8");
+    expect(css).toMatch(/\.root\[data-overflowing\] \.row > \[data-pin\] \{[^}]*border-radius: 0/);
   });
 });

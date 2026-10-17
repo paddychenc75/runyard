@@ -93,18 +93,6 @@
   background: inherit;
 }
 
-.head .headerCell[data-pin] {
-  background: var(--color-bg-window);
-}
-
-[data-pin="start"] {
-  inset-inline-start: 0;
-}
-
-[data-pin="end"] {
-  inset-inline-end: 0;
-}
-
 /* 行的左右内边距要让固定列贴着行边：固定列自己补回这一段，选中的强调线画在它上面 */
 .row > [data-pin="start"] {
   margin-inline-start: calc(var(--space-6) * -1);
@@ -118,6 +106,33 @@
   padding-inline-end: var(--space-6);
   border-start-end-radius: var(--radius-row);
   border-end-end-radius: var(--radius-row);
+}
+
+/* 窗口放不下、固定列贴在可见区域的边上时，圆角会漏出被盖在底下的列（右缘的括号状碎片，#348）：
+   此时固定列的角收成直角，圆角只在整行放得下、固定列正好是行首行尾时才要 */
+.root[data-overflowing] .row > [data-pin] {
+  border-radius: 0;
+}
+
+/* 固定列和滚动过去的列之间画一条细线：表头里被固定列盖住的字（“创建者”只剩半截）才读得出是被盖住，不是错位 */
+.root[data-overflowing] .row > [data-pin="end"] {
+  box-shadow: inset 1px 0 0 var(--color-line-hairline);
+}
+
+.root[data-overflowing] .row > [data-pin="start"] {
+  box-shadow: inset -1px 0 0 var(--color-line-hairline);
+}
+
+.head .headerCell[data-pin] {
+  background: var(--color-bg-window);
+}
+
+[data-pin="start"] {
+  inset-inline-start: 0;
+}
+
+[data-pin="end"] {
+  inset-inline-end: 0;
 }
 
 .body .row[data-selected] > [data-pin="start"] {
