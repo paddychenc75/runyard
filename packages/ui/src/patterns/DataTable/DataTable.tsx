@@ -12,7 +12,7 @@ import { ScrollArea } from "../../primitives/ScrollArea/index.ts";
 import styles from "./DataTable.module.css";
 
 /** 列宽的档位，对应设计变量 size-column-*；fill 和 flex 分剩下的宽度（fill 占 1.5 份，flex 占 1 份） */
-export type DataTableColumnWidth = "fill" | "flex" | "icon" | "sm" | "md" | "lg" | "xl";
+export type DataTableColumnWidth = "fill" | "flex" | "icon" | "sm" | "md" | "lg" | "xl" | "xxl";
 
 export interface DataTableColumn<Row> {
   id: string;
@@ -59,6 +59,7 @@ const TRACK: Record<DataTableColumnWidth, string> = {
   md: "var(--size-column-md)",
   lg: "var(--size-column-lg)",
   xl: "var(--size-column-xl)",
+  xxl: "var(--size-column-xxl)",
 };
 
 const MIN: Record<DataTableColumnWidth, string> = {
