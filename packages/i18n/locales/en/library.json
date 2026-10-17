@@ -66,6 +66,8 @@
   "library.search.key.label": "{term_searchShortcut}",
   "library.search.label": "Search playgrounds",
   "library.search.placeholder": "Search name, note, template",
+  "library.sidebar.collapse.label": "Hide sidebar",
+  "library.sidebar.expand.label": "Show sidebar",
   "library.sidebar.footer.label": "{count, plural, one {# playground} other {# playgrounds}}",
   "library.sort.created.label": "Created",
   "library.sort.name.label": "Name",

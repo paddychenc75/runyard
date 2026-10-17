@@ -1,0 +1,46 @@
+/* 分隔条：占的就是卡片之间的间距，平时看不见，悬停、聚焦、拖动时在中间画一条强调色的线 */
+.root {
+  position: relative;
+  flex: none;
+  touch-action: none;
+  -webkit-app-region: no-drag;
+}
+
+.root[data-orientation="vertical"] {
+  inline-size: var(--size-card-gap);
+  cursor: col-resize;
+}
+
+.root[data-orientation="horizontal"] {
+  block-size: var(--size-card-gap);
+  cursor: row-resize;
+}
+
+.root::after {
+  content: "";
+  position: absolute;
+  border-radius: var(--radius-control);
+  background: var(--color-fill-accent);
+  opacity: 0;
+  transition: opacity var(--motion-duration-fast) var(--motion-easing-standard);
+}
+
+.root[data-orientation="vertical"]::after {
+  inset-block: var(--space-6);
+  inset-inline: calc(50% - var(--space-1) / 2);
+}
+
+.root[data-orientation="horizontal"]::after {
+  inset-inline: var(--space-6);
+  inset-block: calc(50% - var(--space-1) / 2);
+}
+
+.root:hover::after,
+.root:focus-visible::after,
+.root[data-dragging]::after {
+  opacity: 1;
+}
+
+.root:focus-visible {
+  outline: none;
+}

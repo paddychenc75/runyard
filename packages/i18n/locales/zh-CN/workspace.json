@@ -6,8 +6,10 @@
   "workspace.closeConfirm.optOut.label": "不再提示",
   "workspace.closeConfirm.title": "关闭 {name} 并停止运行？",
   "workspace.files.add.aria": "在项目根新建",
+  "workspace.files.collapse.label": "收起文件树",
   "workspace.files.create.aria": "新文件或文件夹的名称",
   "workspace.files.empty.hint": "这个项目里还没有文件",
+  "workspace.files.expand.label": "展开文件树",
   "workspace.files.failed.hint": "文件操作没有成功，请再试一次",
   "workspace.files.menu.aria": "文件树的操作",
   "workspace.files.nameExists.hint": "已经有一个叫 {name} 的文件或文件夹",
@@ -26,6 +28,10 @@
   "workspace.files.trashItem.action": "移到{term_trash}",
   "workspace.files.trashed.hint": "已移到{term_trash}",
   "workspace.files.tree.aria": "文件树",
+  "workspace.resize.console.label": "调整输出面板高度",
+  "workspace.resize.hint": "拖动调整大小，双击恢复默认",
+  "workspace.resize.preview.label": "调整预览宽度",
+  "workspace.resize.tree.label": "调整文件树宽度",
   "workspace.tab.close.label": "关闭 {name}",
   "workspace.tabs.aria": "标签页"
 }

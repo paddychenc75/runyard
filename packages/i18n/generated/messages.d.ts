@@ -366,6 +366,7 @@ export type CatalogMessages = {
   "desktop.failure.stepStart.label": Record<never, never>;
   "desktop.failure.steps.aria": Record<never, never>;
   "desktop.menu.new.label": Record<never, never>;
+  "desktop.menu.sidebar.label": Record<never, never>;
   "desktop.missing.command.label": Record<never, never>;
   "desktop.missing.copied.label": Record<never, never>;
   "desktop.missing.copy.action": Record<never, never>;
@@ -567,6 +568,8 @@ export type CatalogMessages = {
   "library.search.key.label": Record<never, never>;
   "library.search.label": Record<never, never>;
   "library.search.placeholder": Record<never, never>;
+  "library.sidebar.collapse.label": Record<never, never>;
+  "library.sidebar.expand.label": Record<never, never>;
   "library.sidebar.footer.label": {
     count: number;
   };
@@ -652,8 +655,10 @@ export type CatalogMessages = {
     name: string | number;
   };
   "workspace.files.add.aria": Record<never, never>;
+  "workspace.files.collapse.label": Record<never, never>;
   "workspace.files.create.aria": Record<never, never>;
   "workspace.files.empty.hint": Record<never, never>;
+  "workspace.files.expand.label": Record<never, never>;
   "workspace.files.failed.hint": Record<never, never>;
   "workspace.files.menu.aria": Record<never, never>;
   "workspace.files.nameExists.hint": {
@@ -683,6 +688,10 @@ export type CatalogMessages = {
   "workspace.files.trashItem.action": Record<never, never>;
   "workspace.files.trashed.hint": Record<never, never>;
   "workspace.files.tree.aria": Record<never, never>;
+  "workspace.resize.console.label": Record<never, never>;
+  "workspace.resize.hint": Record<never, never>;
+  "workspace.resize.preview.label": Record<never, never>;
+  "workspace.resize.tree.label": Record<never, never>;
   "workspace.tab.close.label": {
     name: string | number;
   };

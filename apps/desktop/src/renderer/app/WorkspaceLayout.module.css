@@ -1,0 +1,51 @@
+/* 项目标签页的版面：分隔条自己占卡片之间的间距，所以这里不再用 gap；宽高来自 WorkspaceLayout 写的变量 */
+.root {
+  flex: 1;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding-block-end: var(--size-window-inset);
+  padding-inline-end: var(--size-window-inset);
+}
+
+/* 量尺寸的是这一层：不含右边和下边的窗口留白 */
+.inner {
+  flex: 1;
+  min-block-size: 0;
+  display: flex;
+}
+
+/* 设计稿 WebLight：文件树是整高的一列，编辑器、预览在右边上一行，输出面板在它们下面 */
+.column {
+  flex: 1;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.top {
+  flex: 1;
+  min-block-size: 0;
+  display: flex;
+}
+
+/* 预览或脚本输出：固定宽度，编辑器吃剩下的 */
+.right {
+  flex: none;
+  display: flex;
+  inline-size: var(--pane-preview-width);
+  min-inline-size: 0;
+}
+
+/* 文件树收起后的窄条：只放一个“展开”按钮，宽度含右边的间距 */
+.rail {
+  flex: none;
+  box-sizing: border-box;
+  inline-size: calc(var(--size-control-lg) + var(--size-card-gap));
+  padding-block-start: var(--space-6);
+  padding-inline-end: var(--size-card-gap);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}

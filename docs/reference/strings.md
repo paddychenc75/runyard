@@ -204,6 +204,7 @@
 | desktop.failure.stepStart.label | 启动开发服务 | Start dev server | — |
 | desktop.failure.steps.aria | 启动步骤 | Start-up steps | — |
 | desktop.menu.new.label | 新建… | New… | — |
+| desktop.menu.sidebar.label | 切换侧栏 | Toggle Sidebar | — |
 | desktop.missing.command.label | 安装命令 | Install command | — |
 | desktop.missing.copied.label | 已复制 | Copied | — |
 | desktop.missing.copy.action | 复制命令 | Copy command | — |
@@ -457,6 +458,8 @@
 | library.search.key.label | {term_searchShortcut} | {term_searchShortcut} | — |
 | library.search.label | 搜索项目 | Search playgrounds | — |
 | library.search.placeholder | 搜索名称、备注、模板 | Search name, note, template | — |
+| library.sidebar.collapse.label | 收起侧栏 | Hide sidebar | — |
+| library.sidebar.expand.label | 显示侧栏 | Show sidebar | — |
 | library.sidebar.footer.label | {count, plural, other {# 个项目}} | {count, plural, one {# playground} other {# playgrounds}} | count：资源库里项目的总数 |
 | library.sort.created.label | 创建时间 | Created | — |
 | library.sort.name.label | 名称 | Name | — |
@@ -558,8 +561,10 @@
 | workspace.closeConfirm.optOut.label | 不再提示 | Don’t ask again | — |
 | workspace.closeConfirm.title | 关闭 {name} 并停止运行？ | Close {name} and stop it? | name：项目名，用户自己起的，不翻译 |
 | workspace.files.add.aria | 在项目根新建 | New at the playground root | — |
+| workspace.files.collapse.label | 收起文件树 | Hide file tree | — |
 | workspace.files.create.aria | 新文件或文件夹的名称 | Name of the new file or folder | — |
 | workspace.files.empty.hint | 这个项目里还没有文件 | There are no files in this playground yet | — |
+| workspace.files.expand.label | 展开文件树 | Show file tree | — |
 | workspace.files.failed.hint | 文件操作没有成功，请再试一次 | The file action didn’t work. Please try again | — |
 | workspace.files.menu.aria | 文件树的操作 | File tree actions | — |
 | workspace.files.nameExists.hint | 已经有一个叫 {name} 的文件或文件夹 | A file or folder named {name} already exists | name：已存在的名字 |
@@ -578,5 +583,9 @@
 | workspace.files.trashItem.action | 移到{term_trash} | Move to {term_trash} | — |
 | workspace.files.trashed.hint | 已移到{term_trash} | Moved to {term_trash} | — |
 | workspace.files.tree.aria | 文件树 | File tree | — |
+| workspace.resize.console.label | 调整输出面板高度 | Resize output panel | — |
+| workspace.resize.hint | 拖动调整大小，双击恢复默认 | Drag to resize, double-click to reset | — |
+| workspace.resize.preview.label | 调整预览宽度 | Resize preview | — |
+| workspace.resize.tree.label | 调整文件树宽度 | Resize file tree | — |
 | workspace.tab.close.label | 关闭 {name} | Close {name} | name：项目名，用户自己起的，不翻译 |
 | workspace.tabs.aria | 标签页 | Tabs | — |

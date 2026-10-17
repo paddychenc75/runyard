@@ -26,7 +26,12 @@ import { claimSingleInstance, focusWindow } from "./integration/single-instance.
 import { ElectronSystemActions } from "./integration/system-actions.ts";
 import { resolveUserDataDir } from "./integration/user-data.ts";
 import { keepAliveAfterClose } from "./integration/window-lifecycle.ts";
-import { type IpcHost, registerBridgeHandlers, requestPicker } from "./ipc-handlers.ts";
+import {
+  type IpcHost,
+  registerBridgeHandlers,
+  requestPicker,
+  requestSidebarToggle,
+} from "./ipc-handlers.ts";
 import { type LibraryClient, LibraryController } from "./library-controller.ts";
 import { buildAppMenu } from "./native-ui/app-menu.ts";
 import {
@@ -176,6 +181,7 @@ async function main(args: DesktopArgs): Promise<void> {
           locale: menuLocale,
           platform: currentPlatform(),
           onNew: () => requestPicker(ipcHost),
+          onToggleSidebar: () => requestSidebarToggle(ipcHost),
         }),
       ),
     );

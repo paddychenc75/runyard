@@ -85,6 +85,7 @@
   "desktop.failure.stepStart.label": "启动开发服务",
   "desktop.failure.steps.aria": "启动步骤",
   "desktop.menu.new.label": "新建…",
+  "desktop.menu.sidebar.label": "切换侧栏",
   "desktop.missing.command.label": "安装命令",
   "desktop.missing.copied.label": "已复制",
   "desktop.missing.copy.action": "复制命令",

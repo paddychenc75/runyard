@@ -4,6 +4,7 @@ import { type KeyboardEvent, useCallback, useEffect, useMemo, useRef, useState }
 import type { DesktopBridge } from "../../../shared/desktop-bridge.ts";
 import type { FileEntry } from "../../../shared/editor-files.ts";
 import { useWorkspaceFiles } from "../../shared/workspace-files.tsx";
+import { PaneToggleButton } from "../PaneToggleButton.tsx";
 import styles from "./FileTree.module.css";
 import { EntryIcon, toneOf } from "./FileTreeGlyph.tsx";
 import { FileTreeMenu, type MenuTarget } from "./FileTreeMenu.tsx";
@@ -21,6 +22,8 @@ export interface FileTreeProps {
   /** 项目 id（文件服务按它找项目文件夹） */
   project: string;
   hooks?: FileTreeHooks;
+  /** 给了就在标题行画“收起文件树”按钮（规格 DESKTOP-WORKSPACE-60） */
+  onCollapse?: () => void;
 }
 
 // 按路径找行：路径里可能有引号等字符，不拼进选择器
@@ -40,7 +43,7 @@ const NAV_KEYS: readonly string[] = [
 
 // 项目标签页左边的文件树（设计稿 Web、Script 的“文件”面板，规格 desktop/editor 文件树）：
 // 玻璃面板，标题行加“新建”，下面是树；只用键盘就能操作全部动作，焦点所在的行始终画出焦点环。
-export function FileTree({ bridge, project, hooks }: FileTreeProps) {
+export function FileTree({ bridge, project, hooks, onCollapse }: FileTreeProps) {
   const workspace = useWorkspaceFiles();
   const host = useMemo<FileTreeHost>(
     () => ({ activePath: workspace.activePath, openFile: workspace.openFile, ...hooks }),
@@ -131,6 +134,13 @@ export function FileTree({ bridge, project, hooks }: FileTreeProps) {
       <GlassSurface material="filetree" className={styles.root}>
         <div className={styles.head}>
           <span className={styles.title}>{t("workspace.files.title.label")}</span>
+          {onCollapse === undefined ? null : (
+            <PaneToggleButton
+              label={t("workspace.files.collapse.label")}
+              expanded
+              onClick={onCollapse}
+            />
+          )}
           <IconButton
             icon="plus"
             size="sm"
