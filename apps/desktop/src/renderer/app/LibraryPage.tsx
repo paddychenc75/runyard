@@ -11,7 +11,7 @@ import {
   statusFilters,
   typeFilters,
 } from "../library-query.ts";
-import { monogramOf, pickLocalizedText, runningCount } from "../library-view.ts";
+import { logoOf, monogramOf, pickLocalizedText, runningCount } from "../library-view.ts";
 import { FilterMenu } from "./FilterMenu.tsx";
 import styles from "./LibraryPage.module.css";
 import { LibraryTable } from "./LibraryTable.tsx";
@@ -137,7 +137,11 @@ export function LibraryPage({
                     className={styles.chip}
                     onClick={() => onCreateFrom(template.id)}
                   >
-                    <MonogramTile letters={monogramOf(template.id)} size="lg" />
+                    <MonogramTile
+                      letters={monogramOf(template.id)}
+                      logo={logoOf(template.id)}
+                      size="lg"
+                    />
                     <UserText>{pickLocalizedText(template.name, locale)}</UserText>
                   </button>
                 ))}

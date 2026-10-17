@@ -8,3 +8,9 @@
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+
+/* 技术标志是实心图形（来自 Simple Icons 的单色字形），不画线 */
+.root[data-icon^="logo-"] {
+  fill: currentColor;
+  stroke: none;
+}

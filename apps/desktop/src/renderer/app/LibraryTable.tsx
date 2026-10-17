@@ -15,6 +15,7 @@ import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { PlaygroundRow } from "../../shared/library-state.ts";
 import {
   creatorOf,
+  logoOf,
   monogramOf,
   pickLocalizedText,
   retentionOf,
@@ -83,7 +84,7 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
       width: "flex",
       render: (row) => (
         <span className={styles.template}>
-          <MonogramTile letters={monogramOf(row.templateId)} />
+          <MonogramTile letters={monogramOf(row.templateId)} logo={logoOf(row.templateId)} />
           <Truncate>
             <UserText>
               {row.templateName === null

@@ -95,6 +95,9 @@
   --color-fill-agent-tint: light-dark(rgba(175, 82, 222, 0.12), rgba(191, 90, 242, 0.24));
   --color-fill-switch-on: light-dark(var(--green-600), var(--green-500));
   --color-fill-switch-off: light-dark(rgba(120, 120, 128, 0.32), rgba(120, 120, 128, 0.4));
+  --color-brand-html5: light-dark(#e34c26, #f06529);
+  --color-brand-vue: light-dark(#35495e, #4fc08d);
+  --color-brand-python: light-dark(#3776ab, #4b8bbe);
   --color-code-plain: light-dark(var(--ink-900), var(--gray-50));
   --color-code-keyword: light-dark(var(--magenta-600), var(--pink-400));
   --color-code-string: light-dark(var(--crimson-700), var(--coral-400));

@@ -35,7 +35,7 @@
 ## 子目录地图
 
 - `src/primitives/`：基础组件；`src/patterns/`：组合组件（用基础组件拼成，如标签条）
-- `src/icons/`：`svg/` 是图标源文件（只许 `<path>`，颜色只许 `currentColor`），`generated/` 是生成的图标表，不手改
+- `src/icons/`：`svg/` 是图标源文件（只许 `<path>`，颜色只许 `currentColor`），`generated/` 是生成的图标表，不手改。`logo-*.svg` 是第三方技术标志（实心字形，授权和品牌规范见根目录 `THIRD_PARTY_NOTICES.md`），只由 `MonogramTile` 的 `logo` 用，颜色来自设计变量 `color-brand-*`；加新的先查品牌规范
 - `src/styles/`：`reset.css`、`base.css`、`materials.css`；`src/fixtures/`：样例文件的类型和布局小零件
 - `visual/`：截图比对（Playwright 配置、`visual.spec.ts`、组合矩阵、溢出扫描、对照页和它的报告器、预算）和 `__screenshots__/` 基准图（CI 生成，归负责人，`.github/CODEOWNERS`）
 - `build/`：图标表生成和样式规则测试（Node 脚本）；`workbench/`：工作台（`build.ts` 打包，`serve.ts` 开服务，`registry.ts` 登记样例，`sample-data.*.ts` 是各语言的示例文字）

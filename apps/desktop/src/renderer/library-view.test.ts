@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { PlaygroundRow } from "../shared/library-state.ts";
 import {
   creatorOf,
+  logoOf,
   monogramOf,
   pickLocalizedText,
   retentionOf,
@@ -112,5 +113,16 @@ describe("其余", () => {
     expect(pickLocalizedText({ en: "A", "zh-CN": "甲" }, "zh-CN")).toBe("甲");
     expect(pickLocalizedText({ en: "A" }, "zh-CN")).toBe("A");
     expect(pickLocalizedText("plain", "en")).toBe("plain");
+  });
+});
+
+describe("logoOf", () => {
+  it("只有授权和品牌规范允许的三个内置模板有标志，其余和自定义模板退回缩写", () => {
+    expect(logoOf("html")).toBe("html5");
+    expect(logoOf("vue3")).toBe("vue");
+    expect(logoOf("python")).toBe("python");
+    for (const id of ["react19", "react18", "hono", "node-ts", "go", "my-template"]) {
+      expect(logoOf(id)).toBeUndefined();
+    }
   });
 });

@@ -18,7 +18,7 @@ import {
   PRESET_DAYS,
   parseCustomDays,
 } from "../create-view.ts";
-import { monogramOf, pickLocalizedText } from "../library-view.ts";
+import { logoOf, monogramOf, pickLocalizedText } from "../library-view.ts";
 import { useOverlay } from "../shared/overlay-context.tsx";
 import styles from "./CreateDialog.module.css";
 import { useErrorText } from "./use-error-text.ts";
@@ -121,7 +121,9 @@ export function CreateDialog({
       onSubmit={() => void submit()}
       title={t("desktop.create.dialog.title")}
       subtitle={t("desktop.create.template.label", { name: templateName })}
-      leading={<MonogramTile letters={monogramOf(templateId)} size="xl" />}
+      leading={
+        <MonogramTile letters={monogramOf(templateId)} logo={logoOf(templateId)} size="xl" />
+      }
       headerAction={
         <Button type="button" onClick={onChangeTemplate} disabled={busy}>
           {t("desktop.create.changeTemplate.action")}
