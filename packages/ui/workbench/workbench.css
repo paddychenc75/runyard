@@ -35,7 +35,14 @@
 
 .list {
   min-inline-size: 0;
-  overflow: hidden;
+  /*
+   * 列表不参与网格行高（contain: size 让它的固有高度为 0），自己在行内滚动。
+   * 否则组件一多，列表比状态表高，网格行被撑高，拉伸的 <main>（被截图的元素）跟着变高，
+   * 每张基准图的高度都变（#243：Badge 同样的内容从 878 变成 1038 像素）。
+   */
+  contain: size;
+  overflow-x: hidden;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
