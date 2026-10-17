@@ -30,3 +30,16 @@
   font-size: var(--text-body-size);
   line-height: var(--text-body-line-height);
 }
+
+/* 技术标志用品牌色（设计变量里按主题给了值，深色下用官方的浅一档，保证在中性方块上看得清） */
+.root[data-logo="html5"] {
+  color: var(--color-brand-html5);
+}
+
+.root[data-logo="vue"] {
+  color: var(--color-brand-vue);
+}
+
+.root[data-logo="python"] {
+  color: var(--color-brand-python);
+}
