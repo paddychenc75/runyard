@@ -493,8 +493,10 @@ export type CatalogMessages = {
     name: string | number;
     user: (chunks: string[]) => string;
   };
+  "desktop.picker.all.label": Record<never, never>;
   "desktop.picker.arrowsKey.label": Record<never, never>;
   "desktop.picker.choose.action": Record<never, never>;
+  "desktop.picker.defaultName.label": Record<never, never>;
   "desktop.picker.dialog.aria": Record<never, never>;
   "desktop.picker.empty.hint": Record<never, never>;
   "desktop.picker.enterKey.label": Record<never, never>;
@@ -503,6 +505,7 @@ export type CatalogMessages = {
   "desktop.picker.move.hint": Record<never, never>;
   "desktop.picker.next.hint": Record<never, never>;
   "desktop.picker.noMatch.hint": Record<never, never>;
+  "desktop.picker.rail.aria": Record<never, never>;
   "desktop.picker.recent.label": Record<never, never>;
   "desktop.picker.search.label": Record<never, never>;
   "desktop.picker.search.placeholder": Record<never, never>;

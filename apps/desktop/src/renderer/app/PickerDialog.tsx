@@ -2,7 +2,8 @@ import { useT } from "@runyard/i18n/react";
 import { GlassSurface, Kbd, ListPicker, SearchField } from "@runyard/ui";
 import { type KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import type { LibraryState } from "../../shared/library-state.ts";
-import { buildPickerGroups, matchTemplates } from "../picker-view.ts";
+import { defaultName } from "../create-view.ts";
+import { buildPickerGroups, buildPickerRail, matchTemplates } from "../picker-view.ts";
 import { useOverlay } from "../shared/overlay-context.tsx";
 import styles from "./PickerDialog.module.css";
 
@@ -47,6 +48,14 @@ export function PickerDialog({ library, onPick, onClose }: PickerDialogProps) {
       ),
     [library, search, searching, t],
   );
+  const rail = useMemo(
+    () => ({
+      label: t("desktop.picker.rail.aria"),
+      items: buildPickerRail(groups, t("desktop.picker.all.label")),
+    }),
+    [groups, t],
+  );
+  const existing = useMemo(() => library.playgrounds.map((row) => row.name), [library]);
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     if (event.key === "Escape") {
       event.preventDefault();
@@ -74,6 +83,7 @@ export function PickerDialog({ library, onPick, onClose }: PickerDialogProps) {
           className={styles.picker}
           label={t("desktop.picker.list.aria")}
           groups={groups}
+          rail={rail}
           chooseLabel={t("desktop.picker.choose.action")}
           onChoose={onPick}
           renderHeader={(props) => (
@@ -87,14 +97,23 @@ export function PickerDialog({ library, onPick, onClose }: PickerDialogProps) {
               trailing={<Kbd>{t("desktop.picker.escKey.label")}</Kbd>}
             />
           )}
-          footer={
+          footer={(activeId) => (
             <>
               <Kbd>{t("desktop.picker.arrowsKey.label")}</Kbd>
               <span>{t("desktop.picker.move.hint")}</span>
               <Kbd>{t("desktop.picker.enterKey.label")}</Kbd>
               <span>{t("desktop.picker.next.hint")}</span>
+              {activeId === undefined ? null : (
+                <>
+                  <span className={styles.spacer} />
+                  <span>{t("desktop.picker.defaultName.label")}</span>
+                  <span className={styles.defaultName} data-default-name="">
+                    {defaultName(activeId, existing)}
+                  </span>
+                </>
+              )}
             </>
-          }
+          )}
         />
       </GlassSurface>
     </div>

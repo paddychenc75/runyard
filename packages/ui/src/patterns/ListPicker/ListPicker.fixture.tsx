@@ -31,12 +31,24 @@ function groups(data: SampleData, long: boolean): ListPickerGroup[] {
   ];
 }
 
-function picker(data: SampleData, long: boolean, empty = false) {
+function picker(data: SampleData, long: boolean, empty = false, withRail = false) {
   return (
     <FixtureFrame>
       <ListPicker
         label={data.label}
         groups={empty ? [] : groups(data, long)}
+        rail={
+          withRail
+            ? {
+                label: data.label,
+                items: [
+                  { id: "recent", label: data.items[0], count: 1, groupId: "recent" },
+                  { id: "all", label: data.items[1], count: 4 },
+                  { id: "other", label: data.items[2], count: 3, groupId: "all" },
+                ],
+              }
+            : undefined
+        }
         chooseLabel={data.items[2]}
         onChoose={() => {}}
         renderHeader={(props) => (
@@ -57,4 +69,5 @@ export const samples: readonly FixtureSample[] = [
   { name: "default", render: (data) => picker(data, false) },
   { name: "empty", render: (data) => picker(data, false, true) },
   { name: "long-label", render: (data) => picker(data, true) },
+  { name: "with-rail", render: (data) => picker(data, false, false, true) },
 ];

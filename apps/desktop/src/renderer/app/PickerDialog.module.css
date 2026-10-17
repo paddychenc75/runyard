@@ -13,9 +13,10 @@
 .dialog {
   display: flex;
   flex-direction: column;
-  inline-size: var(--size-dialog-width);
+  inline-size: var(--size-picker-width);
   max-inline-size: calc(100% - var(--space-10));
-  max-block-size: calc(100vh - var(--space-10) * 2);
+  /* 设计稿的对话框贴着上下各留一段边距、始终撑满 */
+  block-size: calc(100vh - var(--space-10) * 2);
   overflow: hidden;
 }
 
@@ -28,4 +29,15 @@
   padding: var(--space-8);
   color: var(--color-text-secondary);
   font-size: var(--text-body-size);
+}
+
+/* 底部右侧的默认名称（设计稿 Picker）：前面的空白把它推到右边 */
+.spacer {
+  flex: 1;
+}
+
+.defaultName {
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
+  font-weight: var(--text-item-weight);
 }
