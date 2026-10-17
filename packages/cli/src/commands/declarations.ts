@@ -15,6 +15,7 @@ import { skillInstall as skillInstallRun } from "./skill-install.ts";
 import { status } from "./status.ts";
 import { stop } from "./stop.ts";
 import { templateLint, templateList, templateSave, templateShow } from "./template-commands.ts";
+import { versionCommand } from "./version.ts";
 
 // 命令表（docs/architecture/cli-contract.md 第 2 节）。
 // template test 没有 run，等 #54 的冒烟测试。
@@ -258,6 +259,15 @@ const skillInstall = defineCommand({
   run: skillInstallRun,
 });
 
+const versionDeclaration = defineCommand({
+  name: "version",
+  title: (t) => t("cli.command.version.title"),
+  positionals: [],
+  options: [],
+  needsSupervisor: false,
+  run: versionCommand,
+});
+
 const configCommands: CommandSpec[] = [
   defineCommand({
     name: "config get",
@@ -289,6 +299,7 @@ export const builtinRegistry: CommandRegistry = {
     logsCommand,
     rmCommand,
     doctorCommand,
+    versionDeclaration,
     ...templateCommands,
     skillInstall,
     ...configCommands,

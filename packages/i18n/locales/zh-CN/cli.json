@@ -24,6 +24,7 @@
   "cli.command.templateSave.title": "把项目存为模板",
   "cli.command.templateShow.title": "查看一个模板",
   "cli.command.templateTest.title": "对模板做冒烟测试",
+  "cli.command.version.title": "输出版本号",
   "cli.config.getLang.body": "{lang}（来源：{source, select, flag {--lang} env {RUNYARD_LANG} saved {已保存的设置} other {默认值}}）",
   "cli.config.setLang.body": "语言已设为 {lang}。",
   "cli.doctor.bundle.body": "诊断包已导出：{path}",
@@ -82,6 +83,7 @@
   "cli.option.timeout.hint": "最多等待的秒数",
   "cli.option.toolVersion.hint": "用指定的工具版本测试",
   "cli.option.var.hint": "替换模板里的变量，可以重复",
+  "cli.option.version.hint": "输出版本号",
   "cli.rm.trashed.body": "已把 {name} 移到{term_trash}：{path}",
   "cli.run.alreadyRunning.body": "{name} 已经在运行。",
   "cli.run.finished.body": "{name} 已运行结束，退出码 {exitCode}。",
@@ -110,5 +112,6 @@
   "cli.usage.tooManyArguments.body": "多出来的参数：{argument}。",
   "cli.usage.unknownCommand.body": "不认识的命令：{command}。",
   "cli.usage.unknownOption.body": "不认识的选项：{option}。",
-  "cli.usage.unknownSetting.body": "不认识的设置项：{name}。目前只有 lang。"
+  "cli.usage.unknownSetting.body": "不认识的设置项：{name}。目前只有 lang。",
+  "cli.version.body": "{version}"
 }

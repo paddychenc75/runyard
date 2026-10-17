@@ -7,7 +7,7 @@
 ## 1. 全局规则
 
 - 始终非交互：不提问、不等待输入。`<pg>` 是项目名称或路径。
-- 全局参数：`--json`、`--quiet`、`--root <dir>`、`--lang <locale>`（只对这一条命令生效）。
+- 全局参数：`--json`、`--quiet`、`--root <dir>`、`--lang <locale>`（只对这一条命令生效）、`--version` / `-v`（输出版本号，同 `version` 命令）。
 - 带 `--json` 时标准输出上恰好一个对象：结果，或 `{"error": {...}}`；路径都是绝对路径。唯一例外是 `logs --follow --json`：每行一个对象（NDJSON），最后一行是 `{ "end": true, "cursor": … }`。
 - `--json` 的输出不随语言变：字段名稳定、`code` 稳定；`error.message` 和 `error.hint` **永远是英文**，由命令行按错误码从英文文案生成（协议里已经没有这两个字段）。智能体看 `code`，不要解析 `message`。
 - 本机地址一律字面量 `127.0.0.1`，不写 `localhost`。
@@ -23,6 +23,7 @@
 | `status [pg]` | `--running` | #prd-run-view |
 | `logs <pg>` | `--since <游标>`、`--tail <n>`（默认 200）、`--follow`、`--raw`（保留颜色码等控制序列；默认是清洗后的纯文本） | #prd-cli-json |
 | `rm <pg>` | 先停止，再移到废纸篓；任何情形不永久删除 | #prd-retention |
+| `version` | 输出与应用相同的版本号（`--version`、`-v` 同）；`--json` 为 `{ "version" }`，不随语言变；不连管理进程 | #prd-cli-distribution |
 | `doctor` | `--template <id>`、`--bundle`（导出诊断包 zip，打印路径；去掉口令和代理账号密码） | #prd-cli-commands |
 | `template list \| show \| save \| lint \| test` | `test` 另有 `--keep-dir`、`--tool-version`；`lint`、`test` 在命令行进程里直接跑，不经管理进程 | #prd-template-lint-test |
 | `skill install` | `--target claude\|agents\|all`；写 `~/.claude/skills/runyard/SKILL.md` 和 `~/.agents/skills/runyard/SKILL.md` | #prd-cli-commands |

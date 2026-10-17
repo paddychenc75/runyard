@@ -24,6 +24,7 @@
   "cli.command.templateSave.title": "Save a playground as a template",
   "cli.command.templateShow.title": "Show one template",
   "cli.command.templateTest.title": "Smoke-test a template",
+  "cli.command.version.title": "Print the version number",
   "cli.config.getLang.body": "{lang} (source: {source, select, flag {--lang} env {RUNYARD_LANG} saved {saved setting} other {default}})",
   "cli.config.setLang.body": "Language set to {lang}.",
   "cli.doctor.bundle.body": "Diagnostics bundle exported: {path}",
@@ -82,6 +83,7 @@
   "cli.option.timeout.hint": "Longest time to wait, in seconds",
   "cli.option.toolVersion.hint": "Test with the given tool version",
   "cli.option.var.hint": "Replace a variable in the template; can be repeated",
+  "cli.option.version.hint": "Print the version number",
   "cli.rm.trashed.body": "Moved {name} to the {term_trash}: {path}",
   "cli.run.alreadyRunning.body": "{name} was already running.",
   "cli.run.finished.body": "{name} finished with exit code {exitCode}.",
@@ -110,5 +112,6 @@
   "cli.usage.tooManyArguments.body": "Unexpected argument: {argument}.",
   "cli.usage.unknownCommand.body": "Unknown command: {command}.",
   "cli.usage.unknownOption.body": "Unknown option: {option}.",
-  "cli.usage.unknownSetting.body": "Unknown setting: {name}. The only setting is lang."
+  "cli.usage.unknownSetting.body": "Unknown setting: {name}. The only setting is lang.",
+  "cli.version.body": "{version}"
 }

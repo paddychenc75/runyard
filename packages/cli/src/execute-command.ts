@@ -7,6 +7,7 @@ import type { CommandContext } from "./commands/command-context.ts";
 import type { CommandSpec } from "./commands/command-spec.ts";
 import type { GlobalFlags } from "./commands/global-options.ts";
 import { notImplemented } from "./commands/stub-command.ts";
+import { printVersion } from "./commands/version.ts";
 import { renderCommandHelp, renderGroupHelp, renderRootHelp } from "./help/render-help.ts";
 import type { Output } from "./output/output.ts";
 import type { ParsedLine, Resolved } from "./parse-command-line.ts";
@@ -32,6 +33,8 @@ export async function executeCommand(
 ): Promise<void> {
   const { out, translator, deps } = runtime;
   const text = translator.t;
+  // --version / -v 优先于命令和 --help：问版本的人不想看别的
+  if (globals.version) return printVersion(out, text, deps.host.install.version);
   switch (resolved.kind) {
     case "none":
       if (globals.help) return out.help(renderRootHelp(text, deps.registry));

@@ -31,6 +31,7 @@
 | cli.command.templateSave.title | 把项目存为模板 | Save a playground as a template | — |
 | cli.command.templateShow.title | 查看一个模板 | Show one template | — |
 | cli.command.templateTest.title | 对模板做冒烟测试 | Smoke-test a template | — |
+| cli.command.version.title | 输出版本号 | Print the version number | — |
 | cli.config.getLang.body | {lang}（来源：{source, select, flag {--lang} env {RUNYARD_LANG} saved {已保存的设置} other {默认值}}） | {lang} (source: {source, select, flag {--lang} env {RUNYARD_LANG} saved {saved setting} other {default}}) | lang：生效的语言，en 或 zh-CN，原样显示；source：来源：flag、env、saved 或 default；用 select 选词 |
 | cli.config.setLang.body | 语言已设为 {lang}。 | Language set to {lang}. | lang：写入的语言，en 或 zh-CN，原样显示 |
 | cli.doctor.bundle.body | 诊断包已导出：{path} | Diagnostics bundle exported: {path} | path：诊断包的绝对路径，原样显示 |
@@ -89,6 +90,7 @@
 | cli.option.timeout.hint | 最多等待的秒数 | Longest time to wait, in seconds | — |
 | cli.option.toolVersion.hint | 用指定的工具版本测试 | Test with the given tool version | — |
 | cli.option.var.hint | 替换模板里的变量，可以重复 | Replace a variable in the template; can be repeated | — |
+| cli.option.version.hint | 输出版本号 | Print the version number | — |
 | cli.rm.trashed.body | 已把 {name} 移到{term_trash}：{path} | Moved {name} to the {term_trash}: {path} | name：项目名称，原样显示；path：项目原来所在文件夹的绝对路径，原样显示 |
 | cli.run.alreadyRunning.body | {name} 已经在运行。 | {name} was already running. | name：项目名称，原样显示 |
 | cli.run.finished.body | {name} 已运行结束，退出码 {exitCode}。 | {name} finished with exit code {exitCode}. | name：项目名称，原样显示；exitCode：脚本的退出码（整数） |
@@ -118,6 +120,7 @@
 | cli.usage.unknownCommand.body | 不认识的命令：{command}。 | Unknown command: {command}. | command：用户输入的命令，原样显示 |
 | cli.usage.unknownOption.body | 不认识的选项：{option}。 | Unknown option: {option}. | option：用户输入的选项，原样显示 |
 | cli.usage.unknownSetting.body | 不认识的设置项：{name}。目前只有 lang。 | Unknown setting: {name}. The only setting is lang. | name：用户输入的设置项，原样显示 |
+| cli.version.body | {version} | {version} | version：应用的版本号，如 0.2.0；输出里只有它 |
 | desktop.agentNotice.meta.label | {url} · {time} | {url} · {time} | url：运行的地址，如 http://127.0.0.1:7113/；还没有端口时不显示这一条；time：相对时间，如“刚刚” |
 | desktop.agentNotice.title.label | <user>{agent}</user> 创建并运行了 <user>{name}</user> | <user>{agent}</user> created and ran <user>{name}</user> | agent：智能体名称（用户或命令行给的，不翻译）；name：项目名称（不翻译）；user：包住用户内容的标签 |
 | desktop.category.frontend.label | 前端 | Front end | — |

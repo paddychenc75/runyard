@@ -72,6 +72,7 @@ export function parseLine(
           type: spec.type,
           ...(spec.multiple ? { multiple: true } : {}),
           ...(spec.name === "help" ? { short: "h" } : {}),
+          ...(spec.name === "version" ? { short: "v" } : {}),
         },
       ]),
     ),
@@ -115,6 +116,7 @@ export function peekGlobals(args: readonly string[]): GlobalFlags {
       json: { type: "boolean" },
       quiet: { type: "boolean" },
       help: { type: "boolean", short: "h" },
+      version: { type: "boolean", short: "v" },
       root: { type: "string" },
       lang: { type: "string" },
     },
@@ -127,6 +129,7 @@ export function peekGlobals(args: readonly string[]): GlobalFlags {
     json: values.json === true,
     quiet: values.quiet === true,
     help: values.help === true,
+    version: values.version === true,
     root: text(values.root),
     lang: text(values.lang),
   };
@@ -141,6 +144,7 @@ export function globalsOf(line: ParsedLine): GlobalFlags {
     json: line.options.has("json"),
     quiet: line.options.has("quiet"),
     help: line.options.has("help"),
+    version: line.options.has("version"),
     root: last("root"),
     lang: last("lang"),
   };
