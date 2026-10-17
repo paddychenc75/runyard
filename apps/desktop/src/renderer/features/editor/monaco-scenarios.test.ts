@@ -73,11 +73,17 @@ function textTab(path: string, content: string): FileTab {
   });
 }
 
-function mountHost(path: string, content: string, edits: string[] = []) {
+function mountHost(
+  path: string,
+  content: string,
+  edits: string[] = [],
+  normalized: string[] = [],
+) {
   const container = document.createElement("div");
   document.body.append(container);
   const host = buildHost(runtime, container, {
     onEdit: (_path, text) => edits.push(text),
+    onNormalized: (_path, text) => normalized.push(text),
   });
   const state: SessionState = { tabs: [textTab(path, content)], active: path, closePrompt: null };
   host.sync(state, "light");
@@ -219,6 +225,65 @@ describe("编辑器的主题、查找替换和多光标", () => {
     find.replaceAll();
     expect(editor.getValue()).toBe("total = 1;\nconst total2 = total;\nlog(total);");
     expect(edits.at(-1)).toBe("total = 1;\nconst total2 = total;\nlog(total);");
+    host.dispose();
+  });
+});
+
+describe("自动保存与外部监听往返后的编辑器（#310）", () => {
+  const sfc =
+    '<script setup lang="ts">\nconst n = 1\n</script>\n<template>\n  <main>hello world</main>\n</template>\n';
+
+  it("[DESKTOP-EDITOR-31] Vue 单文件组件：自动保存把标签标成保存中再标成已保存，编辑器不重载，光标和选区纹丝不动", () => {
+    const { host, state, model, editor } = mountHost("src/App.vue", sfc);
+    editor.setSelection({ startLineNumber: 5, startColumn: 9, endLineNumber: 5, endColumn: 14 });
+    const version = model.getVersionId();
+    const tab = state.tabs[0];
+    if (tab === undefined) throw new Error("tab missing");
+    // 会话在保存前后的两次状态：内容相同，只有 saving、savedText 变了；随后“自己写的”监听事件不产生新状态
+    host.sync({ ...state, tabs: [{ ...tab, saving: true }] }, "light");
+    host.sync({ ...state, tabs: [{ ...tab, saving: false, savedText: tab.text }] }, "light");
+    host.sync({ ...state, tabs: [{ ...tab, saving: false, savedText: tab.text }] }, "light");
+    expect(model.getVersionId()).toBe(version);
+    expect(editor.getSelection()).toMatchObject({
+      startLineNumber: 5,
+      startColumn: 9,
+      endLineNumber: 5,
+      endColumn: 14,
+    });
+    host.dispose();
+  });
+
+  it("[DESKTOP-EDITOR-31] 换内容是会话的事：不当成用户的编辑交回会话（否则静默重载会变成一次保存）", () => {
+    const edits: string[] = [];
+    const { host, state, editor } = mountHost("src/App.vue", sfc, edits);
+    editor.setPosition({ lineNumber: 5, column: 4 });
+    const tab = state.tabs[0];
+    if (tab === undefined) throw new Error("tab missing");
+    const next = sfc.replace("hello", "changed");
+    host.sync({ ...state, tabs: [{ ...tab, text: next, savedText: next }] }, "light");
+    expect(editor.getValue()).toBe(next);
+    expect(editor.getPosition()).toMatchObject({ lineNumber: 5, column: 4 });
+    expect(edits).toEqual([]);
+    host.dispose();
+  });
+
+  it("[DESKTOP-EDITOR-31] 磁盘内容里有 Monaco 会改写的换行（单独的 \\r）：交给会话采用，不算编辑，也不反复重载", () => {
+    const edits: string[] = [];
+    const normalized: string[] = [];
+    const { host, state, model } = mountHost("src/App.vue", "a\nb\n", edits, normalized);
+    const tab = state.tabs[0];
+    if (tab === undefined) throw new Error("tab missing");
+    const raw = "x\ry\rz\r";
+    const reloaded = { ...tab, text: raw, savedText: raw };
+    host.sync({ ...state, tabs: [reloaded] }, "light");
+    expect(edits).toEqual([]);
+    expect(normalized).toEqual([model.getValue()]);
+    // 会话采用规范化后的内容后再同步一次：不再换内容
+    const version = model.getVersionId();
+    const adopted = model.getValue();
+    host.sync({ ...state, tabs: [{ ...reloaded, text: adopted, savedText: adopted }] }, "light");
+    expect(model.getVersionId()).toBe(version);
+    expect(normalized).toHaveLength(1);
     host.dispose();
   });
 });

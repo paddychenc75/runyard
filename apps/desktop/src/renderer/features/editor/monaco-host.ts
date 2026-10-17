@@ -21,6 +21,10 @@ export interface EditorHostHandlers {
   onOpenFile?(path: string, at: Monaco.IPosition | undefined): void;
   /** 改名一类的操作改到了没打开的文件：让会话为它开标签、带上改后的内容并照常保存 */
   onStrayEdit?(path: string, text: string): void;
+  /** 输入法正在组词（拼音还没选定）或结束：组词期间不该自动保存，免得把半截拼音写进磁盘（#310） */
+  onComposing?(path: string, composing: boolean): void;
+  /** 会话换进来的内容被 Monaco 规范化后和会话里的不一样（比如单独的 \r 换行）：这不是用户的编辑，会话把它当作已保存的内容采用，不写盘 */
+  onNormalized?(path: string, text: string): void;
 }
 
 export interface EditorHost {
@@ -117,6 +121,9 @@ export function buildHost(
   let shownId: string | null = null;
   let reveal: { path: string; at: Monaco.IPosition; until: number } | null = null;
   let creatingOwn = false;
+  /** 会话换内容（setValue）期间模型的变化不是用户的编辑，不能交回会话，否则静默重载会变成一次保存 */
+  let applyingSession = false;
+  let appliedTheme: EditorTheme | null = null;
   /** 没打开的项目文件被语言服务临时建了模型（跳转预览、查找引用、改名）：记下来，改了就交给会话，没改就清掉 */
   const strays = new Map<Monaco.editor.ITextModel, { edited: boolean }>();
   const diagnostics = new TypeScriptDiagnostics({
@@ -157,6 +164,20 @@ export function buildHost(
     overviewRulerLanes: 0,
     scrollbar: { useShadows: false, horizontalScrollbarSize: 8, verticalScrollbarSize: 8 },
   });
+  // 输入法组词期间不自动保存（#310）：组词时模型里已经是还没选定的拼音
+  const composing = [
+    editor.onDidCompositionStart(() => {
+      const path = shownPath();
+      if (path !== null) handlers.onComposing?.(path, true);
+    }),
+    editor.onDidCompositionEnd(() => {
+      const path = shownPath();
+      if (path !== null) handlers.onComposing?.(path, false);
+    }),
+  ];
+  function shownPath(): string | null {
+    return shownId === null ? null : (entries.get(shownId)?.path ?? null);
+  }
   // ⌘S 和 ⌘W 不在这里：它们在整个窗口层面处理（EditorColumn），焦点在不在编辑器里都一样
 
   const uriOf = (path: string): Monaco.Uri => monaco.Uri.from({ scheme: "file", path: `/${path}` });
@@ -256,6 +277,7 @@ export function buildHost(
       model,
       // 路径取调用时的，改名后会话里已是新路径
       subscription: model.onDidChangeContent(() => {
+        if (applyingSession) return;
         handlers.onEdit(entry.path, model.getValue());
         diagnostics.schedule();
       }),
@@ -265,10 +287,20 @@ export function buildHost(
 
   function replaceText(model: Monaco.editor.ITextModel, tab: FileTab, shown: boolean): void {
     const position = shown ? editor.getPosition() : null;
-    model.setValue(tab.text);
-    if (tab.eol === "crlf") model.setEOL(monaco.editor.EndOfLineSequence.CRLF);
-    else if (tab.eol === "lf") model.setEOL(monaco.editor.EndOfLineSequence.LF);
+    const scroll = shown ? { top: editor.getScrollTop(), left: editor.getScrollLeft() } : null;
+    applyingSession = true;
+    try {
+      model.setValue(tab.text);
+      if (tab.eol === "crlf") model.setEOL(monaco.editor.EndOfLineSequence.CRLF);
+      else if (tab.eol === "lf") model.setEOL(monaco.editor.EndOfLineSequence.LF);
+    } finally {
+      applyingSession = false;
+    }
     if (position !== null) editor.setPosition(model.validatePosition(position));
+    if (scroll !== null) editor.setScrollPosition({ scrollTop: scroll.top, scrollLeft: scroll.left });
+    // Monaco 把内容规范化了（单独的 \r 当换行等）：交给会话采用，下一轮 sync 里两边就一致了，不会反复重载
+    const actual = model.getValue();
+    if (actual !== tab.text) handlers.onNormalized?.(tab.path, actual);
   }
 
   function disposeEntry(entry: Entry): void {
@@ -288,7 +320,10 @@ export function buildHost(
 
   return {
     sync(state, theme) {
-      monaco.editor.setTheme(runtime.themes[theme]);
+      if (appliedTheme !== theme) {
+        monaco.editor.setTheme(runtime.themes[theme]);
+        appliedTheme = theme;
+      }
       const editable = new Map(
         state.tabs.filter((tab) => tab.view === "text").map((tab) => [tab.id, tab]),
       );
@@ -353,6 +388,7 @@ export function buildHost(
     dispose() {
       opener.dispose();
       createdListener.dispose();
+      for (const listener of composing) listener.dispose();
       project?.dispose();
       diagnostics.dispose();
       for (const model of strays.keys()) {

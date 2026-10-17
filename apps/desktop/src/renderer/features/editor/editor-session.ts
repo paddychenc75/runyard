@@ -30,6 +30,8 @@ export class EditorSession {
   readonly #timers = new PathTimers();
   /** 回答“保存、不保存、取消”的人在等：关项目标签页和退出时用，回答不关文件标签 */
   #answer: ((answer: ClosePromptAnswer) => void) | null = null;
+  /** 输入法正在组词的文件：组词没完不自动保存，免得把半截拼音写进磁盘、白白触发一次热更新（#310） */
+  readonly #composing = new Set<string>();
   #stopWatching: (() => void) | null = null;
   #restoring = true;
   #disposed = false;
@@ -217,12 +219,33 @@ export class EditorSession {
     this.#timers.cancel(path);
   }
 
+  /** 编辑器报告输入法开始或结束组词；结束时若有没保存的修改，重新计时 */
+  setComposing(path: string, composing: boolean): void {
+    if (composing) {
+      this.#composing.add(path);
+      this.#cancelTimer(path);
+      return;
+    }
+    if (this.#composing.delete(path)) this.#schedule(path);
+  }
+
+  /**
+   * 编辑器把会话换进去的内容规范化了（单独的 \r 当换行等）：这不是用户的编辑，不写盘；
+   * 文本和“已保存”一起换成规范化后的，之后两边一致，不会反复重载。
+   */
+  adoptNormalized(path: string, text: string): void {
+    const tab = this.#state.tabs.find((candidate) => candidate.path === path);
+    if (tab === undefined || tab.view !== "text" || isDirty(tab)) return;
+    this.#patch(path, { text, savedText: text });
+  }
+
   /** delay 档：每次输入都重新计时，停下满 1 秒才写（DESKTOP-EDITOR-23）；等用户选择的和已删除的文件不自动写 */
   #schedule(path: string): void {
     this.#cancelTimer(path);
     if (this.#disposed || this.#options.autosave() !== "delay") return;
+    if (this.#composing.has(path)) return;
     this.#timers.restart(path, AUTOSAVE_DELAY_MS, () => {
-      if (this.#canAutosave(path)) void this.save(path);
+      if (!this.#composing.has(path) && this.#canAutosave(path)) void this.save(path);
     });
   }
 

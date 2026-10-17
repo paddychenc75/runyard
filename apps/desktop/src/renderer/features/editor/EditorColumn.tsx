@@ -54,6 +54,8 @@ export function EditorColumn({ bridge, tab, createHost = createMonacoHost }: Edi
       container,
       {
         onEdit: (path, text) => session.edit(path, text),
+        onComposing: (path, composing) => session.setComposing(path, composing),
+        onNormalized: (path, text) => session.adoptNormalized(path, text),
         onOpenFile: (path) => void session.openFile(path),
         onStrayEdit: (path, text) => void session.adoptEdit(path, text),
       },
