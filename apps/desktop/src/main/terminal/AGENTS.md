@@ -37,3 +37,7 @@
 - `FindBar`（⌘F，设计稿 TerminalFind）、右键菜单（用 `Menu` 的 `align="start"`，锚点是鼠标处零大小的元素，打开期间 `useOverlay` 让原生预览让位）、“终端已结束”一行（位置由光标所在行算出）都在 `TerminalView`。
 - 关标签页确认（`CloseConfirmDialog`）认 `closeRequest.terminalCommand`/`stopsRun`；⌘Q：`EditorWorkspace` 的 `beforeQuit`（编辑器的保存询问之后）经 `terminal.busy` 问主进程，有命令在运行就弹 `QuitTerminalPrompt`。
 - 测试：jsdom 里 xterm 画不出来，`vitest.setup.tsx` 统一把 `@xterm/*` 换成 `test-support/` 里记调用的假类；真实的绘制只在应用里看（对照截图见 PR）。
+
+## 改名、移到废纸篓前的先后顺序（#265）
+
+`ProjectRelease`（`src/main/project-release.ts`）：先让编辑器写入未保存的修改（`project.flushRequested`，应用里发起的自动保存关着会问，取消就整个中止；管理进程请求释放的无处可问，直接写入），再结束终端、放文件监听，改名做完或没做成再把监听接回来。名称框下和移到废纸篓确认里的终端说明靠 `terminal.status`（有没有开着的终端、在运行什么）。在项目自己的终端里 `runyard rm`：终端被结束时请求的命令行跟着没了，管理进程不依赖请求方的连接，项目照样完整移走。
