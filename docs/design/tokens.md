@@ -90,6 +90,8 @@ disagree, `tokens.json` wins.
 | Starting / warning: mark (`--color-status-warning-mark`) | #C27400 | #FFD60A |
 | Starting / warning: text (`--color-status-warning-text`) | #8A4B00 | #FFD60A |
 | Warning tint background (`--color-fill-warning-tint`) | rgba(194, 116, 0, 0.08) | rgba(255, 214, 10, 0.14) |
+| Terminal find: background of every match (`--color-fill-find-match`) | rgba(255, 214, 10, 0.45) | rgba(255, 214, 10, 0.3) |
+| Terminal find: background of the current match (`--color-fill-find-active`) | rgba(255, 149, 0, 0.75) | rgba(255, 159, 10, 0.7) |
 | Crashed / destructive: mark (`--color-status-danger-mark`) | #D70015 | #FF453A |
 | Crashed / destructive: text (`--color-status-danger-text`) | #C4001A | #FF9F99 |
 | Destructive tint background (`--color-fill-danger-tint`) | rgba(215, 0, 21, 0.1) | rgba(255, 69, 58, 0.18) |

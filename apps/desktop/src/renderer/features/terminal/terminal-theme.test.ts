@@ -29,13 +29,18 @@ describe("终端配色", () => {
     }
   });
 
-  it("查找高亮是不带透明度的色值（xterm 不收透明色），当前结果比别的深", () => {
+  it("查找高亮来自两个设计变量，叠在终端背景上得到不带透明度的色值；当前结果比别的深", () => {
     expect(blend("#000000", "#ffffff", 0.5)).toBe("#808080");
+    // 设计稿 TerminalFind：浅色 255,214,10 的 45% 与 255,149,0 的 75% 叠在白色上
+    const light = findDecorations("light");
+    expect(light.matchBackground).toBe("#ffed91");
+    expect(light.activeMatchBackground).toBe("#ffb040");
     for (const mode of ["light", "dark"] as const) {
       const decorations = findDecorations(mode);
       expect(decorations.matchBackground).toMatch(/^#[0-9a-f]{6}$/);
       expect(decorations.activeMatchBackground).toMatch(/^#[0-9a-f]{6}$/);
       expect(decorations.activeMatchBackground).not.toBe(decorations.matchBackground);
+      expect(themes[mode]["color-fill-find-match"]).toMatch(/^rgba\(/);
     }
   });
 });

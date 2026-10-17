@@ -82,6 +82,8 @@
   --color-status-warning-mark: light-dark(var(--amber-700), var(--yellow-500));
   --color-status-warning-text: light-dark(var(--amber-900), var(--yellow-500));
   --color-fill-warning-tint: light-dark(rgba(194, 116, 0, 0.08), rgba(255, 214, 10, 0.14));
+  --color-fill-find-match: light-dark(rgba(255, 214, 10, 0.45), rgba(255, 214, 10, 0.3));
+  --color-fill-find-active: light-dark(rgba(255, 149, 0, 0.75), rgba(255, 159, 10, 0.7));
   --color-status-danger-mark: light-dark(var(--red-600), var(--red-500));
   --color-status-danger-text: light-dark(var(--red-700), var(--red-300));
   --color-fill-danger-tint: light-dark(rgba(215, 0, 21, 0.1), rgba(255, 69, 58, 0.18));

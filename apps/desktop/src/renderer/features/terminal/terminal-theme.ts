@@ -62,14 +62,32 @@ function channels(hex: string): [number, number, number] {
   return [(value >> 16) & 255, (value >> 8) & 255, value & 255];
 }
 
+/** 变量表里的 `rgba(r, g, b, a)` 拆成三个通道和透明度 */
+function parseRgba(color: string): { rgb: [number, number, number]; alpha: number } {
+  const match = /^rgba\(\s*(\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\s*\)$/.exec(color);
+  if (match === null) throw new Error(`not an rgba colour: ${color}`);
+  return {
+    rgb: [Number(match[1]), Number(match[2]), Number(match[3])],
+    alpha: Number(match[4]),
+  };
+}
+
+function toHex(rgb: readonly number[]): string {
+  return `#${rgb.map((channel) => Math.round(channel).toString(16).padStart(2, "0")).join("")}`;
+}
+
 /** 把 top 以 alpha 的不透明度叠在 bottom 上，得到不带透明度的 #RRGGBB（xterm 的查找高亮不收带透明度的色值） */
 export function blend(top: string, bottom: string, alpha: number): string {
   const a = channels(top);
   const b = channels(bottom);
-  const mixed = a.map((channel, index) =>
-    Math.round(channel * alpha + (b[index] ?? 0) * (1 - alpha)),
-  );
-  return `#${mixed.map((channel) => channel.toString(16).padStart(2, "0")).join("")}`;
+  return toHex(a.map((channel, index) => channel * alpha + (b[index] ?? 0) * (1 - alpha)));
+}
+
+/** 带透明度的变量叠在背景上得到的实色 */
+function over(color: string, background: string): string {
+  const { rgb, alpha } = parseRgba(color);
+  const bottom = channels(background);
+  return toHex(rgb.map((channel, index) => channel * alpha + (bottom[index] ?? 0) * (1 - alpha)));
 }
 
 export interface FindDecorations {
@@ -80,15 +98,15 @@ export interface FindDecorations {
   activeMatchColorOverviewRuler: string;
 }
 
-/** 查找高亮（设计稿 TerminalFind）：别的结果是淡黄，当前这个更深并带强调色描边 */
+/** 查找高亮（设计稿 TerminalFind）：别的结果是淡黄，当前这个是橙色并带强调色描边；两个颜色都是设计变量 */
 export function findDecorations(appearance: TerminalAppearance): FindDecorations {
-  const warning = themes[appearance]["color-status-warning-mark"];
+  const tokens = themes[appearance];
   const background = xtermThemes[appearance].background;
-  const accent = themes[appearance]["color-line-accent"];
+  const accent = tokens["color-line-accent"];
   return {
-    matchBackground: blend(warning, background, 0.4),
-    matchOverviewRuler: warning,
-    activeMatchBackground: blend(warning, background, 0.8),
+    matchBackground: over(tokens["color-fill-find-match"], background),
+    matchOverviewRuler: tokens["color-status-warning-mark"],
+    activeMatchBackground: over(tokens["color-fill-find-active"], background),
     activeMatchBorder: accent,
     activeMatchColorOverviewRuler: accent,
   };

@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, configure, render, screen, waitFor, within } from "@testing-library/react";
+import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
@@ -17,8 +17,6 @@ vi.stubGlobal(
 );
 vi.setConfig({ testTimeout: 20_000 });
 const SLOW = { timeout: 8000 };
-// 慢机器（windows-2025）上整个外壳加弹窗要几秒才画出来：等待条件的期限放宽（用例的时限不变）
-configure({ asyncUtilTimeout: 8000 });
 afterEach(cleanup);
 
 const state: LibraryState = {
@@ -85,6 +83,8 @@ describe("⌘Q 时终端里有命令在运行", () => {
     await user.click(within(dialog).getByRole("button", { name: "取消" }));
     await waitFor(() => expect(t.replies()).toContainEqual({ id: 7, reply: "cancel" }));
     expect(t.replies()).not.toContainEqual({ id: 7, reply: "proceed" });
+    // 第一个确认要先完全关掉：它的关闭过程中弹窗还在，慢机器上第二次弹出前点“退出”会点到旧弹窗上（windows-2025 上红过，#343）
+    await waitFor(() => expect(screen.queryByRole("alertdialog")).toBeNull());
     // 再按一次 ⌘Q，这次选“退出”
     await t.quit();
     await user.click(await screen.findByRole("button", { name: "退出" }, SLOW));

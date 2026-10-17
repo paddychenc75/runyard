@@ -101,7 +101,7 @@
 - 验证：test
 
 ### Requirement: 复制、粘贴、清屏、链接和快捷键
-焦点在终端里时：`⌘C` MUST 复制选中的文字，没有选中时 MUST NOT 做任何事（MUST NOT 发中断）；`⌃C` 等 Control 组合键 MUST 原样交给 shell；`⌘V` MUST 把剪贴板里的文字作为输入粘贴进去，多行文字 MUST 以“括号粘贴”方式交给 shell（支持它的 shell 不会逐行立即执行）；`⌘A` MUST 选中全部内容；`⌘K` MUST 清掉屏幕和回滚内容、shell 不受影响。右键 MUST 弹出系统原生菜单：复制、粘贴、全选、清除。输出里的网址 MUST 在按住 `⌘` 悬停时显示下划线，`⌘` 加点击 MUST 用系统默认浏览器打开；普通点击 MUST 只做选择。应用级快捷键（如 `⌘⇧P`、`⌘P`、`⌘W`、`⌘S`、`⌘N`）在焦点在终端里时 MUST 照常生效，不被终端吞掉。
+焦点在终端里时：`⌘C` MUST 复制选中的文字，没有选中时 MUST NOT 做任何事（MUST NOT 发中断）；`⌃C` 等 Control 组合键 MUST 原样交给 shell；`⌘V` MUST 把剪贴板里的文字作为输入粘贴进去，多行文字 MUST 以“括号粘贴”方式交给 shell（支持它的 shell 不会逐行立即执行）；`⌘A` MUST 选中全部内容；`⌘K` MUST 清掉屏幕和回滚内容、shell 不受影响。右键 MUST 弹出应用内的菜单（外观按设计稿 TerminalMenu，打开期间原生预览让位）：复制、粘贴、全选、清除。输出里的网址 MUST 在按住 `⌘` 悬停时显示下划线，`⌘` 加点击 MUST 用系统默认浏览器打开；普通点击 MUST 只做选择。应用级快捷键（如 `⌘⇧P`、`⌘P`、`⌘W`、`⌘S`、`⌘N`）在焦点在终端里时 MUST 照常生效，不被终端吞掉。
 来源：PRD #prd-terminal；PRD #prd-editor
 
 #### Scenario: [DESKTOP-TERMINAL-15] `⌘C` 复制，`⌃C` 中断
@@ -124,7 +124,7 @@
 
 #### Scenario: [DESKTOP-TERMINAL-18] 右键菜单
 - **WHEN** 在终端里右键
-- **THEN** 弹出系统原生菜单，依次是复制、粘贴、全选、清除；没有选中文字时“复制”不可用
+- **THEN** 弹出应用内的菜单（按设计稿 TerminalMenu），依次是复制、粘贴、全选、清除，右侧写快捷键；没有选中文字时“复制”不可用；右键不改变已有的选区
 - 验证：test
 
 #### Scenario: [DESKTOP-TERMINAL-19] `⌘` 加点击打开网址
