@@ -153,3 +153,32 @@
 .cell[data-span="4"] {
   grid-column: span 4;
 }
+
+/* 行下面的通栏说明：贴着上一行（上一行下沿变平），自己是一条圆角淡底 */
+.body .row[data-has-detail] {
+  border-end-start-radius: 0;
+  border-end-end-radius: 0;
+}
+
+.detail {
+  display: block;
+  box-sizing: border-box;
+  margin-block-end: var(--space-1);
+  border-radius: 0 0 var(--radius-row) var(--radius-row);
+  background-color: var(--color-fill-neutral);
+}
+
+.detail[data-tone="warning"] {
+  background-color: var(--color-fill-warning-tint);
+  color: var(--color-status-warning-text);
+}
+
+.detailCell {
+  position: sticky;
+  inset-inline-start: 0;
+  display: block;
+  box-sizing: border-box;
+  inline-size: var(--table-viewport, 100%);
+  max-inline-size: 100%;
+  padding: var(--space-4) var(--space-6);
+}

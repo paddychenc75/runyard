@@ -15,6 +15,7 @@ export {
   DataTable,
   type DataTableColumn,
   type DataTableColumnWidth,
+  type DataTableDetail,
   type DataTableProps,
 } from "./patterns/DataTable/index.ts";
 export {

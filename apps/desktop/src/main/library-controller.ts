@@ -16,7 +16,7 @@ import type { LibraryClient, LibraryControllerOptions, PreviewHost } from "./con
 import { createPlayground } from "./create-playground.ts";
 import { toDesktopError } from "./desktop-error.ts";
 import { frameBeforeCrash } from "./last-frame.ts";
-import { readLibraryRoot } from "./library-root.ts";
+import { LibraryChrome } from "./library-chrome.ts";
 import { PlaygroundEdits } from "./playground-edits.ts";
 import { ProjectSystem } from "./project-system.ts";
 import { RunActions } from "./run-actions.ts";
@@ -38,7 +38,7 @@ export class LibraryController {
   readonly #home: string;
   readonly #now: () => number;
   readonly #timeline = new StartTimeline();
-  #libraryRoot = "";
+  readonly chrome: LibraryChrome;
   readonly #listeners = new Set<(state: LibraryState) => void>();
   readonly #busy = new Set<string>();
   #playgrounds: Playground[] = [];
@@ -97,6 +97,12 @@ export class LibraryController {
     });
     this.#console = new ConsoleLogs(options.client);
     this.system = new ProjectSystem(options.system, (id) => this.folderOf(id));
+    this.chrome = new LibraryChrome(options, {
+      refresh: () => this.refresh(),
+      emit: () => this.#emit(),
+      setError,
+      trash: (id) => this.edits.trash(id),
+    });
     this.edits = new PlaygroundEdits(options.client, {
       busy: this.#busy,
       emit: () => this.#emit(),
@@ -116,7 +122,7 @@ export class LibraryController {
 
   /** 订阅管理进程的事件并读第一份数据 */
   async start(): Promise<void> {
-    this.#libraryRoot = await readLibraryRoot(this.#client, this.#home);
+    await this.chrome.readRoot();
     try {
       await this.#client.subscribe(["run", "playground"], () => {
         void this.refresh();
@@ -124,14 +130,14 @@ export class LibraryController {
     } catch (error) {
       this.#error = toDesktopError(error);
     }
+    // 文件夹被挪走了要在列表里看得到：先让管理进程扫一遍（规格 DESKTOP-LIBRARY-VIEW-49）；扫不了不影响打开
+    await this.#client.call("library.rescan", {}).catch(() => undefined);
     await this.refresh();
     await this.#restore();
   }
 
   /** 退出开始：之后不再覆盖已记下的标签页 */
-  freezeSession(): void {
-    this.#session.freeze();
-  }
+  freezeSession = (): void => this.#session.freeze();
 
   // 恢复上次的标签页（规格 DESKTOP-WORKSPACE-51 至 54）：只启动当前显示的那个；
   // 已被命令行运行起来的是查看画面，不另启动
@@ -156,6 +162,7 @@ export class LibraryController {
   // 恢复出来没启动的标签页被切到才启动；已有进行中的运行（命令行启动的）就不再启动
   async #startIfPending(id: string): Promise<void> {
     if (!this.#pendingStart.delete(id)) return;
+    if (this.#isMissing(id)) return;
     const run = latestRunByPlayground(this.#runs).get(id);
     if (run === undefined || !isActiveRun(run.state)) await this.startRun(id);
   }
@@ -163,7 +170,7 @@ export class LibraryController {
   /** 设置页改了语言或资源库位置：按新的重读、推给界面；旧位置的文件一个不碰（规格 DESKTOP-SETTINGS-03、06） */
   async applySettings(locale: Locale): Promise<void> {
     this.#locale = locale;
-    this.#libraryRoot = await readLibraryRoot(this.#client, this.#home);
+    await this.chrome.readRoot();
     await this.refresh();
   }
 
@@ -178,7 +185,7 @@ export class LibraryController {
       busyIds: this.#busy,
       closeRequestId: this.#close.requestId,
       error: this.#error,
-      libraryRoot: this.#libraryRoot,
+      ...this.chrome.inputs(),
       startErrors: this.#startErrors,
       lastFrames: this.#lastFrames,
       home: this.#home,
@@ -189,9 +196,7 @@ export class LibraryController {
 
   onChange(listener: (state: LibraryState) => void): () => void {
     this.#listeners.add(listener);
-    return () => {
-      this.#listeners.delete(listener);
-    };
+    return () => void this.#listeners.delete(listener);
   }
 
   /** 重读全部数据。并发的调用合并：正在读时再来请求，读完后补读一次 */
@@ -223,6 +228,7 @@ export class LibraryController {
     if (isNew) {
       // 先接上控制台再启动：安装和启动阶段的输出也要看得到（规格 DESKTOP-WORKSPACE-16）
       await this.#console.watch(playgroundId);
+      if (this.#isMissing(playgroundId)) return;
       // 命令行已经在运行它：只查看，不启动，持有者仍是命令行（规格 DESKTOP-WORKSPACE-46、48）
       if (heldByCli(playgroundId, this.#runs) !== null) {
         await this.#cliView.sync(this.#workspace.tabs, this.#runs);
@@ -255,19 +261,20 @@ export class LibraryController {
   }
 
   /** 这个项目标签页的控制台已有的全部输出（界面挂载时先取这份，再接后面的推送） */
-  consoleLines(playgroundId: string): ConsoleLine[] {
-    return this.#console.lines(playgroundId);
-  }
+  consoleLines = (playgroundId: string): ConsoleLine[] => this.#console.lines(playgroundId);
 
-  onConsole(listener: (append: ConsoleAppend) => void): () => void {
-    return this.#console.onAppend(listener);
-  }
+  onConsole = (listener: (append: ConsoleAppend) => void): (() => void) =>
+    this.#console.onAppend(listener);
 
   /** 启动（或标签页里点“运行”再次启动）；持有者始终是这个项目的标签页 */
   async startRun(playgroundId: string): Promise<void> {
     this.#pendingStart.delete(playgroundId);
+    if (this.#isMissing(playgroundId)) return;
     await this.#runActions.start(playgroundId);
   }
+
+  #isMissing = (id: string): boolean =>
+    this.#playgrounds.find((playground) => playground.id === id)?.missingSince !== undefined;
 
   stopRun = (playgroundId: string): Promise<void> => this.#runActions.stop(playgroundId);
 
@@ -295,9 +302,8 @@ export class LibraryController {
     this.#cliView.forget(id);
   }
 
-  folderOf(playgroundId: string): string | null {
-    return this.#playgrounds.find((playground) => playground.id === playgroundId)?.path ?? null;
-  }
+  folderOf = (id: string): string | null =>
+    this.#playgrounds.find((playground) => playground.id === id)?.path ?? null;
 
   selectTab(id: string): void {
     this.#workspace.select(id);
@@ -313,6 +319,7 @@ export class LibraryController {
     if (!created.ok) return created;
     const id = created.id;
     this.#timeline.noteCopy(id, this.#now() - began);
+    this.chrome.created(created.name, created.notices);
     await this.refresh();
     await this.openProject(id);
     return { ok: true };
@@ -334,6 +341,7 @@ export class LibraryController {
       this.#timeline.observe(latestRunByPlayground(runs), this.#now());
       this.#playgrounds = playgrounds;
       this.#runs = runs;
+      this.chrome.observe(playgrounds, runs);
       this.#templates = templates;
       this.#loaded = true;
       const removed = this.#workspace.retain(
@@ -378,6 +386,7 @@ export class LibraryController {
 
   #emit(): void {
     const state = this.getState();
+    this.chrome.publish(state);
     for (const listener of this.#listeners) listener(state);
     // 标签页一变就记下；没启动的恢复标签页仍算“上次在运行”
     this.#session.record({

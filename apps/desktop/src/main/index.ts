@@ -20,6 +20,7 @@ import {
   installCliLink,
   uninstallCliLink,
 } from "./integration/cli-link.ts";
+import { CLEAN_CHECK_INTERVAL_MS, createDockBadge } from "./integration/dock-badge.ts";
 import { createMainWindow } from "./integration/main-window.ts";
 import { createElectronSettingsHost } from "./integration/settings-host.ts";
 import { claimSingleInstance, focusWindow } from "./integration/single-instance.ts";
@@ -157,6 +158,11 @@ async function main(args: DesktopArgs): Promise<void> {
     preview,
     system,
     home: args.root ?? homedir(),
+    dock: createDockBadge(app),
+    isCloudSynced: (path) =>
+      getPlatform(args.root === undefined ? {} : { home: absPath(args.root) }).paths.isCloudSynced(
+        absPath(path),
+      ),
     session: new FileSessionStore(join(app.getPath("userData"), "workspace-session.json")),
   });
   const ipcHost: IpcHost = {
@@ -228,6 +234,13 @@ async function main(args: DesktopArgs): Promise<void> {
   await window.loadURL(`${APP_ORIGIN}/`);
   await controller.start();
   await settings.start();
+  // 自动清理的调度在主进程（技术设计 §2.1）：启动时判断一次，之后定时；退出时停掉计时器
+  void controller.chrome.clean.check();
+  const cleanTimer = setInterval(
+    () => void controller.chrome.clean.check(),
+    CLEAN_CHECK_INTERVAL_MS,
+  );
+  app.once("will-quit", () => clearInterval(cleanTimer));
 
   if (args.smoke) {
     const code = await runSmoke(controller, window, preview, diagnostic);

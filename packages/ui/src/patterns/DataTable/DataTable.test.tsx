@@ -84,4 +84,17 @@ describe("DataTable", () => {
     expect(container.querySelector("[data-pin=start]")).not.toBeNull();
     expect(container.querySelector("[data-pin=end]")).not.toBeNull();
   });
+
+  it("行下面可以接一条通栏说明：占满整行宽，带色调，不算数据行", () => {
+    const { container } = setup({
+      renderDetail: (row) => (row.id === "a" ? { content: "note-a", tone: "warning" } : null),
+    });
+    const detail = container.querySelector("[data-detail-for=a]");
+    expect(detail?.getAttribute("data-tone")).toBe("warning");
+    expect(detail?.textContent).toBe("note-a");
+    expect(detail?.querySelector("td")?.getAttribute("colspan")).toBe("3");
+    expect(detail?.previousElementSibling?.getAttribute("data-row-id")).toBe("a");
+    expect(container.querySelector("[data-detail-for=b]")).toBeNull();
+    expect(container.querySelectorAll("[data-row-id]")).toHaveLength(2);
+  });
 });

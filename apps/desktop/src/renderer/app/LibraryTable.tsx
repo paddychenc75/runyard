@@ -4,6 +4,8 @@ import {
   Badge,
   DataTable,
   type DataTableColumn,
+  type DataTableDetail,
+  Icon,
   MonogramTile,
   StatusMark,
   Tooltip,
@@ -11,10 +13,10 @@ import {
   UserText,
 } from "@runyard/ui";
 import { type ReactNode, useMemo, useState } from "react";
+import { isDueTomorrow } from "../../shared/clean-due.ts";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { PlaygroundRow } from "../../shared/library-state.ts";
 import {
-  creatorOf,
   logoOf,
   monogramOf,
   pickLocalizedText,
@@ -22,9 +24,13 @@ import {
   stateLabelKey,
   statusMarkOf,
 } from "../library-view.ts";
+import { ActionFailedDialog } from "./ActionFailedDialog.tsx";
+import { CreatorCell, CreatorDetails } from "./CreatorCell.tsx";
 import styles from "./LibraryTable.module.css";
+import { MissingNote } from "./MissingNote.tsx";
 import { RenameInlineActions, RenameInlineFields } from "./RenameInline.tsx";
 import { RowActions } from "./RowActions.tsx";
+import { useRelocate } from "./use-relocate.ts";
 import { useRenameDraft } from "./use-rename-draft.ts";
 
 export interface LibraryTableProps {
@@ -48,6 +54,18 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
   const taken = useMemo(() => rows.map((row) => row.name), [rows]);
   const draft = useRenameDraft(bridge, taken);
   const editingId = draft.session?.target.id ?? null;
+  const relocating = useRelocate(bridge);
+  // 展开了创建信息的智能体项目（规格 DESKTOP-LIBRARY-VIEW“智能体创建的项目”）
+  const [expanded, setExpanded] = useState<ReadonlySet<string>>(new Set());
+  const toggleExpanded = (id: string) =>
+    setExpanded((current) => {
+      const next = new Set(current);
+      if (!next.delete(id)) next.add(id);
+      return next;
+    });
+  // 找不到文件夹的行其余列变淡（设计稿 FolderMissing）
+  const dim = (row: PlaygroundRow, node: ReactNode): ReactNode =>
+    row.missing ? <span className={styles.dim}>{node}</span> : node;
 
   const columns: DataTableColumn<PlaygroundRow>[] = [
     {
@@ -84,45 +102,56 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
       id: "status",
       header: t("library.column.status.label"),
       width: "xl",
-      render: (row) => (
-        <StatusMark status={statusMarkOf(row.state)}>{t(stateLabelKey(row.state))}</StatusMark>
-      ),
+      render: (row) =>
+        row.missing ? (
+          <span className={styles.missingStatus} data-missing-status="">
+            <Icon name="warning" size={14} />
+            <Truncate>{t("library.missing.status.label")}</Truncate>
+          </span>
+        ) : (
+          <StatusMark status={statusMarkOf(row.state)}>{t(stateLabelKey(row.state))}</StatusMark>
+        ),
     },
     {
       id: "template",
       header: t("library.column.template.label"),
       width: "flex",
-      render: (row) => (
-        <span className={styles.template}>
-          <MonogramTile letters={monogramOf(row.templateId)} logo={logoOf(row.templateId)} />
-          <Truncate>
-            <UserText>
-              {row.templateName === null
-                ? row.templateId
-                : pickLocalizedText(row.templateName, locale)}
-            </UserText>
-          </Truncate>
-        </span>
-      ),
+      render: (row) =>
+        dim(
+          row,
+          <span className={styles.template}>
+            <MonogramTile letters={monogramOf(row.templateId)} logo={logoOf(row.templateId)} />
+            <Truncate>
+              <UserText>
+                {row.templateName === null
+                  ? row.templateId
+                  : pickLocalizedText(row.templateName, locale)}
+              </UserText>
+            </Truncate>
+          </span>,
+        ),
     },
     {
       id: "port",
       header: t("library.column.port.label"),
       width: "sm",
       render: (row) =>
-        row.port === null ? (
-          <span className={styles.secondary}>{NONE}</span>
-        ) : (
-          <UserText mono className={styles.port}>
-            {portLabel(row.port)}
-          </UserText>
+        dim(
+          row,
+          row.port === null ? (
+            <span className={styles.secondary}>{NONE}</span>
+          ) : (
+            <UserText mono className={styles.port}>
+              {portLabel(row.port)}
+            </UserText>
+          ),
         ),
     },
     {
       id: "retention",
       header: t("library.column.retention.label"),
       width: "md",
-      render: (row) => retentionCell(row, now, t),
+      render: (row) => dim(row, retentionCell(row, now, t)),
     },
     {
       id: "lastOpened",
@@ -132,31 +161,27 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
         row.id === editingId ? (
           <RenameInlineActions draft={draft} />
         ) : (
-          <span className={styles.secondary}>
-            {row.lastOpenedAt === null ? NONE : format.relativeTime(row.lastOpenedAt, now)}
-          </span>
+          dim(
+            row,
+            <span className={styles.secondary}>
+              {row.lastOpenedAt === null ? NONE : format.relativeTime(row.lastOpenedAt, now)}
+            </span>,
+          )
         ),
     },
     {
       id: "creator",
       header: t("library.column.creator.label"),
       width: "lg",
-      render: (row) => {
-        const creator = creatorOf(row);
-        if (creator.kind === "me")
-          return <span className={styles.secondary}>{t("library.creator.me.label")}</span>;
-        if (creator.kind === "cli")
-          return <span className={styles.secondary}>{t("library.creator.cli.label")}</span>;
-        return (
-          <Badge variant="violet" icon="spark">
-            {creator.name === null ? (
-              t("library.creator.agent.label")
-            ) : (
-              <UserText>{creator.name}</UserText>
-            )}
-          </Badge>
-        );
-      },
+      render: (row) =>
+        dim(
+          row,
+          <CreatorCell
+            row={row}
+            expanded={expanded.has(row.id)}
+            onToggle={() => toggleExpanded(row.id)}
+          />,
+        ),
     },
     {
       id: "actions",
@@ -176,38 +201,71 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
             )
           }
           onDuplicated={setSelectedId}
+          onRelocate={() => void relocating.relocate(row.id)}
         />
       ),
     },
   ];
 
   return (
-    <DataTable
-      label={t("library.table.aria")}
-      columns={columns}
-      rows={rows}
-      getRowId={(row) => row.id}
-      selectedId={selectedId}
-      editingId={editingId}
-      // 编辑中的行：名称框占名称到模板三列，取消和保存占最后三列（设计稿 RenameInline）
-      cellSpan={(row, columnId) =>
-        row.id !== editingId ? 1 : columnId === "name" || columnId === "lastOpened" ? 3 : 1
-      }
-      onRowClick={(row) => setSelectedId(row.id)}
-      // 弹窗经 React 事件冒泡到行上：只有双击发生在这一行自己里面才打开
-      onRowDoubleClick={(row, event) => {
-        if (event.currentTarget.contains(event.target as Node) && row.id !== editingId) {
-          void bridge.call("tab.open", row.id);
+    <>
+      <DataTable
+        label={t("library.table.aria")}
+        columns={columns}
+        rows={rows}
+        getRowId={(row) => row.id}
+        selectedId={selectedId}
+        editingId={editingId}
+        // 编辑中的行：名称框占名称到模板三列，取消和保存占最后三列（设计稿 RenameInline）
+        cellSpan={(row, columnId) =>
+          row.id !== editingId ? 1 : columnId === "name" || columnId === "lastOpened" ? 3 : 1
         }
-      }}
-      className={styles.table}
-    />
+        renderDetail={(row): DataTableDetail | null => {
+          if (row.missing) {
+            return {
+              tone: "warning",
+              content: (
+                <MissingNote
+                  bridge={bridge}
+                  id={row.id}
+                  name={row.name}
+                  folder={row.folder ?? row.path}
+                  mismatch={relocating.mismatchId === row.id}
+                  onRelocate={() => void relocating.relocate(row.id)}
+                  onForget={() => void relocating.forget(row.id)}
+                />
+              ),
+            };
+          }
+          if (!expanded.has(row.id)) return null;
+          return { tone: "neutral", content: <CreatorDetails row={row} /> };
+        }}
+        onRowClick={(row) => setSelectedId(row.id)}
+        // 弹窗经 React 事件冒泡到行上：只有双击发生在这一行自己里面才打开
+        onRowDoubleClick={(row, event) => {
+          if (event.currentTarget.contains(event.target as Node) && row.id !== editingId) {
+            void bridge.call("tab.open", row.id);
+          }
+        }}
+        className={styles.table}
+      />
+      {relocating.failed === null ? null : (
+        <ActionFailedDialog error={relocating.failed} onClose={relocating.clearFailed} />
+      )}
+    </>
   );
 }
 
 const portLabel = (port: number) => `:${port}`;
 
 function retentionCell(row: PlaygroundRow, now: number, t: ReturnType<typeof useT>): ReactNode {
+  // 离到期不足一天：警示色的“明天清理”（规格 DESKTOP-LIBRARY-VIEW-57）
+  if (isDueTomorrow(row, now))
+    return (
+      <Badge variant="dashed" className={styles.tomorrow} data-clean-tomorrow="">
+        {t("library.retention.tomorrow.label")}
+      </Badge>
+    );
   const retention = retentionOf(row, now);
   if (retention.kind === "kept")
     return <Badge variant="solid">{t("library.retention.kept.label")}</Badge>;

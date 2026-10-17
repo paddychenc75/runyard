@@ -13,6 +13,7 @@ import styles from "./AppShell.module.css";
 import { CloseConfirmDialog } from "./CloseConfirmDialog.tsx";
 import { CreateDialog } from "./CreateDialog.tsx";
 import { LibraryPage } from "./LibraryPage.tsx";
+import { NoticeToasts } from "./NoticeToasts.tsx";
 import { PickerDialog } from "./PickerDialog.tsx";
 import { Sidebar } from "./Sidebar.tsx";
 import { SettingsPage } from "./settings/SettingsPage.tsx";
@@ -191,6 +192,7 @@ export function AppShell({ bridge, library, settings }: AppShellProps) {
             </main>
           )}
           <CloseConfirmDialog bridge={bridge} request={library?.closeRequest ?? null} />
+          <NoticeToasts bridge={bridge} notices={library?.notices ?? []} />
           {creating !== null && library !== null ? (
             <CreateDialog
               key={creating}

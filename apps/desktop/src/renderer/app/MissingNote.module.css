@@ -1,0 +1,61 @@
+/* 设计稿 FolderMissing：警示色淡底的一条，左边是原路径说明，右边三个操作 */
+.root {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4) var(--space-6);
+  min-inline-size: 0;
+  color: var(--color-status-warning-text);
+  font-size: var(--text-item-size);
+  line-height: var(--text-item-line-height);
+}
+
+.icon {
+  flex: none;
+}
+
+.text {
+  flex: 1 1 var(--size-popover-width);
+  min-inline-size: 0;
+}
+
+.body,
+.problem {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.path {
+  font-weight: var(--text-item-weight);
+}
+
+.problem {
+  color: var(--color-status-danger-text);
+}
+
+.actions {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text-link);
+  font: inherit;
+  cursor: pointer;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.link:focus-visible {
+  border-radius: var(--radius-control);
+  outline: none;
+  box-shadow: var(--shadow-focus-ring);
+}

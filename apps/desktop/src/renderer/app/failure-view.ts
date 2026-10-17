@@ -5,6 +5,8 @@ import { STARTING_STATES } from "./start-view.ts";
 // 预览区在没有页面时显示哪一种画面的纯判断（规格 DESKTOP-WORKSPACE-18 至 22），不碰 DOM、不生成文字。
 
 export type PreviewScreen =
+  /** 项目文件夹找不到：不启动，显示说明和重新定位等操作 */
+  | "folder-missing"
   /** 页面已就绪：原生预览视图盖在占位区上，占位区什么都不画 */
   | "page"
   /** 缺少运行环境（缺工具、版本过低） */
@@ -25,6 +27,7 @@ export type PreviewScreen =
 const MISSING_CODES: readonly ErrorCode[] = ["TOOL_MISSING", "TOOL_TOO_OLD"];
 
 export function previewScreenOf(tab: TabRow): PreviewScreen {
+  if (tab.missing === true) return "folder-missing";
   if (tab.previewUrl !== null) return "page";
   if (tab.state === "crashed") return "crashed";
   if (tab.failure !== null) {

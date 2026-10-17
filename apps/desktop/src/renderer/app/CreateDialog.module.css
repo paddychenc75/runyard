@@ -55,3 +55,14 @@
 .grow {
   flex: 1;
 }
+
+/* 资源库在网盘同步目录下的警告：警示色的一行小字 */
+.synced {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin: 0;
+  color: var(--color-status-warning-text);
+  font-size: var(--text-secondary-size);
+  line-height: var(--text-secondary-line-height);
+}

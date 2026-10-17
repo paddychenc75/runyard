@@ -174,10 +174,11 @@ describe("LibraryController 实时更新", () => {
 });
 
 describe("LibraryController", () => {
-  it("启动时读项目、运行和模板，并订阅 run 与 playground 事件", async () => {
+  it("启动时先扫描资源库，再读项目、运行和模板，并订阅 run 与 playground 事件", async () => {
     const { client, controller } = setup();
     await controller.start();
     expect(client.calls.map((call) => call.method).sort()).toEqual([
+      "library.rescan",
       "playground.list",
       "run.list",
       "settings.get",

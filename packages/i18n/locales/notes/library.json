@@ -1,4 +1,23 @@
 {
+  "library.cleanBanner.idle.label": {
+    "days": "已经几天没打开"
+  },
+  "library.cleanBanner.lead.label": {
+    "count": "明天会被自动清理的项目数"
+  },
+  "library.creator.details.label": {
+    "time": "创建时间（已格式化）",
+    "hasCommand": "有创建命令是 yes，否则 no",
+    "command": "创建时的命令行（用 code 标签包成等宽）",
+    "user": "包住智能体名称的标签",
+    "code": "包住命令的标签，显示成等宽字体",
+    "agent": "智能体名称（不翻译）"
+  },
+  "library.creator.tooltip.label": {
+    "time": "创建时间（已格式化）",
+    "hasCommand": "有创建命令是 yes，否则 no",
+    "command": "创建时的命令行（用 code 标签包成等宽）"
+  },
   "library.filter.sort.label": {
     "value": "当前选中的排序名"
   },
@@ -7,6 +26,14 @@
   },
   "library.filter.type.label": {
     "value": "当前选中的类型名"
+  },
+  "library.missing.body": {
+    "path": "项目原来的文件夹路径（主目录缩成 ~）",
+    "mono": "包住路径的标签，显示成等宽字体"
+  },
+  "library.missing.mismatch.label": {
+    "name": "这个项目的名称（用户自己起的，不翻译）",
+    "user": "包住用户内容的标签"
   },
   "library.noResults.create.action": {
     "query": "用户输入的搜索文字，同时是新项目的名称"
