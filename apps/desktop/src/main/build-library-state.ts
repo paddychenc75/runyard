@@ -151,6 +151,9 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
   const autoRuns = new Map(
     inputs.playgrounds.map((playground) => [playground.id, playground.scriptAutoRun]),
   );
+  const serviceTemplates = new Set(
+    inputs.templates.filter((template) => template.category === "service").map((t) => t.id),
+  );
   const tabs: TabRow[] = [];
   for (const row of rows) {
     if (!inputs.tabIds.includes(row.id)) continue;
@@ -181,6 +184,7 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
       folder: row.folder ?? row.path,
       phaseMs: inputs.phases?.(row.id) ?? { copy: null, install: null, start: null },
       missing: row.missing,
+      service: serviceTemplates.has(row.templateId),
     });
   }
   tabs.sort((a, b) => inputs.tabIds.indexOf(a.id) - inputs.tabIds.indexOf(b.id));
@@ -314,6 +318,17 @@ export function previewUrlFor(
   const run = latestRunByPlayground(runs).get(previewId);
   if (run === undefined || run.state !== "ready" || run.url === undefined) return null;
   return run.url;
+}
+
+/** 当前标签页的预览地址；服务类项目右侧是请求面板，没有网页可预览（规格 DESKTOP-REQUEST-PANEL-01） */
+export function previewUrlForTab(
+  tabs: readonly TabRow[],
+  previewId: string,
+  runs: readonly RunSnapshot[],
+): string | null {
+  return tabs.find((tab) => tab.id === previewId)?.service === true
+    ? null
+    : previewUrlFor(previewId, runs);
 }
 
 function failureOf(

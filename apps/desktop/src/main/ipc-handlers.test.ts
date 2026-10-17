@@ -60,6 +60,13 @@ function setup() {
       reloadPreview: (id: string) => void calls.push(["reload", id]),
       openPreviewInBrowser: (id: string) => void calls.push(["external", id]),
       openPreviewDevTools: (id: string) => void calls.push(["devtools", id]),
+      sendRequest: async (id: string, request: unknown) => {
+        calls.push(["request", id, request]);
+        return { outcome: "failed", reason: "unreachable", durationMs: 0 };
+      },
+      lastRequest: async (id: string) => void calls.push(["lastRequest", id]),
+      openRequestInBrowser: (id: string, path: string) =>
+        void calls.push(["openRequest", id, path]),
     },
     setPreviewBounds: (bounds: unknown) => void calls.push(["bounds", bounds]),
     capturePreview: async () => "data:image/png;base64,AAAA",
@@ -225,6 +232,45 @@ describe("registerBridgeHandlers", () => {
     await call(app, "run.stdin", { id: "a", line: 1 });
     await call(app, "playground.scriptAutoRun", { id: "a", enabled: "no" });
     await call(app, "preview.devtools", 7);
+    expect(calls).toEqual([]);
+  });
+
+  it("[DESKTOP-REQUEST-PANEL-02] 请求面板通道：合格的请求转给控制器；形状不对的（路径不以 / 开头、方法不在名单里、缺字段）不转", async () => {
+    const { call, calls } = setup();
+    const request = {
+      method: "POST",
+      path: "/todos",
+      headers: [{ name: "a", value: "b" }],
+      payload: "x",
+    };
+    expect(await call(app, "request.send", { id: "a", request })).toMatchObject({
+      outcome: "failed",
+      reason: "unreachable",
+    });
+    await call(app, "request.getLast", "a");
+    await call(app, "request.openInBrowser", { id: "a", path: "/todos" });
+    expect(calls).toEqual([
+      ["request", "a", request],
+      ["lastRequest", "a"],
+      ["openRequest", "a", "/todos"],
+    ]);
+    calls.length = 0;
+    for (const bad of [
+      { id: "a", request: { ...request, path: "http://example.com/" } },
+      { id: "a", request: { ...request, path: "example.com/x" } },
+      { id: "a", request: { ...request, method: "TRACE" } },
+      { id: "a", request: { method: "GET" } },
+      { id: "", request },
+      { request },
+      null,
+    ]) {
+      expect(await call(app, "request.send", bad)).toMatchObject({
+        outcome: "failed",
+        reason: "invalid-request",
+      });
+    }
+    await call(app, "request.openInBrowser", { id: "a", path: 7 });
+    await call(app, "request.getLast", 5);
     expect(calls).toEqual([]);
   });
 

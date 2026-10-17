@@ -4,7 +4,7 @@ import { absPath } from "@runyard/platform";
 import type { Owner, RunSnapshot } from "@runyard/protocol";
 import type { ProcessBehavior } from "@runyard/testing";
 import { expect, it } from "vitest";
-import { composeExtensions } from "./compose-extensions.ts";
+import { type ComposeOptions, composeExtensions } from "./compose-extensions.ts";
 import { LibraryWorld, Pump } from "./library-harness.test.ts";
 import type { LogModule } from "./log-module.ts";
 import type { RunModule, RunModuleOptions } from "./run-module.ts";
@@ -32,6 +32,8 @@ export class RunWorld extends LibraryWorld {
   readonly ports = new Map<string, number>();
   #nextPort = 7100;
   moduleOptions: Partial<RunModuleOptions> = {};
+  /** 请求面板发请求的替身；不给就是真实的（只发往本机） */
+  sendRequest: ComposeOptions["sendRequest"];
   /** 服务运行器的 watch 规则；默认不监听（#262 的测试改成 restart，和 hono 运行器一样） */
   serverWatch: Record<string, unknown> = { mode: "none" };
 
@@ -129,6 +131,7 @@ export class RunWorld extends LibraryWorld {
           },
           appVersion: "0.0.0-test",
           log: (line) => this.logs.push(line),
+          ...(this.sendRequest === undefined ? {} : { sendRequest: this.sendRequest }),
           run: {
             preparer: this.preparer,
             readiness: this.readiness,

@@ -15,20 +15,4 @@ export const reservedMethods = {
     errors: ["NOT_SUPPORTED"],
     status: "reserved",
   },
-  "request.send": {
-    group: "request",
-    summary: "请求面板发请求（M3）",
-    params: anything,
-    result: anything,
-    errors: ["NOT_SUPPORTED"],
-    status: "reserved",
-  },
-  "request.getLast": {
-    group: "request",
-    summary: "请求面板取上一次请求（M3）",
-    params: anything,
-    result: anything,
-    errors: ["NOT_SUPPORTED"],
-    status: "reserved",
-  },
 } as const satisfies Record<string, MethodDefinition>;

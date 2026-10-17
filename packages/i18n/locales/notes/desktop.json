@@ -96,6 +96,16 @@
     "project": "项目名，用户自己起的，不翻译",
     "command": "命令名，不翻译"
   },
+  "desktop.request.autoResent.label": {
+    "time": "自动重发的时刻，时分秒，如 20:11:02，由格式化函数生成"
+  },
+  "desktop.request.meta.label": {
+    "duration": "耗时，如 12 ms，由格式化函数生成",
+    "size": "响应体大小，如 156 B，由格式化函数生成"
+  },
+  "desktop.request.methodOption.label": {
+    "method": "HTTP 方法名（GET、POST 等），技术词，不翻译"
+  },
   "desktop.runbar.missing.label": {
     "tool": "工具标识，如 go、node"
   },
