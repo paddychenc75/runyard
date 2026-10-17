@@ -9,11 +9,19 @@ import styles from "./EditorColumn.module.css";
 import { useActiveEditor } from "./EditorWorkspace.tsx";
 import { FileNotice } from "./FileNotice.tsx";
 import { FileTabs } from "./FileTabs.tsx";
-import { isDirty } from "./file-tab.ts";
+import { type FileTab, isDirty } from "./file-tab.ts";
 import { createMonacoHost, type EditorHost, type EditorHostFactory } from "./monaco-host.ts";
 import { baseName } from "./path-names.ts";
 import { SaveStatus, type SaveStatusKind } from "./SaveStatus.tsx";
 import { useAppliedTheme } from "./use-applied-theme.ts";
+
+function statusOf(tab: FileTab): SaveStatusKind {
+  if (tab.saveError !== null) return "failed";
+  if (tab.conflict) return "conflict";
+  if (tab.deleted) return "deleted";
+  if (tab.saving) return "saving";
+  return isDirty(tab) ? "unsaved" : "saved";
+}
 
 export interface EditorColumnProps {
   bridge: DesktopBridge;
@@ -29,6 +37,7 @@ export function EditorColumn({ bridge, tab, createHost = createMonacoHost }: Edi
   const t = useT();
   const { session, state } = useActiveEditor();
   const theme = useAppliedTheme();
+  const rootRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const hostRef = useRef<EditorHost | null>(null);
   const [hostReady, setHostReady] = useState(false);
@@ -86,11 +95,24 @@ export function EditorColumn({ bridge, tab, createHost = createMonacoHost }: Edi
     return () => window.removeEventListener("keydown", onKeyDown, true);
   }, [session, modKey]);
 
+  // 失去焦点（DESKTOP-EDITOR-24）：焦点移出编辑器区域（点了预览、控制台或别处），或者切到别的应用、关窗口
+  useEffect(() => {
+    const root = rootRef.current;
+    const onFocusOut = (event: FocusEvent) => {
+      if (!root?.contains(event.relatedTarget as Node | null)) session.blur();
+    };
+    const onWindowBlur = () => session.blur();
+    root?.addEventListener("focusout", onFocusOut);
+    window.addEventListener("blur", onWindowBlur);
+    return () => {
+      root?.removeEventListener("focusout", onFocusOut);
+      window.removeEventListener("blur", onWindowBlur);
+    };
+  }, [session]);
+
   const editing = active?.view === "text";
   let status: SaveStatusKind | null = null;
-  if (editing && active !== null) {
-    status = active.saveError !== null ? "failed" : isDirty(active) ? "unsaved" : "saved";
-  }
+  if (editing && active !== null) status = statusOf(active);
   const name = active === null ? "" : baseName(active.path);
   const saveFailedMessage =
     active?.saveError === "read-only"
@@ -98,9 +120,10 @@ export function EditorColumn({ bridge, tab, createHost = createMonacoHost }: Edi
       : active?.saveError === "permission"
         ? t("desktop.editor.saveFailedPermission.body", { name })
         : t("desktop.editor.saveFailedOther.body", { name });
+  const conflict = editing && active?.conflict ? active : null;
   const promptTab = state.tabs.find((candidate) => candidate.path === state.closePrompt);
   return (
-    <section className={styles.root} data-editor={tab.id}>
+    <section ref={rootRef} className={styles.root} data-editor={tab.id}>
       <div className={styles.bar}>
         <FileTabs
           tabs={state.tabs}
@@ -120,6 +143,37 @@ export function EditorColumn({ bridge, tab, createHost = createMonacoHost }: Edi
             label: t("desktop.editor.saveFailedRetry.action"),
             onClick: () => void session.save(active.path),
           }}
+        />
+      ) : null}
+      {conflict === null ? null : (
+        <EditorBar
+          tone="info"
+          message={t("desktop.editor.diskChanged.body", { name })}
+          action={{
+            label: t("desktop.editor.useDisk.action"),
+            onClick: () => void session.useDisk(conflict.path),
+          }}
+          secondary={{
+            label: t("desktop.editor.keepMine.action"),
+            onClick: () => void session.keepMine(conflict.path),
+          }}
+        />
+      )}
+      {editing && active?.deleted ? (
+        <EditorBar
+          tone="info"
+          message={t("desktop.editor.deletedNotice.body", {
+            name,
+            keys: modKey === "meta" ? "⌘S" : "Ctrl+S",
+          })}
+        />
+      ) : null}
+      {editing && active?.mixedEol && active.eol !== "none" ? (
+        <EditorBar
+          tone="info"
+          message={t("desktop.editor.mixedEolNotice.body", {
+            eol: active.eol === "crlf" ? "CRLF" : "LF",
+          })}
         />
       ) : null}
       {editing && active?.mode === "plain" ? (

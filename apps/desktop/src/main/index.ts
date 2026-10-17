@@ -36,6 +36,7 @@ import {
 } from "./parse-args.ts";
 import { ElectronPreviewHost } from "./preview-view.ts";
 import { registerQuitFlow } from "./quit-coordinator.ts";
+import { QuitFlushGate } from "./quit-flush-gate.ts";
 import { runSmoke } from "./smoke.ts";
 
 // 主进程入口（构建后在 apps/desktop/dist/main/index.mjs）。入口是 ES 模块，
@@ -96,6 +97,13 @@ async function main(args: DesktopArgs): Promise<void> {
   keepAliveAfterClose(app, window, closeKeepsAppAlive(currentPlatform()));
   const preview = new ElectronPreviewHost(window);
 
+  // 退出前问编辑器（规格 DESKTOP-EDITOR-27、28）；渲染进程没了就不问
+  const quitGate = new QuitFlushGate((id) => {
+    if (window.isDestroyed()) return false;
+    window.webContents.send(desktopChannels.event, "app.quitRequested", { id });
+    return true;
+  });
+  window.webContents.on("render-process-gone", () => quitGate.abandon());
   let client: LibraryClient;
   let clientId = "";
   let close = (): void => {};
@@ -105,16 +113,26 @@ async function main(args: DesktopArgs): Promise<void> {
     clientId = connected.clientId;
     close = () => connected.client.close();
     // 应用正常退出：先向管理进程道别，它会停掉这条连接名下的标签页运行（最多等 5 秒）
-    registerQuitFlow(app, async () => {
-      try {
-        await connected.client.call("session.bye", {});
-      } finally {
-        close();
-      }
-    });
+    registerQuitFlow(
+      app,
+      async () => {
+        try {
+          await connected.client.call("session.bye", {});
+        } finally {
+          close();
+        }
+      },
+      () => quitGate.request(),
+    );
   } catch (error) {
     diagnostic(`could not reach the supervisor: ${String(error)}`);
     client = unavailableClient(error);
+    // 没有管理进程要道别，但编辑器里未保存的修改照样要在退出前写入
+    registerQuitFlow(
+      app,
+      async () => {},
+      () => quitGate.request(),
+    );
   }
 
   const system = new ElectronSystemActions();
@@ -164,6 +182,7 @@ async function main(args: DesktopArgs): Promise<void> {
     }),
     files,
     { reveal: (path) => system.revealInFileManager(path), open: (path) => system.openPath(path) },
+    quitGate,
   );
   // 应用菜单：⌘N 打开模板选择器（焦点在预览视图里也有效）
   Menu.setApplicationMenu(

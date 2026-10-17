@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from "react";
-import type { EditorSession, SessionState } from "./editor-session.ts";
+import type { EditorSession } from "./editor-session.ts";
+import type { SessionState } from "./session-types.ts";
 
 const EMPTY: SessionState = { tabs: [], active: null, closePrompt: null };
 const noSubscribe = (): (() => void) => () => {};

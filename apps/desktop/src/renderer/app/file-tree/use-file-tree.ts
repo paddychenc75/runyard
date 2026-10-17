@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { DesktopBridge } from "../../../shared/desktop-bridge.ts";
 import type { EditorFileError, FileEntry } from "../../../shared/editor-files.ts";
+import { watchProject } from "../../shared/project-watch.ts";
 import {
   baseNameOf,
   type EditDraft,
@@ -110,21 +111,18 @@ export function useFileTree(
       pending.clear();
       for (const folder of folders) void load(folder);
     };
-    const stop = bridge.on("files.changed", (payload) => {
-      if (payload.project !== project) return;
+    const stop = watchProject(bridge, project, (payload) => {
       const loaded = new Set(latest.current.dirs.keys());
       for (const folder of foldersToReload(payload.changes, loaded)) pending.add(folder);
       if (pending.size > 0 && timer === null) timer = setTimeout(flush, RELOAD_DELAY_MS);
     });
     // 先订阅再开监听再读：读之后发生的变化不会漏
-    void bridge.call("files.watch", { project });
     void load("");
     return () => {
       alive.current = false;
       stop();
       if (timer !== null) clearTimeout(timer);
       if (noticeTimer.current !== null) clearTimeout(noticeTimer.current);
-      void bridge.call("files.unwatch", { project });
     };
   }, [bridge, project, load]);
 

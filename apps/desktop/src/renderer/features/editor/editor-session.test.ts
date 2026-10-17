@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { type AutosaveMode, EditorSession } from "./editor-session.ts";
+import { EditorSession } from "./editor-session.ts";
+import type { AutosaveMode } from "./session-types.ts";
 import { fakeDisk, fakeMemory, filesOn } from "./test-files.ts";
 
 function setup(

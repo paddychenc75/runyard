@@ -25,8 +25,18 @@
   "desktop.editor.closePrompt.title": {
     "name": "文件名"
   },
+  "desktop.editor.deletedNotice.body": {
+    "name": "文件名",
+    "keys": "保存快捷键，如 ⌘S"
+  },
+  "desktop.editor.diskChanged.body": {
+    "name": "文件名"
+  },
   "desktop.editor.failed.body": {
     "name": "文件名"
+  },
+  "desktop.editor.mixedEolNotice.body": {
+    "eol": "统一成的换行符，LF 或 CRLF"
   },
   "desktop.editor.saveFailedOther.body": {
     "name": "文件名"
@@ -38,6 +48,9 @@
     "name": "文件名"
   },
   "desktop.editor.tabClose.label": {
+    "name": "文件名（用户的内容）"
+  },
+  "desktop.editor.tabDeleted.label": {
     "name": "文件名（用户的内容）"
   },
   "desktop.editor.tabUnsaved.label": {

@@ -29,6 +29,11 @@ export interface CreateRequest {
 }
 export type CreateResult = { ok: true } | { ok: false; error: DesktopError };
 
+export interface QuitReply {
+  id: number;
+  reply: "ack" | "proceed" | "cancel";
+}
+
 /** 界面可以调用的方法：参数类型与返回类型 */
 export interface DesktopMethods extends EditorFileMethods {
   "library.get": { param: undefined; result: LibraryState };
@@ -46,6 +51,8 @@ export interface DesktopMethods extends EditorFileMethods {
   "tab.closeConfirm": { param: { id: string; dontAskAgain: boolean }; result: undefined };
   /** 取消关闭：什么都不变，也不记住勾选 */
   "tab.closeCancel": { param: undefined; result: undefined };
+  /** 退出前的回执（规格 DESKTOP-EDITOR-27、28）：界面收到 app.quitRequested 后先 ack，写完或问完后 proceed（可以退出）或 cancel（用户取消，不退出） */
+  "app.quitReply": { param: QuitReply; result: undefined };
   /** 在系统文件管理器（访达）里选中项目文件夹 */
   "playground.reveal": { param: string; result: undefined };
   /** 把项目文件夹的绝对路径放进剪贴板 */
@@ -75,6 +82,7 @@ export const desktopMethodNames: readonly DesktopMethod[] = [
   "tab.close",
   "tab.closeConfirm",
   "tab.closeCancel",
+  "app.quitReply",
   "playground.reveal",
   "playground.copyPath",
   "clipboard.copy",
@@ -92,6 +100,8 @@ export interface DesktopEvents {
   "console.appended": ConsoleAppend;
   /** 应用菜单的“新建…”（⌘N）：焦点在预览视图里时按键到不了界面，所以由主进程通知 */
   "picker.open": undefined;
+  /** 应用要退出了：编辑器先把未保存的修改写入（自动保存关着的先问用户），再用 app.quitReply 回话 */
+  "app.quitRequested": { id: number };
   /** 项目文件夹里的文件变了（监听由 files.watch 开启）：目录树更新和外部修改提示靠它 */
   "files.changed": FilesChanged;
 }
@@ -101,6 +111,7 @@ export const desktopEventNames: readonly DesktopEventName[] = [
   "library.changed",
   "console.appended",
   "picker.open",
+  "app.quitRequested",
   "files.changed",
 ];
 

@@ -162,11 +162,15 @@
 | desktop.editor.closePrompt.body | 不保存的话，这些修改会丢失。 | If you don't save, these changes will be lost. | — |
 | desktop.editor.closePrompt.title | 保存对 {name} 的修改吗？ | Save changes to {name}? | name：文件名 |
 | desktop.editor.closeSave.action | 保存 | Save | — |
+| desktop.editor.deletedNotice.body | {name} 已在磁盘上被删除，内容还在编辑器里。按 {keys} 可以重新创建它。 | {name} was deleted on disk. Its content is still in the editor; press {keys} to create it again. | name：文件名；keys：保存快捷键，如 ⌘S |
+| desktop.editor.diskChanged.body | 磁盘上的 {name} 已被别的程序修改。选定之前，这个文件不会自动保存。 | {name} was changed on disk by another program. It won't be saved automatically until you choose. | name：文件名 |
 | desktop.editor.empty.body | 在左边的文件树里选一个文件，就能在这里编辑。 | Pick a file in the file tree on the left to edit it here. | — |
 | desktop.editor.empty.title | 还没有打开的文件 | No file is open | — |
 | desktop.editor.failed.body | 读取 {name} 时出了错。文件可能刚被移走或没有读取权限。 | Something went wrong reading {name}. It may have just been moved, or you may not have permission to read it. | name：文件名 |
 | desktop.editor.failed.title | 打不开这个文件 | Can't open this file | — |
+| desktop.editor.keepMine.action | 保留我的修改 | Keep my changes | — |
 | desktop.editor.loading.label | 正在打开… | Opening… | — |
+| desktop.editor.mixedEolNotice.body | 这个文件的换行符号不统一，保存时会统一成 {eol}。 | This file mixes line endings. Saving will make them all {eol}. | eol：统一成的换行符，LF 或 CRLF |
 | desktop.editor.openExternal.action | 在外部编辑器中打开 | Open in external editor | — |
 | desktop.editor.plainLargeNotice.body | 文件很大，已关闭语法高亮和智能提示。 | This file is very large, so syntax highlighting and suggestions are off. | — |
 | desktop.editor.plainNotice.body | 文件较大，不做语法高亮。 | This file is large, so syntax highlighting is off. | — |
@@ -176,14 +180,20 @@
 | desktop.editor.saveFailedPermission.body | 没有写入 {name} 的权限。你的修改还在编辑器里，处理权限后再保存一次。 | No permission to write {name}. Your changes are still in the editor; fix the permission and save again. | name：文件名 |
 | desktop.editor.saveFailedReadOnly.body | {name} 是只读的。你的修改还在编辑器里，改回可写后再保存一次。 | {name} is read-only. Your changes are still in the editor; make it writable and save again. | name：文件名 |
 | desktop.editor.saveFailedRetry.action | 再保存一次 | Save again | — |
+| desktop.editor.statusConflict.label | 磁盘上有改动 | Changed on disk | — |
+| desktop.editor.statusDeleted.label | 已删除 | Deleted | — |
 | desktop.editor.statusFailed.label | 保存失败 | Save failed | — |
 | desktop.editor.statusSaved.label | 已保存 | Saved | — |
+| desktop.editor.statusSaving.label | 保存中… | Saving… | — |
 | desktop.editor.statusUnsaved.label | 未保存 | Unsaved | — |
 | desktop.editor.tabClose.label | 关闭 {name} | Close {name} | name：文件名（用户的内容） |
+| desktop.editor.tabDeleted.label | {name}（已删除） | {name} (deleted) | name：文件名（用户的内容） |
+| desktop.editor.tabDeletedMark.label | 已删除 | Deleted | — |
 | desktop.editor.tabUnsaved.label | {name}（未保存） | {name} (unsaved) | name：文件名（用户的内容） |
 | desktop.editor.tabs.aria | 文件标签 | File tabs | — |
 | desktop.editor.tooLarge.body | {name} 有 {size}，超过了编辑器能打开的上限（{limit}）。 | {name} is {size}, over the {limit} the editor can open. | name：文件名；size：已格式化的文件大小；limit：已格式化的上限大小 |
 | desktop.editor.tooLarge.title | 文件太大，没有打开 | This file is too large to open | — |
+| desktop.editor.useDisk.action | 用磁盘上的版本 | Use the disk version | — |
 | desktop.empty.templates.hint | 或者直接用常用模板开始，点一下进入填写名称那一步： | Or start from a common template; one click takes you to the naming step: | — |
 | desktop.error.title.label | 出错了：{title} | Error: {title} | title：错误的标题，来自 errors.<代码>.title，已是翻译好的句子 |
 | desktop.failure.log.label | 安装日志 | Install log | — |

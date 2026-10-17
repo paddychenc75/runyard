@@ -2,7 +2,7 @@ import { useT } from "@runyard/i18n/react";
 import { AlertDialog, Button } from "@runyard/ui";
 import { useRef } from "react";
 import { useOverlay } from "../../shared/overlay-context.tsx";
-import type { ClosePromptAnswer } from "./editor-session.ts";
+import type { ClosePromptAnswer } from "./session-types.ts";
 
 export interface ClosePromptProps {
   /** 要问的文件名；不用问是 null */

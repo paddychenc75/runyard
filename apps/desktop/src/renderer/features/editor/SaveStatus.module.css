@@ -16,3 +16,23 @@
 .root[data-status="failed"] {
   color: var(--color-status-danger-text);
 }
+
+.warn {
+  color: var(--color-status-warning-mark);
+}
+
+.root[data-status="conflict"],
+.root[data-status="deleted"] {
+  color: var(--color-status-warning-text);
+}
+
+/* 设计稿 SpecStates“保存中…”：10 px 的琥珀色圆环，缺口表示在转 */
+.ring {
+  flex: none;
+  inline-size: var(--space-5);
+  block-size: var(--space-5);
+  box-sizing: border-box;
+  border-radius: var(--radius-capsule);
+  border: var(--space-1) solid var(--color-status-warning-mark);
+  border-inline-end-color: transparent;
+}
