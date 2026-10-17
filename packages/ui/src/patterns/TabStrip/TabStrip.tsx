@@ -60,6 +60,8 @@ export interface TabStripProps extends Omit<ComponentProps<"div">, "aria-label" 
 
 /** “+N”按钮量不到时的估计宽度，加上右端渐隐占的位置 */
 const MORE_FALLBACK_PX = 64;
+/** 量不到 --size-tab-min 时（没有样式的测试环境）的最窄宽度，同设计变量的值 */
+const TAB_MIN_FALLBACK_PX = 112;
 const FADE_PX = 16;
 
 // 标签条：标签直接放在窗口背景上，没有外壳，选中的标签只有一块浅底色（滑动的那块）。
@@ -88,10 +90,11 @@ export function TabStrip({
   const fullWidths = useRef(new Map<string, number>());
   const current = items.find((item) => item.id === value);
   const slide = useSlidingIndicator<HTMLDivElement>(current?.id ?? null);
-  const [fit, setFit] = useState<{ iconOnly: readonly boolean[]; visible: readonly boolean[] }>({
-    iconOnly: [],
-    visible: [],
-  });
+  const [fit, setFit] = useState<{
+    iconOnly: readonly boolean[];
+    visible: readonly boolean[];
+    shrunk: boolean;
+  }>({ iconOnly: [], visible: [], shrunk: false });
   // 状态里的数组按位置对应标签；标签增删后长度对不上，就当作都显示，等量完再放进状态
   const aligned = fit.visible.length === items.length;
   const visibleAt = (index: number) => (aligned ? fit.visible[index] !== false : true);
@@ -104,17 +107,36 @@ export function TabStrip({
     if (root === null || row === null || overflowLabel === undefined) return;
     const gap = Number.parseFloat(getComputedStyle(row).columnGap) || 0;
     const nodes = Array.from(row.querySelectorAll<HTMLElement>("[data-tab-id]"));
+    const tabMin =
+      Number.parseFloat(getComputedStyle(row).getPropertyValue("--size-tab-min")) ||
+      TAB_MIN_FALLBACK_PX;
     const widths = items.map((item, index) => {
       const node = nodes.find((candidate) => candidate.dataset.tabId === item.id);
-      if (node !== undefined && !iconOnlyAt(index))
-        fullWidths.current.set(item.id, node.offsetWidth);
+      if (node !== undefined && !iconOnlyAt(index)) {
+        // 名字被省略时，完整宽度要加上被截掉的那一段
+        const label = node.querySelector<HTMLElement>("[data-truncate]");
+        const cap =
+          label === null
+            ? 0
+            : Number.parseFloat(getComputedStyle(label).maxWidth) || Number.POSITIVE_INFINITY;
+        const cut =
+          label === null ? 0 : Math.max(0, Math.min(label.scrollWidth, cap) - label.clientWidth);
+        fullWidths.current.set(item.id, node.offsetWidth + cut);
+      }
       return (fullWidths.current.get(item.id) ?? node?.offsetWidth ?? 0) + gap;
     });
+    // 能关闭的项目标签可以压到 tabMin；资源库这类不能关闭的不压
+    const minWidths = items.map((item, index) =>
+      item.closeLabel === undefined
+        ? (widths[index] ?? 0)
+        : Math.min(widths[index] ?? 0, tabMin + gap),
+    );
     const tabHeight = nodes[0]?.offsetHeight ?? 0;
     const addWidth = addRef.current?.offsetWidth ?? 0;
     const moreWidth = (moreRef.current?.offsetWidth ?? MORE_FALLBACK_PX) + gap + FADE_PX;
     const result = fitTabs({
       widths,
+      minWidths,
       available: root.clientWidth - addWidth,
       selected: items.findIndex((item) => item.id === value),
       shrinkable: items.map((item) => item.shrinkToIcon === true),
@@ -122,6 +144,7 @@ export function TabStrip({
       moreWidth,
     });
     const same =
+      result.shrunk === fit.shrunk &&
       result.visible.length === fit.visible.length &&
       result.visible.every((flag, index) => flag === fit.visible[index]) &&
       result.iconOnly.every((flag, index) => flag === fit.iconOnly[index]);
@@ -192,6 +215,7 @@ export function TabStrip({
         aria-orientation="horizontal"
         className={styles.row}
         data-overflow={hidden.length > 0 ? "" : undefined}
+        data-shrunk={aligned && fit.shrunk ? "" : undefined}
       >
         <SlidingIndicator indicatorRef={slide.indicator} className={styles.indicator} />
         {items.map((item, index) => {

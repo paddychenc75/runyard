@@ -41,6 +41,8 @@
   z-index: var(--z-slide-content);
 }
 
+/* 项目标签（能关闭的）放不下时从完整宽度压窄，名字省略；压到 --size-tab-min 还不够才折进“+N”。
+   资源库这类不能关闭的标签不压 */
 .tab {
   position: relative;
   z-index: var(--z-slide-content);
@@ -54,6 +56,17 @@
   transition:
     background-color var(--motion-duration-fast) linear,
     color var(--motion-duration-fast) linear;
+}
+
+.tab:has([data-closable]) {
+  flex: 0 1 auto;
+  min-inline-size: var(--size-tab-min);
+}
+
+/* 压窄时只有选中和悬停的标签看得见关闭钮；只是变透明，不占出空位，所以量宽度不受影响 */
+.row[data-shrunk] .tab:not([data-selected], :hover, :focus-within) .close {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* 选中背景是滑动的那一块（SlidingIndicator），只有一层浅填充：没有阴影、没有圈 */
@@ -108,7 +121,7 @@
 
 .label {
   min-inline-size: 0;
-  max-inline-size: var(--size-dialog-width);
+  max-inline-size: var(--size-tab-label-max);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

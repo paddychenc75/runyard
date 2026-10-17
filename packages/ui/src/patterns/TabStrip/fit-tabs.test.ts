@@ -3,6 +3,7 @@ import { fitTabs } from "./fit-tabs.ts";
 
 const base = {
   widths: [100, 120, 120, 120, 120],
+  minWidths: [100, 80, 80, 80, 80],
   selected: 0,
   shrinkable: [true, false, false, false, false],
   iconWidth: 36,
@@ -20,21 +21,42 @@ describe("fitTabs", () => {
     expect(fitTabs({ ...base, available: 0 }).visible).toEqual([true, true, true, true, true]);
   });
 
-  it("[DESKTOP-WORKSPACE-63] 先把资源库标签缩成图标，缩了就够的话不折叠任何标签", () => {
-    const result = fitTabs({ ...base, available: 36 + 480 });
+  it("[DESKTOP-WORKSPACE-63] 先压窄项目标签；压到最窄还不够才把资源库标签缩成图标，缩了就够的话不折叠任何标签", () => {
+    const result = fitTabs({ ...base, available: 400 });
     expect(result.iconOnly[0]).toBe(true);
     expect(result.visible).toEqual([true, true, true, true, true]);
   });
 
   it("[DESKTOP-WORKSPACE-63] 还不够就把后面的标签折进“+N”，顺序不乱", () => {
-    const result = fitTabs({ ...base, available: 36 + 240 + 50 });
+    const result = fitTabs({ ...base, available: 300 });
     expect(result.visible).toEqual([true, true, true, false, false]);
   });
 
   it("[DESKTOP-WORKSPACE-64] 选中的标签放在后面也始终显示", () => {
-    const result = fitTabs({ ...base, selected: 4, available: 36 + 240 + 50 });
+    const result = fitTabs({ ...base, selected: 4, available: 300 });
     expect(result.visible[4]).toBe(true);
     expect(result.visible.filter(Boolean)).toHaveLength(3);
     expect(result.visible.slice(0, 2)).toEqual([true, true]);
+  });
+
+  it("[DESKTOP-WORKSPACE-63] 放不下完整宽度但压窄就够：全部显示、资源库保留文字，只是压窄了", () => {
+    const result = fitTabs({ ...base, available: 450 });
+    expect(result.visible).toEqual([true, true, true, true, true]);
+    expect(result.iconOnly).toEqual([false, false, false, false, false]);
+    expect(result.shrunk).toBe(true);
+  });
+
+  it("[DESKTOP-WORKSPACE-63] 1440 宽：资源库加 6 个项目标签（完整 170、最窄 112）全部放得下，不折叠、资源库不缩", () => {
+    const result = fitTabs({
+      widths: [100, 170, 170, 170, 170, 170, 170],
+      minWidths: [100, 112, 112, 112, 112, 112, 112],
+      shrinkable: [true, false, false, false, false, false, false],
+      available: 900,
+      selected: 1,
+      iconWidth: 36,
+      moreWidth: 80,
+    });
+    expect(result.visible.every(Boolean)).toBe(true);
+    expect(result.iconOnly[0]).toBe(false);
   });
 });

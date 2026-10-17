@@ -206,6 +206,8 @@ disagree, `tokens.json` wins.
 | `--size-window-inset` | 8px | Window inset for floating panels |
 | `--size-nav-item` | 36px | Sidebar navigation item height |
 | `--size-tab` | 36px | Tab height in the top bar |
+| `--size-tab-min` | 112px | Narrowest a project tab is squeezed to before tabs fold into +N |
+| `--size-tab-label-max` | 180px | Widest a tab name gets before it is truncated |
 | `--size-search-wide` | 240px | Library header search field, wide window |
 | `--size-search-short` | 180px | Library header search field, narrow window |
 | `--size-window-controls` | 72px | Space reserved for the native window buttons in a title bar |

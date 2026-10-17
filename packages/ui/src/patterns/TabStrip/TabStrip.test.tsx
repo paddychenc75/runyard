@@ -232,7 +232,19 @@ describe("TabStrip 放不下时折进“+N”", () => {
     expect(more()).toBeNull();
   });
 
-  it("[DESKTOP-WORKSPACE-63] 窄到放不下时，资源库标签先缩成只剩图标，悬停提示写“资源库”", () => {
+  it("[DESKTOP-WORKSPACE-63] 压窄（名字省略）就放得下时，不折叠、资源库也保留文字", () => {
+    rootWidth = 700 + 36; // 完整宽度 720 放不下，最窄 680 放得下
+    setup({ overflowLabel: text("更多标签页"), add: { label: text("新建"), onClick: () => {} } }, [
+      { ...six[0], shrinkToIcon: true } as TabStripItem,
+      ...six.slice(1),
+    ]);
+    expect(folded()).toEqual([]);
+    expect(more()).toBeNull();
+    expect(document.querySelector("[data-icon-only]")).toBeNull();
+    expect(document.querySelector("[data-shrunk]")).toBeTruthy();
+  });
+
+  it("[DESKTOP-WORKSPACE-63] 窄到压窄也放不下时，资源库标签先缩成只剩图标，悬停提示写“资源库”", () => {
     rootWidth = 120 * 5 + 36; // 六个标签差一点：缩掉资源库的文字就够了
     setup(
       {
