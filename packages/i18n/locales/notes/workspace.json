@@ -1,6 +1,17 @@
 {
+  "workspace.attached.title": {
+    "agent": "智能体的名称，来自命令行的启动记录，原样显示",
+    "ago": "相对时间，如“31 分钟前”，由格式化函数生成"
+  },
+  "workspace.attached.titlePlain.label": {
+    "ago": "相对时间，如“31 分钟前”，由格式化函数生成"
+  },
   "workspace.closeConfirm.title": {
     "name": "项目名，用户自己起的，不翻译"
+  },
+  "workspace.duration.hoursMinutes.label": {
+    "hours": "小时数，如“2 小时”",
+    "minutes": "分钟数，如“14 分钟”"
   },
   "workspace.files.nameExists.hint": {
     "name": "已存在的名字"
@@ -17,6 +28,18 @@
   },
   "workspace.files.trashFailed.hint": {
     "name": "文件或文件夹的名字（不含路径）"
+  },
+  "workspace.running.open.aria": {
+    "name": "项目名，用户自己起的，不翻译"
+  },
+  "workspace.running.sourceCli.label": {
+    "agent": "智能体的名称（如 Claude Code），来自命令行的启动记录，原样显示"
+  },
+  "workspace.running.stop.aria": {
+    "name": "项目名，用户自己起的，不翻译"
+  },
+  "workspace.running.uptime.label": {
+    "duration": "已运行的时长，由格式化函数生成，如“47 分钟”“2 小时 14 分钟”"
   },
   "workspace.tab.close.label": {
     "name": "项目名，用户自己起的，不翻译"

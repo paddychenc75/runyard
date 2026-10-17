@@ -62,7 +62,8 @@ export function AppShell({ bridge, library, settings }: AppShellProps) {
   // 用户关掉之后不再自动弹出
   const firstLoadHandled = useRef(false);
   useEffect(() => {
-    if (library === null || firstLoadHandled.current) return;
+    // 管理进程还没回话时的空列表不算“资源库是空的”：等第一次读完再判（#298）
+    if (library === null || !library.loaded || firstLoadHandled.current) return;
     firstLoadHandled.current = true;
     if (library.playgrounds.length === 0 && library.error === null) setPickerOpen(true);
   }, [library]);
@@ -149,6 +150,7 @@ export function AppShell({ bridge, library, settings }: AppShellProps) {
               tabs={tabs}
               activeTab={activeTab}
               running={runningCount(library?.playgrounds ?? [])}
+              runs={library?.runs ?? []}
               playgrounds={library?.playgrounds ?? []}
               activeTabRow={activeTabRow}
               sidebarVisible={sidebarVisible}

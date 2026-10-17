@@ -8,20 +8,21 @@ import {
   buildLibraryState,
   isActiveRun,
   latestRunByPlayground,
-  needsStopOnClose,
-  ownedActiveRun,
   previewUrlFor,
 } from "./build-library-state.ts";
+import { CliView, heldByCli } from "./cli-view.ts";
 import { ConsoleLogs } from "./console-logs.ts";
 import type { LibraryClient, LibraryControllerOptions, PreviewHost } from "./controller-hosts.ts";
 import { createPlayground } from "./create-playground.ts";
 import { toDesktopError } from "./desktop-error.ts";
 import { frameBeforeCrash } from "./last-frame.ts";
-import { readConfirmClose, readLibraryRoot } from "./library-root.ts";
+import { readLibraryRoot } from "./library-root.ts";
 import { PlaygroundEdits } from "./playground-edits.ts";
 import { ProjectSystem } from "./project-system.ts";
-import { classifyStartError } from "./start-error.ts";
+import { RunActions } from "./run-actions.ts";
+import { SessionTracker } from "./session-tracker.ts";
 import { StartTimeline } from "./start-timeline.ts";
+import { TabClose } from "./tab-close.ts";
 import { LIBRARY_TAB, WorkspaceTabs } from "./workspace-tabs.ts";
 
 // 窗口背后的逻辑：向管理进程要项目、模板、运行，转成界面看的状态；执行界面发来的动作。
@@ -31,7 +32,6 @@ export type { LibraryClient, PreviewHost, SystemActions } from "./controller-hos
 
 export class LibraryController {
   readonly #client: LibraryClient;
-  readonly #clientId: string;
   #locale: Locale;
   readonly #preview: PreviewHost;
   readonly #home: string;
@@ -44,25 +44,55 @@ export class LibraryController {
   #runs: RunSnapshot[] = [];
   #templates: TemplateRecord[] = [];
   readonly #workspace = new WorkspaceTabs();
-  #closeRequestId: string | null = null;
+  readonly #session: SessionTracker;
+  readonly #cliView: CliView;
+  /** 恢复出来但还没启动的标签页：切过去才启动（规格 DESKTOP-WORKSPACE-52） */
+  readonly #pendingStart = new Set<string>();
+  #loaded = false;
+  readonly #close: TabClose;
+  readonly #runActions: RunActions;
   readonly #console: ConsoleLogs;
   #error: DesktopError | null = null;
-  /** 启动请求失败时的错误（带缺工具的参数）；再次启动时清掉 */
   readonly #startErrors = new Map<string, DesktopError>();
-  /** 崩溃前截下的预览最后一帧 */
   readonly #lastFrames = new Map<string, string>();
   readonly edits: PlaygroundEdits;
   readonly system: ProjectSystem;
   #refreshing: Promise<void> | undefined;
   #refreshAgain = false;
-
   constructor(options: LibraryControllerOptions) {
     this.#client = options.client;
-    this.#clientId = options.clientId;
     this.#locale = options.locale;
     this.#preview = options.preview;
     this.#home = options.home;
     this.#now = options.now ?? Date.now;
+    const setError = (error: DesktopError | null): void => {
+      this.#error = error;
+    };
+    this.#session = new SessionTracker(options.session);
+    this.#cliView = new CliView(options.client, options.clientId);
+    this.#runActions = new RunActions(
+      {
+        client: options.client,
+        clientId: options.clientId,
+        kindOf: (id) => this.#playgrounds.find((playground) => playground.id === id)?.kind,
+        busy: this.#busy,
+        startErrors: this.#startErrors,
+        lastFrames: this.#lastFrames,
+        setError,
+        emit: () => this.#emit(),
+        refresh: () => this.refresh(),
+      },
+      this.#cliView,
+    );
+    this.#close = new TabClose({
+      client: options.client,
+      hasTab: (id) => this.#workspace.tabs.includes(id),
+      runs: () => this.#runs,
+      dropTab: (id) => this.#dropTab(id),
+      refresh: () => this.refresh(),
+      emit: () => this.#emit(),
+      fail: setError,
+    });
     this.#console = new ConsoleLogs(options.client);
     this.system = new ProjectSystem(options.system, (id) => this.folderOf(id));
     this.edits = new PlaygroundEdits(options.client, {
@@ -87,6 +117,39 @@ export class LibraryController {
       this.#error = toDesktopError(error);
     }
     await this.refresh();
+    await this.#restore();
+  }
+
+  /** 退出开始：之后不再覆盖已记下的标签页 */
+  freezeSession(): void {
+    this.#session.freeze();
+  }
+
+  // 恢复上次的标签页（规格 DESKTOP-WORKSPACE-51 至 54）：只启动当前显示的那个；
+  // 已被命令行运行起来的是查看画面，不另启动
+  async #restore(): Promise<void> {
+    const known = new Set(this.#playgrounds.map((playground) => playground.id));
+    const plan = this.#loaded ? await this.#session.plan(known) : null;
+    if (plan !== null) {
+      for (const id of plan.tabs) {
+        this.#workspace.open(id);
+        await this.#console.watch(id);
+      }
+      this.#workspace.select(plan.active);
+      for (const id of plan.pending) this.#pendingStart.add(id);
+      await this.#cliView.sync(this.#workspace.tabs, this.#runs);
+      await this.#startIfPending(this.#workspace.active);
+      this.#applyPreview();
+    }
+    this.#session.open();
+    this.#emit();
+  }
+
+  // 恢复出来没启动的标签页被切到才启动；已有进行中的运行（命令行启动的）就不再启动
+  async #startIfPending(id: string): Promise<void> {
+    if (!this.#pendingStart.delete(id)) return;
+    const run = latestRunByPlayground(this.#runs).get(id);
+    if (run === undefined || !isActiveRun(run.state)) await this.startRun(id);
   }
 
   /** 设置页改了语言或资源库位置：按新的重读、推给界面；旧位置的文件一个不碰（规格 DESKTOP-SETTINGS-03、06） */
@@ -105,13 +168,14 @@ export class LibraryController {
       tabIds: this.#workspace.tabs,
       activeTab: this.#workspace.active,
       busyIds: this.#busy,
-      closeRequestId: this.#closeRequestId,
+      closeRequestId: this.#close.requestId,
       error: this.#error,
       libraryRoot: this.#libraryRoot,
       startErrors: this.#startErrors,
       lastFrames: this.#lastFrames,
       home: this.#home,
       phases: (id) => this.#timeline.phases(id),
+      loaded: this.#loaded,
     });
   }
 
@@ -151,9 +215,23 @@ export class LibraryController {
     if (isNew) {
       // 先接上控制台再启动：安装和启动阶段的输出也要看得到（规格 DESKTOP-WORKSPACE-16）
       await this.#console.watch(playgroundId);
+      // 命令行已经在运行它：只查看，不启动，持有者仍是命令行（规格 DESKTOP-WORKSPACE-46、48）
+      if (heldByCli(playgroundId, this.#runs) !== null) {
+        await this.#cliView.sync(this.#workspace.tabs, this.#runs);
+        return;
+      }
       await this.startRun(playgroundId);
     }
   }
+
+  /** “改为由我管理”（规格 DESKTOP-WORKSPACE-49） */
+  async adoptRun(playgroundId: string): Promise<void> {
+    const held = heldByCli(playgroundId, this.#runs);
+    if (held !== null) await this.#runActions.adopt(held);
+  }
+
+  /** 运行视图的“全部停止”（规格 DESKTOP-WORKSPACE-45） */
+  stopAll = (): Promise<void> => this.#runActions.stopAll();
 
   /** “打开但不运行”（规格 DESKTOP-LIBRARY-VIEW-33）：已停止的只开标签页、不算一次使用；运行中的同“打开” */
   async openProjectWithoutRun(playgroundId: string): Promise<void> {
@@ -179,96 +257,16 @@ export class LibraryController {
 
   /** 启动（或标签页里点“运行”再次启动）；持有者始终是这个项目的标签页 */
   async startRun(playgroundId: string): Promise<void> {
-    this.#startErrors.delete(playgroundId);
-    this.#lastFrames.delete(playgroundId);
-    const kind = this.#playgrounds.find((playground) => playground.id === playgroundId)?.kind;
-    await this.#act(playgroundId, async () => {
-      // 标签页持有者：这个项目在本应用里的“标签页”就是它自己，运行随本连接的生死
-      const starting = this.#client.call("run.start", {
-        playground: playgroundId,
-        owner: { kind: "tab", clientId: this.#clientId, tabId: `tab-${playgroundId}` },
-        // 服务等到就绪或失败：失败的错误响应带参数（缺哪个工具等）；脚本没有就绪，只看状态
-        wait: kind === "oneshot" ? "none" : "ready",
-      });
-      if (kind === "oneshot") {
-        await starting;
-        return;
-      }
-      // 不等到就绪：运行条要立刻能点“停止”；立刻就有的错误赶得上这一轮，之后的由 #startSettled 记下
-      const settled = starting.then(
-        () => this.#startSettled(playgroundId),
-        (error: unknown) => this.#startSettled(playgroundId, error),
-      );
-      await Promise.race([settled, new Promise<void>((resolve) => setTimeout(resolve, 0))]);
-    });
+    this.#pendingStart.delete(playgroundId);
+    await this.#runActions.start(playgroundId);
   }
 
-  // 启动请求有了结果：失败的原因留给预览区的专门画面，其余错误照旧报在 error 里
-  async #startSettled(playgroundId: string, error?: unknown): Promise<void> {
-    const outcome = error === undefined ? null : classifyStartError(error);
-    if (outcome?.kind === "failure") this.#startErrors.set(playgroundId, outcome.error);
-    else if (outcome?.kind === "other") this.#error = outcome.error;
-    await this.refresh();
-  }
+  stopRun = (playgroundId: string): Promise<void> => this.#runActions.stop(playgroundId);
 
-  async stopRun(playgroundId: string): Promise<void> {
-    await this.#act(playgroundId, async () => {
-      await this.#client.call("run.stop", { playground: playgroundId });
-    });
-  }
-
-  /**
-   * 关闭项目标签（规格 DESKTOP-WORKSPACE-04、06、09、10）：只有“标签页持有、仍在进行”的运行
-   * 才需要确认，而且用户没勾过“不再提示”；已停止的和命令行持有的直接关。
-   */
-  async requestCloseTab(playgroundId: string): Promise<void> {
-    if (!this.#workspace.tabs.includes(playgroundId)) return;
-    if (ownedActiveRun(playgroundId, this.#runs) === null) {
-      await this.#closeNow(playgroundId);
-      return;
-    }
-    if (!(await readConfirmClose(this.#client))) {
-      await this.#closeNow(playgroundId);
-      return;
-    }
-    this.#closeRequestId = playgroundId;
-    this.#emit();
-  }
-
-  /** 确认关闭并停止；勾了“不再提示”就先记下（失败只报错，不拦着关） */
-  async confirmClose(playgroundId: string, dontAskAgain: boolean): Promise<void> {
-    if (this.#closeRequestId !== playgroundId) return;
-    this.#closeRequestId = null;
-    if (dontAskAgain) {
-      try {
-        await this.#client.call("settings.set", { confirmCloseRunningTab: false });
-      } catch (error) {
-        this.#error = toDesktopError(error);
-      }
-    }
-    await this.#closeNow(playgroundId);
-  }
-
-  /** 取消：弹窗关掉，标签和运行都不动，勾选也不记 */
-  cancelClose(): void {
-    if (this.#closeRequestId === null) return;
-    this.#closeRequestId = null;
-    this.#emit();
-  }
-
-  // 先把标签去掉（界面立刻响应），再停它持有的运行；停止的时限由管理进程保证（run/ownership）
-  async #closeNow(playgroundId: string): Promise<void> {
-    const owned = needsStopOnClose(playgroundId, this.#runs);
-    if (!this.#dropTab(playgroundId)) return;
-    if (owned) {
-      try {
-        await this.#client.call("run.stop", { playground: playgroundId });
-      } catch (error) {
-        this.#error = toDesktopError(error);
-      }
-    }
-    await this.refresh();
-  }
+  requestCloseTab = (id: string): Promise<void> => this.#close.request(id);
+  confirmClose = (id: string, dontAskAgain: boolean): Promise<void> =>
+    this.#close.confirm(id, dontAskAgain);
+  cancelClose = (): void => this.#close.cancel();
 
   /** 去掉标签并放掉预览和控制台，不碰运行 */
   #dropTab(playgroundId: string): boolean {
@@ -285,6 +283,8 @@ export class LibraryController {
     this.#console.unwatch(id);
     this.#startErrors.delete(id);
     this.#lastFrames.delete(id);
+    this.#pendingStart.delete(id);
+    this.#cliView.forget(id);
   }
 
   folderOf(playgroundId: string): string | null {
@@ -295,6 +295,7 @@ export class LibraryController {
     this.#workspace.select(id);
     this.#applyPreview();
     this.#emit();
+    void this.#startIfPending(id);
   }
 
   /** 新建弹窗的“创建并运行”（规格 DESKTOP-CREATE-FLOW-11）：创建失败原样交回弹窗，不动全局错误；运行失败不算创建失败 */
@@ -309,23 +310,6 @@ export class LibraryController {
     return { ok: true };
   }
 
-  async #act(busyId: string | undefined, action: () => Promise<void>): Promise<void> {
-    if (busyId !== undefined) {
-      if (this.#busy.has(busyId)) return;
-      this.#busy.add(busyId);
-    }
-    this.#error = null;
-    this.#emit();
-    try {
-      await action();
-    } catch (error) {
-      this.#error = toDesktopError(error);
-    } finally {
-      if (busyId !== undefined) this.#busy.delete(busyId);
-    }
-    await this.refresh();
-  }
-
   async #readAll(): Promise<void> {
     try {
       const [playgrounds, runs, templates] = await Promise.all([
@@ -338,6 +322,7 @@ export class LibraryController {
       this.#playgrounds = playgrounds;
       this.#runs = runs;
       this.#templates = templates;
+      this.#loaded = true;
       const removed = this.#workspace.retain(
         new Set(playgrounds.map((playground) => playground.id)),
       );
@@ -345,11 +330,17 @@ export class LibraryController {
         this.#timeline.forget(id);
         this.#dropProject(id);
       }
-      if (this.#closeRequestId !== null && !this.#workspace.tabs.includes(this.#closeRequestId)) {
-        this.#closeRequestId = null;
-      }
+      const requested = this.#close.requestId;
+      if (requested !== null && !this.#workspace.tabs.includes(requested))
+        this.#close.requestId = null;
     } catch (error) {
       this.#error = toDesktopError(error);
+    }
+    // 命令行刚启动了某个已打开标签页的项目：它就成了查看画面（规格 DESKTOP-WORKSPACE-54）
+    await this.#cliView.sync(this.#workspace.tabs, this.#runs);
+    for (const id of [...this.#pendingStart]) {
+      const run = latestRunByPlayground(this.#runs).get(id);
+      if (run !== undefined && isActiveRun(run.state)) this.#pendingStart.delete(id);
     }
     this.#applyPreview();
     this.#emit();
@@ -390,5 +381,13 @@ export class LibraryController {
   #emit(): void {
     const state = this.getState();
     for (const listener of this.#listeners) listener(state);
+    // 标签页一变就记下；没启动的恢复标签页仍算“上次在运行”
+    this.#session.record({
+      tabs: state.tabs.map((tab) => ({
+        id: tab.id,
+        running: tab.active || this.#pendingStart.has(tab.id),
+      })),
+      active: state.activeTab,
+    });
   }
 }

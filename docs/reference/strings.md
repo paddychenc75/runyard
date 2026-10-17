@@ -241,6 +241,7 @@
 | desktop.rerun.action | 重新运行 | Run again | — |
 | desktop.run.action | 运行 | Run | — |
 | desktop.runbar.aria | 运行条 | Run bar | — |
+| desktop.runbar.cliHint.label | 由命令行启动，关闭标签页不会停止 | Started from the CLI; closing the tab will not stop it | — |
 | desktop.runbar.closeHint.label | 关闭标签页即停止 | Stops when the tab closes | — |
 | desktop.runbar.missing.label | 缺少 {tool} | {tool} is missing | tool：工具标识，如 go、node |
 | desktop.runbar.state.label | {state} :{port} | {state} :{port} | state：运行状态的名字，来自 runState.<状态>；port：端口号，纯数字字符串（不加千分位） |
@@ -566,12 +567,19 @@
 | settings.theme.title | 主题 | Theme | — |
 | settings.updateCheck.hint | 每天一次，只访问 GitHub 的公开发布页，不发送任何标识 | Once a day, reads the public GitHub releases page only and sends no identifier | — |
 | settings.updateCheck.title | 自动检查更新 | Check for updates automatically | — |
+| workspace.attached.adopt.action | 改为由我管理 | Manage it myself | — |
+| workspace.attached.aria | 命令行启动的运行 | Run started from the command line | — |
+| workspace.attached.hint | 改为由我管理后，关闭标签页就会停止它。不改的话，它空闲一段时间后会自动停止。 | Once you manage it, closing the tab stops it. Otherwise it stops by itself after a while idle. | — |
+| workspace.attached.stop.action | 停止 | Stop | — |
+| workspace.attached.title | 这个项目由 {agent} 在 {ago} 通过命令行启动。 | {agent} started this playground from the command line {ago}. | agent：智能体的名称，来自命令行的启动记录，原样显示；ago：相对时间，如“31 分钟前”，由格式化函数生成 |
+| workspace.attached.titlePlain.label | 这个项目在 {ago} 通过命令行启动。 | This playground was started from the command line {ago}. | ago：相对时间，如“31 分钟前”，由格式化函数生成 |
 | workspace.closeConfirm.body | 关闭标签页会停止这个项目。代码和文件不受影响，下次打开会重新运行。 | Closing the tab stops this playground. Your code and files are not affected, and it runs again the next time you open it. | — |
 | workspace.closeConfirm.cancel.action | 取消 | Cancel | — |
 | workspace.closeConfirm.confirm.action | 关闭并停止 | Close and stop | — |
 | workspace.closeConfirm.optOut.hint | 以后关闭标签页直接停止。可以在“设置 › 编辑与运行”里重新打开提示。 | Tabs will then close and stop right away. You can turn the prompt back on in Settings › Editing and running. | — |
 | workspace.closeConfirm.optOut.label | 不再提示 | Don’t ask again | — |
 | workspace.closeConfirm.title | 关闭 {name} 并停止运行？ | Close {name} and stop it? | name：项目名，用户自己起的，不翻译 |
+| workspace.duration.hoursMinutes.label | {hours} {minutes} | {hours} {minutes} | hours：小时数，如“2 小时”；minutes：分钟数，如“14 分钟” |
 | workspace.files.add.aria | 在项目根新建 | New at the playground root | — |
 | workspace.files.collapse.label | 收起文件树 | Hide file tree | — |
 | workspace.files.create.aria | 新文件或文件夹的名称 | Name of the new file or folder | — |
@@ -599,5 +607,17 @@
 | workspace.resize.hint | 拖动调整大小，双击恢复默认 | Drag to resize, double-click to reset | — |
 | workspace.resize.preview.label | 调整预览宽度 | Resize preview | — |
 | workspace.resize.tree.label | 调整文件树宽度 | Resize file tree | — |
+| workspace.running.aria | 运行中的项目 | Running playgrounds | — |
+| workspace.running.footer.hint | 标签页打开的，关闭标签页即停止；命令行启动的，空闲后自动停止，也可以在这里停止。 | Started from a tab: stops when the tab closes. Started from the command line: stops automatically when idle, or stop it here. | — |
+| workspace.running.idle.hint | 空闲后自动停止 | Stops automatically when idle | — |
+| workspace.running.open.aria | 查看 {name} | View {name} | name：项目名，用户自己起的，不翻译 |
+| workspace.running.sourceCli.label | 命令行 · {agent} | CLI · {agent} | agent：智能体的名称（如 Claude Code），来自命令行的启动记录，原样显示 |
+| workspace.running.sourceCliPlain.label | 命令行 | CLI | — |
+| workspace.running.sourceTab.label | 标签页 | Tab | — |
+| workspace.running.stop.action | 停止 | Stop | — |
+| workspace.running.stop.aria | 停止 {name} | Stop {name} | name：项目名，用户自己起的，不翻译 |
+| workspace.running.stopAll.action | 全部停止 | Stop all | — |
+| workspace.running.title | 运行中 | Running | — |
+| workspace.running.uptime.label | 已运行 {duration} | Up {duration} | duration：已运行的时长，由格式化函数生成，如“47 分钟”“2 小时 14 分钟” |
 | workspace.tab.close.label | 关闭 {name} | Close {name} | name：项目名，用户自己起的，不翻译 |
 | workspace.tabs.aria | 标签页 | Tabs | — |

@@ -53,6 +53,10 @@ export interface DesktopMethods extends EditorFileMethods, SettingsMethods {
   "library.get": { param: undefined; result: LibraryState };
   "run.start": { param: string; result: undefined };
   "run.stop": { param: string; result: undefined };
+  /** 运行视图的“全部停止”（规格 DESKTOP-WORKSPACE-45）：停止全部运行，标签页留着显示已停止 */
+  "run.stopAll": { param: undefined; result: undefined };
+  /** “改为由我管理”（规格 DESKTOP-WORKSPACE-49）：命令行持有的运行改由这个项目的标签页持有，不重启 */
+  "run.adopt": { param: string; result: undefined };
   /** 打开项目：新开标签并启动运行（持有者是这个标签）；已开着的只切换 */
   "tab.open": { param: string; result: undefined };
   /** “打开但不运行”（规格 DESKTOP-LIBRARY-VIEW-33）：已停止的只开标签页、不启动、不算一次使用；运行中的同 tab.open */
@@ -106,6 +110,8 @@ export const desktopMethodNames: readonly DesktopMethod[] = [
   "library.get",
   "run.start",
   "run.stop",
+  "run.stopAll",
+  "run.adopt",
   "tab.open",
   "tab.select",
   "tab.openWithoutRun",

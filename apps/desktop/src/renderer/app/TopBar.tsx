@@ -7,12 +7,13 @@ import {
   type TabStripItem,
   UserText,
 } from "@runyard/ui";
-import type { RefObject } from "react";
+import { type RefObject, useCallback, useState } from "react";
 import type { BootstrapInfo, DesktopBridge } from "../../shared/desktop-bridge.ts";
-import type { PlaygroundRow, TabRow } from "../../shared/library-state.ts";
+import type { PlaygroundRow, RunningRow, TabRow } from "../../shared/library-state.ts";
 import { useFlushProject } from "../features/editor/EditorWorkspace.tsx";
 import { PaneToggleButton } from "./PaneToggleButton.tsx";
 import { RunBar } from "./RunBar.tsx";
+import { RunningPopover } from "./RunningPopover.tsx";
 import { SearchBox } from "./SearchBox.tsx";
 import styles from "./TopBar.module.css";
 
@@ -24,6 +25,8 @@ export interface TopBarProps {
   activeTab: string;
   /** 正在运行的项目数：标签页持有的和命令行持有的都算 */
   running: number;
+  /** 运行视图（点“N 个运行中”）列出的运行 */
+  runs: readonly RunningRow[];
   /** 资源库里的全部项目：运行条的“更多”菜单用 */
   playgrounds: readonly PlaygroundRow[];
   /** 当前的项目标签；在资源库时是 undefined，不显示运行条 */
@@ -45,13 +48,14 @@ export interface TopBarProps {
 // 顶栏：标签条里资源库固定在第一位、不能关闭（规格 desktop/workspace 的 DESKTOP-WORKSPACE-03），
 // 后面是打开的项目标签，名字前是运行状态的小圆点。项目标签有关闭钮和 ⌘W（#174，
 // 运行中的会先出确认对话框，见 CloseConfirmDialog）。右边是“N 个运行中”
-// （点开运行视图随 #186）；当前标签是资源库时左边是搜索框（#181），是项目时多一条运行条（#176）；最右是“新建”（#173，打开模板选择器）。
+// （点开是运行视图 RunningPopover，#186）；当前标签是资源库时左边是搜索框（#181），是项目时多一条运行条（#176）；最右是“新建”（#173，打开模板选择器）。
 export function TopBar({
   bridge,
   modKey,
   tabs,
   activeTab,
   running,
+  runs,
   playgrounds,
   activeTabRow,
   onNew,
@@ -65,6 +69,8 @@ export function TopBar({
 }: TopBarProps) {
   const t = useT();
   const flushProject = useFlushProject();
+  const [listOpen, setListOpen] = useState(false);
+  const closeList = useCallback(() => setListOpen(false), []);
   const items: TabStripItem[] = [
     { id: "library", label: t("library.tab.title"), icon: "grid" },
     ...tabs.map(
@@ -107,14 +113,30 @@ export function TopBar({
       ) : (
         <RunBar bridge={bridge} tab={activeTabRow} playgrounds={playgrounds} />
       )}
-      <GlassSurface material="toolbar" className={styles.running}>
-        <StatusMark status={running > 0 ? "running" : "stopped"} />
-        <span>
-          {running > 0
-            ? t("library.topbar.running.label", { count: running })
-            : t("library.topbar.idle.label")}
-        </span>
-      </GlassSurface>
+      <div className={styles.runningWrap}>
+        <GlassSurface
+          material="toolbar"
+          className={styles.running}
+          data-open={listOpen || undefined}
+        >
+          <button
+            type="button"
+            className={styles.runningButton}
+            data-running-toggle=""
+            aria-haspopup="dialog"
+            aria-expanded={listOpen}
+            onClick={() => setListOpen((open) => !open)}
+          >
+            <StatusMark status={running > 0 ? "running" : "stopped"} />
+            <span>
+              {running > 0
+                ? t("library.topbar.running.label", { count: running })
+                : t("library.topbar.idle.label")}
+            </span>
+          </button>
+        </GlassSurface>
+        {listOpen ? <RunningPopover bridge={bridge} runs={runs} onClose={closeList} /> : null}
+      </div>
       <Button variant="primary" icon="plus" className={styles.new} onClick={onNew}>
         {t("desktop.create.title")}
       </Button>

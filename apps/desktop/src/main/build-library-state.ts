@@ -10,6 +10,7 @@ import type {
   DesktopError,
   LibraryState,
   PlaygroundRow,
+  RunningRow,
   StartPhaseMs,
   TabRow,
   TabStatus,
@@ -54,6 +55,8 @@ export interface LibraryInputs {
   lastFrames?: ReadonlyMap<string, string>;
   /** 主目录，把项目文件夹显示成 ~/…；不给就原样显示 */
   home?: string;
+  /** 第一次读完资源库了没有；不给按已读完算 */
+  loaded?: boolean;
   /** 启动清单各步的用时（项目 id → 用时） */
   phases?: (playgroundId: string) => StartPhaseMs;
 }
@@ -128,6 +131,7 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
       missing: playground.missingSince !== undefined,
     };
   });
+  const rowById = new Map(rows.map((row) => [row.id, row]));
   const playgrounds = [...rows].sort(compareRows);
   const entries = new Map(
     inputs.playgrounds.map((playground) => [playground.id, playground.entry]),
@@ -155,6 +159,7 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
       failure: failureOf(row, run, inputs.startErrors?.get(row.id)),
       portFallback: portFallbackOf(row.active ? run : undefined),
       lastFrame: run?.state === "crashed" ? (inputs.lastFrames?.get(row.id) ?? null) : null,
+      attached: attachedOf(run),
       entry: entries.get(row.id) ?? null,
       folder: inputs.home === undefined ? row.path : displayPath(row.path, inputs.home),
       phaseMs: inputs.phases?.(row.id) ?? { copy: null, install: null, start: null },
@@ -179,11 +184,43 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
     tabs,
     activeTab: inputs.activeTab,
     templates,
+    runs: runningRows(inputs.runs, (id) => rowById.get(id)?.templateName ?? null),
+    loaded: inputs.loaded ?? true,
     recentTemplates: recentTemplateIds(inputs.playgrounds, templates),
     closeRequest: closeRequestOf(inputs.closeRequestId ?? null, rows),
     error: inputs.error,
     libraryRoot: inputs.libraryRoot ?? "",
   };
+}
+
+function attachedOf(run: RunSnapshot | undefined): TabRow["attached"] {
+  if (run === undefined || run.owner.kind !== "cli" || !isActiveRun(run.state)) return null;
+  return { agent: run.owner.agent ?? null, startedAt: run.startedAt };
+}
+
+/** 运行视图的列表：仍在进行的运行，标签页持有的在前，同类按开始先后；已结束的脚本不列出 */
+export function runningRows(
+  runs: readonly RunSnapshot[],
+  templateOf: (playgroundId: string) => TemplateRecord["name"] | null,
+): RunningRow[] {
+  const rows = runs
+    .filter((run) => isActiveRun(run.state))
+    .map(
+      (run): RunningRow => ({
+        runId: run.runId,
+        id: run.playgroundId,
+        name: run.name,
+        templateName: templateOf(run.playgroundId),
+        port: run.port ?? null,
+        startedAt: run.startedAt,
+        source:
+          run.owner.kind === "tab"
+            ? { kind: "tab" }
+            : { kind: "cli", agent: run.owner.agent ?? null },
+      }),
+    );
+  const rank = (row: RunningRow) => (row.source.kind === "tab" ? 0 : 1);
+  return rows.sort((a, b) => rank(a) - rank(b) || a.startedAt - b.startedAt);
 }
 
 function closeRequestOf(

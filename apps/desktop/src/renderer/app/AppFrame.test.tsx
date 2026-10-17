@@ -56,6 +56,8 @@ const state: LibraryState = {
       unmaintained: false,
     },
   ],
+  runs: [],
+  loaded: true,
   recentTemplates: [],
   tabs: [],
   activeTab: "library",

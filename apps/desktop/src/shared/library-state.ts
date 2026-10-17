@@ -83,6 +83,11 @@ export interface TabRow {
   portFallback: TabPortFallback | null;
   /** 崩溃前预览的最后一帧（PNG 的 data 地址）；没有是 null */
   lastFrame: string | null;
+  /**
+   * 最近一次运行由命令行持有且仍在进行：标签页只是查看它（规格 DESKTOP-WORKSPACE-48）；
+   * 不是时为 null。agent 是智能体名称，命令行没写就是 null
+   */
+  attached: { agent: string | null; startedAt: number } | null;
   /** 入口文件（项目内相对路径）：第一次打开项目时编辑器先打开它；项目没有记录是 null */
   entry: string | null;
   /** 项目文件夹的显示写法（主目录缩成 ~），启动进度画面的说明里用 */
@@ -105,6 +110,19 @@ export interface TabPortFallback {
   reason: PortFallbackReason;
   /** 占用者；查不到是 null */
   occupant: { pid: number; name: string } | null;
+}
+
+/** 运行视图（“N 个运行中”弹层）里的一行：一个仍在进行的运行 */
+export interface RunningRow {
+  runId: string;
+  /** 项目 id */
+  id: string;
+  name: string;
+  templateName: LocalizedText | null;
+  port: number | null;
+  startedAt: number;
+  /** 来源：标签页，或命令行（带智能体名称，没写是 null）；命令行持有的“空闲后自动停止” */
+  source: { kind: "tab" } | { kind: "cli"; agent: string | null };
 }
 
 export interface TemplateRow {
@@ -130,6 +148,10 @@ export interface LibraryState {
   /** 当前标签："library" 或项目 id */
   activeTab: string;
   templates: TemplateRow[];
+  /** 仍在进行的运行（标签页和命令行持有的），标签页持有的在前；已结束的脚本不在其中 */
+  runs: RunningRow[];
+  /** 第一次从管理进程读到资源库之后为 true；之前的空列表不代表资源库是空的（#298） */
+  loaded: boolean;
   /** 最近用来创建过项目的模板 id，最近的在前、不重复；只含此刻仍在 templates 里的 */
   recentTemplates: string[];
   /** 正在等用户确认的“关闭运行中的标签页”；没有是 null（规格 DESKTOP-WORKSPACE-04） */

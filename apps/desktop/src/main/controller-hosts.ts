@@ -31,6 +31,19 @@ export interface SystemActions {
   openExternal(url: string): void;
 }
 
+/** 上次退出时的标签页（规格 DESKTOP-WORKSPACE-51）：按顺序，running 是当时是否在运行（切过去时是否要启动） */
+export interface SavedSession {
+  tabs: { id: string; running: boolean }[];
+  /** 当前显示的标签："library" 或项目 id */
+  active: string;
+}
+
+/** 标签页的存放处；读不到或坏了就当没有，存失败不影响使用 */
+export interface SessionStore {
+  load(): Promise<SavedSession | null>;
+  save(session: SavedSession): Promise<void>;
+}
+
 /** 控制器用到的客户端的那一小部分 */
 export type LibraryClient = Pick<RunyardClient, "call" | "subscribe" | "followLogs">;
 
@@ -43,6 +56,8 @@ export interface LibraryControllerOptions {
   system: SystemActions;
   /** 主目录（用来把资源库路径显示成 ~/…）；开发时 --root 给的目录算主目录 */
   home: string;
+  /** 恢复和记住标签页；不给就不恢复（测试和冒烟） */
+  session?: SessionStore;
   /** 毫秒时钟；启动清单各步的用时靠它量，测试里换成假的 */
   now?: () => number;
 }
