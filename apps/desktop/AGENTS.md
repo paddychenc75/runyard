@@ -26,7 +26,7 @@ pnpm --filter @runyard/desktop smoke             # 冒烟自检：窗口不显�
 - 只有本包可以导入 `electron`（技术设计 §3.2 规则 1）。界面（`src/renderer/`）没有 Node 接口，也不许导入 `electron`、`client`、`platform`、`core`、`supervisor`；预加载脚本只转发。由 Biome 的 `noRestrictedImports`、`noNodejsModules` 和界面单独的 `tsconfig.renderer.json`（DOM、没有 Node 类型）拦住。可导入的包的唯一出处是 `tooling/checks/layers.json`。
 - 单实例：同一份用户数据目录只许一个应用进程，第二次启动直接退出，由已有的进程聚焦窗口（`main/integration/single-instance.ts`）。用户数据目录显式设置（`integration/user-data.ts`）：正式 `Runyard`，从源码运行 `Runyard-dev`，指定 `--root` 时放在 `<root>/.runyard/app-data`；因此不同 `--root` 的试验窗口与正在用的窗口互不抢锁、互不混数据。
 - 关窗口（规格 desktop/workspace「关闭窗口与退出应用」）：macOS 上关窗口只是藏起来，应用和运行继续，点 Dock 图标再显示；其他系统关掉最后一个窗口就退出（`integration/window-lifecycle.ts`）。
-- 退出：第一次退出请求先 `session.bye`，道别期间的再次请求只拦下（`quit-coordinator.ts`，决策记录 0005）。
+- 退出（规格 DESKTOP-WORKSPACE-24）：⌘Q 的第一次退出请求先 `session.bye`（管理进程停掉本连接名下的标签页运行、命令行持有的不动，最多等 5 秒），道别期间的再次请求只拦下，不重复道别也不二次 `app.quit()`；道别 7 秒没回复也照样退出，不让 ⌘Q 失灵。接线在 `quit-coordinator.ts` 的 `registerQuitFlow`，要在窗口生命周期之后登记（决策记录 0005）。连不上管理进程时没有这条流程，退出直接放行。
 - 外壳版面：侧栏、顶栏、列表的尺寸只在 `shared/layout.ts` 写一次（留白和胶囊高度取自设计变量），界面把它们写成 `--layout-*`；macOS 用 `hiddenInset` 标题栏，红黄绿画在侧栏顶上（`integration/main-window.ts`）。
 - 窗口：`contextIsolation` 开、`sandbox` 开、`nodeIntegration` 关；界面只从 `app://runyard/` 加载打包好的文件（`app-protocol.ts` 只许落在界面目录内），页面带内容安全策略；主进程只响应来自这个地址的 IPC 发送者。
 - 预览（技术设计 §6.1、§6.5）：每个有页面的标签页一个 `WebContentsView`（`preview-view.ts`），沙箱、没有预加载脚本、没有 Node，独立的内存存储分区；页面就绪才创建，没就绪、停止、崩溃时销毁，界面的占位区显示说明；切到资源库或别的标签只是摘下视图、保留着（“只保留最近 3 个”的优化以后做）。导航判断在 `preview-policy.ts`：只许 `http://127.0.0.1:<端口>`，其他网页链接交给系统浏览器、预览不跳转，别的协议（`mailto:`、`runyard://`、`file:`）拦下；权限默认拒绝，只放行剪贴板。位置不在主进程算：界面的 `PreviewSlot`（`renderer/widgets/`）用 `ResizeObserver` 实测自己的矩形，经 `preview.bounds` 报来，主进程据此摆视图。
