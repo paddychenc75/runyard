@@ -2,7 +2,7 @@
 .workbench {
   display: grid;
   /* 列表列定宽：用 auto 的话，新增一个名字更长的组件就会挤窄右边的状态表，所有基准图的宽度和折行跟着变 */
-  grid-template-columns: 130px minmax(0, 1fr);
+  grid-template-columns: 130px 1fr;
   grid-template-rows: auto 1fr;
   min-block-size: 100vh;
 }
