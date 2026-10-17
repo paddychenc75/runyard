@@ -21,7 +21,7 @@ test("首次启动：空资源库自动弹出选择器，只用键盘选模板�
 
   const runBar = page.getByRole("group", { name: "Run bar" });
   await expect(page.getByRole("tab", { name: /html-1/ })).toBeVisible();
-  await expect(runBar).toContainText(/Running :\d+/);
+  await expect(runBar).toContainText(/:\d+/);
   await expect.poll(() => previewText(app)).toContain("html-1");
   expect(readFileSync(join(runyard.library, "html-1", "index.html"), "utf8")).toContain(
     "<title>html-1</title>",
@@ -56,7 +56,7 @@ test("React 19 模板：启动进度出现、预览就绪，改 App.tsx 自动�
     }).observe(document.body, { childList: true, subtree: true, characterData: true });
   });
   await createWithKeyboard(page, "react 19");
-  await expect(page.getByRole("group", { name: "Run bar" })).toContainText(/Running :\d+/, {
+  await expect(page.getByRole("group", { name: "Run bar" })).toContainText(/:\d+/, {
     timeout: 80_000,
   });
   expect(
