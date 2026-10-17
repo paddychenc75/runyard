@@ -247,10 +247,44 @@ export type CatalogMessages = {
   "desktop.crashed.title": {
     exitCode: string | number;
   };
+  "desktop.create.autoClean.label": Record<never, never>;
+  "desktop.create.autoCleanOff.hint": Record<never, never>;
+  "desktop.create.autoCleanOff.label": Record<never, never>;
+  "desktop.create.autoCleanOn.hint": Record<never, never>;
+  "desktop.create.cancel.action": Record<never, never>;
+  "desktop.create.changeTemplate.action": Record<never, never>;
+  "desktop.create.cleanAfter.label": Record<never, never>;
+  "desktop.create.cleanSummary.hint": {
+    days: number;
+  };
+  "desktop.create.custom.label": Record<never, never>;
+  "desktop.create.customDays.label": Record<never, never>;
+  "desktop.create.customDaysInvalid.hint": Record<never, never>;
+  "desktop.create.days.label": {
+    days: number;
+  };
+  "desktop.create.dialog.title": Record<never, never>;
+  "desktop.create.enter.hint": Record<never, never>;
+  "desktop.create.folder.hint": {
+    code: (chunks: string[]) => string;
+    path: string | number;
+  };
+  "desktop.create.name.label": Record<never, never>;
+  "desktop.create.nameInvalid.hint": Record<never, never>;
+  "desktop.create.nameTaken.hint": Record<never, never>;
+  "desktop.create.newProject.action": Record<never, never>;
+  "desktop.create.note.label": Record<never, never>;
+  "desktop.create.note.placeholder": Record<never, never>;
+  "desktop.create.optional.label": Record<never, never>;
+  "desktop.create.submit.action": Record<never, never>;
+  "desktop.create.template.label": {
+    name: string | number;
+  };
   "desktop.create.title": Record<never, never>;
   "desktop.duration.seconds.label": {
     seconds: string | number;
   };
+  "desktop.empty.templates.hint": Record<never, never>;
   "desktop.error.title.label": {
     title: string | number;
   };

@@ -21,3 +21,12 @@
   block-size: var(--size-tile-lg);
   background: var(--color-bg-raised);
 }
+
+.root[data-size="xl"] {
+  inline-size: var(--size-dialog-icon);
+  block-size: var(--size-dialog-icon);
+  border-radius: var(--radius-row);
+  background: var(--color-bg-raised);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line-height);
+}

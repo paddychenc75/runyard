@@ -15,6 +15,7 @@ export const samples: readonly FixtureSample[] = [
       <FixtureStack>
         <MonogramTile letters="Re" />
         <MonogramTile letters="TS" size="lg" />
+        <MonogramTile letters="Re" size="xl" />
       </FixtureStack>
     ),
   },

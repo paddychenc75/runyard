@@ -1,0 +1,39 @@
+/* 分段选择：轨道内边距 2、圆角 11，每段高 28、圆角 9；选中段浅色是白块带投影，深色是提亮的填充 */
+.root {
+  display: flex;
+  flex: none;
+  padding: var(--space-1);
+  border-radius: calc(var(--radius-control) + var(--space-1));
+  background: var(--color-fill-neutral);
+}
+
+.segment {
+  box-sizing: border-box;
+  block-size: var(--size-control-sm);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--size-control-padding-md);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--color-text-secondary-strong);
+  font-family: inherit;
+  font-size: var(--text-body-size);
+  font-weight: var(--text-body-weight);
+  line-height: var(--text-body-line-height);
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  outline: none;
+}
+
+.segment[data-pressed] {
+  background: var(--color-bg-raised);
+  box-shadow: var(--shadow-segment-selected);
+  color: var(--color-text-primary);
+  font-weight: var(--text-item-weight);
+}
+
+.segment:focus-visible {
+  box-shadow: var(--shadow-focus-ring);
+}

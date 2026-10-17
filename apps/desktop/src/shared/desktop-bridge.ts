@@ -1,7 +1,7 @@
 import type { Locale } from "@runyard/i18n";
 import type { ConsoleAppend, ConsoleLine } from "./console-state.ts";
 import type { Bounds } from "./layout.ts";
-import type { LibraryState } from "./library-state.ts";
+import type { DesktopError, LibraryState } from "./library-state.ts";
 
 // 预加载脚本交给界面的窄接口，只有三样：同步的启动信息 bootstrap、按名字调用的 call、订阅事件的 on。
 // 方法名和事件名是白名单（下面两张表）；界面发不出表外的消息，也拿不到 ipcRenderer。
@@ -13,6 +13,17 @@ export const desktopChannels = {
   event: "desktop:event",
 } as const;
 
+/** 新建弹窗交上来的内容；主进程不信任它，逐项校验 */
+export interface CreateRequest {
+  template: string;
+  name: string;
+  /** 没写是空串 */
+  note: string;
+  /** 自动清理的天数；关闭（已保留）是 null */
+  autoClean: number | null;
+}
+export type CreateResult = { ok: true } | { ok: false; error: DesktopError };
+
 /** 界面可以调用的方法：参数类型与返回类型 */
 export interface DesktopMethods {
   "library.get": { param: undefined; result: LibraryState };
@@ -22,7 +33,8 @@ export interface DesktopMethods {
   "tab.open": { param: string; result: undefined };
   /** 切到资源库（"library"）或已打开的项目标签 */
   "tab.select": { param: string; result: undefined };
-  "playground.create": { param: string; result: undefined };
+  /** 新建弹窗的“创建并运行”：创建项目、打开它的标签页并运行；失败（重名、不合法……）原样交回给弹窗显示在名称下 */
+  "playground.create": { param: CreateRequest; result: CreateResult };
   /** 请求关闭项目标签（关闭钮、⌘W）：运行中且由标签持有时先出确认（状态里的 closeRequest），否则直接关 */
   "tab.close": { param: string; result: undefined };
   /** 确认关闭并停止；dontAskAgain 为真就记住“不再提示” */

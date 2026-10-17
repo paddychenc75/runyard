@@ -33,6 +33,7 @@ const library = (extra: Partial<LibraryState> = {}): LibraryState => ({
   recentTemplates: [],
   tabs: [],
   activeTab: "library",
+  libraryRoot: "~/Runyard",
   playgrounds: [],
   ...extra,
 });
@@ -58,7 +59,10 @@ const existing: PlaygroundRow = {
 };
 
 function setup(state: LibraryState) {
-  const call = vi.fn(async (method: string) => (method === "library.get" ? state : undefined));
+  const call = vi.fn(async (method: string) => {
+    if (method === "library.get") return state;
+    return method === "playground.create" ? { ok: true } : undefined;
+  });
   const listeners = new Map<string, () => void>();
   const bridge = {
     bootstrap: {
@@ -95,8 +99,22 @@ describe("模板选择器", () => {
     const dialog = await screen.findByRole("dialog", { name: "选择模板" });
     expect(dialog).toBeTruthy();
     await user.keyboard("{Enter}");
-    expect(call).toHaveBeenCalledWith("playground.create", "html");
-    expect(screen.queryByRole("dialog")).toBeNull();
+    // 选择器关闭，换成新建弹窗；选择器自己什么都不创建
+    expect(call).not.toHaveBeenCalledWith("playground.create", expect.anything());
+    expect(screen.queryByRole("dialog", { name: "选择模板" })).toBeNull();
+    const created = await screen.findByRole("dialog", { name: "新建项目" });
+    expect(within(created).getByText("模板：html")).toBeTruthy();
+    // 初始焦点在下一帧才落到名称框
+    await vi.waitFor(() =>
+      expect(document.activeElement).toBe(within(created).getByRole("textbox", { name: "名称" })),
+    );
+    await user.keyboard("{Enter}");
+    expect(call).toHaveBeenCalledWith("playground.create", {
+      template: "html",
+      name: "html-1",
+      note: "",
+      autoClean: null,
+    });
   });
 
   it("有项目的资源库首次启动不自动弹出选择器", async () => {
@@ -112,9 +130,9 @@ describe("模板选择器", () => {
     const option = screen.getByRole("option", { name: /python/ });
     expect(option.getAttribute("aria-disabled")).toBeNull();
     await user.click(option);
-    expect(call).toHaveBeenCalledWith("playground.create", "python");
+    await screen.findByRole("dialog", { name: "新建项目" });
     for (const [method] of call.mock.calls) {
-      expect(["library.get", "playground.create"]).toContain(method);
+      expect(method).toBe("library.get");
     }
   });
 
@@ -153,8 +171,14 @@ describe("模板选择器", () => {
     await screen.findByRole("dialog");
     // html 是第一行；页面分组一个，再往下两行是 react19
     await user.keyboard("{ArrowDown}{Enter}");
-    expect(call).toHaveBeenCalledWith("playground.create", "react19");
-    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(call).not.toHaveBeenCalledWith("playground.create", expect.anything());
+    expect(screen.queryByRole("dialog", { name: "选择模板" })).toBeNull();
+    const created = await screen.findByRole("dialog", { name: "新建项目" });
+    // 弹窗里的模板是 react19：副标题写模板名，名称默认带模板标识
+    expect(within(created).getByText("模板：react19")).toBeTruthy();
+    expect((within(created).getByRole("textbox", { name: "名称" }) as HTMLInputElement).value).toBe(
+      "react19-1",
+    );
   });
 
   it("Esc 关闭选择器，不创建任何东西", async () => {

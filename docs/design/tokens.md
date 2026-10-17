@@ -18,6 +18,8 @@ disagree, `tokens.json` wins.
 | Window background (workspace) (`--color-bg-workspace`) | #F5F5F7 | #161618 |
 | Content card (editor, panels, tables, settings cards) (`--color-bg-card`) | #FFFFFF | #1E1E21 |
 | Inset / field / code block background (`--color-bg-inset`) | #F5F5F7 | rgba(0, 0, 0, 0.35) |
+| Text field and settings card inside a dialog (`--color-bg-field`) | #FFFFFF | rgba(0, 0, 0, 0.35) |
+| Suggestion capsule and inline command chip (empty state) (`--color-bg-suggestion`) | #F5F5F7 | rgba(118, 118, 128, 0.24) |
 | Small neutral chip, badge tile (`--color-bg-chip`) | #F0F0F3 | rgba(255, 255, 255, 0.1) |
 | White raised tile (template badge, selected segment) (`--color-bg-raised`) | #FFFFFF | rgba(255, 255, 255, 0.18) |
 | Neutral fill button, segmented track (`--color-fill-neutral`) | rgba(118, 118, 128, 0.14) | rgba(118, 118, 128, 0.24) |
@@ -47,6 +49,9 @@ disagree, `tokens.json` wins.
 | Glass shadow, menu / popover (between sidebar and dialog) (`--shadow-menu`) | 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 16px 40px rgba(15, 23, 42, 0.2), inset 0 1px 0 rgba(255, 255, 255, 1) | 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.14) |
 | Primary button glow (`--shadow-accent-button`) | 0 4px 14px rgba(0, 113, 227, 0.25) | 0 4px 14px rgba(10, 132, 255, 0.35) |
 | Focus ring: 1.5 px accent line plus 3 px halo (`--shadow-focus-ring`) | 0 0 0 1.5px #0071E3, 0 0 0 4.5px rgba(0, 113, 227, 0.18) | 0 0 0 1.5px #0A84FF, 0 0 0 4.5px rgba(10, 132, 255, 0.32) |
+| Text field focus halo (3 px, beside the 1.5 px accent border) (`--shadow-field-focus`) | 0 0 0 3px rgba(0, 113, 227, 0.18) | 0 0 0 3px rgba(10, 132, 255, 0.2) |
+| Selected segment in a segmented control (`--shadow-segment-selected`) | 0 1px 3px rgba(0, 0, 0, 0.14), 0 0 0 0.5px rgba(0, 0, 0, 0.05) | none |
+| Switch thumb (`--shadow-thumb`) | 0 1px 3px rgba(0, 0, 0, 0.25) | 0 1px 3px rgba(0, 0, 0, 0.25) |
 | Selected tab inside a glass capsule (`--shadow-tab-selected`) | 0 1px 3px rgba(0, 0, 0, 0.12) | inset 0 1px 0 rgba(255, 255, 255, 0.18) |
 
 ### Text
@@ -66,6 +71,8 @@ disagree, `tokens.json` wins.
 | --- | --- | --- |
 | Hairline between rows / card border (`--color-line-hairline`) | rgba(0, 0, 0, 0.06) | rgba(255, 255, 255, 0.08) |
 | Stronger divider, input border (`--color-line-strong`) | rgba(0, 0, 0, 0.1) | rgba(255, 255, 255, 0.14) |
+| Text field border (`--color-line-field`) | rgba(0, 0, 0, 0.12) | rgba(255, 255, 255, 0.14) |
+| Settings card border inside a dialog (`--color-line-card`) | rgba(0, 0, 0, 0.08) | rgba(255, 255, 255, 0.08) |
 
 ### Accent and status
 
@@ -93,6 +100,7 @@ disagree, `tokens.json` wins.
 | Agent: text (`--color-agent-text`) | #7A2E9E | #D0A8FF |
 | Agent: tint background (`--color-fill-agent-tint`) | rgba(175, 82, 222, 0.12) | rgba(191, 90, 242, 0.24) |
 | Switch on (`--color-fill-switch-on`) | #28A745 | #30D158 |
+| Switch off track (`--color-fill-switch-off`) | rgba(120, 120, 128, 0.32) | rgba(120, 120, 128, 0.4) |
 
 ### Code syntax
 
@@ -169,6 +177,9 @@ disagree, `tokens.json` wins.
 | `--size-card-gap` | 8px | Gap between cards |
 | `--size-dialog-width` | 580px | Dialog width |
 | `--size-checkbox` | 18px | Checkbox box edge |
+| `--size-switch-width` | 42px | Switch track width |
+| `--size-switch-height` | 26px | Switch track height |
+| `--size-switch-thumb` | 22px | Switch thumb diameter |
 | `--size-dialog-icon` | 40px | Dialog icon block |
 | `--size-status-mark` | 9px | Status dot / square in a list row |
 | `--size-badge` | 22px | Badge (retention, creator) height |

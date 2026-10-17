@@ -120,4 +120,6 @@ export interface LibraryState {
   /** 正在等用户确认的“关闭运行中的标签页”；没有是 null（规格 DESKTOP-WORKSPACE-04） */
   closeRequest: { id: string; name: string } | null;
   error: DesktopError | null;
+  /** 资源库文件夹，主目录缩成 ~（新建弹窗的“文件夹：…”提示）；还没读到是空串 */
+  libraryRoot: string;
 }

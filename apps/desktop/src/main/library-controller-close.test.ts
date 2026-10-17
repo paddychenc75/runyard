@@ -20,7 +20,10 @@ class FakeClient {
     this.calls.push({ method, params });
     if (method === "settings.get") {
       if (this.settingsFails) throw new Error("unavailable");
-      return { confirmCloseRunningTab: this.confirmCloseRunningTab } as MethodResult<M>;
+      return {
+        libraryRoot: "/home/u/Runyard",
+        confirmCloseRunningTab: this.confirmCloseRunningTab,
+      } as MethodResult<M>;
     }
     if (method === "settings.set") {
       this.confirmCloseRunningTab = (
@@ -72,6 +75,7 @@ async function setup(runs: ReturnType<typeof run>[]) {
   const controller = new LibraryController({
     client: client as unknown as LibraryClient,
     clientId: "app-1",
+    home: "/home/u",
     locale: "zh-CN",
     preview,
     system: { revealInFileManager() {}, copyText() {}, openExternal() {} },
@@ -161,7 +165,8 @@ describe("LibraryController 关闭标签页", () => {
     expect(controller.getState().closeRequest).toBeNull();
     expect(tabsOf(controller)).toEqual([]);
     expect(client.count("run.stop")).toBe(0);
-    expect(client.count("settings.get")).toBe(0);
+    // 启动时读过一次资源库文件夹；关闭已停止的标签页不再读设置
+    expect(client.count("settings.get")).toBe(1);
   });
 
   it("[DESKTOP-WORKSPACE-10] 查看命令行持有的运行：关标签不弹确认，运行继续，持有者仍是命令行", async () => {

@@ -8,6 +8,7 @@ import { OverlayCounter } from "../shared/overlay-counter.ts";
 import styles from "./AppShell.module.css";
 import { CloseConfirmDialog } from "./CloseConfirmDialog.tsx";
 import { ConsolePanel } from "./ConsolePanel.tsx";
+import { CreateDialog } from "./CreateDialog.tsx";
 import { LibraryPage } from "./LibraryPage.tsx";
 import { PickerDialog } from "./PickerDialog.tsx";
 import { PreviewPane } from "./PreviewPane.tsx";
@@ -34,6 +35,8 @@ export function AppShell({ bridge, library }: AppShellProps) {
     document.title = title;
   }, [title]);
   const [pickerOpen, setPickerOpen] = useState(false);
+  // 选好模板后的新建弹窗（规格 DESKTOP-CREATE-FLOW-05）：值是模板标识，没有弹窗是 null
+  const [creating, setCreating] = useState<string | null>(null);
   // 空资源库的首次启动直接进选择器（PRD #prd-first-run）：只在第一次读到状态时判断一次，
   // 用户关掉之后不再自动弹出
   const firstLoadHandled = useRef(false);
@@ -43,16 +46,15 @@ export function AppShell({ bridge, library }: AppShellProps) {
     if (library.playgrounds.length === 0 && library.error === null) setPickerOpen(true);
   }, [library]);
   // ⌘N 是主进程的菜单项（焦点在预览视图里时按键到不了这里），经事件通知
-  useEffect(() => bridge.on("picker.open", () => setPickerOpen(true)), [bridge]);
-  // 选好模板后的下一步是新建弹窗（#173，规格 DESKTOP-CREATE-FLOW-05）。在它做好之前，
-  // 直接用默认名称创建，这样选择器选出来的模板还能用；#173 把这里换成“打开新建弹窗”。
-  const onPick = useCallback(
-    (templateId: string) => {
-      setPickerOpen(false);
-      void bridge.call("playground.create", templateId);
-    },
-    [bridge],
-  );
+  const openPicker = useCallback(() => {
+    setCreating(null);
+    setPickerOpen(true);
+  }, []);
+  useEffect(() => bridge.on("picker.open", openPicker), [bridge, openPicker]);
+  const onPick = useCallback((templateId: string) => {
+    setPickerOpen(false);
+    setCreating(templateId);
+  }, []);
   const { windowControls, modKey } = bridge.bootstrap;
   const tabs = library?.tabs ?? [];
   const activeTab = library?.activeTab ?? "library";
@@ -69,12 +71,18 @@ export function AppShell({ bridge, library }: AppShellProps) {
           activeTab={activeTab}
           running={runningCount(library?.playgrounds ?? [])}
           activeTabRow={activeTabRow}
+          onNew={openPicker}
           onSelect={(id) => void bridge.call("tab.select", id)}
           onClose={(id) => void bridge.call("tab.close", id)}
         />
         <main className={styles.content}>
           {activeTabRow === undefined ? (
-            <LibraryPage bridge={bridge} library={library} />
+            <LibraryPage
+              bridge={bridge}
+              library={library}
+              onNew={openPicker}
+              onCreateFrom={onPick}
+            />
           ) : (
             <div className={styles.workspace}>
               <div className={styles.top}>
@@ -90,6 +98,16 @@ export function AppShell({ bridge, library }: AppShellProps) {
           )}
         </main>
         <CloseConfirmDialog bridge={bridge} request={library?.closeRequest ?? null} />
+        {creating !== null && library !== null ? (
+          <CreateDialog
+            key={creating}
+            bridge={bridge}
+            library={library}
+            templateId={creating}
+            onClose={() => setCreating(null)}
+            onChangeTemplate={openPicker}
+          />
+        ) : null}
         {pickerOpen && library !== null ? (
           <PickerDialog library={library} onPick={onPick} onClose={() => setPickerOpen(false)} />
         ) : null}

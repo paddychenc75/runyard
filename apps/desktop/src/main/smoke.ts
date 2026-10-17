@@ -29,10 +29,16 @@ export async function runSmoke(
   log: (line: string) => void,
 ): Promise<number> {
   try {
-    await controller.create("html");
+    // 创建会同时打开标签页并运行（和新建弹窗的“创建并运行”同一条路）
+    const result = await controller.create({
+      template: "html",
+      name: "smoke-1",
+      note: "",
+      autoClean: null,
+    });
+    if (!result.ok) throw new Error(`smoke could not create: ${result.error.code}`);
     const created = await waitFor("a playground", () => controller.getState().playgrounds[0]);
     log(`created ${created.name}`);
-    await controller.openProject(created.id);
     await waitFor("ready", () =>
       controller.getState().playgrounds.find((row) => row.id === created.id)?.state === "ready"
         ? true

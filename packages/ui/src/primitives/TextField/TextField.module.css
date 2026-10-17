@@ -1,0 +1,36 @@
+/* 单行输入框：高 40、圆角 12、内边距 12；聚焦的光环不占版面（边从 1 变 1.5，高度固定所以不跳） */
+.root {
+  box-sizing: border-box;
+  inline-size: 100%;
+  block-size: var(--size-control-lg);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--space-6);
+  border: 1px solid var(--color-line-field);
+  border-radius: var(--radius-row);
+  background: var(--color-bg-field);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: var(--text-item-size);
+  font-weight: var(--text-body-weight);
+  line-height: var(--text-item-line-height);
+  outline: none;
+}
+
+.root::placeholder {
+  color: var(--color-text-placeholder);
+}
+
+.root:focus-visible:not([data-force-state]),
+.root[data-force-state="focus"] {
+  border: calc(var(--space-1) * 0.75) solid var(--color-line-accent);
+  box-shadow: var(--shadow-field-focus);
+}
+
+.root[data-invalid] {
+  border-color: var(--color-status-danger-mark);
+}
+
+.root[data-disabled] {
+  opacity: 0.4;
+}

@@ -1,0 +1,54 @@
+/* 开关：轨道 42 × 26，圆钮 22，两边各留 2；关用灰，开用绿（设计稿 CreateDialog、CreateDialogOn） */
+.root {
+  flex: none;
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+  inline-size: var(--size-switch-width);
+  block-size: var(--size-switch-height);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-capsule);
+  background: var(--color-fill-switch-off);
+  outline: none;
+  transition: background-color var(--motion-duration-fast) linear;
+}
+
+.root[data-checked] {
+  background: var(--color-fill-switch-on);
+}
+
+.root:focus-visible:not([data-force-state]),
+.root[data-force-state="focus"] {
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.root[data-disabled] {
+  opacity: 0.4;
+}
+
+.thumb {
+  position: absolute;
+  inset-block-start: var(--space-1);
+  inset-inline-start: var(--space-1);
+  inline-size: var(--size-switch-thumb);
+  block-size: var(--size-switch-thumb);
+  border-radius: var(--radius-capsule);
+  background: var(--color-text-on-accent);
+  box-shadow: var(--shadow-thumb);
+  transition: transform var(--motion-duration-fast) linear;
+}
+
+.thumb[data-checked] {
+  transform: translateX(
+    calc(var(--size-switch-width) - var(--size-switch-thumb) - var(--space-1) * 2)
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root,
+  .thumb {
+    transition: none;
+  }
+}

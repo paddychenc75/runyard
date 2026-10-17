@@ -27,6 +27,7 @@ function setup() {
     recentTemplates: [],
     closeRequest: null,
     error: null,
+    libraryRoot: "~/Runyard",
   } as LibraryState;
   const controller = {
     getState: () => state,
@@ -34,7 +35,10 @@ function setup() {
     stopRun: async (id: string) => void calls.push(["stop", id]),
     openProject: async (id: string) => void calls.push(["open", id]),
     selectTab: (id: string) => void calls.push(["select", id]),
-    create: async (id: string) => void calls.push(["create", id]),
+    create: async (request: unknown) => {
+      calls.push(["create", request]);
+      return { ok: true };
+    },
     requestCloseTab: async (id: string) => void calls.push(["close", id]),
     confirmClose: async (id: string, again: boolean) => void calls.push(["confirm", id, again]),
     cancelClose: () => void calls.push(["cancel"]),
@@ -75,6 +79,8 @@ function setup() {
 const app: IpcSender = { url: "app://runyard/" };
 const outsider: IpcSender = { url: "http://127.0.0.1:7101/" };
 
+const validCreate = { template: "html", name: "demo-1", note: "", autoClean: null };
+
 describe("registerBridgeHandlers", () => {
   it("来自本应用界面的调用转给控制器", async () => {
     const { call, calls, state } = setup();
@@ -83,7 +89,7 @@ describe("registerBridgeHandlers", () => {
     await call(app, "run.stop", "a");
     await call(app, "tab.open", "a");
     await call(app, "tab.select", "library");
-    await call(app, "playground.create", "html");
+    await call(app, "playground.create", validCreate);
     await call(app, "tab.close", "a");
     await call(app, "tab.closeConfirm", { id: "a", dontAskAgain: true });
     await call(app, "tab.closeConfirm", { id: "a", dontAskAgain: "yes" });
@@ -94,7 +100,7 @@ describe("registerBridgeHandlers", () => {
       ["stop", "a"],
       ["open", "a"],
       ["select", "library"],
-      ["create", "html"],
+      ["create", validCreate],
       ["close", "a"],
       ["confirm", "a", true],
       ["cancel"],
@@ -135,7 +141,21 @@ describe("registerBridgeHandlers", () => {
     const { call, calls } = setup();
     await call(app, "run.start", 42);
     await call(app, "run.stop", "");
-    await call(app, "playground.create", { evil: true });
+    // 新建的内容形状不对：不调用控制器，界面拿到“失败”而不是异常
+    for (const bad of [
+      "html",
+      { evil: true },
+      { ...validCreate, name: "" },
+      { ...validCreate, note: 1 },
+      { ...validCreate, autoClean: 0 },
+      { ...validCreate, autoClean: 1.5 },
+      { ...validCreate, autoClean: "30" },
+    ]) {
+      expect(await call(app, "playground.create", bad)).toEqual({
+        ok: false,
+        error: { code: "INTERNAL", params: {} },
+      });
+    }
     expect(calls).toEqual([]);
   });
 

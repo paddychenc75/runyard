@@ -1,5 +1,7 @@
 import {
   type BootstrapInfo,
+  type CreateRequest,
+  type CreateResult,
   type DesktopMethod,
   desktopChannels,
   desktopMethodNames,
@@ -26,6 +28,28 @@ export interface IpcHost {
 function text(value: unknown): string | null {
   return typeof value === "string" && value !== "" ? value : null;
 }
+
+/** 界面发来的新建内容：形状不对一律不要（页面发来的数据不可信）；名称是否合法由管理进程判 */
+function parseCreateRequest(value: unknown): CreateRequest | null {
+  if (typeof value !== "object" || value === null) return null;
+  const { template, name, note, autoClean } = value as Record<string, unknown>;
+  if (text(template) === null || text(name) === null || typeof note !== "string") return null;
+  const days =
+    autoClean === null
+      ? null
+      : Number.isInteger(autoClean) && (autoClean as number) > 0
+        ? autoClean
+        : undefined;
+  if (days === undefined) return null;
+  return {
+    template: template as string,
+    name: name as string,
+    note,
+    autoClean: days as number | null,
+  };
+}
+
+const rejectedCreate: CreateResult = { ok: false, error: { code: "INTERNAL", params: {} } };
 
 /** 占位区的矩形：四个有限的数，宽高不为负；其他形状一律不要（页面发来的数据不可信） */
 function parseBounds(value: unknown): Bounds | null {
@@ -104,9 +128,9 @@ export function registerBridgeHandlers(
     "link.open": (value) => {
       if (typeof value === "string") controller.openLink(value);
     },
-    "playground.create": async (id) => {
-      const template = text(id);
-      if (template !== null) await controller.create(template);
+    "playground.create": async (value) => {
+      const request = parseCreateRequest(value);
+      return request === null ? rejectedCreate : await controller.create(request);
     },
   };
 

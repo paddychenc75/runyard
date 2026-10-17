@@ -26,6 +26,7 @@ const tab = sampleTab({ id: "a", name: "hono-todo-api" });
 
 const base: LibraryState = {
   locale: "zh-CN",
+  libraryRoot: "~/Runyard",
   error: null,
   closeRequest: null,
   templates: [],

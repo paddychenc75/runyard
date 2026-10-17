@@ -2,6 +2,7 @@ import { isClientError, type RunyardClient } from "@runyard/client";
 import type { Locale } from "@runyard/i18n";
 import type { Playground, RunSnapshot, TemplateRecord } from "@runyard/protocol";
 import type { ConsoleAppend, ConsoleLine } from "../shared/console-state.ts";
+import type { CreateRequest, CreateResult } from "../shared/desktop-bridge.ts";
 import type { Bounds } from "../shared/layout.ts";
 import type { DesktopError, LibraryState } from "../shared/library-state.ts";
 import {
@@ -13,6 +14,9 @@ import {
 } from "./build-library-state.ts";
 import { ConsoleLogs } from "./console-logs.ts";
 import type { PreviewHost, SystemActions } from "./controller-hosts.ts";
+import { createPlayground } from "./create-playground.ts";
+import { toDesktopError } from "./desktop-error.ts";
+import { readLibraryRoot } from "./library-root.ts";
 import { LIBRARY_TAB, WorkspaceTabs } from "./workspace-tabs.ts";
 
 export type { PreviewHost, SystemActions } from "./controller-hosts.ts";
@@ -30,6 +34,8 @@ export interface LibraryControllerOptions {
   locale: Locale;
   preview: PreviewHost;
   system: SystemActions;
+  /** 主目录（用来把资源库路径显示成 ~/…）；开发时 --root 给的目录算主目录 */
+  home: string;
 }
 
 export class LibraryController {
@@ -38,6 +44,8 @@ export class LibraryController {
   readonly #locale: Locale;
   readonly #preview: PreviewHost;
   readonly #system: SystemActions;
+  readonly #home: string;
+  #libraryRoot = "";
   readonly #listeners = new Set<(state: LibraryState) => void>();
   readonly #busy = new Set<string>();
   #playgrounds: Playground[] = [];
@@ -60,17 +68,19 @@ export class LibraryController {
     this.#locale = options.locale;
     this.#preview = options.preview;
     this.#system = options.system;
+    this.#home = options.home;
     this.#console = new ConsoleLogs(options.client);
   }
 
   /** 订阅管理进程的事件并读第一份数据 */
   async start(): Promise<void> {
+    this.#libraryRoot = await readLibraryRoot(this.#client, this.#home);
     try {
       await this.#client.subscribe(["run", "playground"], () => {
         void this.refresh();
       });
     } catch (error) {
-      this.#fail(error);
+      this.#error = toDesktopError(error);
     }
     await this.refresh();
   }
@@ -86,6 +96,7 @@ export class LibraryController {
       busyIds: this.#busy,
       closeRequestId: this.#closeRequestId,
       error: this.#error,
+      libraryRoot: this.#libraryRoot,
       startErrors: this.#startErrors,
       lastFrames: this.#lastFrames,
     });
@@ -178,7 +189,7 @@ export class LibraryController {
           params: known.params as Record<string, unknown>,
         });
       } else if (known?.code !== "READY_TIMEOUT") {
-        this.#fail(error);
+        this.#error = toDesktopError(error);
       }
     }
     await this.refresh();
@@ -221,7 +232,7 @@ export class LibraryController {
       try {
         await this.#client.call("settings.set", { confirmCloseRunningTab: false });
       } catch (error) {
-        this.#fail(error);
+        this.#error = toDesktopError(error);
       }
     }
     await this.#closeNow(playgroundId);
@@ -248,7 +259,7 @@ export class LibraryController {
       try {
         await this.#client.call("run.stop", { playground: playgroundId });
       } catch (error) {
-        this.#fail(error);
+        this.#error = toDesktopError(error);
       }
     }
     await this.refresh();
@@ -286,13 +297,14 @@ export class LibraryController {
     this.#emit();
   }
 
-  async create(templateId: string): Promise<void> {
-    await this.#act(undefined, async () => {
-      await this.#client.call("playground.create", {
-        template: templateId,
-        createdBy: { kind: "user" },
-      });
-    });
+  /** 新建弹窗的“创建并运行”（规格 DESKTOP-CREATE-FLOW-11）：创建失败原样交回弹窗，不动全局错误；运行失败不算创建失败 */
+  async create(request: CreateRequest): Promise<CreateResult> {
+    const created = await createPlayground(this.#client, request);
+    if (!created.ok) return created;
+    const id = created.id;
+    await this.refresh();
+    await this.openProject(id);
+    return { ok: true };
   }
 
   async #act(busyId: string | undefined, action: () => Promise<void>): Promise<void> {
@@ -305,7 +317,7 @@ export class LibraryController {
     try {
       await action();
     } catch (error) {
-      this.#fail(error);
+      this.#error = toDesktopError(error);
     } finally {
       if (busyId !== undefined) this.#busy.delete(busyId);
     }
@@ -336,7 +348,7 @@ export class LibraryController {
         this.#closeRequestId = null;
       }
     } catch (error) {
-      this.#fail(error);
+      this.#error = toDesktopError(error);
     }
     this.#applyPreview();
     this.#emit();
@@ -375,14 +387,6 @@ export class LibraryController {
     const url = previewUrlFor(active, this.#runs);
     if (url !== null) this.#preview.show(active, url);
     else this.#preview.release(active);
-  }
-
-  #fail(error: unknown): void {
-    const known = isClientError(error) ? error.known : undefined;
-    this.#error =
-      known === undefined
-        ? { code: "INTERNAL", params: {} }
-        : { code: known.code, params: known.params as Record<string, unknown> };
   }
 
   #emit(): void {

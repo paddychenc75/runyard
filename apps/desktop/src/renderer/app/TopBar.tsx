@@ -1,5 +1,12 @@
 import { useT } from "@runyard/i18n/react";
-import { GlassSurface, StatusMark, TabStrip, type TabStripItem, UserText } from "@runyard/ui";
+import {
+  Button,
+  GlassSurface,
+  StatusMark,
+  TabStrip,
+  type TabStripItem,
+  UserText,
+} from "@runyard/ui";
 import type { BootstrapInfo, DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { TabRow } from "../../shared/library-state.ts";
 import { RunBar } from "./RunBar.tsx";
@@ -15,6 +22,8 @@ export interface TopBarProps {
   running: number;
   /** 当前的项目标签；在资源库时是 undefined，不显示运行条 */
   activeTabRow: TabRow | undefined;
+  /** 顶栏右端的“新建”：打开模板选择器 */
+  onNew: () => void;
   onSelect: (id: string) => void;
   /** 关闭项目标签（关闭钮、⌘W）；要不要确认由主进程决定 */
   onClose: (id: string) => void;
@@ -23,7 +32,7 @@ export interface TopBarProps {
 // 顶栏：标签条里资源库固定在第一位、不能关闭（规格 desktop/workspace 的 DESKTOP-WORKSPACE-03），
 // 后面是打开的项目标签，名字前是运行状态的小圆点。项目标签有关闭钮和 ⌘W（#174，
 // 运行中的会先出确认对话框，见 CloseConfirmDialog）。右边是“N 个运行中”
-// （点开运行视图随 #186）；当前标签是项目时右边多一条运行条（#176）；搜索、新建随 #181、#173。
+// （点开运行视图随 #186）；当前标签是项目时右边多一条运行条（#176）；最右是“新建”（#173，打开模板选择器）；搜索随 #181。
 export function TopBar({
   bridge,
   modKey,
@@ -31,6 +40,7 @@ export function TopBar({
   activeTab,
   running,
   activeTabRow,
+  onNew,
   onSelect,
   onClose,
 }: TopBarProps) {
@@ -68,6 +78,9 @@ export function TopBar({
             : t("library.topbar.idle.label")}
         </span>
       </GlassSurface>
+      <Button variant="primary" icon="plus" className={styles.new} onClick={onNew}>
+        {t("desktop.create.title")}
+      </Button>
     </div>
   );
 }

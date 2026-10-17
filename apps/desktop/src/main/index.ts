@@ -1,3 +1,4 @@
+import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { windowBackground } from "@runyard/tokens";
@@ -113,6 +114,7 @@ async function main(args: DesktopArgs): Promise<void> {
     locale,
     preview,
     system: new ElectronSystemActions(),
+    home: args.root ?? homedir(),
   });
   const ipcHost: IpcHost = {
     handle: (channel, handler) =>

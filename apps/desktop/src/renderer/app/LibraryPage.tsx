@@ -10,32 +10,32 @@ import { useNow } from "./use-now.ts";
 export interface LibraryPageProps {
   bridge: DesktopBridge;
   library: LibraryState | null;
+  /** 空状态的“新建项目”：打开模板选择器 */
+  onNew: () => void;
+  /** 空状态里的常用模板胶囊：直接进入新建弹窗 */
+  onCreateFrom: (templateId: string) => void;
 }
 
 // 相对时间和“剩 N 天”不靠事件，半分钟走一次字
 const CLOCK_INTERVAL_MS = 30_000;
 
+/** 空状态里列出的常用模板（设计稿 Empty：静态页面、React 19、Python），库里没有的就不画 */
+const COMMON_TEMPLATES = ["html", "react19", "python"] as const;
+
+/** 空状态里给智能体看的示例命令（设计稿 Empty） */
+const SAMPLE_COMMAND = "runyard new react19 --run";
+
 // 资源库页的内容（设计稿 Main、Empty）：页标题和概况、项目表、没有项目时的空状态。
-// 搜索筛选随 #181，打开和更多菜单随 #171，新建对话框随 #173，所以这里还留着
-// 开发期的“用内置模板新建”（模板按钮，设计稿 Empty 里是三个常用模板的胶囊），那几件做好后换掉它。
-export function LibraryPage({ bridge, library }: LibraryPageProps) {
+// 搜索筛选随 #181；新建走模板选择器和新建弹窗（#172、#173）。
+export function LibraryPage({ bridge, library, onNew, onCreateFrom }: LibraryPageProps) {
   const t = useT();
   const now = useNow(CLOCK_INTERVAL_MS);
   if (library === null) return null;
   const { playgrounds, templates, locale } = library;
-  const createButtons = (
-    <div className={styles.templates}>
-      {templates.map((template) => (
-        <Button
-          key={template.id}
-          onClick={() => void bridge.call("playground.create", template.id)}
-        >
-          <MonogramTile letters={monogramOf(template.id)} size="lg" />
-          <UserText>{pickLocalizedText(template.name, locale)}</UserText>
-        </Button>
-      ))}
-    </div>
-  );
+  const common = COMMON_TEMPLATES.flatMap((id) => {
+    const template = templates.find((candidate) => candidate.id === id);
+    return template === undefined ? [] : [template];
+  });
   return (
     <section className={styles.root}>
       <header className={styles.header}>
@@ -58,17 +58,34 @@ export function LibraryPage({ bridge, library }: LibraryPageProps) {
           title={t("library.empty.title")}
           description={t("library.empty.hint")}
         >
-          {createButtons}
-          <p className={styles.cli}>{t("library.empty.cli.label")}</p>
+          <Button variant="primary" icon="plus" className={styles.newButton} onClick={onNew}>
+            {t("desktop.create.newProject.action")}
+          </Button>
+          {common.length === 0 ? null : (
+            <>
+              <p className={styles.hint}>{t("desktop.empty.templates.hint")}</p>
+              <div className={styles.templates}>
+                {common.map((template) => (
+                  <button
+                    key={template.id}
+                    type="button"
+                    className={styles.chip}
+                    onClick={() => onCreateFrom(template.id)}
+                  >
+                    <MonogramTile letters={monogramOf(template.id)} size="lg" />
+                    <UserText>{pickLocalizedText(template.name, locale)}</UserText>
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+          <div className={styles.cli}>
+            <span>{t("library.empty.cli.label")}</span>
+            <code className={styles.command}>{SAMPLE_COMMAND}</code>
+          </div>
         </EmptyState>
       ) : (
-        <>
-          <LibraryTable bridge={bridge} locale={locale} rows={playgrounds} now={now} />
-          <div className={styles.footer}>
-            <h2 className={styles.section}>{t("desktop.create.title")}</h2>
-            {createButtons}
-          </div>
-        </>
+        <LibraryTable bridge={bridge} locale={locale} rows={playgrounds} now={now} />
       )}
     </section>
   );

@@ -43,6 +43,7 @@ function row(
 
 const state: LibraryState = {
   locale: "zh-CN",
+  libraryRoot: "~/Runyard",
   error: null,
   closeRequest: null,
   templates: [
@@ -122,7 +123,7 @@ describe("主窗口外壳", () => {
     expect((screen.getByRole("button", { name: "模板" }) as HTMLButtonElement).disabled).toBe(true);
   });
 
-  it("资源库行的打开、停止运行、双击行和用模板新建都发给主进程", async () => {
+  it("资源库行的打开、停止运行、双击行都发给主进程；开发期的“用模板新建”按钮行已经没有了", async () => {
     const user = userEvent.setup();
     const { bridge, call } = fakeBridge();
     render(<AppFrame bridge={bridge} locale="zh-CN" theme="system" />);
@@ -130,11 +131,11 @@ describe("主窗口外壳", () => {
     await user.click(screen.getByRole("button", { name: "停止运行" }));
     await user.click(screen.getByRole("button", { name: "打开" }));
     await user.dblClick(screen.getByText("react-counter"));
-    await user.click(screen.getByRole("button", { name: /纯 HTML/ }));
     expect(call).toHaveBeenCalledWith("run.stop", "a");
     expect(call).toHaveBeenCalledWith("tab.open", "b");
     expect(call).toHaveBeenCalledWith("tab.open", "a");
-    expect(call).toHaveBeenCalledWith("playground.create", "html");
+    expect(screen.queryByRole("button", { name: /纯 HTML/ })).toBeNull();
+    expect(call).not.toHaveBeenCalledWith("playground.create", expect.anything());
   });
 
   it("[DESKTOP-WORKSPACE-11] 项目标签：运行中有停止，手动停止后标签还在、出现“运行”按钮，点它再运行", async () => {

@@ -1,0 +1,106 @@
+/*
+ * 表单弹窗（设计稿 CreateDialog、CreateDialogOn）：宽 580、圆角 28，内边距 26/28/22，块间距 18，
+ * 垂直居中（自动清理展开后变高，上下对称地长）。材质由 GlassSurface 的 dialog 配方给。
+ */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-scrim);
+  background: var(--color-scrim);
+  opacity: 1;
+  transition: opacity var(--motion-duration-base) linear;
+}
+
+.popup {
+  position: fixed;
+  inset-block-start: 45%;
+  inset-inline-start: 50%;
+  z-index: var(--z-dialog);
+  box-sizing: border-box;
+  inline-size: var(--size-dialog-width);
+  max-inline-size: calc(100% - var(--space-10) * 2);
+  max-block-size: calc(100% - var(--space-10) * 2);
+  overflow-y: auto;
+  padding-block: calc(var(--space-9) + var(--space-1)) calc(var(--space-8) + var(--space-1));
+  padding-inline: var(--space-10);
+  border: var(--glass-border-width) solid var(--glass-border-color);
+  color: var(--color-text-primary);
+  transform: translate(-50%, -50%);
+  opacity: 1;
+  outline: none;
+  transition: opacity var(--motion-duration-popover) var(--motion-easing-popover);
+}
+
+.backdrop[data-starting-style],
+.backdrop[data-ending-style],
+.popup[data-starting-style],
+.popup[data-ending-style] {
+  opacity: 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-7) + var(--space-1));
+  margin: 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.leading {
+  flex: none;
+  display: inline-flex;
+}
+
+.heading {
+  flex: 1;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--text-dialog-title-size);
+  font-weight: var(--text-dialog-title-weight);
+  line-height: var(--text-dialog-title-line-height);
+  overflow-wrap: anywhere;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line-height);
+  color: var(--color-text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.action {
+  flex: none;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.hint {
+  flex: 1;
+  min-inline-size: 0;
+  font-size: var(--text-secondary-size);
+  line-height: var(--text-secondary-line-height);
+  color: var(--color-text-secondary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop,
+  .popup {
+    transition: none;
+  }
+}
