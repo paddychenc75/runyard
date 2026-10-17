@@ -1,0 +1,50 @@
+import { closePicker, expect, test } from "./support/fixtures.ts";
+
+// 顶栏方案 A 的真实窗口检查（规格 DESKTOP-LIBRARY-VIEW-61、65 至 67）：搜索框在页头、侧栏按钮在侧栏顶部、窗口变窄时收紧
+test("版面：搜索在页头、侧栏按钮跟着红绿灯、1024 宽时页头收紧", async ({ launch }) => {
+  const runyard = await launch();
+  const { page, app } = runyard;
+  await runyard.cli("new", "html", "alpha");
+  await runyard.cli("run", "alpha");
+  await closePicker(page);
+  const resize = (width: number, height: number) =>
+    app.evaluate(
+      ({ BrowserWindow }, size) => {
+        BrowserWindow.getAllWindows()[0]?.setContentSize(size[0] ?? 1440, size[1] ?? 900);
+      },
+      [width, height],
+    );
+  await resize(1440, 900);
+
+  // 搜索框在内容区的页头里，顶栏（标签条所在行）里没有
+  const search = page.getByRole("textbox", { name: "Search playgrounds" });
+  await expect(
+    page.getByRole("main").getByRole("textbox", { name: "Search playgrounds" }),
+  ).toBeVisible();
+  const tabs = page.getByRole("tablist");
+  const searchBox = await search.boundingBox();
+  const tabsBox = await tabs.boundingBox();
+  expect(searchBox?.y ?? 0).toBeGreaterThan((tabsBox?.y ?? 0) + (tabsBox?.height ?? 0));
+  await expect(page.getByRole("button", { name: /^Type/ })).toBeVisible();
+
+  // 侧栏按钮在侧栏里；收起后在顶栏最左边，标签条在它右边
+  const hide = page.getByRole("button", { name: "Hide sidebar" });
+  const hideBox = await hide.boundingBox();
+  expect(hideBox?.x ?? 0).toBeLessThan(240);
+  await hide.click();
+  const show = page.getByRole("button", { name: "Show sidebar" });
+  await expect(show).toBeVisible();
+  const showBox = await show.boundingBox();
+  const tabsAfter = await tabs.boundingBox();
+  expect(showBox?.x ?? 0).toBeLessThan(tabsAfter?.x ?? 0);
+  expect(showBox?.y ?? 0).toBeLessThan(60);
+  await show.click();
+
+  // 1024 宽：筛选合并、运行数只写数字
+  await resize(1024, 720);
+  await expect(page.getByRole("button", { name: "Filter" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /^Type/ })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /^1 running/ })).toHaveText("1");
+  await resize(1440, 900);
+  await expect(page.getByRole("button", { name: /^Type/ })).toBeVisible();
+});

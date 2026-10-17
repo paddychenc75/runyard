@@ -1,3 +1,4 @@
+import type { Localized } from "@runyard/i18n";
 import { useT } from "@runyard/i18n/react";
 import { IconButton, Menu } from "@runyard/ui";
 import { useState } from "react";
@@ -12,6 +13,8 @@ export interface RunBarMenuProps {
   bridge: DesktopBridge;
   row: PlaygroundRow;
   taken: readonly string[];
+  /** 菜单最上面一行不可点的说明（模板名、持有者说明）；没有就不画（规格 DESKTOP-WORKSPACE-25、26） */
+  note?: string | null;
 }
 
 const CLOCK_INTERVAL_MS = 30_000;
@@ -19,7 +22,7 @@ const CLOCK_INTERVAL_MS = 30_000;
 // 运行条最右的“更多”菜单（设计稿 WorkspaceMenu）：和资源库行菜单共用同一份菜单项（usePlaygroundEdits）。
 // 项和顺序同设计稿：重命名到移到废纸篓，没有“打开”那一组。
 // 工作区里没有表格行，“重命名…”和“编辑备注…”开小弹窗（规格 DESKTOP-WORKSPACE-29）。
-export function RunBarMenu({ bridge, row, taken }: RunBarMenuProps) {
+export function RunBarMenu({ bridge, row, taken, note = null }: RunBarMenuProps) {
   const t = useT();
   const now = useNow(CLOCK_INTERVAL_MS);
   const [open, setOpen] = useState(false);
@@ -51,7 +54,15 @@ export function RunBarMenu({ bridge, row, taken }: RunBarMenuProps) {
       <Menu
         label={label}
         trigger={<IconButton icon="more" size="sm" label={label} />}
-        entries={menu.entries}
+        entries={
+          note === null
+            ? menu.entries
+            : [
+                { id: "note", label: note as Localized, disabled: true },
+                { type: "separator" },
+                ...menu.entries,
+              ]
+        }
         onSelect={menu.select}
         onOpenChange={setOpen}
       />

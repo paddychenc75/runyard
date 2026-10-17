@@ -1,7 +1,7 @@
 import type { Localized } from "@runyard/i18n";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { TabStrip, type TabStripItem } from "./TabStrip.tsx";
 
 const text = (value: string) => value as Localized;
@@ -26,6 +26,7 @@ function setup(
       label={text("Tabs")}
       items={items}
       value="library"
+      data-test-root=""
       onValueChange={onValueChange}
       onClose={onClose}
       {...props}
@@ -133,5 +134,131 @@ describe("TabStrip", () => {
       closeLabel: "plain",
     });
     expect(typeOnly).toBeTypeOf("function");
+  });
+});
+
+// jsdom 没有版面：用假的宽度顶替。每个标签 120 宽，标签条根 root 宽 rootWidth，“＋”按钮 36 宽
+describe("TabStrip 放不下时折进“+N”", () => {
+  let rootWidth = 0;
+  const widthOf = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "offsetWidth");
+  const clientOf = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "clientWidth");
+  beforeEach(() => {
+    Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
+      configurable: true,
+      get(this: HTMLElement) {
+        if (this.dataset.tabId !== undefined) return 120;
+        // “＋”新建按钮外面的那层
+        return this.tagName === "SPAN" && this.querySelector("button") !== null ? 36 : 0;
+      },
+    });
+    Object.defineProperty(HTMLElement.prototype, "clientWidth", {
+      configurable: true,
+      get(this: HTMLElement) {
+        return this.dataset.testRoot === undefined ? 0 : rootWidth;
+      },
+    });
+  });
+  afterEach(() => {
+    if (widthOf !== undefined) Object.defineProperty(HTMLElement.prototype, "offsetWidth", widthOf);
+    if (clientOf !== undefined)
+      Object.defineProperty(HTMLElement.prototype, "clientWidth", clientOf);
+  });
+
+  const six: TabStripItem[] = [
+    library,
+    ...["a", "b", "c", "d", "e"].map((id) => ({ ...demo, id, label: id, menuLabel: text(id) })),
+  ];
+  const folded = () =>
+    Array.from(document.querySelectorAll("[data-folded]")).map((node) =>
+      node.getAttribute("data-tab-id"),
+    );
+  const more = () => screen.queryByRole("button", { name: "更多标签页" });
+
+  it("[DESKTOP-WORKSPACE-63] 放不下的标签折进“+N”，N 是个数；列表里是折进去的，选一个就切过去", async () => {
+    rootWidth = 120 * 3 + 36 + 70; // 三个标签、“＋”和“+N”按钮
+    const user = userEvent.setup();
+    const { onValueChange } = setup(
+      { overflowLabel: text("更多标签页"), add: { label: text("新建"), onClick: () => {} } },
+      six,
+    );
+    expect(folded()).toEqual(["c", "d", "e"]);
+    expect(more()?.textContent).toBe("+3");
+    await user.click(more() as HTMLElement);
+    const menu = await screen.findByRole("menu");
+    expect(
+      within(menu)
+        .getAllByRole("menuitem")
+        .map((item) => item.textContent),
+    ).toEqual(["c", "d", "e"]);
+    await user.click(within(menu).getByRole("menuitem", { name: "d" }));
+    expect(onValueChange).toHaveBeenCalledWith("d");
+  });
+
+  it("[DESKTOP-WORKSPACE-64] 选中折进去的标签后它出现在条上，“+N”里不再有它；窗口变宽时都回来", () => {
+    rootWidth = 120 * 3 + 36 + 70;
+    const { rerender } = render(
+      <TabStrip
+        label={text("Tabs")}
+        items={six}
+        value="library"
+        overflowLabel={text("更多标签页")}
+        data-test-root=""
+      />,
+    );
+    expect(folded()).toEqual(["c", "d", "e"]);
+    rerender(
+      <TabStrip
+        label={text("Tabs")}
+        items={six}
+        value="e"
+        overflowLabel={text("更多标签页")}
+        data-test-root=""
+      />,
+    );
+    expect(folded()).not.toContain("e");
+    expect(folded()).toHaveLength(3);
+    expect(more()?.textContent).toBe("+3");
+    rootWidth = 2000;
+    rerender(
+      <TabStrip
+        label={text("Tabs")}
+        items={six}
+        value="e"
+        overflowLabel={text("更多标签页")}
+        data-test-root=""
+      />,
+    );
+    expect(folded()).toEqual([]);
+    expect(more()).toBeNull();
+  });
+
+  it("[DESKTOP-WORKSPACE-63] 压窄（名字省略）就放得下时，不折叠、资源库也保留文字", () => {
+    rootWidth = 700 + 36; // 完整宽度 720 放不下，最窄 680 放得下
+    setup({ overflowLabel: text("更多标签页"), add: { label: text("新建"), onClick: () => {} } }, [
+      { ...six[0], shrinkToIcon: true } as TabStripItem,
+      ...six.slice(1),
+    ]);
+    expect(folded()).toEqual([]);
+    expect(more()).toBeNull();
+    expect(document.querySelector("[data-icon-only]")).toBeNull();
+    expect(document.querySelector("[data-shrunk]")).toBeTruthy();
+  });
+
+  it("[DESKTOP-WORKSPACE-63] 窄到压窄也放不下时，资源库标签先缩成只剩图标，悬停提示写“资源库”", () => {
+    rootWidth = 120 * 5 + 36; // 六个标签差一点：缩掉资源库的文字就够了
+    setup(
+      {
+        overflowLabel: text("更多标签页"),
+        add: { label: text("新建"), onClick: () => {} },
+      },
+      [
+        { ...six[0], shrinkToIcon: true, menuLabel: text("资源库") } as TabStripItem,
+        ...six.slice(1),
+      ],
+    );
+    const tab = screen.getAllByRole("tab")[0] as HTMLElement;
+    expect(tab.getAttribute("title")).toBe("资源库");
+    expect(tab.closest("[data-icon-only]")).toBeTruthy();
+    expect(folded()).toEqual([]);
   });
 });

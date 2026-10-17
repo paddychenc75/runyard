@@ -579,6 +579,10 @@ export type CatalogMessages = {
   "desktop.runbar.missing.label": {
     tool: string | number;
   };
+  "desktop.runbar.note.label": {
+    hint: string | number;
+    template: string | number;
+  };
   "desktop.runbar.state.label": {
     port: string | number;
     state: string | number;
@@ -834,6 +838,7 @@ export type CatalogMessages = {
   "library.filter.agent.label": Record<never, never>;
   "library.filter.all.label": Record<never, never>;
   "library.filter.autoClean.label": Record<never, never>;
+  "library.filter.combined.label": Record<never, never>;
   "library.filter.kept.label": Record<never, never>;
   "library.filter.sort.label": {
     value: string | number;
@@ -923,9 +928,11 @@ export type CatalogMessages = {
   "library.row.stop.action": Record<never, never>;
   "library.row.trash.action": Record<never, never>;
   "library.search.clear.aria": Record<never, never>;
+  "library.search.expand.aria": Record<never, never>;
   "library.search.key.label": Record<never, never>;
   "library.search.label": Record<never, never>;
   "library.search.placeholder": Record<never, never>;
+  "library.search.short.placeholder": Record<never, never>;
   "library.sidebar.collapse.label": Record<never, never>;
   "library.sidebar.expand.label": Record<never, never>;
   "library.sidebar.footer.label": {
@@ -1199,4 +1206,5 @@ export type CatalogMessages = {
     name: string | number;
   };
   "workspace.tabs.aria": Record<never, never>;
+  "workspace.tabs.more.aria": Record<never, never>;
 };

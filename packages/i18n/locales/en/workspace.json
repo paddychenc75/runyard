@@ -55,5 +55,6 @@
   "workspace.running.title": "Running",
   "workspace.running.uptime.label": "Up {duration}",
   "workspace.tab.close.label": "Close {name}",
-  "workspace.tabs.aria": "Tabs"
+  "workspace.tabs.aria": "Tabs",
+  "workspace.tabs.more.aria": "More tabs"
 }

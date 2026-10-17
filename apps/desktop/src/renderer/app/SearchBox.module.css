@@ -1,19 +1,56 @@
-/* 设计稿 Main：和旁边的胶囊同高（44），宽 300，放大镜、输入、末端提示 */
+/* 方案 A：页头里和筛选按钮同高（32）、同样只有填充；宽 240，窄时 180，再窄缩成放大镜 */
 .root {
   display: flex;
   flex: none;
   align-items: center;
   gap: var(--space-4);
   box-sizing: border-box;
-  block-size: var(--size-toolbar);
-  inline-size: calc(var(--size-column-xl) * 2 + var(--space-9) + var(--space-6));
+  block-size: var(--size-control-md);
+  inline-size: var(--size-search-wide);
   min-inline-size: 0;
-  padding-inline: var(--space-7);
+  padding-inline: var(--space-6);
+  border-radius: var(--radius-capsule);
+  background: var(--color-fill-neutral);
+  transition: inline-size var(--motion-duration-fast) linear;
+}
+
+.root[data-size="short"],
+.root[data-size="icon"]:focus-within {
+  inline-size: var(--size-search-short);
+}
+
+/* 放大镜态：只剩一个圆钮；输入框宽度 0 但仍在，⌘F 能聚焦它 */
+.root[data-size="icon"]:not(:focus-within):has(.input:placeholder-shown) {
+  inline-size: var(--size-control-md);
+  padding-inline: 0;
+  justify-content: center;
+}
+
+.root[data-size="icon"]:not(:focus-within):has(.input:placeholder-shown) .input {
+  flex: none;
+  inline-size: 0;
+}
+
+.root[data-size="icon"]:not(:focus-within):has(.input:placeholder-shown) .key {
+  display: none;
 }
 
 .icon {
   flex: none;
   color: var(--color-text-secondary);
+}
+
+.iconButton {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: default;
+  outline: none;
 }
 
 .input {
@@ -53,4 +90,10 @@
 
 .clear:focus-visible {
   box-shadow: var(--shadow-focus-ring);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition: none;
+  }
 }

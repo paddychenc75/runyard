@@ -245,6 +245,7 @@
   "desktop.runbar.cliHint.label": "Started from the CLI; closing the tab will not stop it",
   "desktop.runbar.closeHint.label": "Stops when the tab closes",
   "desktop.runbar.missing.label": "{tool} is missing",
+  "desktop.runbar.note.label": "{template} · {hint}",
   "desktop.runbar.state.label": "{state} :{port}",
   "desktop.runbar.tooOld.label": "{tool} is too old",
   "desktop.saveTemplate.cancel.action": "Cancel",

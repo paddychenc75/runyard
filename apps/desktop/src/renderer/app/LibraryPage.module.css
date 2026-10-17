@@ -23,6 +23,7 @@
 .filters {
   display: flex;
   flex: none;
+  align-items: center;
   gap: var(--space-4);
 }
 
@@ -35,7 +36,10 @@
 
 .summary {
   margin: var(--space-1) 0 0;
+  overflow: hidden;
   color: var(--color-text-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .error {

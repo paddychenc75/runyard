@@ -3,7 +3,12 @@
  * 组件一律用 <GlassSurface material="…">，不自己写模糊。五种配方对应材质规范板（SpecMaterial）。
  * 背景色随“降低透明度”换成不透明底色由设计变量负责（tokens.json 的 opaque），这里只负责关掉模糊。
  */
-[data-glass-material] {
+/*
+ * 第 2 档（工具栏、侧栏、文件树）只有填充和一层柔和阴影，没有描边；
+ * 第 3、4 档（对话框、菜单）单独浮起，里面不再套带轮廓的东西，保留 1px 描边。
+ */
+[data-glass-material="dialog"],
+[data-glass-material="menu"] {
   border: var(--glass-border-width) solid var(--glass-border-color);
 }
 

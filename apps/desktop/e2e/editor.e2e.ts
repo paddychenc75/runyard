@@ -6,7 +6,7 @@ test("HTML 项目：在编辑器里改文件，自动保存写到磁盘，预览
   const runyard = await launch();
   const { page, app } = runyard;
   await createWithKeyboard(page);
-  await expect(page.getByRole("group", { name: "Run bar" })).toContainText(/Running :\d+/);
+  await expect(page.getByRole("group", { name: "Run bar" })).toContainText(/:\d+/);
   await expect.poll(() => previewText(app)).toContain("Clicked 0 times");
 
   await page.getByRole("treeitem", { name: "index.html" }).click();

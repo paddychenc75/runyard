@@ -5,7 +5,11 @@ import { closePicker, expect, test } from "./support/fixtures.ts";
 
 test("资源库：搜索与筛选、重命名、改备注、移到废纸篓", async ({ launch }) => {
   const runyard = await launch();
-  const { page } = runyard;
+  const { page, app } = runyard;
+  // 页头在窄窗口里会把“类型”“状态”合成“筛选”：CI 的屏幕小，窗口会被压窄，先固定成宽窗口
+  await app.evaluate(({ BrowserWindow }) => {
+    BrowserWindow.getAllWindows()[0]?.setContentSize(1440, 900);
+  });
   await runyard.cli("new", "html", "alpha");
   await runyard.cli("new", "python", "beta");
   await runyard.cli("run", "alpha");

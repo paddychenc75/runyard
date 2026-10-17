@@ -317,9 +317,9 @@ describe("搜索没有结果", () => {
     await user.type(await searchBox(), "websocket");
     expect(await screen.findByText("没有找到“websocket”")).toBeTruthy();
     expect(screen.getByText("名称、备注和模板里都没有这个词。")).toBeTruthy();
-    // 顶栏搜索框里的清除钮和画面里的“清除搜索”同名，只看内容区的
+    // 页头搜索框里的清除钮和画面里的“清除搜索”同名：都在内容区里，各一个
     const main = within(screen.getByRole("main"));
-    expect(main.getByRole("button", { name: "清除搜索" })).toBeTruthy();
+    expect(main.getAllByRole("button", { name: "清除搜索" })).toHaveLength(2);
     expect(main.getByRole("button", { name: "新建项目，名称用“websocket”" })).toBeTruthy();
     expect(screen.getByText(/^0 个结果 · 共 20 个项目/)).toBeTruthy();
     expect(screen.queryByRole("table")).toBeNull();
@@ -346,7 +346,7 @@ describe("搜索没有结果", () => {
     await user.type(await searchBox(), "Hello World");
     await screen.findByText("没有找到“Hello World”");
     const main = within(screen.getByRole("main"));
-    expect(main.getByRole("button", { name: "清除搜索" })).toBeTruthy();
+    expect(main.getAllByRole("button", { name: "清除搜索" })).toHaveLength(2);
     expect(main.queryByRole("button", { name: /^新建项目，名称用/ })).toBeNull();
   });
 
@@ -389,6 +389,104 @@ describe("页概况与资源库位置", () => {
     expect(await screen.findByText("20 个项目 · 4 个正在运行 · 存放在 ~/Runyard")).toBeTruthy();
     const footer = screen.getByText("20 个项目", { selector: "div" });
     expect(footer.parentElement?.textContent).toContain("~/Runyard");
+  });
+});
+
+describe("搜索框在页头", () => {
+  it("[DESKTOP-LIBRARY-VIEW-65] 搜索框在页标题所在的页头，在筛选按钮前面；顶栏里没有搜索框", async () => {
+    setup(search4());
+    const box = await searchBox();
+    const main = screen.getByRole("main");
+    expect(main.contains(box)).toBe(true);
+    const header = box.closest("header") as HTMLElement;
+    expect(within(header).getByRole("heading", { name: "全部" })).toBeTruthy();
+    const filter = within(header).getByRole("button", { name: /^类型：全部/ });
+    // DOM 顺序：搜索框在“类型”前面
+    expect(box.compareDocumentPosition(filter) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    // 顶栏（标签条所在的那一行）里没有搜索框
+    const topBar = screen.getByRole("tablist").parentElement?.parentElement as HTMLElement;
+    expect(within(topBar).queryByRole("textbox")).toBeNull();
+    expect(within(topBar).getByRole("button", { name: "新建" })).toBeTruthy();
+  });
+});
+
+// jsdom 没有版面：页头的宽度和窗口宽度用假的顶替
+describe("窗口变窄时页头和顶栏收紧", () => {
+  const original = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "clientWidth");
+  function layout(windowWidth: number, headerWidth: number) {
+    window.innerWidth = windowWidth;
+    Object.defineProperty(HTMLElement.prototype, "clientWidth", {
+      configurable: true,
+      get(this: HTMLElement) {
+        return this.tagName === "HEADER" && this.parentElement?.tagName === "SECTION"
+          ? headerWidth
+          : 0;
+      },
+    });
+  }
+  afterEach(() => {
+    window.innerWidth = 1440;
+    if (original !== undefined)
+      Object.defineProperty(HTMLElement.prototype, "clientWidth", original);
+  });
+  const running = () =>
+    library([
+      row("pricing-1", { state: "ready", active: true, port: 7101 }),
+      row("hono-1", { templateId: "hono" }),
+    ]);
+
+  it("[DESKTOP-LIBRARY-VIEW-67] 1024 宽：搜索框变短、类型和状态合成“筛选”、排序只写方式、运行数只写数字", async () => {
+    layout(1024, 680);
+    setup(running());
+    const box = await searchBox();
+    expect(box.closest("[data-size]")?.getAttribute("data-size")).toBe("short");
+    expect(box.getAttribute("placeholder")).toBe("搜索");
+    expect(screen.getByRole("button", { name: "筛选" })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /^类型：/ })).toBeNull();
+    expect(screen.queryByRole("button", { name: /^状态：/ })).toBeNull();
+    expect(screen.getByRole("button", { name: "最近打开" })).toBeTruthy();
+    const count = screen.getByRole("button", { name: "1 个运行中" });
+    expect(count.textContent).toBe("1");
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-67] 改回 1440 宽：搜索框、类型状态两个按钮、完整的运行数都恢复", async () => {
+    layout(1440, 1100);
+    setup(running());
+    const box = await searchBox();
+    expect(box.closest("[data-size]")?.getAttribute("data-size")).toBe("wide");
+    expect(box.getAttribute("placeholder")).toBe("搜索名称、备注、模板");
+    expect(screen.getByRole("button", { name: /^类型：全部/ })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /^状态：全部/ })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /^排序：/ })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "1 个运行中" }).textContent).toBe("1 个运行中");
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-67] “筛选”按钮里有类型和状态两组，选了照样筛选列表", async () => {
+    const user = userEvent.setup();
+    layout(1024, 680);
+    setup(running());
+    await user.click(await screen.findByRole("button", { name: "筛选" }));
+    const menu = await screen.findByRole("menu");
+    expect(within(menu).getAllByRole("menuitemradio").length).toBeGreaterThan(4);
+    await user.click(within(menu).getByRole("menuitemradio", { name: "运行中" }));
+    expect(await names()).toEqual(["pricing-1"]);
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-68] 窄到放不下 180 的搜索框时缩成放大镜：⌘F 照样进搜索框，输入后筛选列表", async () => {
+    const user = userEvent.setup();
+    layout(900, 400);
+    setup(search4());
+    const box = await searchBox();
+    expect(box.closest("[data-size]")?.getAttribute("data-size")).toBe("icon");
+    expect(screen.getByRole("button", { name: "展开搜索" })).toBeTruthy();
+    const table = await screen.findByRole("table", { name: "项目列表" });
+    table.focus();
+    await user.keyboard("{Meta>}f{/Meta}");
+    expect(document.activeElement).toBe(box);
+    await user.keyboard("hono");
+    expect(await names()).toEqual(["hono-1"]);
+    await user.clear(box);
+    expect((await names()).length).toBe(4);
   });
 });
 

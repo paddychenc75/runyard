@@ -11,7 +11,7 @@ test("终端：运行命令看到输出；有命令在跑时关标签页会问�
   const sleeperAlive = async (): Promise<boolean> =>
     (await runyard.platform.proc.findByMarker(mark)).length > 0;
   await createWithKeyboard(page);
-  await expect(page.getByRole("group", { name: "Run bar" })).toContainText(/Running :\d+/);
+  await expect(page.getByRole("group", { name: "Run bar" })).toContainText(/:\d+/);
 
   await page.getByRole("button", { name: "Terminal" }).click();
   const terminal = page.locator(".xterm").first();

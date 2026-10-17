@@ -62,22 +62,25 @@ const finished = (extra: Partial<TabRow> = {}) =>
   });
 
 describe("运行条：重启与持有者", () => {
-  it("[DESKTOP-WORKSPACE-25] 标签页持有的服务：写着关闭即停止，按钮是“重启”“停止”和“更多”", () => {
+  it("[DESKTOP-WORKSPACE-25] 标签页持有的服务：悬停提示写模板和关闭即停止，按钮是“重启”“停止”和“更多”", async () => {
     const { bridge } = fakeBridge();
     const row = sampleTab({ templateName: { en: "Hono", "zh-CN": "Hono" }, port: 7101 });
     render(view(<RunBar bridge={bridge} tab={row} />));
     const bar = screen.getByRole("group", { name: "运行条" });
     expect(within(bar).getByText("运行中 :7101")).toBeTruthy();
-    expect(within(bar).getByText("关闭标签页即停止")).toBeTruthy();
+    expect(within(bar).queryByText("关闭标签页即停止")).toBeNull();
+    await userEvent.setup().hover(within(bar).getByText("运行中 :7101"));
+    expect(await screen.findByText("关闭标签页即停止")).toBeTruthy();
     expect(within(bar).getByRole("button", { name: "重启" })).toBeTruthy();
     expect(within(bar).getByRole("button", { name: "停止" })).toBeTruthy();
   });
 
-  it("[DESKTOP-WORKSPACE-26] 命令行持有的运行：写明由命令行启动、关闭标签页不会停止", () => {
+  it("[DESKTOP-WORKSPACE-26] 命令行持有的运行：悬停提示写明由命令行启动、关闭标签页不会停止", async () => {
     const { bridge } = fakeBridge();
     const row = sampleTab({ ownedByTab: false, attached: { agent: "Claude Code", startedAt: 1 } });
     render(view(<RunBar bridge={bridge} tab={row} />));
-    expect(screen.getByText("由命令行启动，关闭标签页不会停止")).toBeTruthy();
+    await userEvent.setup().hover(screen.getByText("运行中 :7101"));
+    expect(await screen.findByText("由命令行启动，关闭标签页不会停止")).toBeTruthy();
     expect(screen.queryByText("关闭标签页即停止")).toBeNull();
   });
 

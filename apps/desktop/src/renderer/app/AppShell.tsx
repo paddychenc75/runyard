@@ -217,6 +217,7 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
               templateCount={library?.templateCount ?? library?.templates.length ?? 0}
               libraryRoot={library?.libraryRoot ?? ""}
               page={page}
+              onCollapse={toggleSidebar}
               onNavigate={(next) => {
                 showLibrary({ activeTab, selectTab });
                 setPage(next);
@@ -236,9 +237,6 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
               sidebarVisible={sidebarVisible}
               onToggleSidebar={onLibraryPage ? toggleSidebar : undefined}
               onNew={openPicker}
-              search={query.search}
-              onSearchChange={(search) => patchQuery({ search })}
-              searchRef={searchRef}
               onSelect={selectTab}
               onClose={(id) => void bridge.call("tab.close", id)}
             />
@@ -262,6 +260,7 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
                   bridge={bridge}
                   library={library}
                   query={query}
+                  searchRef={searchRef}
                   onQueryChange={patchQuery}
                   onNew={openPicker}
                   onCreateFrom={onPick}

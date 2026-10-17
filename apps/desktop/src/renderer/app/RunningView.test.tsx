@@ -212,7 +212,8 @@ describe("命令行持有的运行的查看画面", () => {
     expect(within(notice).getByText(/改为由我管理后，关闭标签页就会停止它/)).toBeTruthy();
     expect(within(notice).getByRole("button", { name: "改为由我管理" })).toBeTruthy();
     expect(within(notice).getByRole("button", { name: "停止" })).toBeTruthy();
-    expect(screen.getByText("由命令行启动，关闭标签页不会停止")).toBeTruthy();
+    await userEvent.setup().hover(screen.getByText(/^运行中 :/));
+    expect(await screen.findByText("由命令行启动，关闭标签页不会停止")).toBeTruthy();
     expect(screen.queryByText("关闭标签页即停止")).toBeNull();
   });
 
@@ -231,6 +232,7 @@ describe("命令行持有的运行的查看画面", () => {
     await user.click(await screen.findByRole("button", { name: "改为由我管理" }, SLOW));
     expect(call).toHaveBeenCalledWith("run.adopt", "hono-1");
     push({ ...viewing, tabs: [sampleTab({ id: "hono-1", name: "hono-1" })] });
+    await user.hover(await screen.findByText(/^运行中 :/));
     await screen.findByText("关闭标签页即停止");
     expect(screen.queryByRole("region", { name: "命令行启动的运行" })).toBeNull();
   });

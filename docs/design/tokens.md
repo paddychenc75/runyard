@@ -30,14 +30,14 @@ disagree, `tokens.json` wins.
 | Role | Light | Dark |
 | --- | --- | --- |
 | Toolbar / capsule background (`--glass-toolbar-bg`) | rgba(255, 255, 255, 0.66) | rgba(72, 72, 78, 0.55) |
-| Sidebar background (library) (`--glass-sidebar-bg`) | rgba(242, 243, 247, 0.78) | rgba(58, 58, 62, 0.55) |
-| File tree panel background (`--glass-filetree-bg`) | rgba(255, 255, 255, 0.62) | rgba(58, 58, 62, 0.55) |
+| Sidebar background (library) (`--glass-sidebar-bg`) | rgba(240, 241, 245, 0.92) | rgba(44, 44, 48, 0.92) |
+| File tree panel background (`--glass-filetree-bg`) | rgba(255, 255, 255, 0.72) | rgba(40, 40, 44, 0.92) |
 | Dialog / menu background (`--glass-dialog-bg`) | rgba(250, 250, 252, 0.82) | rgba(44, 44, 48, 0.78) |
 | Control on glass (secondary button), rest (`--glass-control-bg`) | rgba(255, 255, 255, 0.66) | rgba(72, 72, 78, 0.55) |
 | Control on glass, hover (one more fill layer) (`--glass-control-bg-hover`) | rgba(255, 255, 255, 0.78) | rgba(72, 72, 78, 0.68) |
 | Control on glass, pressed (`--glass-control-bg-pressed`) | rgba(255, 255, 255, 0.9) | rgba(72, 72, 78, 0.8) |
-| Glass border colour (width: glass-border-width) (`--glass-border-color`) | rgba(255, 255, 255, 0.9) | rgba(255, 255, 255, 0.14) |
-| Selected tab inside a glass capsule (`--glass-tab-selected-bg`) | #FFFFFF | rgba(255, 255, 255, 0.16) |
+| Border of dialogs and menus (elevation 3 and 4 only; width: glass-border-width) (`--glass-border-color`) | rgba(255, 255, 255, 0.9) | rgba(255, 255, 255, 0.14) |
+| Selected tab: a light fill only, no shadow or ring (`--glass-tab-selected-bg`) | rgba(0, 0, 0, 0.065) | rgba(255, 255, 255, 0.1) |
 
 ### Shadows
 
@@ -45,7 +45,7 @@ disagree, `tokens.json` wins.
 | --- | --- | --- |
 | Elevation 0: inset blocks, table rows, inputs (no shadow) (`--shadow-flat`) | none | none |
 | Elevation 1: content cards (no shadow, a 1 px hairline border instead) (`--shadow-card`) | none | none |
-| Elevation 2: glass bars, sidebar, file tree (`--shadow-floating`) | 0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(15, 23, 42, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.9) | 0 10px 28px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.14) |
+| Elevation 2: sidebar, file tree (fill plus one soft shadow, no edge, ring or top highlight) (`--shadow-floating`) | 0 1px 2px rgba(15, 23, 42, 0.05), 0 8px 24px rgba(15, 23, 42, 0.09) | 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 28px rgba(0, 0, 0, 0.42) |
 | Elevation 4: dialogs, template picker (`--shadow-dialog`) | 0 0 0 0.5px rgba(0, 0, 0, 0.14), 0 40px 90px rgba(15, 23, 42, 0.32), inset 0 1px 0 rgba(255, 255, 255, 1) | 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 40px 90px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.14) |
 | Elevation 3: menus, popovers, tooltips (`--shadow-overlay`) | 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 16px 40px rgba(15, 23, 42, 0.2), inset 0 1px 0 rgba(255, 255, 255, 1) | 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.14) |
 | Primary button glow (`--shadow-accent-button`) | 0 4px 14px rgba(0, 113, 227, 0.25) | 0 4px 14px rgba(10, 132, 255, 0.35) |
@@ -53,7 +53,6 @@ disagree, `tokens.json` wins.
 | Text field focus halo (3 px, beside the 1.5 px accent border) (`--shadow-field-focus`) | 0 0 0 3px rgba(0, 113, 227, 0.18) | 0 0 0 3px rgba(10, 132, 255, 0.2) |
 | Selected segment in a segmented control (`--shadow-segment-selected`) | 0 1px 3px rgba(0, 0, 0, 0.14), 0 0 0 0.5px rgba(0, 0, 0, 0.05) | none |
 | Switch thumb (`--shadow-thumb`) | 0 1px 3px rgba(0, 0, 0, 0.25) | 0 1px 3px rgba(0, 0, 0, 0.25) |
-| Selected tab inside a glass capsule (`--shadow-tab-selected`) | 0 1px 3px rgba(0, 0, 0, 0.12) | inset 0 1px 0 rgba(255, 255, 255, 0.18) |
 | Template tile: a very faint top highlight (`--shadow-tile`) | inset 0 1px 0 rgba(255, 255, 255, 0.7) | inset 0 1px 0 rgba(255, 255, 255, 0.06) |
 
 ### Text
@@ -206,7 +205,11 @@ disagree, `tokens.json` wins.
 | `--size-menu-item` | 32px | Menu item height |
 | `--size-window-inset` | 8px | Window inset for floating panels |
 | `--size-nav-item` | 36px | Sidebar navigation item height |
-| `--size-tab` | 36px | Tab height inside the toolbar capsule |
+| `--size-tab` | 36px | Tab height in the top bar |
+| `--size-tab-min` | 112px | Narrowest a project tab is squeezed to before tabs fold into +N |
+| `--size-tab-label-max` | 180px | Widest a tab name gets before it is truncated |
+| `--size-search-wide` | 240px | Library header search field, wide window |
+| `--size-search-short` | 180px | Library header search field, narrow window |
 | `--size-window-controls` | 72px | Space reserved for the native window buttons in a title bar |
 | `--size-card-gap` | 8px | Gap between cards |
 | `--size-dialog-width` | 580px | Dialog width |
