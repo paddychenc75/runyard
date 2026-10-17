@@ -6,22 +6,20 @@ import type { SettingsApi } from "../bridge/use-settings.ts";
 import { EditorWorkspace } from "../features/editor/EditorWorkspace.tsx";
 import { defaultQuery, type LibraryQuery, navCounts } from "../library-query.ts";
 import { runningCount } from "../library-view.ts";
+import { useLayoutPrefs } from "../shared/layout-prefs.ts";
 import { OverlayContext } from "../shared/overlay-context.tsx";
 import { OverlayCounter } from "../shared/overlay-counter.ts";
 import styles from "./AppShell.module.css";
 import { CloseConfirmDialog } from "./CloseConfirmDialog.tsx";
-import { ConsolePanel } from "./ConsolePanel.tsx";
 import { CreateDialog } from "./CreateDialog.tsx";
 import { LibraryPage } from "./LibraryPage.tsx";
 import { PickerDialog } from "./PickerDialog.tsx";
-import { PreviewPane } from "./PreviewPane.tsx";
-import { isScript } from "./run-view.ts";
-import { ScriptOutput } from "./ScriptOutput.tsx";
 import { Sidebar } from "./Sidebar.tsx";
 import { SettingsPage } from "./settings/SettingsPage.tsx";
 import { useAutoSaveReader } from "./settings/use-autosave-reader.ts";
-import { TabContent } from "./TabContent.tsx";
+import { chooseNavFilter, showLibrary } from "./sidebar-navigation.ts";
 import { TopBar } from "./TopBar.tsx";
+import { WorkspaceLayout } from "./WorkspaceLayout.tsx";
 
 export interface AppShellProps {
   bridge: DesktopBridge;
@@ -90,6 +88,8 @@ export function AppShell({ bridge, library, settings }: AppShellProps) {
     setCreating(templateId);
   }, []);
   const { windowControls, modKey } = bridge.bootstrap;
+  // 版面偏好：侧栏收起与否、各面板的尺寸（记在界面自己的存储里）
+  const [layoutPrefs, patchLayout] = useLayoutPrefs();
   const onLibraryPage = (library?.activeTab ?? "library") === "library";
   // ⌘F 在资源库页把焦点放进搜索框（规格 DESKTOP-LIBRARY-VIEW-14）；项目标签页没有搜索框，不拦
   useEffect(() => {
@@ -106,23 +106,42 @@ export function AppShell({ bridge, library, settings }: AppShellProps) {
   }, [onLibraryPage, modKey]);
   const tabs = library?.tabs ?? [];
   const activeTab = library?.activeTab ?? "library";
+  // 侧栏只在资源库标签上显示（设计稿 WebLight、Script 的项目标签页没有它），并且可以收起
+  const sidebarVisible = onLibraryPage && !layoutPrefs.sidebarCollapsed;
+  // ⌃⌘S 是主进程的菜单项（原因同 ⌘N）：资源库标签上收起或显示侧栏，项目标签页上收起或展开文件树
+  // （那里的“侧栏”，规格 DESKTOP-WORKSPACE-62）
+  const toggleSidebar = useCallback(() => {
+    if (onLibraryPage) patchLayout({ sidebarCollapsed: !layoutPrefs.sidebarCollapsed });
+    else patchLayout({ treeCollapsed: !layoutPrefs.treeCollapsed });
+  }, [onLibraryPage, layoutPrefs.sidebarCollapsed, layoutPrefs.treeCollapsed, patchLayout]);
+  useEffect(() => bridge.on("sidebar.toggle", toggleSidebar), [bridge, toggleSidebar]);
+  const selectTab = useCallback((id: string) => void bridge.call("tab.select", id), [bridge]);
   const activeTabRow = tabs.find((tab) => tab.id === activeTab);
   const total = library?.playgrounds.length ?? 0;
   return (
     <OverlayContext.Provider value={overlays}>
       <EditorWorkspace bridge={bridge} tabs={tabs} activeTab={activeTab} autosave={readAutoSave}>
-        <div className={styles.root}>
-          <Sidebar
-            windowControls={windowControls}
-            total={total}
-            counts={navCounts(library?.playgrounds ?? [])}
-            nav={query.nav}
-            onNavChange={(nav) => patchQuery({ nav })}
-            templateCount={library?.templates.length ?? 0}
-            libraryRoot={library?.libraryRoot ?? ""}
-            page={page}
-            onNavigate={setPage}
-          />
+        <div
+          className={styles.root}
+          data-sidebar={sidebarVisible ? "shown" : "hidden"}
+          data-controls={windowControls.inset === 0 ? "none" : windowControls.side}
+        >
+          {sidebarVisible ? (
+            <Sidebar
+              windowControls={windowControls}
+              total={total}
+              counts={navCounts(library?.playgrounds ?? [])}
+              nav={query.nav}
+              onNavChange={(nav) => chooseNavFilter(nav, { activeTab, patchQuery, selectTab })}
+              templateCount={library?.templates.length ?? 0}
+              libraryRoot={library?.libraryRoot ?? ""}
+              page={page}
+              onNavigate={(next) => {
+                showLibrary({ activeTab, selectTab });
+                setPage(next);
+              }}
+            />
+          ) : null}
           {page === "settings" ? null : (
             <TopBar
               bridge={bridge}
@@ -132,11 +151,13 @@ export function AppShell({ bridge, library, settings }: AppShellProps) {
               running={runningCount(library?.playgrounds ?? [])}
               playgrounds={library?.playgrounds ?? []}
               activeTabRow={activeTabRow}
+              sidebarVisible={sidebarVisible}
+              onToggleSidebar={onLibraryPage ? toggleSidebar : undefined}
               onNew={openPicker}
               search={query.search}
               onSearchChange={(search) => patchQuery({ search })}
               searchRef={searchRef}
-              onSelect={(id) => void bridge.call("tab.select", id)}
+              onSelect={selectTab}
               onClose={(id) => void bridge.call("tab.close", id)}
             />
           )}
@@ -157,19 +178,13 @@ export function AppShell({ bridge, library, settings }: AppShellProps) {
                   onNewNamed={openPickerNamed}
                 />
               ) : (
-                <div className={styles.workspace}>
-                  <div className={styles.top}>
-                    <TabContent key={activeTabRow.id} bridge={bridge} tab={activeTabRow} />
-                    {isScript(activeTabRow) ? (
-                      <ScriptOutput bridge={bridge} tab={activeTabRow} />
-                    ) : (
-                      <PreviewPane bridge={bridge} tab={activeTabRow} overlays={overlays} />
-                    )}
-                  </div>
-                  {isScript(activeTabRow) ? null : (
-                    <ConsolePanel bridge={bridge} tab={activeTabRow} />
-                  )}
-                </div>
+                <WorkspaceLayout
+                  bridge={bridge}
+                  tab={activeTabRow}
+                  overlays={overlays}
+                  prefs={layoutPrefs}
+                  onPrefs={patchLayout}
+                />
               )}
             </main>
           )}

@@ -23,21 +23,15 @@
   min-block-size: 0;
 }
 
-/* 项目标签：上面一行（左内容、右预览或脚本输出），下面是控制台；卡片间距和窗口边距来自设计变量 */
-.workspace {
-  flex: 1;
-  min-inline-size: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-card-gap);
-  box-sizing: border-box;
-  padding-block-end: var(--size-window-inset);
-  padding-inline-end: var(--size-window-inset);
+/* 侧栏收起或在项目标签页时，内容区从窗口左边的留白开始，顶栏让开窗口按钮（红黄绿） */
+.root[data-sidebar="hidden"] {
+  --layout-content-left: var(--size-window-inset);
 }
 
-.top {
-  flex: 1;
-  min-block-size: 0;
-  display: flex;
-  gap: var(--size-card-gap);
+.root[data-sidebar="hidden"][data-controls="left"] {
+  --layout-topbar-start: calc(
+    var(--size-window-inset) +
+    var(--size-window-controls) +
+    var(--space-6)
+  );
 }

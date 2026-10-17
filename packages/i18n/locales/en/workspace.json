@@ -6,8 +6,10 @@
   "workspace.closeConfirm.optOut.label": "Don’t ask again",
   "workspace.closeConfirm.title": "Close {name} and stop it?",
   "workspace.files.add.aria": "New at the playground root",
+  "workspace.files.collapse.label": "Hide file tree",
   "workspace.files.create.aria": "Name of the new file or folder",
   "workspace.files.empty.hint": "There are no files in this playground yet",
+  "workspace.files.expand.label": "Show file tree",
   "workspace.files.failed.hint": "The file action didn’t work. Please try again",
   "workspace.files.menu.aria": "File tree actions",
   "workspace.files.nameExists.hint": "A file or folder named {name} already exists",
@@ -26,6 +28,10 @@
   "workspace.files.trashItem.action": "Move to {term_trash}",
   "workspace.files.trashed.hint": "Moved to {term_trash}",
   "workspace.files.tree.aria": "File tree",
+  "workspace.resize.console.label": "Resize output panel",
+  "workspace.resize.hint": "Drag to resize, double-click to reset",
+  "workspace.resize.preview.label": "Resize preview",
+  "workspace.resize.tree.label": "Resize file tree",
   "workspace.tab.close.label": "Close {name}",
   "workspace.tabs.aria": "Tabs"
 }

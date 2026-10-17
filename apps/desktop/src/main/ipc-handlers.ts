@@ -233,3 +233,8 @@ export function registerBridgeHandlers(
 export function requestPicker(host: Pick<IpcHost, "send">): void {
   host.send(desktopChannels.event, "picker.open", undefined);
 }
+
+/** 通知界面收起或显示侧栏（应用菜单的“切换侧栏”，⌃⌘S） */
+export function requestSidebarToggle(host: Pick<IpcHost, "send">): void {
+  host.send(desktopChannels.event, "sidebar.toggle", undefined);
+}

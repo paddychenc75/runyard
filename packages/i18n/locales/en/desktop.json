@@ -85,6 +85,7 @@
   "desktop.failure.stepStart.label": "Start dev server",
   "desktop.failure.steps.aria": "Start-up steps",
   "desktop.menu.new.label": "New…",
+  "desktop.menu.sidebar.label": "Toggle Sidebar",
   "desktop.missing.command.label": "Install command",
   "desktop.missing.copied.label": "Copied",
   "desktop.missing.copy.action": "Copy command",

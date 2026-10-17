@@ -1,6 +1,6 @@
-/* 设计稿 WebLight、Script：圆角 16 的内容卡片，顶上 40 高的标签条，下面是面包屑和代码；与右边的预览 1.05 比 1 */
+/* 设计稿 WebLight、Script：圆角 16 的内容卡片，顶上 40 高的标签条，下面是面包屑和代码；右边的预览是固定宽度（可拖，默认 1.05 比 1），编辑器吃剩下的 */
 .root {
-  flex: 1.05;
+  flex: 1;
   min-inline-size: 0;
   display: flex;
   flex-direction: column;

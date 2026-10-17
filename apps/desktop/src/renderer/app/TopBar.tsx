@@ -11,6 +11,7 @@ import type { RefObject } from "react";
 import type { BootstrapInfo, DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { PlaygroundRow, TabRow } from "../../shared/library-state.ts";
 import { useFlushProject } from "../features/editor/EditorWorkspace.tsx";
+import { PaneToggleButton } from "./PaneToggleButton.tsx";
 import { RunBar } from "./RunBar.tsx";
 import { SearchBox } from "./SearchBox.tsx";
 import styles from "./TopBar.module.css";
@@ -29,6 +30,9 @@ export interface TopBarProps {
   activeTabRow: TabRow | undefined;
   /** 顶栏右端的“新建”：打开模板选择器 */
   onNew: () => void;
+  /** 侧栏现在是不是显示着，和切换它的回调（项目标签页没有侧栏，不给就不画按钮） */
+  sidebarVisible: boolean;
+  onToggleSidebar?: () => void;
   /** 搜索框的文字和焦点：只在资源库标签上显示（规格 DESKTOP-LIBRARY-VIEW-14） */
   search: string;
   onSearchChange: (value: string) => void;
@@ -51,6 +55,8 @@ export function TopBar({
   playgrounds,
   activeTabRow,
   onNew,
+  sidebarVisible,
+  onToggleSidebar,
   search,
   onSearchChange,
   searchRef,
@@ -74,6 +80,19 @@ export function TopBar({
   ];
   return (
     <div className={styles.root}>
+      {onToggleSidebar === undefined ? null : (
+        <GlassSurface material="toolbar" className={styles.toggle}>
+          <PaneToggleButton
+            label={
+              sidebarVisible
+                ? t("library.sidebar.collapse.label")
+                : t("library.sidebar.expand.label")
+            }
+            expanded={sidebarVisible}
+            onClick={onToggleSidebar}
+          />
+        </GlassSurface>
+      )}
       <TabStrip
         label={t("workspace.tabs.aria")}
         items={items}

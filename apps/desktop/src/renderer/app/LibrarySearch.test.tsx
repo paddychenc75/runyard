@@ -86,8 +86,8 @@ function setup(state: LibraryState) {
     reducedTransparency: false,
     highContrast: false,
   };
-  const on = (_event: string, handler: (next: LibraryState) => void) => {
-    handlers.push(handler);
+  const on = (event: string, handler: (next: LibraryState) => void) => {
+    if (event === "library.changed") handlers.push(handler);
     return () => {};
   };
   const bridge = { bootstrap, call, on } as unknown as DesktopBridge;

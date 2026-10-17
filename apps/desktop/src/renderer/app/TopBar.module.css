@@ -2,7 +2,8 @@
 .root {
   position: absolute;
   inset-block-start: calc(var(--size-window-inset) + var(--space-3));
-  inset-inline: calc(var(--layout-content-left) + var(--space-6)) var(--space-7);
+  inset-inline: var(--layout-topbar-start, calc(var(--layout-content-left) + var(--space-6)))
+    var(--space-7);
   display: flex;
   align-items: center;
   block-size: var(--size-toolbar);
@@ -36,4 +37,16 @@
   block-size: var(--size-toolbar);
   margin-inline-start: var(--space-5);
   padding-inline: var(--space-8);
+}
+
+/* 侧栏的收起钮：和“N 个运行中”一样的玻璃圆钮，放在标签条左边 */
+.toggle {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  inline-size: var(--size-toolbar);
+  block-size: var(--size-toolbar);
+  margin-inline-end: var(--space-5);
 }
