@@ -138,7 +138,12 @@ export function realTerminals(options: RealTerminalsOptions = {}): RealTerminals
     return found;
   };
   const markers: string[] = [];
-  const link = new LoopbackLink({ earlyExitMs: 400, graceMs: 800, ...options.overrides }, platform);
+  // 测试要的是确定的 shell：规格场景的前提是“用户的登录 shell 是 /bin/zsh”，而 CI 机器上的用户记录里是 /bin/bash。
+  // 真的“取自用户记录”那条路由打包后的冒烟和 terminal-process 的测试走
+  const link = new LoopbackLink(
+    { earlyExitMs: 400, graceMs: 800, loginShell: async () => "/bin/zsh", ...options.overrides },
+    platform,
+  );
   const service = new TerminalService({
     launch: () => link,
     folderOf: (id) => folders[id] ?? null,
