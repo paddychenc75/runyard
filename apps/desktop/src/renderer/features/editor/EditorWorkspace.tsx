@@ -47,7 +47,7 @@ export interface EditorWorkspaceProps {
   tabs: readonly TabRow[];
   /** 当前标签：资源库是 "library"，项目标签是项目 id */
   activeTab: string;
-  /** 自动保存的档位；设置页（#188）做出来之前不传，用默认的“停止输入 1 秒后” */
+  /** 自动保存的档位，来自设置页（#188）；不传用默认的“停止输入 1 秒后” */
   autosave?: () => AutosaveMode;
   children: ReactNode;
 }

@@ -15,6 +15,7 @@ import { editorFileMethods, type FileOpeners } from "./editor-files/editor-ipc.t
 import type { EditorFileService } from "./editor-files/file-service.ts";
 import type { LibraryController } from "./library-controller.ts";
 import type { QuitFlushGate } from "./quit-flush-gate.ts";
+import type { SettingsController } from "./settings-controller.ts";
 
 // 把界面发来的消息接到控制器上。Electron 的 ipcMain 通过 IpcHost 这个接口传进来，测试里换成假的。
 
@@ -93,6 +94,7 @@ export function registerBridgeHandlers(
   files?: EditorFileService,
   openers?: FileOpeners,
   quitGate?: QuitFlushGate,
+  settings?: SettingsController,
 ): () => void {
   // 方法名到控制器的映射；参数不是预期类型时不调用控制器
   const methods: Record<DesktopMethod, (param: unknown) => unknown> = {
@@ -163,6 +165,18 @@ export function registerBridgeHandlers(
       const request = parseCreateRequest(value);
       return request === null ? rejectedCreate : await controller.create(request);
     },
+    // 设置页（#188）；没接线时设置读不到，界面显示默认值
+    "settings.get": () => settings?.get(),
+    "settings.set": (patch) => settings?.set(patch),
+    "settings.editors": async () => (await settings?.editors()) ?? [],
+    "settings.pickLibraryRoot": async () => (await settings?.pickLibraryRoot()) ?? null,
+    "settings.revealLibraryRoot": async () => {
+      await settings?.revealLibraryRoot();
+    },
+    "playground.openInEditor": async (id) => {
+      const playground = text(id);
+      if (playground !== null) await settings?.openInEditor(playground);
+    },
     "playground.edit": async (value) => {
       const request = parseEditRequest(value);
       return request === null ? rejectedEdit : await controller.edits.edit(request);
@@ -205,9 +219,13 @@ export function registerBridgeHandlers(
   const stopConsole = controller.onConsole((append) =>
     host.send(desktopChannels.event, "console.appended", append),
   );
+  const stopSettings = settings?.onChange((changed) =>
+    host.send(desktopChannels.event, "settings.changed", changed),
+  );
   return () => {
     stopState();
     stopConsole();
+    stopSettings?.();
   };
 }
 

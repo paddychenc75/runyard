@@ -741,6 +741,9 @@
 | `ports` | `{ min: integer; max: integer }` | 否 | 分配端口的范围，含两端 |
 | `urlNewSkipConfirmForBuiltin` | `boolean` | 否 |  |
 | `updateCheck` | `boolean` | 否 |  |
+| `autoSave` | `'delay' \| 'blur' \| 'off'` | 否 | 编辑器自动保存：停止输入后、失去焦点时、关闭 |
+| `theme` | `'system' \| 'light' \| 'dark'` | 否 | 界面明暗：跟随系统、浅色、深色 |
+| `language` | `'en' \| 'zh-CN'` | 否 | 桌面应用界面语言；没写就按系统语言（命令行的语言在 cli.json） |
 | `confirmCloseRunningTab` | `boolean` | 否 | 关闭运行中的标签页前是否确认；“不再提示”关掉它 |
 
 出参：
@@ -1001,6 +1004,9 @@
 | `ports` | `{ min: integer; max: integer }` | 是 | 分配端口的范围，含两端 |
 | `urlNewSkipConfirmForBuiltin` | `boolean` | 是 |  |
 | `updateCheck` | `boolean` | 是 |  |
+| `autoSave` | `'delay' \| 'blur' \| 'off'` | 是 | 编辑器自动保存：停止输入后、失去焦点时、关闭 |
+| `theme` | `'system' \| 'light' \| 'dark'` | 是 | 界面明暗：跟随系统、浅色、深色 |
+| `language` | `'en' \| 'zh-CN'` | 否 | 桌面应用界面语言；没写就按系统语言（命令行的语言在 cli.json） |
 | `confirmCloseRunningTab` | `boolean` | 是 | 关闭运行中的标签页前是否确认；“不再提示”关掉它 |
 
 ### `TemplateRecord`

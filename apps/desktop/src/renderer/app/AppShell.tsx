@@ -2,6 +2,7 @@ import { useT } from "@runyard/i18n/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { LibraryState } from "../../shared/library-state.ts";
+import type { SettingsApi } from "../bridge/use-settings.ts";
 import { EditorWorkspace } from "../features/editor/EditorWorkspace.tsx";
 import { defaultQuery, type LibraryQuery, navCounts } from "../library-query.ts";
 import { runningCount } from "../library-view.ts";
@@ -17,6 +18,8 @@ import { PreviewPane } from "./PreviewPane.tsx";
 import { isScript } from "./run-view.ts";
 import { ScriptOutput } from "./ScriptOutput.tsx";
 import { Sidebar } from "./Sidebar.tsx";
+import { SettingsPage } from "./settings/SettingsPage.tsx";
+import { useAutoSaveReader } from "./settings/use-autosave-reader.ts";
 import { TabContent } from "./TabContent.tsx";
 import { TopBar } from "./TopBar.tsx";
 
@@ -24,18 +27,27 @@ export interface AppShellProps {
   bridge: DesktopBridge;
   /** 第一次推送之前是 null */
   library: LibraryState | null;
+  settings: SettingsApi;
 }
 
 // 主窗口的外壳（设计稿 Main）：悬浮的玻璃侧栏、顶部的标签条，右下是内容区。
 // 资源库标签的内容区是资源库页（整宽的项目表）；项目标签上面是 TabContent 加右边的预览（原生视图）
 // 或脚本输出，下面是控制台（脚本的输出就在右边，不再另开）。
-export function AppShell({ bridge, library }: AppShellProps) {
+export function AppShell({ bridge, library, settings }: AppShellProps) {
   const t = useT();
   const [overlays] = useState(() => new OverlayCounter());
   const title = t("desktop.window.title");
   useEffect(() => {
     document.title = title;
   }, [title]);
+  // 设置是主窗口里的一页（规格 DESKTOP-SETTINGS-01）：侧栏点“设置”进，点“全部”或打开别的标签回到资源库
+  const [page, setPage] = useState<"library" | "settings">("library");
+  const activeTabId = library?.activeTab ?? "library";
+  useEffect(() => {
+    setPage("library");
+  }, [activeTabId]);
+  // 编辑器按设置里的自动保存档位存（规格 DESKTOP-SETTINGS-11）
+  const readAutoSave = useAutoSaveReader(settings.settings);
   const [pickerOpen, setPickerOpen] = useState(false);
   // 选好模板后的新建弹窗（规格 DESKTOP-CREATE-FLOW-05）：值是模板标识，没有弹窗是 null
   const [creating, setCreating] = useState<string | null>(null);
@@ -98,7 +110,7 @@ export function AppShell({ bridge, library }: AppShellProps) {
   const total = library?.playgrounds.length ?? 0;
   return (
     <OverlayContext.Provider value={overlays}>
-      <EditorWorkspace bridge={bridge} tabs={tabs} activeTab={activeTab}>
+      <EditorWorkspace bridge={bridge} tabs={tabs} activeTab={activeTab} autosave={readAutoSave}>
         <div className={styles.root}>
           <Sidebar
             windowControls={windowControls}
@@ -108,49 +120,59 @@ export function AppShell({ bridge, library }: AppShellProps) {
             onNavChange={(nav) => patchQuery({ nav })}
             templateCount={library?.templates.length ?? 0}
             libraryRoot={library?.libraryRoot ?? ""}
+            page={page}
+            onNavigate={setPage}
           />
-          <TopBar
-            bridge={bridge}
-            modKey={modKey}
-            tabs={tabs}
-            activeTab={activeTab}
-            running={runningCount(library?.playgrounds ?? [])}
-            playgrounds={library?.playgrounds ?? []}
-            activeTabRow={activeTabRow}
-            onNew={openPicker}
-            search={query.search}
-            onSearchChange={(search) => patchQuery({ search })}
-            searchRef={searchRef}
-            onSelect={(id) => void bridge.call("tab.select", id)}
-            onClose={(id) => void bridge.call("tab.close", id)}
-          />
-          <main className={styles.content}>
-            {activeTabRow === undefined ? (
-              <LibraryPage
-                bridge={bridge}
-                library={library}
-                query={query}
-                onQueryChange={patchQuery}
-                onNew={openPicker}
-                onCreateFrom={onPick}
-                onNewNamed={openPickerNamed}
-              />
-            ) : (
-              <div className={styles.workspace}>
-                <div className={styles.top}>
-                  <TabContent key={activeTabRow.id} bridge={bridge} tab={activeTabRow} />
-                  {isScript(activeTabRow) ? (
-                    <ScriptOutput bridge={bridge} tab={activeTabRow} />
-                  ) : (
-                    <PreviewPane bridge={bridge} tab={activeTabRow} overlays={overlays} />
+          {page === "settings" ? null : (
+            <TopBar
+              bridge={bridge}
+              modKey={modKey}
+              tabs={tabs}
+              activeTab={activeTab}
+              running={runningCount(library?.playgrounds ?? [])}
+              playgrounds={library?.playgrounds ?? []}
+              activeTabRow={activeTabRow}
+              onNew={openPicker}
+              search={query.search}
+              onSearchChange={(search) => patchQuery({ search })}
+              searchRef={searchRef}
+              onSelect={(id) => void bridge.call("tab.select", id)}
+              onClose={(id) => void bridge.call("tab.close", id)}
+            />
+          )}
+          {page === "settings" ? (
+            <main className={styles.settings}>
+              <SettingsPage bridge={bridge} api={settings} library={library} />
+            </main>
+          ) : (
+            <main className={styles.content}>
+              {activeTabRow === undefined ? (
+                <LibraryPage
+                  bridge={bridge}
+                  library={library}
+                  query={query}
+                  onQueryChange={patchQuery}
+                  onNew={openPicker}
+                  onCreateFrom={onPick}
+                  onNewNamed={openPickerNamed}
+                />
+              ) : (
+                <div className={styles.workspace}>
+                  <div className={styles.top}>
+                    <TabContent key={activeTabRow.id} bridge={bridge} tab={activeTabRow} />
+                    {isScript(activeTabRow) ? (
+                      <ScriptOutput bridge={bridge} tab={activeTabRow} />
+                    ) : (
+                      <PreviewPane bridge={bridge} tab={activeTabRow} overlays={overlays} />
+                    )}
+                  </div>
+                  {isScript(activeTabRow) ? null : (
+                    <ConsolePanel bridge={bridge} tab={activeTabRow} />
                   )}
                 </div>
-                {isScript(activeTabRow) ? null : (
-                  <ConsolePanel bridge={bridge} tab={activeTabRow} />
-                )}
-              </div>
-            )}
-          </main>
+              )}
+            </main>
+          )}
           <CloseConfirmDialog bridge={bridge} request={library?.closeRequest ?? null} />
           {creating !== null && library !== null ? (
             <CreateDialog

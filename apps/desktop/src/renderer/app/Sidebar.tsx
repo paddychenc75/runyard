@@ -25,10 +25,13 @@ export interface SidebarProps {
   templateCount: number;
   /** 资源库文件夹，主目录缩成 ~；还没读到是空串 */
   libraryRoot: string;
+  /** 当前显示的页：资源库或设置（规格 DESKTOP-SETTINGS-01） */
+  page: "library" | "settings";
+  onNavigate: (page: "library" | "settings") => void;
 }
 
 // 侧栏：顶上给窗口按钮留位置，下面是品牌、资源库的筛选、管理的几个页面，底部是资源库的概况。
-// 资源库的四个固定筛选可点，右边是符合的项目数（#181）；管理里的页面随 #169、#170 等，现在列出但点不了（设计稿 Main）。
+// 资源库的四个固定筛选可点，右边是符合的项目数（#181）；管理里“设置”可点（#188），其余页面随 #169、#170 等，现在列出但点不了（设计稿 Main）。
 export function Sidebar({
   windowControls,
   total,
@@ -37,6 +40,8 @@ export function Sidebar({
   onNavChange,
   templateCount,
   libraryRoot,
+  page,
+  onNavigate,
 }: SidebarProps) {
   const t = useT();
   const format = useFormat();
@@ -66,7 +71,6 @@ export function Sidebar({
           id: "settings",
           label: t("library.nav.settings.label"),
           icon: "sliders",
-          disabled: true,
         },
       ],
     },
@@ -82,8 +86,15 @@ export function Sidebar({
         <NavList
           label={t("library.nav.aria")}
           sections={sections}
-          value={nav}
-          onValueChange={(id) => onNavChange(id as NavFilter)}
+          value={page === "settings" ? "settings" : nav}
+          onValueChange={(id) => {
+            if (id === "settings") {
+              onNavigate("settings");
+              return;
+            }
+            onNavChange(id as NavFilter);
+            onNavigate("library");
+          }}
         />
       </ScrollArea>
       <div className={styles.footer}>

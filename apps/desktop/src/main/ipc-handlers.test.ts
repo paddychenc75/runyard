@@ -8,6 +8,7 @@ import {
   requestPicker,
 } from "./ipc-handlers.ts";
 import type { LibraryController } from "./library-controller.ts";
+import type { SettingsController } from "./settings-controller.ts";
 
 type Handler = (sender: IpcSender, ...args: unknown[]) => unknown;
 
@@ -206,5 +207,79 @@ describe("registerBridgeHandlers", () => {
       event: "picker.open",
       state: undefined,
     });
+  });
+});
+
+describe("设置通道", () => {
+  function withSettings() {
+    const { host, handlers, sent } = (() => {
+      const handlers = new Map<string, Handler>();
+      const sent: { channel: string; event: string; payload: unknown }[] = [];
+      const host: IpcHost = {
+        handle: (channel, handler) => void handlers.set(channel, handler),
+        handleSync: () => {},
+        send: (channel, event, payload) => void sent.push({ channel, event, payload }),
+      };
+      return { host, handlers, sent };
+    })();
+    const seen: unknown[][] = [];
+    let push: ((settings: unknown) => void) | undefined;
+    const settings = {
+      get: async () => ({ theme: "system" }),
+      set: async (patch: unknown) => {
+        seen.push(["set", patch]);
+        return patch;
+      },
+      editors: async () => [{ id: "cursor", name: "Cursor" }],
+      pickLibraryRoot: async () => null,
+      revealLibraryRoot: async () => void seen.push(["reveal"]),
+      openInEditor: async (id: string) => void seen.push(["editor", id]),
+      onChange: (listener: (settings: unknown) => void) => {
+        push = listener;
+        return () => {};
+      },
+    } as unknown as SettingsController;
+    const controller = {
+      onChange: () => () => {},
+      onConsole: () => () => {},
+    } as unknown as LibraryController;
+    registerBridgeHandlers(
+      host,
+      controller,
+      {} as BootstrapInfo,
+      undefined,
+      undefined,
+      undefined,
+      settings,
+    );
+    const call = (sender: IpcSender, method: string, param?: unknown) =>
+      handlers.get(desktopChannels.call)?.(sender, method, param);
+    return { call, seen, sent, push: (value: unknown) => push?.(value) };
+  }
+
+  it("设置的方法转给设置控制器；项目 id 不是非空字符串时不动", async () => {
+    const { call, seen } = withSettings();
+    expect(await call(app, "settings.get")).toEqual({ theme: "system" });
+    await call(app, "settings.set", { theme: "dark" });
+    expect(await call(app, "settings.editors")).toEqual([{ id: "cursor", name: "Cursor" }]);
+    expect(await call(app, "settings.pickLibraryRoot")).toBeNull();
+    await call(app, "settings.revealLibraryRoot");
+    await call(app, "playground.openInEditor", "demo");
+    await call(app, "playground.openInEditor", "");
+    expect(seen).toEqual([["set", { theme: "dark" }], ["reveal"], ["editor", "demo"]]);
+  });
+
+  it("本应用之外的页面调不动设置", () => {
+    const { call, seen } = withSettings();
+    expect(() => call(outsider, "settings.set", { theme: "dark" })).toThrow();
+    expect(seen).toEqual([]);
+  });
+
+  it("设置变化作为 settings.changed 事件推给界面", () => {
+    const { push, sent } = withSettings();
+    push({ theme: "dark" });
+    expect(sent).toEqual([
+      { channel: desktopChannels.event, event: "settings.changed", payload: { theme: "dark" } },
+    ]);
   });
 });

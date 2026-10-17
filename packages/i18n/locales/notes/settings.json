@@ -1,0 +1,13 @@
+{
+  "settings.libraryRoot.confirm.title": {
+    "path": "新位置，主目录缩成 ~；用户选的，不翻译"
+  },
+  "settings.builtinSkip.title": {
+    "glossarySkip": ["项目"],
+    "glossarySkipReason": "设计稿 Settings 的中文写“来自链接的新建请求”，英文写 New-playground links，两边的说法本来就不成对"
+  },
+  "settings.runNote.label": {
+    "glossarySkip": ["项目"],
+    "glossarySkipReason": "设计稿 Settings 的中文这句说“标签页即运行”，没有“项目”这个词，英文写 playground"
+  }
+}

@@ -14,6 +14,15 @@
   min-block-size: 0;
 }
 
+/* 设置页：没有顶栏，内容从窗口顶边起（设计稿 Settings） */
+.settings {
+  position: absolute;
+  inset-block: 0;
+  inset-inline: var(--layout-content-left) 0;
+  display: flex;
+  min-block-size: 0;
+}
+
 /* 项目标签：上面一行（左内容、右预览或脚本输出），下面是控制台；卡片间距和窗口边距来自设计变量 */
 .workspace {
   flex: 1;

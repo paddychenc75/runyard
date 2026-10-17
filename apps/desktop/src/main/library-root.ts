@@ -16,3 +16,11 @@ export async function readLibraryRoot(client: LibraryClient, home: string): Prom
     return "";
   }
 }
+
+/** 关闭运行中的标签页前要不要确认；读不到设置就当作要确认：宁可多问一次，不要悄悄停掉用户的运行 */
+export async function readConfirmClose(client: LibraryClient): Promise<boolean> {
+  return await client.call("settings.get", {}).then(
+    (settings) => settings.confirmCloseRunningTab,
+    () => true,
+  );
+}

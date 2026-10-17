@@ -21,7 +21,7 @@ import type {
 import { createPlayground } from "./create-playground.ts";
 import { toDesktopError } from "./desktop-error.ts";
 import { frameBeforeCrash } from "./last-frame.ts";
-import { readLibraryRoot } from "./library-root.ts";
+import { readConfirmClose, readLibraryRoot } from "./library-root.ts";
 import { PlaygroundEdits } from "./playground-edits.ts";
 import { classifyStartError } from "./start-error.ts";
 import { StartTimeline } from "./start-timeline.ts";
@@ -30,17 +30,12 @@ import { LIBRARY_TAB, WorkspaceTabs } from "./workspace-tabs.ts";
 // 窗口背后的逻辑：向管理进程要项目、模板、运行，转成界面看的状态；执行界面发来的动作。
 // 不认识 Electron：预览通过 PreviewHost 这个接口交给外面，所以可以用假客户端整个测。
 
-export type {
-  LibraryClient,
-  LibraryControllerOptions,
-  PreviewHost,
-  SystemActions,
-} from "./controller-hosts.ts";
+export type { LibraryClient, PreviewHost, SystemActions } from "./controller-hosts.ts";
 
 export class LibraryController {
   readonly #client: LibraryClient;
   readonly #clientId: string;
-  readonly #locale: Locale;
+  #locale: Locale;
   readonly #preview: PreviewHost;
   readonly #system: SystemActions;
   readonly #home: string;
@@ -91,6 +86,13 @@ export class LibraryController {
     } catch (error) {
       this.#error = toDesktopError(error);
     }
+    await this.refresh();
+  }
+
+  /** 设置页改了语言或资源库位置：按新的重读、推给界面；旧位置的文件一个不碰（规格 DESKTOP-SETTINGS-03、06） */
+  async applySettings(locale: Locale): Promise<void> {
+    this.#locale = locale;
+    this.#libraryRoot = await readLibraryRoot(this.#client, this.#home);
     await this.refresh();
   }
 
@@ -212,12 +214,7 @@ export class LibraryController {
       await this.#closeNow(playgroundId);
       return;
     }
-    // 读不到设置就当作要确认：宁可多问一次，不要悄悄停掉用户的运行
-    const confirmNeeded = await this.#client.call("settings.get", {}).then(
-      (settings) => settings.confirmCloseRunningTab,
-      () => true,
-    );
-    if (!confirmNeeded) {
+    if (!(await readConfirmClose(this.#client))) {
       await this.#closeNow(playgroundId);
       return;
     }
@@ -273,13 +270,13 @@ export class LibraryController {
 
   /** 更多菜单“在访达中显示”：路径取管理进程给的那份，界面只报项目 id */
   revealFolder(playgroundId: string): void {
-    const path = this.#folderOf(playgroundId);
+    const path = this.folderOf(playgroundId);
     if (path !== null) this.#system.revealInFileManager(path);
   }
 
   /** 更多菜单“复制路径”：把项目文件夹的绝对路径放进剪贴板 */
   copyFolderPath(playgroundId: string): void {
-    const path = this.#folderOf(playgroundId);
+    const path = this.folderOf(playgroundId);
     if (path !== null) this.#system.copyText(path);
   }
 
@@ -293,7 +290,7 @@ export class LibraryController {
     if (/^https:\/\/\S+$/.test(url)) this.#system.openExternal(url);
   }
 
-  #folderOf(playgroundId: string): string | null {
+  folderOf(playgroundId: string): string | null {
     return this.#playgrounds.find((playground) => playground.id === playgroundId)?.path ?? null;
   }
 

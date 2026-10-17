@@ -11,6 +11,7 @@ class FakeClient {
   playgrounds = [playground("a"), playground("b")];
   runs: ReturnType<typeof run>[] = [];
   confirmCloseRunningTab = true;
+  libraryRoot = "/home/u/Runyard";
   settingsFails = false;
 
   call = async <M extends MethodName>(
@@ -21,7 +22,7 @@ class FakeClient {
     if (method === "settings.get") {
       if (this.settingsFails) throw new Error("unavailable");
       return {
-        libraryRoot: "/home/u/Runyard",
+        libraryRoot: this.libraryRoot,
         confirmCloseRunningTab: this.confirmCloseRunningTab,
       } as MethodResult<M>;
     }
@@ -145,6 +146,38 @@ describe("LibraryController 关闭标签页", () => {
       { playground: "a" },
       { playground: "b" },
     ]);
+  });
+
+  it("[DESKTOP-SETTINGS-06] 换资源库位置后重读：显示新位置，列表是新位置里的 2 个项目，不对旧位置发任何删除或移动", async () => {
+    const { client, controller } = await setup([]);
+    client.playgrounds = Array.from({ length: 20 }, (_, i) => playground(`old-${i}`));
+    await controller.refresh();
+    expect(controller.getState().playgrounds).toHaveLength(20);
+    client.libraryRoot = "/home/u/Work/lib";
+    client.playgrounds = [playground("new-1"), playground("new-2")];
+    await controller.applySettings("zh-CN");
+    expect(controller.getState().libraryRoot).toBe("~/Work/lib");
+    expect(
+      controller
+        .getState()
+        .playgrounds.map((row) => row.id)
+        .sort(),
+    ).toEqual(["new-1", "new-2"]);
+    expect(client.calls.map((call) => call.method)).not.toContain("playground.trash");
+  });
+
+  it("[DESKTOP-SETTINGS-08] 勾过“不再提示”之后，在设置里把“关闭前询问”打开，再关闭运行中的标签页，确认弹窗重新出现", async () => {
+    const { client, controller } = await setup([readyTabRun("a"), readyTabRun("b")]);
+    await controller.openProject("a");
+    await controller.openProject("b");
+    await controller.requestCloseTab("a");
+    await controller.confirmClose("a", true);
+    expect(client.confirmCloseRunningTab).toBe(false);
+    // 设置页的开关就是这一次 settings.set
+    await client.call("settings.set", { confirmCloseRunningTab: true });
+    await controller.requestCloseTab("b");
+    expect(controller.getState().closeRequest).toEqual({ id: "b", name: "b" });
+    expect(tabsOf(controller)).toEqual(["b"]);
   });
 
   it("[DESKTOP-WORKSPACE-08] 勾选后取消不记住：不写设置，下次关闭仍然弹出确认", async () => {

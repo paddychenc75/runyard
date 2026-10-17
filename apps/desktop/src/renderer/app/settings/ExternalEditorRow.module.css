@@ -1,0 +1,6 @@
+/* 按钮里的“名字 + 向下的小箭头”，两者间隔 8（设计稿 Settings） */
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+}

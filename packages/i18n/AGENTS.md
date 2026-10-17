@@ -11,7 +11,7 @@
 - `createTranslator({ locale, platform, catalogs })` 得到 `{ locale, t }`；`t(key, values)` 返回 `Localized`。
 - `createTestTranslator()`：测试用，返回“键加参数”（`⟦键|参数=值⟧`），测试断言键，不断言句子。
 - `cliCatalogs`：命令行打包的文案组（两种语言），交给 `createTranslator({ catalogs })`；新增文案组时加进这个列表（`src/cli-catalogs.ts`）。
-- `desktopCatalogs`：桌面应用打包的文案组（`desktop`、`errors`、`notice`、`runState`、`platform`、`format`），同样的用法（`src/desktop-catalogs.ts`）；`desktop` 组放桌面外壳自己的文字，键以 `desktop.` 开头。`library`、`create`、`workspace`、`ui` 等界面文案组随第一个用到它们的界面改动一起建：`i18n-unused` 不许有没人引用的键，所以不先建空壳；新建时把它们加进这个列表。
+- `desktopCatalogs`：桌面应用打包的文案组（`desktop`、`settings`、`errors`、`notice`、`runState`、`platform`、`format`），同样的用法（`src/desktop-catalogs.ts`）；`desktop` 组放桌面外壳自己的文字，键以 `desktop.` 开头。`library`、`create`、`workspace`、`ui` 等界面文案组随第一个用到它们的界面改动一起建：`i18n-unused` 不许有没人引用的键，所以不先建空壳；新建时把它们加进这个列表。
 - `createFormat(translator)`：数字、日期、日期加时间、文件大小、技术性时长、说给人听的时长、相对时间。
 - `@runyard/i18n/react`（`src/react/`，用 `createElement` 写，没有 JSX）：`<I18nProvider locale platform catalogs>`（`catalogs` 要引用稳定，语言变了整棵树重新取文案）；钩子 `useT()`、`useFormat()`、`useLocale()`；`<T k values components />` 给带标签的文案（`components` 把 `<code>` 这类标签换成组件）；`htmlLang(locale)` 给 `<html lang>`。没包 Provider 就用钩子会抛开发者诊断。
 - 伪语言：`pseudoLocale`（`en-XA`）。`createTranslator({ locale: "en-XA" })` 从英文文案生成：字母加重音、末尾补约 40%、首尾加 `⟦ ⟧`，参数和标签保持原样；`translator.locale` 是 `en`（数字和日期按英文）。它不在 `locales` 里，设置页的语言列表看不到；只许开发版和测试传入，谁来开关由应用决定。`pseudolocalize(icu)` 是底层纯函数。
