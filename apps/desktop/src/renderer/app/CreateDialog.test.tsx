@@ -110,7 +110,7 @@ describe("新建弹窗", () => {
     expect([nameBox.selectionStart, nameBox.selectionEnd]).toEqual([0, 9]);
   });
 
-  it("[PRD #prd-create-dialog] 资源库在网盘同步目录下：弹窗里给一条警告；不在就没有", async () => {
+  it("[DESKTOP-CREATE-FLOW-20] 资源库在网盘同步目录下：弹窗里给一条警告；不在就没有", async () => {
     const { dialog } = await openCreateDialog([], { ok: true }, true);
     expect(dialog.querySelector("[data-synced-warning]")?.textContent).toContain("网盘同步目录");
     cleanup();
