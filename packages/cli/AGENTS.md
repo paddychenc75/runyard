@@ -12,7 +12,7 @@
 - 声明一条命令：`defineCommand({ name, title, positionals, options, needsSupervisor, run })`，加进 `src/commands/declarations.ts`；步骤见 `docs/guides/add-cli-command.md`。`run(context)` 拿到 `CommandContext`（`src/commands/command-context.ts`）：`positionals`、`flag/value/values`、`t`、`format`、`out`、`platform`、`env`、`settings`、`client()`。
 - 输出只经 `context.out`（`src/output/output.ts`）：`result(json, 文字行)`、`line`、`data`、`progress`、`notice`、`stream`；失败直接抛 `cliError(code, params)` 或 `usageError(...)`，或让 `ClientError` / `PlatformError` 原样冒出来。
 - `CommandContext.host`（`CliHost`，`src/cli-deps.ts`）：这一份命令行是什么（`install`：app 或 source、版本、位置）、模板数据目录（内置模板、运行器、工具定义）、临时目录、时钟、`probeInstall`（看一眼 PATH 上另一份 runyard 是哪种安装）。组合根给真的，`Harness` 给假的。
-- 组合根 `src/composition-root.ts` 的 `CliConfig` 是管理进程入口位置的唯一配置值（开发时是 `packages/supervisor/src/main.ts`）；打包后的位置没定。
+- 组合根 `src/composition-root.ts` 的 `CliConfig` 是管理进程入口位置的唯一配置值（开发时是 `packages/supervisor/src/main.ts`）；随应用安装时用 `packagedConfig`（`main-packaged.ts` 入口，被打成资源目录里的 `runyard/cli.mjs`）：管理进程入口、模板数据在它旁边，用 `ELECTRON_RUN_AS_NODE` 拉起管理进程，版本和构建标识取旁边的 `manifest.json`（与应用一致，#194）。
 
 ## 本包特有的规则
 

@@ -35,6 +35,8 @@
 - `composeExtensions`（`compose-extensions.ts`）：运行编排 + 日志 + 空闲停止 + 崩溃记录的单一装配，`run-main.ts` 和单元测试现场（`run-harness.test.ts`）都用它；`combineObservers`（`run-observers.ts`）把几个 `RunObserver` 并成一个。`onShutdown` 的顺序：停空闲计时 → 停全部运行 → 等运行记录落盘 → 等日志落盘。
 - 处理函数用 `methodFailure(code, params, debug)` 返回协议错误；`HandlerOutcome` 带“响应写出之后”的动作。
 
+- 打包入口（#194）：`main-packaged.ts` 与 `main.ts` 相同，只是模板数据取自自己旁边的 `templates/`（`template-dirs.ts` 的 `templateDirsUnder`），被打成应用资源目录里的 `runyard/supervisor.mjs`；`runSupervisorMain(argv, templateData?)` 的第二个参数缺省是仓库的 `templates/`。
+
 ## 本包特有的规则
 
 - 可以导入：`@runyard/protocol`、`@runyard/platform`、`@runyard/core`（依赖规则的唯一出处是 `tooling/checks/layers.json`）。不许导入 `i18n`，不产生给人看的句子：错误只有代码加参数加英文 `debug`。
