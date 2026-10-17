@@ -60,6 +60,10 @@ export interface TabRow {
   kind: RunKind;
   /** 最近一次运行的持有者是这个标签页（关闭标签页会停止它）；命令行持有的运行只是被查看 */
   ownedByTab: boolean;
+  /** 脚本：保存了有语法错误的代码，没有重新运行，显示的是上一次的输出（规格 DESKTOP-WORKSPACE-35） */
+  stale: boolean;
+  /** 脚本项目自己的“保存后自动运行”开关；没写过就是开（规格 run/scripts） */
+  scriptAutoRun: boolean;
   /** 模板的显示名（运行条上项目名后面的那一小段）；模板已不在列表里是 null */
   templateName: LocalizedText | null;
   /** 此刻占着的端口；没有端口（脚本）或没运行是 null */

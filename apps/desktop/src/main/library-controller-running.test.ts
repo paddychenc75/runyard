@@ -85,6 +85,9 @@ class QuietPreview implements PreviewHost {
     return null;
   }
   setVisible() {}
+  reload() {}
+  currentUrl = () => undefined;
+  openDevTools() {}
 }
 
 const quietSystem: SystemActions = {

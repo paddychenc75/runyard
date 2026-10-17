@@ -34,3 +34,75 @@
   min-block-size: 0;
   padding-block: var(--space-5);
 }
+
+.spacer {
+  flex: 1;
+}
+
+/* 设计稿 ScriptStale：状态后面一个小的黄色“过期”标记 */
+.stale {
+  flex: none;
+  padding: var(--space-1) var(--space-3);
+  margin-inline-start: var(--space-4);
+  border-radius: var(--radius-capsule);
+  background: var(--color-fill-warning-tint);
+  color: var(--color-status-warning-text);
+  font-size: var(--text-item-size);
+  font-weight: var(--text-control-weight);
+}
+
+/* 输出上方的整行黄色说明 */
+.staleNotice {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin: var(--space-4) var(--space-4) 0;
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-control);
+  background: var(--color-fill-warning-tint);
+  color: var(--color-status-warning-text);
+}
+
+/* 开关和它的文字、全局设置关闭时的说明 */
+.autoRun {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-inline-end: var(--space-5);
+  white-space: nowrap;
+}
+
+.autoRunHint {
+  color: var(--color-text-secondary);
+}
+
+/* 启动失败：原因写在输出区顶上，红色标题，下面是说明和“最后几行”的小标题 */
+.failure {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: var(--space-4) var(--space-4) 0;
+}
+
+.failureTitle {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-status-danger-text);
+  font-weight: var(--text-section-title-weight);
+}
+
+.failureBody {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.failureLabel {
+  margin: var(--space-3) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-item-size);
+}

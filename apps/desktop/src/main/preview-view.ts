@@ -86,9 +86,20 @@ export class ElectronPreviewHost implements PreviewHost {
     this.#apply();
   }
 
-  /** 预览此刻真正加载着的地址（冒烟自检用） */
-  currentUrl(): string | undefined {
-    return this.#currentView()?.webContents.getURL();
+  reload(playgroundId: string): void {
+    this.#views.get(playgroundId)?.view.webContents.reload();
+  }
+
+  openDevTools(playgroundId: string): void {
+    // 分离的窗口：开发者工具不挤占预览区，也不会落到应用界面的 webContents 上
+    this.#views.get(playgroundId)?.view.webContents.openDevTools({ mode: "detach" });
+  }
+
+  /** 预览此刻真正加载着的地址：不给项目就是摆在窗口里的那个（冒烟自检用） */
+  currentUrl(playgroundId?: string): string | undefined {
+    const view =
+      playgroundId === undefined ? this.#currentView() : this.#views.get(playgroundId)?.view;
+    return view?.webContents.getURL();
   }
 
   /** 预览视图此刻的位置（冒烟自检用）；没有预览是 undefined */

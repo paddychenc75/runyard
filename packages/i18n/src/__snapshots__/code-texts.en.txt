@@ -147,7 +147,7 @@ runState.checking: Checking tools
 runState.installing: Installing dependencies
 runState.starting: Starting
 runState.ready: Ready
-runState.reloading: Reloading
+runState.reloading: Restarting
 runState.running: Running
 runState.stopping: Stopping
 runState.stopped: Stopped

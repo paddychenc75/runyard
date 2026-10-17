@@ -12,13 +12,21 @@ export interface ConsoleOutputProps {
   className?: string;
   /** 只显示最后几行（失败画面里的日志摘要）；不给就是全部 */
   tail?: number;
+  /** 没有输出时不写“还没有输出”（脚本启动失败时上面已经写明原因，规格 DESKTOP-WORKSPACE-41） */
+  quietWhenEmpty?: boolean;
 }
 
 type NoticeText = (key: string, values: unknown) => Localized;
 
 // 一个项目的进程输出（规格 desktop/workspace「控制台显示进程输出」）：主进程留着、读取时清洗过的
 // 行，这里只负责显示。进程自己的输出不翻译，管理进程插入的提示按提示码翻译。
-export function ConsoleOutput({ bridge, playground, className, tail }: ConsoleOutputProps) {
+export function ConsoleOutput({
+  bridge,
+  playground,
+  className,
+  tail,
+  quietWhenEmpty,
+}: ConsoleOutputProps) {
   const t = useT();
   const fmt = useFormat();
   const lines = useConsoleLines(bridge, playground);
@@ -49,7 +57,7 @@ export function ConsoleOutput({ bridge, playground, className, tail }: ConsoleOu
       {...(className === undefined ? {} : { className })}
       lines={items}
       label={t("desktop.output.aria")}
-      empty={t("desktop.output.empty.label")}
+      {...(quietWhenEmpty === true ? {} : { empty: t("desktop.output.empty.label") })}
     />
   );
 }

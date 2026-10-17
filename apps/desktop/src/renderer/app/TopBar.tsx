@@ -1,5 +1,6 @@
 import { useT } from "@runyard/i18n/react";
 import {
+  Badge,
   Button,
   GlassSurface,
   StatusMark,
@@ -77,7 +78,20 @@ export function TopBar({
     ...tabs.map(
       (tab): TabStripItem => ({
         id: tab.id,
-        label: <UserText>{tab.name}</UserText>,
+        label: (
+          <>
+            <UserText>{tab.name}</UserText>
+            {tab.attached !== null ? (
+              <Badge variant="violet" className={styles.agent}>
+                {tab.attached.agent === null ? (
+                  t("desktop.tab.cli.label")
+                ) : (
+                  <UserText>{tab.attached.agent}</UserText>
+                )}
+              </Badge>
+            ) : null}
+          </>
+        ),
         status: tab.status,
         closeLabel: t("workspace.tab.close.label", { name: tab.name }),
         statusLabel:

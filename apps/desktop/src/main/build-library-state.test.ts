@@ -197,3 +197,31 @@ describe("recentTemplateIds", () => {
     expect(state.recentTemplates).toEqual(["vue3", "html"]);
   });
 });
+
+describe("运行条与脚本页的数据", () => {
+  const withTab = (runs: ReturnType<typeof run>[], extra = {}) =>
+    buildLibraryState({
+      ...base,
+      tabIds: ["a"],
+      playgrounds: [{ ...playground("a"), kind: "oneshot", ...extra }],
+      runs,
+    }).tabs[0];
+
+  it("[DESKTOP-WORKSPACE-35] 语法错误：快照带 stale 时标签页也标过期，新的运行没有", () => {
+    expect(withTab([run("a", "finished", { stale: true })])?.stale).toBe(true);
+    expect(withTab([run("a", "finished")])?.stale).toBe(false);
+  });
+
+  it("[DESKTOP-WORKSPACE-34] 项目自己的自动运行开关：没写过是开，关掉后是关", () => {
+    expect(withTab([])?.scriptAutoRun).toBe(true);
+    expect(withTab([], { scriptAutoRun: false })?.scriptAutoRun).toBe(false);
+  });
+
+  it("[DESKTOP-WORKSPACE-41] 脚本没能启动：带上失败原因；跑出错（errored）不算启动失败", () => {
+    expect(withTab([run("a", "failed", { reason: "RUN_FAILED" })])?.failure).toEqual({
+      code: "RUN_FAILED",
+      params: { name: "a" },
+    });
+    expect(withTab([run("a", "errored")])?.failure).toBeNull();
+  });
+});

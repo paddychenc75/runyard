@@ -44,6 +44,9 @@ class FakePreview implements PreviewHost {
     return this.frame;
   }
   setVisible() {}
+  reload() {}
+  currentUrl = () => undefined;
+  openDevTools() {}
 }
 
 const copied: string[] = [];

@@ -47,7 +47,8 @@ export function runStatusOf(tab: TabRow, now: number): RunStatus {
         text: { kind: "script-running", state, elapsedMs: Math.max(0, now - tab.startedAt) },
       };
     }
-    if (!tab.active && tab.durationMs !== null && state !== "stopped") {
+    // 没能启动（failed）没有退出码，只写状态名；停止的也只写状态名
+    if (!tab.active && tab.durationMs !== null && (state === "finished" || state === "errored")) {
       return {
         mark,
         danger,

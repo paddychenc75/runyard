@@ -136,6 +136,9 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
   const entries = new Map(
     inputs.playgrounds.map((playground) => [playground.id, playground.entry]),
   );
+  const autoRuns = new Map(
+    inputs.playgrounds.map((playground) => [playground.id, playground.scriptAutoRun]),
+  );
   const tabs: TabRow[] = [];
   for (const row of rows) {
     if (!inputs.tabIds.includes(row.id)) continue;
@@ -149,6 +152,8 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
       busy: row.busy,
       kind: row.kind,
       ownedByTab: run?.owner.kind === "tab",
+      stale: run?.stale === true,
+      scriptAutoRun: autoRuns.get(row.id) ?? true,
       templateName: row.templateName,
       port: row.port,
       startedAt: run?.startedAt ?? null,
@@ -279,13 +284,19 @@ function failureOf(
   run: RunSnapshot | undefined,
   recorded: DesktopError | undefined,
 ): DesktopError | null {
-  if (run === undefined || row.kind === "oneshot") return null;
-  if (run.state !== "failed" && run.state !== "errored") return null;
+  if (run === undefined) return null;
+  // 脚本只有“没能启动”（failed）才有失败原因；跑出错（errored）看输出里的报错（规格 DESKTOP-WORKSPACE-40、41）
+  const oneshot = row.kind === "oneshot";
+  if (run.state !== "failed" && (oneshot || run.state !== "errored")) return null;
   const code = run.reason;
-  if (code === undefined || !FAILURE_CODES.includes(code)) return null;
-  if (recorded?.code === code) return recorded;
-  // 缺工具的参数（要什么、当前什么版本）只有启动请求的错误响应里有；其余失败只需要项目名
-  if (code === "TOOL_MISSING" || code === "TOOL_TOO_OLD" || code === "RUNTIME_MISSING") return null;
+  const known = code !== undefined && FAILURE_CODES.includes(code);
+  if (known && recorded?.code === code) return recorded;
+  // 缺工具的参数（要什么、当前什么版本）只有启动请求的错误响应里有；服务退回“已停止”加“运行”，
+  // 脚本不能没有说明，退回“启动失败”这一条通用的原因
+  const needsParams =
+    code === "TOOL_MISSING" || code === "TOOL_TOO_OLD" || code === "RUNTIME_MISSING";
+  if (!known || needsParams)
+    return oneshot ? { code: "RUN_FAILED", params: { name: row.name } } : null;
   return { code, params: { name: row.name } };
 }
 

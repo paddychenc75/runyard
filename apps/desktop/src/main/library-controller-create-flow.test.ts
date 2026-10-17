@@ -44,6 +44,9 @@ const preview: PreviewHost = {
     return null;
   },
   setVisible() {},
+  reload() {},
+  currentUrl: () => undefined,
+  openDevTools() {},
 };
 
 function setup() {

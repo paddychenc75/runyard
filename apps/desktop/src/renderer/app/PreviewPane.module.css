@@ -16,6 +16,7 @@
   box-sizing: border-box;
   display: flex;
   align-items: center;
+  gap: var(--space-3);
   padding-inline: var(--space-3);
   border-block-end: 1px solid var(--color-line-hairline);
 }
@@ -41,4 +42,33 @@
   flex: none;
   padding: var(--space-4);
   border-block-end: 1px solid var(--color-line-hairline);
+}
+
+/* 地址栏右边的文字操作：次要色，悬停变主色（设计稿 Web） */
+.action {
+  flex: none;
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: var(--text-item-size);
+  white-space: nowrap;
+  cursor: default;
+}
+
+.action:hover:not(:disabled) {
+  color: var(--color-text-primary);
+  background: var(--color-bg-chip);
+}
+
+.action:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.action:disabled {
+  opacity: 0.4;
 }

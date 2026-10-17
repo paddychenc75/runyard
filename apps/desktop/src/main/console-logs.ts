@@ -73,6 +73,14 @@ export class ConsoleLogs {
     return watch.ready;
   }
 
+  /** “清除”：这次运行已有的行不再显示，之后的新输出照常接上（游标不动，只取更新的） */
+  clear(playground: string): void {
+    const watch = this.#watches.get(playground);
+    if (watch === undefined) return;
+    watch.lines = [];
+    for (const listener of this.#listeners) listener({ playground, lines: [], reset: true });
+  }
+
   /** 标签页没了（项目被删）：取消订阅，丢掉行 */
   unwatch(playground: string): void {
     const watch = this.#watches.get(playground);

@@ -86,6 +86,11 @@ class FakePreview implements PreviewHost {
   setVisible(visible: boolean) {
     this.visible.push(visible);
   }
+  reload() {}
+  currentUrl() {
+    return undefined;
+  }
+  openDevTools() {}
 }
 
 class FakeSystem implements SystemActions {

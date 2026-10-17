@@ -124,6 +124,7 @@
 | desktop.category.page.label | 页面 | Pages | — |
 | desktop.category.script.label | 脚本 | Scripts | — |
 | desktop.category.service.label | 服务 | Services | — |
+| desktop.console.clear.action | 清除 | Clear | — |
 | desktop.console.tab.label | 输出 | Output | — |
 | desktop.crashed.log.label | 最后的日志 | Last output | — |
 | desktop.crashed.overlay.aria | 崩溃提示 | Crash notice | — |
@@ -236,9 +237,13 @@
 | desktop.port.occupant.label | 占用者：{name}（PID {pid}） | In use by: {name} (PID {pid}) | name：占用端口的进程名，原样显示；pid：占用者的进程号 |
 | desktop.port.title | {wanted} 端口{reason, select, PORT_RESERVED {被系统保留} other {被占用}} | Port {wanted} is {reason, select, PORT_RESERVED {reserved by the system} other {in use}} | wanted：原来想用的端口，纯数字字符串；reason：PORT_OCCUPIED 或 PORT_RESERVED |
 | desktop.port.untouched.label | 没有结束占用者，它仍在运行。 | The other program was not stopped; it is still running. | — |
+| desktop.preview.devtools.action | 开发者工具 | Developer tools | — |
 | desktop.preview.frame.label | 页面预览的截图 | Screenshot of the page preview | — |
+| desktop.preview.openExternal.action | 在浏览器中打开 | Open in browser | — |
+| desktop.preview.reload.action | 刷新 | Reload | — |
 | desktop.preview.waiting.label | 页面还没有就绪，就绪后会显示在这里。 | The page isn't ready yet. It shows up here once it is. | — |
 | desktop.rerun.action | 重新运行 | Run again | — |
+| desktop.restart.action | 重启 | Restart | — |
 | desktop.run.action | 运行 | Run | — |
 | desktop.runbar.aria | 运行条 | Run bar | — |
 | desktop.runbar.cliHint.label | 由命令行启动，关闭标签页不会停止 | Started from the CLI; closing the tab will not stop it | — |
@@ -246,9 +251,17 @@
 | desktop.runbar.missing.label | 缺少 {tool} | {tool} is missing | tool：工具标识，如 go、node |
 | desktop.runbar.state.label | {state} :{port} | {state} :{port} | state：运行状态的名字，来自 runState.<状态>；port：端口号，纯数字字符串（不加千分位） |
 | desktop.runbar.tooOld.label | {tool} 版本过低 | {tool} is too old | tool：工具标识，如 go、node |
+| desktop.script.autoRun.label | 保存后自动运行 | Run on save | — |
+| desktop.script.autoRunGlobalOff.hint | 全局设置已关闭 | Turned off in settings | — |
 | desktop.script.ended.label | {state} · 退出码 {exitCode} · {duration} | {state} · exit code {exitCode} · {duration} | state：运行状态的名字，来自 runState.<状态>；exitCode：进程的退出码；duration：这次运行的总耗时 |
 | desktop.script.endedNoCode.label | {state} · {duration} | {state} · {duration} | state：运行状态的名字，来自 runState.<状态>；duration：这次运行的总耗时 |
+| desktop.script.failedTail.label | 已有的最后几行输出 | Last lines of output so far | — |
+| desktop.script.input.aria | 给程序的输入 | Input for the program | — |
+| desktop.script.input.placeholder | 输入内容后回车发送给程序 | Type and press Enter to send to the program | — |
+| desktop.script.inputDisabled.hint | 仅程序运行中可用 | Available while the program is running | — |
 | desktop.script.running.label | {state} · 已 {duration} | {state} · {duration} | state：运行状态的名字，来自 runState.<状态>；duration：已经运行的时长，如 3.2 秒 |
+| desktop.script.stale.label | 过期 | Stale | — |
+| desktop.script.staleNotice.label | 代码有语法错误，没有重新运行。下面是上一次的输出。 | The code has a syntax error and was not re-run. Below is the previous output. | — |
 | desktop.slow.body | 启动比平时慢，进程还在运行。下面的输出可以看到进度。 | Starting is taking longer than usual, but the process is still running. The output below shows progress. | — |
 | desktop.slow.title | 启动中（较慢） | Starting (slow) | — |
 | desktop.start.body | 项目已经建好，放在 {folder}。页面准备好后会自动显示在这里。 | The playground is ready in {folder}. The page will appear here automatically once it is up. | folder：项目文件夹的显示路径，主目录缩成 ~ |
@@ -259,6 +272,7 @@
 | desktop.state.idle.label | 未运行 | Not running | — |
 | desktop.stop.action | 停止 | Stop | — |
 | desktop.stopped.body | 你手动停止了它。点“运行”重新启动；关闭标签页后再打开，也会自动运行。 | You stopped it. Choose Run to start it again; closing the tab and opening it again also runs it. | — |
+| desktop.tab.cli.label | 命令行 | CLI | — |
 | desktop.window.title | Runyard | Runyard | — |
 | errors.APP_REQUIRED.body | open 和 screenshot 要由桌面应用来完成，命令行自己做不到。 | The open and screenshot commands are carried out by the desktop app. The command line cannot do them on its own. | — |
 | errors.APP_REQUIRED.hint | 打开 Runyard 应用后重新运行。 | Open the Runyard app, then run it again. | — |
@@ -506,7 +520,7 @@
 | runState.finished | 已结束 | Finished | — |
 | runState.installing | 安装依赖 | Installing dependencies | — |
 | runState.ready | 就绪 | Ready | — |
-| runState.reloading | 重载中 | Reloading | — |
+| runState.reloading | 重新启动中 | Restarting | — |
 | runState.running | 运行中 | Running | — |
 | runState.starting | 启动中 | Starting | — |
 | runState.stopped | 已停止 | Stopped | — |

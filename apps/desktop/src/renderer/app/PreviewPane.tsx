@@ -1,4 +1,5 @@
 import { useT } from "@runyard/i18n/react";
+import { IconButton } from "@runyard/ui";
 import { type ReactNode, useState } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { Bounds } from "../../shared/layout.ts";
@@ -33,7 +34,7 @@ export function addressLabel(url: string | null): string {
 // （缺运行环境、依赖安装失败、启动较慢、崩溃，规格 DESKTOP-WORKSPACE-18 至 21）；
 // 端口自动改用的说明在卡片最上面（规格 DESKTOP-WORKSPACE-22）。
 // 启动进度画面没有页面可显示，设计稿 Creating 那里不画地址栏。
-// 地址栏上的刷新、在浏览器中打开、开发者工具不在 #175 范围（见 PR 的“与设计稿的差异”）。
+// 地址栏左边是“刷新”，右边是“在浏览器中打开”和“开发者工具”（规格 DESKTOP-WORKSPACE-31 至 33）。
 export function PreviewPane({ bridge, tab, overlays }: PreviewPaneProps) {
   const t = useT();
   const [slot, setSlot] = useState<Bounds | null>(null);
@@ -88,7 +89,30 @@ export function PreviewPane({ bridge, tab, overlays }: PreviewPaneProps) {
       )}
       {screen === "starting" ? null : (
         <div className={styles.address}>
+          <IconButton
+            icon="refresh"
+            size="sm"
+            label={t("desktop.preview.reload.action")}
+            disabled={tab.previewUrl === null}
+            onClick={() => void bridge.call("preview.reload", tab.id)}
+          />
           <span className={styles.url}>{addressLabel(tab.previewUrl)}</span>
+          <button
+            type="button"
+            className={styles.action}
+            disabled={tab.previewUrl === null}
+            onClick={() => void bridge.call("preview.openExternal", tab.id)}
+          >
+            {t("desktop.preview.openExternal.action")}
+          </button>
+          <button
+            type="button"
+            className={styles.action}
+            disabled={tab.previewUrl === null}
+            onClick={() => void bridge.call("preview.devtools", tab.id)}
+          >
+            {t("desktop.preview.devtools.action")}
+          </button>
         </div>
       )}
       <PreviewSlot

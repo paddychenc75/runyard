@@ -20,6 +20,7 @@ import { readLibraryRoot } from "./library-root.ts";
 import { PlaygroundEdits } from "./playground-edits.ts";
 import { ProjectSystem } from "./project-system.ts";
 import { RunActions } from "./run-actions.ts";
+import { RunBarActions } from "./run-bar-actions.ts";
 import { SessionTracker } from "./session-tracker.ts";
 import { StartTimeline } from "./start-timeline.ts";
 import { TabClose } from "./tab-close.ts";
@@ -57,6 +58,7 @@ export class LibraryController {
   readonly #lastFrames = new Map<string, string>();
   readonly edits: PlaygroundEdits;
   readonly system: ProjectSystem;
+  readonly runBar: RunBarActions;
   #refreshing: Promise<void> | undefined;
   #refreshAgain = false;
   constructor(options: LibraryControllerOptions) {
@@ -103,6 +105,12 @@ export class LibraryController {
       dropTab: (id) => void this.#dropTab(id),
       chooseFolder: (defaultPath) => options.system.chooseFolder(defaultPath),
       folderOf: (id) => this.folderOf(id),
+    });
+    this.runBar = new RunBarActions({
+      ...options,
+      console: this.#console,
+      runs: () => this.#runs,
+      act: (id, action) => this.#runActions.act(id, action),
     });
   }
 
@@ -317,7 +325,12 @@ export class LibraryController {
         this.#client.call("run.list", {}),
         this.#client.call("template.list", {}),
       ]);
-      await this.#keepLastFrame(runs);
+      const active = this.#workspace.active;
+      const frame =
+        active === LIBRARY_TAB
+          ? null
+          : await frameBeforeCrash(this.#preview, active, this.#runs, runs);
+      if (frame !== null) this.#lastFrames.set(active, frame);
       this.#timeline.observe(latestRunByPlayground(runs), this.#now());
       this.#playgrounds = playgrounds;
       this.#runs = runs;
@@ -346,24 +359,9 @@ export class LibraryController {
     this.#emit();
   }
 
-  async #keepLastFrame(next: readonly RunSnapshot[]): Promise<void> {
-    const active = this.#workspace.active;
-    if (active === LIBRARY_TAB) return;
-    const frame = await frameBeforeCrash(this.#preview, active, this.#runs, next);
-    if (frame !== null) this.#lastFrames.set(active, frame);
-  }
-
-  setPreviewBounds(bounds: Bounds | null): void {
-    this.#preview.setBounds(bounds);
-  }
-
-  capturePreview(): Promise<string | null> {
-    return this.#preview.capture();
-  }
-
-  setPreviewVisible(visible: boolean): void {
-    this.#preview.setVisible(visible);
-  }
+  setPreviewBounds = (bounds: Bounds | null): void => this.#preview.setBounds(bounds);
+  capturePreview = (): Promise<string | null> => this.#preview.capture();
+  setPreviewVisible = (visible: boolean): void => this.#preview.setVisible(visible);
 
   #applyPreview(): void {
     // 预览跟着当前标签走：资源库标签不显示预览（视图留着，回来即见）。

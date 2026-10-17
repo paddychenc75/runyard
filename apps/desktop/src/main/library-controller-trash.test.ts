@@ -58,6 +58,9 @@ const preview: PreviewHost = {
     return null;
   },
   setVisible() {},
+  reload() {},
+  currentUrl: () => undefined,
+  openDevTools() {},
 };
 
 async function setup(chosen: string | null = null) {
