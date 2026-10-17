@@ -1,4 +1,3 @@
-import { type RequestSpec, requestSpecSchema } from "@runyard/protocol";
 import {
   type BootstrapInfo,
   type CreateRequest,
@@ -17,6 +16,7 @@ import { editorFileMethods, type FileOpeners } from "./editor-files/editor-ipc.t
 import type { EditorFileService } from "./editor-files/file-service.ts";
 import type { LibraryController } from "./library-controller.ts";
 import type { QuitFlushGate } from "./quit-flush-gate.ts";
+import { requestMethods } from "./request-ipc.ts";
 import type { SettingsController } from "./settings-controller.ts";
 import { templateMethods } from "./template-ipc.ts";
 import type { TemplatesView } from "./templates-view.ts";
@@ -40,14 +40,6 @@ export interface IpcHost {
 
 function text(value: unknown): string | null {
   return typeof value === "string" && value !== "" ? value : null;
-}
-
-/** 请求面板交上来的请求：按协议的形状校验，不合的不发（页面发来的数据不可信） */
-function parseRequestCall(value: unknown): { id: string; request: RequestSpec } | null {
-  if (typeof value !== "object" || value === null) return null;
-  const { id, request } = value as Record<string, unknown>;
-  const parsed = requestSpecSchema.safeParse(request);
-  return text(id) === null || !parsed.success ? null : { id: id as string, request: parsed.data };
 }
 
 /** 项目 id 的列表：不是字符串数组就当空（页面发来的数据不可信） */
@@ -160,24 +152,6 @@ export function registerBridgeHandlers(
       const playground = text(id);
       if (playground !== null && typeof enabled === "boolean") {
         await controller.runBar.setScriptAutoRun(playground, enabled);
-      }
-    },
-    "request.send": async (value) => {
-      const parsed = parseRequestCall(value);
-      return parsed === null
-        ? ({ outcome: "failed", reason: "invalid-request", durationMs: 0 } as const)
-        : await controller.runBar.sendRequest(parsed.id, parsed.request);
-    },
-    "request.getLast": async (id) => {
-      const playground = text(id);
-      return playground === null ? null : await controller.runBar.lastRequest(playground);
-    },
-    "request.openInBrowser": (value) => {
-      if (typeof value !== "object" || value === null) return;
-      const { id, path } = value as Record<string, unknown>;
-      const playground = text(id);
-      if (playground !== null && typeof path === "string") {
-        controller.runBar.openRequestInBrowser(playground, path);
       }
     },
     "console.clear": async (id) => {
@@ -350,6 +324,8 @@ export function registerBridgeHandlers(
       const playground = text(id);
       if (playground !== null) controller.system.openTerminal(playground);
     },
+    // 请求面板（#187）
+    ...requestMethods(controller),
     // 文件服务（#257）；没接线时这些方法不可用
     ...templateMethods(templates),
     ...editorFileMethods(files, openers),
