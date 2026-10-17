@@ -38,10 +38,10 @@ const runsOf = async (ctx: Ctx) =>
 const save = (ctx: Ctx, file: string, text: string) =>
   ctx.w.fs.writeFile(absPath(join(ctx.folder, file)), text);
 
-async function advance(w: RunWorld, ms: number): Promise<void> {
+async function advance(w: RunWorld, ms: number, step = 100): Promise<void> {
   const end = w.clock.now() + ms;
   while (w.clock.now() < end) {
-    await w.clock.advance(Math.min(100, end - w.clock.now()));
+    await w.clock.advance(Math.min(step, end - w.clock.now()));
     for (let i = 0; i < 3; i++) await new Promise((resolve) => setImmediate(resolve));
   }
 }
@@ -111,7 +111,8 @@ describe("编辑器保存后的实时结果（管理进程一侧）", { timeout:
   it("[RUN-SCRIPTS-32] 标签页持有的监听不计空闲：过了 30 分钟保存仍然重新运行", async () => {
     const ctx = await setup("script");
     await runScriptInTab(ctx);
-    await advance(ctx.w, 31 * 60_000);
+    // 大步推进：一分钟一步，免得 31 分钟的假时间拖慢测试
+    await advance(ctx.w, 31 * 60_000, 60_000);
     expect(ctx.w.module.scriptWatch.isWatching(ctx.id)).toBe(true);
     save(ctx, "index.js", "// 很久以后");
     await ctx.w.until(async () => (await runsOf(ctx)).length === 2);
