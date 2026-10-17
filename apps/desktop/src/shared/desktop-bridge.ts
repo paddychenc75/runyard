@@ -118,6 +118,14 @@ export interface DesktopMethods
   "clean.shown": { param: string[]; result: undefined };
   /** 关掉右下角的一条提示 */
   "notice.dismiss": { param: string; result: undefined };
+  /** runyard://new 确认框的“新建并运行”（规格 DESKTOP-LINKS-09） */
+  "link.confirm": { param: undefined; result: undefined };
+  /** 确认框的“取消”、回车、Esc（规格 DESKTOP-LINKS-08）：什么都不创建 */
+  "link.cancel": { param: undefined; result: undefined };
+  /** “有新版本”的“下载”：用系统浏览器打开发布页，应用自己不下载（规格 DESKTOP-SETTINGS-26） */
+  "update.download": { param: undefined; result: undefined };
+  /** “以后再说”：这个版本不再提示 */
+  "update.later": { param: undefined; result: undefined };
   /** 在系统终端里打开一个位于项目文件夹的窗口（规格 DESKTOP-LIBRARY-VIEW-48） */
   "playground.openTerminal": { param: string; result: undefined };
   /** 请求关闭项目标签（关闭钮、⌘W）：运行中且由标签持有时先出确认（状态里的 closeRequest），否则直接关 */
@@ -193,6 +201,10 @@ export const desktopMethodNames: readonly DesktopMethod[] = [
   "clean.later",
   "clean.shown",
   "notice.dismiss",
+  "link.confirm",
+  "link.cancel",
+  "update.download",
+  "update.later",
   "tab.close",
   "tab.closeConfirm",
   "tab.closeCancel",

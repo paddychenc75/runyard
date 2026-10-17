@@ -26,6 +26,7 @@ import { useAutoSaveReader } from "./settings/use-autosave-reader.ts";
 import { chooseNavFilter, type ShellPage, showLibrary } from "./sidebar-navigation.ts";
 import { TopBar } from "./TopBar.tsx";
 import { TemplatesPage } from "./templates/TemplatesPage.tsx";
+import { UrlConfirmDialog } from "./UrlConfirmDialog.tsx";
 import { WorkspaceLayout } from "./WorkspaceLayout.tsx";
 
 export interface AppShellProps {
@@ -283,6 +284,13 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
             nameOf={(project) => tabs.find((tab) => tab.id === project)?.name ?? project}
             onAnswer={(quit) => quitAsk?.answer(quit)}
           />
+          {library === null ? null : (
+            <UrlConfirmDialog
+              bridge={bridge}
+              request={library.linkConfirm}
+              locale={library.locale}
+            />
+          )}
           <NoticeToasts bridge={bridge} notices={library?.notices ?? []} />
           {creating !== null && library !== null ? (
             <CreateDialog

@@ -11,14 +11,17 @@ import type {
   AppNotice,
   DesktopError,
   LibraryState,
+  LinkConfirmView,
   PlaygroundRow,
   RunningRow,
   StartPhaseMs,
   TabRow,
   TabStatus,
   TemplateRow,
+  UpdateBannerView,
 } from "../shared/library-state.ts";
 import { displayPath } from "./library-root.ts";
+import { recentTemplateIds } from "./recent-templates.ts";
 
 // 结束了的状态；其余都算进行中（run-state-machine.md 第 1 节）
 const ENDED_STATES: readonly RunState[] = ["stopped", "finished", "errored", "crashed", "failed"];
@@ -69,6 +72,8 @@ export interface LibraryInputs {
   cleanLater?: ReadonlySet<string>;
   libraryRootSynced?: boolean;
   notices?: readonly AppNotice[];
+  linkConfirm?: LinkConfirmView | null;
+  update?: UpdateBannerView | null;
 }
 
 /**
@@ -238,6 +243,8 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
     libraryRootSynced: inputs.libraryRootSynced ?? false,
     ...cleanReminderOf(rows, inputs.now ?? Date.now(), inputs.cleanLater),
     notices: [...(inputs.notices ?? [])],
+    linkConfirm: inputs.linkConfirm ?? null,
+    update: inputs.update ?? null,
   };
 }
 
@@ -383,18 +390,4 @@ function portFallbackOf(run: RunSnapshot | undefined): TabRow["portFallback"] {
     reason: fallback.reason,
     occupant: fallback.occupant ?? null,
   };
-}
-
-/** 按项目的创建时间从新到旧，取用过的模板，同一个模板只算一次；不在模板列表里的（已删除的用户模板）略过 */
-export function recentTemplateIds(
-  playgrounds: readonly Playground[],
-  templates: readonly TemplateRow[],
-): string[] {
-  const known = new Set(templates.map((template) => template.id));
-  const recent: string[] = [];
-  for (const playground of [...playgrounds].sort((a, b) => b.createdAt - a.createdAt)) {
-    const id = playground.template.id;
-    if (known.has(id) && !recent.includes(id)) recent.push(id);
-  }
-  return recent;
 }

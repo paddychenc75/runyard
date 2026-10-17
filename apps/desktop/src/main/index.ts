@@ -38,6 +38,9 @@ import {
   requestSidebarToggle,
 } from "./ipc-handlers.ts";
 import { type LibraryClient, LibraryController } from "./library-controller.ts";
+import { LinkHandler } from "./links/link-handler.ts";
+import { createLinkHost } from "./links/link-host.ts";
+import { LinkInbox } from "./links/link-inbox.ts";
 import { buildAppMenu } from "./native-ui/app-menu.ts";
 import {
   type DesktopArgs,
@@ -52,6 +55,8 @@ import { FileSessionStore } from "./session-store.ts";
 import { SettingsController } from "./settings-controller.ts";
 import { runSmoke } from "./smoke.ts";
 import { TemplatesView } from "./templates-view.ts";
+import { UpdateChecker } from "./updates/update-checker.ts";
+import { FileUpdateStore } from "./updates/update-record.ts";
 
 // 主进程入口（构建后在 apps/desktop/dist/main/index.mjs）。入口是 ES 模块，
 // 不能在模块顶层 await app.whenReady()（互相等待，应用永远不就绪；决策记录 0005），所以用 then。
@@ -71,6 +76,14 @@ protocol.registerSchemesAsPrivileged([
 ]);
 
 let mainWindow: BrowserWindow | null = null;
+
+// runyard:// 链接（macOS 的 open-url）：冷启动时事件早于 ready，所以监听挂在入口最前面，先排队（规格 DESKTOP-LINKS-05）。
+// 协议的系统登记由打包完成（Info.plist），这里不向系统登记
+const linkInbox = new LinkInbox();
+app.on("open-url", (event, address) => {
+  event.preventDefault();
+  linkInbox.push(address);
+});
 
 function runtime(): DesktopRuntime {
   return app.isPackaged
@@ -272,6 +285,34 @@ async function main(args: DesktopArgs): Promise<void> {
   app.once("will-quit", () => void files.dispose());
   // 移到废纸篓前先放掉项目的文件监听（#265 的先后顺序）
   controller.onProjectRelease((id) => files.unwatch(id));
+  const links = new LinkHandler(
+    createLinkHost({
+      controller,
+      focus: () => focusWindow(window),
+      skipConfirmForBuiltin: async () => (await settings.get()).urlNewSkipConfirmForBuiltin,
+    }),
+  );
+  preview.onAppLink = (address, playgroundId) => void links.handle(address, playgroundId);
+  // 检查更新：从源码运行时不联网，只显示记录里已有的（canFetch）
+  const updates = new UpdateChecker({
+    current: app.getVersion(),
+    fetch: globalThis.fetch,
+    store: new FileUpdateStore(join(app.getPath("userData"), "update-check.json")),
+    now: () => new Date(),
+    enabled: async () => (await settings.get()).updateCheck,
+    publish: (view) => {
+      controller.chrome.update = view;
+      controller.chrome.changed();
+    },
+    openExternal: (url) => system.openExternal(url),
+    canFetch: app.isPackaged && !args.smoke,
+  });
+  let updateCheckOn = initial?.updateCheck ?? true;
+  settings.onChange((next) => {
+    if (next.updateCheck === updateCheckOn) return;
+    updateCheckOn = next.updateCheck;
+    void updates.run();
+  });
   registerBridgeHandlers(
     ipcHost,
     controller,
@@ -292,10 +333,14 @@ async function main(args: DesktopArgs): Promise<void> {
       home: args.root ?? homedir(),
       refresh: controller.refresh,
     }),
+    { links, updates },
   );
   await window.loadURL(`${APP_ORIGIN}/`);
   await controller.start();
   await settings.start();
+  // 冷启动时排着的链接在资源库读出来之后处理；之后的链接直接处理
+  linkInbox.attach((address) => void links.handle(address));
+  void updates.run();
   // 自动清理的调度在主进程（技术设计 §2.1）：启动时判断一次，之后定时；退出时停掉计时器
   void controller.chrome.clean.check();
   const cleanTimer = setInterval(

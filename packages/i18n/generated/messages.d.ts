@@ -423,6 +423,30 @@ export type CatalogMessages = {
   "desktop.failure.stepReady.label": Record<never, never>;
   "desktop.failure.stepStart.label": Record<never, never>;
   "desktop.failure.steps.aria": Record<never, never>;
+  "desktop.linkNotice.linkInvalid.label": Record<never, never>;
+  "desktop.linkNotice.newBusy.label": Record<never, never>;
+  "desktop.linkNotice.newFailed.label": {
+    user: (chunks: string[]) => string;
+    value: string | number;
+  };
+  "desktop.linkNotice.newNameInvalid.label": {
+    user: (chunks: string[]) => string;
+    value: string | number;
+  };
+  "desktop.linkNotice.newNameTaken.label": {
+    user: (chunks: string[]) => string;
+    value: string | number;
+  };
+  "desktop.linkNotice.newNoTemplate.label": {
+    user: (chunks: string[]) => string;
+    value: string | number;
+  };
+  "desktop.linkNotice.newThrottled.label": Record<never, never>;
+  "desktop.linkNotice.openInvalid.label": Record<never, never>;
+  "desktop.linkNotice.openMissing.label": {
+    user: (chunks: string[]) => string;
+    value: string | number;
+  };
   "desktop.menu.new.label": Record<never, never>;
   "desktop.menu.palette.label": Record<never, never>;
   "desktop.menu.quickOpen.label": Record<never, never>;
@@ -722,6 +746,28 @@ export type CatalogMessages = {
   "desktop.terminalMenu.paste.hint": Record<never, never>;
   "desktop.terminalMenu.selectAll.action": Record<never, never>;
   "desktop.terminalMenu.selectAll.hint": Record<never, never>;
+  "desktop.update.banner.label": {
+    current: string | number;
+    latest: string | number;
+  };
+  "desktop.update.download.action": Record<never, never>;
+  "desktop.update.later.action": Record<never, never>;
+  "desktop.update.region.aria": Record<never, never>;
+  "desktop.urlConfirm.cancel.action": Record<never, never>;
+  "desktop.urlConfirm.claimed.label": Record<never, never>;
+  "desktop.urlConfirm.confirm.action": Record<never, never>;
+  "desktop.urlConfirm.folder.label": Record<never, never>;
+  "desktop.urlConfirm.from.label": Record<never, never>;
+  "desktop.urlConfirm.name.label": Record<never, never>;
+  "desktop.urlConfirm.preview.label": {
+    name: string | number;
+    user: (chunks: string[]) => string;
+  };
+  "desktop.urlConfirm.source.label": Record<never, never>;
+  "desktop.urlConfirm.template.label": Record<never, never>;
+  "desktop.urlConfirm.title": Record<never, never>;
+  "desktop.urlConfirm.unknown.label": Record<never, never>;
+  "desktop.urlConfirm.warning.label": Record<never, never>;
   "desktop.window.title": Record<never, never>;
   "format.duration.days": {
     count: number;

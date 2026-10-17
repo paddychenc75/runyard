@@ -25,6 +25,10 @@ export const iconPaths = {
     viewBox: "0 0 16 16",
     paths: ["M8 1.5L14 5v6l-6 3.5L2 11V5zM2 5l6 3.5L14 5M8 8.5v6"],
   },
+  download: {
+    viewBox: "0 0 16 16",
+    paths: ["M8 1.8a6.2 6.2 0 1 0 0 12.4A6.2 6.2 0 0 0 8 1.8zM8 4.8v5.6M5.6 8.2L8 10.6l2.4-2.4"],
+  },
   exclamation: {
     viewBox: "0 0 16 16",
     paths: ["M8 3v6M8 12.4v.1"],
@@ -38,6 +42,12 @@ export const iconPaths = {
   info: {
     viewBox: "0 0 16 16",
     paths: ["M8 2a6 6 0 1 0 0 12A6 6 0 0 0 8 2zM8 7.2V11M8 5v.2"],
+  },
+  link: {
+    viewBox: "0 0 16 16",
+    paths: [
+      "M6.8 9.2a2.4 2.4 0 0 0 3.36 0l2.08-2.08a2.4 2.4 0 0 0-3.36-3.36l-.72.72M9.2 6.8a2.4 2.4 0 0 0-3.36 0L3.76 8.88a2.4 2.4 0 0 0 3.36 3.36l.72-.72",
+    ],
   },
   "logo-html5": {
     viewBox: "0 0 24 24",

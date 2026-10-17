@@ -22,6 +22,7 @@ import { LibraryTable } from "./LibraryTable.tsx";
 import { navLabel, sortLabel, statusLabel, typeLabel } from "./library-labels.ts";
 import { NoResults } from "./NoResults.tsx";
 import { SearchBox, type SearchSize } from "./SearchBox.tsx";
+import { UpdateBanner } from "./UpdateBanner.tsx";
 import { useNow } from "./use-now.ts";
 
 export interface LibraryPageProps {
@@ -172,6 +173,7 @@ export function LibraryPage({
           </div>
         )}
       </header>
+      <UpdateBanner bridge={bridge} update={library.update} />
       <CleanBanner bridge={bridge} items={library.cleanReminder ?? []} playgrounds={playgrounds} />
       {library.error === null ? null : (
         <p className={styles.error}>

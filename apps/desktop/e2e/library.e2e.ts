@@ -100,3 +100,115 @@ test("资源库表格：窗口放得下和放不下时，表头与每一行逐�
     expect(firstRow.slice(0, 8)).toEqual(header);
   }
 });
+
+type Box = { left: number; right: number; width: number };
+
+test("[DESKTOP-LIBRARY-VIEW-28][DESKTOP-LIBRARY-VIEW-29] 窗口 1100 宽：横向滚动时名称列和操作列不动，表头与每格逐列对齐，没有被截断的列，状态圆点留在名称列里", async ({
+  launch,
+}) => {
+  const runyard = await launch();
+  const { page, app } = runyard;
+  await runyard.cli("new", "html", "alpha");
+  await runyard.cli("new", "python", "beta");
+  await runyard.cli("run", "alpha");
+  await closePicker(page);
+  const table = page.getByRole("table", { name: "Playgrounds" });
+  await expect(table.getByRole("row").filter({ hasText: "alpha" })).toHaveCount(1);
+  await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0]?.setSize(1100, 800));
+  await expect.poll(() => page.evaluate(() => window.innerWidth)).toBeLessThanOrEqual(1100);
+
+  // 一次取出：滚动区的可见范围、表头和第一行各格的位置、每个格子内容有没有被截断
+  const measure = () =>
+    page.evaluate(() => {
+      const tableEl = document.querySelector("table[aria-label='Playgrounds']");
+      if (tableEl === null) throw new Error("no table");
+      let scroller: Element | null = tableEl.parentElement;
+      while (scroller !== null && getComputedStyle(scroller).overflowX === "visible")
+        scroller = scroller.parentElement;
+      if (scroller === null) throw new Error("no scroller");
+      const box = (el: Element) => {
+        const rect = el.getBoundingClientRect();
+        return { left: rect.left, right: rect.right, width: rect.width };
+      };
+      const view = box(scroller);
+      const row = tableEl.querySelector("tbody tr:has(td[data-column='name'])");
+      const running = [...tableEl.querySelectorAll("tbody tr")].find((r) =>
+        r.textContent?.includes("alpha"),
+      );
+      if (row === null || running === undefined) throw new Error("no rows");
+      const dot = running.querySelector("td[data-column='name'] [data-when-overflowing]");
+      const nameCell = running.querySelector("td[data-column='name']");
+      return {
+        overflowing: scroller.scrollWidth > scroller.clientWidth + 1,
+        maxScroll: scroller.scrollWidth - scroller.clientWidth,
+        view,
+        headers: [...tableEl.querySelectorAll("th")].map((th) => ({
+          text: th.textContent ?? "",
+          ...box(th),
+        })),
+        cells: [...row.querySelectorAll("td")].map((td) => box(td)),
+        clipped: [...tableEl.querySelectorAll("th, td[data-column]")]
+          .filter((cell) => cell.scrollWidth > cell.clientWidth + 1)
+          .map((cell) => cell.getAttribute("data-column") ?? cell.textContent),
+        dot: dot === null || nameCell === null ? null : { dot: box(dot), name: box(nameCell) },
+      };
+    });
+  const scrollTo = (x: number) =>
+    page.evaluate((left) => {
+      const tableEl = document.querySelector("table[aria-label='Playgrounds']");
+      let scroller: Element | null = tableEl?.parentElement ?? null;
+      while (scroller !== null && getComputedStyle(scroller).overflowX === "visible")
+        scroller = scroller.parentElement;
+      scroller?.scrollTo({ left });
+    }, x);
+  const round = (b: Box) => ({ left: Math.round(b.left), width: Math.round(b.width) });
+
+  const start = await measure();
+  expect(start.overflowing).toBe(true);
+  expect(start.clipped).toEqual([]);
+  const nameStart = round(start.headers[0] as Box);
+  const actionsStart = round(start.headers[7] as Box);
+
+  for (const fraction of [0.5, 1]) {
+    await scrollTo(Math.floor(start.maxScroll * fraction));
+    await expect
+      .poll(async () => Math.round((await measure()).headers[3]?.left ?? 0))
+      .not.toBe(Math.round(start.headers[3]?.left ?? 0));
+    const now = await measure();
+    // 表头和第一行逐列对齐
+    expect(now.cells.map(round)).toEqual(now.headers.map(round));
+    // 名称列和操作列不随滚动移动
+    expect(round(now.headers[0] as Box)).toEqual(nameStart);
+    expect(round(now.headers[7] as Box)).toEqual(actionsStart);
+    // 状态圆点在名称列里看得见
+    expect(now.dot).not.toBeNull();
+    expect(now.dot?.dot.width).toBeGreaterThan(0);
+    expect(now.dot?.dot.left).toBeGreaterThanOrEqual(now.dot?.name.left ?? Infinity);
+    expect(now.dot?.dot.right).toBeLessThanOrEqual(now.dot?.name.right ?? 0);
+  }
+
+  // 滚到最右：“保留”“上次打开”“创建者”整列落在两根固定列之间，表头完整
+  const end = await measure();
+  const nameRight = (end.headers[0] as Box).right;
+  const actionsLeft = (end.headers[7] as Box).left;
+  for (const text of ["Retention", "Last opened", "Created by"]) {
+    const header = end.headers.find((h) => h.text === text);
+    expect(header, text).toBeDefined();
+    expect(header?.left).toBeGreaterThanOrEqual(nameRight - 1);
+    expect(header?.right).toBeLessThanOrEqual(actionsLeft + 1);
+  }
+  expect(end.clipped).toEqual([]);
+});
+
+test("[#299] 主题蓝：浅色和深色下主按钮的渲染色都是设计稿的 #0071E3", async ({ launch }) => {
+  for (const theme of ["light", "dark"] as const) {
+    const runyard = await launch({ theme });
+    await closePicker(runyard.page);
+    const color = await runyard.page
+      .getByRole("button", { name: "New", exact: true })
+      .first()
+      .evaluate((el) => getComputedStyle(el).backgroundColor);
+    expect(color, theme).toBe("rgb(0, 113, 227)");
+    await runyard.shutdown();
+  }
+});

@@ -73,6 +73,26 @@
   "desktop.error.title.label": {
     "title": "错误的标题，来自 errors.<代码>.title，已是翻译好的句子"
   },
+  "desktop.linkNotice.newFailed.label": {
+    "value": "链接里写的项目名称、模板标识或新名称（不翻译）",
+    "user": "包住用户内容的标签"
+  },
+  "desktop.linkNotice.newNameInvalid.label": {
+    "value": "链接里写的项目名称、模板标识或新名称（不翻译）",
+    "user": "包住用户内容的标签"
+  },
+  "desktop.linkNotice.newNameTaken.label": {
+    "value": "链接里写的项目名称、模板标识或新名称（不翻译）",
+    "user": "包住用户内容的标签"
+  },
+  "desktop.linkNotice.newNoTemplate.label": {
+    "value": "链接里写的项目名称、模板标识或新名称（不翻译）",
+    "user": "包住用户内容的标签"
+  },
+  "desktop.linkNotice.openMissing.label": {
+    "value": "链接里写的项目名称、模板标识或新名称（不翻译）",
+    "user": "包住用户内容的标签"
+  },
   "desktop.missing.requirement.label": {
     "tool": "工具标识，如 go、node",
     "required": "需要的版本范围，原样显示"
@@ -177,5 +197,13 @@
   "desktop.terminalFind.count.label": {
     "index": "当前是第几个，从 1 开始",
     "total": "一共几个"
+  },
+  "desktop.update.banner.label": {
+    "latest": "新版本号，如 0.3.0",
+    "current": "当前版本号，如 0.2.0"
+  },
+  "desktop.urlConfirm.preview.label": {
+    "name": "项目名称（不翻译）",
+    "user": "包住用户内容的标签"
   }
 }

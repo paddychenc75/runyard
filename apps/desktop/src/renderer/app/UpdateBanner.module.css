@@ -1,0 +1,56 @@
+/* 设计稿 UpdateBanner：强调色淡底的一条，左图标、中间一句话、右边“下载”和“以后再说” */
+.root {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  box-sizing: border-box;
+  min-block-size: calc(var(--size-control-lg) + var(--space-4));
+  margin-block-end: var(--space-5);
+  padding: var(--space-4) var(--space-5) var(--space-4) var(--space-6);
+  border: 1px solid var(--color-line-accent);
+  border-radius: var(--radius-card);
+  background: var(--color-fill-accent-tint);
+  color: var(--color-text-primary);
+  font-size: var(--text-item-size);
+  line-height: var(--text-item-line-height);
+}
+
+.icon {
+  flex: none;
+  color: var(--color-text-accent);
+}
+
+.text {
+  flex: 1;
+  min-inline-size: 0;
+  margin: 0;
+  font-weight: var(--text-item-weight);
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.link {
+  padding: 0 var(--space-3);
+  border: 0;
+  background: none;
+  color: var(--color-text-link);
+  font: inherit;
+  font-weight: var(--text-item-weight);
+  cursor: pointer;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.link:focus-visible {
+  border-radius: var(--radius-control);
+  outline: none;
+  box-shadow: var(--shadow-focus-ring);
+}
