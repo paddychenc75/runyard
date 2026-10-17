@@ -6,6 +6,7 @@ import { clientError, connectSupervisor, type RunyardClient } from "@runyard/cli
 import { absPath, getPlatform } from "@runyard/platform";
 import pkg from "../../package.json" with { type: "json" };
 import type { LibraryClient } from "./library-controller.ts";
+import { ReconnectingClient } from "./reconnecting-client.ts";
 
 // 组合根：把真的东西接到桌面应用上。和命令行的组合根（packages/cli/src/composition-root.ts）一样，
 // 管理进程入口文件的位置是这里唯一注入的配置值：从源码运行时在仓库里，打包后在应用的资源目录里（#194）。
@@ -78,6 +79,27 @@ export async function connectToSupervisor(
     },
   });
   return { client, clientId: randomUUID() };
+}
+
+/**
+ * 在已连上的连接外包一层：管理进程被换掉、重启后自己重连并重新订阅（#358）；
+ * 连上之后让它重扫一遍资源库，再调 refresh 重读状态
+ */
+export function withReconnect(
+  connected: Connected,
+  runtime: DesktopRuntime,
+  root: string | undefined,
+  refresh: () => Promise<void>,
+): ReconnectingClient {
+  const wrapper: ReconnectingClient = new ReconnectingClient(connected.client, {
+    connect: async () => (await connectToSupervisor(runtime, root)).client,
+    onReconnected: async () => {
+      await wrapper.call("library.rescan", {}).catch(() => undefined);
+      await refresh();
+    },
+    sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
+  });
+  return wrapper;
 }
 
 /** 连不上管理进程时窗口照样打开，列表区显示这个错误；每个调用都以同一个错误失败 */

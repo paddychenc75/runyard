@@ -42,7 +42,13 @@ export type VersionOutcome =
   // 管理进程是旧的，已换成自己带的（没有运行时才会换）
   | { kind: "replaced" }
   // 管理进程是旧的但有运行，沿用了它，没有停任何运行。应用提示“后台管理进程是旧版本，停止全部运行后会自动更新”
-  | { kind: "outdated"; reason: "build-differs" | "protocol-older"; runs: number };
+  // blockedByApp：没有运行，是因为桌面应用正连着它，管理进程拒绝被换（#358）；命令行据此可以说明原因
+  | {
+      kind: "outdated";
+      reason: "build-differs" | "protocol-older";
+      runs: number;
+      blockedByApp?: true;
+    };
 
 /** 管理进程的自我介绍（supervisor.info）加握手里拿到的最低协议要求 */
 export interface SupervisorSummary {

@@ -6,7 +6,12 @@ import { windowBackground } from "@runyard/tokens";
 import { app, type BrowserWindow, ipcMain, Menu, nativeTheme, net, protocol } from "electron";
 import { desktopChannels } from "../shared/desktop-bridge.ts";
 import { APP_ORIGIN, APP_SCHEME, resolveAppFile } from "./app-protocol.ts";
-import { connectToSupervisor, type DesktopRuntime, unavailableClient } from "./composition-root.ts";
+import {
+  connectToSupervisor,
+  type DesktopRuntime,
+  unavailableClient,
+  withReconnect,
+} from "./composition-root.ts";
 import type { TerminalHooks } from "./controller-hosts.ts";
 import { EditorFileService } from "./editor-files/file-service.ts";
 import { runEditorSmoke } from "./editor-smoke.ts";
@@ -146,18 +151,19 @@ async function main(args: DesktopArgs): Promise<void> {
   let close = (): void => {};
   try {
     const connected = await connectToSupervisor(runtime(), args.root);
-    client = connected.client;
-    clientId = connected.clientId;
-    close = () => connected.client.close();
+    const reconnecting = withReconnect(connected, runtime(), args.root, () => controller.refresh());
+    [client, clientId] = [reconnecting, connected.clientId];
+    close = () => reconnecting.close();
     // 应用正常退出：先向管理进程道别，它会停掉这条连接名下的标签页运行（最多等 5 秒）
     registerQuitFlow(
       app,
       async () => {
         // 道别会停掉标签页的运行：先停止记录标签页，下次打开才知道哪些原来在运行
         controller.freezeSession();
+        reconnecting.stopReconnecting();
         try {
           // 终端和运行一起收尾：⌘Q 后 5 秒内不留下 shell 和里面的命令（规格 DESKTOP-TERMINAL-30）
-          await Promise.all([connected.client.call("session.bye", {}), terminals.dispose()]);
+          await Promise.all([reconnecting.call("session.bye", {}), terminals.dispose()]);
         } finally {
           close();
         }
