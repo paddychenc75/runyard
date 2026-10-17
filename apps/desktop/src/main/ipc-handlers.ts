@@ -6,6 +6,8 @@ import {
 } from "../shared/desktop-bridge.ts";
 import type { Bounds } from "../shared/layout.ts";
 import { isAppUrl } from "./app-protocol.ts";
+import { editorFileMethods } from "./editor-files/editor-ipc.ts";
+import type { EditorFileService } from "./editor-files/file-service.ts";
 import type { LibraryController } from "./library-controller.ts";
 
 // 把界面发来的消息接到控制器上。Electron 的 ipcMain 通过 IpcHost 这个接口传进来，测试里换成假的。
@@ -42,6 +44,7 @@ export function registerBridgeHandlers(
   host: IpcHost,
   controller: LibraryController,
   bootstrap: BootstrapInfo,
+  files?: EditorFileService,
 ): () => void {
   // 方法名到控制器的映射；参数不是预期类型时不调用控制器
   const methods: Record<DesktopMethod, (param: unknown) => unknown> = {
@@ -108,6 +111,8 @@ export function registerBridgeHandlers(
       const template = text(id);
       if (template !== null) await controller.create(template);
     },
+    // 文件服务（#257）；没接线时这些方法不可用
+    ...editorFileMethods(files),
   };
 
   // 只有本应用自己的界面页面发来的消息才执行：预览页面（任何本机服务）没有预加载脚本，

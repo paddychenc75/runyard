@@ -1,9 +1,12 @@
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { absPath, getPlatform } from "@runyard/platform";
 import { windowBackground } from "@runyard/tokens";
 import { app, type BrowserWindow, ipcMain, Menu, nativeTheme, net, protocol } from "electron";
+import { desktopChannels } from "../shared/desktop-bridge.ts";
 import { APP_ORIGIN, APP_SCHEME, resolveAppFile } from "./app-protocol.ts";
 import { connectToSupervisor, type DesktopRuntime, unavailableClient } from "./composition-root.ts";
+import { EditorFileService } from "./editor-files/file-service.ts";
 import {
   buildBootstrapInfo,
   closeKeepsAppAlive,
@@ -132,6 +135,15 @@ async function main(args: DesktopArgs): Promise<void> {
       if (!window.isDestroyed()) window.webContents.send(channel, name, payload);
     },
   };
+  // 编辑器的文件服务：只认项目 id 加项目内相对路径，文件夹每次从当前列表里查
+  const files = new EditorFileService({
+    platform: getPlatform(args.root === undefined ? {} : { home: absPath(args.root) }),
+    projectFolder: (id) =>
+      controller.getState().playgrounds.find((playground) => playground.id === id)?.path ?? null,
+    onChange: (project, changes) =>
+      ipcHost.send(desktopChannels.event, "files.changed", { project, changes }),
+  });
+  app.once("will-quit", () => void files.dispose());
   registerBridgeHandlers(
     ipcHost,
     controller,
@@ -141,6 +153,7 @@ async function main(args: DesktopArgs): Promise<void> {
       reducedTransparency: nativeTheme.prefersReducedTransparency,
       highContrast: nativeTheme.shouldUseHighContrastColors,
     }),
+    files,
   );
   // 应用菜单：⌘N 打开模板选择器（焦点在预览视图里也有效）
   Menu.setApplicationMenu(
