@@ -12,6 +12,10 @@ import type { SupervisorApi } from "./supervisor-api.ts";
 // 空闲的口径与命令行运行的空闲停止（idle-stop.ts）相同：项目文件夹里的文件变化、命令行的命令提到它；
 // 但脚本不参与运行的空闲停止（RUN-OWNERSHIP-16），空闲结束的只是监听，不会停任何运行。
 // 重跑时旧的先停、新的再起，由 `ScriptRuns` 保证；重跑出来的运行沿用同一个持有者，所以不会重复监听。
+// 桌面应用的标签页持有的运行（脚本和服务）也在这里监听（RUN-SCRIPTS-32、TEMPLATES-RUNNERS-36，#262）：
+// 保存与外部写入一样由磁盘变化驱动。监听跟随标签页：`run.stop`（关标签页、停止按钮）、应用断开或告别时结束，
+// 没有空闲计时；运行器 `watch.mode` 为 none（静态页面、Vite 热更新）时 `ScriptRuns.watch` 什么也不挂。
+// 服务（restart）只受运行器的规则管，不受脚本的“保存后自动运行”开关管。
 
 const ACTIVITY_IGNORE = [".runyard", "node_modules", ".git"].map(posixRelPath);
 
@@ -30,6 +34,8 @@ export interface ScriptWatch {
   mention(playgroundId: string, session: Session | undefined): void;
   /** 结束这个项目的监听（`runyard stop`、移到废纸篓）；没在监听时什么也不做 */
   end(playgroundId: string): void;
+  /** 应用的这个客户端断开或告别：结束它的标签页持有的全部监听 */
+  endTabsOf(clientId: string): void;
   /** 结束全部监听（`runyard stop --all`） */
   endAll(): void;
   /** 管理进程关闭：摘掉全部监听和计时 */
@@ -40,6 +46,8 @@ export interface ScriptWatch {
 
 interface Watching {
   readonly playgroundId: string;
+  /** 标签页持有的监听不计空闲，也不需要活动信号 */
+  readonly tabClientId: string | undefined;
   last: number;
   closed: boolean;
   timer?: number;
@@ -80,15 +88,25 @@ export function createScriptWatch(api: SupervisorApi, deps: ScriptWatchDeps): Sc
   }
 
   async function begin(run: Run): Promise<void> {
-    const { playgroundId } = run.request;
+    const { playgroundId, owner } = run.request;
     // 同步占位：状态事件一个接一个来，不能让两次都走到 watch
-    const w: Watching = { playgroundId, last: clock.now(), closed: false };
+    const w: Watching = {
+      playgroundId,
+      tabClientId: owner.kind === "tab" ? owner.clientId : undefined,
+      last: clock.now(),
+      closed: false,
+    };
     watching.set(playgroundId, w);
     try {
-      if (!(await deps.autoRunEnabled(playgroundId)) || w.closed) return close(w);
+      // 开关只管脚本；服务的重启由运行器的规则决定
+      if (run.request.kind === "oneshot" && !(await deps.autoRunEnabled(playgroundId))) {
+        return close(w);
+      }
+      if (w.closed) return;
       const watcher = await deps.scripts.watch(run.request);
       if (w.closed) return void (await watcher.dispose());
       w.watcher = watcher;
+      if (w.tabClientId !== undefined) return;
       const folder = await deps.folderOf(playgroundId).catch(() => undefined);
       if (folder !== undefined && !w.closed) {
         // 活动信号监听失败只是少一种信号，监听本身照常
@@ -112,7 +130,8 @@ export function createScriptWatch(api: SupervisorApi, deps: ScriptWatchDeps): Sc
   return {
     observer: {
       state: ({ run: snapshot }: RunStateEvent) => {
-        if (snapshot.owner.kind !== "cli" || snapshot.kind !== "oneshot") return;
+        const tabOwned = snapshot.owner.kind === "tab";
+        if (!tabOwned && !(snapshot.owner.kind === "cli" && snapshot.kind === "oneshot")) return;
         if (watching.has(snapshot.playgroundId)) return;
         // 正在停止的运行不开始监听：`runyard stop` 先摘掉监听，随后这次运行自己的“停止中”事件不能把它重新挂上（#153）
         if (!isActiveState(snapshot.state) || snapshot.state === "stopping") return;
@@ -128,6 +147,9 @@ export function createScriptWatch(api: SupervisorApi, deps: ScriptWatchDeps): Sc
     end(playgroundId) {
       const w = watching.get(playgroundId);
       if (w !== undefined) close(w);
+    },
+    endTabsOf(clientId) {
+      for (const w of [...watching.values()]) if (w.tabClientId === clientId) close(w);
     },
     endAll() {
       for (const w of [...watching.values()]) close(w);

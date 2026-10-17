@@ -169,6 +169,17 @@ describe("LibraryController 关闭标签页", () => {
     expect(client.count("settings.get")).toBe(1);
   });
 
+  it("[RUN-SCRIPTS-32] 标签页持有的脚本已跑完：关标签页发一次 run.stop，结束保存后自动重跑的监听，不弹确认", async () => {
+    const { client, controller } = await setup([run("a", "finished", { kind: "oneshot" })]);
+    await controller.openProject("a");
+    await controller.requestCloseTab("a");
+    expect(controller.getState().closeRequest).toBeNull();
+    expect(tabsOf(controller)).toEqual([]);
+    expect(client.calls.filter((c) => c.method === "run.stop").map((c) => c.params)).toEqual([
+      { playground: "a" },
+    ]);
+  });
+
   it("[DESKTOP-WORKSPACE-10] 查看命令行持有的运行：关标签不弹确认，运行继续，持有者仍是命令行", async () => {
     const cliRun = run("a", "ready", {
       owner: { kind: "cli", command: "runyard run a" },

@@ -217,6 +217,7 @@ export function createRunModule(api: SupervisorApi, options: RunModuleOptions): 
     refreshSettings,
     mentioned,
     stopRequested: (playgroundId) => scriptWatch.end(playgroundId),
+    tabsGone: (clientId) => scriptWatch.endTabsOf(clientId),
     stopWaitLimitMs: options.stopWaitLimitMs ?? STOP_WAIT_LIMIT_MS,
   });
   const viewers = new RunViewers();

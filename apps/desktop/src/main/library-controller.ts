@@ -8,6 +8,7 @@ import type { DesktopError, LibraryState } from "../shared/library-state.ts";
 import {
   buildLibraryState,
   latestRunByPlayground,
+  needsStopOnClose,
   ownedActiveRun,
   previewUrlFor,
 } from "./build-library-state.ts";
@@ -248,7 +249,7 @@ export class LibraryController {
 
   // 先把标签去掉（界面立刻响应），再停它持有的运行；停止的时限由管理进程保证（run/ownership）
   async #closeNow(playgroundId: string): Promise<void> {
-    const owned = ownedActiveRun(playgroundId, this.#runs) !== null;
+    const owned = needsStopOnClose(playgroundId, this.#runs);
     if (!this.#workspace.close(playgroundId)) return;
     this.#preview.release(playgroundId);
     this.#console.unwatch(playgroundId);
