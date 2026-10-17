@@ -1,4 +1,4 @@
-import type { EditorFileError, FileChange, SaveProblem } from "../../../shared/editor-files.ts";
+import type { FileChange } from "../../../shared/editor-files.ts";
 import { type DiskHost, reconcileDisk, useDiskVersion } from "./disk-change.ts";
 import { type FileTab, isDirty, loadingTab, withContent } from "./file-tab.ts";
 import { PathTimers } from "./path-timers.ts";
@@ -9,16 +9,13 @@ import {
   type EditorSessionOptions,
   type SessionState,
 } from "./session-types.ts";
+import { type WriteHost, writeTab } from "./write-tab.ts";
 
 // 一个项目的编辑器会话（规格 desktop/editor「文件标签」）：打开的文件标签、选中的是哪个、保存、关闭、恢复上次的标签。
 // 不认识 Monaco 和界面——内容由界面把编辑器里的变化经 edit() 交进来，文件读写经注入的 files——所以用假的文件接口就能测。
 // 自动保存三档（#260）：delay 档在 edit() 里为每个文件各自计时，blur 档由 select() 和 blur() 触发，off 档只有 save()。
 // 磁盘上的外部修改（#260）经 files.watch() 的变化推送进来：没有未保存修改就换成磁盘内容，
 // 有就标 conflict 并暂停这个文件的自动保存，等 useDisk() / keepMine()；被删除的标 deleted，只有 save() 重新创建。
-
-function saveReason(error: EditorFileError): SaveProblem {
-  return error.code === "EDITOR_SAVE_FAILED" ? error.params.reason : "other";
-}
 
 export class EditorSession {
   readonly #options: EditorSessionOptions;
@@ -217,6 +214,19 @@ export class EditorSession {
     this.#timers.cancel(path);
   }
 
+  /** 输入法组词中不自动保存，免得把半截拼音写进磁盘、白白触发一次热更新（#310）；结束后重新计时 */
+  setComposing(path: string, composing: boolean): void {
+    if (composing) this.#timers.hold(path);
+    else if (this.#timers.release(path)) this.#schedule(path);
+  }
+
+  /** 编辑器把换进去的内容规范化了（单独的 \r 当换行等）：不是用户的编辑，不写盘，文本和已保存的一起换掉 */
+  adoptNormalized(path: string, text: string): void {
+    const tab = this.#state.tabs.find((candidate) => candidate.path === path);
+    if (tab === undefined || tab.view !== "text" || isDirty(tab)) return;
+    this.#patch(path, { text, savedText: text });
+  }
+
   /** delay 档：每次输入都重新计时，停下满 1 秒才写（DESKTOP-EDITOR-23）；等用户选择的和已删除的文件不自动写 */
   #schedule(path: string): void {
     this.#cancelTimer(path);
@@ -260,33 +270,15 @@ export class EditorSession {
     return next;
   }
 
-  async #write(path: string): Promise<boolean> {
-    const tab = this.#state.tabs.find((candidate) => candidate.path === path);
-    if (tab === undefined || tab.view !== "text") return true;
-    if (!isDirty(tab) && tab.saveError === null && !tab.deleted) return true;
-    const snapshot = tab.text;
-    const content = tab.bom ? `﻿${snapshot}` : snapshot;
-    this.#patch(path, { saving: true });
-    const result = await this.#options.files.write(
-      path,
-      content,
-      tab.eol === "none" ? undefined : tab.eol,
-    );
-    if (result.ok) {
-      // 写的过程中又输入了的话 text 已经变了，只记下写进去的那一份，未保存标记留着。
-      // 换行不统一的提示只给一次：写过一次，磁盘上就已经统一了（DESKTOP-EDITOR-55）
-      this.#patch(path, {
-        savedText: snapshot,
-        saveError: null,
-        deleted: false,
-        mixedEol: false,
-        saving: false,
-      });
-      return true;
-    }
-    this.#patch(path, { saveError: saveReason(result.error), saving: false });
-    return false;
+  #write(path: string): Promise<boolean> {
+    return writeTab(this.#writeHost, path);
   }
+
+  readonly #writeHost: WriteHost = {
+    tab: (path) => this.#state.tabs.find((candidate) => candidate.path === path),
+    patch: (path, change) => this.#patch(path, change),
+    write: (path, content, eol) => this.#options.files.write(path, content, eol),
+  };
 
   /** 关闭或退出时这个文件要不要先问：“关闭”档，以及自动保存帮不上的（等用户选择的、已删除的） */
   #needsAsking(tab: FileTab): boolean {
