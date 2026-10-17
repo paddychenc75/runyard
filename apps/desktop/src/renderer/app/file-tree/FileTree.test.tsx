@@ -267,7 +267,8 @@ describe("文件树：重命名", () => {
   it("[DESKTOP-EDITOR-09] 重命名已打开的文件：磁盘只剩新名字，通知工作区把标签改成新路径", async () => {
     const files = fakeFiles(PROJECT);
     const { user, host } = setup(files, hostOf({ activePath: "src/App.tsx" }));
-    await expandSrc(user);
+    // 打开着的文件所在的文件夹会自动展开，不用再点 src
+    await screen.findByRole("treeitem", { name: "App.tsx" });
     fireEvent.contextMenu(item("App.tsx"));
     await user.click(await screen.findByRole("menuitem", { name: /^重命名/ }));
     await user.keyboard("{Control>}a{/Control}Main.tsx{Enter}");

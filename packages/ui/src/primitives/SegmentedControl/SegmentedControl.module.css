@@ -34,6 +34,10 @@
   font-weight: var(--text-item-weight);
 }
 
+.segment:disabled {
+  opacity: 0.4;
+}
+
 .segment:focus-visible {
   box-shadow: var(--shadow-focus-ring);
 }

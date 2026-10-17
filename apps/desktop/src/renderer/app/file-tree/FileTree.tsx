@@ -70,6 +70,15 @@ export function FileTree({ bridge, project, hooks, onCollapse }: FileTreeProps) 
     },
     [tree.setFocused],
   );
+  // 打开着的文件要看得见（设计稿 Web：src 展开、App.tsx 是强调色实底）：它所在的文件夹逐级展开
+  const { activePath } = workspace;
+  const { toggle: toggleDir } = tree;
+  useEffect(() => {
+    if (activePath === null) return;
+    const parts = activePath.split("/").slice(0, -1);
+    for (let depth = 1; depth <= parts.length; depth++)
+      toggleDir(parts.slice(0, depth).join("/"), true);
+  }, [activePath, toggleDir]);
   // 新建、改名、移走之后焦点回到树里（输入框消失时它会丢焦点）
   const draftOpen = tree.draft !== null;
   const returnTo = tree.focused;

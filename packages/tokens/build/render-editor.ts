@@ -59,7 +59,7 @@ function editorColors(pick: Pick): [string, string][] {
     ["editor.background", pick("color-bg-card")],
     ["editor.foreground", pick("color-code-plain")],
     ["editorLineNumber.foreground", pick("color-code-line-number")],
-    ["editorLineNumber.activeForeground", pick("color-code-plain")],
+    ["editorLineNumber.activeForeground", pick("color-code-line-number")],
     ["editor.lineHighlightBackground", pick("color-code-current-line")],
     ["editor.selectionBackground", pick("color-fill-accent-tint")],
     ["editorCursor.foreground", pick("color-line-accent")],

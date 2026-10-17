@@ -142,6 +142,7 @@
   --shadow-segment-selected: 0 1px 3px rgba(0, 0, 0, 0.14), 0 0 0 0.5px rgba(0, 0, 0, 0.05);
   --shadow-thumb: 0 1px 3px rgba(0, 0, 0, 0.25);
   --shadow-tab-selected: 0 1px 3px rgba(0, 0, 0, 0.12);
+  --shadow-tile: inset 0 1px 0 rgba(255, 255, 255, 0.7);
   --glass-border-width: 1px;
   --glass-blur-toolbar: blur(28px) saturate(180%);
   --glass-blur-sidebar: blur(40px) saturate(180%);
@@ -169,6 +170,7 @@
   --size-control-padding-lg: 18px;
   --size-control-padding-md: 14px;
   --size-tree-row: 28px;
+  --size-menu-min: 252px;
   --size-menu-item: 32px;
   --size-window-inset: 8px;
   --size-nav-item: 36px;
@@ -219,6 +221,7 @@
   --text-secondary-size: 12px;
   --text-caption-size: 11px;
   --text-micro-size: 10px;
+  --text-tile-large-size: 17px;
   --text-code-size: 13px;
   --text-code-small-size: 12px;
   --text-page-title-weight: 700;
@@ -282,6 +285,7 @@
   --shadow-segment-selected: none;
   --shadow-thumb: 0 1px 3px rgba(0, 0, 0, 0.25);
   --shadow-tab-selected: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  --shadow-tile: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -301,6 +305,7 @@
     --shadow-segment-selected: none;
     --shadow-thumb: 0 1px 3px rgba(0, 0, 0, 0.25);
     --shadow-tab-selected: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    --shadow-tile: inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 }
 

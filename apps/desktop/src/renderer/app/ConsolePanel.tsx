@@ -1,5 +1,5 @@
 import { useT } from "@runyard/i18n/react";
-import { Button } from "@runyard/ui";
+import { Button, SegmentedControl } from "@runyard/ui";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { TabRow } from "../../shared/library-state.ts";
 import { ConsoleOutput } from "./ConsoleOutput.tsx";
@@ -17,7 +17,16 @@ export function ConsolePanel({ bridge, tab }: ConsolePanelProps) {
   return (
     <section className={styles.root} data-console={tab.id}>
       <header className={styles.header}>
-        <h2 className={styles.tab}>{t("desktop.console.tab.label")}</h2>
+        {/* 终端页签随终端的界面（#263）才能点；先灰着，位置和设计稿一致 */}
+        <SegmentedControl
+          label={t("desktop.console.tabs.aria")}
+          items={[
+            { value: "output", label: t("desktop.console.tab.label") },
+            { value: "terminal", label: t("desktop.console.terminal.label"), disabled: true },
+          ]}
+          value="output"
+          onValueChange={() => {}}
+        />
         <Button size="sm" onClick={() => void bridge.call("console.clear", tab.id)}>
           {t("desktop.console.clear.action")}
         </Button>

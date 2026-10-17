@@ -11,7 +11,7 @@ import {
   statusFilters,
   typeFilters,
 } from "../library-query.ts";
-import { logoOf, monogramOf, pickLocalizedText, runningCount } from "../library-view.ts";
+import { brandOf, logoOf, monogramOf, pickLocalizedText, runningCount } from "../library-view.ts";
 import { CleanBanner } from "./CleanBanner.tsx";
 import { FilterMenu } from "./FilterMenu.tsx";
 import styles from "./LibraryPage.module.css";
@@ -142,6 +142,7 @@ export function LibraryPage({
                     <MonogramTile
                       letters={monogramOf(template.id)}
                       logo={logoOf(template.id)}
+                      brand={brandOf(template.id)}
                       size="lg"
                     />
                     <UserText>{pickLocalizedText(template.name, locale)}</UserText>

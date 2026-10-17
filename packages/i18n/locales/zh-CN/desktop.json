@@ -9,6 +9,8 @@
   "desktop.category.service.label": "服务",
   "desktop.console.clear.action": "清除",
   "desktop.console.tab.label": "输出",
+  "desktop.console.terminal.label": "终端",
+  "desktop.console.tabs.aria": "底部面板",
   "desktop.crashed.log.label": "最后的日志",
   "desktop.crashed.overlay.aria": "崩溃提示",
   "desktop.crashed.title": "已崩溃 · 退出码 {exitCode}",

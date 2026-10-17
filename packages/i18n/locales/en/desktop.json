@@ -9,6 +9,8 @@
   "desktop.category.service.label": "Services",
   "desktop.console.clear.action": "Clear",
   "desktop.console.tab.label": "Output",
+  "desktop.console.terminal.label": "Terminal",
+  "desktop.console.tabs.aria": "Bottom panel",
   "desktop.crashed.log.label": "Last output",
   "desktop.crashed.overlay.aria": "Crash notice",
   "desktop.crashed.title": "Crashed · exit code {exitCode}",

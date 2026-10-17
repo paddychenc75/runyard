@@ -1,3 +1,5 @@
+/* 模板方块（视觉规范第 7 节）：底永远是中性色，不用品牌色铺满；标志占边长约 60%，
+   字母用系统无衬线、字重 600、字距 -0.01em，只借各技术的代表色。小和中圆角 xs，大方块 md。 */
 .root {
   display: inline-flex;
   flex: none;
@@ -7,28 +9,28 @@
   inline-size: var(--size-tile);
   block-size: var(--size-tile);
   border: 1px solid var(--color-line-hairline);
-  border-radius: var(--radius-control);
+  border-radius: var(--radius-xs);
   background: var(--color-bg-chip);
+  box-shadow: var(--shadow-tile);
   color: var(--color-text-secondary-strong);
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: var(--text-micro-size);
   font-weight: var(--text-micro-weight);
-  line-height: var(--text-micro-line-height);
+  letter-spacing: calc(var(--space-1) * -0.05);
+  line-height: 1;
 }
 
 .root[data-size="lg"] {
   inline-size: var(--size-tile-lg);
   block-size: var(--size-tile-lg);
-  background: var(--color-bg-raised);
+  font-size: var(--text-caption-size);
 }
 
 .root[data-size="xl"] {
   inline-size: var(--size-dialog-icon);
   block-size: var(--size-dialog-icon);
-  border-radius: var(--radius-row);
-  background: var(--color-bg-raised);
-  font-size: var(--text-body-size);
-  line-height: var(--text-body-line-height);
+  border-radius: var(--radius-md);
+  font-size: var(--text-tile-large-size);
 }
 
 /* 技术标志用品牌色（设计变量里按主题给了值，深色下用官方的浅一档，保证在中性方块上看得清） */
@@ -40,6 +42,27 @@
   color: var(--color-brand-vue);
 }
 
+/* Python 用官方双色原图：第一条路径是蓝蛇，第二条是黄蛇 */
 .root[data-logo="python"] {
   color: var(--color-brand-python);
+}
+
+.root[data-logo="python"] svg path:nth-child(2) {
+  fill: var(--color-brand-python-yellow);
+}
+
+.root[data-brand="react"] {
+  color: var(--color-brand-react);
+}
+
+.root[data-brand="go"] {
+  color: var(--color-brand-go);
+}
+
+.root[data-brand="node"] {
+  color: var(--color-brand-node);
+}
+
+.root[data-brand="hono"] {
+  color: var(--color-brand-hono);
 }

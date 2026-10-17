@@ -19,19 +19,12 @@
   padding: var(--space-3) var(--space-4);
 }
 
-.tab {
-  margin: 0;
-  padding-inline: var(--space-6);
-  block-size: var(--size-control-sm);
-  display: flex;
-  align-items: center;
-  border-radius: var(--radius-control);
-  background: var(--color-bg-chip);
-  font-size: var(--text-item-size);
-  font-weight: var(--text-section-title-weight);
-}
-
+/* 输出内容放在一块内嵌块里（视觉规范：内嵌块 md 12），不贴卡片边 */
 .log {
   flex: 1;
   min-block-size: 0;
+  margin: 0 var(--space-4) var(--space-4);
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-inset);
 }

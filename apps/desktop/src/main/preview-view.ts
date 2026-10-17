@@ -1,3 +1,4 @@
+import { numbers } from "@runyard/tokens";
 import { type BrowserWindow, shell, WebContentsView } from "electron";
 import type { Bounds } from "../shared/layout.ts";
 import type { PreviewHost } from "./library-controller.ts";
@@ -135,6 +136,8 @@ export class ElectronPreviewHost implements PreviewHost {
         partition: `preview-${playgroundId}`,
       },
     });
+    // 预览所在的卡片是 lg 圆角、里面有 1px 细线；原生视图不会被网页的 overflow 裁，所以自己圆角（视觉规范第 1 节）
+    view.setBorderRadius(numbers["radius-lg"] - 1);
     const contents = view.webContents;
     contents.session.setPermissionRequestHandler((_contents, permission, callback) =>
       callback(isPermissionAllowed(permission)),

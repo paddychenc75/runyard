@@ -17,6 +17,7 @@ import { isDueTomorrow } from "../../shared/clean-due.ts";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { PlaygroundRow } from "../../shared/library-state.ts";
 import {
+  brandOf,
   logoOf,
   monogramOf,
   pickLocalizedText,
@@ -120,7 +121,11 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
         dim(
           row,
           <span className={styles.template}>
-            <MonogramTile letters={monogramOf(row.templateId)} logo={logoOf(row.templateId)} />
+            <MonogramTile
+              letters={monogramOf(row.templateId)}
+              logo={logoOf(row.templateId)}
+              brand={brandOf(row.templateId)}
+            />
             <Truncate>
               <UserText>
                 {row.templateName === null
