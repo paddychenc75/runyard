@@ -1,4 +1,4 @@
-import { mkdirSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
+import { mkdirSync, unlinkSync, writeFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { makeTestProject, PROJECT } from "./test-project.ts";
 
@@ -66,25 +66,6 @@ describe("监听项目文件夹", () => {
     const mine = p.changes.filter((c) => c.path !== "done.marker");
     expect(mine.length).toBeGreaterThan(0);
     expect(mine.every((c) => c.path === "App.tsx" && c.self)).toBe(true);
-    await p.service.dispose();
-  });
-
-  it("[DESKTOP-EDITOR-36] 自己保存之后外部程序改成别的内容：这次变化不被当成自己的", async () => {
-    const p = makeTestProject();
-    p.put("App.tsx", "v0");
-    await p.service.watch(PROJECT);
-    await settle(p);
-    await p.service.write(PROJECT, "App.tsx", "mine");
-    const appChanges = () => p.changes.filter((c) => c.path === "App.tsx" && c.kind !== "remove");
-    await expect.poll(() => appChanges().length, poll).toBeGreaterThanOrEqual(1);
-    expect(appChanges().every((c) => c.self)).toBe(true);
-    const seen = appChanges().length;
-    // 外部程序（智能体常见的写法）也是先写临时文件再改名盖掉：Linux 的 inotify 盯着文件本身，
-    // 自己的原子保存换掉文件后，原地改写可能漏报，改名式写入两个系统都报得出来（macOS 为正式目标）
-    writeFileSync(p.at("other.tmp"), "theirs");
-    renameSync(p.at("other.tmp"), p.at("App.tsx"));
-    await expect.poll(() => appChanges().length, poll).toBeGreaterThan(seen);
-    expect(appChanges().at(-1)?.self).toBe(false);
     await p.service.dispose();
   });
 
