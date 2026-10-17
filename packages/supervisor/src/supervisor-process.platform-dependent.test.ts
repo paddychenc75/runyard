@@ -1,9 +1,9 @@
 import { randomBytes } from "node:crypto";
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, statSync } from "node:fs";
 import { createServer, type Server } from "node:net";
 import { join } from "node:path";
 import { type AbsPath, absPath, type Platform } from "@runyard/platform";
-import { type SupervisorFile, supervisorFileFormat, supervisorFileSchema } from "@runyard/protocol";
+import { type SupervisorFile, supervisorFileFormat } from "@runyard/protocol";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { discoveryFilePath } from "./discovery-file.ts";
 import {
@@ -11,6 +11,7 @@ import {
   ProcessLedger,
   platformAt,
   type RunningSupervisor,
+  readDiscoveryFile,
   waitUntil,
 } from "./process-harness.test.ts";
 import { EXIT_ALREADY_RUNNING_LINE } from "./run-main.ts";
@@ -44,10 +45,7 @@ afterEach(async () => {
 });
 
 function readDiscovery(at: Platform = platform): SupervisorFile | undefined {
-  const path = discoveryFilePath(at.paths.stateDir);
-  if (!existsSync(path)) return undefined;
-  const parsed = supervisorFileSchema.safeParse(JSON.parse(readFileSync(path, "utf8")));
-  return parsed.success ? parsed.data : undefined;
+  return readDiscoveryFile(discoveryFilePath(at.paths.stateDir));
 }
 
 async function waitReady(

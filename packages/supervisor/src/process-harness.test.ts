@@ -1,4 +1,4 @@
-import { mkdtempSync, realpathSync, rmSync } from "node:fs";
+import { mkdtempSync, readFileSync, realpathSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -8,6 +8,7 @@ import {
   type ManagedProcess,
   type Platform,
 } from "@runyard/platform";
+import { type SupervisorFile, supervisorFileSchema } from "@runyard/protocol";
 import { registerSpawned } from "@runyard/testing";
 import { expect, it } from "vitest";
 import { supervisorEntryPath } from "./index.ts";
@@ -137,8 +138,39 @@ export async function waitUntil<T>(
   }
 }
 
+/**
+ * 读发现文件，没有就是 undefined。不能先 existsSync 再读：新的管理进程启动时会删掉上次留下的旧文件，
+ * 夹在两步之间就读到 ENOENT（#225）。只有“文件不存在”算没有，其他错误照常抛。
+ * 读取函数可注入，单元测试用它模拟夹在中间被删。
+ */
+export function readDiscoveryFile(
+  path: string,
+  read: (path: string) => string = (p) => readFileSync(p, "utf8"),
+): SupervisorFile | undefined {
+  let text: string;
+  try {
+    text = read(path);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return undefined;
+    throw error;
+  }
+  const parsed = supervisorFileSchema.safeParse(JSON.parse(text));
+  return parsed.success ? parsed.data : undefined;
+}
+
 // 本文件在单元阶段也会被收集（Windows 上没有平台实现），所以这里不碰真实平台
 it("harness: 工具已就绪", () => {
   expect(typeof makeShortHome).toBe("function");
   expect(typeof ProcessLedger).toBe("function");
+});
+
+it("[SUPERVISOR-LIFECYCLE-03] 读发现文件时文件正好被新的管理进程删掉：当作没有，不抛 ENOENT（#225）", () => {
+  const gone = () => {
+    throw Object.assign(new Error("ENOENT: no such file"), { code: "ENOENT" });
+  };
+  expect(readDiscoveryFile("/nonexistent/supervisor.json", gone)).toBeUndefined();
+  const denied = () => {
+    throw Object.assign(new Error("EACCES"), { code: "EACCES" });
+  };
+  expect(() => readDiscoveryFile("/nonexistent/supervisor.json", denied)).toThrow("EACCES");
 });
