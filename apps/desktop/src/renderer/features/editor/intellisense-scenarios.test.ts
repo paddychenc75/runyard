@@ -28,6 +28,11 @@ beforeAll(async () => {
   };
   const { createEditorRuntime } = await import("../../editor/runtime.ts");
   runtime = await createEditorRuntime();
+  // 热身：第一次问语言服务要起线程、载入标准库，慢的 CI 机器上能超过用例的 5 秒；这笔冷启动在装载阶段付掉
+  const warm = runtime.monaco.editor.createModel("const warm: number = 1;", "typescript");
+  const getWorker = await runtime.typescript.getTypeScriptWorker();
+  await (await getWorker(warm.uri)).getSemanticDiagnostics(warm.uri.toString());
+  warm.dispose();
 }, 120_000);
 
 const commands = () =>
