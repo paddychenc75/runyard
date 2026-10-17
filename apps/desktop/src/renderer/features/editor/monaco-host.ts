@@ -164,20 +164,13 @@ export function buildHost(
     overviewRulerLanes: 0,
     scrollbar: { useShadows: false, horizontalScrollbarSize: 8, verticalScrollbarSize: 8 },
   });
-  // 输入法组词期间不自动保存（#310）：组词时模型里已经是还没选定的拼音
-  const composing = [
-    editor.onDidCompositionStart(() => {
-      const path = shownPath();
-      if (path !== null) handlers.onComposing?.(path, true);
+  // 输入法组词时模型里已经是没选定的拼音，会话据此暂缓自动保存（#310）
+  const composing = [true, false].map((on) =>
+    (on ? editor.onDidCompositionStart : editor.onDidCompositionEnd)(() => {
+      const path = shownId === null ? undefined : entries.get(shownId)?.path;
+      if (path !== undefined) handlers.onComposing?.(path, on);
     }),
-    editor.onDidCompositionEnd(() => {
-      const path = shownPath();
-      if (path !== null) handlers.onComposing?.(path, false);
-    }),
-  ];
-  function shownPath(): string | null {
-    return shownId === null ? null : (entries.get(shownId)?.path ?? null);
-  }
+  );
   // ⌘S 和 ⌘W 不在这里：它们在整个窗口层面处理（EditorColumn），焦点在不在编辑器里都一样
 
   const uriOf = (path: string): Monaco.Uri => monaco.Uri.from({ scheme: "file", path: `/${path}` });
@@ -297,8 +290,9 @@ export function buildHost(
       applyingSession = false;
     }
     if (position !== null) editor.setPosition(model.validatePosition(position));
-    if (scroll !== null) editor.setScrollPosition({ scrollTop: scroll.top, scrollLeft: scroll.left });
-    // Monaco 把内容规范化了（单独的 \r 当换行等）：交给会话采用，下一轮 sync 里两边就一致了，不会反复重载
+    if (scroll !== null)
+      editor.setScrollPosition({ scrollTop: scroll.top, scrollLeft: scroll.left });
+    // Monaco 规范化了内容（单独的 \r 当换行等）：交给会话采用，两边一致就不会反复重载
     const actual = model.getValue();
     if (actual !== tab.text) handlers.onNormalized?.(tab.path, actual);
   }

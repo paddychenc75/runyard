@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { EditorSession } from "./editor-session.ts";
-import { fakeDisk, fakeMemory, filesOn, emitChanges } from "./test-files.ts";
+import { emitChanges, fakeDisk, fakeMemory, filesOn } from "./test-files.ts";
 
 // 自动保存和外部监听往返时编辑器内容不被动、不多写盘（#310、#319）。计时用假时钟。
 

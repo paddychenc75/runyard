@@ -73,12 +73,7 @@ function textTab(path: string, content: string): FileTab {
   });
 }
 
-function mountHost(
-  path: string,
-  content: string,
-  edits: string[] = [],
-  normalized: string[] = [],
-) {
+function mountHost(path: string, content: string, edits: string[] = [], normalized: string[] = []) {
   const container = document.createElement("div");
   document.body.append(container);
   const host = buildHost(runtime, container, {
