@@ -312,6 +312,11 @@
 | desktop.preview.openExternal.action | 在浏览器中打开 | Open in browser | — |
 | desktop.preview.reload.action | 刷新 | Reload | — |
 | desktop.preview.waiting.label | 页面还没有就绪，就绪后会显示在这里。 | The page isn't ready yet. It shows up here once it is. | — |
+| desktop.quitConfirm.body | 这些终端里还有命令在运行，退出会结束它们。 | Commands are still running in these terminals. Quitting will end them. | — |
+| desktop.quitConfirm.cancel.action | 取消 | Cancel | — |
+| desktop.quitConfirm.confirm.action | 退出 | Quit | — |
+| desktop.quitConfirm.item.label | {project}：{command} | {project}: {command} | project：项目名，用户自己起的，不翻译；command：命令名，不翻译 |
+| desktop.quitConfirm.title | 退出 Runyard？ | Quit Runyard? | — |
 | desktop.rerun.action | 重新运行 | Run again | — |
 | desktop.restart.action | 重启 | Restart | — |
 | desktop.run.action | 运行 | Run | — |
@@ -343,6 +348,36 @@
 | desktop.stop.action | 停止 | Stop | — |
 | desktop.stopped.body | 你手动停止了它。点“运行”重新启动；关闭标签页后再打开，也会自动运行。 | You stopped it. Choose Run to start it again; closing the tab and opening it again also runs it. | — |
 | desktop.tab.cli.label | 命令行 | CLI | — |
+| desktop.terminal.aria | 终端 | Terminal | — |
+| desktop.terminal.endedExited.label | 终端已结束（退出码 {exitCode}） | Terminal ended (exit code {exitCode}) | exitCode：shell 的退出码，数字 |
+| desktop.terminal.endedHostCrashed.label | 终端意外结束 | Terminal ended unexpectedly | — |
+| desktop.terminal.endedRenamed.label | 项目已改名，终端已关闭 | The playground was renamed, so the terminal was closed | — |
+| desktop.terminal.endedSignal.label | 终端已结束 | Terminal ended | — |
+| desktop.terminal.endedStartFailed.label | 终端没能启动 | The terminal could not start | — |
+| desktop.terminal.reopen.action | 重新打开终端 | Reopen terminal | — |
+| desktop.terminal.shellFallback.label | 没能启动 {shell}（{reason, select, notFound {文件不存在} notExecutable {不能执行} spawnFailed {启动失败} other {启动后立刻退出}}），已改用 {fallback}。 | Could not start {shell} ({reason, select, notFound {file not found} notExecutable {not executable} spawnFailed {failed to start} other {exited right away}}). Using {fallback} instead. | shell：没能启动的 shell 的路径，不翻译；fallback：改用的 shell 的路径，不翻译；reason：原因代码：notFound、notExecutable、spawnFailed，其余都当“启动后立刻退出” |
+| desktop.terminalFind.aria | 在终端里查找 | Find in terminal | — |
+| desktop.terminalFind.case.aria | 区分大小写 | Match case | — |
+| desktop.terminalFind.case.label | Aa | Aa | — |
+| desktop.terminalFind.close.aria | 关闭查找 | Close find | — |
+| desktop.terminalFind.count.label | 第 {index} 个，共 {total} 个 | {index} of {total} | index：当前是第几个，从 1 开始；total：一共几个 |
+| desktop.terminalFind.field.aria | 查找内容 | Search text | — |
+| desktop.terminalFind.next.aria | 下一个 | Next match | — |
+| desktop.terminalFind.none.label | 无结果 | No results | — |
+| desktop.terminalFind.previous.aria | 上一个 | Previous match | — |
+| desktop.terminalFind.regex.aria | 使用正则表达式 | Use regular expression | — |
+| desktop.terminalFind.regex.label | .* | .* | — |
+| desktop.terminalFind.word.aria | 全词匹配 | Match whole word | — |
+| desktop.terminalFind.word.label | ab | ab | — |
+| desktop.terminalMenu.aria | 终端菜单 | Terminal menu | — |
+| desktop.terminalMenu.clear.action | 清除 | Clear | — |
+| desktop.terminalMenu.clear.hint | {term_clearShortcut} | {term_clearShortcut} | — |
+| desktop.terminalMenu.copy.action | 复制 | Copy | — |
+| desktop.terminalMenu.copy.hint | {term_copyShortcut} | {term_copyShortcut} | — |
+| desktop.terminalMenu.paste.action | 粘贴 | Paste | — |
+| desktop.terminalMenu.paste.hint | {term_pasteShortcut} | {term_pasteShortcut} | — |
+| desktop.terminalMenu.selectAll.action | 全选 | Select all | — |
+| desktop.terminalMenu.selectAll.hint | {term_selectAllShortcut} | {term_selectAllShortcut} | — |
 | desktop.window.title | Runyard | Runyard | — |
 | errors.APP_REQUIRED.body | open 和 screenshot 要由桌面应用来完成，命令行自己做不到。 | The open and screenshot commands are carried out by the desktop app. The command line cannot do them on its own. | — |
 | errors.APP_REQUIRED.hint | 打开 Runyard 应用后重新运行。 | Open the Runyard app, then run it again. | — |
@@ -597,8 +632,12 @@
 | notice.RELOADING | 文件有改动，正在重载。 | Files changed, reloading. | — |
 | notice.STOPPED_BY_USER | 你停止了这个项目。 | You stopped this playground. | — |
 | notice.TOOL_VERSION_UNTESTED | {tool} {found} 高于这个模板测试过的范围（{required}）。照常运行，但没有经过测试。 | {tool} {found} is newer than the range this template was tested with ({required}). It runs as usual but is untested. | tool：工具标识，例如 node、go、python；由模板的工具定义决定，原样显示，不翻译；found：本机检测到的版本，例如 20.11.0；原样显示，不翻译；required：模板要求的版本范围，例如 >=22.18；原样显示，不翻译 |
+| platform.clearShortcut | {platform, select, other {⌘K}} | {platform, select, other {⌘K}} | — |
+| platform.copyShortcut | {platform, select, other {⌘C}} | {platform, select, other {⌘C}} | — |
 | platform.fileManager | {platform, select, other {访达}} | {platform, select, other {Finder}} | — |
+| platform.pasteShortcut | {platform, select, other {⌘V}} | {platform, select, other {⌘V}} | — |
 | platform.searchShortcut | {platform, select, other {⌘F}} | {platform, select, other {⌘F}} | — |
+| platform.selectAllShortcut | {platform, select, other {⌘A}} | {platform, select, other {⌘A}} | — |
 | platform.trash | {platform, select, other {废纸篓}} | {platform, select, other {Trash}} | — |
 | runState.checking | 检查工具 | Checking tools | — |
 | runState.crashed | 已崩溃 | Crashed | — |
@@ -676,9 +715,12 @@
 | workspace.attached.titlePlain.label | 这个项目在 {ago} 通过命令行启动。 | This playground was started from the command line {ago}. | ago：相对时间，如“31 分钟前”，由格式化函数生成 |
 | workspace.closeConfirm.body | 关闭标签页会停止这个项目。代码和文件不受影响，下次打开会重新运行。 | Closing the tab stops this playground. Your code and files are not affected, and it runs again the next time you open it. | — |
 | workspace.closeConfirm.cancel.action | 取消 | Cancel | — |
+| workspace.closeConfirm.close.action | 关闭 | Close | — |
 | workspace.closeConfirm.confirm.action | 关闭并停止 | Close and stop | — |
 | workspace.closeConfirm.optOut.hint | 以后关闭标签页直接停止。可以在“设置 › 编辑与运行”里重新打开提示。 | Tabs will then close and stop right away. You can turn the prompt back on in Settings › Editing and running. | — |
 | workspace.closeConfirm.optOut.label | 不再提示 | Don’t ask again | — |
+| workspace.closeConfirm.terminal.body | {stopsRun, select, yes {关闭标签页会停止这个项目，终端里还在运行 {command}，也会被结束。代码和文件不受影响，下次打开会重新运行。} other {终端里还在运行 {command}，关闭会结束它。}} | {stopsRun, select, yes {Closing the tab stops this playground, and {command} still running in the terminal will end too. Your code and files are not affected; it runs again the next time you open it.} other {{command} is still running in the terminal. Closing will end it.}} | stopsRun：yes 表示关闭还会停止运行，other 表示只结束终端里的命令；command：终端里正在运行的命令名，不翻译 |
+| workspace.closeConfirm.terminal.title | 关闭 {name}？ | Close {name}? | name：项目名，用户自己起的，不翻译 |
 | workspace.closeConfirm.title | 关闭 {name} 并停止运行？ | Close {name} and stop it? | name：项目名，用户自己起的，不翻译 |
 | workspace.duration.hoursMinutes.label | {hours} {minutes} | {hours} {minutes} | hours：小时数，如“2 小时”；minutes：分钟数，如“14 分钟” |
 | workspace.files.add.aria | 在项目根新建 | New at the playground root | — |

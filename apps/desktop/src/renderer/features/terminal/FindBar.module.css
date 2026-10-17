@@ -1,0 +1,104 @@
+/* 设计稿 TerminalFind：右上角的玻璃条，高 40，输入框 210 宽带强调色描边 */
+.root {
+  position: absolute;
+  inset-block-start: var(--space-4);
+  inset-inline-end: var(--space-6);
+  z-index: var(--z-popover);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  box-sizing: border-box;
+  block-size: var(--size-control-lg);
+  padding-inline: var(--space-3);
+  border-radius: var(--radius-md);
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  box-sizing: border-box;
+  inline-size: calc(2 * var(--size-column-md) + var(--space-6) + var(--space-3));
+  block-size: var(--size-control-sm);
+  padding-inline: var(--space-4) var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-field);
+  border: 1px solid var(--color-line-accent);
+  box-shadow: var(--shadow-field-focus);
+}
+
+.searchIcon {
+  flex: none;
+  color: var(--color-text-secondary);
+}
+
+.input {
+  flex: 1;
+  min-inline-size: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: var(--text-body-size);
+  caret-color: var(--color-line-accent);
+}
+
+.toggle {
+  flex: none;
+  inline-size: var(--size-tile-lg);
+  block-size: var(--size-tile);
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-caption-size);
+  font-weight: var(--text-micro-weight);
+  cursor: default;
+  transition:
+    background var(--motion-duration-fast) linear,
+    color var(--motion-duration-fast) linear;
+}
+
+.toggle:hover {
+  background: var(--color-fill-neutral);
+}
+
+.toggle[aria-pressed="true"] {
+  background: var(--color-fill-accent-tint);
+  color: var(--color-text-accent);
+}
+
+.count {
+  padding-inline: var(--space-2);
+  color: var(--color-text-secondary);
+  font-size: var(--text-secondary-size);
+  white-space: nowrap;
+}
+
+.step {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: calc(var(--size-tile-lg) + var(--space-1));
+  block-size: calc(var(--size-tile-lg) + var(--space-1));
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-capsule);
+  background: transparent;
+  color: var(--color-text-secondary-strong);
+  cursor: default;
+  transition: background var(--motion-duration-fast) linear;
+}
+
+.step:hover {
+  background: var(--color-fill-neutral);
+}
+
+.flipped {
+  transform: rotate(180deg);
+}

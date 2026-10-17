@@ -209,7 +209,7 @@ describe("项目标签页的可拖面板", () => {
     expect(document.querySelector("[data-script-output]")).toBeTruthy();
   });
 
-  it("[DESKTOP-WORKSPACE-57] 向上拖输出面板上沿 60 像素，输出面板高 280；脚本项目没有这条分隔条", async () => {
+  it("[DESKTOP-WORKSPACE-57] 向上拖输出面板上沿 60 像素，输出面板高 280；脚本项目底部也有这个面板（设计稿 Script 的终端）", async () => {
     const { container, unmount } = setup(projectState());
     await handle("调整输出面板高度");
     expect(cssVar(container, "--layout-console-height")).toBe("220px");
@@ -218,7 +218,7 @@ describe("项目标签页的可拖面板", () => {
     unmount();
     setup(projectState("oneshot"));
     await handle("调整文件树宽度");
-    expect(screen.queryByRole("separator", { name: "调整输出面板高度" })).toBeNull();
+    expect(screen.getByRole("separator", { name: "调整输出面板高度" })).toBeTruthy();
   });
 
   it("[DESKTOP-WORKSPACE-58] 一直往一个方向拖，停在最小尺寸，不会消失", async () => {

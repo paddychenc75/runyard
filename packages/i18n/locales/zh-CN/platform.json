@@ -1,5 +1,9 @@
 {
+  "platform.clearShortcut": "{platform, select, other {⌘K}}",
+  "platform.copyShortcut": "{platform, select, other {⌘C}}",
   "platform.fileManager": "{platform, select, other {访达}}",
+  "platform.pasteShortcut": "{platform, select, other {⌘V}}",
   "platform.searchShortcut": "{platform, select, other {⌘F}}",
+  "platform.selectAllShortcut": "{platform, select, other {⌘A}}",
   "platform.trash": "{platform, select, other {废纸篓}}"
 }

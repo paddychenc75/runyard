@@ -6,6 +6,13 @@
   "workspace.attached.titlePlain.label": {
     "ago": "相对时间，如“31 分钟前”，由格式化函数生成"
   },
+  "workspace.closeConfirm.terminal.body": {
+    "stopsRun": "yes 表示关闭还会停止运行，other 表示只结束终端里的命令",
+    "command": "终端里正在运行的命令名，不翻译"
+  },
+  "workspace.closeConfirm.terminal.title": {
+    "name": "项目名，用户自己起的，不翻译"
+  },
   "workspace.closeConfirm.title": {
     "name": "项目名，用户自己起的，不翻译"
   },

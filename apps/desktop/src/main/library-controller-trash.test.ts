@@ -75,6 +75,7 @@ async function setup(chosen: string | null = null) {
     system: {
       revealInFileManager() {},
       copyText() {},
+      readText: async () => "",
       openExternal() {},
       openTerminal: (path) => void terminals.push(path),
       chooseFolder: async () => chosen,

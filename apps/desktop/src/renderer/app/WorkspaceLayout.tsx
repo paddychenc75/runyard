@@ -51,7 +51,7 @@ export function WorkspaceLayout({ bridge, tab, overlays, prefs, onPrefs }: Works
     return () => observer.disconnect();
   }, []);
   const script = isScript(tab);
-  const { sizes, ranges } = layoutPanes(box, prefs, !script);
+  const { sizes, ranges } = layoutPanes(box, prefs, true);
   const vars = {
     "--layout-file-tree-width": `${sizes.tree}px`,
     "--layout-console-height": `${sizes.console}px`,
@@ -109,20 +109,16 @@ export function WorkspaceLayout({ bridge, tab, overlays, prefs, onPrefs }: Works
                   )}
                 </div>
               </div>
-              {script ? null : (
-                <>
-                  <ResizeHandle
-                    orientation="horizontal"
-                    label={t("workspace.resize.console.label")}
-                    value={sizes.console}
-                    range={ranges.console}
-                    growsTowardEnd={false}
-                    onResize={(consoleHeight) => onPrefs({ consoleHeight })}
-                    onReset={() => onPrefs({ consoleHeight: null })}
-                  />
-                  <ConsolePanel bridge={bridge} tab={tab} />
-                </>
-              )}
+              <ResizeHandle
+                orientation="horizontal"
+                label={t("workspace.resize.console.label")}
+                value={sizes.console}
+                range={ranges.console}
+                growsTowardEnd={false}
+                onResize={(consoleHeight) => onPrefs({ consoleHeight })}
+                onReset={() => onPrefs({ consoleHeight: null })}
+              />
+              <ConsolePanel bridge={bridge} tab={tab} />
             </div>
           )}
         </TabContent>

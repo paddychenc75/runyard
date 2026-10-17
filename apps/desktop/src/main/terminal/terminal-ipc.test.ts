@@ -21,6 +21,7 @@ function fakeService() {
     clear: (...args: unknown[]) => void calls.push(["clear", ...args]),
     reopen: record("reopen"),
     foreground: async () => ({ command: null }),
+    busyCommands: async () => [{ project: "demo", command: "tail" }],
   } as unknown as TerminalService;
   return { methods: terminalMethods(service), calls };
 }
@@ -62,5 +63,12 @@ describe("终端的界面消息", () => {
       output: "",
     });
     expect(() => methods["terminal.write"]({ project: "demo", data: "x" })).toThrow();
+  });
+
+  it("[DESKTOP-TERMINAL-30] terminal.busy 交回所有在运行命令的终端，⌘Q 的确认据此列出项目和命令", async () => {
+    const { methods } = fakeService();
+    expect(await methods["terminal.busy"](undefined)).toEqual([
+      { project: "demo", command: "tail" },
+    ]);
   });
 });
