@@ -64,6 +64,23 @@ describe("settings.get / settings.set", () => {
     expect(await app.result("settings.get", {})).toMatchObject({ network });
   });
 
+  it("[DESKTOP-SETTINGS-32] 包管理器设为 npm，之后新建的项目记下 npm；设回自动，新建的项目不记录", async () => {
+    const app = await setup();
+    await app.result("settings.set", { packageManager: "npm" });
+    const first = await lw.create(app, "with-npm");
+    const file = (name: string) =>
+      JSON.parse(lw.fs.readFile(lw.at(name, ".runyard", "playground.json"))) as Record<
+        string,
+        unknown
+      >;
+    expect(file("with-npm").packageManager).toBe("npm");
+    expect(first.playground).toMatchObject({ packageManager: "npm" });
+
+    await app.result("settings.set", { packageManager: "auto" });
+    await lw.create(app, "with-auto");
+    expect("packageManager" in file("with-auto")).toBe(false);
+  });
+
   it("[DESKTOP-SETTINGS-13] 清空镜像源就是把 registry 去掉，之后读到的没有 registry（沿用本机配置）", async () => {
     const app = await setup();
     await app.result("settings.set", {

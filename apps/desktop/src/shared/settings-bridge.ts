@@ -61,10 +61,14 @@ export interface AgentSkillStatus {
 }
 export type AgentSkillTarget = keyof AgentSkillStatus;
 
-/** 后台管理进程：是否在运行，以及命令行持有的运行个数（“运行中 · N 个由命令行启动”） */
+/**
+ * 后台管理进程：是否在运行，命令行持有的运行个数（“运行中 · N 个由命令行启动”），
+ * 以及标签页持有的运行个数（停止管理进程时它们也会停，确认框要写明）
+ */
 export interface SupervisorStatus {
   running: boolean;
   cliRuns: number;
+  tabRuns: number;
 }
 
 export interface SettingsMethods {

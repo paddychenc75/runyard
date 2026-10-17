@@ -144,8 +144,9 @@ function SupervisorRow({ cli }: { cli: Cli }) {
   const status: SupervisorStatus | null = cli.supervisor;
   if (status === null) return null;
   const stop = () => {
-    // 有命令行持有的运行先确认，写明会停几个（规格 DESKTOP-SETTINGS-23）；没有就直接停
-    if (status.cliRuns > 0) setConfirming(true);
+    // 有运行（命令行持有的或标签页持有的，管理进程一退出都会停）先确认，写明各停几个
+    // （规格 DESKTOP-SETTINGS-23）；一个运行都没有就直接停
+    if (status.cliRuns + status.tabRuns > 0) setConfirming(true);
     else cli.stopSupervisor();
   };
   return (
@@ -169,7 +170,10 @@ function SupervisorRow({ cli }: { cli: Cli }) {
         icon="stop"
         tone="danger"
         title={t("settings.supervisor.confirm.title")}
-        description={t("settings.supervisor.confirm.body", { count: status.cliRuns })}
+        description={t("settings.supervisor.confirm.body", {
+          cli: status.cliRuns,
+          tab: status.tabRuns,
+        })}
         cancelLabel={t("settings.dialog.cancel.action")}
         confirmLabel={t("settings.supervisor.stop.action")}
         onCancel={() => setConfirming(false)}

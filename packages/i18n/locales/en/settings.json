@@ -114,7 +114,7 @@
   "settings.skills.none.label": "Not installed",
   "settings.skills.other.action": "Install for another agent…",
   "settings.skills.title": "Agent skill",
-  "settings.supervisor.confirm.body": "{count, plural, one {This stops # run started from the CLI, then quits the supervisor. The app starts a new one when it needs it.} other {This stops # runs started from the CLI, then quits the supervisor. The app starts a new one when it needs it.}}",
+  "settings.supervisor.confirm.body": "This stops every run: {cli, plural, one {# started from the CLI} other {# started from the CLI}} and {tab, plural, one {# running in a tab} other {# running in tabs}}. Then the supervisor quits; the app starts a new one when it needs it.",
   "settings.supervisor.confirm.title": "Stop the background supervisor?",
   "settings.supervisor.hint": "Looks after every run; keeps CLI-started playgrounds going after the app quits",
   "settings.supervisor.running.label": "{count, plural, =0 {Running} one {Running · # started from the CLI} other {Running · # started from the CLI}}",

@@ -94,7 +94,7 @@ export function world(
       case "agents.status":
         return { claude: false, agents: false };
       case "supervisor.status":
-        return { running: false, cliRuns: 0 };
+        return { running: false, cliRuns: 0, tabRuns: 0 };
       default:
         return undefined;
     }

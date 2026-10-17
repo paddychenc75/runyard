@@ -146,6 +146,21 @@ describe("工具检查与安装", () => {
     ]);
   });
 
+  it("[DESKTOP-SETTINGS-32] pnpm 和 npm 都有时，项目记的是 npm 就用 npm 安装，没有回退提示", async () => {
+    const h = createPrepareHarness({
+      tools: ["node", "pnpm", "npm"],
+      packageManager: "npm",
+      requires: { node: { version: ">=22" }, pnpm: { version: ">=9" }, npm: { version: ">=10" } },
+    });
+    h.fake.processes.when(["/fake/bin/npm", "install", "--prefer-offline"], installOk);
+    serveOn(h, 7100);
+    h.engine.start(h.request());
+    await h.advance(500);
+    expect(spawnedArgvs(h)).toContain("/fake/bin/npm install --prefer-offline");
+    expect(spawnedArgvs(h).some((line) => line.includes("pnpm install"))).toBe(false);
+    expect(h.notices().filter((n) => n.code === "PACKAGE_MANAGER_FALLBACK")).toEqual([]);
+  });
+
   it("项目选定的包管理器优先；不可用时退到可用的并提示", async () => {
     const h = createPrepareHarness({
       tools: ["node", "npm"],

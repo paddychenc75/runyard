@@ -159,14 +159,14 @@ describe("后台管理进程", () => {
   const cliRun = { owner: { kind: "cli" } };
   const tabRun = { owner: { kind: "tab" } };
 
-  it("运行中，N 是命令行持有的运行个数（标签页的不算）", async () => {
+  it("运行中：分别数命令行持有的和标签页持有的运行", async () => {
     const { cli } = setup({ runs: [cliRun, tabRun, cliRun] });
-    expect(await cli.supervisorStatus()).toEqual({ running: true, cliRuns: 2 });
+    expect(await cli.supervisorStatus()).toEqual({ running: true, cliRuns: 2, tabRuns: 1 });
   });
 
   it("[DESKTOP-SETTINGS-23] 停止：先停命令行持有的运行，再让管理进程退出", async () => {
     const { cli, calls } = setup({ runs: [cliRun, cliRun] });
-    expect(await cli.stopSupervisor()).toEqual({ running: false, cliRuns: 0 });
+    expect(await cli.stopSupervisor()).toEqual({ running: false, cliRuns: 0, tabRuns: 0 });
     expect(calls.map((call) => [call.method, call.params])).toEqual([
       ["run.stopAll", { mine: true }],
       ["supervisor.shutdown", { ifIdle: false, reason: "user" }],
