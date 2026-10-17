@@ -12,6 +12,23 @@ body {
   margin: 0;
 }
 
+/* macOS 应用的界面文字不可选中（#348）；只有要读、要复制的内容放开：输入框、编辑器、终端、日志、
+   可复制的命令（自带 user-select: all）。需要放开的元素加 data-selectable。新增例外在这里加，不要在组件里零散地改 */
+body {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+input,
+textarea,
+[contenteditable="true"],
+[data-selectable],
+.monaco-editor,
+.xterm {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
 /* 所有会弹出的东西渲染在应用根元素之内，根元素自成层叠上下文（技术设计 §6.7） */
 #root {
   isolation: isolate;

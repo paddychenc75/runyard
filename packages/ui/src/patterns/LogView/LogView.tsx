@@ -87,7 +87,11 @@ export function LogView({ lines, label, empty, className, ...rest }: LogViewProp
         tabIndex: 0,
         onScroll,
         // 长行不折行、横向滚动：这是有意的，不是撑破
-        ...{ "data-truncate": "", "data-virtual": measured ? "" : undefined },
+        ...{
+          "data-truncate": "",
+          "data-selectable": "",
+          "data-virtual": measured ? "" : undefined,
+        },
       }}
     >
       {/* 量行高用的探针：一行的高度由样式固定，所以量一行就够 */}
