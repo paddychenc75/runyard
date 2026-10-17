@@ -44,10 +44,10 @@ expect(await fake.platform.ports.isFree(7100)).toBe("free");
 
 | 阶段 | 包含 | 并发 | 命令 |
 | --- | --- | --- | --- |
-| 单元（`unit`） | 其余所有 `*.test.ts` | 各包并行，包内文件并行 | `pnpm test:unit` |
+| 单元（`unit`） | 其余所有 `*.test.ts` | 一次一个包（`turbo --concurrency=1`），包内文件并行 | `pnpm test:unit` |
 | 进程（`process`） | 所有 `*.platform-dependent.test.ts` | 一次一个包（`turbo --concurrency=1`），包内一个工作进程、一次一个文件 | `pnpm test:process` |
 
-`pnpm test`（和 `pnpm verify` 里的测试部分）先跑单元阶段，通过后再跑进程阶段，所以起真进程的测试不会和别的测试抢 CPU。只跑一个包或一个阶段：`pnpm test:unit --filter @runyard/core`、`pnpm test:process --filter @runyard/platform`；只跑一个文件：`pnpm --filter @runyard/platform exec vitest run --project process src/spawn-detached`。
+`pnpm test`（和 `pnpm verify` 里的测试部分）先跑单元阶段，通过后再跑进程阶段，所以起真进程的测试不会和别的测试抢 CPU。单元阶段也一次只跑一个包：十二个包同时起 Vitest，进程数是核数的好几倍，CI 的 2 到 4 核机器上先启动的测试文件被拖慢十几倍（资源库搜索、协议帧等用例因此偶发超过 5 秒，#306 #322 #316 #296），包内的文件并行已经用满所有核，包与包再并行只有争抢。只跑一个包或一个阶段：`pnpm test:unit --filter @runyard/core`、`pnpm test:process --filter @runyard/platform`；只跑一个文件：`pnpm --filter @runyard/platform exec vitest run --project process src/spawn-detached`。
 
 新包照抄任一现有包的两行脚本（`test`: `vitest run --project unit`，`test:process`: `vitest run --project process --passWithNoTests`）和 `vitest.config.ts`，它的进程测试就自动归入进程阶段；`test-phases` 检查守着这两行。
 
