@@ -47,6 +47,8 @@
   --color-bg-workspace: light-dark(var(--gray-50), var(--night-900));
   --color-bg-card: light-dark(var(--white), var(--night-700));
   --color-bg-inset: light-dark(var(--gray-50), rgba(0, 0, 0, 0.35));
+  --color-bg-field: light-dark(#ffffff, rgba(0, 0, 0, 0.35));
+  --color-bg-suggestion: light-dark(var(--gray-50), rgba(118, 118, 128, 0.24));
   --color-bg-chip: light-dark(var(--gray-100), rgba(255, 255, 255, 0.1));
   --color-bg-raised: light-dark(var(--white), rgba(255, 255, 255, 0.18));
   --color-fill-neutral: light-dark(rgba(118, 118, 128, 0.14), rgba(118, 118, 128, 0.24));
@@ -68,6 +70,8 @@
   --color-text-on-accent: light-dark(var(--white), var(--white));
   --color-line-hairline: light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.08));
   --color-line-strong: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.14));
+  --color-line-field: light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.14));
+  --color-line-card: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.08));
   --color-fill-accent: light-dark(var(--blue-600), var(--blue-600));
   --color-line-accent: light-dark(var(--blue-600), var(--blue-500));
   --color-text-accent: light-dark(var(--blue-700), var(--blue-400));
@@ -90,6 +94,7 @@
   --color-agent-text: light-dark(var(--purple-700), var(--purple-300));
   --color-fill-agent-tint: light-dark(rgba(175, 82, 222, 0.12), rgba(191, 90, 242, 0.24));
   --color-fill-switch-on: light-dark(var(--green-600), var(--green-500));
+  --color-fill-switch-off: light-dark(rgba(120, 120, 128, 0.32), rgba(120, 120, 128, 0.4));
   --color-code-plain: light-dark(var(--ink-900), var(--gray-50));
   --color-code-keyword: light-dark(var(--magenta-600), var(--pink-400));
   --color-code-string: light-dark(var(--crimson-700), var(--coral-400));
@@ -121,6 +126,9 @@
     inset 0 1px 0 rgba(255, 255, 255, 1);
   --shadow-accent-button: 0 4px 14px rgba(0, 113, 227, 0.25);
   --shadow-focus-ring: 0 0 0 1.5px #0071e3, 0 0 0 4.5px rgba(0, 113, 227, 0.18);
+  --shadow-field-focus: 0 0 0 3px rgba(0, 113, 227, 0.18);
+  --shadow-segment-selected: 0 1px 3px rgba(0, 0, 0, 0.14), 0 0 0 0.5px rgba(0, 0, 0, 0.05);
+  --shadow-thumb: 0 1px 3px rgba(0, 0, 0, 0.25);
   --shadow-tab-selected: 0 1px 3px rgba(0, 0, 0, 0.12);
   --glass-border-width: 1px;
   --glass-blur-toolbar: blur(28px) saturate(180%);
@@ -151,6 +159,9 @@
   --size-card-gap: 8px;
   --size-dialog-width: 580px;
   --size-checkbox: 18px;
+  --size-switch-width: 42px;
+  --size-switch-height: 26px;
+  --size-switch-thumb: 22px;
   --size-dialog-icon: 40px;
   --size-status-mark: 9px;
   --size-badge: 22px;
@@ -236,6 +247,9 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.14);
   --shadow-accent-button: 0 4px 14px rgba(10, 132, 255, 0.35);
   --shadow-focus-ring: 0 0 0 1.5px #0a84ff, 0 0 0 4.5px rgba(10, 132, 255, 0.32);
+  --shadow-field-focus: 0 0 0 3px rgba(10, 132, 255, 0.2);
+  --shadow-segment-selected: none;
+  --shadow-thumb: 0 1px 3px rgba(0, 0, 0, 0.25);
   --shadow-tab-selected: inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
@@ -251,6 +265,9 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.14);
     --shadow-accent-button: 0 4px 14px rgba(10, 132, 255, 0.35);
     --shadow-focus-ring: 0 0 0 1.5px #0a84ff, 0 0 0 4.5px rgba(10, 132, 255, 0.32);
+    --shadow-field-focus: 0 0 0 3px rgba(10, 132, 255, 0.2);
+    --shadow-segment-selected: none;
+    --shadow-thumb: 0 1px 3px rgba(0, 0, 0, 0.25);
     --shadow-tab-selected: inset 0 1px 0 rgba(255, 255, 255, 0.18);
   }
 }

@@ -2,6 +2,19 @@
   "desktop.crashed.title": {
     "exitCode": "进程的退出码"
   },
+  "desktop.create.cleanSummary.hint": {
+    "days": "天数"
+  },
+  "desktop.create.days.label": {
+    "days": "天数"
+  },
+  "desktop.create.folder.hint": {
+    "path": "项目文件夹的显示路径，主目录缩成 ~，如 ~/Runyard/react19-4（用 code 标签包成等宽）",
+    "code": "用来包住路径的标签，路径显示成等宽字体"
+  },
+  "desktop.create.template.label": {
+    "name": "模板的显示名，已按语言取好"
+  },
   "desktop.duration.seconds.label": {
     "seconds": "秒数，已按语言格式化的数字"
   },

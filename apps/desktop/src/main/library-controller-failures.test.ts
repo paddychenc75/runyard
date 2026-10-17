@@ -22,6 +22,7 @@ class FakeClient {
       "playground.list": [playground("a")],
       "run.list": this.runs,
       "template.list": [template("html")],
+      "settings.get": { libraryRoot: "/home/u/Runyard" },
       "run.start": run("a", "checking"),
       "logs.read": { entries: [], cursor: "r:1", truncated: false },
     };
@@ -54,6 +55,7 @@ function setup() {
   const controller = new LibraryController({
     client: client as unknown as LibraryClient,
     clientId: "app-1",
+    home: "/home/u",
     locale: "zh-CN",
     preview,
     system: {

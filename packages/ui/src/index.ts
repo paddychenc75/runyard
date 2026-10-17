@@ -54,7 +54,9 @@ export {
 } from "./primitives/Button/index.ts";
 export { Checkbox, type CheckboxProps } from "./primitives/Checkbox/index.ts";
 export { CopyableCommand, type CopyableCommandProps } from "./primitives/CopyableCommand/index.ts";
+export { Dialog, type DialogProps } from "./primitives/Dialog/index.ts";
 export { EmptyState, type EmptyStateProps } from "./primitives/EmptyState/index.ts";
+export { Field, type FieldProps } from "./primitives/Field/index.ts";
 export {
   type GlassMaterial,
   GlassSurface,
@@ -86,6 +88,11 @@ export {
 } from "./primitives/ScrollArea/index.ts";
 export { SearchField, type SearchFieldProps } from "./primitives/SearchField/index.ts";
 export {
+  SegmentedControl,
+  type SegmentedControlItem,
+  type SegmentedControlProps,
+} from "./primitives/SegmentedControl/index.ts";
+export {
   StatusMark,
   type StatusMarkProps,
   type StatusMarkStatus,
@@ -96,6 +103,8 @@ export {
   type StepListProps,
   type StepStatus,
 } from "./primitives/StepList/index.ts";
+export { Switch, type SwitchProps } from "./primitives/Switch/index.ts";
+export { TextField, type TextFieldProps } from "./primitives/TextField/index.ts";
 export { Tooltip, type TooltipProps } from "./primitives/Tooltip/index.ts";
 export { Truncate, type TruncateProps } from "./primitives/Truncate/index.ts";
 export { UserText, type UserTextProps } from "./primitives/UserText/index.ts";

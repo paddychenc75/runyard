@@ -10,7 +10,7 @@
   "library.creator.agent.label": "Agent",
   "library.creator.cli.label": "Command line",
   "library.creator.me.label": "Me",
-  "library.empty.cli.label": "An agent can also create one from the command line:",
+  "library.empty.cli.label": "Or let an agent create one from the command line:",
   "library.empty.hint": "Pick a template to create your first playground.",
   "library.empty.title": "No playgrounds yet",
   "library.filter.agent.label": "Agent-made",

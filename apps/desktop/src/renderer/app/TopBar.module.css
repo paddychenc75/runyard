@@ -28,3 +28,11 @@
   font-weight: var(--text-control-weight);
   white-space: nowrap;
 }
+
+/* 设计稿 Main 的“新建”和左边的“N 个运行中”同高（44），中间隔 10 */
+.new[data-size] {
+  flex: none;
+  block-size: var(--size-toolbar);
+  margin-inline-start: var(--space-5);
+  padding-inline: var(--space-8);
+}

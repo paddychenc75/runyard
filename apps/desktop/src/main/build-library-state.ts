@@ -44,6 +44,8 @@ export interface LibraryInputs {
   /** 等确认关闭的标签（项目 id） */
   closeRequestId?: string | null;
   error: DesktopError | null;
+  /** 资源库文件夹的显示写法（主目录缩成 ~）；还没读到是空串 */
+  libraryRoot?: string;
   /** 启动请求失败时管理进程给的错误（项目 id → 错误）；带着缺工具的参数 */
   startErrors?: ReadonlyMap<string, DesktopError>;
   /** 崩溃前截下的预览最后一帧（项目 id → data 地址） */
@@ -167,6 +169,7 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
     recentTemplates: recentTemplateIds(inputs.playgrounds, templates),
     closeRequest: closeRequestOf(inputs.closeRequestId ?? null, rows),
     error: inputs.error,
+    libraryRoot: inputs.libraryRoot ?? "",
   };
 }
 

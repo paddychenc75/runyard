@@ -47,6 +47,7 @@ function library(playgrounds: PlaygroundRow[], locale: "zh-CN" | "en" = "zh-CN")
     recentTemplates: [],
     tabs: [],
     activeTab: "library",
+    libraryRoot: "~/Runyard",
     playgrounds,
   };
 }

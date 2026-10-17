@@ -128,8 +128,33 @@
 | desktop.crashed.log.label | 最后的日志 | Last output | — |
 | desktop.crashed.overlay.aria | 崩溃提示 | Crash notice | — |
 | desktop.crashed.title | 已崩溃 · 退出码 {exitCode} | Crashed · exit code {exitCode} | exitCode：进程的退出码 |
+| desktop.create.autoClean.label | 自动清理 | Auto-clean | — |
+| desktop.create.autoCleanOff.hint | 打开后，很久没打开会自动移到{term_trash} | When on, it moves to the {term_trash} after going unused | — |
+| desktop.create.autoCleanOff.label | 可选，默认关闭 | optional, off by default | — |
+| desktop.create.autoCleanOn.hint | 打开后，这个项目很久没用时会自动移到{term_trash}。不打开则一直保留。 | When on, this playground moves to the {term_trash} after going unused. When off, it is kept for good. | — |
+| desktop.create.cancel.action | 取消 | Cancel | — |
+| desktop.create.changeTemplate.action | 换一个模板 | Change template | — |
+| desktop.create.cleanAfter.label | 多久没打开后清理 | Clean up after unused for | — |
+| desktop.create.cleanSummary.hint | {days, plural, other {# 天}}没打开就移到{term_trash}，清理前一天会提醒你，可以随时改成保留。 | Moves to the {term_trash} after {days, plural, one {# day} other {# days}} unused. You get a reminder the day before, and can switch to Kept any time. | days：天数 |
+| desktop.create.custom.label | 自定义 | Custom | — |
+| desktop.create.customDays.label | 自定义天数 | Custom number of days | — |
+| desktop.create.customDaysInvalid.hint | 请填大于 0 的整数 | Enter a whole number above 0 | — |
+| desktop.create.days.label | {days, plural, other {# 天}} | {days, plural, one {# day} other {# days}} | days：天数 |
+| desktop.create.dialog.title | 新建项目 | New playground | — |
+| desktop.create.enter.hint | 按回车直接创建并运行 | Press Return to create and run | — |
+| desktop.create.folder.hint | 文件夹：<code>{path}</code> | Folder: <code>{path}</code> | path：项目文件夹的显示路径，主目录缩成 ~，如 ~/Runyard/react19-4（用 code 标签包成等宽）；code：用来包住路径的标签，路径显示成等宽字体 |
+| desktop.create.name.label | 名称 | Name | — |
+| desktop.create.nameInvalid.hint | 只能用小写字母、数字和连字符，最长 64 个字符，首尾不能是连字符 | Use lowercase letters, digits and hyphens only, up to 64 characters, not starting or ending with a hyphen | — |
+| desktop.create.nameTaken.hint | 这个名字已被占用 | This name is already taken | — |
+| desktop.create.newProject.action | 新建项目 | New playground | — |
+| desktop.create.note.label | 备注 | Note | — |
+| desktop.create.note.placeholder | 这个项目用来做什么？ | What is this playground for? | — |
+| desktop.create.optional.label | 可选 | optional | — |
+| desktop.create.submit.action | 创建并运行 | Create and run | — |
+| desktop.create.template.label | 模板：{name} | Template: {name} | name：模板的显示名，已按语言取好 |
 | desktop.create.title | 新建 | New | — |
 | desktop.duration.seconds.label | {seconds} 秒 | {seconds} s | seconds：秒数，已按语言格式化的数字 |
+| desktop.empty.templates.hint | 或者直接用常用模板开始，点一下进入填写名称那一步： | Or start from a common template; one click takes you to the naming step: | — |
 | desktop.error.title.label | 出错了：{title} | Error: {title} | title：错误的标题，来自 errors.<代码>.title，已是翻译好的句子 |
 | desktop.failure.log.label | 安装日志 | Install log | — |
 | desktop.failure.retry.action | 重试 | Retry | — |
@@ -330,7 +355,7 @@
 | library.creator.agent.label | 智能体 | Agent | — |
 | library.creator.cli.label | 命令行 | Command line | — |
 | library.creator.me.label | 我 | Me | — |
-| library.empty.cli.label | 也可以让智能体用命令行创建： | An agent can also create one from the command line: | — |
+| library.empty.cli.label | 也可以让智能体用命令行创建： | Or let an agent create one from the command line: | — |
 | library.empty.hint | 选一个模板，新建你的第一个项目。 | Pick a template to create your first playground. | — |
 | library.empty.title | 还没有项目 | No playgrounds yet | — |
 | library.filter.agent.label | 智能体创建 | Agent-made | — |

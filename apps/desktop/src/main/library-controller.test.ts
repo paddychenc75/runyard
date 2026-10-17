@@ -25,10 +25,16 @@ class FakeClient {
     if (this.failWith !== undefined && (method === "run.start" || method === "run.stop")) {
       throw this.failWith;
     }
+    if (method === "playground.create") {
+      if (this.failCreate !== undefined) throw this.failCreate;
+      // 创建成功后项目出现在列表里（标签页只留列表里有的项目）
+      this.playgrounds = [...this.playgrounds, playground("c")];
+    }
     const results: Record<string, unknown> = {
       "playground.list": this.playgrounds,
       "run.list": this.runs,
       "template.list": [template("html")],
+      "settings.get": { libraryRoot: this.libraryRoot },
       "run.start": run("a", "starting"),
       "run.stop": run("a", "stopped"),
       "logs.read": { entries: this.logEntries, cursor: "r:1", truncated: false },
@@ -36,6 +42,9 @@ class FakeClient {
     };
     return results[method] as MethodResult<M>;
   };
+
+  failCreate: unknown;
+  libraryRoot = "/home/u/Runyard";
 
   logEntries: { at: number; kind: "stdout"; text: string }[] = [];
   wakeLogs: (() => void) | undefined;
@@ -94,8 +103,9 @@ class FakeSystem implements SystemActions {
   }
 }
 
-function setup() {
+function setup(options: { libraryRoot?: string } = {}) {
   const client = new FakeClient();
+  if (options.libraryRoot !== undefined) client.libraryRoot = options.libraryRoot;
   const preview = new FakePreview();
   const system = new FakeSystem();
   const controller = new LibraryController({
@@ -104,6 +114,7 @@ function setup() {
     locale: "zh-CN",
     preview,
     system,
+    home: "/home/u",
   });
   return { client, preview, system, controller };
 }
@@ -157,6 +168,7 @@ describe("LibraryController", () => {
     expect(client.calls.map((call) => call.method).sort()).toEqual([
       "playground.list",
       "run.list",
+      "settings.get",
       "template.list",
     ]);
     expect(controller.getState().playgrounds.map((row) => row.id)).toEqual(["a", "b"]);
@@ -249,14 +261,67 @@ describe("LibraryController", () => {
     expect(controller.getState().error).toBeNull();
   });
 
-  it("用内置模板新建项目，创建者是用户", async () => {
+  it("[DESKTOP-CREATE-FLOW-11] 创建并运行：创建者是用户，随后打开项目标签并启动运行，持有者是标签页", async () => {
     const { client, controller } = setup();
     await controller.start();
-    await controller.create("html");
-    expect(client.calls.find((call) => call.method === "playground.create")?.params).toEqual({
+    const result = await controller.create({
       template: "html",
+      name: "demo-1",
+      note: "",
+      autoClean: null,
+    });
+    expect(result).toEqual({ ok: true });
+    const created = client.calls.find((call) => call.method === "playground.create");
+    expect(created?.params).toEqual({
+      template: "html",
+      name: "demo-1",
+      ifExists: "fail",
       createdBy: { kind: "user" },
     });
+    // 不传 autoClean 就是“已保留”
+    expect(created?.params).not.toHaveProperty("autoClean");
+    const start = client.calls.find((call) => call.method === "run.start");
+    expect(start?.params).toMatchObject({ playground: "c", owner: { kind: "tab" } });
+    expect(controller.getState().tabs.map((tab) => tab.id)).toEqual(["c"]);
+    expect(controller.getState().activeTab).toBe("c");
+  });
+
+  it("[DESKTOP-CREATE-FLOW-08] 备注和自动清理天数原样交给管理进程", async () => {
+    const { client, controller } = setup();
+    await controller.start();
+    await controller.create({ template: "html", name: "demo-2", note: "pricing", autoClean: 30 });
+    expect(client.calls.find((call) => call.method === "playground.create")?.params).toMatchObject({
+      note: "pricing",
+      autoClean: 30,
+    });
+  });
+
+  it("[DESKTOP-CREATE-FLOW-09] 创建被拒绝（重名）：把错误交回弹窗，不打开标签页，也不动全局错误", async () => {
+    const { client, controller } = setup();
+    await controller.start();
+    client.failCreate = clientError("NAME_EXISTS", { kind: "playground", name: "demo" }, "exists");
+    const result = await controller.create({
+      template: "html",
+      name: "demo",
+      note: "",
+      autoClean: null,
+    });
+    expect(result).toEqual({
+      ok: false,
+      error: { code: "NAME_EXISTS", params: { kind: "playground", name: "demo" } },
+    });
+    expect(controller.getState().tabs).toEqual([]);
+    expect(controller.getState().error).toBeNull();
+    expect(client.calls.some((call) => call.method === "run.start")).toBe(false);
+  });
+
+  it("资源库文件夹显示成 ~/…（主目录前缀缩写），别处的路径原样", async () => {
+    const { controller } = setup();
+    await controller.start();
+    expect(controller.getState().libraryRoot).toBe("~/Runyard");
+    const { controller: other } = setup({ libraryRoot: "/Volumes/data/Runyard" });
+    await other.start();
+    expect(other.getState().libraryRoot).toBe("/Volumes/data/Runyard");
   });
 
   it("同一个项目的动作进行中，重复点击被忽略", async () => {

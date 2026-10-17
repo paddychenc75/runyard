@@ -1,12 +1,12 @@
 import type { ComponentProps } from "react";
 import styles from "./MonogramTile.module.css";
 
-export type MonogramTileSize = "sm" | "lg";
+export type MonogramTileSize = "sm" | "lg" | "xl";
 
 export interface MonogramTileProps extends Omit<ComponentProps<"span">, "children"> {
   /** 两个字母左右的缩写；是装饰，读屏器跳过（旁边总有完整的名字） */
   letters: string;
-  /** sm 在表格行里，lg 在胶囊按钮里 */
+  /** sm 在表格行里，lg 在胶囊按钮里，xl 在弹窗标题前（设计稿 CreateDialog） */
   size?: MonogramTileSize;
 }
 

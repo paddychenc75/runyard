@@ -1,0 +1,37 @@
+/* 字段：名字、控件、说明（设计稿 CreateDialog）。间距 6；说明 12 的次要色；错误用危险色 */
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-inline-size: 0;
+}
+
+.label {
+  font-size: var(--text-body-size);
+  font-weight: var(--text-item-weight);
+  line-height: var(--text-body-line-height);
+  color: var(--color-text-primary);
+  overflow-wrap: anywhere;
+}
+
+.optional {
+  margin-inline-start: var(--space-2);
+  font-weight: var(--text-body-weight);
+  color: var(--color-text-secondary);
+}
+
+.description,
+.error {
+  margin: 0;
+  font-size: var(--text-secondary-size);
+  line-height: var(--text-secondary-line-height);
+  overflow-wrap: anywhere;
+}
+
+.description {
+  color: var(--color-text-secondary);
+}
+
+.error {
+  color: var(--color-status-danger-text);
+}
