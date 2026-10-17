@@ -1,6 +1,6 @@
 import type { Localized } from "@runyard/i18n";
 import type { TemplateCategory } from "@runyard/protocol";
-import type { ListPickerGroup } from "@runyard/ui";
+import type { ListPickerGroup, ListPickerRailItem } from "@runyard/ui";
 import type { TemplateRow } from "../shared/library-state.ts";
 import { brandOf, logoOf, monogramOf, pickLocalizedText } from "./library-view.ts";
 
@@ -83,4 +83,27 @@ export function buildPickerGroups(
     });
   }
   return groups;
+}
+
+/**
+ * 左侧分类栏（设计稿 Picker，规格 DESKTOP-CREATE-FLOW-22）：有“最近使用”时它在最上面，接着“全部”，
+ * 然后是有模板的类型。栏只负责跳转，所以每一项就是列表里的一个分组；“全部”的个数是不重复的模板总数
+ * （同一个模板可以同时在“最近使用”和它的类型里）
+ */
+export function buildPickerRail(
+  groups: readonly ListPickerGroup[],
+  allLabel: Localized,
+): ListPickerRailItem[] {
+  const entry = (group: ListPickerGroup): ListPickerRailItem => ({
+    id: group.id,
+    label: group.title,
+    count: group.items.length,
+    groupId: group.id,
+  });
+  const total = new Set(groups.flatMap((group) => group.items.map((item) => item.id))).size;
+  const all: ListPickerRailItem = { id: "all", label: allLabel, count: total };
+  const [first, ...rest] = groups;
+  return first?.id === "recent"
+    ? [entry(first), all, ...rest.map(entry)]
+    : [all, ...groups.map(entry)];
 }

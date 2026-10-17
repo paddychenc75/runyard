@@ -23,6 +23,8 @@ export {
   type ListPickerGroup,
   type ListPickerItem,
   type ListPickerProps,
+  type ListPickerRail,
+  type ListPickerRailItem,
   type ListPickerSearchProps,
 } from "./patterns/ListPicker/index.ts";
 export {

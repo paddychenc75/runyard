@@ -6,17 +6,90 @@
   min-inline-size: 0;
 }
 
+.body {
+  display: flex;
+  flex: 1;
+  min-block-size: 0;
+  border-block-start: 1px solid var(--color-line-hairline);
+}
+
+/* 左侧分类栏（设计稿 Picker）：只负责跳转和指示位置 */
+.rail {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--space-1);
+  inline-size: var(--size-picker-rail-width);
+  box-sizing: border-box;
+  padding-block: var(--space-6);
+  padding-inline: var(--space-5);
+  border-inline-end: 1px solid var(--color-line-hairline);
+}
+
+.railItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  inline-size: 100%;
+  block-size: var(--size-nav-item);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--space-6);
+  border: 0;
+  border-radius: var(--radius-row);
+  background: transparent;
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: var(--text-body-size);
+  font-weight: var(--text-body-weight);
+  line-height: var(--text-body-line-height);
+  text-align: start;
+  cursor: default;
+  user-select: none;
+  outline: none;
+  transition: background-color var(--motion-duration-fast) linear;
+}
+
+.railItem:hover:not([data-selected], :disabled) {
+  background: var(--color-fill-neutral);
+}
+
+.railItem[data-selected] {
+  background: var(--color-fill-accent-tint);
+  font-weight: var(--text-item-weight);
+}
+
+.railItem:disabled {
+  opacity: 0.4;
+}
+
+.railLabel {
+  flex: 1;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.railCount {
+  flex: none;
+  color: var(--color-text-secondary);
+  font-size: var(--text-secondary-size);
+  font-weight: var(--text-body-weight);
+  line-height: var(--text-secondary-line-height);
+}
+
 .scroll {
   flex: 1;
   min-block-size: 0;
+  min-inline-size: 0;
   /* 行里的长文字靠省略号收住，不撑宽；只竖向滚动（滚动条见 ScrollArea） */
-  border-block-start: 1px solid var(--color-line-hairline);
 }
 
 .list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-1);
   padding: var(--space-4);
 }
 
@@ -40,8 +113,9 @@
   align-items: center;
   gap: var(--space-6);
   min-inline-size: 0;
-  padding-block: var(--space-3);
-  padding-inline: var(--space-5);
+  /* 设计稿 Picker 的行高是 42：两行字加上下各 2 */
+  padding-block: var(--space-1);
+  padding-inline: var(--space-6);
   border: 1px solid transparent;
   border-radius: var(--radius-row);
   cursor: default;

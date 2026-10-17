@@ -301,17 +301,20 @@
 | desktop.palette.open.label | 打开 | open | — |
 | desktop.palette.results.aria | 结果 | Results | — |
 | desktop.pathNotice.title.label | <user>{name}</user> 已创建 | <user>{name}</user> was created | name：新建项目的名称（不翻译）；user：包住用户内容的标签 |
-| desktop.picker.arrowsKey.label | 上下键 | Up/Down | — |
+| desktop.picker.all.label | 全部 | All | — |
+| desktop.picker.arrowsKey.label | 上下键 | ↑ ↓ | — |
 | desktop.picker.choose.action | 选择 | Select | — |
+| desktop.picker.defaultName.label | 默认名称 | Default name | — |
 | desktop.picker.dialog.aria | 选择模板 | Choose a template | — |
 | desktop.picker.empty.hint | 没有可用的模板。 | No templates available. | — |
 | desktop.picker.enterKey.label | 回车 | Return | — |
 | desktop.picker.escKey.label | esc | esc | — |
 | desktop.picker.list.aria | 模板列表 | Templates | — |
-| desktop.picker.move.hint | 移动 | move | — |
-| desktop.picker.next.hint | 下一步：填写名称和备注 | next: name and note | — |
+| desktop.picker.move.hint | 移动 | Move | — |
+| desktop.picker.next.hint | 下一步：填写名称和备注 | Next: name and note | — |
 | desktop.picker.noMatch.hint | 没有匹配的模板。 | No matching templates. | — |
-| desktop.picker.recent.label | 最近使用 | Recently used | — |
+| desktop.picker.rail.aria | 模板分类 | Template categories | — |
+| desktop.picker.recent.label | 最近使用 | Recent | — |
 | desktop.picker.search.label | 搜索模板 | Search templates | — |
 | desktop.picker.search.placeholder | 搜索模板：名称、框架、语言 | Search templates: name, framework, language | — |
 | desktop.port.body.label | 已改用 {actual} 端口。 | Switched to port {actual}. | actual：现在实际使用的端口，纯数字字符串 |

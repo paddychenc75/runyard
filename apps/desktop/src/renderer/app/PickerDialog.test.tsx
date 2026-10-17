@@ -257,3 +257,173 @@ describe("模板选择器的搜索", () => {
     expect(screen.getAllByRole("group")[0]?.getAttribute("aria-label")).toBe("最近使用");
   });
 });
+
+describe("模板选择器的分类栏和默认名称", () => {
+  // 与规格 DESKTOP-CREATE-FLOW-22 同一份数据：页面 1、前端 3、脚本 3、服务 1、我的 2，最近用过其中 3 个
+  const catalog: TemplateRow[] = [
+    row("html", "page"),
+    row("react19", "frontend"),
+    row("react18", "frontend"),
+    row("vue3", "frontend"),
+    row("node-ts", "script"),
+    row("python", "script"),
+    row("go", "script"),
+    row("hono", "service"),
+    row("team-ui", "mine"),
+    row("api-mock", "mine"),
+  ];
+  const recent = ["react19", "hono", "python"];
+  const full = (extra: Partial<LibraryState> = {}) =>
+    library({ templates: catalog, recentTemplates: recent, ...extra });
+  const rail = () => screen.getByRole("toolbar", { name: "模板分类" });
+  const railItems = () =>
+    within(rail())
+      .getAllByRole("button")
+      .map((button) => button.textContent);
+  const selectedRail = () =>
+    within(rail())
+      .getAllByRole("button")
+      .filter((button) => button.getAttribute("aria-current") === "true")
+      .map((button) => button.textContent);
+  const active = () =>
+    screen.getAllByRole("option").find((option) => option.getAttribute("aria-selected") === "true")
+      ?.textContent;
+  const scrolled: Element[] = [];
+  beforeAll(() => {
+    // jsdom 没有 scrollIntoView；记下被滚到顶部的元素，证明点分类真的把那个分组滚到了列表顶
+    Element.prototype.scrollIntoView = function (this: Element, arg?: unknown) {
+      if (typeof arg === "object" && arg !== null && (arg as { block?: string }).block === "start")
+        scrolled.push(this);
+    };
+  });
+  afterEach(() => {
+    scrolled.length = 0;
+  });
+
+  it("[DESKTOP-CREATE-FLOW-22] 默认视图：最近使用 3、全部 10、页面 1、前端 3、脚本 3、服务 1、我的 2，没有全栈，选中最近使用", async () => {
+    setup(full());
+    await screen.findByRole("dialog");
+    expect(railItems()).toEqual([
+      "最近使用3",
+      "全部10",
+      "页面1",
+      "前端3",
+      "脚本3",
+      "服务1",
+      "我的2",
+    ]);
+    expect(selectedRail()).toEqual(["最近使用3"]);
+  });
+
+  it("[DESKTOP-CREATE-FLOW-22] 没有最近使用时栏里没有这一项，第一个类型选中", async () => {
+    setup(full({ recentTemplates: [] }));
+    await screen.findByRole("dialog");
+    expect(railItems()[0]).toBe("全部10");
+    expect(railItems()).not.toContain("最近使用0");
+    expect(selectedRail()).toEqual(["页面1"]);
+  });
+
+  it("[DESKTOP-CREATE-FLOW-23] 点“前端”：列表滚到前端分组，高亮它的第一个模板；焦点仍在搜索框，列表没有被过滤；点“全部”回到开头", async () => {
+    const user = userEvent.setup();
+    setup(full());
+    await screen.findByRole("dialog");
+    const optionCount = screen.getAllByRole("option").length;
+    await user.click(within(rail()).getByRole("button", { name: /^前端/ }));
+    expect(selectedRail()).toEqual(["前端3"]);
+    expect(active()).toContain("react19");
+    const frontend = screen.getByRole("group", { name: "前端" });
+    const highlighted = screen
+      .getAllByRole("option")
+      .find((option) => option.getAttribute("aria-selected") === "true");
+    expect(frontend.contains(highlighted ?? null)).toBe(true);
+    expect(scrolled.at(-1)?.parentElement).toBe(frontend);
+    expect(document.activeElement).toBe(screen.getByRole("combobox", { name: "搜索模板" }));
+    expect(screen.getAllByRole("option")).toHaveLength(optionCount);
+    await user.click(within(rail()).getByRole("button", { name: /^全部/ }));
+    expect(selectedRail()).toEqual(["最近使用3"]);
+    expect(scrolled.at(-1)?.parentElement).toBe(screen.getByRole("group", { name: "最近使用" }));
+  });
+
+  it("[DESKTOP-CREATE-FLOW-24] 方向键越过分组边界，选中的分类跟着变；按回车进入新建弹窗", async () => {
+    const user = userEvent.setup();
+    setup(full());
+    await screen.findByRole("dialog");
+    await user.keyboard("{ArrowDown}{ArrowDown}");
+    expect(selectedRail()).toEqual(["最近使用3"]);
+    await user.keyboard("{ArrowDown}");
+    expect(selectedRail()).toEqual(["页面1"]);
+    await user.keyboard("{ArrowUp}");
+    expect(selectedRail()).toEqual(["最近使用3"]);
+    await user.keyboard("{End}");
+    expect(selectedRail()).toEqual(["我的2"]);
+    await user.keyboard("{Enter}");
+    const created = await screen.findByRole("dialog", { name: "新建项目" });
+    expect(within(created).getByText("模板：api-mock")).toBeTruthy();
+  });
+
+  it("[DESKTOP-CREATE-FLOW-25] 搜索 react：栏里只剩 全部 2 和 前端 2；清空后回到默认", async () => {
+    const user = userEvent.setup();
+    setup(full({ recentTemplates: ["vue3"] }));
+    await screen.findByRole("dialog");
+    await user.keyboard("react");
+    expect(railItems()).toEqual(["全部2", "前端2"]);
+    await user.keyboard("{Backspace}{Backspace}{Backspace}{Backspace}{Backspace}");
+    expect(railItems()).toEqual([
+      "最近使用1",
+      "全部10",
+      "页面1",
+      "前端3",
+      "脚本3",
+      "服务1",
+      "我的2",
+    ]);
+  });
+
+  it("[DESKTOP-CREATE-FLOW-26] 搜索 rails：栏里只有点不了的“全部 0”，列表写明没有匹配", async () => {
+    const user = userEvent.setup();
+    setup(full());
+    await screen.findByRole("dialog");
+    await user.keyboard("rails");
+    expect(railItems()).toEqual(["全部0"]);
+    expect(within(rail()).getByRole("button").hasAttribute("disabled")).toBe(true);
+    expect(screen.getByText("没有匹配的模板。")).toBeTruthy();
+  });
+
+  it("[DESKTOP-CREATE-FLOW-27] 底部写默认名称：已有 react19-1、react19-3 时 react19 是 react19-4，移到 hono 变成 hono-1；没有结果时不写", async () => {
+    const user = userEvent.setup();
+    const names = ["react19-1", "react19-3"];
+    const { press } = setup(
+      full({
+        recentTemplates: [],
+        playgrounds: names.map((name) => ({ ...existing, id: name, name })),
+      }),
+    );
+    await screen.findAllByText("react19-3");
+    press();
+    await screen.findByRole("dialog");
+    const footer = () => document.querySelector("[data-default-name]")?.parentElement?.textContent;
+    expect(footer()).toContain("默认名称html-1");
+    await user.keyboard("{ArrowDown}");
+    expect(active()).toContain("react19");
+    expect(footer()).toContain("默认名称react19-4");
+    await user.keyboard("hono");
+    expect(footer()).toContain("默认名称hono-1");
+    await user.keyboard("zzz");
+    expect(document.querySelector("[data-default-name]")).toBeNull();
+    expect(screen.queryByText("默认名称")).toBeNull();
+  });
+
+  it("[DESKTOP-CREATE-FLOW-28] 点分类后按回车进入新建弹窗，模板是点击后高亮的那一行；Tab 不把焦点移到分类栏", async () => {
+    const user = userEvent.setup();
+    setup(full());
+    await screen.findByRole("dialog");
+    const search = screen.getByRole("combobox", { name: "搜索模板" });
+    await user.keyboard("{Tab}");
+    expect(document.activeElement).toBe(search);
+    await user.click(within(rail()).getByRole("button", { name: /^脚本/ }));
+    expect(document.activeElement).toBe(search);
+    await user.keyboard("{Enter}");
+    const created = await screen.findByRole("dialog", { name: "新建项目" });
+    expect(within(created).getByText("模板：node-ts")).toBeTruthy();
+  });
+});
