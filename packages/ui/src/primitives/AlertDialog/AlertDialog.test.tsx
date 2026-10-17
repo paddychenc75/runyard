@@ -1,5 +1,5 @@
 import type { Localized } from "@runyard/i18n";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { AlertDialog } from "./AlertDialog.tsx";
@@ -38,10 +38,17 @@ describe("AlertDialog", () => {
         />
       </>,
     );
-    await screen.findByRole("alertdialog");
-    await user.tab();
-    await user.tab();
-    await user.tab();
+    const dialog = await screen.findByRole("alertdialog");
+    const focusIsInDialog = () => expect(dialog.contains(document.activeElement)).toBe(true);
+    // 焦点进出弹窗都不是同步的：Base UI 在下一个动画帧才把初始焦点移进弹窗，
+    // Tab 走到弹窗边缘的焦点守卫后，也是下一帧才把焦点拉回弹窗。
+    // 测试按键比这些帧快（慢机器上尤其），Tab 会越过守卫落到弹窗外的按钮上（#235）。
+    // 所以每一步都等焦点确实回到弹窗里再继续；断言本身不变：焦点始终没有跑到弹窗外
+    await waitFor(focusIsInDialog);
+    for (let i = 0; i < 3; i++) {
+      await user.tab();
+      await waitFor(focusIsInDialog);
+    }
     expect(document.activeElement).not.toBe(screen.getByText("outside"));
     await user.keyboard("{Escape}");
     expect(onOpenChange).toHaveBeenCalledWith(false);
