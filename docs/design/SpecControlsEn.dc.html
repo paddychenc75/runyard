@@ -219,9 +219,9 @@ a{color:#0071E3}a:hover{color:#0058B0}
 
 <section style="display: flex; flex-direction: column; gap: 10px">
 <h3 style="margin: 0; font-size: 13px; font-weight: 600">Tabs</h3>
-<div role="tablist" aria-label="Window tabs" style="align-self: flex-start; height: 44px; padding: 4px; box-sizing: border-box; border-radius: 22px; display: flex; align-items: center; gap: 2px; background: {{th.glass0}}; backdrop-filter: blur(28px) saturate(180%); border: {{th.glassEdge}}; box-shadow: {{th.glassShadow}}">
+<div role="tablist" aria-label="Window tabs" style="align-self: flex-start; height: 44px; box-sizing: border-box; display: flex; align-items: center; gap: 2px">
 <sc-for list="{{th.winTabs}}" as="w" hint-placeholder-count="3">
-<button role="tab" aria-selected="{{w.sel}}" style="height: 36px; padding: 0 12px 0 14px; border-radius: 18px; border: none; display: flex; align-items: center; gap: 8px; white-space: nowrap; {{w.css}}">
+<button role="tab" aria-selected="{{w.sel}}" style="height: 32px; padding: 0 10px 0 12px; border-radius: 16px; border: none; display: flex; align-items: center; gap: 8px; white-space: nowrap; {{w.css}}">
 <sc-if value="{{w.dot}}" hint-placeholder-val="{{false}}"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: {{th.run}}"></span></sc-if>{{w.name}}
 <sc-if value="{{w.close}}" hint-placeholder-val="{{false}}"><svg role="img" aria-label="Close and stop" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="{{th.ink2}}" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l6 6M8 2 2 8"/></svg></sc-if>
 </button>
@@ -230,7 +230,7 @@ a{color:#0071E3}a:hover{color:#0058B0}
 <div role="tablist" aria-label="Panel tabs" style="align-self: flex-start; display: flex; padding: 2px; border-radius: 11px; background: {{th.fill0}}">
 <sc-for list="{{th.panelTabs}}" as="i" hint-placeholder-count="3"><button role="tab" aria-selected="{{i.cur}}" style="height: 28px; padding: 0 14px; border-radius: 9px; border: none; white-space: nowrap; {{i.css}}">{{i.t}}</button></sc-for>
 </div>
-<div style="font-size: 12px; color: {{th.ink2}}">Window tabs: capsule 44, tab 36: selected, running dot, hover (close mark). Panel tabs: item 28.</div>
+<div style="font-size: 12px; color: {{th.ink2}}">Window tabs: no shell, straight on the window; tab 32, selected has a light fill only (no shadow, no border); running dot, close mark on hover; overflow goes into “+N”. Panel tabs: item 28.</div>
 </section>
 
 </div>
@@ -384,7 +384,8 @@ const build = (t) => {
   const menuLabels = [
     { t: 'Default', h: '32px' }, { t: 'Highlighted', h: '32px' }, { t: 'With hint', h: '32px' }, { t: '', h: '11px' }, { t: 'Destructive', h: '32px' }
   ];
-  const wt = (name, sel, dot, close) => ({ name: name, sel: sel ? 'true' : 'false', dot: dot, close: close, css: sel ? 'background:' + t.tabSel + ';box-shadow:' + t.tabShadow + ';font-weight:600;color:' + t.ink + ';' : 'background:transparent;color:' + t.ink3 + ';' });
+  t.selFill = t.ink === '#1D1D1F' ? 'rgba(0,0,0,0.065)' : 'rgba(255,255,255,0.10)';
+  const wt = (name, sel, dot, close) => ({ name: name, sel: sel ? 'true' : 'false', dot: dot, close: close, css: sel ? 'background:' + t.selFill + ';font-weight:600;color:' + t.ink + ';' : 'background:transparent;color:' + t.ink3 + ';' });
   const winTabs = [wt('react-app', true, true, true), wt('api', false, true, false), wt('web', false, false, true)];
   const panelTabs = ['Output', 'Browser console', 'Terminal'].map((l, k) => ({ t: l, cur: k === 0 ? 'true' : 'false', css: k === 0 ? 'background:' + t.selBg + ';box-shadow:' + t.selShadow + ';font-weight:600;color:' + t.ink + ';' : 'background:transparent;color:' + t.ink3 + ';' }));
   const legend = [
