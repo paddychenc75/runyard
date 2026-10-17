@@ -102,6 +102,19 @@
   "desktop.runbar.tooOld.label": {
     "tool": "工具标识，如 go、node"
   },
+  "desktop.saveTemplate.footer.hint": {
+    "path": "新模板文件夹的显示路径，如 ~/.runyard/templates/todo-api"
+  },
+  "desktop.saveTemplate.id.hint": {
+    "id": "模板标识；还没填时是“<标识>”这样的占位",
+    "code": "包住命令的标签，显示成等宽字体"
+  },
+  "desktop.saveTemplate.requiresFrom.body": {
+    "template": "原模板的显示名，已按语言取好"
+  },
+  "desktop.saveTemplate.subtitle.body": {
+    "name": "项目名称（用户的内容，不翻译）"
+  },
   "desktop.script.ended.label": {
     "state": "运行状态的名字，来自 runState.<状态>",
     "exitCode": "进程的退出码",
@@ -120,5 +133,19 @@
   },
   "desktop.start.title": {
     "name": "项目名"
+  },
+  "desktop.templates.fallback.hint": {
+    "tool": "首选的工具名，如 pnpm",
+    "fallback": "缺它时改用的工具名，如 npm"
+  },
+  "desktop.templates.problemOther.label": {
+    "rule": "检查规则的标识，如 entry-missing（给开发者看，不翻译）"
+  },
+  "desktop.templates.readyLog.label": {
+    "match": "日志里要匹配的特征（正则文本，用 code 的等宽样式显示，不翻译）"
+  },
+  "desktop.templates.summary.label": {
+    "builtin": "内置模板的个数",
+    "user": "用户自己的模板的个数"
   }
 }

@@ -208,6 +208,7 @@ disagree, `tokens.json` wins.
 | `--size-window-controls` | 72px | Space reserved for the native window buttons in a title bar |
 | `--size-card-gap` | 8px | Gap between cards |
 | `--size-dialog-width` | 580px | Dialog width |
+| `--size-dialog-width-wide` | 720px | Width of the wide form dialog (save as template) |
 | `--size-popover-width` | 420px | Width of the running-list popover |
 | `--size-palette-width` | 680px | Width of the command palette and quick open |
 | `--size-palette-top` | 66px | Distance from the window top to the command palette |

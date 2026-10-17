@@ -511,6 +511,38 @@ export type CatalogMessages = {
   "desktop.runbar.tooOld.label": {
     tool: string | number;
   };
+  "desktop.saveTemplate.cancel.action": Record<never, never>;
+  "desktop.saveTemplate.description.label": Record<never, never>;
+  "desktop.saveTemplate.description.placeholder": Record<never, never>;
+  "desktop.saveTemplate.excluded.label": Record<never, never>;
+  "desktop.saveTemplate.files.aria": Record<never, never>;
+  "desktop.saveTemplate.files.label": Record<never, never>;
+  "desktop.saveTemplate.footer.hint": {
+    path: string | number;
+  };
+  "desktop.saveTemplate.id.hint": {
+    code: (chunks: string[]) => string;
+    id: string | number;
+  };
+  "desktop.saveTemplate.id.label": Record<never, never>;
+  "desktop.saveTemplate.idInvalid.hint": Record<never, never>;
+  "desktop.saveTemplate.idPlaceholder.label": Record<never, never>;
+  "desktop.saveTemplate.idTaken.hint": Record<never, never>;
+  "desktop.saveTemplate.listComma.label": Record<never, never>;
+  "desktop.saveTemplate.name.label": Record<never, never>;
+  "desktop.saveTemplate.reasonBuild.label": Record<never, never>;
+  "desktop.saveTemplate.reasonDeps.label": Record<never, never>;
+  "desktop.saveTemplate.reasonSecret.label": Record<never, never>;
+  "desktop.saveTemplate.replaceName.label": Record<never, never>;
+  "desktop.saveTemplate.requires.label": Record<never, never>;
+  "desktop.saveTemplate.requiresFrom.body": {
+    template: string | number;
+  };
+  "desktop.saveTemplate.submit.action": Record<never, never>;
+  "desktop.saveTemplate.subtitle.body": {
+    name: string | number;
+  };
+  "desktop.saveTemplate.title": Record<never, never>;
   "desktop.script.autoRun.label": Record<never, never>;
   "desktop.script.autoRunGlobalOff.hint": Record<never, never>;
   "desktop.script.ended.label": {
@@ -547,6 +579,55 @@ export type CatalogMessages = {
   "desktop.stop.action": Record<never, never>;
   "desktop.stopped.body": Record<never, never>;
   "desktop.tab.cli.label": Record<never, never>;
+  "desktop.templates.create.action": Record<never, never>;
+  "desktop.templates.detail.aria": Record<never, never>;
+  "desktop.templates.detailGone.hint": Record<never, never>;
+  "desktop.templates.edit.hint": Record<never, never>;
+  "desktop.templates.empty.hint": Record<never, never>;
+  "desktop.templates.fallback.hint": {
+    fallback: string | number;
+    tool: string | number;
+  };
+  "desktop.templates.files.title": Record<never, never>;
+  "desktop.templates.filesEmpty.hint": Record<never, never>;
+  "desktop.templates.hereColumn.label": Record<never, never>;
+  "desktop.templates.invalid.label": Record<never, never>;
+  "desktop.templates.list.aria": Record<never, never>;
+  "desktop.templates.loadFailed.hint": Record<never, never>;
+  "desktop.templates.problemEntry.label": Record<never, never>;
+  "desktop.templates.problemFormat.label": Record<never, never>;
+  "desktop.templates.problemName.label": Record<never, never>;
+  "desktop.templates.problemOther.label": {
+    rule: string | number;
+  };
+  "desktop.templates.problemReserved.label": Record<never, never>;
+  "desktop.templates.problemRunner.label": Record<never, never>;
+  "desktop.templates.problemTemplateJson.label": Record<never, never>;
+  "desktop.templates.rangeAnd.label": Record<never, never>;
+  "desktop.templates.readyLog.label": {
+    match: string | number;
+  };
+  "desktop.templates.readyPort.label": Record<never, never>;
+  "desktop.templates.requiredColumn.label": Record<never, never>;
+  "desktop.templates.requires.title": Record<never, never>;
+  "desktop.templates.requiresNone.hint": Record<never, never>;
+  "desktop.templates.run.title": Record<never, never>;
+  "desktop.templates.runInstall.label": Record<never, never>;
+  "desktop.templates.runReady.label": Record<never, never>;
+  "desktop.templates.runStart.label": Record<never, never>;
+  "desktop.templates.sourceBuiltin.label": Record<never, never>;
+  "desktop.templates.sourceUser.label": Record<never, never>;
+  "desktop.templates.statusColumn.label": Record<never, never>;
+  "desktop.templates.statusMet.label": Record<never, never>;
+  "desktop.templates.statusMissing.label": Record<never, never>;
+  "desktop.templates.statusTooOld.label": Record<never, never>;
+  "desktop.templates.summary.label": {
+    builtin: number;
+    user: number;
+  };
+  "desktop.templates.title": Record<never, never>;
+  "desktop.templates.toolColumn.label": Record<never, never>;
+  "desktop.templates.unmaintained.label": Record<never, never>;
   "desktop.window.title": Record<never, never>;
   "format.duration.days": {
     count: number;

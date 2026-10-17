@@ -188,6 +188,8 @@ export interface LibraryState {
   /** 当前标签："library" 或项目 id */
   activeTab: string;
   templates: TemplateRow[];
+  /** 全部模板的个数（内置加用户的，无效的也算）：侧栏“模板”右边的数；没给就用 templates 的个数 */
+  templateCount?: number;
   /** 仍在进行的运行（标签页和命令行持有的），标签页持有的在前；已结束的脚本不在其中 */
   runs: RunningRow[];
   /** 第一次从管理进程读到资源库之后为 true；之前的空列表不代表资源库是空的（#298） */

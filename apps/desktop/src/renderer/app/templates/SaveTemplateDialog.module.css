@@ -1,0 +1,38 @@
+/* 另存为模板弹窗里除文件树以外的版面（设计稿 SaveTemplate） */
+.code,
+.mono {
+  font-family: var(--font-mono);
+}
+
+.files {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.label {
+  font-weight: var(--text-section-title-weight);
+}
+
+.requires {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-6);
+  margin: 0;
+}
+
+.requiresText {
+  color: var(--color-text-secondary);
+}
+
+.requirement {
+  margin-inline-start: var(--space-3);
+}
+
+.switchRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  cursor: default;
+}

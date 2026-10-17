@@ -55,6 +55,18 @@
   min-inline-size: 0;
 }
 
+/* 只留给读屏器：不占版面、不可见，但仍在无障碍树里 */
+.hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 .label {
   font-size: var(--text-body-size);
   font-weight: var(--text-control-weight);

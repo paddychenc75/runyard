@@ -184,15 +184,15 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
     });
   }
   tabs.sort((a, b) => inputs.tabIds.indexOf(a.id) - inputs.tabIds.indexOf(b.id));
-  // 无效的用户模板建不出项目，列表里只给内置的、格式有效的
+  // 无效的用户模板建不出项目，选择器里只给格式有效的；用户自己的模板归在“我的”（规格 DESKTOP-TEMPLATES-VIEW-09）
   const templates = inputs.templates
-    .filter((template) => template.source === "builtin" && template.valid && template.kind !== null)
+    .filter((template) => template.valid && template.kind !== null)
     .map(
       (template): TemplateRow => ({
         id: template.id,
         name: template.name,
         description: template.description,
-        category: template.category,
+        category: template.source === "user" ? "mine" : template.category,
         unmaintained: template.tags.includes("unmaintained"),
       }),
     );
@@ -202,6 +202,7 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
     tabs,
     activeTab: inputs.activeTab,
     templates,
+    templateCount: inputs.templates.length,
     runs: runningRows(inputs.runs, (id) => rowById.get(id)?.templateName ?? null),
     loaded: inputs.loaded ?? true,
     recentTemplates: recentTemplateIds(inputs.playgrounds, templates),

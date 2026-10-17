@@ -1,4 +1,4 @@
-import { useT } from "@runyard/i18n/react";
+import { useLocale, useT } from "@runyard/i18n/react";
 import type { MenuEntry } from "@runyard/ui";
 import { type ReactNode, useState } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
@@ -7,10 +7,11 @@ import { retentionOf } from "../library-view.ts";
 import { ActionFailedDialog } from "./ActionFailedDialog.tsx";
 import { AutoCleanDialog } from "./AutoCleanDialog.tsx";
 import { RenameDialog } from "./RenameDialog.tsx";
+import { SaveTemplateDialog } from "./templates/SaveTemplateDialog.tsx";
 import type { RenameFocus } from "./use-rename-draft.ts";
 
 export interface PlaygroundEdits {
-  /** 重命名、编辑备注、自动清理、分隔线、另存为模板（占位）、创建副本：资源库行菜单和工作区“更多”菜单共用这一份（规格 DESKTOP-WORKSPACE“更多菜单”） */
+  /** 重命名、编辑备注、自动清理、分隔线、另存为模板、创建副本：资源库行菜单和工作区“更多”菜单共用这一份（规格 DESKTOP-WORKSPACE“更多菜单”） */
   entries: MenuEntry[];
   /** 菜单选中了某项；不是这里的项返回 false，由调用方处理 */
   select: (id: string) => boolean;
@@ -38,7 +39,8 @@ export interface UsePlaygroundEditsOptions {
 export function usePlaygroundEdits(options: UsePlaygroundEditsOptions): PlaygroundEdits {
   const { bridge, row, taken, now, onInlineRename, onDuplicated } = options;
   const t = useT();
-  const [dialog, setDialog] = useState<"autoClean" | RenameFocus | null>(null);
+  const locale = useLocale();
+  const [dialog, setDialog] = useState<"autoClean" | "saveTemplate" | RenameFocus | null>(null);
   const [failed, setFailed] = useState<DesktopError | null>(null);
 
   const retention = retentionOf(row, now);
@@ -63,8 +65,8 @@ export function usePlaygroundEdits(options: UsePlaygroundEditsOptions): Playgrou
       hint: t("library.row.autoCleanNow.hint", { state }),
     },
     { type: "separator" },
-    // 另存为模板由 #292 做；菜单里先按设计稿占位，不可点
-    { id: "saveAsTemplate", label: t("library.row.saveAsTemplate.action"), disabled: true },
+    // 另存为模板（#292，规格 DESKTOP-TEMPLATES-VIEW-07）；找不到文件夹的行不走这份菜单
+    { id: "saveAsTemplate", label: t("library.row.saveAsTemplate.action") },
     { id: "duplicate", label: t("library.row.duplicate.action"), disabled: row.busy },
   ];
 
@@ -83,6 +85,7 @@ export function usePlaygroundEdits(options: UsePlaygroundEditsOptions): Playgrou
     if (id === "rename") begin("name");
     else if (id === "editNote") begin("note");
     else if (id === "autoClean") setDialog("autoClean");
+    else if (id === "saveAsTemplate") setDialog("saveTemplate");
     else if (id === "duplicate") void duplicate();
     else return false;
     return true;
@@ -106,6 +109,18 @@ export function usePlaygroundEdits(options: UsePlaygroundEditsOptions): Playgrou
           focus={dialog}
           taken={taken}
           onClose={close}
+        />
+      ) : null}
+      {dialog === "saveTemplate" ? (
+        <SaveTemplateDialog
+          bridge={bridge}
+          project={{ id: row.id, name: row.name }}
+          locale={locale}
+          onClose={close}
+          onUnavailable={(error) => {
+            close();
+            setFailed(error);
+          }}
         />
       ) : null}
       {failed === null ? null : (

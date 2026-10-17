@@ -630,6 +630,8 @@
 | `template` | `TemplateRecord` | 是 |  |
 | `path` | `string` | 是 | 模板文件夹的绝对路径；非空 |
 | `files` | `string[]` | 是 | 模板里文件的相对路径，用 / 分隔 |
+| `runner` | `{ setup: Record<string, string[]>; run: string[] \| null; ready: { http: { path: string }; slowAfterMs: integer } \| { port: {}; slowAfterMs: integer } \| { log: { match: string }; slowAfterMs: integer } \| null } \| null` | 是 |  |
+| `problems` | `({ rule: 'template-json-invalid' \| 'runner-invalid' \| 'name-missing-en' \| 'format-version-unsupported' \| 'path-escape' \| 'variable-undeclared' \| 'entry-missing' \| 'maintainer-missing' \| 'command-shell-syntax' \| 'stop-signal-name' \| 'bind-address' \| 'port-hardcoded' \| 'requires-missing' \| 'range-invalid' \| 'range-no-upper' \| 'tool-unknown' \| 'runner-not-found' \| 'template-id-reserved' \| 'allow-builds-missing' \| 'lockfile-missing' \| 'version-not-exact'; path: string })[]` | 是 |  |
 
 可能返回的错误码：`TEMPLATE_NOT_FOUND`
 

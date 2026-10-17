@@ -50,6 +50,7 @@ import { QuitFlushGate } from "./quit-flush-gate.ts";
 import { FileSessionStore } from "./session-store.ts";
 import { SettingsController } from "./settings-controller.ts";
 import { runSmoke } from "./smoke.ts";
+import { TemplatesView } from "./templates-view.ts";
 
 // 主进程入口（构建后在 apps/desktop/dist/main/index.mjs）。入口是 ES 模块，
 // 不能在模块顶层 await app.whenReady()（互相等待，应用永远不就绪；决策记录 0005），所以用 then。
@@ -283,6 +284,12 @@ async function main(args: DesktopArgs): Promise<void> {
     quitGate,
     settings,
     terminals,
+    new TemplatesView({
+      client,
+      reveal: (path) => system.revealInFileManager(path),
+      home: args.root ?? homedir(),
+      refresh: controller.refresh,
+    }),
   );
   await window.loadURL(`${APP_ORIGIN}/`);
   await controller.start();
