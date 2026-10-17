@@ -32,6 +32,20 @@ const shikiRoles: [string[], string][] = [
   [["constant.numeric"], "color-code-number"],
   [["entity.name.tag"], "color-code-tag"],
   [["punctuation", "comment"], "color-code-punctuation"],
+  // 设计稿只画了上面 6 类；CSS 属性名、HTML 与 Vue 模板的属性名、JSON 的键、Markdown 也要着色
+  // （DESKTOP-EDITOR-37、38）。JSX 里的 className 照设计稿保持正文色，所以只登记 HTML 的属性名
+  [
+    [
+      "support.type.property-name",
+      "meta.property-name",
+      "entity.other.attribute-name.html",
+      "entity.other.attribute-name.id.html",
+    ],
+    "color-code-property",
+  ],
+  [["markup.heading", "markup.heading.markdown"], "color-code-heading"],
+  [["markup.bold", "markup.italic"], "color-code-emphasis"],
+  [["markup.inline.raw", "markup.fenced_code"], "color-code-raw"],
 ];
 
 // xterm 的 16 个颜色到变量；没有单独的终端色板，借用状态色和代码色
@@ -97,6 +111,13 @@ function monaco(theme: Theme, pick: Pick): string[] {
   ];
 }
 
+// 一行放得下就写一行，放不下每项占一行（和 Biome 的排版一致）
+function scopeLines(scopes: string[]): string[] {
+  const oneLine = `        scope: [${scopes.map(q).join(", ")}],`;
+  if (oneLine.length <= 100) return [oneLine];
+  return ["        scope: [", ...scopes.map((scope) => `          ${q(scope)},`), "        ],"];
+}
+
 function shiki(theme: Theme, pick: Pick): string[] {
   return [
     `  ${theme}: {`,
@@ -108,7 +129,7 @@ function shiki(theme: Theme, pick: Pick): string[] {
     "    tokenColors: [",
     ...shikiRoles.flatMap(([scopes, name]) => [
       "      {",
-      `        scope: [${scopes.map(q).join(", ")}],`,
+      ...scopeLines(scopes),
       `        settings: { foreground: ${q(pick(name))} },`,
       "      },",
     ]),

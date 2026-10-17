@@ -25,43 +25,10 @@ import { type EditorRuntime, WORKER_BASE_URL } from "./runtime-types.ts";
 // 配色来自设计变量（packages/tokens 生成的 shikiThemes，设计稿的代码配色），不用 Shiki 自带的 GitHub 主题
 const THEMES = { light: shikiThemes.light.name, dark: shikiThemes.dark.name } as const;
 
-type TokenRule = { scope: string[]; settings: { foreground: string } };
-type DesignTheme = { tokenColors: readonly TokenRule[] };
-
-function colorOf(theme: DesignTheme, scope: string): string {
-  const color = theme.tokenColors.find((rule) => rule.scope.includes(scope))?.settings.foreground;
-  if (color === undefined) throw new Error(`design theme has no color for ${scope}`);
-  return color;
-}
-
-// 设计变量里的配色只给了 6 类记号（关键字、字符串、函数与属性、数字、标签、标点与注释）。
-// 规格要求 CSS 属性名、HTML 和 Vue 模板里的属性名、Markdown、JSON 的键也要着色（DESKTOP-EDITOR-37、38），
-// 所以在不引入新颜色的前提下，把这些语法范围归到设计里已有的颜色上。
-// 属性名只给 HTML 的（含 Vue 模板），JSX 里的 className 照设计稿保持正文色。
-function withLanguageScopes(theme: DesignTheme): ThemeInput {
-  const fn = colorOf(theme, "entity.name.function");
-  const keyword = colorOf(theme, "keyword");
-  const string = colorOf(theme, "string");
-  const extra: TokenRule[] = [
-    {
-      scope: [
-        "support.type.property-name",
-        "meta.property-name",
-        "entity.other.attribute-name.html",
-        "entity.other.attribute-name.id.html",
-      ],
-      settings: { foreground: fn },
-    },
-    { scope: ["markup.heading", "markup.heading.markdown"], settings: { foreground: keyword } },
-    { scope: ["markup.bold", "markup.italic"], settings: { foreground: fn } },
-    { scope: ["markup.inline.raw", "markup.fenced_code"], settings: { foreground: string } },
-  ];
-  return { ...theme, tokenColors: [...theme.tokenColors, ...extra] } as unknown as ThemeInput;
-}
-
+// 属性名、Markdown 等额外的语法范围也登记在设计变量里（shikiThemes），这里不再另配颜色
 const THEME_REGISTRATIONS: ThemeInput[] = [
-  withLanguageScopes(shikiThemes.light as unknown as DesignTheme),
-  withLanguageScopes(shikiThemes.dark as unknown as DesignTheme),
+  shikiThemes.light as unknown as ThemeInput,
+  shikiThemes.dark as unknown as ThemeInput,
 ];
 
 // Monaco 里要有这些语言 id，Shiki 才能挂上去；Vue 不是 Monaco 自带的

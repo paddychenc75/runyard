@@ -99,6 +99,27 @@ export const shikiThemes = {
         scope: ["punctuation", "comment"],
         settings: { foreground: "#6E6E73" },
       },
+      {
+        scope: [
+          "support.type.property-name",
+          "meta.property-name",
+          "entity.other.attribute-name.html",
+          "entity.other.attribute-name.id.html",
+        ],
+        settings: { foreground: "#0F68A0" },
+      },
+      {
+        scope: ["markup.heading", "markup.heading.markdown"],
+        settings: { foreground: "#AD3DA4" },
+      },
+      {
+        scope: ["markup.bold", "markup.italic"],
+        settings: { foreground: "#0F68A0" },
+      },
+      {
+        scope: ["markup.inline.raw", "markup.fenced_code"],
+        settings: { foreground: "#B3261E" },
+      },
     ],
   },
   dark: {
@@ -137,6 +158,27 @@ export const shikiThemes = {
       {
         scope: ["punctuation", "comment"],
         settings: { foreground: "#A1A1A6" },
+      },
+      {
+        scope: [
+          "support.type.property-name",
+          "meta.property-name",
+          "entity.other.attribute-name.html",
+          "entity.other.attribute-name.id.html",
+        ],
+        settings: { foreground: "#6BDFFF" },
+      },
+      {
+        scope: ["markup.heading", "markup.heading.markdown"],
+        settings: { foreground: "#FF7AB2" },
+      },
+      {
+        scope: ["markup.bold", "markup.italic"],
+        settings: { foreground: "#6BDFFF" },
+      },
+      {
+        scope: ["markup.inline.raw", "markup.fenced_code"],
+        settings: { foreground: "#FF8170" },
       },
     ],
   },
