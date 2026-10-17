@@ -115,3 +115,37 @@ describe("可重复", () => {
     expect(read("generated/editor-themes.ts")).toBe(out.editor);
   });
 });
+
+describe("shikiThemes 的补充语法范围（#289）", () => {
+  const shikiBlock = out.editor.slice(
+    out.editor.indexOf("export const shikiThemes"),
+    out.editor.indexOf("export const xtermThemes"),
+  );
+  const colorOf = (theme: "light" | "dark", scope: string): string | undefined => {
+    const part = shikiBlock.slice(shikiBlock.indexOf(`  ${theme}: {`));
+    const rule = part.split("      {\n").find((chunk) => chunk.includes(`"${scope}"`));
+    return rule?.match(/foreground: "(#[0-9A-F]{6})"/)?.[1];
+  };
+
+  it("CSS 属性名、HTML 属性名、JSON 键、Markdown 的范围在浅色和深色里都有颜色", () => {
+    for (const theme of ["light", "dark"] as const) {
+      for (const scope of [
+        "support.type.property-name",
+        "meta.property-name",
+        "entity.other.attribute-name.html",
+        "markup.heading",
+        "markup.bold",
+        "markup.inline.raw",
+      ]) {
+        expect(colorOf(theme, scope), `${theme} ${scope}`).toMatch(/^#[0-9A-F]{6}$/);
+      }
+    }
+  });
+
+  it("补充范围的颜色取自设计变量，浅色和深色各用各的值", () => {
+    expect(colorOf("light", "support.type.property-name")).toBe("#0F68A0");
+    expect(colorOf("dark", "support.type.property-name")).toBe("#6BDFFF");
+    expect(colorOf("light", "markup.heading")).toBe("#AD3DA4");
+    expect(colorOf("dark", "markup.inline.raw")).toBe("#FF8170");
+  });
+});

@@ -116,6 +116,10 @@
   --color-code-function: light-dark(var(--cyan-700), var(--cyan-300));
   --color-code-number: light-dark(var(--indigo-800), var(--sand-300));
   --color-code-tag: light-dark(var(--green-800), var(--teal-500));
+  --color-code-property: light-dark(var(--cyan-700), var(--cyan-300));
+  --color-code-heading: light-dark(var(--magenta-600), var(--pink-400));
+  --color-code-emphasis: light-dark(var(--cyan-700), var(--cyan-300));
+  --color-code-raw: light-dark(var(--crimson-700), var(--coral-400));
   --color-code-punctuation: light-dark(var(--gray-600), var(--gray-400));
   --color-code-line-number: light-dark(var(--gray-600), var(--gray-500));
   --color-code-current-line: light-dark(rgba(0, 113, 227, 0.07), rgba(255, 255, 255, 0.06));

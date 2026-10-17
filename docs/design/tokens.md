@@ -138,6 +138,10 @@ disagree, `tokens.json` wins.
 | Function / property (`--color-code-function`) | #0F68A0 | #6BDFFF |
 | Number (`--color-code-number`) | #1C00CF | #D9C97C |
 | Tag name (`--color-code-tag`) | #1B7A34 | #4EB0CC |
+| CSS property / HTML attribute / JSON key (`--color-code-property`) | #0F68A0 | #6BDFFF |
+| Markdown heading (`--color-code-heading`) | #AD3DA4 | #FF7AB2 |
+| Markdown bold / italic (`--color-code-emphasis`) | #0F68A0 | #6BDFFF |
+| Markdown inline code / fenced code (`--color-code-raw`) | #B3261E | #FF8170 |
 | Punctuation / muted (`--color-code-punctuation`) | #6E6E73 | #A1A1A6 |
 | Line number (`--color-code-line-number`) | #6E6E73 | #8E8E93 |
 | Current line (`--color-code-current-line`) | rgba(0, 113, 227, 0.07) | rgba(255, 255, 255, 0.06) |
