@@ -68,6 +68,10 @@ expect(await fake.platform.ports.isFree(7100)).toBe("free");
 
 最慢的系统（macOS）上限 170 秒离预算还有 1.7 倍余量；超过 4 分钟就要查原因，不要先调预算。
 
+## 性能实测：创建后多久看到编辑器
+
+规格 `DESKTOP-EDITOR-04`（150 ms，手工验证）在打好的包上量，不在单元测试里量。脚本是 `apps/desktop/e2e/editor-latency.measure.ts`（文件名不是 `*.e2e.ts`，CI 不跑），用法和历次结果见 `docs/architecture/evidence/editor-150ms.md`。
+
 ## 偶发失败的规则
 
 - 必过检查失败了，不许直接重跑了事：先开一个带 `flaky` 标签的 issue，写上失败的运行链接、哪个测试、哪个系统，再重跑。
