@@ -1,7 +1,8 @@
 /* 工作台自己的页面骨架（不是组件）：左边组件列表，右边一张“状态表”，顶部切换主题和语言 */
 .workbench {
   display: grid;
-  grid-template-columns: auto 1fr;
+  /* 列表列定宽：用 auto 的话，新增一个名字更长的组件就会挤窄右边的状态表，所有基准图的宽度和折行跟着变 */
+  grid-template-columns: 130px minmax(0, 1fr);
   grid-template-rows: auto 1fr;
   min-block-size: 100vh;
 }
@@ -33,6 +34,8 @@
 }
 
 .list {
+  min-inline-size: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
@@ -41,6 +44,9 @@
 }
 
 .item {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   padding: var(--space-3) var(--space-6);
   border-radius: var(--radius-control);
   color: var(--color-text-primary);

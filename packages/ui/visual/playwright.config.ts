@@ -23,7 +23,9 @@ export default defineConfig({
   testMatch: "*.spec.ts",
   outputDir: join(output, "test-results"),
   snapshotPathTemplate: "{testDir}/__screenshots__/{arg}{ext}",
-  updateSnapshots: updateRequested ? "all" : "none",
+  // "changed"：只改写和基准图不一致（超出下面 expect 里的容差）的图，一致的保持原样。用 "all" 的话
+  // 每张图都会被重新编码写回，基准图 PR 里混进一堆没变的图（#218）
+  updateSnapshots: updateRequested ? "changed" : "none",
   // 每个样例文件一张整表图，几十个页面而已；一个工作进程，渲染结果最稳定（K15 实测是在串行下一致的）
   workers: 1,
   retries: 0,
