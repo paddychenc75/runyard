@@ -102,6 +102,14 @@ disagree, `tokens.json` wins.
 | Switch on (`--color-fill-switch-on`) | #28A745 | #30D158 |
 | Switch off track (`--color-fill-switch-off`) | rgba(120, 120, 128, 0.32) | rgba(120, 120, 128, 0.4) |
 
+### Technology logos
+
+| Role | Light | Dark |
+| --- | --- | --- |
+| HTML5 logo on a template tile (W3C orange; the lighter official orange in dark) (`--color-brand-html5`) | #E34C26 | #F06529 |
+| Vue logo on a template tile (official navy in light, official green in dark) (`--color-brand-vue`) | #35495E | #4FC08D |
+| Python logo on a template tile (official blue; the lighter official blue in dark) (`--color-brand-python`) | #3776AB | #4B8BBE |
+
 ### Code syntax
 
 | Role | Light | Dark |

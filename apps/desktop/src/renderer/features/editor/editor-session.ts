@@ -2,6 +2,7 @@ import type { EditorFileError, FileChange, SaveProblem } from "../../../shared/e
 import { type DiskHost, reconcileDisk, useDiskVersion } from "./disk-change.ts";
 import { type FileTab, isDirty, loadingTab, withContent } from "./file-tab.ts";
 import { PathTimers } from "./path-timers.ts";
+import { renameTabPaths } from "./rename-tab-paths.ts";
 import {
   AUTOSAVE_DELAY_MS,
   type ClosePromptAnswer,
@@ -150,6 +151,16 @@ export class EditorSession {
     return this.#add(path);
   }
 
+  /** 改名这类操作改到了没打开的文件：开一个不抢选中的标签，读完磁盘后把改后的内容当用户的编辑交进来 */
+  async adoptEdit(path: string, text: string): Promise<void> {
+    if (!this.#state.tabs.some((tab) => tab.path === path)) {
+      this.#set({ tabs: [...this.#state.tabs, loadingTab(path, this.#newId())] });
+      this.#remember();
+      await this.#load(path);
+    }
+    this.edit(path, text);
+  }
+
   select(path: string): void {
     const { tabs, active } = this.#state;
     if (active === path || !tabs.some((tab) => tab.path === path)) return;
@@ -171,19 +182,7 @@ export class EditorSession {
    * 内容、未保存的修改、写回用的换行符和 BOM 都留着，之后的保存写进新路径。
    */
   renamePath(from: string, to: string): void {
-    const move = (path: string): string | null => {
-      if (path === from) return to;
-      return path.startsWith(`${from}/`) ? `${to}${path.slice(from.length)}` : null;
-    };
-    const { tabs, active, closePrompt } = this.#state;
-    this.#set({
-      tabs: tabs.map((tab) => {
-        const moved = move(tab.path);
-        return moved === null ? tab : { ...tab, path: moved };
-      }),
-      active: active === null ? null : (move(active) ?? active),
-      closePrompt: closePrompt === null ? null : (move(closePrompt) ?? closePrompt),
-    });
+    this.#set(renameTabPaths(this.#state, from, to));
     this.#remember();
   }
 

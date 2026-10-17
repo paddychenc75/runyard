@@ -1,1 +1,6 @@
-export { MonogramTile, type MonogramTileProps, type MonogramTileSize } from "./MonogramTile.tsx";
+export {
+  MonogramTile,
+  type MonogramTileProps,
+  type MonogramTileSize,
+  type TechLogo,
+} from "./MonogramTile.tsx";
