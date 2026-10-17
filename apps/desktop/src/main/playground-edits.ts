@@ -16,6 +16,8 @@ export interface EditHooks {
   dropTab: (id: string) => void;
   chooseFolder: (defaultPath: string) => Promise<string | null>;
   folderOf: (id: string) => string | null;
+  /** 改名、移到废纸篓之前放掉项目的句柄：终端结束、文件监听放掉（技术设计 §4.3）；做完才兑现 */
+  releaseProject: (id: string, reason: "rename" | "trash") => Promise<void>;
 }
 
 /** 管理进程回应“没有移走”（trashed 为 false）：当作废纸篓不可用 */
@@ -31,9 +33,6 @@ class TrashRefused extends Error {
 export class PlaygroundEdits {
   readonly #client: LibraryClient;
   readonly #hooks: EditHooks;
-  /** 放掉项目的文件监听（编辑器的文件服务，技术设计 §6.4）；文件服务比控制器晚建，所以事后接 */
-  #releaseWatchers: (id: string) => Promise<void> = async () => {};
-
   constructor(client: LibraryClient, hooks: EditHooks) {
     this.#client = client;
     this.#hooks = hooks;
@@ -49,6 +48,8 @@ export class PlaygroundEdits {
       return { ok: false, error: { code: "PLAYGROUND_NOT_FOUND", params: {} } };
     return this.#guard(request.id, async () => {
       if (request.name !== before.name) {
+        // 终端要先结束再改名：它的工作目录不能停在一个已不存在的文件夹里（规格 DESKTOP-TERMINAL-34）
+        await this.#hooks.releaseProject(request.id, "rename");
         await this.#client.call("playground.rename", {
           playground: request.id,
           newName: request.name,
@@ -77,10 +78,6 @@ export class PlaygroundEdits {
     return result.ok ? { ok: true, id: copyId } : result;
   }
 
-  onReleaseWatchers(release: (id: string) => Promise<void>): void {
-    this.#releaseWatchers = release;
-  }
-
   /**
    * 移到废纸篓（规格 DESKTOP-LIBRARY-VIEW-43 至 45；#183）：先关标签页、放掉文件监听，
    * 再交给管理进程（它先停止运行、走释放顺序、只经平台层移动）。从不永久删除：
@@ -92,7 +89,7 @@ export class PlaygroundEdits {
       return { ok: false, error: { code: "PLAYGROUND_NOT_FOUND", params: {} } };
     return this.#guard(id, async () => {
       this.#hooks.dropTab(id);
-      await this.#releaseWatchers(id);
+      await this.#hooks.releaseProject(id, "trash");
       const outcome = await this.#client.call("playground.trash", { playground: id });
       if (!outcome.trashed) throw new TrashRefused(before.name);
     });

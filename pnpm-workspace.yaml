@@ -20,6 +20,10 @@ catalog:
   "@types/node": 24.19.0
   "@types/react": 19.3.0
   "@types/react-dom": 19.3.0
+  "@xterm/addon-fit": 0.11.0
+  "@xterm/addon-search": 0.16.0
+  "@xterm/addon-web-links": 0.12.0
+  "@xterm/xterm": 6.0.0
   chokidar: 5.0.0
   electron: 44.5.1
   electron-builder: 26.17.0
@@ -27,6 +31,7 @@ catalog:
   intl-messageformat: 11.2.15
   jsdom: 29.1.1
   monaco-editor: 0.57.0
+  node-pty: 1.1.0
   react: 19.3.0
   react-dom: 19.3.0
   shiki: 4.4.3
@@ -53,5 +58,8 @@ allowBuilds:
   # 只给 Windows 的 NSIS 安装包用，第一版不打 Windows（决策记录 0007）
   electron-winstaller: false
   esbuild: true
+  # 预编译文件随包带（darwin-arm64、darwin-x64），install 脚本在 macOS 上一行都不用跑（K5 证据第 6 条）；
+  # 写 false 不放行任何新脚本；负责人 2026-10-17 批准
+  node-pty: false
 # Node 版本不符直接拒绝安装
 engineStrict: true

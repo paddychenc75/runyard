@@ -9,6 +9,12 @@ import {
 import type { Bounds } from "./layout.ts";
 import type { DesktopError, LibraryState } from "./library-state.ts";
 import { type SettingsMethods, settingsMethodNames } from "./settings-bridge.ts";
+import {
+  type TerminalEvents,
+  type TerminalMethods,
+  terminalEventNames,
+  terminalMethodNames,
+} from "./terminal.ts";
 
 // 预加载脚本交给界面的窄接口，只有三样：同步的启动信息 bootstrap、按名字调用的 call、订阅事件的 on。
 // 方法名和事件名是白名单（下面两张表）；界面发不出表外的消息，也拿不到 ipcRenderer。
@@ -49,7 +55,7 @@ export interface QuitReply {
 }
 
 /** 界面可以调用的方法：参数类型与返回类型 */
-export interface DesktopMethods extends EditorFileMethods, SettingsMethods {
+export interface DesktopMethods extends EditorFileMethods, SettingsMethods, TerminalMethods {
   "library.get": { param: undefined; result: LibraryState };
   "run.start": { param: string; result: undefined };
   "run.stop": { param: string; result: undefined };
@@ -171,10 +177,11 @@ export const desktopMethodNames: readonly DesktopMethod[] = [
   "console.get",
   ...editorFileMethodNames,
   ...settingsMethodNames,
+  ...terminalMethodNames,
 ];
 
 /** 主进程推给界面的事件 */
-export interface DesktopEvents {
+export interface DesktopEvents extends TerminalEvents {
   "library.changed": LibraryState;
   "console.appended": ConsoleAppend;
   /** 应用菜单的“新建…”（⌘N）：焦点在预览视图里时按键到不了界面，所以由主进程通知 */
@@ -198,6 +205,7 @@ export const desktopEventNames: readonly DesktopEventName[] = [
   "app.quitRequested",
   "files.changed",
   "settings.changed",
+  ...terminalEventNames,
 ];
 
 /** 启动信息：主进程建窗口时算好，预加载脚本同步交给界面（技术设计 §6.7；协议包建好该类型后移过去） */

@@ -14,6 +14,10 @@ export interface DesktopArgs {
   smoke: boolean;
   /** 编辑器冒烟：打开不带管理进程的冒烟页，检查 Monaco、后台线程、Shiki 在新内容安全策略下都起得来，做完自己退出 */
   editorSmoke: boolean;
+  /** 终端冒烟：不开窗口，走一遍主进程终端服务和 pty-host（开终端、回显、改大小、结束、不留进程），做完自己退出 */
+  terminalSmoke: boolean;
+  /** 终端冒烟做到一半停住不退出（输出里写下 shell 和后台作业的进程号），留给外面强制结束应用、核对 10 秒内不留进程 */
+  terminalSmokeHold: boolean;
   /** 把随应用安装的 runyard 接到 PATH 上或撤掉，做完就退出、不开窗口；设置页里的按钮随后续 issue */
   cliLink: { action: "install" | "uninstall"; binDir: string | undefined } | undefined;
 }
@@ -75,6 +79,8 @@ export function parseDesktopArgs(
       theme,
       smoke: argv.includes("--smoke"),
       editorSmoke: argv.includes("--editor-smoke"),
+      terminalSmoke: argv.includes("--terminal-smoke") || argv.includes("--terminal-smoke-hold"),
+      terminalSmokeHold: argv.includes("--terminal-smoke-hold"),
     },
   };
 }

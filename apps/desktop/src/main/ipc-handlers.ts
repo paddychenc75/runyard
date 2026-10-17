@@ -16,6 +16,8 @@ import type { EditorFileService } from "./editor-files/file-service.ts";
 import type { LibraryController } from "./library-controller.ts";
 import type { QuitFlushGate } from "./quit-flush-gate.ts";
 import type { SettingsController } from "./settings-controller.ts";
+import { terminalMethods } from "./terminal/terminal-ipc.ts";
+import type { TerminalService } from "./terminal/terminal-service.ts";
 
 // 把界面发来的消息接到控制器上。Electron 的 ipcMain 通过 IpcHost 这个接口传进来，测试里换成假的。
 
@@ -100,6 +102,7 @@ export function registerBridgeHandlers(
   openers?: FileOpeners,
   quitGate?: QuitFlushGate,
   settings?: SettingsController,
+  terminals?: TerminalService,
 ): () => void {
   // 方法名到控制器的映射；参数不是预期类型时不调用控制器
   const methods: Record<DesktopMethod, (param: unknown) => unknown> = {
@@ -273,6 +276,8 @@ export function registerBridgeHandlers(
     },
     // 文件服务（#257）；没接线时这些方法不可用
     ...editorFileMethods(files, openers),
+    // 集成终端（#263）；没接线时这些方法不可用
+    ...terminalMethods(terminals),
   };
 
   // 只有本应用自己的界面页面发来的消息才执行：预览页面（任何本机服务）没有预加载脚本，

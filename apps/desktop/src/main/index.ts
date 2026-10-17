@@ -7,6 +7,7 @@ import { app, type BrowserWindow, ipcMain, Menu, nativeTheme, net, protocol } fr
 import { desktopChannels } from "../shared/desktop-bridge.ts";
 import { APP_ORIGIN, APP_SCHEME, resolveAppFile } from "./app-protocol.ts";
 import { connectToSupervisor, type DesktopRuntime, unavailableClient } from "./composition-root.ts";
+import type { TerminalHooks } from "./controller-hosts.ts";
 import { EditorFileService } from "./editor-files/file-service.ts";
 import { runEditorSmoke } from "./editor-smoke.ts";
 import {
@@ -25,6 +26,7 @@ import { createMainWindow } from "./integration/main-window.ts";
 import { createElectronSettingsHost } from "./integration/settings-host.ts";
 import { claimSingleInstance, focusWindow } from "./integration/single-instance.ts";
 import { ElectronSystemActions } from "./integration/system-actions.ts";
+import { createTerminalService, runTerminalSmokeFlow } from "./integration/terminal-host.ts";
 import { resolveUserDataDir } from "./integration/user-data.ts";
 import { keepAliveAfterClose } from "./integration/window-lifecycle.ts";
 import {
@@ -82,6 +84,20 @@ async function main(args: DesktopArgs): Promise<void> {
     return net.fetch(pathToFileURL(file).href);
   });
 
+  // 终端冒烟不开窗口也不连管理进程：只验证主进程终端服务、pty-host 和 node-pty 在这个构建里能工作
+  if (args.terminalSmoke) {
+    app.dock?.hide();
+    app.exit(
+      await runTerminalSmokeFlow({
+        root: args.root,
+        distDir,
+        log: diagnostic,
+        hold: args.terminalSmokeHold,
+      }),
+    );
+    return;
+  }
+
   // 冒烟自检不要在屏幕上出现任何东西
   if (args.smoke || args.editorSmoke) app.dock?.hide();
   const window = createMainWindow({
@@ -124,7 +140,8 @@ async function main(args: DesktopArgs): Promise<void> {
         // 道别会停掉标签页的运行：先停止记录标签页，下次打开才知道哪些原来在运行
         controller.freezeSession();
         try {
-          await connected.client.call("session.bye", {});
+          // 终端和运行一起收尾：⌘Q 后 5 秒内不留下 shell 和里面的命令（规格 DESKTOP-TERMINAL-30）
+          await Promise.all([connected.client.call("session.bye", {}), terminals.dispose()]);
         } finally {
           close();
         }
@@ -137,7 +154,9 @@ async function main(args: DesktopArgs): Promise<void> {
     // 没有管理进程要道别，但编辑器里未保存的修改照样要在退出前写入
     registerQuitFlow(
       app,
-      async () => {},
+      async () => {
+        await terminals.dispose();
+      },
       () => quitGate.request(),
     );
   }
@@ -151,6 +170,12 @@ async function main(args: DesktopArgs): Promise<void> {
   // system 就是跟随系统（技术设计 §6.7“切换主题”第 3 步）
   nativeTheme.themeSource = theme;
   const system = new ElectronSystemActions();
+  // 控制器和终端服务互相要用（标签页关闭要结束终端，终端要查项目文件夹）：控制器拿到的是下面这组薄的包装，
+  // 终端服务在控制器之后建好，用到时才查
+  const terminalHooks: TerminalHooks = {
+    end: (id, reason) => terminals.end(id, reason),
+    runningCommand: async (id) => (await terminals.foreground(id)).command,
+  };
   const controller = new LibraryController({
     client,
     clientId,
@@ -164,6 +189,7 @@ async function main(args: DesktopArgs): Promise<void> {
         absPath(path),
       ),
     session: new FileSessionStore(join(app.getPath("userData"), "workspace-session.json")),
+    terminals: terminalHooks,
   });
   const ipcHost: IpcHost = {
     handle: (channel, handler) =>
@@ -183,6 +209,12 @@ async function main(args: DesktopArgs): Promise<void> {
       if (!window.isDestroyed()) window.webContents.send(channel, name, payload);
     },
   };
+  const terminals = createTerminalService({
+    root: args.root,
+    distDir,
+    folderOf: (id) => controller.folderOf(id),
+    emit: (event, payload) => ipcHost.send(desktopChannels.event, event, payload),
+  });
   // 应用菜单：⌘N 打开模板选择器（焦点在预览视图里也有效）；语言变了重建
   const installMenu = (menuLocale: typeof locale): void =>
     Menu.setApplicationMenu(
@@ -216,7 +248,7 @@ async function main(args: DesktopArgs): Promise<void> {
   });
   app.once("will-quit", () => void files.dispose());
   // 移到废纸篓前先放掉项目的文件监听（#265 的先后顺序）
-  controller.edits.onReleaseWatchers((id) => files.unwatch(id));
+  controller.onProjectRelease((id) => files.unwatch(id));
   registerBridgeHandlers(
     ipcHost,
     controller,
@@ -230,6 +262,7 @@ async function main(args: DesktopArgs): Promise<void> {
     { reveal: (path) => system.revealInFileManager(path), open: (path) => system.openPath(path) },
     quitGate,
     settings,
+    terminals,
   );
   await window.loadURL(`${APP_ORIGIN}/`);
   await controller.start();

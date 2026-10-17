@@ -24,6 +24,20 @@ await Promise.all([
       js: 'import { createRequire as __createRequire } from "node:module"; const require = __createRequire(import.meta.url);',
     },
   }),
+  // pty-host（终端进程，utilityProcess 里运行）：node-pty 带原生文件，不打进单文件，留作外部依赖，
+  // 运行时从旁边的 node_modules 读；打包时 pack.ts 把它拷成真实目录并解到 asar 之外（K5 证据）。
+  // import.meta.url 在 CommonJS 输出里没有，用 __filename 换算
+  build({
+    ...common,
+    entryPoints: ["src/pty-host/index.ts"],
+    outfile: "dist/pty-host/index.cjs",
+    platform: "node",
+    format: "cjs",
+    target: "node24",
+    external: ["electron", "node-pty"],
+    define: { "import.meta.url": "__importMetaUrl" },
+    banner: { js: 'const __importMetaUrl = require("node:url").pathToFileURL(__filename).href;' },
+  }),
   build({
     ...common,
     entryPoints: ["src/preload/index.ts"],
