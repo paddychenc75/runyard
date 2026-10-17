@@ -34,6 +34,7 @@ function row(id: string, extra: Partial<PlaygroundRow> = {}): PlaygroundRow {
     lastOpenedAt: NOW - 5 * MINUTE,
     createdBy: { kind: "user" },
     createdAt: 1,
+    missing: false,
     ...extra,
   };
 }

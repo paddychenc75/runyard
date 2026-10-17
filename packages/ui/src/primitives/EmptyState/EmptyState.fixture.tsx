@@ -20,6 +20,10 @@ export const samples: readonly FixtureSample[] = [
     ),
   },
   {
+    name: "search-art",
+    render: (data) => <EmptyState art="search" title={data.label} description={data.items[0]} />,
+  },
+  {
     name: "title-only",
     render: (data) => <EmptyState title={data.label} />,
   },

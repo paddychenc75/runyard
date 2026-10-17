@@ -57,6 +57,13 @@
   flex: 1;
 }
 
+/* 单选菜单里的对勾位：没选中的项也留着，文字才对得齐 */
+.check {
+  display: inline-flex;
+  flex: none;
+  inline-size: var(--space-7);
+}
+
 .hint {
   font-size: var(--text-caption-size);
   color: var(--color-text-secondary);

@@ -391,6 +391,7 @@ export type CatalogMessages = {
   "desktop.picker.list.aria": Record<never, never>;
   "desktop.picker.move.hint": Record<never, never>;
   "desktop.picker.next.hint": Record<never, never>;
+  "desktop.picker.noMatch.hint": Record<never, never>;
   "desktop.picker.recent.label": Record<never, never>;
   "desktop.picker.search.label": Record<never, never>;
   "desktop.picker.search.placeholder": Record<never, never>;
@@ -491,14 +492,43 @@ export type CatalogMessages = {
   "library.filter.all.label": Record<never, never>;
   "library.filter.autoClean.label": Record<never, never>;
   "library.filter.kept.label": Record<never, never>;
+  "library.filter.sort.label": {
+    value: string | number;
+  };
+  "library.filter.status.label": {
+    value: string | number;
+  };
+  "library.filter.type.label": {
+    value: string | number;
+  };
+  "library.menu.sort.aria": Record<never, never>;
+  "library.menu.status.aria": Record<never, never>;
+  "library.menu.type.aria": Record<never, never>;
   "library.nav.aria": Record<never, never>;
   "library.nav.library.title": Record<never, never>;
   "library.nav.manage.title": Record<never, never>;
   "library.nav.settings.label": Record<never, never>;
   "library.nav.templates.label": Record<never, never>;
   "library.nav.unused.label": Record<never, never>;
+  "library.noResults.clear.action": Record<never, never>;
+  "library.noResults.create.action": {
+    query: string | number;
+  };
+  "library.noResults.filtered.hint": Record<never, never>;
+  "library.noResults.filtered.title": Record<never, never>;
+  "library.noResults.hint": Record<never, never>;
+  "library.noResults.reset.action": Record<never, never>;
+  "library.noResults.title": {
+    query: string | number;
+  };
   "library.note.empty.label": Record<never, never>;
+  "library.page.results.label": {
+    count: number;
+    root: string | number;
+    total: number;
+  };
   "library.page.summary.label": {
+    root: string | number;
     running: number;
     total: number;
   };
@@ -517,9 +547,19 @@ export type CatalogMessages = {
   "library.row.openHint.label": Record<never, never>;
   "library.row.reveal.action": Record<never, never>;
   "library.row.stop.action": Record<never, never>;
+  "library.search.clear.aria": Record<never, never>;
+  "library.search.key.label": Record<never, never>;
+  "library.search.label": Record<never, never>;
+  "library.search.placeholder": Record<never, never>;
   "library.sidebar.footer.label": {
     count: number;
   };
+  "library.sort.created.label": Record<never, never>;
+  "library.sort.name.label": Record<never, never>;
+  "library.sort.recent.label": Record<never, never>;
+  "library.status.problem.label": Record<never, never>;
+  "library.status.running.label": Record<never, never>;
+  "library.status.stopped.label": Record<never, never>;
   "library.tab.title": Record<never, never>;
   "library.table.aria": Record<never, never>;
   "library.topbar.idle.label": Record<never, never>;
@@ -527,6 +567,7 @@ export type CatalogMessages = {
     count: number;
   };
   "platform.fileManager": Record<never, never>;
+  "platform.searchShortcut": Record<never, never>;
   "platform.trash": Record<never, never>;
   "workspace.closeConfirm.body": Record<never, never>;
   "workspace.closeConfirm.cancel.action": Record<never, never>;

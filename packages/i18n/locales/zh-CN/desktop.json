@@ -107,6 +107,7 @@
   "desktop.picker.list.aria": "模板列表",
   "desktop.picker.move.hint": "移动",
   "desktop.picker.next.hint": "下一步：填写名称和备注",
+  "desktop.picker.noMatch.hint": "没有匹配的模板。",
   "desktop.picker.recent.label": "最近使用",
   "desktop.picker.search.label": "搜索模板",
   "desktop.picker.search.placeholder": "搜索模板：名称、框架、语言",

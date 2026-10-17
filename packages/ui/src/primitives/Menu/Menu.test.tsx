@@ -73,4 +73,25 @@ describe("Menu", { timeout: 20_000 }, () => {
     await user.keyboard("{Escape}");
     await vi.waitFor(() => expect(onOpenChange).toHaveBeenLastCalledWith(false));
   });
+
+  it("单选菜单：带 checked 的项读成 menuitemradio，当前值是选中", async () => {
+    const user = userEvent.setup();
+    render(
+      <Menu
+        label={l("sort")}
+        trigger={<IconButton icon="more" label={l("more")} />}
+        entries={[
+          { id: "recent", label: l("recent"), checked: true },
+          { id: "name", label: l("name"), checked: false },
+        ]}
+        onSelect={() => {}}
+      />,
+    );
+    await user.click(screen.getByRole("button", { name: "more" }));
+    const recent = await screen.findByRole("menuitemradio", { name: "recent" });
+    expect(recent.getAttribute("aria-checked")).toBe("true");
+    expect(screen.getByRole("menuitemradio", { name: "name" }).getAttribute("aria-checked")).toBe(
+      "false",
+    );
+  });
 });

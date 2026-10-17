@@ -27,6 +27,8 @@ export interface CreateDialogProps {
   bridge: DesktopBridge;
   library: LibraryState;
   templateId: string;
+  /** 预先填好的名称（资源库“没有结果”画面的“新建项目，名称用…”）；不给就用默认名称 */
+  initialName?: string;
   onClose: () => void;
   /** “换一个模板”：回到选择器 */
   onChangeTemplate: () => void;
@@ -40,6 +42,7 @@ export function CreateDialog({
   bridge,
   library,
   templateId,
+  initialName,
   onClose,
   onChangeTemplate,
 }: CreateDialogProps) {
@@ -54,7 +57,7 @@ export function CreateDialog({
   const template = library.templates.find((candidate) => candidate.id === templateId);
   const templateName =
     template === undefined ? templateId : pickLocalizedText(template.name, library.locale);
-  const [name, setName] = useState(() => defaultName(templateId, existing));
+  const [name, setName] = useState(() => initialName ?? defaultName(templateId, existing));
   const [note, setNote] = useState("");
   const [autoClean, setAutoClean] = useState(false);
   const [choice, setChoice] = useState<string>(String(DEFAULT_DAYS));
