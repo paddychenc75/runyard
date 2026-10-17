@@ -4,6 +4,7 @@ import type { LibraryEntry } from "@runyard/protocol";
 import { type AutoCleanCandidate, type AutoCleanVerdict, judgeAutoClean } from "./auto-clean.ts";
 import { type CreateContext, createPlayground } from "./create-playground.ts";
 import { randomUlid } from "./create-ulid.ts";
+import { duplicatePlayground } from "./duplicate-playground.ts";
 import { libraryError } from "./library-error.ts";
 import { LibraryIndex, libraryIndexPath } from "./library-index.ts";
 import {
@@ -97,6 +98,11 @@ export class PlaygroundLibrary {
     request: CreatePlaygroundRequest,
   ): Promise<CreatePlaygroundResult> {
     return createPlayground(this.#context(), seed, request);
+  }
+
+  /** 创建副本（playground.duplicate）：不复制依赖目录，不运行 */
+  async duplicate(ref: string, request: { name?: string } = {}): Promise<CreatePlaygroundResult> {
+    return duplicatePlayground(this.#context(), this.requireFolder(ref), request);
   }
 
   /** 扫描根目录并落盘索引；返回的变化由 supervisor 发成 playground.* 事件 */

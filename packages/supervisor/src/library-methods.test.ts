@@ -90,6 +90,41 @@ describe("创建与查询", () => {
     ).toBe("NAME_INVALID");
   });
 
+  it("[DESKTOP-LIBRARY-VIEW-42] 创建副本：新 id 新端口、名称取模板标识加序号、备注沿用、不复制 node_modules、原项目运行不受影响、不自动运行", async () => {
+    const app = await setup();
+    for (const n of [1, 2, 4]) await lw.create(app, `react19-${n}`);
+    const origin = await lw.create(app, "react19-3", { note: "图表库对比", autoClean: 30 });
+    lw.fs.writeFile(lw.at("react19-3", "node_modules", "left-pad", "index.js"), "x");
+    lw.fs.writeFile(lw.at("react19-3", "src", "main.tsx"), "export {}\n");
+    lw.runs.active.set(origin.playground.id, cliOwner);
+    const copy = await app.result<Pg & { note: string; autoClean: unknown }>(
+      "playground.duplicate",
+      { playground: "react19-3" },
+    );
+    expect(copy.name).toBe("react19-5");
+    expect(copy.id).not.toBe(origin.playground.id);
+    expect(copy.port).not.toBe(origin.playground.port);
+    expect(copy.note).toBe("图表库对比");
+    expect(copy.autoClean).toMatchObject({ enabled: true, days: 30 });
+    expect(lw.fs.readFile(lw.at("react19-5", "src", "main.tsx"))).toBe("export {}\n");
+    expect(lw.fs.exists(lw.at("react19-5", "node_modules"))).toBe(false);
+    expect(lw.fs.exists(lw.at("react19-3", "node_modules", "left-pad", "index.js"))).toBe(true);
+    expect(lw.runs.active.has(origin.playground.id)).toBe(true);
+    expect(lw.runs.active.has(copy.id)).toBe(false);
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-42] 创建副本：给了重名的名称报 NAME_EXISTS，找不到项目报 PLAYGROUND_NOT_FOUND", async () => {
+    const app = await setup();
+    await lw.create(app, "demo");
+    await lw.create(app, "taken");
+    expect(await app.errorCode("playground.duplicate", { playground: "demo", name: "taken" })).toBe(
+      "NAME_EXISTS",
+    );
+    expect(await app.errorCode("playground.duplicate", { playground: "nope" })).toBe(
+      "PLAYGROUND_NOT_FOUND",
+    );
+  });
+
   it("list 按运行中和创建者过滤；get 找不到报 PLAYGROUND_NOT_FOUND", async () => {
     const app = await setup();
     const a = await lw.create(app, "alpha");

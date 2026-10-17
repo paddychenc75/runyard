@@ -1,3 +1,5 @@
+import type { RunyardClient } from "@runyard/client";
+import type { Locale } from "@runyard/i18n";
 import type { Bounds } from "../shared/layout.ts";
 
 // 控制器对外面的两个依赖（接口）：预览视图的宿主和系统层动作。真实的在 Electron 接线里，测试里换假的。
@@ -23,4 +25,20 @@ export interface SystemActions {
   copyText(text: string): void;
   /** 用系统浏览器打开链接；调用前已确认是 https */
   openExternal(url: string): void;
+}
+
+/** 控制器用到的客户端的那一小部分 */
+export type LibraryClient = Pick<RunyardClient, "call" | "subscribe" | "followLogs">;
+
+export interface LibraryControllerOptions {
+  client: LibraryClient;
+  /** 这个应用实例的连接标识；标签页持有者靠它绑定到本连接（PRD #prd-run-ownership） */
+  clientId: string;
+  locale: Locale;
+  preview: PreviewHost;
+  system: SystemActions;
+  /** 主目录（用来把资源库路径显示成 ~/…）；开发时 --root 给的目录算主目录 */
+  home: string;
+  /** 毫秒时钟；启动清单各步的用时靠它量，测试里换成假的 */
+  now?: () => number;
 }

@@ -5,6 +5,8 @@ import {
   type DesktopMethod,
   desktopChannels,
   desktopMethodNames,
+  type EditRequest,
+  type EditResult,
   type QuitReply,
 } from "../shared/desktop-bridge.ts";
 import type { Bounds } from "../shared/layout.ts";
@@ -62,6 +64,15 @@ function parseQuitReply(value: unknown): QuitReply | null {
   return { id, reply };
 }
 
+/** 重命名和备注：形状不对一律不要；名称是否合法由管理进程判 */
+function parseEditRequest(value: unknown): EditRequest | null {
+  if (typeof value !== "object" || value === null) return null;
+  const { id, name, note } = value as Record<string, unknown>;
+  if (text(id) === null || text(name) === null || typeof note !== "string") return null;
+  return { id: id as string, name: name as string, note };
+}
+
+const rejectedEdit: EditResult = { ok: false, error: { code: "INTERNAL", params: {} } };
 const rejectedCreate: CreateResult = { ok: false, error: { code: "INTERNAL", params: {} } };
 
 /** 占位区的矩形：四个有限的数，宽高不为负；其他形状一律不要（页面发来的数据不可信） */
@@ -151,6 +162,21 @@ export function registerBridgeHandlers(
     "playground.create": async (value) => {
       const request = parseCreateRequest(value);
       return request === null ? rejectedCreate : await controller.create(request);
+    },
+    "playground.edit": async (value) => {
+      const request = parseEditRequest(value);
+      return request === null ? rejectedEdit : await controller.edits.edit(request);
+    },
+    "playground.autoClean": async (value) => {
+      if (typeof value !== "object" || value === null) return rejectedEdit;
+      const { id, days } = value as Record<string, unknown>;
+      const valid = days === null || (Number.isSafeInteger(days) && (days as number) > 0);
+      if (text(id) === null || !valid) return rejectedEdit;
+      return await controller.edits.autoClean(id as string, days as number | null);
+    },
+    "playground.duplicate": async (id) => {
+      const playground = text(id);
+      return playground === null ? rejectedEdit : await controller.edits.duplicate(playground);
     },
     // 文件服务（#257）；没接线时这些方法不可用
     ...editorFileMethods(files, openers),

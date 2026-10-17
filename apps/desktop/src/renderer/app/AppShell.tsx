@@ -115,6 +115,7 @@ export function AppShell({ bridge, library }: AppShellProps) {
             tabs={tabs}
             activeTab={activeTab}
             running={runningCount(library?.playgrounds ?? [])}
+            playgrounds={library?.playgrounds ?? []}
             activeTabRow={activeTabRow}
             onNew={openPicker}
             search={query.search}

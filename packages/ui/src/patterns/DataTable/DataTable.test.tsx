@@ -42,6 +42,19 @@ describe("DataTable", () => {
     expect(within(table).getByRole("cell", { name: "alpha" })).toBeTruthy();
   });
 
+  it("行内编辑：编辑中的行有标记，输入格可以向右占列，被占掉的格不画", () => {
+    const { container } = setup({
+      editingId: "a",
+      cellSpan: (row, columnId) => (row.id === "a" && columnId === "name" ? 2 : 1),
+    });
+    const editing = container.querySelector("[data-row-id=a]");
+    expect(editing?.hasAttribute("data-editing")).toBe(true);
+    expect(editing?.querySelectorAll("td")).toHaveLength(2);
+    expect(editing?.querySelector("[data-column=name]")?.getAttribute("data-span")).toBe("2");
+    expect(editing?.querySelector("[data-column=port]")).toBeNull();
+    expect(container.querySelector("[data-row-id=b]")?.querySelectorAll("td")).toHaveLength(3);
+  });
+
   it("没有可见表头的列用 hiddenHeader 当名字", () => {
     setup();
     expect(screen.getByRole("columnheader", { name: "Actions" })).toBeTruthy();

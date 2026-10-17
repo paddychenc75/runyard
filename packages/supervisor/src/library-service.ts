@@ -15,6 +15,7 @@ export interface LibraryService {
   create(params: MethodParams<"playground.create">): Promise<MethodResult<"playground.create">>;
   rename(ref: string, newName: string): Promise<Playground>;
   update(params: MethodParams<"playground.update">): Promise<Playground>;
+  duplicate(params: MethodParams<"playground.duplicate">): Promise<Playground>;
   trash(ref: string): Promise<MethodResult<"playground.trash">>;
   relocate(ref: string, path: string): Promise<Playground>;
   forget(ref: string): Promise<void>;
@@ -99,6 +100,20 @@ export function createLibraryService(ctx: LibraryContext): LibraryService {
       return ctx.changed(library, id);
     });
 
+  // 副本和新建一样登记并发 playground.added；不启动运行，原项目的运行不受影响
+  const duplicate: LibraryService["duplicate"] = (params) =>
+    mutex.run(async () => {
+      const { library } = await ctx.open();
+      const result = await library.duplicate(params.playground, {
+        ...(params.name !== undefined ? { name: params.name } : {}),
+      });
+      const item = ctx.require(library, result.entry.id);
+      ctx.remember(item.entry.id, result.file);
+      const playground = await ctx.describe(library, item);
+      api.publish("playground.added", playground);
+      return playground;
+    });
+
   return {
     async start() {
       try {
@@ -125,6 +140,7 @@ export function createLibraryService(ctx: LibraryContext): LibraryService {
     create,
     rename,
     update,
+    duplicate,
     trash: (ref) =>
       mutex.run(async () => {
         const { library } = await ctx.open();
