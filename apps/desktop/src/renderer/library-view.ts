@@ -1,6 +1,6 @@
 import type { Locale } from "@runyard/i18n";
 import type { LocalizedText, RunState } from "@runyard/protocol";
-import type { StatusMarkStatus } from "@runyard/ui";
+import type { StatusMarkStatus, TechLogo } from "@runyard/ui";
 import type { PlaygroundRow } from "../shared/library-state.ts";
 
 // 资源库列表里每一格“显示什么”的纯判断，不碰 DOM、不生成文字（文字在组件里经文案包），所以可以直接测。
@@ -51,6 +51,20 @@ export function retentionOf(row: PlaygroundRow, now: number): Retention {
   if (row.autoClean.days === null) return { kind: "autoCleanUnknown" };
   const elapsedDays = Math.floor(Math.max(0, now - row.lastUsedAt) / DAY_MS);
   return { kind: "autoClean", daysLeft: Math.max(0, row.autoClean.days - elapsedDays) };
+}
+
+/** 内置模板里有官方技术标志可用的（授权和品牌规范见 THIRD_PARTY_NOTICES.md）；其余和自定义模板返回 undefined，界面退回缩写方块 */
+export function logoOf(templateId: string): TechLogo | undefined {
+  switch (templateId) {
+    case "html":
+      return "html5";
+    case "vue3":
+      return "vue";
+    case "python":
+      return "python";
+    default:
+      return undefined;
+  }
 }
 
 /** 模板的缩写方块：id 带连字符取各段首字母（node-ts 是 NT），否则首字母大写加第二个字母小写（react19 是 Re） */

@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { MonogramTile } from "../../primitives/MonogramTile/index.ts";
+import { MonogramTile, type TechLogo } from "../../primitives/MonogramTile/index.ts";
 import styles from "./ListPicker.module.css";
 
 export interface ListPickerItem {
@@ -20,6 +20,8 @@ export interface ListPickerItem {
   tone?: "default" | "warning";
   /** 前面方块里的字母 */
   letters: string;
+  /** 有技术标志时画标志，不画字母 */
+  logo?: TechLogo;
 }
 
 export interface ListPickerGroup {
@@ -151,7 +153,7 @@ export function ListPicker({
                     }}
                     onClick={() => onChoose(item.id)}
                   >
-                    <MonogramTile letters={item.letters} size="lg" />
+                    <MonogramTile letters={item.letters} logo={item.logo} size="lg" />
                     <span className={styles.text}>
                       <span className={styles.title} data-truncate="">
                         {item.title}

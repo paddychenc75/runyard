@@ -2,7 +2,7 @@ import type { Localized } from "@runyard/i18n";
 import type { TemplateCategory } from "@runyard/protocol";
 import type { ListPickerGroup } from "@runyard/ui";
 import type { TemplateRow } from "../shared/library-state.ts";
-import { monogramOf, pickLocalizedText } from "./library-view.ts";
+import { logoOf, monogramOf, pickLocalizedText } from "./library-view.ts";
 
 // 模板选择器的数据：顶部“最近使用”，其后按类型分组。只用已有的信息（模板列表和创建过的项目），
 // 不查工具：缺工具的模板照常显示可选（规格 DESKTOP-CREATE-FLOW-02、PRD #prd-missing-runtime-prompt）。
@@ -57,6 +57,7 @@ export function buildPickerGroups(
     subtitle: pickLocalizedText(template.description, locale),
     tone: template.unmaintained ? ("warning" as const) : ("default" as const),
     letters: monogramOf(template.id),
+    logo: logoOf(template.id),
   });
   const byId = new Map(templates.map((template) => [template.id, template]));
   const recentItems = (searching ? [] : recent.slice(0, RECENT_LIMIT)).flatMap((id) => {
