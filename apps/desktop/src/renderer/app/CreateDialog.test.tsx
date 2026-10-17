@@ -34,6 +34,7 @@ const project = (name: string): PlaygroundRow => ({
   lastOpenedAt: null,
   createdBy: { kind: "user" },
   createdAt: 1,
+  missing: false,
 });
 
 function library(names: string[]): LibraryState {

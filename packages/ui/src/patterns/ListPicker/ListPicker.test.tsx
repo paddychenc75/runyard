@@ -83,4 +83,29 @@ describe("ListPicker", () => {
     input.dispatchEvent(down);
     expect(onChoose).not.toHaveBeenCalled();
   });
+
+  it("列表内容变了（如搜索过滤）高亮回到第一行", async () => {
+    const user = userEvent.setup();
+    const view = render(
+      <ListPicker
+        label={name("templates")}
+        groups={groups}
+        chooseLabel={name("pick")}
+        onChoose={() => {}}
+        renderHeader={(props) => <SearchField {...props} label={name("search")} />}
+      />,
+    );
+    await user.type(screen.getByRole("combobox", { name: "search" }), "{ArrowDown}{ArrowDown}");
+    expect(screen.getAllByRole("option")[2]?.getAttribute("aria-selected")).toBe("true");
+    view.rerender(
+      <ListPicker
+        label={name("templates")}
+        groups={groups.slice(1)}
+        chooseLabel={name("pick")}
+        onChoose={() => {}}
+        renderHeader={(props) => <SearchField {...props} label={name("search")} />}
+      />,
+    );
+    expect(screen.getAllByRole("option")[0]?.getAttribute("aria-selected")).toBe("true");
+  });
 });

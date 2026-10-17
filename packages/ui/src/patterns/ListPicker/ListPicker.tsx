@@ -69,6 +69,13 @@ export function ListPicker({
   const flat = groups.flatMap((group) => group.items.map((item) => ({ group, item })));
   const count = flat.length;
   const current = Math.min(active, Math.max(count - 1, 0));
+  // 列表内容变了（如搜索过滤）就回到第一行：第一个结果自动高亮
+  const signature = flat.map((entry) => `${entry.group.id}/${entry.item.id}`).join("|");
+  const [seen, setSeen] = useState(signature);
+  if (seen !== signature) {
+    setSeen(signature);
+    setActive(0);
+  }
   const optionId = (index: number) => `${baseId}-option-${index}`;
   const listRef = useRef<HTMLDivElement>(null);
 

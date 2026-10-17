@@ -4,12 +4,26 @@
   inline-size: 100%;
   min-inline-size: 0;
   box-sizing: border-box;
-  padding-block: var(--space-8) 0;
+  padding-block: calc(var(--space-8) + var(--space-1) * 1.5) 0;
   padding-inline: var(--space-10);
 }
 
 .header {
-  margin-block-end: var(--space-7);
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-7);
+  margin-block-end: var(--space-8);
+}
+
+.heading {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.filters {
+  display: flex;
+  flex: none;
+  gap: var(--space-4);
 }
 
 .title {

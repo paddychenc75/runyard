@@ -5,6 +5,14 @@ export const iconPaths = {
     viewBox: "0 0 16 16",
     paths: ["M3.5 8.5l3 3 6-7"],
   },
+  "chevron-down": {
+    viewBox: "0 0 16 16",
+    paths: ["M3.5 6l4.5 4.5L12.5 6"],
+  },
+  clear: {
+    viewBox: "0 0 16 16",
+    paths: ["M8 14.25a6.25 6.25 0 1 0 0-12.5 6.25 6.25 0 0 0 0 12.5ZM6 6l4 4M10 6l-4 4"],
+  },
   clock: {
     viewBox: "0 0 16 16",
     paths: ["M8 2a6 6 0 1 0 0 12A6 6 0 0 0 8 2zM8 4.5V8l2.5 1.5"],

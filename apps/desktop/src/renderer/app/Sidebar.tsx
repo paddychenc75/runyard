@@ -1,37 +1,66 @@
 import { useFormat, useT } from "@runyard/i18n/react";
-import { GlassSurface, NavList, type NavListSection, ScrollArea, TitleBar } from "@runyard/ui";
-import { useState } from "react";
+import {
+  GlassSurface,
+  NavList,
+  type NavListSection,
+  ScrollArea,
+  TitleBar,
+  UserText,
+} from "@runyard/ui";
 import type { BootstrapInfo } from "../../shared/desktop-bridge.ts";
+import { type NavFilter, navFilters } from "../library-query.ts";
+import { navLabel } from "./library-labels.ts";
 import styles from "./Sidebar.module.css";
 
 export interface SidebarProps {
   windowControls: BootstrapInfo["windowControls"];
   /** 资源库里项目的总数 */
   total: number;
+  /** 四个固定筛选各自符合的项目数 */
+  counts: Record<NavFilter, number>;
+  /** 当前的固定筛选 */
+  nav: NavFilter;
+  onNavChange: (nav: NavFilter) => void;
+  /** 模板总数（“管理”组的“模板”右边） */
+  templateCount: number;
+  /** 资源库文件夹，主目录缩成 ~；还没读到是空串 */
+  libraryRoot: string;
 }
 
 // 侧栏：顶上给窗口按钮留位置，下面是品牌、资源库的筛选、管理的几个页面，底部是资源库的概况。
-// 只有“全部”有内容可看；其余筛选项和页面随 #169、#170 等，现在列出但点不了（设计稿 Main）。
-export function Sidebar({ windowControls, total }: SidebarProps) {
+// 资源库的四个固定筛选可点，右边是符合的项目数（#181）；管理里的页面随 #169、#170 等，现在列出但点不了（设计稿 Main）。
+export function Sidebar({
+  windowControls,
+  total,
+  counts,
+  nav,
+  onNavChange,
+  templateCount,
+  libraryRoot,
+}: SidebarProps) {
   const t = useT();
   const format = useFormat();
-  const [section, setSection] = useState("all");
   const sections: NavListSection[] = [
     {
       id: "library",
       title: t("library.nav.library.title"),
-      items: [
-        { id: "all", label: t("library.filter.all.label"), count: format.number(total) },
-        { id: "kept", label: t("library.filter.kept.label"), disabled: true },
-        { id: "autoClean", label: t("library.filter.autoClean.label"), disabled: true },
-        { id: "agent", label: t("library.filter.agent.label"), disabled: true },
-      ],
+      items: navFilters.map((id) => ({
+        id,
+        label: navLabel(id, t),
+        count: format.number(counts[id]),
+      })),
     },
     {
       id: "manage",
       title: t("library.nav.manage.title"),
       items: [
-        { id: "templates", label: t("library.nav.templates.label"), icon: "cube", disabled: true },
+        {
+          id: "templates",
+          label: t("library.nav.templates.label"),
+          icon: "cube",
+          count: format.number(templateCount),
+          disabled: true,
+        },
         { id: "unused", label: t("library.nav.unused.label"), icon: "clock", disabled: true },
         {
           id: "settings",
@@ -53,11 +82,16 @@ export function Sidebar({ windowControls, total }: SidebarProps) {
         <NavList
           label={t("library.nav.aria")}
           sections={sections}
-          value={section}
-          onValueChange={setSection}
+          value={nav}
+          onValueChange={(id) => onNavChange(id as NavFilter)}
         />
       </ScrollArea>
-      <div className={styles.footer}>{t("library.sidebar.footer.label", { count: total })}</div>
+      <div className={styles.footer}>
+        <UserText mono className={styles.location}>
+          {libraryRoot}
+        </UserText>
+        <div>{t("library.sidebar.footer.label", { count: total })}</div>
+      </div>
     </GlassSurface>
   );
 }

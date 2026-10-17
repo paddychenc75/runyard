@@ -32,6 +32,7 @@ function row(extra: Partial<PlaygroundRow> = {}): PlaygroundRow {
     lastOpenedAt: null,
     createdBy: { kind: "user" },
     createdAt: 1,
+    missing: false,
     ...extra,
   };
 }

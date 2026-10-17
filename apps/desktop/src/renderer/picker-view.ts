@@ -26,11 +26,30 @@ export interface PickerLabels {
   categories: Record<TemplateCategory, Localized>;
 }
 
+/** 搜索：名称、标识或说明里含有这段文字（不分大小写）的模板（规格 DESKTOP-CREATE-FLOW-17） */
+export function matchTemplates(
+  templates: readonly TemplateRow[],
+  search: string,
+  locale: "en" | "zh-CN",
+): TemplateRow[] {
+  const needle = search.trim().toLowerCase();
+  if (needle === "") return [...templates];
+  return templates.filter((template) =>
+    [
+      template.id,
+      pickLocalizedText(template.name, locale),
+      pickLocalizedText(template.description, locale),
+    ].some((text) => text.toLowerCase().includes(needle)),
+  );
+}
+
 export function buildPickerGroups(
   templates: readonly TemplateRow[],
   recent: readonly string[],
   locale: "en" | "zh-CN",
   labels: PickerLabels,
+  /** 搜索时不显示“最近使用”分组 */
+  searching = false,
 ): ListPickerGroup[] {
   const item = (template: TemplateRow) => ({
     id: template.id,
@@ -40,7 +59,7 @@ export function buildPickerGroups(
     letters: monogramOf(template.id),
   });
   const byId = new Map(templates.map((template) => [template.id, template]));
-  const recentItems = recent.slice(0, RECENT_LIMIT).flatMap((id) => {
+  const recentItems = (searching ? [] : recent.slice(0, RECENT_LIMIT)).flatMap((id) => {
     const template = byId.get(id);
     return template === undefined ? [] : [item(template)];
   });
