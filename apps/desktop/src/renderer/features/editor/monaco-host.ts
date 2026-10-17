@@ -4,7 +4,10 @@ import { loadEditorRuntime } from "../../editor/editor-loader.ts";
 import type { EditorRuntime } from "../../editor/runtime-types.ts";
 import { editorLanguageOf } from "./file-language.ts";
 import type { FileTab } from "./file-tab.ts";
+import type { ProjectSource } from "./project-source.ts";
 import type { SessionState } from "./session-types.ts";
+import { TypeScriptDiagnostics } from "./typescript-diagnostics.ts";
+import { type ClosedFile, TypeScriptProject } from "./typescript-project.ts";
 
 // 把编辑会话（EditorSession）摆进 Monaco：每个能编辑的文件标签一个模型，选中的那个放进编辑器。
 // 只给打开的文件建模型——给项目里每个文件都建会让 TS 线程同步慢到第一次补全等几十秒（K8 证据“装法”第 7 条）。
@@ -14,6 +17,10 @@ export type EditorTheme = "light" | "dark";
 
 export interface EditorHostHandlers {
   onEdit(path: string, text: string): void;
+  /** 跳转到定义、改名等落在别的文件上：打开（或切到）那个文件的标签，光标放在 at（DESKTOP-EDITOR-41） */
+  onOpenFile?(path: string, at: Monaco.IPosition | undefined): void;
+  /** 改名一类的操作改到了没打开的文件：让会话为它开标签、带上改后的内容并照常保存 */
+  onStrayEdit?(path: string, text: string): void;
 }
 
 export interface EditorHost {
@@ -26,6 +33,8 @@ export type EditorHostFactory = (
   container: HTMLElement,
   handlers: EditorHostHandlers,
   locale: Locale,
+  /** 项目文件的来源：有它才有跨文件的智能提示 */
+  source?: ProjectSource,
 ) => Promise<EditorHost>;
 
 /**
@@ -36,6 +45,13 @@ export type EditorHostFactory = (
 export const IGNORED_DIAGNOSTIC_CODES = [2307, 2792, 7016, 7026, 2875, 7006, 7031, 7044];
 
 const configured = new WeakSet<object>();
+
+/**
+ * 每个路径的模型用过的最大版本号（同一个运行时里所有项目共用）。语言服务按“路径加版本号”缓存：
+ * 关掉的文件再打开、或者换到另一个项目里同一个相对路径的文件，新模型从版本 1 开始，
+ * 撞上缓存里的 1 就拿到旧项目的类型，所以新模型的版本号一律抬到用过的最大值之上。
+ */
+const usedVersions = new WeakMap<object, Map<string, number>>();
 
 function configureTypeScript(runtime: EditorRuntime): void {
   if (configured.has(runtime)) return;
@@ -53,7 +69,12 @@ function configureTypeScript(runtime: EditorRuntime): void {
   };
   typescriptDefaults.setCompilerOptions(compilerOptions);
   javascriptDefaults.setCompilerOptions(compilerOptions);
-  const diagnostics = { diagnosticCodesToIgnore: IGNORED_DIAGNOSTIC_CODES };
+  // 语义检查（类型错误）由 TypeScriptDiagnostics 自己做：Monaco 自带的只在本文件内容变了时重做，
+  // 别的文件改了不会更新（DESKTOP-EDITOR-44）。语法检查仍用自带的。
+  const diagnostics = {
+    diagnosticCodesToIgnore: IGNORED_DIAGNOSTIC_CODES,
+    noSemanticValidation: true,
+  };
   typescriptDefaults.setDiagnosticsOptions(diagnostics);
   javascriptDefaults.setDiagnosticsOptions(diagnostics);
 }
@@ -64,13 +85,17 @@ function monoFontFamily(): string {
 }
 
 /** 生产用：加载编辑器脚本（预加载过就是现成的）再装配 */
-export const createMonacoHost: EditorHostFactory = async (container, handlers, locale) =>
-  buildHost(await loadEditorRuntime(document, locale), container, handlers);
+export const createMonacoHost: EditorHostFactory = async (container, handlers, locale, source) =>
+  buildHost(await loadEditorRuntime(document, locale), container, handlers, source);
+
+/** 跳转后等着摆光标的位置，过了这么久还没等到那个文件显示出来就作废（文件没打开成功） */
+const REVEAL_EXPIRES_MS = 5000;
 
 export function buildHost(
   runtime: EditorRuntime,
   container: HTMLElement,
   handlers: EditorHostHandlers,
+  source?: ProjectSource,
 ): EditorHost {
   const { monaco } = runtime;
   configureTypeScript(runtime);
@@ -83,7 +108,34 @@ export function buildHost(
   }
   const entries = new Map<string, Entry>();
   const viewStates = new Map<string, Monaco.editor.ICodeEditorViewState | null>();
+  const versions = usedVersions.get(runtime) ?? new Map<string, number>();
+  usedVersions.set(runtime, versions);
+  const remember = (model: Monaco.editor.ITextModel): void => {
+    const key = model.uri.toString();
+    versions.set(key, Math.max(versions.get(key) ?? 0, model.getVersionId()));
+  };
   let shownId: string | null = null;
+  let reveal: { path: string; at: Monaco.IPosition; until: number } | null = null;
+  let creatingOwn = false;
+  /** 没打开的项目文件被语言服务临时建了模型（跳转预览、查找引用、改名）：记下来，改了就交给会话，没改就清掉 */
+  const strays = new Map<Monaco.editor.ITextModel, { edited: boolean }>();
+  const diagnostics = new TypeScriptDiagnostics({
+    runtime,
+    models: () => [...entries.values()].map((entry) => entry.model),
+    ignoredCodes: IGNORED_DIAGNOSTIC_CODES,
+  });
+  const project =
+    source === undefined
+      ? undefined
+      : new TypeScriptProject({
+          runtime,
+          source,
+          onLibsChanged: () => {
+            sweepStrays();
+            diagnostics.schedule();
+          },
+        });
+  void project?.start();
   const editor = monaco.editor.create(container, {
     model: null,
     automaticLayout: true,
@@ -109,12 +161,90 @@ export function buildHost(
 
   const uriOf = (path: string): Monaco.Uri => monaco.Uri.from({ scheme: "file", path: `/${path}` });
 
+  function sweepStrays(): void {
+    for (const [model, info] of [...strays]) {
+      if (model.isDisposed()) strays.delete(model);
+      else if (!info.edited) {
+        strays.delete(model);
+        remember(model);
+        model.dispose();
+      }
+    }
+  }
+
+  const createdListener = monaco.editor.onDidCreateModel((model) => {
+    if (creatingOwn || model.uri.scheme !== "file") return;
+    if (project === undefined || !project.isKnownScript(model.uri.path.slice(1))) return;
+    const info = { edited: false };
+    strays.set(model, info);
+    const path = model.uri.path.slice(1);
+    const subscription = model.onDidChangeContent(() => {
+      info.edited = true;
+      subscription.dispose();
+      handlers.onStrayEdit?.(path, model.getValue());
+    });
+    model.onWillDispose(() => {
+      subscription.dispose();
+      strays.delete(model);
+    });
+  });
+
+  // 跳转到定义：目标在别的文件就打开（或切到）它的标签；同一个文件由 Monaco 自己摆光标
+  const opener = monaco.editor.registerEditorOpener({
+    openCodeEditor(from, resource, selectionOrPosition) {
+      if (from !== editor || resource.scheme !== "file") return false;
+      if (editor.getModel()?.uri.toString() === resource.toString()) return false;
+      if (handlers.onOpenFile === undefined) return false;
+      const path = resource.path.slice(1);
+      if (project?.isKnownScript(path) !== true && !isOpenPath(path)) return false;
+      const at =
+        selectionOrPosition === undefined
+          ? undefined
+          : "startLineNumber" in selectionOrPosition
+            ? {
+                lineNumber: selectionOrPosition.startLineNumber,
+                column: selectionOrPosition.startColumn,
+              }
+            : selectionOrPosition;
+      if (at !== undefined) reveal = { path, at, until: Date.now() + REVEAL_EXPIRES_MS };
+      handlers.onOpenFile(path, at);
+      return true;
+    },
+  });
+
+  function isOpenPath(path: string): boolean {
+    return [...entries.values()].some((entry) => entry.path === path);
+  }
+
+  /**
+   * 模型的版本号要比同一路径上 extra lib 的大：语言服务按“路径加版本号”缓存，两边都是 1 的话
+   * 它认为文件没变，类型还是旧的（K8 证据“装法”第 7 条）。用一次加字符、删字符的编辑把版本号抬上去，内容不变。
+   */
+  function raiseVersionAboveLib(model: Monaco.editor.ITextModel, path: string): void {
+    const floor = Math.max(project?.libVersion(path) ?? 0, versions.get(model.uri.toString()) ?? 0);
+    if (floor === 0) return;
+    const origin = new monaco.Range(1, 1, 1, 1);
+    while (model.getVersionId() <= floor) {
+      model.applyEdits([{ range: origin, text: " " }]);
+      model.applyEdits([{ range: new monaco.Range(1, 1, 1, 2), text: "" }]);
+    }
+  }
+
   function createEntry(tab: FileTab): Entry {
+    // 同一个地址已有模型（语言服务为预览临时建的、没打开的文件）：让位给标签自己的
+    const taken = monaco.editor.getModel(uriOf(tab.path));
+    if (taken !== null) {
+      remember(taken);
+      taken.dispose();
+    }
+    creatingOwn = true;
     const model = monaco.editor.createModel(
       tab.text,
       editorLanguageOf(tab.path, tab.mode),
       uriOf(tab.path),
     );
+    creatingOwn = false;
+    raiseVersionAboveLib(model, tab.path);
     // 编辑器选项里的关闭不一定传到模型上（实测括号仍按深度着色），设计稿的括号是标点灰，所以模型上也关
     model.updateOptions({
       bracketColorizationOptions: { enabled: false, independentColorPoolPerBracketType: false },
@@ -125,7 +255,10 @@ export function buildHost(
       path: tab.path,
       model,
       // 路径取调用时的，改名后会话里已是新路径
-      subscription: model.onDidChangeContent(() => handlers.onEdit(entry.path, model.getValue())),
+      subscription: model.onDidChangeContent(() => {
+        handlers.onEdit(entry.path, model.getValue());
+        diagnostics.schedule();
+      }),
     };
     return entry;
   }
@@ -139,6 +272,7 @@ export function buildHost(
   }
 
   function disposeEntry(entry: Entry): void {
+    remember(entry.model);
     entry.subscription.dispose();
     entry.model.dispose();
   }
@@ -158,8 +292,13 @@ export function buildHost(
       const editable = new Map(
         state.tabs.filter((tab) => tab.view === "text").map((tab) => [tab.id, tab]),
       );
+      const closed = new Map<string, ClosedFile>();
       for (const [id, entry] of [...entries]) {
         if (!editable.has(id)) {
+          closed.set(entry.path, {
+            text: entry.model.getValue(),
+            version: entry.model.getVersionId(),
+          });
           disposeEntry(entry);
           entries.delete(id);
           viewStates.delete(id);
@@ -183,6 +322,8 @@ export function buildHost(
         // 超出新内容就放在最后（DESKTOP-EDITOR-31）
         if (entry.model.getValue() !== tab.text) replaceText(entry.model, tab, id === shownId);
       }
+      project?.setOpen(new Set([...entries.values()].map((entry) => entry.path)), closed);
+      diagnostics.schedule();
       const activeTab = state.tabs.find((tab) => tab.path === state.active);
       const next = activeTab !== undefined && editable.has(activeTab.id) ? activeTab.id : null;
       if (next === shownId) return;
@@ -195,11 +336,31 @@ export function buildHost(
         applyLanguageOptions(next);
         const saved = viewStates.get(next);
         if (saved) editor.restoreViewState(saved);
+        const wanted = reveal;
+        reveal = null;
+        if (
+          wanted !== null &&
+          wanted.path === entries.get(next)?.path &&
+          Date.now() < wanted.until
+        ) {
+          editor.setPosition(wanted.at);
+          editor.revealPositionInCenter(wanted.at, monaco.editor.ScrollType.Immediate);
+        }
         editor.focus();
       }
     },
     focus: () => editor.focus(),
     dispose() {
+      opener.dispose();
+      createdListener.dispose();
+      project?.dispose();
+      diagnostics.dispose();
+      for (const model of strays.keys()) {
+        if (model.isDisposed()) continue;
+        remember(model);
+        model.dispose();
+      }
+      strays.clear();
       for (const entry of entries.values()) disposeEntry(entry);
       entries.clear();
       editor.dispose();

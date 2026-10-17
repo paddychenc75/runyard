@@ -10,7 +10,12 @@
     "types": [],
     "jsx": "react-jsx"
   },
-  "include": ["src/renderer/**/*.ts", "src/renderer/**/*.tsx", "src/shared/**/*.ts"],
+  "include": [
+    "src/renderer/**/*.ts",
+    "src/renderer/**/*.tsx",
+    "src/shared/**/*.ts",
+    "test-support/**/*.ts"
+  ],
   "references": [
     { "path": "../../packages/protocol" },
     { "path": "../../packages/i18n" },

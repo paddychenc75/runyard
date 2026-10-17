@@ -12,6 +12,7 @@ import { FileTabs } from "./FileTabs.tsx";
 import { type FileTab, isDirty } from "./file-tab.ts";
 import { createMonacoHost, type EditorHost, type EditorHostFactory } from "./monaco-host.ts";
 import { baseName } from "./path-names.ts";
+import { bridgeProjectSource } from "./project-source.ts";
 import { SaveStatus, type SaveStatusKind } from "./SaveStatus.tsx";
 import { useAppliedTheme } from "./use-applied-theme.ts";
 
@@ -49,7 +50,16 @@ export function EditorColumn({ bridge, tab, createHost = createMonacoHost }: Edi
     if (container === null) return;
     let disposed = false;
     let host: EditorHost | undefined;
-    createHost(container, { onEdit: (path, text) => session.edit(path, text) }, locale)
+    createHost(
+      container,
+      {
+        onEdit: (path, text) => session.edit(path, text),
+        onOpenFile: (path) => void session.openFile(path),
+        onStrayEdit: (path, text) => void session.adoptEdit(path, text),
+      },
+      locale,
+      bridgeProjectSource(bridge, tab.id),
+    )
       .then((created) => {
         if (disposed) {
           created.dispose();
@@ -69,7 +79,7 @@ export function EditorColumn({ bridge, tab, createHost = createMonacoHost }: Edi
       hostRef.current = null;
       setHostReady(false);
     };
-  }, [createHost, session, locale]);
+  }, [createHost, session, locale, bridge, tab.id]);
 
   useEffect(() => {
     if (hostReady) hostRef.current?.sync(state, theme);

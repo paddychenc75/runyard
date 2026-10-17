@@ -361,3 +361,29 @@ describe("文件树的改名和移到废纸篓落到文件标签上", () => {
     expect(new Set(ids).size).toBe(2);
   });
 });
+
+describe("别处改到没打开的文件（改名等）", () => {
+  it("为它开一个标签但不抢走选中的，改后的内容是未保存的修改，自动保存后写进磁盘", async () => {
+    const { session, disk } = setup(
+      { "src/App.tsx": "a", "src/math.ts": "old" },
+      { autosave: "off" },
+    );
+    await session.start("src/App.tsx");
+    await session.adoptEdit("src/math.ts", "new");
+    expect(paths(session)).toEqual(["src/App.tsx", "src/math.ts"]);
+    expect(session.getState().active).toBe("src/App.tsx");
+    const math = session.getState().tabs.find((tab) => tab.path === "src/math.ts");
+    expect(math?.text).toBe("new");
+    expect(math?.savedText).toBe("old");
+    expect(await session.save("src/math.ts")).toBe(true);
+    expect(disk.writes).toEqual([{ path: "src/math.ts", content: "new", eol: undefined }]);
+  });
+
+  it("文件已经开着时只是更新内容", async () => {
+    const { session } = setup({ "src/App.tsx": "a" });
+    await session.start("src/App.tsx");
+    await session.adoptEdit("src/App.tsx", "b");
+    expect(paths(session)).toEqual(["src/App.tsx"]);
+    expect(session.getState().tabs[0]?.text).toBe("b");
+  });
+});
