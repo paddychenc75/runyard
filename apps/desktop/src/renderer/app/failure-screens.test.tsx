@@ -77,6 +77,14 @@ const missing = (extra: Record<string, unknown> = {}): TabRow =>
   });
 
 describe("缺少运行环境", () => {
+  it("[DESKTOP-WORKSPACE-18] 顶栏状态写“缺少 go”，用警示色和三角图标，不是“启动失败”", () => {
+    const { container } = setup(missing());
+    const status = container.querySelector("[data-run-status=missing]");
+    expect(status?.textContent).toContain("缺少 go");
+    expect(status?.querySelector("svg")).not.toBeNull();
+    expect(screen.queryByText("启动失败")).toBeNull();
+  });
+
   it("[DESKTOP-WORKSPACE-18] 写明缺哪个工具、需要的版本、当前没装、安装命令和官网，有“复制命令”和“重新检测”", () => {
     setup(missing());
     const pane = screen.getByText("没有找到 go").closest("[data-failure-screen]") as HTMLElement;

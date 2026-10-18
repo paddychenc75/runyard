@@ -19,6 +19,16 @@
   font-weight: var(--text-control-weight);
 }
 
+.warning {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-inline-end: var(--space-3);
+  color: var(--color-status-warning-text);
+  font-weight: var(--text-control-weight);
+}
+
 .status[data-danger] {
   color: var(--color-status-danger-text);
 }

@@ -1,6 +1,6 @@
 import type { Localized } from "@runyard/i18n";
 import { useLocale, useT } from "@runyard/i18n/react";
-import { IconButton, StatusMark, Tooltip } from "@runyard/ui";
+import { Icon, IconButton, StatusMark, Tooltip } from "@runyard/ui";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { PlaygroundRow, TabRow } from "../../shared/library-state.ts";
 import { pickLocalizedText } from "../library-view.ts";
@@ -55,16 +55,23 @@ export function RunBar({ bridge, tab, playgrounds, compact = false }: RunBarProp
   // 窄窗口：服务运行中只留“:7101”，其余状态（出错、缺工具、脚本的退出码）的文字照旧
   const portOnly = compact && tab.port !== null && status.text.includes(`:${tab.port}`);
   const statusText = (portOnly ? `:${tab.port}` : status.text) as Localized;
-  const mark = (
-    <StatusMark
-      status={status.mark}
-      className={styles.status}
-      data-danger={status.danger || undefined}
-      data-compact={portOnly || undefined}
-    >
-      {statusText}
-    </StatusMark>
-  );
+  // 缺工具不是失败：警示色加三角图标，和设计稿 MissingLight 的“缺少 Go”一致
+  const mark =
+    action === "recheck" ? (
+      <span className={styles.warning} data-run-status="missing">
+        <Icon name="warning" size={16} />
+        {statusText}
+      </span>
+    ) : (
+      <StatusMark
+        status={status.mark}
+        className={styles.status}
+        data-danger={status.danger || undefined}
+        data-compact={portOnly || undefined}
+      >
+        {statusText}
+      </StatusMark>
+    );
   return (
     <fieldset className={styles.root} aria-label={t("desktop.runbar.aria")} data-run-bar={tab.id}>
       {lines.length === 0 ? (
