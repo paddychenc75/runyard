@@ -408,6 +408,7 @@
 | desktop.script.running.label | {state} · 已 {duration} | {state} · {duration} | state：运行状态的名字，来自 runState.<状态>；duration：已经运行的时长，如 3.2 秒 |
 | desktop.script.stale.label | 过期 | Stale | — |
 | desktop.script.staleNotice.label | 代码有语法错误，没有重新运行。下面是上一次的输出。 | The code has a syntax error and was not re-run. Below is the previous output. | — |
+| desktop.script.startFailed.body | 程序没能启动。项目文件原样保留，代码可以照常编辑。 | The program could not start. The playground files are untouched and you can still edit the code. | — |
 | desktop.slow.body | 启动比平时慢，进程还在运行。下面的输出可以看到进度。 | Starting is taking longer than usual, but the process is still running. The output below shows progress. | — |
 | desktop.slow.title | 启动中（较慢） | Starting (slow) | — |
 | desktop.start.body | 项目已经建好，放在 {folder}。页面准备好后会自动显示在这里。 | The playground is ready in {folder}. The page will appear here automatically once it is up. | folder：项目文件夹的显示路径，主目录缩成 ~ |

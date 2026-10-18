@@ -651,6 +651,7 @@ export type CatalogMessages = {
   };
   "desktop.script.stale.label": Record<never, never>;
   "desktop.script.staleNotice.label": Record<never, never>;
+  "desktop.script.startFailed.body": Record<never, never>;
   "desktop.slow.body": Record<never, never>;
   "desktop.slow.title": Record<never, never>;
   "desktop.start.body": {

@@ -101,7 +101,7 @@ export function PreviewPane({ bridge, tab, overlays }: PreviewPaneProps) {
           <PortChanged fallback={portFallback} onDismiss={() => setDismissed(portKey)} />
         </div>
       )}
-      {screen === "starting" ? null : (
+      {screen === "starting" || screen === "missing" ? null : (
         <div className={styles.address}>
           <IconButton
             icon="refresh"

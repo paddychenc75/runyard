@@ -234,8 +234,8 @@ describe("脚本失败", () => {
     render(view(<ScriptOutput bridge={bridge} tab={row} />));
     expect(screen.getAllByText("启动失败").length).toBeGreaterThan(0);
     expect(screen.getByText("项目 python-2 启动失败")).toBeTruthy();
-    expect(screen.getByText("已有的最后几行输出")).toBeTruthy();
     expect(await screen.findByText("env: python3: No such file or directory")).toBeTruthy();
+    expect(screen.getByText("已有的最后几行输出")).toBeTruthy();
     expect(screen.queryByText("还没有输出。")).toBeNull();
   });
 
@@ -251,6 +251,10 @@ describe("脚本失败", () => {
     expect(screen.getByText("项目 python-2 启动失败")).toBeTruthy();
     await act(async () => {});
     expect(screen.queryByText("还没有输出。")).toBeNull();
+    // 这次没有输出：不留一个下面是空的“最后几行输出”小标题；脚本没有“就绪”，说明里不提
+    expect(screen.queryByText("已有的最后几行输出")).toBeNull();
+    expect(screen.getByText(/程序没能启动/)).toBeTruthy();
+    expect(screen.queryByText(/就绪/)).toBeNull();
   });
 });
 

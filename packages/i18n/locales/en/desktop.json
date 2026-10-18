@@ -286,6 +286,7 @@
   "desktop.script.running.label": "{state} · {duration}",
   "desktop.script.stale.label": "Stale",
   "desktop.script.staleNotice.label": "The code has a syntax error and was not re-run. Below is the previous output.",
+  "desktop.script.startFailed.body": "The program could not start. The playground files are untouched and you can still edit the code.",
   "desktop.slow.body": "Starting is taking longer than usual, but the process is still running. The output below shows progress.",
   "desktop.slow.title": "Starting (slow)",
   "desktop.start.body": "The playground is ready in {folder}. The page will appear here automatically once it is up.",

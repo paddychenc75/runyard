@@ -95,6 +95,40 @@ describe("logs.read", () => {
   });
 });
 
+describe("没产生输出就失败的运行", () => {
+  it("[RUN-LOGS-20] 缺工具的运行失败后，logs.read 读到的是这次的（空）日志，不是上一次成功运行的输出", async () => {
+    const { w, cli, id } = await setup();
+    w.world.fake.processes.when((spec) => spec.argv[1] === "server.js", {
+      listenOn: { port: w.portOf(id), atMs: 100 },
+      output: [{ atMs: 10, stream: "stdout", data: "Hello, Runyard!\n" }],
+    });
+    const first = await w.startRun(cli, id, cliOwner);
+    await w.ready(cli, first.runId);
+    await w.drive(cli.result("run.stop", { runId: first.runId }));
+    const before = await cli.result<Read>("logs.read", { playground: id });
+    expect(texts(before.entries)).toContain("Hello, Runyard!");
+
+    const prepare = w.preparer.prepare;
+    w.preparer.prepare = async () => ({
+      ok: false,
+      failure: {
+        code: "TOOL_TOO_OLD",
+        params: { tool: "go", required: ">=1.26 <2", found: "1.20.1" },
+        debug: "go is too old",
+      },
+    });
+    const second = await w.startRun(cli, id, cliOwner);
+    await w.drive(w.clock.advance(10));
+    const after = await cli.result<Read>("logs.read", { playground: id, since: before.cursor });
+    w.preparer.prepare = prepare;
+    expect(after.state).toBe("failed");
+    expect(after.entries).toEqual([]);
+    expect(after.truncated).toBe(true);
+    expect(after.cursor.startsWith(second.runId)).toBe(true);
+    await w.dispose();
+  });
+});
+
 describe("logs.follow", () => {
   it("订阅之后的新条目以 run.log 事件推送；取消订阅之后不再推", async () => {
     const { w, cli, id } = await setup();

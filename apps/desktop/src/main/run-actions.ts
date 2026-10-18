@@ -42,27 +42,27 @@ export class RunActions {
       const starting = host.client.call("run.start", {
         playground: playgroundId,
         owner: { kind: "tab", clientId: host.clientId, tabId: `tab-${playgroundId}` },
-        // 服务等到就绪或失败：失败的错误响应带参数（缺哪个工具等）；脚本没有就绪，只看状态
-        wait: oneshot ? "none" : "ready",
+        // 失败的错误响应带参数（缺哪个工具、要什么版本）：服务等到就绪，脚本等到结束，
+        // 光看运行状态拿不到这些参数，缺工具画面就写不出来
+        wait: oneshot ? "exit" : "ready",
       });
-      if (oneshot) {
-        await starting;
-        return;
-      }
-      // 不等到就绪：运行条要立刻能点“停止”；立刻就有的错误赶得上这一轮，之后的由 #settled 记下
+      // 不等到结束：运行条要立刻能点“停止”；立刻就有的错误赶得上这一轮，之后的由 #settled 记下
       const settled = starting.then(
-        () => this.#settled(playgroundId),
-        (error: unknown) => this.#settled(playgroundId, error),
+        () => this.#settled(playgroundId, undefined, oneshot),
+        (error: unknown) => this.#settled(playgroundId, error, oneshot),
       );
       await Promise.race([settled, new Promise<void>((resolve) => setTimeout(resolve, 0))]);
     });
   }
 
   // 启动请求有了结果：失败的原因留给预览区的专门画面，其余错误照旧报在 error 里
-  async #settled(playgroundId: string, error?: unknown): Promise<void> {
+  // 脚本跑出错（SCRIPT_ERRORED）看输出区里的报错，不算全局错误
+  async #settled(playgroundId: string, error: unknown, oneshot: boolean): Promise<void> {
     const outcome = error === undefined ? null : classifyStartError(error);
     if (outcome?.kind === "failure") this.#host.startErrors.set(playgroundId, outcome.error);
-    else if (outcome?.kind === "other") this.#host.setError(outcome.error);
+    else if (outcome?.kind === "other" && !(oneshot && outcome.error.code === "SCRIPT_ERRORED")) {
+      this.#host.setError(outcome.error);
+    }
     await this.#host.refresh();
   }
 

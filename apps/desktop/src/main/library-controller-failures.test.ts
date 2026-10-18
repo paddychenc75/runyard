@@ -7,6 +7,7 @@ import { playground, run, template } from "./library-fixtures.ts";
 // 失败画面要的数据：启动请求的错误带着缺工具的参数，崩溃要留住预览的最后一帧
 class FakeClient {
   runs: ReturnType<typeof run>[] = [];
+  playgrounds = [playground("a")];
   startFailure: Error | undefined;
   startCalls: unknown[] = [];
 
@@ -19,7 +20,7 @@ class FakeClient {
       if (this.startFailure !== undefined) throw this.startFailure;
     }
     const results: Record<string, unknown> = {
-      "playground.list": [playground("a")],
+      "playground.list": this.playgrounds,
       "run.list": this.runs,
       "template.list": [template("html")],
       "settings.get": { libraryRoot: "/home/u/Runyard" },
@@ -115,6 +116,53 @@ describe("LibraryController 失败状态的数据", () => {
     client.runs = [run("a", "starting", { startedAt: 5 })];
     await controller.startRun("a");
     expect(tabOf(controller)?.failure).toBeNull();
+  });
+
+  it("[DESKTOP-WORKSPACE-18] 脚本项目缺工具：启动请求等到结束，错误参数（当前版本、安装命令）交给缺工具画面", async () => {
+    const { client, controller } = setup();
+    client.playgrounds = [{ ...playground("a"), kind: "oneshot" }];
+    await controller.start();
+    client.startFailure = clientError(
+      "TOOL_TOO_OLD",
+      { tool: "go", required: ">=1.26 <2", found: "1.20.1", installCommand: "brew install go" },
+      "go is too old",
+    );
+    client.runs = [run("a", "failed", { reason: "TOOL_TOO_OLD", kind: "oneshot" })];
+    await controller.openProject("a");
+    await controller.refresh();
+    // 脚本没有就绪：只有等到结束才拿得到失败的参数
+    expect(client.startCalls).toEqual([expect.objectContaining({ wait: "exit" })]);
+    expect(tabOf(controller)?.failure).toEqual({
+      code: "TOOL_TOO_OLD",
+      params: {
+        tool: "go",
+        required: ">=1.26 <2",
+        found: "1.20.1",
+        installCommand: "brew install go",
+      },
+    });
+    expect(controller.getState().error).toBeNull();
+  });
+
+  it("[DESKTOP-WORKSPACE-41] 脚本启动失败但拿不到参数（命令行启动的）：退回通用的启动失败", async () => {
+    const { client, controller } = setup();
+    client.playgrounds = [{ ...playground("a"), kind: "oneshot" }];
+    await controller.start();
+    client.runs = [run("a", "failed", { reason: "TOOL_TOO_OLD", kind: "oneshot" })];
+    await controller.refresh();
+    await controller.openProjectWithoutRun("a");
+    expect(tabOf(controller)?.failure).toEqual({ code: "RUN_FAILED", params: { name: "a" } });
+  });
+
+  it("[DESKTOP-WORKSPACE-40] 脚本跑出错（SCRIPT_ERRORED）不是全局错误，看输出区", async () => {
+    const { client, controller } = setup();
+    client.playgrounds = [{ ...playground("a"), kind: "oneshot" }];
+    await controller.start();
+    client.startFailure = clientError("SCRIPT_ERRORED", { name: "a" }, "exit 1");
+    client.runs = [run("a", "errored", { kind: "oneshot", exitCode: 1 })];
+    await controller.openProject("a");
+    await controller.refresh();
+    expect(controller.getState().error).toBeNull();
   });
 
   it("[DESKTOP-WORKSPACE-19] 依赖安装失败：只凭运行状态里的错误码就有失败原因（不需要启动请求的参数）", async () => {
