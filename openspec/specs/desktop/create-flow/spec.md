@@ -148,8 +148,8 @@
 - 验证：test
 
 ### Requirement: 创建时的两条提醒
-资源库文件夹在 iCloud、Dropbox 这类网盘同步目录下时，新建弹窗 MUST 显示一条警告，说明同步可能拖慢依赖安装或让文件被临时锁住；不在同步目录下时 MUST NOT 显示。创建成功但项目路径接近系统长度上限时，MUST 在右下角显示一条只能关闭的提示，写明项目名、路径长度和上限；创建 MUST 照常完成。
-来源：PRD #prd-create-dialog；PRD #prd-failure-states
+资源库文件夹在 iCloud、Dropbox 这类网盘同步目录下时，新建弹窗 MUST 显示一条警告，说明同步可能拖慢依赖安装或让文件被临时锁住；不在同步目录下时 MUST NOT 显示。创建成功但项目路径接近系统长度上限时，MUST 发一条通知（见 desktop/notifications），写明项目名、路径长度和上限，只有关闭；创建 MUST 照常完成。
+来源：PRD #prd-create-dialog；PRD #prd-failure-states；PRD #prd-notifications
 
 #### Scenario: [DESKTOP-CREATE-FLOW-20] 资源库在同步目录下
 - 前提：资源库文件夹在网盘同步目录下
@@ -160,7 +160,7 @@
 #### Scenario: [DESKTOP-CREATE-FLOW-21] 路径接近长度上限的提示
 - 前提：创建的项目路径接近系统长度上限
 - **WHEN** 创建成功
-- **THEN** 项目照常创建，右下角出现提示，写明项目名、路径字符数和上限，只有关闭按钮；关闭后提示消失
+- **THEN** 项目照常创建，“通知”按钮下方出现卡片，写明项目名、路径字符数和上限，只有关闭；关闭后卡片收起，这一条在通知列表“最近”里
 - 验证：test
 
 ### Requirement: 模板选择器的分类栏和默认名称
