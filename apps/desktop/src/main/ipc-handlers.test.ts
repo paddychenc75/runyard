@@ -5,6 +5,7 @@ import {
   type IpcHost,
   type IpcSender,
   registerBridgeHandlers,
+  requestCommand,
   requestPicker,
 } from "./ipc-handlers.ts";
 import type { LibraryController } from "./library-controller.ts";
@@ -302,6 +303,17 @@ describe("registerBridgeHandlers", () => {
       event: "picker.open",
       state: undefined,
     });
+  });
+});
+
+describe("应用菜单触发命令", () => {
+  it("requestCommand 经 command.run 事件把命令标识符交给界面", () => {
+    const sent: { event: string; state: unknown }[] = [];
+    requestCommand(
+      { send: (_channel, event, state) => void sent.push({ event, state }) },
+      "app.settings",
+    );
+    expect(sent).toEqual([{ event: "command.run", state: { id: "app.settings" } }]);
   });
 });
 

@@ -19,7 +19,8 @@ export const commandRegistry = {
   // 应用
   "app.new": { group: "app", accelerator: "CmdOrCtrl+N" },
   "app.openLibrary": { group: "app" },
-  "app.settings": { group: "app" },
+  "app.settings": { group: "app", accelerator: "CmdOrCtrl+," },
+  "app.closeTab": { group: "app", accelerator: "CmdOrCtrl+W" },
   "app.quickOpen": { group: "app", accelerator: "CmdOrCtrl+P" },
   "app.showTerminal": { group: "app" },
   "app.showOutput": { group: "app" },
@@ -31,9 +32,9 @@ export const commandRegistry = {
   "app.themeDark": { group: "app" },
   "app.themeSystem": { group: "app" },
   // 项目
-  "project.run": { group: "project" },
-  "project.stop": { group: "project" },
-  "project.restart": { group: "project" },
+  "project.run": { group: "project", accelerator: "CmdOrCtrl+R" },
+  "project.stop": { group: "project", accelerator: "CmdOrCtrl+." },
+  "project.restart": { group: "project", accelerator: "CmdOrCtrl+Shift+R" },
   "project.reloadPreview": { group: "project" },
   "project.openInBrowser": { group: "project" },
   "project.openDevtools": { group: "project" },

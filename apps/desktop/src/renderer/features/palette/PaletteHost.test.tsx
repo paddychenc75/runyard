@@ -122,7 +122,7 @@ describe("命令面板", () => {
     const dialog = await screen.findByRole("dialog", { name: "命令面板" });
     expect(document.activeElement).toBe(within(dialog).getByRole("combobox"));
     expect(within(dialog).getByText("最近使用")).toBeTruthy();
-    expect(optionNames()).toEqual(["显示终端", "运行", "保存⌘S"]);
+    expect(optionNames()).toEqual(["显示终端", "运行⌘R", "保存⌘S"]);
     expect(screen.getAllByRole("option")[0]?.getAttribute("aria-selected")).toBe("true");
   });
 
@@ -130,11 +130,11 @@ describe("命令面板", () => {
     const { user } = setup({ commands: { "project.stop": noop, "project.run": noop } });
     await user.keyboard("{Meta>}{Shift>}p{/Shift}{/Meta}");
     await user.keyboard("停止");
-    expect(optionNames()).toEqual(["停止运行"]);
+    expect(optionNames()).toEqual(["停止运行⌘."]);
     expect(document.querySelector('[role="option"] [class*="hit"]')?.textContent).toBe("停止");
     await user.clear(screen.getByRole("combobox"));
     await user.keyboard("stop");
-    expect(optionNames()).toEqual(["停止运行Stop"]);
+    expect(optionNames()).toEqual(["停止运行Stop⌘."]);
     expect(
       [...document.querySelectorAll('[role="option"] [class*="hit"]')].map((el) => el.textContent),
     ).toEqual(["Stop"]);
@@ -167,18 +167,19 @@ describe("命令面板", () => {
   it("[DESKTOP-EDITOR-61] 只列能用的命令：没登记的（比如已停止时的“停止运行”）不出现", async () => {
     const { user } = setup({ commands: { "project.run": noop, "project.stop": null } });
     await user.keyboard("{F1}");
-    expect(optionNames()).toEqual(["运行"]);
+    expect(optionNames()).toEqual(["运行⌘R"]);
   });
 
   it("[DESKTOP-EDITOR-62] 全部登记时，应用命令和编辑器命令都在，名称是当前界面语言", async () => {
     const all = Object.fromEntries(commandIds.map((id) => [id, noop]));
     const { user } = setup({ commands: all });
     await user.keyboard("{F1}");
-    const names = optionNames().map((name) => name?.replace(/[⌘⌃⌥⇧A-Z0-9/ ]+$/, "").trim());
+    const names = optionNames().map((name) => name?.replace(/[⌘⌃⌥⇧A-Z0-9/,. ]+$/, "").trim());
     for (const expected of [
       "新建项目…",
       "打开资源库",
       "设置",
+      "关闭标签页",
       "快速打开文件",
       "显示终端",
       "显示输出",
@@ -201,7 +202,7 @@ describe("命令面板", () => {
       "复制路径",
       "复制链接",
       "移到废纸篓",
-      "切换侧栏",
+      "显示/隐藏侧栏",
       "收起或展开文件树",
       "主题：浅色",
       "主题：深色",
@@ -249,7 +250,7 @@ describe("命令面板", () => {
       },
     });
     await user.keyboard("{Meta>}{Shift>}p{/Shift}{/Meta}");
-    expect(optionNames()).toEqual(["新建项目…⌘N", "设置", "全部停止", "切换侧栏⌃⌘S"]);
+    expect(optionNames()).toEqual(["新建项目…⌘N", "设置⌘,", "全部停止", "显示/隐藏侧栏⌃⌘S"]);
   });
 
   it("[DESKTOP-EDITOR-65] 焦点在预览里：主进程的菜单项发 palette.open，面板照常打开", () => {
@@ -279,7 +280,7 @@ describe("命令面板", () => {
     expect(screen.getByRole("dialog", { name: "快速打开" })).toBeTruthy();
     await user.keyboard(">");
     expect(screen.getByRole("dialog", { name: "命令面板" })).toBeTruthy();
-    expect(optionNames()).toEqual(["运行"]);
+    expect(optionNames()).toEqual(["运行⌘R"]);
     await user.keyboard("{Backspace}");
     expect(screen.getByRole("dialog", { name: "快速打开" })).toBeTruthy();
   });
@@ -290,9 +291,9 @@ describe("命令面板", () => {
       commands: { "project.stop": noop, "project.run": noop },
     });
     await user.keyboard("{F1}");
-    expect(optionNames()).toEqual(["Run", "Stop"]);
+    expect(optionNames()).toEqual(["Run⌘R", "Stop⌘."]);
     await user.keyboard("停止");
-    expect(optionNames()).toEqual(["Stop停止运行"]);
+    expect(optionNames()).toEqual(["Stop停止运行⌘."]);
   });
 });
 

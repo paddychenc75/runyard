@@ -1,3 +1,4 @@
+import type { CommandId } from "../shared/commands.ts";
 import {
   type BootstrapInfo,
   type CreateRequest,
@@ -376,6 +377,11 @@ export function requestPicker(host: Pick<IpcHost, "send">): void {
 /** 通知界面收起或显示侧栏（应用菜单的“切换侧栏”，⌃⌘S） */
 export function requestSidebarToggle(host: Pick<IpcHost, "send">): void {
   host.send(desktopChannels.event, "sidebar.toggle", undefined);
+}
+
+/** 通知界面执行一条应用命令（应用菜单里的设置、项目操作等，命令此刻没登记就什么都不发生） */
+export function requestCommand(host: Pick<IpcHost, "send">, id: CommandId): void {
+  host.send(desktopChannels.event, "command.run", { id });
 }
 
 /** 通知界面打开命令面板或快速打开（应用菜单的 ⌘⇧P、F1、⌘P） */
