@@ -291,12 +291,12 @@
    "page": "zh"
   },
   "Settings.dc.html": {
-   "w": 1440,
+   "w": 820,
    "h": 900,
    "radius": 26,
    "x": 1520,
    "y": 9240,
-   "title": "33 设置",
+   "title": "33 设置窗口（⌘,）",
    "page": "zh"
   },
   "MainEn.dc.html": {
@@ -588,12 +588,12 @@
    "page": "en"
   },
   "SettingsEn.dc.html": {
-   "w": 1440,
+   "w": 820,
    "h": 900,
    "radius": 26,
    "x": 1520,
    "y": 9240,
-   "title": "33 Settings",
+   "title": "33 Settings window (⌘,)",
    "page": "en"
   },
   "MainDark.dc.html": {
@@ -885,12 +885,12 @@
    "page": "zhDark"
   },
   "SettingsDark.dc.html": {
-   "w": 1440,
+   "w": 820,
    "h": 900,
    "radius": 26,
    "x": 1520,
    "y": 9240,
-   "title": "33 设置",
+   "title": "33 设置窗口（⌘,）",
    "page": "zhDark"
   },
   "MainDarkEn.dc.html": {
@@ -1182,12 +1182,12 @@
    "page": "enDark"
   },
   "SettingsDarkEn.dc.html": {
-   "w": 1440,
+   "w": 820,
    "h": 900,
    "radius": 26,
    "x": 1520,
    "y": 9240,
-   "title": "33 Settings",
+   "title": "33 Settings window (⌘,)",
    "page": "enDark"
   },
   "Brand.dc.html": {
@@ -2406,12 +2406,12 @@
    "page": "zh"
   },
   "SettingsNarrow.dc.html": {
-   "w": 1100,
+   "w": 820,
    "h": 900,
    "radius": 26,
    "x": 1180,
    "y": 17160,
-   "title": "33b 设置 · 窗口变窄、滚动到“编辑与运行”",
+   "title": "33b 设置窗口 · 滚动到“编辑与运行”",
    "page": "zh"
   },
   "MainSidebarHiddenDark.dc.html": {
@@ -2424,12 +2424,12 @@
    "page": "zhDark"
   },
   "SettingsNarrowDark.dc.html": {
-   "w": 1100,
+   "w": 820,
    "h": 900,
    "radius": 26,
    "x": 1180,
    "y": 17160,
-   "title": "33b 设置 · 窗口变窄、滚动到“编辑与运行”",
+   "title": "33b 设置窗口 · 滚动到“编辑与运行”",
    "page": "zhDark"
   },
   "MainSidebarHiddenEn.dc.html": {
@@ -2442,12 +2442,12 @@
    "page": "en"
   },
   "SettingsNarrowEn.dc.html": {
-   "w": 1100,
+   "w": 820,
    "h": 900,
    "radius": 26,
    "x": 1180,
    "y": 17160,
-   "title": "33b Settings · narrow window, scrolled to Editing and running",
+   "title": "33b Settings window · scrolled to Editing and running",
    "page": "en"
   },
   "MainSidebarHiddenDarkEn.dc.html": {
@@ -2460,12 +2460,12 @@
    "page": "enDark"
   },
   "SettingsNarrowDarkEn.dc.html": {
-   "w": 1100,
+   "w": 820,
    "h": 900,
    "radius": 26,
    "x": 1180,
    "y": 17160,
-   "title": "33b Settings · narrow window, scrolled to Editing and running",
+   "title": "33b Settings window · scrolled to Editing and running",
    "page": "enDark"
   },
   "Notify.dc.html": {

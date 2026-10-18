@@ -94,7 +94,7 @@ a{color:#0071E3}a:hover{color:#0058B0}
 <div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
 <div style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">react18-1</span></div>
 <div style="font-size: 12px; color: #3A3A3C; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">旧版 Suspense 的行为对照</div></div>
-<div style="display: flex; align-items: center; gap: 7px; white-space: nowrap; color: #C4001A; font-weight: 500"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 2px; box-sizing: border-box; flex: none; background: #D70015; border: 1.5px solid #D70015"></span>已崩溃</div>
+<div style="display: flex; align-items: center; gap: 7px; white-space: nowrap; color: #C4001A; font-weight: 500"><svg aria-hidden="true" width="11" height="11" viewBox="0 0 12 12" style="flex: none"><circle cx="6" cy="6" r="6" fill="#D70015"/><path d="M4.2 4.2l3.6 3.6M7.8 4.2 4.2 7.8" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/></svg>已崩溃</div>
 <div style=""><span aria-hidden="true" data-tile="Re" style="width: 22px; height: 22px; box-sizing: border-box; border-radius: 6px; background-color: #F0F0F3; background-position: center; background-repeat: no-repeat; background-size: 60% 60%; border: 1px solid rgba(0,0,0,0.06); box-shadow: inset 0 1px 0 rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; letter-spacing: -0.01em; color: #087EA4; flex: none">Re</span></div>
 <div style="text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: #3A3A3C; ">412 MB</div>
 <div style=""><span style="color: #8E8E93">—</span></div>
@@ -229,7 +229,7 @@ const data = [
 const left = [0, 0, 30, 30, 0, 0, 29, 0, 0, 0, 24, 0];
 const rows0 = data.map((d, i) => Object.assign({ agentLabel: d[0] === 'node-ts-1' ? 'Codex' : 'Claude Code', name: d[0], badge: d[1], template: d[2], port: d[3], opened: d[4], note: d[8] || '未填写备注', noteColor: d[8] ? '#3A3A3C' : '#6E6E73', bg: i === 0 ? 'rgba(0,113,227,0.08)' : 'transparent' }, d[5], d[6], d[7]));
 const navItems = [['全部', '9', true], ['运行中', '2', false], ['智能体创建', '4', false]];
-const nav = navItems.map((n) => ({ label: n[0], count: n[1], bg: n[2] ? '#0071E3' : 'transparent', color: n[2] ? '#FFFFFF' : '#1D1D1F', weight: n[2] ? 600 : 400, mark: n[2] ? '#FFFFFF' : '#8E8E93', countColor: n[2] ? '#FFFFFF' : '#6E6E73' }));
+const nav = navItems.map((n) => ({ label: n[0], count: n[1], bg: n[2] ? 'rgba(0,0,0,0.08)' : 'transparent', color: n[2] ? '#1D1D1F' : '#1D1D1F', weight: n[2] ? 600 : 400, mark: n[2] ? '#0071E3' : '#8E8E93', countColor: n[2] ? '#6E6E73' : '#6E6E73' }));
 const tipText = '30 天没打开就移到废纸篓，每次打开重新计时';
 const rows = [];
 const SIZES = {'react-counter': ['186.3 MB', '#3A3A3C'], 'hono-todo-api': ['38.6 MB', '#3A3A3C'], 'hono-1': ['38.2 MB', '#3A3A3C'], 'react19-3': ['214.7 MB', '#3A3A3C'], 'landing-hero': ['96 KB', '#3A3A3C'], 'go-channels': ['24 KB', '#3A3A3C'], 'python-2': ['61.4 MB', '#3A3A3C'], 'vue-drag-list': ['142.8 MB', '#3A3A3C'], 'vue3-2': ['141.5 MB', '#3A3A3C'], 'api-mock-1': ['12.3 MB', '#3A3A3C'], 'node-ts-1': ['48.9 MB', '#3A3A3C'], 'react18-1': ['412 MB', '#3A3A3C']};
