@@ -3,6 +3,7 @@ import type { Localized } from "@runyard/i18n";
 import type { ReactElement } from "react";
 import { GlassSurface } from "../GlassSurface/index.ts";
 import { Icon } from "../Icon/index.ts";
+import { ScrollArea } from "../ScrollArea/index.ts";
 import styles from "./Menu.module.css";
 
 export interface MenuItemEntry {
@@ -38,6 +39,8 @@ export interface MenuProps {
 }
 
 const SIDE_OFFSET = 6;
+// 离窗口边至少留这么多，翻转和平移（碰撞避让）按它算
+const COLLISION_PADDING = 8;
 
 export function Menu({
   label,
@@ -62,6 +65,8 @@ export function Menu({
           side="bottom"
           align={align}
           sideOffset={SIDE_OFFSET}
+          collisionPadding={COLLISION_PADDING}
+          collisionAvoidance={{ side: "flip", align: "shift", fallbackAxisSide: "none" }}
           className={styles.positioner}
         >
           <BaseMenu.Popup
@@ -70,32 +75,35 @@ export function Menu({
             aria-label={label}
             aria-labelledby={undefined}
           >
-            {entries.map((entry, index) =>
-              entry.type === "separator" ? (
-                <BaseMenu.Separator key={`separator-${index}`} className={styles.separator} />
-              ) : (
-                <BaseMenu.Item
-                  key={entry.id}
-                  className={styles.item}
-                  data-tone={entry.tone ?? "default"}
-                  disabled={entry.disabled}
-                  {...(entry.checked === undefined
-                    ? {}
-                    : { role: "menuitemradio", "aria-checked": entry.checked })}
-                  onClick={() => onSelect(entry.id)}
-                >
-                  {entry.checked === undefined ? null : (
-                    <span className={styles.check} aria-hidden="true">
-                      {entry.checked ? <Icon name="check" size={14} /> : null}
-                    </span>
-                  )}
-                  <span className={styles.label}>{entry.label}</span>
-                  {entry.hint === undefined ? null : (
-                    <span className={styles.hint}>{entry.hint}</span>
-                  )}
-                </BaseMenu.Item>
-              ),
-            )}
+            {/* 上下都放不下时面板的高度被压到可用空间（见 Menu.module.css），超出的在共享 ScrollArea 里滚动 */}
+            <ScrollArea className={styles.scroll}>
+              {entries.map((entry, index) =>
+                entry.type === "separator" ? (
+                  <BaseMenu.Separator key={`separator-${index}`} className={styles.separator} />
+                ) : (
+                  <BaseMenu.Item
+                    key={entry.id}
+                    className={styles.item}
+                    data-tone={entry.tone ?? "default"}
+                    disabled={entry.disabled}
+                    {...(entry.checked === undefined
+                      ? {}
+                      : { role: "menuitemradio", "aria-checked": entry.checked })}
+                    onClick={() => onSelect(entry.id)}
+                  >
+                    {entry.checked === undefined ? null : (
+                      <span className={styles.check} aria-hidden="true">
+                        {entry.checked ? <Icon name="check" size={14} /> : null}
+                      </span>
+                    )}
+                    <span className={styles.label}>{entry.label}</span>
+                    {entry.hint === undefined ? null : (
+                      <span className={styles.hint}>{entry.hint}</span>
+                    )}
+                  </BaseMenu.Item>
+                ),
+              )}
+            </ScrollArea>
           </BaseMenu.Popup>
         </BaseMenu.Positioner>
       </BaseMenu.Portal>

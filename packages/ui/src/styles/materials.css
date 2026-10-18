@@ -1,16 +1,12 @@
 /*
  * 玻璃材质配方：全仓库唯一允许写 backdrop-filter 的文件（技术设计 §6.7 规则 7）。
- * 组件一律用 <GlassSurface material="…">，不自己写模糊。五种配方对应材质规范板（SpecMaterial）。
+ * 组件一律用 <GlassSurface material="…">，不自己写模糊。六种配方对应材质规范板（SpecMaterial）。
  * 背景色随“降低透明度”换成不透明底色由设计变量负责（tokens.json 的 opaque），这里只负责关掉模糊。
  */
 /*
- * 第 2 档（工具栏、侧栏、文件树）只有填充和一层柔和阴影，没有描边；
- * 第 3、4 档（对话框、菜单）单独浮起，里面不再套带轮廓的东西，保留 1px 描边。
+ * 浮动、浮层、弹窗都没有 1px 描边：第 2 档只有填充加一层柔和阴影；第 3、4 档的阴影自带一圈 0.5px 外圈，
+ * 不再另加描边和顶边高光（否则顶边叠出两三条线，#392）。提示条（toast）用第 2 档的阴影。
  */
-[data-glass-material="dialog"],
-[data-glass-material="menu"] {
-  border: var(--glass-border-width) solid var(--glass-border-color);
-}
 
 [data-glass-material="toolbar"] {
   background: var(--glass-toolbar-bg);
@@ -45,6 +41,13 @@
   backdrop-filter: var(--glass-blur-menu);
   border-radius: var(--radius-menu);
   box-shadow: var(--shadow-overlay);
+}
+
+[data-glass-material="toast"] {
+  background: var(--glass-dialog-bg);
+  backdrop-filter: var(--glass-blur-menu);
+  border-radius: var(--radius-menu);
+  box-shadow: var(--shadow-floating);
 }
 
 /* 编辑器（Monaco）的浮层是第三方生成的 DOM，没法写 data-glass-material，所以配方在这里登记（形状见桌面应用的 monaco-widgets.css） */

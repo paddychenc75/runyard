@@ -10,7 +10,14 @@ export const meta: FixtureMeta = {
   backdrop: "colorful",
 };
 
-const materials: readonly GlassMaterial[] = ["toolbar", "sidebar", "filetree", "dialog", "menu"];
+const materials: readonly GlassMaterial[] = [
+  "toolbar",
+  "sidebar",
+  "filetree",
+  "dialog",
+  "menu",
+  "toast",
+];
 
 export const samples: readonly FixtureSample[] = [
   ...materials.map(
