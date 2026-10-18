@@ -98,8 +98,8 @@ test("资源库表格：窗口放得下和放不下时，表头与每一行逐�
     };
     const header = await boxes(table.getByRole("columnheader"));
     const firstRow = await boxes(table.getByRole("row").nth(1).getByRole("cell"));
-    expect(header.length).toBe(8);
-    expect(firstRow.slice(0, 8)).toEqual(header);
+    expect(header.length).toBe(9);
+    expect(firstRow.slice(0, 9)).toEqual(header);
   }
 });
 
@@ -190,16 +190,27 @@ test("[DESKTOP-LIBRARY-VIEW-28][DESKTOP-LIBRARY-VIEW-29] 窗口 1100 宽：横�
     expect(now.dot?.dot.right).toBeLessThanOrEqual(now.dot?.name.right ?? 0);
   }
 
-  // 滚到最右：“保留”“上次打开”“大小”“创建者”整列落在两根固定列之间，表头完整
-  const end = await measure();
-  const nameRight = (end.headers[0] as Box).right;
-  const actionsLeft = (end.headers[8] as Box).left;
-  for (const text of ["Retention", "Last opened", "Size", "Created by"]) {
-    const header = end.headers.find((h) => h.text === text);
-    expect(header, text).toBeDefined();
-    expect(header?.left).toBeGreaterThanOrEqual(nameRight - 1);
-    expect(header?.right).toBeLessThanOrEqual(actionsLeft + 1);
+  // 横向滚动能把“保留”“上次打开”“大小”“创建者”每一列完整地看到（落在两根固定列之间）：
+  // 列多了之后它们不再同时放得下，所以逐个看，滚动过程中每一列至少有一次完整出现
+  const wanted = ["Retention", "Last opened", "Size", "Created by"];
+  const seen = new Set<string>();
+  for (const fraction of [0, 0.25, 0.5, 0.75, 1]) {
+    await scrollTo(Math.floor(start.maxScroll * fraction));
+    await expect
+      .poll(async () => Math.round((await measure()).headers[3]?.left ?? 0))
+      .toBe(Math.round((await measure()).headers[3]?.left ?? 0));
+    const now = await measure();
+    const nameRight = (now.headers[0] as Box).right;
+    const actionsLeft = (now.headers[8] as Box).left;
+    for (const text of wanted) {
+      const header = now.headers.find((h) => h.text === text);
+      expect(header, text).toBeDefined();
+      if (header !== undefined && header.left >= nameRight - 1 && header.right <= actionsLeft + 1)
+        seen.add(text);
+    }
   }
+  expect([...seen].sort()).toEqual([...wanted].sort());
+  const end = await measure();
   expect(end.clipped).toEqual([]);
 
   // 缩窄之后放回 1440 宽：横向滚动条要消失，列宽回到一开始就是 1440 宽的样子（#404）
