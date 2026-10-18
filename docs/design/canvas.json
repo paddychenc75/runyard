@@ -2467,6 +2467,78 @@
    "y": 17160,
    "title": "33b Settings · narrow window, scrolled to Editing and running",
    "page": "enDark"
+  },
+  "Notify.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 15840,
+   "title": "56 通知：启动时",
+   "page": "zh"
+  },
+  "NotifyCenter.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 15840,
+   "title": "57 通知列表",
+   "page": "zh"
+  },
+  "NotifyDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 15840,
+   "title": "56 通知：启动时",
+   "page": "zhDark"
+  },
+  "NotifyCenterDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 15840,
+   "title": "57 通知列表",
+   "page": "zhDark"
+  },
+  "NotifyEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 15840,
+   "title": "56 Notifications at launch",
+   "page": "en"
+  },
+  "NotifyCenterEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 15840,
+   "title": "57 Notification list",
+   "page": "en"
+  },
+  "NotifyDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 4560,
+   "y": 15840,
+   "title": "56 Notifications at launch",
+   "page": "enDark"
+  },
+  "NotifyCenterDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 6080,
+   "y": 15840,
+   "title": "57 Notification list",
+   "page": "enDark"
   }
  },
  "createdOnFiles": {
@@ -3305,7 +3377,15 @@
   "LogoLine.dc.html",
   "LogoLineEn.dc.html",
   "LogoFinal.dc.html",
-  "LogoFinalEn.dc.html"
+  "LogoFinalEn.dc.html",
+  "Notify.dc.html",
+  "NotifyCenter.dc.html",
+  "NotifyDark.dc.html",
+  "NotifyCenterDark.dc.html",
+  "NotifyEn.dc.html",
+  "NotifyCenterEn.dc.html",
+  "NotifyDarkEn.dc.html",
+  "NotifyCenterDarkEn.dc.html"
  ],
  "pages": [
   {

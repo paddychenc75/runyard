@@ -46,11 +46,6 @@ a{color:#4DA3FF}a:hover{color:#7DBBFF}
 <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#A1A1A6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5 5 6.5 8 3.5"/></svg></button>
 </div>
 </div>
-<div role="alert" aria-label="Auto-clean reminder" style="margin: 14px 28px 0 28px; min-height: 48px; padding: 8px 12px 8px 14px; box-sizing: border-box; border-radius: 14px; background: rgba(255,214,10,0.14); border: 1px solid rgba(255,214,10,0.45); display: flex; align-items: center; gap: 10px">
-<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#FFD60A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 1.5"/></svg>
-<div style="flex: 1; min-width: 0; color: #FFD60A; font-weight: 500">1 playground will be auto-cleaned tomorrow: node-ts-1 (not opened for 29 days).</div>
-<div style="display: flex; gap: 8px; flex: none"><button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; flex: none; white-space: nowrap; height: 30px; border-radius: 15px; background: #0071E3; color: #FFFFFF; font-weight: 600">Turn off auto-clean</button><button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; flex: none; white-space: nowrap; height: 30px; border-radius: 15px; background: rgba(118,118,128,0.24)">Clean now</button><button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; flex: none; white-space: nowrap; height: 30px; border-radius: 15px; padding: 0 10px; background: transparent; color: #4DA3FF">Remind me later</button></div>
-</div>
 <div style="margin: 14px 28px 0 28px; display: grid; grid-template-columns: minmax(0, 1.5fr) 132px minmax(0, 1fr) 84px 96px 110px 80px 110px 36px; column-gap: 12px; padding: 0 14px 8px 14px; color: #A1A1A6; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.08)">
 <div>Name and note</div><div>Status</div><div>Template</div><div>Port</div><div>Auto-clean</div><div>Last opened</div><div style="text-align: right">Size</div><div>Created by</div><div></div>
 </div>
@@ -105,6 +100,7 @@ a{color:#4DA3FF}a:hover{color:#7DBBFF}
 </div>
 <button style="height: 32px; padding: 0 10px; border-radius: 16px; border: none; background: transparent; display: flex; align-items: center; gap: 8px; font-weight: 500; flex: none; white-space: nowrap">
 <span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: #30D158; box-shadow: 0 0 0 3px rgba(48,209,88,0.22)"></span>4 running</button>
+<button aria-label="Notifications，1" style="position: relative; width: 32px; height: 32px; border-radius: 16px; border: none; background: transparent; display: flex; align-items: center; justify-content: center; flex: none"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F5F5F7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11V7a4 4 0 0 1 8 0v4l1.2 1.5H2.8z"/><path d="M6.5 14h3"/></svg><span style="position: absolute; top: 3px; right: 2px; min-width: 15px; height: 15px; padding: 0 4px; box-sizing: border-box; border-radius: 8px; background: #FF453A; color: #FFFFFF; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center">1</span></button>
 <button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 8px; flex: none; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,113,227,0.28)">
 <svg aria-hidden="true" width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"><path d="M6 1.5v9M1.5 6h9"/></svg>New</button>
 </div>
@@ -147,7 +143,7 @@ a{color:#4DA3FF}a:hover{color:#7DBBFF}
 <div style="font-size: 12px; color: #A1A1A6">20 playgrounds · 2.9 GB total</div>
 </div>
 </nav>
-<div role="img" aria-label="Badge on the Dock icon" style="position: absolute; right: 16px; top: 60px; display: flex; align-items: center; gap: 14px">
+<div role="img" aria-label="Badge on the Dock icon" style="position: absolute; right: 16px; bottom: 16px; display: flex; align-items: center; gap: 14px">
 <span style="font-size: 12px; color: #A1A1A6; white-space: nowrap">Badge on the Dock icon</span>
 <div aria-hidden="true" style="box-sizing: border-box; padding: 4px 10px; border-radius: 17px; display: flex; align-items: center; gap: 8px; background: rgba(44,44,48,0.78); backdrop-filter: blur(50px) saturate(190%); border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 0 0 0.5px rgba(255,255,255,0.10), 0 18px 48px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.14)">
 <span style="width: 32px; height: 32px; border-radius: 8px; background: rgba(118,118,128,0.32); flex: none"></span>
@@ -162,6 +158,7 @@ a{color:#4DA3FF}a:hover{color:#7DBBFF}
 </div>
 </div>
 
+<div style="position: absolute; right: 16px; top: 50px; display: flex; flex-direction: column; gap: 8px; z-index: 4"><div role="status" style="position: relative; width: 360px; box-sizing: border-box; padding: 12px 36px 12px 12px; border-radius: 16px; background: rgba(44,44,48,0.92); backdrop-filter: blur(30px) saturate(1.6); -webkit-backdrop-filter: blur(30px) saturate(1.6); box-shadow: 0 0 0 0.5px rgba(255,255,255,0.10), 0 16px 40px rgba(0,0,0,0.50); display: flex; gap: 10px; color: #F5F5F7"><div style="width: 32px; height: 32px; flex: none; border-radius: 9px; background: rgba(255,159,10,0.18); display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="#FF9F0A" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.6V8l2.4 1.4"/></svg></div><div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><div style="font-weight: 600; font-size: 13px">node-ts-1 moves to the Trash tomorrow</div><div style="font-size: 12px; color: #A1A1A6">Not opened for 29 days (auto-clean is 30 days).</div><div style="display: flex; gap: 6px; margin-top: 8px"><button style="height: 26px; padding: 0 12px; border-radius: 13px; border: none; background: rgba(118,118,128,0.24); color: #F5F5F7; font-size: 12px; font-weight: 600; white-space: nowrap">Clean now</button><button style="height: 26px; padding: 0 12px; border-radius: 13px; border: none; background: #0A84FF; color: #FFFFFF; font-size: 12px; font-weight: 600; white-space: nowrap">Turn off auto-clean</button></div></div><button aria-label="close" style="position: absolute; top: 10px; right: 10px; width: 20px; height: 20px; border-radius: 10px; border: none; background: rgba(118,118,128,0.24); display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="#A1A1A6" stroke-width="1.6" stroke-linecap="round"><path d="M2 2l6 6M8 2 2 8"/></svg></button></div></div>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
