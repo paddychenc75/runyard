@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "description": "一次性验证（不合并）：官方 Vue 语言服务器 + 带 Vue 插件的 tsserver 跑成独立进程。依赖装在仓库之外：npm install --ignore-scripts --save-exact @vue/language-server@3.3.12 @vue/typescript-plugin@3.3.12 typescript@6.0.3；被测项目是 templates/builtin/vue3 的副本加 fixture/ 里的两个组件（Use.vue 放 src/，Child.vue 放 src/components/）。用法：ELECTRON_RUN_AS_NODE=1 <Electron> drive.mjs <依赖目录> <项目目录> --permission。结果见 docs/architecture/evidence/vue-intellisense.md 的“第二次验证”。",
+  "dependencies": {
+    "@vue/language-server": "3.3.12",
+    "@vue/typescript-plugin": "3.3.12",
+    "typescript": "6.0.3"
+  }
+}
