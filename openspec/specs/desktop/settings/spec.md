@@ -6,8 +6,8 @@
 ## Requirements
 
 ### Requirement: 设置是主窗口里的一页
-点侧栏“设置”MUST 在主窗口里打开设置页，MUST NOT 开新窗口；设置页 MUST NOT 有顶栏。页面 MUST 分五组：通用、编辑与运行、依赖与网络、运行环境、命令行与智能体。每一项改了 MUST 立即生效并保存，MUST NOT 有“保存”按钮；重新打开应用后 MUST 仍是改过的值。命令行或别处改了设置时，开着的设置页 MUST 跟着更新。
-来源：PRD #prd-settings-page；PRD #prd-library-list
+点侧栏“设置”MUST 在主窗口里打开设置页，MUST NOT 开新窗口；设置页 MUST NOT 有顶栏。页面 MUST 分五组：通用、编辑与运行、依赖与网络、运行环境、命令行与智能体，五组 MUST 排成居中的一列。页标题“设置”和五个分区的跳转按钮 MUST 固定在页面顶部，不随内容滚走；点一个分区按钮 MUST 把那一组滚到标题区下方；滚动时 MUST 高亮当前所在分区的按钮；内容滚到标题区下面时，标题区底边 MUST 出现一条细线，滚回最顶上时细线消失。每一项改了 MUST 立即生效并保存，MUST NOT 有“保存”按钮；重新打开应用后 MUST 仍是改过的值。命令行或别处改了设置时，开着的设置页 MUST 跟着更新。
+来源：PRD #prd-settings-page；PRD #prd-library-list（版面：负责人 2026-10-18 选定方案 A，issue #386）
 
 #### Scenario: [DESKTOP-SETTINGS-01] 打开设置页
 - **WHEN** 点侧栏“设置”
@@ -17,6 +17,18 @@
 #### Scenario: [DESKTOP-SETTINGS-02] 改了就保存
 - **WHEN** 把包管理器从“自动”改成“npm”，然后退出并重新打开应用
 - **THEN** 设置页里包管理器仍是“npm”
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-35] 标题固定在顶部
+- 前提：设置页在最顶上，“通用”按钮是高亮的，标题区底边没有细线
+- **WHEN** 把内容往下滚到“依赖与网络”一组
+- **THEN** “设置”标题和五个分区按钮仍在原位；“依赖与网络”按钮高亮；标题区底边出现细线；滚回最顶上后细线消失，“通用”重新高亮
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-36] 点分区按钮跳到那一组
+- 前提：设置页在最顶上
+- **WHEN** 点“命令行与智能体”按钮
+- **THEN** 页面滚到“命令行与智能体”一组，它的标题紧贴在标题区下方（内容不够长时滚到底）；该按钮高亮
 - 验证：test
 
 ### Requirement: 通用
