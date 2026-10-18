@@ -206,8 +206,7 @@ describe("模板选择器的搜索", () => {
     row("python", "script"),
   ];
   const withRecent = () => library({ templates: catalog, recentTemplates: ["vue3", "hono"] });
-  const optionNames = () =>
-    screen.getAllByRole("option").map((option) => option.textContent?.replace(/选择$/, ""));
+  const optionNames = () => screen.getAllByRole("option").map((option) => option.textContent);
 
   it("[DESKTOP-CREATE-FLOW-17] 输入 react 只剩两个 React 模板，没有“最近使用”，第一个被选中", async () => {
     const user = userEvent.setup();
@@ -425,5 +424,47 @@ describe("模板选择器的分类栏和默认名称", () => {
     await user.keyboard("{Enter}");
     const created = await screen.findByRole("dialog", { name: "新建项目" });
     expect(within(created).getByText("模板：node-ts")).toBeTruthy();
+  });
+});
+
+describe("模板选择器每行的内容", () => {
+  const described = [
+    row("react19", "frontend", {
+      name: { en: "React 19 + Vite", "zh-CN": "React 19 + Vite" },
+      description: {
+        en: "React 19 · TypeScript · Vite 8 · instant updates as you edit",
+        "zh-CN": "React 19 · TypeScript · Vite 8 · 改代码即时刷新",
+      },
+    }),
+    row("go", "script", { description: { en: "Go single file", "zh-CN": "Go 单文件" } }),
+    row("python", "script", {
+      description: { en: "Python script", "zh-CN": "Python 脚本" },
+    }),
+  ];
+
+  it("[DESKTOP-CREATE-FLOW-29] 每行写名称，下面一行是说明（按界面语言），各占一行", async () => {
+    setup(library({ templates: described }));
+    await screen.findByRole("dialog");
+    const option = screen.getAllByRole("option").find((item) => item.textContent?.includes("Vite"));
+    const lines = option?.querySelectorAll("[data-truncate]");
+    expect(lines?.length).toBe(2);
+    expect(lines?.[0]?.textContent).toBe("React 19 + Vite");
+    expect(lines?.[1]?.textContent).toBe("React 19 · TypeScript · Vite 8 · 改代码即时刷新");
+  });
+
+  it("[DESKTOP-CREATE-FLOW-30] 不显示本机工具状态：第二行只有说明，打开选择器不发起检测", async () => {
+    const { call } = setup(library({ templates: described }));
+    await screen.findByRole("dialog");
+    const second = (id: string) =>
+      screen
+        .getAllByRole("option")
+        .find((item) => item.textContent?.includes(id))
+        ?.querySelectorAll("[data-truncate]")[1]?.textContent;
+    expect(second("Go")).toBe("Go 单文件");
+    expect(second("python")).toBe("Python 脚本");
+    for (const option of screen.getAllByRole("option")) {
+      expect(option.textContent).not.toMatch(/未安装|3\.13/);
+    }
+    for (const [method] of call.mock.calls) expect(method).toBe("library.get");
   });
 });

@@ -64,15 +64,13 @@ export interface ListPickerProps
   /** 列表的名字，读屏器靠它 */
   label: Localized;
   groups: readonly ListPickerGroup[];
-  /** 当前高亮行右边的按钮文字 */
-  chooseLabel: Localized;
   /** 顶部：一般是搜索框；键盘事件从它冒泡上来，焦点留在它里面 */
   renderHeader: (props: ListPickerSearchProps) => ReactNode;
   /** 左侧分类栏；不给就没有这一栏。栏里的按钮不进 Tab 顺序，点它也不抢走搜索框的焦点 */
   rail?: ListPickerRail;
   /** 底部提示条；给函数时拿到当前高亮行的 id（没有行时为 undefined），内容可以随高亮变 */
   footer?: ReactNode | ((activeId: string | undefined) => ReactNode);
-  /** 点击一行、点“选择”或在高亮行上按回车 */
+  /** 点击一行或在高亮行上按回车 */
   onChoose: (id: string) => void;
 }
 
@@ -82,7 +80,6 @@ export interface ListPickerProps
 export function ListPicker({
   label,
   groups,
-  chooseLabel,
   renderHeader,
   rail,
   footer,
@@ -240,11 +237,6 @@ export function ListPicker({
                           </span>
                         )}
                       </span>
-                      {highlighted ? (
-                        <span className={styles.choose} aria-hidden="true">
-                          {chooseLabel}
-                        </span>
-                      ) : null}
                     </div>
                   );
                 })}

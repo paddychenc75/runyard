@@ -225,7 +225,6 @@
   "desktop.pathNotice.title.label": "<user>{name}</user> 已创建",
   "desktop.picker.all.label": "全部",
   "desktop.picker.arrowsKey.label": "上下键",
-  "desktop.picker.choose.action": "选择",
   "desktop.picker.defaultName.label": "默认名称",
   "desktop.picker.dialog.aria": "选择模板",
   "desktop.picker.empty.hint": "没有可用的模板。",

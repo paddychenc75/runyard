@@ -1,4 +1,4 @@
-/* 分组列表选择器：设计稿 Picker 的右半（分组标题、行、高亮行右边的“选择”）和底部提示条 */
+/* 分组列表选择器：设计稿 Picker 方案 A 的右半（分组标题、行）和底部提示条 */
 .root {
   display: flex;
   flex-direction: column;
@@ -10,6 +10,9 @@
   display: flex;
   flex: 1;
   min-block-size: 0;
+  box-sizing: border-box;
+  /* 列表最高 470，再多就滚动（设计稿 Picker，和命令面板同一档） */
+  max-block-size: var(--size-palette-list-max);
   border-block-start: 1px solid var(--color-line-hairline);
 }
 
@@ -21,9 +24,8 @@
   gap: var(--space-1);
   inline-size: var(--size-picker-rail-width);
   box-sizing: border-box;
-  padding-block: var(--space-6);
-  padding-inline: var(--space-5);
-  border-inline-end: 1px solid var(--color-line-hairline);
+  padding: var(--space-4);
+  /* 分类栏右边不画竖线（设计稿 Picker 方案 A） */
 }
 
 .railItem {
@@ -31,12 +33,12 @@
   align-items: center;
   gap: var(--space-4);
   inline-size: 100%;
-  block-size: var(--size-nav-item);
+  block-size: var(--size-menu-item);
   margin: 0;
   padding-block: 0;
-  padding-inline: var(--space-6);
+  padding-inline: var(--space-5);
   border: 0;
-  border-radius: var(--radius-row);
+  border-radius: var(--radius-sm);
   background: transparent;
   color: var(--color-text-primary);
   font-family: inherit;
@@ -55,7 +57,8 @@
 }
 
 .railItem[data-selected] {
-  background: var(--color-fill-accent-tint);
+  /* 当前项只用选中底色，不用蓝色 */
+  background: var(--glass-tab-selected-bg);
   font-weight: var(--text-item-weight);
 }
 
@@ -90,7 +93,9 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
-  padding: var(--space-4);
+  /* 右边 14 给滚动条留位：8 + 6 */
+  padding-block: var(--space-4);
+  padding-inline: 0 calc(var(--space-4) + var(--space-3));
 }
 
 .group {
@@ -101,7 +106,7 @@
 
 .groupTitle {
   padding-block: var(--space-5) var(--space-2);
-  padding-inline: var(--space-5);
+  padding-inline: var(--space-6);
   color: var(--color-text-secondary);
   font-size: var(--text-secondary-size);
   font-weight: var(--text-section-title-weight);
@@ -113,18 +118,33 @@
   align-items: center;
   gap: var(--space-6);
   min-inline-size: 0;
-  /* 设计稿 Picker 的行高是 42：两行字加上下各 2 */
-  padding-block: var(--space-1);
+  box-sizing: border-box;
+  /* 设计稿 Picker 的行高是 42：两行字（20 + 16）加上下各 3 */
+  min-block-size: calc(var(--size-palette-row) + var(--space-3));
+  padding-block: 0;
   padding-inline: var(--space-6);
-  border: 1px solid transparent;
+  border: 0;
   border-radius: var(--radius-row);
   cursor: default;
   user-select: none;
 }
 
+/* 选中行：实心强调色，没有描边、没有“选择”按钮（回车已写在底栏）；图块底色换成白色 */
 .row[data-active] {
-  border-color: var(--color-line-accent);
-  background: var(--color-fill-accent-tint);
+  background: var(--color-fill-accent);
+}
+
+.row[data-active] .title {
+  color: var(--color-text-on-accent);
+}
+
+.row[data-active] .subtitle,
+.row[data-active][data-tone="warning"] .subtitle {
+  color: color-mix(in srgb, var(--color-text-on-accent) 80%, transparent);
+}
+
+.row[data-active] > :first-child {
+  background: var(--color-text-on-accent);
 }
 
 .text {
@@ -157,26 +177,22 @@
   color: var(--color-status-warning-text);
 }
 
-.choose {
-  flex: none;
-  padding-block: var(--space-3);
-  padding-inline: var(--size-control-padding-md);
-  border-radius: var(--radius-capsule);
-  background: var(--color-fill-accent);
-  color: var(--color-text-on-accent);
-  font-size: var(--text-body-size);
-  font-weight: var(--text-item-weight);
-  line-height: var(--text-body-line-height);
-}
-
 .footer {
   display: flex;
   align-items: center;
-  gap: var(--space-6);
-  padding-block: var(--space-5);
+  gap: var(--space-7);
+  box-sizing: border-box;
+  block-size: var(--size-palette-footer);
+  padding-block: 0;
   padding-inline: var(--space-8);
   border-block-start: 1px solid var(--color-line-hairline);
   color: var(--color-text-secondary);
   font-size: var(--text-secondary-size);
   line-height: var(--text-secondary-line-height);
+}
+
+/* 底栏键帽：只用中性填充，不加边框、不用白底 */
+.footer kbd {
+  border: 0;
+  background: var(--color-fill-neutral);
 }

@@ -49,7 +49,6 @@ function picker(data: SampleData, long: boolean, empty = false, withRail = false
               }
             : undefined
         }
-        chooseLabel={data.items[2]}
         onChoose={() => {}}
         renderHeader={(props) => (
           <SearchField
