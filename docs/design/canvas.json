@@ -17,7 +17,7 @@
    "radius": 26,
    "x": 1520,
    "y": 0,
-   "title": "02 窗口变窄时，表格横向滚动",
+   "title": "02 窗口变窄时，表格收起次要列",
    "page": "zh"
   },
   "Empty.dc.html": {
@@ -314,7 +314,7 @@
    "radius": 26,
    "x": 1520,
    "y": 0,
-   "title": "02 Narrow window: the table scrolls sideways",
+   "title": "02 Narrow window: the table folds secondary columns",
    "page": "en"
   },
   "EmptyEn.dc.html": {
@@ -611,7 +611,7 @@
    "radius": 26,
    "x": 1520,
    "y": 0,
-   "title": "02 窗口变窄时，表格横向滚动",
+   "title": "02 窗口变窄时，表格收起次要列",
    "page": "zhDark"
   },
   "EmptyDark.dc.html": {
@@ -908,7 +908,7 @@
    "radius": 26,
    "x": 1520,
    "y": 0,
-   "title": "02 Narrow window: the table scrolls sideways",
+   "title": "02 Narrow window: the table folds secondary columns",
    "page": "enDark"
   },
   "EmptyDarkEn.dc.html": {
