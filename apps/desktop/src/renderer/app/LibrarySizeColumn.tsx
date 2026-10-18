@@ -65,7 +65,7 @@ export function sizeColumn(
   return {
     id: "size",
     header,
-    width: "md",
+    width: "sm",
     align: "end",
     sort: { sorted, onSort },
     render: (row) => <SizeCell row={row} />,
