@@ -250,6 +250,10 @@ export type CatalogMessages = {
     name: string | number;
     user: (chunks: string[]) => string;
   };
+  "desktop.agentNotice.unnamed.label": {
+    name: string | number;
+    user: (chunks: string[]) => string;
+  };
   "desktop.category.frontend.label": Record<never, never>;
   "desktop.category.fullstack.label": Record<never, never>;
   "desktop.category.mine.label": Record<never, never>;
