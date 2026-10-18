@@ -234,7 +234,8 @@ test("资源库：窗口矮时最后一行的更多菜单不被截断，最后�
   const menu = page.getByRole("menu");
   const trash = menu.getByRole("menuitem", { name: "Move to Trash" });
   await trash.scrollIntoViewIfNeeded();
-  const viewport = page.viewportSize() ?? { width: 0, height: 0 };
+  // Electron 的页面没有固定视口，用窗口内容高度
+  const viewport = { height: await page.evaluate(() => window.innerHeight) };
   const box = await menu.boundingBox();
   expect(box).not.toBeNull();
   expect((box?.y ?? 0) + (box?.height ?? 0)).toBeLessThanOrEqual(viewport.height);
