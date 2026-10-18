@@ -13,6 +13,7 @@
 
 - 加字段或改字段：改 `packages/protocol/src/template-file.ts`、`runner-file.ts`、`tool-definition.ts`，再运行 `pnpm generate`。已发布的格式是破坏性改动，要升 `formatVersion` 并写决策记录。
 - 以后放进来的内置模板和运行器都要通过 `template lint`；模板依赖一律精确版本（技术设计 §8.6.5）。
+- `description` 是模板选择器每行第二行给用户看的一句话（`要点 · 要点 · 要点`，中英文都要），不写开发备注和工具限制；限制写在模板的 `files/README.md` 或入口文件开头的注释里（负责人 2026-10-18，#396）。
 - JSON Schema 描述“写什么”（带默认值的字段可以省略）。zod 里的 `refine` 类规则（相对路径不含 `..`、正则合法等）和 `template lint` 的具体规则（`command-shell-syntax`、`stop-signal-name` 等）JSON Schema 写不出来，以 `validateTemplate`、`validateRunner` 为准。
 
 ## 子目录地图
@@ -29,7 +30,7 @@
 ## Vite 类模板（react19、react18、vue3）
 
 - 三个模板共用运行器 `vite`；版本固定在技术设计 §8.6.5 的表里，每个直接依赖在 `docs/architecture/dependencies.md` 有一行。锁文件 `pnpm-lock.yaml` 和 `package-lock.json` 都带（没有 pnpm 时回退 npm）。重新生成锁文件的办法见 `docs/guides/add-template.md`；不要手改，也不要让它们进根工作区的锁文件。
-- Vite 的报错框颜色去不掉，Vite 也不支持 `--no-color`：写在每个模板的 `description` 和 `files/README.md` 里；运行器因此不传 `--no-color`。
+- Vite 的报错框颜色去不掉，Vite 也不支持 `--no-color`：写在每个模板的 `files/README.md` 里（不写进 `description`，见上面“本包特有的规则”）；运行器因此不传 `--no-color`。
 - `setup.errors` 的特征串对着真实输出校对过（pnpm 11.28.0、npm 11.20.0，2026-10-16）。不可达注册表和离线时 pnpm 的真实输出是 `ERR_PNPM_META_FETCH_FAIL`、`ERR_PNPM_NO_OFFLINE_META`（没有出现 `ENOTFOUND`），所以它们和 `ECONNREFUSED`、`ECONNRESET` 一起归 `DEPS_OFFLINE`；`VCRUNTIME140` 一条是 Windows 上的字样，macOS 上无法核对，留给做 Windows 时。
 - 这些模板自带的依赖不进仓库工作区，仓库里不安装它们。真实安装加启动的冒烟要联网，用 `pnpm template:smoke`，不在 `pnpm test` 里（模板 CI 见 `docs/guides/commands.md` 的“模板 CI”：`.github/workflows/templates.yml` 与 `templates-nightly.yml`）。
 

@@ -3,8 +3,8 @@
   "id": "react19",
   "name": { "en": "React 19 + Vite", "zh-CN": "React 19 + Vite" },
   "description": {
-    "en": "A React 19 and TypeScript front end built with Vite 8. Vite's error overlay keeps its colors and cannot be changed; Vite does not support --no-color.",
-    "zh-CN": "用 Vite 8 构建的 React 19 加 TypeScript 前端。 Vite 的报错框颜色去不掉，Vite 也不支持 --no-color。"
+    "en": "React 19 · TypeScript · Vite 8 · instant updates as you edit",
+    "zh-CN": "React 19 · TypeScript · Vite 8 · 改代码即时刷新"
   },
   "category": "frontend",
   "runner": "vite",

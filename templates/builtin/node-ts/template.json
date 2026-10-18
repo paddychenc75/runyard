@@ -3,8 +3,8 @@
   "id": "node-ts",
   "name": { "en": "Node + TypeScript script", "zh-CN": "Node + TypeScript 脚本" },
   "description": {
-    "en": "A TypeScript script run directly by Node, with no dependencies and no build step. Only type annotations are supported (no enum or namespace).",
-    "zh-CN": "由 Node 直接运行的 TypeScript 脚本，没有依赖，不用构建。只支持类型注解（不支持 enum、namespace）。"
+    "en": "Single TypeScript file · no build step · runs on save",
+    "zh-CN": "单个 TypeScript 文件 · 不用构建 · 保存后自动运行"
   },
   "category": "script",
   "runner": "node-ts",

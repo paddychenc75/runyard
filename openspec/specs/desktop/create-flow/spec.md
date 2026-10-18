@@ -207,3 +207,19 @@
 - **WHEN** 点左侧的分类，再按回车
 - **THEN** 进入新建弹窗，模板是点击后高亮的那一行；Tab 键不会把焦点移到分类栏
 - 验证：test
+
+### Requirement: 模板选择器每行的内容
+模板选择器的每一行 MUST 写模板的名称，下面一行写模板的说明（按界面语言取，只占一行，放不下 MUST 以省略号截断）。选择器 MUST NOT 在行里显示本机工具的版本、“当前未安装”一类工具状态，MUST NOT 为此读取或触发工具检测；缺少工具只在创建或打开项目时提醒。
+来源：PRD #prd-template-picker；PRD #prd-failure-states
+
+#### Scenario: [DESKTOP-CREATE-FLOW-29] 每行写名称和一句说明
+- 前提：界面语言是简体中文，本机有内置的 `react19` 模板
+- **WHEN** 打开模板选择器
+- **THEN** `react19` 那一行写“React 19 + Vite”，下面一行是它 `description` 里 `zh-CN` 的文字，只占一行
+- 验证：test
+
+#### Scenario: [DESKTOP-CREATE-FLOW-30] 不显示本机工具状态
+- 前提：本机没有装 Go，且之前检测过工具（检测结果里记着 Go 缺失、Python 是 3.13）
+- **WHEN** 打开模板选择器
+- **THEN** `go` 和 `python` 两行的第二行只有各自的说明，没有“当前未安装”“3.13”这类文字；打开选择器不发起工具检测
+- 验证：test
