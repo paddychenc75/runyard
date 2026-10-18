@@ -58,7 +58,9 @@ export function Button({
           className={loading ? styles.spinner : undefined}
         />
       )}
-      <span className={styles.label}>{children}</span>
+      <span className={styles.label} data-truncate="">
+        {children}
+      </span>
     </BaseButton>
   );
 }
