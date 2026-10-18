@@ -43,11 +43,6 @@ catalog:
 
 # 发布不满 14 天的版本不装（单位：分钟，20160 = 14 天）
 minimumReleaseAge: 20160
-minimumReleaseAgeExclude:
-  # 安全修复例外（技术设计 §8.6.1 规则 3）：electron-builder 26.17.0 的间接依赖 http-cache-semantics
-  # 4.2.0 有 GHSA-ch52-4w7c-c8xp，4.3.0 修复（2026-10-04 发布，已满 72 小时）；负责人 2026-10-17 批准。
-  # 2026-10-18 02:56Z 满 14 天后删掉这一条（#193）。
-  - http-cache-semantics@4.3.0
 # 清掉锁文件已不再使用的例外条目（与年龄无关；满 14 天后要手动删，决策记录 0011）
 minimumReleaseAgeExcludePrune: true
 # 写入 package.json 时不加 ^ 或 ~
