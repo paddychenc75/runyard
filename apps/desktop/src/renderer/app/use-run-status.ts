@@ -4,6 +4,7 @@ import type { StatusMarkStatus } from "@runyard/ui";
 import type { TabRow } from "../../shared/library-state.ts";
 import { stateLabelKey } from "../library-view.ts";
 import { runStatusOf, secondsOf } from "./run-view.ts";
+import { toolName } from "./settings/tool-view.ts";
 import { useNow } from "./use-now.ts";
 
 export interface RunStatusView {
@@ -27,9 +28,17 @@ export function useRunStatus(tab: TabRow): RunStatusView {
     case "slow":
       return { mark, danger, text: t("desktop.slow.title") };
     case "tool-missing":
-      return { mark, danger, text: t("desktop.runbar.missing.label", { tool: text.tool }) };
+      return {
+        mark,
+        danger,
+        text: t("desktop.runbar.missing.label", { tool: toolName(text.tool) }),
+      };
     case "tool-too-old":
-      return { mark, danger, text: t("desktop.runbar.tooOld.label", { tool: text.tool }) };
+      return {
+        mark,
+        danger,
+        text: t("desktop.runbar.tooOld.label", { tool: toolName(text.tool) }),
+      };
     case "port":
       return {
         mark,
