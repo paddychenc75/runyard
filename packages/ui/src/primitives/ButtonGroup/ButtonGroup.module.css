@@ -2,6 +2,9 @@
 .root {
   display: flex;
   flex-wrap: wrap;
+  /* 在弹窗底栏这类 flex 容器里不撑破：太长的按钮由 Button 自己的 max-inline-size 截断 */
+  min-inline-size: 0;
+  max-inline-size: 100%;
   align-items: center;
   gap: var(--space-5);
 }
