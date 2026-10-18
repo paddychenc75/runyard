@@ -49,9 +49,7 @@ export function SizeCell({ row }: { row: PlaygroundRow }) {
         </span>
       }
     >
-      <UserText mono className={styles.number}>
-        {text}
-      </UserText>
+      <UserText className={styles.number}>{text}</UserText>
     </Tooltip>
   );
 }
