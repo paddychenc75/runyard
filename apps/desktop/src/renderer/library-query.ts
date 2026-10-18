@@ -1,5 +1,6 @@
 import type { Locale } from "@runyard/i18n";
 import type { TemplateCategory } from "@runyard/protocol";
+import { lastUsedAt } from "../shared/last-used.ts";
 import type { PlaygroundRow, TemplateRow } from "../shared/library-state.ts";
 import { nameProblem } from "./create-view.ts";
 import { creatorOf, pickLocalizedText, statusMarkOf } from "./library-view.ts";
@@ -91,10 +92,8 @@ function matchesSearch(row: PlaygroundRow, needle: string, locale: Locale): bool
 function compare(sort: SortKey, a: PlaygroundRow, b: PlaygroundRow): number {
   if (sort === "name") return a.name.localeCompare(b.name);
   if (sort === "created") return b.createdAt - a.createdAt || a.name.localeCompare(b.name);
-  // 最近打开：从没打开过的按创建时间排（和主进程的默认顺序一致，规格 DESKTOP-LIBRARY-VIEW-01）
-  const aTime = a.lastOpenedAt ?? a.createdAt;
-  const bTime = b.lastOpenedAt ?? b.createdAt;
-  return bTime - aTime || a.name.localeCompare(b.name);
+  // 最近使用：打开、命令行运行、创建里最近的一次（规格 DESKTOP-LIBRARY-VIEW-01、94）
+  return lastUsedAt(b) - lastUsedAt(a) || a.name.localeCompare(b.name);
 }
 
 export function filterRows(

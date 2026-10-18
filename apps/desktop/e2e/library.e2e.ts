@@ -70,7 +70,7 @@ test("资源库：搜索与筛选、重命名、改备注、移到废纸篓", as
   expect(readdirSync(trash).some((name) => name.startsWith("alpha-renamed"))).toBe(true);
 });
 
-test("资源库表格：窗口放得下和放不下时，表头与每一行逐列的 x 位置和宽度一致（#348）", async ({
+test("资源库表格：每个宽度下表头和每一行逐列对齐，没有横向滚动，没有列被截断（#348）", async ({
   launch,
 }) => {
   const runyard = await launch();
@@ -96,21 +96,31 @@ test("资源库表格：窗口放得下和放不下时，表头与每一行逐�
       }
       return out;
     };
+    // 收列是放不下时才发生的：等表头的列数稳定后再逐列比
+    await expect
+      .poll(async () => (await boxes(table.getByRole("columnheader"))).length)
+      .toBeGreaterThanOrEqual(5);
     const header = await boxes(table.getByRole("columnheader"));
     const firstRow = await boxes(table.getByRole("row").nth(1).getByRole("cell"));
-    expect(header.length).toBe(8);
-    expect(firstRow.slice(0, 8)).toEqual(header);
+    expect(firstRow).toEqual(header);
+    const scrolls = await page.evaluate(() => {
+      const tableEl = document.querySelector("table[aria-label='Playgrounds']");
+      let scroller: Element | null = tableEl?.parentElement ?? null;
+      while (scroller !== null && getComputedStyle(scroller).overflowX === "visible")
+        scroller = scroller.parentElement;
+      return scroller !== null && scroller.scrollWidth > scroller.clientWidth + 1;
+    });
+    expect(scrolls, `${width} 宽`).toBe(false);
   }
 });
 
 type Box = { left: number; right: number; width: number };
 
-test("[DESKTOP-LIBRARY-VIEW-28][DESKTOP-LIBRARY-VIEW-29] 窗口 1100 宽：横向滚动时名称列和操作列不动，表头与每格逐列对齐，没有被截断的列，状态圆点留在名称列里", async ({
+test("[DESKTOP-LIBRARY-VIEW-28][DESKTOP-LIBRARY-VIEW-29] 窗口 1100 宽：收起“最近使用”和端口、模板只剩徽标，没有横向滚动，运行中的行在状态后写端口；拉宽到 1440 后全部恢复", async ({
   launch,
 }) => {
   const runyard = await launch();
   const { page, app } = runyard;
-  // 选择器只在应用读到空资源库时弹出：先等它出现并关掉，再让命令行建项目，否则命令行抢先时选择器根本不会出现
   await closePicker(page);
   await runyard.cli("new", "html", "alpha");
   await runyard.cli("new", "python", "beta");
@@ -120,7 +130,7 @@ test("[DESKTOP-LIBRARY-VIEW-28][DESKTOP-LIBRARY-VIEW-29] 窗口 1100 宽：横�
   await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0]?.setSize(1100, 800));
   await expect.poll(() => page.evaluate(() => window.innerWidth)).toBeLessThanOrEqual(1100);
 
-  // 一次取出：滚动区的可见范围、表头和第一行各格的位置、每个格子内容有没有被截断
+  // 一次取出：滚动区有没有横向滚动、表头的字、每格有没有被截断、运行中的行的状态格写了什么
   const measure = () =>
     page.evaluate(() => {
       const tableEl = document.querySelector("table[aria-label='Playgrounds']");
@@ -128,87 +138,76 @@ test("[DESKTOP-LIBRARY-VIEW-28][DESKTOP-LIBRARY-VIEW-29] 窗口 1100 宽：横�
       let scroller: Element | null = tableEl.parentElement;
       while (scroller !== null && getComputedStyle(scroller).overflowX === "visible")
         scroller = scroller.parentElement;
-      if (scroller === null) throw new Error("no scroller");
+      const shown = (el: Element) => (el as HTMLElement).offsetParent !== null;
+      const status = [...tableEl.querySelectorAll("tbody tr")]
+        .find((r) => r.textContent?.includes("alpha"))
+        ?.querySelector("td[data-column='status']");
+      const stopped = [...tableEl.querySelectorAll("tbody tr")]
+        .find((r) => r.textContent?.includes("beta"))
+        ?.querySelector("td[data-column='status']");
       const box = (el: Element) => {
         const rect = el.getBoundingClientRect();
         return { left: rect.left, right: rect.right, width: rect.width };
       };
-      const view = box(scroller);
-      const row = tableEl.querySelector("tbody tr:has(td[data-column='name'])");
-      const running = [...tableEl.querySelectorAll("tbody tr")].find((r) =>
-        r.textContent?.includes("alpha"),
-      );
-      if (row === null || running === undefined) throw new Error("no rows");
-      const dot = running.querySelector("td[data-column='name'] [data-when-overflowing]");
-      const nameCell = running.querySelector("td[data-column='name']");
       return {
-        overflowing: scroller.scrollWidth > scroller.clientWidth + 1,
-        maxScroll: scroller.scrollWidth - scroller.clientWidth,
-        view,
+        scrolls: scroller !== null && scroller.scrollWidth > scroller.clientWidth + 1,
         headers: [...tableEl.querySelectorAll("th")].map((th) => ({
           text: th.textContent ?? "",
+          column: th.getAttribute("data-column") ?? "",
           ...box(th),
         })),
-        cells: [...row.querySelectorAll("td")].map((td) => box(td)),
         clipped: [...tableEl.querySelectorAll("th, td[data-column]")]
           .filter((cell) => cell.scrollWidth > cell.clientWidth + 1)
           .map((cell) => cell.getAttribute("data-column") ?? cell.textContent),
-        dot: dot === null || nameCell === null ? null : { dot: box(dot), name: box(nameCell) },
+        runningStatus:
+          status === undefined || status === null ? null : (status as HTMLElement).innerText,
+        stoppedStatus:
+          stopped === undefined || stopped === null ? null : (stopped as HTMLElement).innerText,
+        portHidden: [...tableEl.querySelectorAll("[data-when-collapsed]")].every(
+          (el) => !shown(el),
+        ),
       };
     });
-  const scrollTo = (x: number) =>
-    page.evaluate((left) => {
-      const tableEl = document.querySelector("table[aria-label='Playgrounds']");
-      let scroller: Element | null = tableEl?.parentElement ?? null;
-      while (scroller !== null && getComputedStyle(scroller).overflowX === "visible")
-        scroller = scroller.parentElement;
-      scroller?.scrollTo({ left });
-    }, x);
-  const round = (b: Box) => ({ left: Math.round(b.left), width: Math.round(b.width) });
 
-  const start = await measure();
-  expect(start.overflowing).toBe(true);
-  expect(start.clipped).toEqual([]);
-  const nameStart = round(start.headers[0] as Box);
-  const actionsStart = round(start.headers[7] as Box);
+  await expect.poll(async () => (await measure()).headers.length).toBe(5);
+  const narrow = await measure();
+  expect(narrow.scrolls).toBe(false);
+  expect(narrow.headers.map((h) => h.column)).toEqual([
+    "name",
+    "status",
+    "template",
+    "retention",
+    "actions",
+  ]);
+  expect(narrow.headers.filter((h) => h.column !== "actions").map((h) => h.text)).toEqual([
+    "Name and note",
+    "Status",
+    "Template",
+    "Auto-clean",
+  ]);
+  expect(narrow.clipped).toEqual([]);
+  // 运行中的行：“Running :71xx”；已停止的只写状态
+  expect(narrow.runningStatus).toMatch(/^Running\s+:\d+$/);
+  expect(narrow.stoppedStatus?.trim()).toBe("Stopped");
+  // 表头每列都完整落在表里
+  for (const header of narrow.headers as Box[]) expect(header.width).toBeGreaterThan(0);
 
-  for (const fraction of [0.5, 1]) {
-    await scrollTo(Math.floor(start.maxScroll * fraction));
-    await expect
-      .poll(async () => Math.round((await measure()).headers[3]?.left ?? 0))
-      .not.toBe(Math.round(start.headers[3]?.left ?? 0));
-    const now = await measure();
-    // 表头和第一行逐列对齐
-    expect(now.cells.map(round)).toEqual(now.headers.map(round));
-    // 名称列和操作列不随滚动移动
-    expect(round(now.headers[0] as Box)).toEqual(nameStart);
-    expect(round(now.headers[7] as Box)).toEqual(actionsStart);
-    // 状态圆点在名称列里看得见
-    expect(now.dot).not.toBeNull();
-    expect(now.dot?.dot.width).toBeGreaterThan(0);
-    expect(now.dot?.dot.left).toBeGreaterThanOrEqual(now.dot?.name.left ?? Infinity);
-    expect(now.dot?.dot.right).toBeLessThanOrEqual(now.dot?.name.right ?? 0);
-  }
-
-  // 滚到最右：“保留”“上次打开”“创建者”整列落在两根固定列之间，表头完整
-  const end = await measure();
-  const nameRight = (end.headers[0] as Box).right;
-  const actionsLeft = (end.headers[7] as Box).left;
-  for (const text of ["Retention", "Last opened", "Created by"]) {
-    const header = end.headers.find((h) => h.text === text);
-    expect(header, text).toBeDefined();
-    expect(header?.left).toBeGreaterThanOrEqual(nameRight - 1);
-    expect(header?.right).toBeLessThanOrEqual(actionsLeft + 1);
-  }
-  expect(end.clipped).toEqual([]);
-
-  // 缩窄之后放回 1440 宽：横向滚动条要消失，列宽回到一开始就是 1440 宽的样子（#404）
+  // 拉宽：端口和最近使用回到自己的列，状态里不再写端口
   await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0]?.setSize(1440, 800));
   await expect.poll(() => page.evaluate(() => window.innerWidth)).toBeGreaterThanOrEqual(1440);
-  await expect.poll(async () => (await measure()).overflowing).toBe(false);
+  await expect.poll(async () => (await measure()).headers.length).toBe(7);
   const wide = await measure();
-  expect(wide.maxScroll).toBeLessThanOrEqual(1);
+  expect(wide.scrolls).toBe(false);
+  expect(wide.headers.filter((h) => h.column !== "actions").map((h) => h.text)).toEqual([
+    "Name and note",
+    "Status",
+    "Template",
+    "Port",
+    "Last used",
+    "Auto-clean",
+  ]);
   expect(wide.clipped).toEqual([]);
+  expect(wide.runningStatus?.trim()).toBe("Running");
 });
 
 test("[#299] 主题蓝：浅色和深色下主按钮的渲染色都是设计稿的 #0071E3", async ({ launch }) => {
