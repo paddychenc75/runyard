@@ -2287,6 +2287,114 @@
    "y": 15840,
    "title": "55 New version available",
    "page": "enDark"
+  },
+  "PickerOptionA.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 22500,
+   "title": "12A 选模板 · 方案 A（推荐）：和命令面板同一套，680 宽、顶边 66、选中行实心蓝",
+   "page": "zh"
+  },
+  "PickerOptionB.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 22500,
+   "title": "12B 选模板 · 方案 B：保留 860 宽和现在的结构，只修位置、高度和选中样式",
+   "page": "zh"
+  },
+  "PickerOptionC.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 22500,
+   "title": "12C 选模板 · 方案 C：Spotlight 式单栏，没有左侧分类栏（要改规格）",
+   "page": "zh"
+  },
+  "PickerOptionAEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 22500,
+   "title": "12A Template picker · Option A (recommended): same family as the command palette, 680 wide, top 66, solid blue selection",
+   "page": "en"
+  },
+  "PickerOptionBEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 22500,
+   "title": "12B Template picker · Option B: keep 860 wide and today’s structure, fix position, height and selection",
+   "page": "en"
+  },
+  "PickerOptionCEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 22500,
+   "title": "12C Template picker · Option C: Spotlight-style single column, no category rail (spec change)",
+   "page": "en"
+  },
+  "PickerOptionADark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 22500,
+   "title": "12A 选模板 · 方案 A（推荐）：和命令面板同一套，680 宽、顶边 66、选中行实心蓝",
+   "page": "zhDark"
+  },
+  "PickerOptionBDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 22500,
+   "title": "12B 选模板 · 方案 B：保留 860 宽和现在的结构，只修位置、高度和选中样式",
+   "page": "zhDark"
+  },
+  "PickerOptionCDark.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 22500,
+   "title": "12C 选模板 · 方案 C：Spotlight 式单栏，没有左侧分类栏（要改规格）",
+   "page": "zhDark"
+  },
+  "PickerOptionADarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 0,
+   "y": 22500,
+   "title": "12A Template picker · Option A (recommended): same family as the command palette, 680 wide, top 66, solid blue selection",
+   "page": "enDark"
+  },
+  "PickerOptionBDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 1520,
+   "y": 22500,
+   "title": "12B Template picker · Option B: keep 860 wide and today’s structure, fix position, height and selection",
+   "page": "enDark"
+  },
+  "PickerOptionCDarkEn.dc.html": {
+   "w": 1440,
+   "h": 900,
+   "radius": 26,
+   "x": 3040,
+   "y": 22500,
+   "title": "12C Template picker · Option C: Spotlight-style single column, no category rail (spec change)",
+   "page": "enDark"
   }
  },
  "createdOnFiles": {
@@ -3105,7 +3213,19 @@
   "LogoLine.dc.html",
   "LogoLineEn.dc.html",
   "LogoFinal.dc.html",
-  "LogoFinalEn.dc.html"
+  "LogoFinalEn.dc.html",
+  "PickerOptionA.dc.html",
+  "PickerOptionB.dc.html",
+  "PickerOptionC.dc.html",
+  "PickerOptionAEn.dc.html",
+  "PickerOptionBEn.dc.html",
+  "PickerOptionCEn.dc.html",
+  "PickerOptionADark.dc.html",
+  "PickerOptionBDark.dc.html",
+  "PickerOptionCDark.dc.html",
+  "PickerOptionADarkEn.dc.html",
+  "PickerOptionBDarkEn.dc.html",
+  "PickerOptionCDarkEn.dc.html"
  ],
  "pages": [
   {
