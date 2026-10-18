@@ -90,6 +90,43 @@ function monacoScrollbarColors(pick: Pick): [string, string][] {
   ];
 }
 
+// 补全列表、悬停、参数提示等浮层（第 3 档）：颜色走这里，形状（圆角、阴影、行高）见 monaco-widgets.css。
+// 选中行用强调色浅底、文字仍是正文色，不用 VS Code 的饱和蓝整条填充。
+function monacoWidgetColors(pick: Pick): [string, string][] {
+  const clear = "#00000000";
+  return [
+    ["editorWidget.background", pick("glass-dialog-bg")],
+    ["editorWidget.foreground", pick("color-text-primary")],
+    ["editorWidget.border", clear],
+    ["editorWidget.resizeBorder", pick("color-line-accent")],
+    ["widget.shadow", clear],
+    ["editorSuggestWidget.background", pick("glass-dialog-bg")],
+    ["editorSuggestWidget.foreground", pick("color-text-primary")],
+    ["editorSuggestWidget.border", clear],
+    ["editorSuggestWidget.selectedForeground", pick("color-text-primary")],
+    ["editorSuggestWidget.selectedBackground", pick("color-fill-accent-tint")],
+    ["editorSuggestWidget.highlightForeground", pick("color-text-accent")],
+    ["editorSuggestWidget.focusHighlightForeground", pick("color-text-accent")],
+    ["editorSuggestWidgetStatus.foreground", pick("color-text-secondary")],
+    ["editorHoverWidget.background", pick("glass-dialog-bg")],
+    ["editorHoverWidget.foreground", pick("color-text-primary")],
+    ["editorHoverWidget.border", clear],
+    ["editorHoverWidget.statusBarBackground", clear],
+    ["list.hoverBackground", pick("color-fill-neutral")],
+    ["list.hoverForeground", pick("color-text-primary")],
+    ["list.activeSelectionBackground", pick("color-fill-accent-tint")],
+    ["list.activeSelectionForeground", pick("color-text-primary")],
+    ["list.focusBackground", pick("color-fill-accent-tint")],
+    ["list.focusForeground", pick("color-text-primary")],
+    ["list.highlightForeground", pick("color-text-accent")],
+    ["textLink.foreground", pick("color-text-link")],
+    ["textLink.activeForeground", pick("color-text-link")],
+    ["editorLink.activeForeground", pick("color-text-link")],
+    ["textCodeBlock.background", pick("color-fill-neutral")],
+    ["textSeparator.foreground", pick("color-line-hairline")],
+  ];
+}
+
 const q = quote;
 
 function monaco(theme: Theme, pick: Pick): string[] {
@@ -103,7 +140,7 @@ function monaco(theme: Theme, pick: Pick): string[] {
     ),
     "    ],",
     "    colors: {",
-    ...[...editorColors(pick), ...monacoScrollbarColors(pick)].map(
+    ...[...editorColors(pick), ...monacoScrollbarColors(pick), ...monacoWidgetColors(pick)].map(
       ([key, value]) => `      ${q(key)}: ${q(value)},`,
     ),
     "    },",
@@ -124,7 +161,10 @@ function shiki(theme: Theme, pick: Pick): string[] {
     `    name: ${q(`runyard-${theme}`)},`,
     `    type: ${q(theme)},`,
     "    colors: {",
-    ...editorColors(pick).map(([key, value]) => `      ${q(key)}: ${q(value)},`),
+    // 运行时真正用的是这一份（@shikijs/monaco 把它转成 Monaco 主题），所以浮层的颜色也要在这里
+    ...[...editorColors(pick), ...monacoWidgetColors(pick)].map(
+      ([key, value]) => `      ${q(key)}: ${q(value)},`,
+    ),
     "    },",
     "    tokenColors: [",
     ...shikiRoles.flatMap(([scopes, name]) => [
