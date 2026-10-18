@@ -123,6 +123,7 @@
 | cli.version.body | {version} | {version} | version：应用的版本号，如 0.2.0；输出里只有它 |
 | desktop.agentNotice.meta.label | {url} · {time} | {url} · {time} | url：运行的地址，如 http://127.0.0.1:7113/；还没有端口时不显示这一条；time：相对时间，如“刚刚” |
 | desktop.agentNotice.title.label | <user>{agent}</user> 创建并运行了 <user>{name}</user> | <user>{agent}</user> created and ran <user>{name}</user> | agent：智能体名称（用户或命令行给的，不翻译）；name：项目名称（不翻译）；user：包住用户内容的标签 |
+| desktop.agentNotice.unnamed.label | 智能体创建并运行了 <user>{name}</user> | An agent created and ran <user>{name}</user> | name：项目名称（不翻译）；user：包住用户内容的标签 |
 | desktop.category.frontend.label | 前端 | Front end | — |
 | desktop.category.fullstack.label | 全栈 | Full stack | — |
 | desktop.category.mine.label | 我的 | Mine | — |
@@ -647,7 +648,7 @@
 | library.clean.later.action | 稍后再说 | Remind me later | — |
 | library.clean.now.action | 现在清理 | Clean now | — |
 | library.cleanBanner.end.label | 。 | . | — |
-| library.cleanBanner.idle.label | （已 {days, plural, other {# 天}}没打开） | (not opened for {days, plural, one {# day} other {# days}}) | days：已经几天没打开 |
+| library.cleanBanner.idle.label | {days, plural, =0 {（今天打开过）} other {（已 # 天没打开）}} | {days, plural, =0 {(opened today)} one {(not opened for # day)} other {(not opened for # days)}} | days：已经几天没打开 |
 | library.cleanBanner.lead.label | {count, plural, other {# 个项目}}明天会被自动清理： | {count, plural, one {# playground} other {# playgrounds}} will be cleaned up tomorrow: | count：明天会被自动清理的项目数 |
 | library.cleanBanner.region.aria | 自动清理提醒 | Auto-clean reminder | — |
 | library.cleanBanner.separator.label | ； | ; | — |

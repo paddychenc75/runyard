@@ -82,11 +82,19 @@ function AgentRunToast({ bridge, notice }: { bridge: DesktopBridge; notice: Agen
       </span>
       <div className={styles.body}>
         <p className={styles.title}>
-          <T
-            k="desktop.agentNotice.title.label"
-            values={{ agent: notice.agent ?? t("library.creator.agent.label"), name: notice.name }}
-            components={{ user: <UserText /> }}
-          />
+          {notice.agent === null ? (
+            <T
+              k="desktop.agentNotice.unnamed.label"
+              values={{ name: notice.name }}
+              components={{ user: <UserText /> }}
+            />
+          ) : (
+            <T
+              k="desktop.agentNotice.title.label"
+              values={{ agent: notice.agent, name: notice.name }}
+              components={{ user: <UserText /> }}
+            />
+          )}
         </p>
         {notice.url === null ? null : (
           <p className={styles.meta}>
