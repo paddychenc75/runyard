@@ -57,14 +57,3 @@
 .hint[data-invalid] {
   color: var(--color-status-danger-text);
 }
-
-.actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--space-4);
-}
-
-/* 设计稿的按钮 30 高，比普通次要按钮（32）矮 2 */
-.actions > button.button {
-  block-size: calc(var(--size-control-md) - var(--space-1));
-}

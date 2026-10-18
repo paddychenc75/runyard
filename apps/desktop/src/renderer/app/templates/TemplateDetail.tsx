@@ -1,5 +1,5 @@
 import { useT } from "@runyard/i18n/react";
-import { Badge, Button, MonogramTile, ScrollArea, UserText } from "@runyard/ui";
+import { Badge, Button, ButtonGroup, MonogramTile, ScrollArea, UserText } from "@runyard/ui";
 import type { LibraryState } from "../../../shared/library-state.ts";
 import type { TemplatePageRow } from "../../../shared/templates-view.ts";
 import { brandOf, logoOf, monogramOf, pickLocalizedText } from "../../library-view.ts";
@@ -75,14 +75,14 @@ export function TemplateDetail({ row, load, locale, onCreate, onReveal }: Templa
         </div>
       </ScrollArea>
       <footer className={styles.footer}>
-        <div className={styles.actions}>
-          <Button variant="primary" size="lg" disabled={!row.valid} onClick={onCreate}>
+        <ButtonGroup size="lg" className={styles.actions}>
+          <Button variant="primary" disabled={!row.valid} onClick={onCreate}>
             {t("desktop.templates.create.action")}
           </Button>
-          <Button size="lg" disabled={detail === null} onClick={onReveal}>
+          <Button disabled={detail === null} onClick={onReveal}>
             {t("library.row.reveal.action")}
           </Button>
-        </div>
+        </ButtonGroup>
         <p className={styles.hint}>{t("desktop.templates.edit.hint")}</p>
       </footer>
     </div>

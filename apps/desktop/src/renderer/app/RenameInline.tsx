@@ -1,5 +1,5 @@
 import { useT } from "@runyard/i18n/react";
-import { Button } from "@runyard/ui";
+import { Button, ButtonGroup } from "@runyard/ui";
 import { useEffect, useRef } from "react";
 import styles from "./RenameInline.module.css";
 import { renameTerminalNote } from "./rename-terminal-note.ts";
@@ -65,19 +65,18 @@ export function RenameInlineFields({ draft }: { draft: RenameDraft }) {
 export function RenameInlineActions({ draft }: { draft: RenameDraft }) {
   const t = useT();
   return (
-    <div className={styles.actions}>
-      <Button type="button" className={styles.button} onClick={draft.cancel}>
+    <ButtonGroup size="sm" align="end" className={styles.actions}>
+      <Button type="button" onClick={draft.cancel}>
         {t("desktop.create.cancel.action")}
       </Button>
       <Button
         type="button"
         variant="primary"
-        className={styles.button}
         disabled={!draft.canSave}
         onClick={() => void draft.save()}
       >
         {t("library.rename.save.action")}
       </Button>
-    </div>
+    </ButtonGroup>
   );
 }

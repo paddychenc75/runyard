@@ -67,9 +67,3 @@
   line-height: var(--text-secondary-line-height);
   overflow-wrap: anywhere;
 }
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-}

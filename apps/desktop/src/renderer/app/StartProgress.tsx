@@ -1,5 +1,5 @@
 import { useFormat, useT } from "@runyard/i18n/react";
-import { Button, Icon } from "@runyard/ui";
+import { Button, ButtonGroup, Icon } from "@runyard/ui";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { TabRow } from "../../shared/library-state.ts";
 import { focusConsoleOutput, type StartStep } from "./failure-view.ts";
@@ -75,13 +75,13 @@ export function StartProgress({ bridge, tab }: StartProgressProps) {
         })}
       </ol>
       {tail === null ? null : <p className={styles.tail}>{tail}</p>}
-      <div className={styles.actions}>
+      <ButtonGroup size="md" className={styles.actions}>
         <Button onClick={focusConsoleOutput}>{t("desktop.output.view.action")}</Button>
         <Button disabled={tab.busy} onClick={() => void bridge.call("run.stop", tab.id)}>
           {t("desktop.start.stop.action")}
         </Button>
         <span className={styles.hint}>{t("desktop.start.hint")}</span>
-      </div>
+      </ButtonGroup>
     </div>
   );
 }

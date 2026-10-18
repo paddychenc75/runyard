@@ -1,5 +1,5 @@
 import { useT } from "@runyard/i18n/react";
-import { Button, Icon, UserText } from "@runyard/ui";
+import { Button, ButtonGroup, Icon, UserText } from "@runyard/ui";
 import { useEffect, useState } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { CleanReminderItem, PlaygroundRow } from "../../shared/library-state.ts";
@@ -51,13 +51,11 @@ export function CleanBanner({ bridge, items, playgrounds }: CleanBannerProps) {
             </span>
           ))}
         </p>
-        <div className={styles.actions}>
-          <Button variant="primary" size="sm" onClick={() => void bridge.call("clean.keep", ids)}>
+        <ButtonGroup size="md" className={styles.actions}>
+          <Button variant="primary" onClick={() => void bridge.call("clean.keep", ids)}>
             {t("library.clean.keep.action")}
           </Button>
-          <Button size="sm" onClick={() => setQueue(ids)}>
-            {t("library.clean.now.action")}
-          </Button>
+          <Button onClick={() => setQueue(ids)}>{t("library.clean.now.action")}</Button>
           <button
             type="button"
             className={styles.link}
@@ -65,7 +63,7 @@ export function CleanBanner({ bridge, items, playgrounds }: CleanBannerProps) {
           >
             {t("library.clean.later.action")}
           </button>
-        </div>
+        </ButtonGroup>
       </section>
       <TrashConfirmDialog
         open={current !== undefined}

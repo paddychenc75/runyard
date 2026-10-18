@@ -135,7 +135,6 @@
   --shadow-floating: 0 1px 2px rgba(15, 23, 42, 0.05), 0 8px 24px rgba(15, 23, 42, 0.09);
   --shadow-dialog: 0 0 0 0.5px rgba(0, 0, 0, 0.14), 0 40px 90px rgba(15, 23, 42, 0.32);
   --shadow-overlay: 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 16px 40px rgba(15, 23, 42, 0.2);
-  --shadow-accent-button: 0 4px 14px rgba(0, 113, 227, 0.25);
   --shadow-focus-ring: 0 0 0 1.5px #0071e3, 0 0 0 4.5px rgba(0, 113, 227, 0.18);
   --shadow-field-focus: 0 0 0 3px rgba(0, 113, 227, 0.18);
   --shadow-segment-selected: 0 1px 3px rgba(0, 0, 0, 0.14), 0 0 0 0.5px rgba(0, 0, 0, 0.05);
@@ -286,7 +285,6 @@
   --shadow-floating: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 28px rgba(0, 0, 0, 0.42);
   --shadow-dialog: 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 40px 90px rgba(0, 0, 0, 0.6);
   --shadow-overlay: 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 16px 40px rgba(0, 0, 0, 0.5);
-  --shadow-accent-button: 0 4px 14px rgba(10, 132, 255, 0.35);
   --shadow-focus-ring: 0 0 0 1.5px #0a84ff, 0 0 0 4.5px rgba(10, 132, 255, 0.32);
   --shadow-field-focus: 0 0 0 3px rgba(10, 132, 255, 0.2);
   --shadow-segment-selected: none;
@@ -301,7 +299,6 @@
     --shadow-floating: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 28px rgba(0, 0, 0, 0.42);
     --shadow-dialog: 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 40px 90px rgba(0, 0, 0, 0.6);
     --shadow-overlay: 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 16px 40px rgba(0, 0, 0, 0.5);
-    --shadow-accent-button: 0 4px 14px rgba(10, 132, 255, 0.35);
     --shadow-focus-ring: 0 0 0 1.5px #0a84ff, 0 0 0 4.5px rgba(10, 132, 255, 0.32);
     --shadow-field-focus: 0 0 0 3px rgba(10, 132, 255, 0.2);
     --shadow-segment-selected: none;

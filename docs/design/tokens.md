@@ -47,7 +47,6 @@ disagree, `tokens.json` wins.
 | Elevation 2: sidebar, file tree (fill plus one soft shadow, no edge, ring or top highlight) (`--shadow-floating`) | 0 1px 2px rgba(15, 23, 42, 0.05), 0 8px 24px rgba(15, 23, 42, 0.09) | 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 28px rgba(0, 0, 0, 0.42) |
 | Elevation 4: dialogs, template picker (`--shadow-dialog`) | 0 0 0 0.5px rgba(0, 0, 0, 0.14), 0 40px 90px rgba(15, 23, 42, 0.32) | 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 40px 90px rgba(0, 0, 0, 0.6) |
 | Elevation 3: menus, popovers, tooltips (`--shadow-overlay`) | 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 16px 40px rgba(15, 23, 42, 0.2) | 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 16px 40px rgba(0, 0, 0, 0.5) |
-| Primary button glow (`--shadow-accent-button`) | 0 4px 14px rgba(0, 113, 227, 0.25) | 0 4px 14px rgba(10, 132, 255, 0.35) |
 | Focus ring: 1.5 px accent line plus 3 px halo (`--shadow-focus-ring`) | 0 0 0 1.5px #0071E3, 0 0 0 4.5px rgba(0, 113, 227, 0.18) | 0 0 0 1.5px #0A84FF, 0 0 0 4.5px rgba(10, 132, 255, 0.32) |
 | Text field focus halo (3 px, beside the 1.5 px accent border) (`--shadow-field-focus`) | 0 0 0 3px rgba(0, 113, 227, 0.18) | 0 0 0 3px rgba(10, 132, 255, 0.2) |
 | Selected segment in a segmented control (`--shadow-segment-selected`) | 0 1px 3px rgba(0, 0, 0, 0.14), 0 0 0 0.5px rgba(0, 0, 0, 0.05) | none |

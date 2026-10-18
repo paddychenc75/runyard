@@ -137,7 +137,7 @@ function SaveForm({
       initialFocus={nameRef}
       actions={
         <>
-          <Button type="button" size="lg" onClick={onClose} disabled={busy}>
+          <Button type="button" onClick={onClose} disabled={busy}>
             {t("desktop.saveTemplate.cancel.action")}
           </Button>
           <Button type="submit" variant="primary" disabled={!canSave} loading={busy}>

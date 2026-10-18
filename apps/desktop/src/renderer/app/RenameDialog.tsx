@@ -45,7 +45,7 @@ export function RenameDialog({ bridge, target, focus, taken, onClose }: RenameDi
       initialFocus={focus === "note" ? noteRef : nameRef}
       actions={
         <>
-          <Button type="button" size="lg" onClick={onClose} disabled={session.busy}>
+          <Button type="button" onClick={onClose} disabled={session.busy}>
             {t("desktop.create.cancel.action")}
           </Button>
           <Button type="submit" variant="primary" loading={session.busy} disabled={!draft.canSave}>

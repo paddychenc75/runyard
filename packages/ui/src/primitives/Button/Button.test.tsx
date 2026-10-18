@@ -62,28 +62,6 @@ describe("Button", () => {
     expect(container.querySelector("svg")?.getAttribute("data-icon")).toBe("spinner");
   });
 
-  it("高度档位按规范板：主要和玻璃是 lg，次要是 md，显式 size 优先", () => {
-    render(
-      <>
-        <Button variant="primary">a</Button>
-        <Button variant="glass">b</Button>
-        <Button>c</Button>
-        <Button variant="destructive">d</Button>
-        <Button variant="primary" size="sm">
-          e
-        </Button>
-      </>,
-    );
-    const size = (name: string) => screen.getByRole("button", { name }).getAttribute("data-size");
-    expect([size("a"), size("b"), size("c"), size("d"), size("e")]).toEqual([
-      "lg",
-      "lg",
-      "md",
-      "md",
-      "sm",
-    ]);
-  });
-
   it("变体写成 data-variant，默认是 neutral", () => {
     render(
       <>
@@ -126,5 +104,23 @@ describe("Button", () => {
       <Button variant="danger">x</Button>
     );
     expect(typeOnly).toBeTypeOf("function");
+  });
+
+  it("档位不随变体变：四个变体默认都是 md，显式 size 才改档", () => {
+    render(
+      <>
+        <Button variant="primary" size="sm">
+          s
+        </Button>
+        <Button variant="primary">p</Button>
+        <Button variant="glass">g</Button>
+        <Button>n</Button>
+        <Button variant="destructive">d</Button>
+      </>,
+    );
+    expect(screen.getByRole("button", { name: "s" }).getAttribute("data-size")).toBe("sm");
+    for (const name of ["p", "g", "n", "d"]) {
+      expect(screen.getByRole("button", { name }).getAttribute("data-size")).toBe("md");
+    }
   });
 });

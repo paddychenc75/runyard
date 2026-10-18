@@ -55,6 +55,7 @@ export {
   type ButtonSize,
   type ButtonVariant,
 } from "./primitives/Button/index.ts";
+export { ButtonGroup, type ButtonGroupProps } from "./primitives/ButtonGroup/index.ts";
 export { Checkbox, type CheckboxProps } from "./primitives/Checkbox/index.ts";
 export { CopyableCommand, type CopyableCommandProps } from "./primitives/CopyableCommand/index.ts";
 export { Dialog, type DialogProps } from "./primitives/Dialog/index.ts";

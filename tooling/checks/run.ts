@@ -1,6 +1,7 @@
 import { join } from "node:path";
 import { adrIndex } from "./adr-index.ts";
 import { agentsConfig } from "./agents-config.ts";
+import { buttonGroups } from "./button-groups.ts";
 import { depsPolicy } from "./deps-policy.ts";
 import { depsRecord } from "./deps-record.ts";
 import { docsCommands } from "./docs-commands.ts";
@@ -77,6 +78,7 @@ const checks: Check[] = [
   uiLayers,
   uiPurity,
   styleTokens,
+  buttonGroups,
   uiFixtures,
   icons,
   fileSize,
