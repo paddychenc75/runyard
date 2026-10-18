@@ -8,6 +8,7 @@ describe("智能体名称的显示", () => {
     expect(agentDisplayName("claude-code@2.1.2")).toBe("Claude Code");
     expect(agentDisplayName("claude-code")).toBe("Claude Code");
     expect(agentDisplayName("codex_0-34-0")).toBe("Codex");
+    expect(agentDisplayName("claude-code_2-1-296_agent")).toBe("Claude Code");
   });
 
   it("[DESKTOP-LIBRARY-VIEW-101] 不认识的标识按单词首字母大写；已经是名字的只去版本", () => {
