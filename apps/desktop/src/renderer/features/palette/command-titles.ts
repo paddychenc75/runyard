@@ -7,6 +7,7 @@ export function commandTitles(t: Translate): Record<CommandId, Localized> {
   return {
     "app.new": t("desktop.command.new.label"),
     "app.openLibrary": t("desktop.command.openLibrary.label"),
+    "app.closeTab": t("desktop.command.closeProjectTab.label"),
     "app.settings": t("desktop.command.settings.label"),
     "app.quickOpen": t("desktop.command.quickOpen.label"),
     "app.showTerminal": t("desktop.command.showTerminal.label"),

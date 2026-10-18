@@ -109,7 +109,7 @@ function setup(state: LibraryState) {
 const names = () =>
   screen
     .getAllByRole("option")
-    .map((option) => option.textContent?.replace(/[⌘⌃⌥⇧A-Z0-9/]+$/, "").trim());
+    .map((option) => option.textContent?.replace(/[⌘⌃⌥⇧A-Z0-9/,.]+$/, "").trim());
 
 describe("命令面板在外壳里", () => {
   it("[DESKTOP-EDITOR-64] 资源库页：列出新建项目…、设置、打开运行视图、全部停止、切换侧栏、主题；没有项目命令和编辑器命令", async () => {
@@ -123,7 +123,7 @@ describe("命令面板在外壳里", () => {
       "设置",
       "打开运行视图",
       "全部停止",
-      "切换侧栏",
+      "显示/隐藏侧栏",
       "主题：浅色",
       "主题：深色",
       "主题：跟随系统",
@@ -201,5 +201,28 @@ describe("命令面板在外壳里", () => {
     expect(within(dialog).getByRole("combobox")).toBeTruthy();
     emit("palette.open", { mode: "files" });
     expect(await screen.findByRole("dialog", { name: "快速打开" })).toBeTruthy();
+  });
+
+  it("应用菜单发 command.run：和命令面板同一个“打开设置”命令；项目标签页上进的是资源库标签里的设置页", async () => {
+    const { emit, call } = setup(projectState());
+    await screen.findByRole("group", { name: "运行条" });
+    emit("command.run", { id: "app.settings" });
+    await vi.waitFor(() => expect(call).toHaveBeenCalledWith("tab.select", "library"));
+  });
+
+  it("应用菜单发 command.run 的命令此刻没登记（资源库页上的“运行”）：什么都不发生", async () => {
+    const { emit, call } = setup(libraryState());
+    await screen.findByRole("navigation", { name: "资源库导航" });
+    emit("command.run", { id: "project.run" });
+    emit("command.run", { id: "app.closeTab" });
+    expect(call.mock.calls.map(([method]) => method)).not.toContain("tab.close");
+    expect(call.mock.calls.map(([method]) => method)).not.toContain("run.start");
+  });
+
+  it("⌘W（菜单的“关闭标签页”，app.closeTab）：项目标签页没有打开的文件时关闭这个标签页", async () => {
+    const { emit, call } = setup(projectState());
+    await screen.findByRole("group", { name: "运行条" });
+    emit("command.run", { id: "app.closeTab" });
+    await vi.waitFor(() => expect(call).toHaveBeenCalledWith("tab.close", "demo"));
   });
 });

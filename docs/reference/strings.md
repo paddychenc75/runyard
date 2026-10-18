@@ -130,6 +130,7 @@
 | desktop.category.script.label | 脚本 | Scripts | — |
 | desktop.category.service.label | 服务 | Services | — |
 | desktop.command.autoClean.label | 自动清理… | Auto-clean… | — |
+| desktop.command.closeProjectTab.label | 关闭标签页 | Close tab | — |
 | desktop.command.closeTab.label | 关闭文件标签 | Close file tab | — |
 | desktop.command.copyLink.label | 复制链接 | Copy link | — |
 | desktop.command.copyPath.label | 复制路径 | Copy path | — |
@@ -261,10 +262,52 @@
 | desktop.linkNotice.newThrottled.label | 新建得太频繁，这个链接已忽略 | Too many projects created too fast, so this link was ignored | — |
 | desktop.linkNotice.openInvalid.label | 链接里的项目名称不合法 | The playground name in the link is not valid | — |
 | desktop.linkNotice.openMissing.label | 没有叫 <user>{value}</user> 的项目 | There is no playground named <user>{value}</user> | value：链接里写的项目名称、模板标识或新名称（不翻译）；user：包住用户内容的标签 |
+| desktop.menu.about.label | 关于 Runyard | About Runyard | — |
+| desktop.menu.actualSize.label | 实际大小 | Actual Size | — |
+| desktop.menu.checkUpdates.label | 检查更新… | Check for Updates… | — |
+| desktop.menu.closeTab.label | 关闭标签页 | Close Tab | — |
+| desktop.menu.closeWindow.label | 关闭窗口 | Close Window | — |
+| desktop.menu.copy.label | 拷贝 | Copy | — |
+| desktop.menu.cut.label | 剪切 | Cut | — |
+| desktop.menu.delete.label | 删除 | Delete | — |
+| desktop.menu.devtools.label | 开发者工具 | Developer Tools | — |
+| desktop.menu.edit.title | 编辑 | Edit | — |
+| desktop.menu.file.title | 文件 | File | — |
+| desktop.menu.forceReload.label | 强制重新载入 | Force Reload | — |
+| desktop.menu.fullscreen.label | 切换全屏 | Toggle Full Screen | — |
+| desktop.menu.help.title | 帮助 | Help | — |
+| desktop.menu.helpPage.label | Runyard 帮助 | Runyard Help | — |
+| desktop.menu.hide.label | 隐藏 Runyard | Hide Runyard | — |
+| desktop.menu.hideOthers.label | 隐藏其他 | Hide Others | — |
+| desktop.menu.minimize.label | 最小化 | Minimize | — |
 | desktop.menu.new.label | 新建… | New… | — |
 | desktop.menu.palette.label | 命令面板 | Command Palette | — |
+| desktop.menu.paste.label | 粘贴 | Paste | — |
+| desktop.menu.pasteMatch.label | 粘贴并匹配样式 | Paste and Match Style | — |
+| desktop.menu.project.title | 项目 | Playground | — |
 | desktop.menu.quickOpen.label | 快速打开文件 | Quick Open File | — |
-| desktop.menu.sidebar.label | 切换侧栏 | Toggle Sidebar | — |
+| desktop.menu.quit.label | 退出 Runyard | Quit Runyard | — |
+| desktop.menu.redo.label | 重做 | Redo | — |
+| desktop.menu.reload.label | 重新载入 | Reload | — |
+| desktop.menu.reportIssue.label | 报告问题… | Report an Issue… | — |
+| desktop.menu.selectAll.label | 全选 | Select All | — |
+| desktop.menu.services.label | 服务 | Services | — |
+| desktop.menu.settings.label | 设置… | Settings… | — |
+| desktop.menu.showAll.label | 全部显示 | Show All | — |
+| desktop.menu.sidebar.label | 显示/隐藏侧栏 | Show/Hide Sidebar | — |
+| desktop.menu.trash.label | 移到{term_trash}… | Move to {term_trash}… | — |
+| desktop.menu.tree.label | 显示/隐藏文件树 | Show/Hide File Tree | — |
+| desktop.menu.undo.label | 撤销 | Undo | — |
+| desktop.menu.update.title | 检查更新 | Check for Updates | — |
+| desktop.menu.updateFailed.body | 没能连上更新服务，请稍后再试。 | Could not reach the update service. Please try again later. | — |
+| desktop.menu.updateLatest.body | 当前版本 {version} 已是最新版本。 | Version {version} is the latest version. | version：当前应用的版本号，如 0.3.0 |
+| desktop.menu.updateUnavailable.body | 从源码运行的版本不检查更新。 | Builds run from source do not check for updates. | — |
+| desktop.menu.view.title | 显示 | View | — |
+| desktop.menu.window.title | 窗口 | Window | — |
+| desktop.menu.windowFront.label | 前置全部窗口 | Bring All to Front | — |
+| desktop.menu.windowZoom.label | 缩放 | Zoom | — |
+| desktop.menu.zoomIn.label | 放大 | Zoom In | — |
+| desktop.menu.zoomOut.label | 缩小 | Zoom Out | — |
 | desktop.missing.command.label | 安装命令 | Install command | — |
 | desktop.missing.copied.label | 已复制 | Copied | — |
 | desktop.missing.copy.action | 复制命令 | Copy command | — |
