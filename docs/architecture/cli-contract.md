@@ -29,7 +29,7 @@
 | `skill install` | `--target claude\|agents\|all`；写 `~/.claude/skills/runyard/SKILL.md` 和 `~/.agents/skills/runyard/SKILL.md` | #prd-cli-commands |
 | `config get lang \| set lang <locale>` | 唯一设置项 `lang`（`en` 或 `zh-CN`），存 `~/.runyard/cli.json`；`get` 显示生效的语言和来源（`--lang`、环境变量、设置、默认） | #prd-cli-language |
 
-`new` 不给名称时按“模板标识加序号”自动命名，序号取现有最大序号加一，不回头补空缺（PRD #prd-naming）。创建时默认已保留，带 `--clean-after 30d` 才开启自动清理。`open`、`screenshot` 属于 P1，需要桌面应用，M1 不做。
+`new` 不给名称时按“模板标识加序号”自动命名，序号取现有最大序号加一，不回头补空缺（PRD #prd-naming）。创建时默认不开启自动清理，带 `--clean-after 30d` 才开启。`open`、`screenshot` 属于 P1，需要桌面应用，M1 不做。
 
 ## 3. `--json` 输出形状
 
