@@ -3,8 +3,8 @@
   "id": "python",
   "name": { "en": "Python script", "zh-CN": "Python 脚本" },
   "description": {
-    "en": "A single Python file with no third-party packages.",
-    "zh-CN": "一个 Python 文件，不用第三方包。"
+    "en": "Single file · standard library only · runs on save",
+    "zh-CN": "单个文件 · 只用标准库 · 保存后自动运行"
   },
   "category": "script",
   "runner": "python-file",

@@ -38,3 +38,23 @@ test("设置：切换主题和语言立即生效并保存", async ({ launch }) =
     )
     .toMatch(/新建/);
 });
+
+test("[DESKTOP-SETTINGS-22] 打好的包里导出诊断信息：生成诊断包并在访达里选中", async ({
+  launch,
+}) => {
+  const runyard = await launch({ lang: "zh-CN", theme: "light" });
+  // 不真的弹出访达：把 shell.showItemInFolder 换成记录
+  await runyard.app.evaluate(({ shell }) => {
+    (globalThis as { revealed?: string[] }).revealed = [];
+    shell.showItemInFolder = (path: string) => {
+      (globalThis as { revealed?: string[] }).revealed?.push(path);
+    };
+  });
+  const outcome = await runyard.call<{ ok: boolean }>("diagnostics.export");
+  expect(outcome).toEqual({ ok: true });
+  const revealed = await runyard.app.evaluate(
+    () => (globalThis as { revealed?: string[] }).revealed ?? [],
+  );
+  expect(revealed).toHaveLength(1);
+  expect(revealed[0]).toMatch(/runyard-doctor-.*\.zip$/);
+});
