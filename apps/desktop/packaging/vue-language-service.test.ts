@@ -9,7 +9,8 @@ describe("vueLanguageServiceProblems", () => {
     // 临时目录不删，留给系统清理
     const root = mkdtempSync(join(tmpdir(), "ry-vue-service-"));
     const problems = vueLanguageServiceProblems(root);
-    expect(problems).toContain("语言服务目录缺少 server/vue-language-server.cjs");
+    // 路径分隔符随系统，期望值也用 join 拼
+    expect(problems).toContain(`语言服务目录缺少 ${join("server", "vue-language-server.cjs")}`);
     expect(problems.some((problem) => problem.includes("tsserver.js"))).toBe(true);
     expect(problems.some((problem) => problem.includes("manifest.json"))).toBe(true);
   });
