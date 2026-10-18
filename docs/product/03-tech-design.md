@@ -688,7 +688,7 @@ Monaco 0.57，语法高亮用 Shiki（一个用 VS Code 语法文件做高亮的
 | --- | --- | --- |
 | TypeScript、JavaScript（含 TSX、JSX） | 补全、跳转定义、重命名、报错，范围是**项目自己的文件** | `node_modules` 里的类型（以后做）。因此“找不到模块”一类的报错被屏蔽，代价是包名真写错了也不报 |
 | CSS、HTML、JSON | Monaco 自带的语言服务；`template.json`、`runner.json`、`package.json` 有字段提示 | — |
-| Vue 单文件组件 | 只有高亮 | 补全、报错 |
+| Vue 单文件组件 | 模板和脚本的补全（含组件属性名、事件名）、悬停、跳转、报错，读项目真实的类型和 `tsconfig.json`：官方的 Vue 语言服务器加带 Vue 插件的 tsserver，每个项目一组独立进程，经主进程接到 Monaco（负责人 2026-10-18 决定，决策记录 0021） | pug 模板、Emmet、格式化 |
 | Python、Go | 只有高亮 | 补全、报错（要接语言服务器，是更后面的事） |
 
 其他约定（架构 §6.4）：
@@ -3039,3 +3039,9 @@ M1 的头几个包（`protocol`、`platform`、`i18n`、`core`）落地后，把
 
 - §4.4：Vite、Next 报错框颜色去不掉、不支持 `--no-color` 这两条从“模板说明”改为写在模板自带的 `files/README.md`；`template.json` 的 `description` 只写给用户看的一句话。
 - §4.8“模板选择器里的副标题”一行：改为只写 `description`、不显示工具状态、不读工具缓存；§14 对应一行标为作废（PRD §4.1 已同步改）。
+
+### 2026-10-18 的修改（Vue 单文件组件的完整智能提示）
+
+依据：负责人 2026-10-18 决定 Vue 智能提示第一版做完整的（证据 `docs/architecture/evidence/vue-intellisense.md` 的选项 3），并问能否装官方的 Vue VS Code 扩展。
+
+- §6.2 语言表的 Vue 一行：由“只有高亮”改为完整的智能提示；做法见决策记录 0021（不装 VS Code 扩展，随应用带上官方扩展所用的同一个语言服务）。本文其余章节不改。
