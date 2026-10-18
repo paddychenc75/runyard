@@ -286,6 +286,7 @@
   "desktop.script.running.label": "{state} · 已 {duration}",
   "desktop.script.stale.label": "过期",
   "desktop.script.staleNotice.label": "代码有语法错误，没有重新运行。下面是上一次的输出。",
+  "desktop.script.startFailed.body": "程序没能启动。项目文件原样保留，代码可以照常编辑。",
   "desktop.slow.body": "启动比平时慢，进程还在运行。下面的输出可以看到进度。",
   "desktop.slow.title": "启动中（较慢）",
   "desktop.start.body": "项目已经建好，放在 {folder}。页面准备好后会自动显示在这里。",

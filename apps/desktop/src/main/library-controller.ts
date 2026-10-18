@@ -351,12 +351,12 @@ export class LibraryController {
         this.#timeline.forget(id);
         this.#dropProject(id);
       }
-      const requested = this.#close.requestId;
-      if (requested !== null && !this.#workspace.tabs.includes(requested))
-        this.#close.requestId = null;
+      // 请求关闭的标签页已经不在了：撤掉请求（没有请求时 requestId 本来就是 null）
+      if (!this.#workspace.tabs.includes(this.#close.requestId ?? "")) this.#close.requestId = null;
     } catch (error) {
       this.#error = toDesktopError(error);
     }
+    await this.#console.syncRuns(latestRunByPlayground(this.#runs), this.#workspace.tabs);
     // 命令行刚启动了某个已打开标签页的项目：它就成了查看画面（规格 DESKTOP-WORKSPACE-54）
     await this.#cliView.sync(this.#workspace.tabs, this.#runs);
     for (const id of [...this.#pendingStart]) {

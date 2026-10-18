@@ -80,6 +80,20 @@ export class RunLogService {
     this.#deliver(playgroundId, entry);
   }
 
+  /**
+   * 一次运行开始了：它就是这个项目“最近一次运行”，哪怕还没产生任何输出。
+   * 没产生输出就失败的运行（缺工具、版本过低）不调用 record，要是不在这里登记，读取会一直读到上一次运行的输出，
+   * 把旧输出当成这次的结果显示给用户。
+   */
+  beginRun(runId: string): void {
+    const playgroundId = this.#deps.playgroundOf(runId);
+    if (playgroundId === undefined) return;
+    if (this.#buckets.get(playgroundId)?.runId === runId) return;
+    const bucket = this.#begin(playgroundId, runId);
+    // 空文件也要落盘：管理进程重启后“最近一次”从磁盘读回来，不能退回到上一次运行的文件
+    bucket.writer?.clear();
+  }
+
   async read(playgroundId: string, options: ReadLogsOptions = {}): Promise<ReadLogsResult> {
     const state = this.#deps.stateOf(playgroundId);
     const withState = (result: Omit<ReadLogsResult, "state">): ReadLogsResult =>

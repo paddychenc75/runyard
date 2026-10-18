@@ -73,6 +73,33 @@ export class ConsoleLogs {
     return watch.ready;
   }
 
+  /** 每个项目控制台最后对齐过的运行 id */
+  readonly #syncedRuns = new Map<string, string>();
+
+  /** 各标签页的项目最近一次运行换了新的（运行 id 变了）就重读；没换不碰 */
+  async syncRuns(
+    latest: ReadonlyMap<string, { runId: string }>,
+    playgrounds: readonly string[],
+  ): Promise<void> {
+    for (const id of playgrounds) {
+      const runId = latest.get(id)?.runId;
+      if (runId === undefined || this.#syncedRuns.get(id) === runId) continue;
+      this.#syncedRuns.set(id, runId);
+      await this.sync(id);
+    }
+  }
+
+  /**
+   * 这个项目开了新的一次运行：重读一次。运行没产生输出就失败（缺工具）时不会有新行的信号，
+   * 不重读的话界面还留着上一次运行的输出，像是这次的结果
+   */
+  async sync(playground: string): Promise<void> {
+    const watch = this.#watches.get(playground);
+    if (watch === undefined) return;
+    await watch.ready;
+    await this.#read(playground, watch).catch(() => undefined);
+  }
+
   /** “清除”：这次运行已有的行不再显示，之后的新输出照常接上（游标不动，只取更新的） */
   clear(playground: string): void {
     const watch = this.#watches.get(playground);
@@ -87,6 +114,7 @@ export class ConsoleLogs {
     if (watch === undefined) return;
     watch.closed = true;
     this.#watches.delete(playground);
+    this.#syncedRuns.delete(playground);
     void watch.unsubscribe?.().catch(() => undefined);
   }
 

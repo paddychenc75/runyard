@@ -19,7 +19,7 @@ export interface LogModuleOptions {
 
 export interface LogModule {
   readonly service: RunLogService;
-  readonly observer: Required<Pick<RunObserver, "log">>;
+  readonly observer: Required<Pick<RunObserver, "log" | "state">>;
   readonly handlers: HandlerMap;
   flush(): Promise<void>;
 }
@@ -34,7 +34,10 @@ export function createLogModule(api: SupervisorApi, options: LogModuleOptions): 
   });
   return {
     service,
-    observer: { log: (runId, entry) => service.record(runId, entry) },
+    observer: {
+      log: (runId, entry) => service.record(runId, entry),
+      state: (event) => service.beginRun(event.run.runId),
+    },
     handlers: createLogHandlers(api, service, options.onMention),
     flush: () => service.flush(),
   };

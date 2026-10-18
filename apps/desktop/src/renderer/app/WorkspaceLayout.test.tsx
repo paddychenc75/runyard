@@ -64,3 +64,41 @@ describe("工作区右侧", () => {
     expect(script.container.querySelector("[data-request-panel]")).toBeNull();
   });
 });
+
+describe("缺工具的画面（任何类型的项目都一样）", () => {
+  const failure = (code: "TOOL_MISSING" | "TOOL_TOO_OLD") => ({
+    code,
+    params: {
+      tool: "go",
+      required: ">=1.26 <2",
+      ...(code === "TOOL_TOO_OLD" ? { found: "1.20.1" } : {}),
+      installCommand: "brew install go",
+      installUrl: "https://go.dev/dl/",
+    },
+  });
+  const failed = { state: "failed", active: false, status: "crashed", port: null } as const;
+
+  it("[DESKTOP-WORKSPACE-18] 脚本项目过旧：右侧是缺工具画面，没有输出区和“启动失败”", () => {
+    const view = renderLayout(
+      sampleTab({ ...failed, kind: "oneshot", failure: failure("TOOL_TOO_OLD") }),
+    );
+    expect(view.container.querySelector("[data-failure-screen=missing]")).not.toBeNull();
+    expect(view.container.querySelector("[data-script-output]")).toBeNull();
+    expect(view.getByText("1.20.1")).toBeTruthy();
+    expect(view.queryByText(/启动失败/)).toBeNull();
+  });
+
+  it("[DESKTOP-WORKSPACE-18] 服务项目没装：右侧是缺工具画面，不是请求面板", () => {
+    const view = renderLayout(
+      sampleTab({ ...failed, service: true, failure: failure("TOOL_MISSING") }),
+    );
+    expect(view.container.querySelector("[data-failure-screen=missing]")).not.toBeNull();
+    expect(view.container.querySelector("[data-request-panel]")).toBeNull();
+    expect(view.getByText("brew install go")).toBeTruthy();
+  });
+
+  it("[DESKTOP-WORKSPACE-18] 网页项目没装：预览区是缺工具画面", () => {
+    const view = renderLayout(sampleTab({ ...failed, failure: failure("TOOL_MISSING") }));
+    expect(view.container.querySelector("[data-failure-screen=missing]")).not.toBeNull();
+  });
+});
