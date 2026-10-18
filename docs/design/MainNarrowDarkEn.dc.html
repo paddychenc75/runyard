@@ -31,7 +31,7 @@ a{color:#4DA3FF}a:hover{color:#7DBBFF}
 <div style="padding: 20px 28px 0 28px; display: flex; align-items: flex-end; gap: 16px">
 <div style="display: flex; flex-direction: column; gap: 2px; flex: 1">
 <h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.3px">All</h1>
-<div style="color: #A1A1A6">20 playgrounds · 4 running · stored in ~/Runyard</div>
+<div style="color: #A1A1A6">9 playgrounds · 2 running · stored in ~/Runyard</div>
 </div>
 <div style="display: flex; gap: 8px; align-items: center">
 <label style="height: 30px; width: 180px; min-width: 0; padding: 0 10px 0 12px; box-sizing: border-box; border-radius: 15px; display: flex; align-items: center; gap: 8px; background: rgba(118,118,128,0.24); flex: none">
@@ -41,93 +41,107 @@ a{color:#4DA3FF}a:hover{color:#7DBBFF}
 </label>
 <button style="height: 30px; flex: none; white-space: nowrap; padding: 0 14px; border-radius: 15px; border: none; background: rgba(118,118,128,0.24); display: flex; align-items: center; gap: 6px">Filter
 <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#A1A1A6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5 5 6.5 8 3.5"/></svg></button>
-<button style="height: 30px; flex: none; white-space: nowrap; padding: 0 14px; border-radius: 15px; border: none; background: rgba(118,118,128,0.24); display: flex; align-items: center; gap: 6px">Recently opened
+<button style="height: 30px; flex: none; white-space: nowrap; padding: 0 14px; border-radius: 15px; border: none; background: rgba(118,118,128,0.24); display: flex; align-items: center; gap: 6px">Last used
 <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#A1A1A6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5 5 6.5 8 3.5"/></svg></button>
 </div>
 </div>
 
-<div style="margin: 18px 28px 0 28px; display: flex; color: #A1A1A6; font-size: 12px">
-<div style="position: relative; z-index: 2; width: 240px; flex: none; box-sizing: border-box; padding: 0 14px 8px 14px; background: #1C1C1E; box-shadow: 8px 0 12px -8px rgba(0,0,0,0.55); border-bottom: 1px solid rgba(255,255,255,0.08)">Name and note</div>
-<div style="flex: 1; min-width: 0; overflow: hidden; border-bottom: 1px solid rgba(255,255,255,0.08)">
-<div style="width: 808px; margin-left: -308px; padding: 0 0 8px 12px; box-sizing: border-box; display: flex; gap: 12px">
-<div style="width: 100px; flex: none">Status</div>
-<div style="width: 140px; flex: none">Template</div>
-<div style="width: 60px; flex: none">Port</div>
-<div style="width: 96px; flex: none">Auto-clean</div>
-<div style="width: 96px; flex: none">Last opened</div>
-<div style="width: 80px; flex: none; text-align: right">Size</div>
-<div style="width: 124px; flex: none">Created by</div>
+<div style="margin: 18px 28px 0 28px; display: grid; grid-template-columns: minmax(0, 1fr) 140px 22px 76px 92px 104px; column-gap: 16px; align-items: end; padding: 0 14px 8px 14px; color: #A1A1A6; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.08)">
+<div>Name and note</div><div>Status</div><div></div><div style="text-align: right">Size</div><div>Auto-clean</div><div></div>
 </div>
-</div>
-<div style="position: relative; z-index: 2; width: 48px; flex: none; background: #1C1C1E; box-shadow: -8px 0 12px -8px rgba(0,0,0,0.55); border-bottom: 1px solid rgba(255,255,255,0.08)"></div>
-</div>
-
 <div style="margin: 6px 28px 0 28px; display: flex; flex-direction: column; gap: 2px">
-<sc-for list="{{rows}}" as="row" hint-placeholder-count="10">
-<div style="display: flex; height: 54px; border-radius: 12px; background: {{row.bg}}">
-<div style="position: relative; z-index: 2; width: 240px; flex: none; background: #1C1C1E; border-radius: 12px 0 0 12px; box-shadow: 8px 0 12px -8px rgba(0,0,0,0.55)">
-<div style="height: 54px; box-sizing: border-box; padding: 0 14px; display: flex; align-items: center; border-radius: 12px 0 0 12px; background: {{row.bg}}">
-<div style="flex: 1; min-width: 0">
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 140px 22px 76px 92px 104px; column-gap: 16px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: transparent">
 <div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
-<div style="font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; min-width: 0"><span aria-hidden="true" style="width: 9px; height: 9px; border-radius: {{row.dotRadius}}; box-sizing: border-box; flex: none; background: {{row.dotFill}}; border: 1.5px solid {{row.dotColor}}"></span><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{row.name}}</span></div>
-<div style="padding-left: 17px; font-size: 12px; color: {{row.noteColor}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{row.note}}</div>
+<div style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">landing-hero</span></div>
+<div style="font-size: 12px; color: #D1D1D6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Hero section layout practice</div></div>
+<div style="display: flex; align-items: center; gap: 7px; white-space: nowrap; color: #30D158; font-weight: 500"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; box-sizing: border-box; flex: none; background: #30D158; border: 1.5px solid #30D158"></span>Running<span style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #A1A1A6">:7100</span></div>
+<div style=""><span aria-hidden="true" data-tile="HT" style="width: 22px; height: 22px; box-sizing: border-box; border-radius: 6px; background-color: rgba(255,255,255,0.10); background-position: center; background-repeat: no-repeat; background-size: 60% 60%; border: 1px solid rgba(255,255,255,0.08); box-shadow: inset 0 1px 0 rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; letter-spacing: -0.01em; color: #D1D1D6; flex: none">HT</span></div>
+<div style="text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: #D1D1D6; ">96 KB</div>
+<div style=""><span style="color: #8E8E93">—</span></div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px"></div>
+</div>
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 140px 22px 76px 92px 104px; column-gap: 16px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: transparent">
+<div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<div style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">hono-1</span><span style="display: inline-flex; align-items: center; gap: 4px; height: 18px; padding: 0 7px; border-radius: 9px; font-size: 11px; font-weight: 500; white-space: nowrap; flex: none; color: #D0A8FF; background: rgba(191,90,242,0.24)"><svg aria-hidden="true" width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#D0A8FF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 1.5v2M6 8.5v2M1.5 6h2M8.5 6h2M3 3l1.2 1.2M7.8 7.8 9 9M9 3 7.8 4.2M4.2 7.8 3 9"/></svg>Claude Code</span></div>
+<div style="font-size: 12px; color: #D1D1D6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Echo webhook requests, check signature headers</div></div>
+<div style="display: flex; align-items: center; gap: 7px; white-space: nowrap; color: #30D158; font-weight: 500"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; box-sizing: border-box; flex: none; background: #30D158; border: 1.5px solid #30D158"></span>Running<span style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #A1A1A6">:7103</span></div>
+<div style=""><span aria-hidden="true" data-tile="Ho" style="width: 22px; height: 22px; box-sizing: border-box; border-radius: 6px; background-color: rgba(255,255,255,0.10); background-position: center; background-repeat: no-repeat; background-size: 60% 60%; border: 1px solid rgba(255,255,255,0.08); box-shadow: inset 0 1px 0 rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; letter-spacing: -0.01em; color: #FF8A3D; flex: none">Ho</span></div>
+<div style="text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: #D1D1D6; ">38.2 MB</div>
+<div style=""><span style="display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; color: #A1A1A6"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 16 16" style="flex: none" fill="none" stroke="#8E8E93" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 1.5"/></svg>30 days left</span></div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px"></div>
+</div>
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 140px 22px 76px 92px 104px; column-gap: 16px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: transparent">
+<div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<div style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">api-notes</span><span style="display: inline-flex; align-items: center; height: 18px; padding: 0 7px; border-radius: 9px; font-size: 11px; font-weight: 500; white-space: nowrap; flex: none; color: #A1A1A6; background: rgba(255,255,255,0.10)">Command line</span></div>
+<div style="font-size: 12px; color: #D1D1D6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Record what the third-party API returns</div></div>
+<div style="display: flex; align-items: center; gap: 7px; white-space: nowrap; color: #A1A1A6; font-weight: 400"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; box-sizing: border-box; flex: none; background: transparent; border: 1.5px solid #8E8E93"></span>Stopped</div>
+<div style=""><span aria-hidden="true" data-tile="HT" style="width: 22px; height: 22px; box-sizing: border-box; border-radius: 6px; background-color: rgba(255,255,255,0.10); background-position: center; background-repeat: no-repeat; background-size: 60% 60%; border: 1px solid rgba(255,255,255,0.08); box-shadow: inset 0 1px 0 rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; letter-spacing: -0.01em; color: #D1D1D6; flex: none">HT</span></div>
+<div style="text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: #A1A1A6; ">Calculating</div>
+<div style=""><span style="color: #8E8E93">—</span></div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px"></div>
+</div>
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 140px 22px 76px 92px 104px; column-gap: 16px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: rgba(10,132,255,0.32)">
+<div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<div style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">react19-1</span><span style="display: inline-flex; align-items: center; gap: 4px; height: 18px; padding: 0 7px; border-radius: 9px; font-size: 11px; font-weight: 500; white-space: nowrap; flex: none; color: #D0A8FF; background: rgba(191,90,242,0.24)"><svg aria-hidden="true" width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#D0A8FF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 1.5v2M6 8.5v2M1.5 6h2M8.5 6h2M3 3l1.2 1.2M7.8 7.8 9 9M9 3 7.8 4.2M4.2 7.8 3 9"/></svg>Claude Code</span></div>
+<div style="font-size: 12px; color: #A1A1A6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">No note</div></div>
+<div style="display: flex; align-items: center; gap: 7px; white-space: nowrap; color: #A1A1A6; font-weight: 400"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; box-sizing: border-box; flex: none; background: transparent; border: 1.5px solid #8E8E93"></span>Stopped</div>
+<div style=""><span aria-hidden="true" data-tile="Re" style="width: 22px; height: 22px; box-sizing: border-box; border-radius: 6px; background-color: rgba(255,255,255,0.10); background-position: center; background-repeat: no-repeat; background-size: 60% 60%; border: 1px solid rgba(255,255,255,0.08); box-shadow: inset 0 1px 0 rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; letter-spacing: -0.01em; color: #61DAFB; flex: none">Re</span></div>
+<div style="text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: #D1D1D6; ">214.7 MB</div>
+<div style=""><span style="display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; color: #A1A1A6"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 16 16" style="flex: none" fill="none" stroke="#8E8E93" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 1.5"/></svg>30 days left</span></div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px"><button style="height: 28px; padding: 0 12px; border-radius: 14px; border: none; background: rgba(118,118,128,0.24); font-size: 12px; font-weight: 500; color: #F5F5F7; white-space: nowrap; flex: none">Open</button><button aria-label="More actions" style="width: 28px; height: 28px; border-radius: 14px; border: none; background: transparent; display: flex; align-items: center; justify-content: center; flex: none"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="#A1A1A6"><circle cx="3.5" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="12.5" cy="8" r="1.3"/></svg></button></div>
+</div>
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 140px 22px 76px 92px 104px; column-gap: 16px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: transparent">
+<div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<div style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">react18-1</span></div>
+<div style="font-size: 12px; color: #D1D1D6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Old Suspense behaviour, for comparison</div></div>
+<div style="display: flex; align-items: center; gap: 7px; white-space: nowrap; color: #FF9F99; font-weight: 500"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 2px; box-sizing: border-box; flex: none; background: #FF453A; border: 1.5px solid #FF453A"></span>Crashed</div>
+<div style=""><span aria-hidden="true" data-tile="Re" style="width: 22px; height: 22px; box-sizing: border-box; border-radius: 6px; background-color: rgba(255,255,255,0.10); background-position: center; background-repeat: no-repeat; background-size: 60% 60%; border: 1px solid rgba(255,255,255,0.08); box-shadow: inset 0 1px 0 rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; letter-spacing: -0.01em; color: #61DAFB; flex: none">Re</span></div>
+<div style="text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: #D1D1D6; ">412 MB</div>
+<div style=""><span style="color: #8E8E93">—</span></div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px"></div>
+</div>
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 140px 22px 76px 92px 104px; column-gap: 16px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: rgba(255,255,255,0.1)">
+<div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<div style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">go-channels</span></div>
+<div style="font-size: 12px; color: #D1D1D6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Buffered channels with workers</div></div>
+<div style="display: flex; align-items: center; gap: 7px; white-space: nowrap; color: #A1A1A6; font-weight: 400"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; box-sizing: border-box; flex: none; background: transparent; border: 1.5px solid #8E8E93"></span>Stopped</div>
+<div style=""><span aria-hidden="true" data-tile="Go" style="width: 22px; height: 22px; box-sizing: border-box; border-radius: 6px; background-color: rgba(255,255,255,0.10); background-position: center; background-repeat: no-repeat; background-size: 60% 60%; border: 1px solid rgba(255,255,255,0.08); box-shadow: inset 0 1px 0 rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; letter-spacing: -0.01em; color: #00ADD8; flex: none">Go</span></div>
+<div style="text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: #D1D1D6; ">24 KB</div>
+<div style=""><span style="color: #8E8E93">—</span></div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px"><button style="height: 28px; padding: 0 12px; border-radius: 14px; border: none; background: rgba(118,118,128,0.24); font-size: 12px; font-weight: 500; color: #F5F5F7; white-space: nowrap; flex: none">Open</button><button aria-label="More actions" style="width: 28px; height: 28px; border-radius: 14px; border: none; background: transparent; display: flex; align-items: center; justify-content: center; flex: none"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="#A1A1A6"><circle cx="3.5" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="12.5" cy="8" r="1.3"/></svg></button></div>
+</div>
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 140px 22px 76px 92px 104px; column-gap: 16px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: transparent">
+<div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<div style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">vue-drag-list</span></div>
+<div style="font-size: 12px; color: #D1D1D6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Drag-to-reorder list</div></div>
+<div style="display: flex; align-items: center; gap: 7px; white-space: nowrap; color: #FFD60A; font-weight: 500"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 16 16" style="flex: none" fill="none" stroke="#FFD60A" stroke-width="1.6" stroke-linecap="round"><path d="M8 1.8 15 14H1z" stroke-linejoin="round"/><path d="M8 6.3v3.4M8 11.8v.1"/></svg>Folder not found</div>
+<div style="opacity: 0.45;"><span aria-hidden="true" data-tile="Vu" style="width: 22px; height: 22px; box-sizing: border-box; border-radius: 6px; background-color: rgba(255,255,255,0.10); background-position: center; background-repeat: no-repeat; background-size: 60% 60%; border: 1px solid rgba(255,255,255,0.08); box-shadow: inset 0 1px 0 rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; letter-spacing: -0.01em; color: #D1D1D6; flex: none">Vu</span></div>
+<div style="text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: #D1D1D6; opacity: 0.45;">—</div>
+<div style="opacity: 0.45;"><span style="color: #8E8E93">—</span></div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px"></div>
+</div>
+<div style="margin: 2px 0 6px 0px; padding: 10px 10px 10px 14px; border-radius: 12px; background: rgba(255,214,10,0.14); display: flex; align-items: center; gap: 12px; font-size: 12px; color: #D1D1D6">
+<span style="flex: 1; min-width: 0"><span style="font-family: 'SF Mono', Menlo, monospace">~/Runyard/vue-drag-list</span> is no longer where it was. It may have been moved, renamed or deleted.</span><button style="height: 28px; padding: 0 12px; border-radius: 14px; border: none; background: rgba(118,118,128,0.24); font-size: 12px; font-weight: 500; color: #F5F5F7; white-space: nowrap; flex: none">Locate…</button><button style="height: 28px; padding: 0 12px; border-radius: 14px; border: none; background: rgba(118,118,128,0.24); font-size: 12px; font-weight: 500; color: #F5F5F7; white-space: nowrap; flex: none">Remove from library</button><button style="height: 28px; padding: 0 12px; border-radius: 14px; border: none; background: rgba(118,118,128,0.24); font-size: 12px; font-weight: 500; color: #F5F5F7; white-space: nowrap; flex: none">Show the parent folder in Finder</button></div><div style="display: grid; grid-template-columns: minmax(0, 1fr) 140px 22px 76px 92px 104px; column-gap: 16px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: transparent">
+<div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<div style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">node-ts-1</span><span style="display: inline-flex; align-items: center; gap: 4px; height: 18px; padding: 0 7px; border-radius: 9px; font-size: 11px; font-weight: 500; white-space: nowrap; flex: none; color: #D0A8FF; background: rgba(191,90,242,0.24)"><svg aria-hidden="true" width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#D0A8FF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 1.5v2M6 8.5v2M1.5 6h2M8.5 6h2M3 3l1.2 1.2M7.8 7.8 9 9M9 3 7.8 4.2M4.2 7.8 3 9"/></svg>Codex</span></div>
+<div style="font-size: 12px; color: #D1D1D6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Clean a CSV, drop duplicate lines</div></div>
+<div style="display: flex; align-items: center; gap: 7px; white-space: nowrap; color: #A1A1A6; font-weight: 400"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; box-sizing: border-box; flex: none; background: transparent; border: 1.5px solid #8E8E93"></span>Stopped</div>
+<div style=""><span aria-hidden="true" data-tile="NT" style="width: 22px; height: 22px; box-sizing: border-box; border-radius: 6px; background-color: rgba(255,255,255,0.10); background-position: center; background-repeat: no-repeat; background-size: 60% 60%; border: 1px solid rgba(255,255,255,0.08); box-shadow: inset 0 1px 0 rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; letter-spacing: -0.01em; color: #5FA04E; flex: none">NT</span></div>
+<div style="text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: #D1D1D6; ">48.9 MB</div>
+<div style=""><span style="display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; color: #A1A1A6"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 16 16" style="flex: none" fill="none" stroke="#8E8E93" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 1.5"/></svg>7 days left</span></div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px"></div>
+</div>
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 140px 22px 76px 92px 104px; column-gap: 16px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: transparent">
+<div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<div style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">python-1</span><span style="display: inline-flex; align-items: center; gap: 4px; height: 18px; padding: 0 7px; border-radius: 9px; font-size: 11px; font-weight: 500; white-space: nowrap; flex: none; color: #D0A8FF; background: rgba(191,90,242,0.24)"><svg aria-hidden="true" width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#D0A8FF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 1.5v2M6 8.5v2M1.5 6h2M8.5 6h2M3 3l1.2 1.2M7.8 7.8 9 9M9 3 7.8 4.2M4.2 7.8 3 9"/></svg>Claude Code</span></div>
+<div style="font-size: 12px; color: #D1D1D6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Validation in dataclass vs pydantic</div></div>
+<div style="display: flex; align-items: center; gap: 7px; white-space: nowrap; color: #A1A1A6; font-weight: 400"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; box-sizing: border-box; flex: none; background: transparent; border: 1.5px solid #8E8E93"></span>Stopped</div>
+<div style=""><span aria-hidden="true" data-tile="Py" style="width: 22px; height: 22px; box-sizing: border-box; border-radius: 6px; background-color: rgba(255,255,255,0.10); background-position: center; background-repeat: no-repeat; background-size: 60% 60%; border: 1px solid rgba(255,255,255,0.08); box-shadow: inset 0 1px 0 rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; letter-spacing: -0.01em; color: #D1D1D6; flex: none">Py</span></div>
+<div style="text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: #D1D1D6; ">61.4 MB</div>
+<div style=""><span style="display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; font-weight: 500; color: #FFD60A"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 16 16" style="flex: none" fill="none" stroke="#FFD60A" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 1.5"/></svg>Tomorrow</span></div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px"></div>
 </div>
 </div>
-</div>
-</div>
-<div style="flex: 1; min-width: 0; overflow: hidden">
-<div style="width: 808px; height: 54px; margin-left: -308px; padding-left: 12px; box-sizing: border-box; display: flex; align-items: center; gap: 12px">
-<div style="width: 100px; flex: none; min-width: 0">
-<div style="display: flex; align-items: center; gap: 8px; color: {{row.statusColor}}; font-weight: 500">
-<span aria-hidden="true" style="width: 9px; height: 9px; border-radius: {{row.dotRadius}}; box-sizing: border-box; background: {{row.dotFill}}; border: 1.5px solid {{row.dotColor}}"></span>{{row.status}}
-</div>
-</div>
-<div style="width: 140px; flex: none; min-width: 0; overflow: hidden">
-<div style="display: flex; align-items: center; gap: 8px; color: #D1D1D6; white-space: nowrap; overflow: hidden">
-<span aria-hidden="true" data-tile="{{row.badge}}" style="width: 22px; height: 22px; box-sizing: border-box; border-radius: 6px; background-color: rgba(255,255,255,0.10); background-position: center; background-repeat: no-repeat; background-size: 60% 60%; border: 1px solid rgba(255,255,255,0.08); box-shadow: inset 0 1px 0 rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: -0.01em; color: #D1D1D6; flex: none">{{row.badge}}</span>{{row.template}}
-</div>
-</div>
-<div style="width: 60px; flex: none; min-width: 0">
-<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #D1D1D6">{{row.port}}</div>
-</div>
-<div style="width: 96px; flex: none; min-width: 0">
-<div><span title="{{row.tip}}" style="display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 12px; color: {{row.keepColor}}; background: {{row.keepBg}}; border: 1px {{row.keepBorder}} rgba(255,255,255,0.14)">{{row.keep}}</span></div>
-</div>
-<div style="width: 96px; flex: none; min-width: 0">
-<div style="color: #A1A1A6">{{row.opened}}</div>
-</div>
-<div style="width: 80px; flex: none; min-width: 0">
-<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: {{row.sizeColor}}; text-align: right; white-space: nowrap">{{row.size}}</div>
-</div>
-<div style="width: 124px; flex: none; min-width: 0">
-<div>
-<sc-if value="{{row.agent}}" hint-placeholder-val="{{false}}">
-<span style="display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 12px; font-weight: 500; color: #D0A8FF; background: rgba(191,90,242,0.24)">
-<svg aria-hidden="true" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#D0A8FF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 1.5v2M6 8.5v2M1.5 6h2M8.5 6h2M3 3l1.2 1.2M7.8 7.8 9 9M9 3 7.8 4.2M4.2 7.8 3 9"/></svg>{{row.agentLabel}}</span>
-</sc-if>
-<sc-if value="{{row.mine}}" hint-placeholder-val="{{true}}"><span style="color: #A1A1A6">Me</span></sc-if>
-</div>
-</div>
-</div>
-</div>
-<div style="position: relative; z-index: 2; width: 48px; flex: none; background: #1C1C1E; border-radius: 0 12px 12px 0; box-shadow: -8px 0 12px -8px rgba(0,0,0,0.55)">
-<div style="height: 54px; display: flex; align-items: center; justify-content: center; border-radius: 0 12px 12px 0; background: {{row.bg}}">
-<button aria-label="More actions" style="width: 32px; height: 32px; border-radius: 16px; border: none; background: transparent; display: flex; align-items: center; justify-content: center">
-<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="#A1A1A6"><circle cx="3.5" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="12.5" cy="8" r="1.3"/></svg>
-</button>
-</div>
-</div>
-</div>
-</sc-for>
-</div>
-<div style="margin: 10px 28px 0 28px; display: flex; height: 6px">
-<div style="width: 240px; flex: none"></div>
-<div style="flex: 1; min-width: 0; height: 6px; border-radius: 3px; background: rgba(118,118,128,0.24)">
-<div style="width: 62%; height: 6px; margin-left: 38%; border-radius: 3px; background: #8E8E93"></div>
-</div>
-<div style="width: 48px; flex: none"></div>
-</div>
-<div style="margin: 16px 28px 0 28px; color: #A1A1A6; font-size: 12px">When the window is narrow: name and note (with status dot) stay pinned on the left, actions on the right, and the columns between them scroll sideways.</div>
 </div>
 
 <!-- floating glass toolbar -->
@@ -136,14 +150,14 @@ a{color:#4DA3FF}a:hover{color:#7DBBFF}
 <button style="height: 32px; flex: none; padding: 0 16px; border-radius: 16px; border: none; background: rgba(255,255,255,0.10); font-weight: 600; display: flex; align-items: center; gap: 7px">
 <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#F5F5F7" stroke-width="1.5" stroke-linejoin="round"><rect x="1.5" y="1.5" width="4.5" height="4.5" rx="1.2"/><rect x="8" y="1.5" width="4.5" height="4.5" rx="1.2"/><rect x="1.5" y="8" width="4.5" height="4.5" rx="1.2"/><rect x="8" y="8" width="4.5" height="4.5" rx="1.2"/></svg>Library</button>
 <button style="height: 32px; flex: none; padding: 0 12px 0 14px; border-radius: 16px; border: none; background: transparent; color: #D1D1D6; display: flex; align-items: center; gap: 8px">
-<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: #30D158"></span>react-counter
+<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: #30D158"></span>landing-hero
 <svg role="img" aria-label="Close and stop" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#A1A1A6" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l6 6M8 2 2 8"/></svg></button>
 <button style="height: 32px; flex: none; padding: 0 12px 0 14px; border-radius: 16px; border: none; background: transparent; color: #D1D1D6; display: flex; align-items: center; gap: 8px">
-<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: #30D158"></span>hono-todo-api
+<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: #30D158"></span>hono-1
 <svg role="img" aria-label="Close and stop" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#A1A1A6" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l6 6M8 2 2 8"/></svg></button>
 </div>
 <button title="4 running" style="height: 32px; padding: 0 10px; border-radius: 16px; border: none; background: transparent; display: flex; align-items: center; gap: 8px; font-weight: 500; flex: none; white-space: nowrap">
-<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: #30D158; box-shadow: 0 0 0 3px rgba(48,209,88,0.22)"></span>4</button>
+<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: #30D158; box-shadow: 0 0 0 3px rgba(48,209,88,0.22)"></span>2</button>
 <button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 8px; flex: none; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,113,227,0.28)">
 <svg aria-hidden="true" width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"><path d="M6 1.5v9M1.5 6h9"/></svg>New</button>
 </div>
@@ -182,7 +196,7 @@ a{color:#4DA3FF}a:hover{color:#7DBBFF}
 <div style="flex: 1"></div>
 <div style="padding: 10px; border-radius: 9px; background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 2px">
 <div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px">~/Runyard</div>
-<div style="font-size: 12px; color: #A1A1A6">20 playgrounds · 2.9 GB total</div>
+<div style="font-size: 12px; color: #A1A1A6">9 playgrounds · calculating sizes</div>
 </div>
 </nav>
 
@@ -214,10 +228,10 @@ const data = [
 ];
 const left = [0, 0, 30, 30, 0, 0, 29, 0, 0, 0, 24, 0];
 const rows0 = data.map((d, i) => Object.assign({ agentLabel: d[0] === 'node-ts-1' ? 'Codex' : 'Claude Code', name: d[0], badge: d[1], template: d[2], port: d[3], opened: d[4], note: d[8] || 'No note', noteColor: d[8] ? '#D1D1D6' : '#A1A1A6', bg: i === 0 ? 'rgba(10,132,255,0.18)' : 'transparent' }, d[5], d[6], d[7]));
-const navItems = [['All', '20', true], ['Running', '4', false], ['Created by agents', '6', false]];
+const navItems = [['All', '9', true], ['Running', '2', false], ['Created by agents', '4', false]];
 const nav = navItems.map((n) => ({ label: n[0], count: n[1], bg: n[2] ? '#0071E3' : 'transparent', color: n[2] ? '#FFFFFF' : '#F5F5F7', weight: n[2] ? 600 : 400, mark: n[2] ? '#FFFFFF' : '#8E8E93', countColor: n[2] ? '#FFFFFF' : '#A1A1A6' }));
 const tipText = 'Moved to Trash after 30 days without being opened; the timer restarts each time you open it';
-const rows = rows0.map((r, i) => { const n = left[i]; return n ? Object.assign({}, r, { keep: n + ' d left', tip: tipText }) : Object.assign({}, r, { tip: '' }); });
+const rows = [];
 const SIZES = {'react-counter': ['186.3 MB', '#D1D1D6'], 'hono-todo-api': ['38.6 MB', '#D1D1D6'], 'hono-1': ['38.2 MB', '#D1D1D6'], 'react19-3': ['214.7 MB', '#D1D1D6'], 'landing-hero': ['96 KB', '#D1D1D6'], 'go-channels': ['24 KB', '#D1D1D6'], 'python-2': ['61.4 MB', '#D1D1D6'], 'vue-drag-list': ['142.8 MB', '#D1D1D6'], 'vue3-2': ['141.5 MB', '#D1D1D6'], 'api-mock-1': ['12.3 MB', '#D1D1D6'], 'node-ts-1': ['48.9 MB', '#D1D1D6'], 'react18-1': ['412 MB', '#D1D1D6']};
 const withSize = (list) => list.map((r) => Object.assign({}, r, { size: (SIZES[r.name] || ['24 KB', '#D1D1D6'])[0], sizeColor: (SIZES[r.name] || ['24 KB', '#D1D1D6'])[1] }));
 return { rows: withSize(rows.slice(0, 10)), nav };

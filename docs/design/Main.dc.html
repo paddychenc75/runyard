@@ -31,7 +31,7 @@ a{color:#0071E3}a:hover{color:#0058B0}
 <div style="padding: 20px 28px 0 28px; display: flex; align-items: flex-end; gap: 16px">
 <div style="display: flex; flex-direction: column; gap: 2px; flex: 1">
 <h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.3px">全部</h1>
-<div style="color: #6E6E73">20 个项目 · 4 个正在运行 · 存放在 ~/Runyard</div>
+<div style="color: #6E6E73">9 个项目 · 2 个正在运行 · 存放在 ~/Runyard</div>
 </div>
 <div style="display: flex; gap: 8px; align-items: center">
 <label style="height: 30px; width: 240px; min-width: 0; padding: 0 10px 0 12px; box-sizing: border-box; border-radius: 15px; display: flex; align-items: center; gap: 8px; background: rgba(118,118,128,0.12); flex: none">
@@ -43,50 +43,125 @@ a{color:#0071E3}a:hover{color:#0058B0}
 <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#6E6E73" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5 5 6.5 8 3.5"/></svg></button>
 <button style="height: 30px; padding: 0 14px; border-radius: 15px; border: none; background: rgba(118,118,128,0.12); display: flex; align-items: center; gap: 6px">状态：全部
 <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#6E6E73" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5 5 6.5 8 3.5"/></svg></button>
-<button style="height: 30px; padding: 0 14px; border-radius: 15px; border: none; background: rgba(118,118,128,0.12); display: flex; align-items: center; gap: 6px">排序：最近打开
+<button style="height: 30px; padding: 0 14px; border-radius: 15px; border: none; background: rgba(118,118,128,0.12); display: flex; align-items: center; gap: 6px">排序：最近使用
 <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#6E6E73" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5 5 6.5 8 3.5"/></svg></button>
 </div>
 </div>
 
-<div style="margin: 18px 28px 0 28px; display: grid; grid-template-columns: minmax(0, 1.5fr) 132px minmax(0, 1fr) 84px 96px 110px 80px 110px 36px; column-gap: 12px; padding: 0 14px 8px 14px; color: #6E6E73; font-size: 12px; border-bottom: 1px solid rgba(0,0,0,0.08)">
-<div>名称与备注</div><div>状态</div><div>模板</div><div>端口</div><div>自动清理</div><div>上次打开</div><div style="text-align: right">大小</div><div>创建者</div><div></div>
+<div style="margin: 18px 28px 0 28px; display: grid; grid-template-columns: minmax(0, 1fr) 124px 150px 60px 84px 96px 104px 104px; column-gap: 16px; align-items: end; padding: 0 14px 8px 14px; color: #6E6E73; font-size: 12px; border-bottom: 1px solid rgba(0,0,0,0.06)">
+<div>名称与备注</div><div>状态</div><div>模板</div><div>端口</div><div style="text-align: right">大小</div><div style="display: flex; align-items: center; gap: 4px; color: #3A3A3C; font-weight: 600">最近使用<svg aria-hidden="true" width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="#3A3A3C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5 5 6.5 8 3.5"/></svg></div><div>自动清理</div><div></div>
 </div>
-
 <div style="margin: 6px 28px 0 28px; display: flex; flex-direction: column; gap: 2px">
-<sc-for list="{{rows}}" as="row" hint-placeholder-count="12">
-<div style="display: grid; grid-template-columns: minmax(0, 1.5fr) 132px minmax(0, 1fr) 84px 96px 110px 80px 110px 36px; column-gap: 12px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: {{row.bg}}; box-shadow: {{row.bar}}">
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 124px 150px 60px 84px 96px 104px 104px; column-gap: 16px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: transparent">
 <div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
-<div style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{row.name}}</div>
-<div style="font-size: 12px; color: {{row.noteColor}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{row.note}}</div>
+<div style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">landing-hero</span></div>
+<div style="font-size: 12px; color: #3A3A3C; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">首页大图区域的排版练习</div></div>
+<div style="display: flex; align-items: center; gap: 7px; white-space: nowrap; color: #1B7A34; font-weight: 500"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; box-sizing: border-box; flex: none; background: #28A745; border: 1.5px solid #28A745"></span>运行中</div>
+<div style="display: flex; align-items: center; gap: 8px; color: #3A3A3C; white-space: nowrap; overflow: hidden; "><span aria-hidden="true" data-tile="HT" style="width: 22px; height: 22px; box-sizing: border-box; border-radius: 6px; background-color: #F0F0F3; background-position: center; background-repeat: no-repeat; background-size: 60% 60%; border: 1px solid rgba(0,0,0,0.06); box-shadow: inset 0 1px 0 rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; letter-spacing: -0.01em; color: #3A3A3C; flex: none">HT</span><span style="overflow: hidden; text-overflow: ellipsis">HTML 页面</span></div>
+<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #3A3A3C; ">:7100</div>
+<div style="text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: #3A3A3C; ">96 KB</div>
+<div style="color: #6E6E73; white-space: nowrap; ">2 分钟前</div>
+<div style=""><span style="color: #8E8E93">—</span></div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px"></div>
 </div>
-<div style="display: flex; align-items: center; gap: 8px; color: {{row.statusColor}}; font-weight: 500">
-<span aria-hidden="true" style="width: 9px; height: 9px; border-radius: {{row.dotRadius}}; box-sizing: border-box; background: {{row.dotFill}}; border: 1.5px solid {{row.dotColor}}"></span>{{row.status}}
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 124px 150px 60px 84px 96px 104px 104px; column-gap: 16px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: transparent">
+<div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<div style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">hono-1</span><span style="display: inline-flex; align-items: center; gap: 4px; height: 18px; padding: 0 7px; border-radius: 9px; font-size: 11px; font-weight: 500; white-space: nowrap; flex: none; color: #7A2E9E; background: rgba(175,82,222,0.12)"><svg aria-hidden="true" width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#7A2E9E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 1.5v2M6 8.5v2M1.5 6h2M8.5 6h2M3 3l1.2 1.2M7.8 7.8 9 9M9 3 7.8 4.2M4.2 7.8 3 9"/></svg>Claude Code</span></div>
+<div style="font-size: 12px; color: #3A3A3C; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">回显 webhook 请求，核对签名头</div></div>
+<div style="display: flex; align-items: center; gap: 7px; white-space: nowrap; color: #1B7A34; font-weight: 500"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; box-sizing: border-box; flex: none; background: #28A745; border: 1.5px solid #28A745"></span>运行中</div>
+<div style="display: flex; align-items: center; gap: 8px; color: #3A3A3C; white-space: nowrap; overflow: hidden; "><span aria-hidden="true" data-tile="Ho" style="width: 22px; height: 22px; box-sizing: border-box; border-radius: 6px; background-color: #F0F0F3; background-position: center; background-repeat: no-repeat; background-size: 60% 60%; border: 1px solid rgba(0,0,0,0.06); box-shadow: inset 0 1px 0 rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; letter-spacing: -0.01em; color: #D14A00; flex: none">Ho</span><span style="overflow: hidden; text-overflow: ellipsis">Hono</span></div>
+<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #3A3A3C; ">:7103</div>
+<div style="text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: #3A3A3C; ">38.2 MB</div>
+<div style="color: #6E6E73; white-space: nowrap; ">31 分钟前</div>
+<div style=""><span style="display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; color: #6E6E73"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 16 16" style="flex: none" fill="none" stroke="#8E8E93" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 1.5"/></svg>剩 30 天</span></div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px"></div>
 </div>
-<div style="display: flex; align-items: center; gap: 8px; color: #3A3A3C; white-space: nowrap; overflow: hidden">
-<span aria-hidden="true" data-tile="{{row.badge}}" style="width: 22px; height: 22px; box-sizing: border-box; border-radius: 6px; background-color: #F0F0F3; background-position: center; background-repeat: no-repeat; background-size: 60% 60%; border: 1px solid rgba(0,0,0,0.06); box-shadow: inset 0 1px 0 rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: -0.01em; color: #3A3A3C; flex: none">{{row.badge}}</span>{{row.template}}
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 124px 150px 60px 84px 96px 104px 104px; column-gap: 16px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: transparent">
+<div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<div style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">api-notes</span><span style="display: inline-flex; align-items: center; height: 18px; padding: 0 7px; border-radius: 9px; font-size: 11px; font-weight: 500; white-space: nowrap; flex: none; color: #6E6E73; background: #F0F0F3">命令行</span></div>
+<div style="font-size: 12px; color: #3A3A3C; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">记录第三方接口的返回值</div></div>
+<div style="display: flex; align-items: center; gap: 7px; white-space: nowrap; color: #6E6E73; font-weight: 400"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; box-sizing: border-box; flex: none; background: transparent; border: 1.5px solid #8E8E93"></span>已停止</div>
+<div style="display: flex; align-items: center; gap: 8px; color: #3A3A3C; white-space: nowrap; overflow: hidden; "><span aria-hidden="true" data-tile="HT" style="width: 22px; height: 22px; box-sizing: border-box; border-radius: 6px; background-color: #F0F0F3; background-position: center; background-repeat: no-repeat; background-size: 60% 60%; border: 1px solid rgba(0,0,0,0.06); box-shadow: inset 0 1px 0 rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; letter-spacing: -0.01em; color: #3A3A3C; flex: none">HT</span><span style="overflow: hidden; text-overflow: ellipsis">HTML 页面</span></div>
+<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #3A3A3C; ">:7105</div>
+<div style="text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: #6E6E73; ">计算中</div>
+<div style="color: #6E6E73; white-space: nowrap; ">刚刚</div>
+<div style=""><span style="color: #8E8E93">—</span></div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px"></div>
 </div>
-<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #3A3A3C">{{row.port}}</div>
-<div><span title="{{row.tip}}" style="display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 12px; color: {{row.keepColor}}; background: {{row.keepBg}}; border: 1px {{row.keepBorder}} rgba(0,0,0,0.16)">{{row.keep}}</span></div>
-<div style="color: #6E6E73">{{row.opened}}</div><div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: {{row.sizeColor}}; text-align: right; white-space: nowrap">{{row.size}}</div>
-<div>
-<sc-if value="{{row.agent}}" hint-placeholder-val="{{false}}">
-<span style="display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 12px; font-weight: 500; color: #7A2E9E; background: rgba(175,82,222,0.12)">
-<svg aria-hidden="true" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#7A2E9E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 1.5v2M6 8.5v2M1.5 6h2M8.5 6h2M3 3l1.2 1.2M7.8 7.8 9 9M9 3 7.8 4.2M4.2 7.8 3 9"/></svg>{{row.agentLabel}}</span>
-</sc-if>
-<sc-if value="{{row.mine}}" hint-placeholder-val="{{true}}"><span style="color: #6E6E73">我</span></sc-if>
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 124px 150px 60px 84px 96px 104px 104px; column-gap: 16px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: rgba(0,113,227,0.08)">
+<div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<div style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">react19-1</span><span style="display: inline-flex; align-items: center; gap: 4px; height: 18px; padding: 0 7px; border-radius: 9px; font-size: 11px; font-weight: 500; white-space: nowrap; flex: none; color: #7A2E9E; background: rgba(175,82,222,0.12)"><svg aria-hidden="true" width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#7A2E9E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 1.5v2M6 8.5v2M1.5 6h2M8.5 6h2M3 3l1.2 1.2M7.8 7.8 9 9M9 3 7.8 4.2M4.2 7.8 3 9"/></svg>Claude Code</span></div>
+<div style="font-size: 12px; color: #6E6E73; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">未填写备注</div></div>
+<div style="display: flex; align-items: center; gap: 7px; white-space: nowrap; color: #6E6E73; font-weight: 400"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; box-sizing: border-box; flex: none; background: transparent; border: 1.5px solid #8E8E93"></span>已停止</div>
+<div style="display: flex; align-items: center; gap: 8px; color: #3A3A3C; white-space: nowrap; overflow: hidden; "><span aria-hidden="true" data-tile="Re" style="width: 22px; height: 22px; box-sizing: border-box; border-radius: 6px; background-color: #F0F0F3; background-position: center; background-repeat: no-repeat; background-size: 60% 60%; border: 1px solid rgba(0,0,0,0.06); box-shadow: inset 0 1px 0 rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; letter-spacing: -0.01em; color: #087EA4; flex: none">Re</span><span style="overflow: hidden; text-overflow: ellipsis">React 19 + Vite</span></div>
+<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #3A3A3C; ">:7102</div>
+<div style="text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: #3A3A3C; ">214.7 MB</div>
+<div style="color: #6E6E73; white-space: nowrap; ">1 小时前</div>
+<div style=""><span style="display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; color: #6E6E73"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 16 16" style="flex: none" fill="none" stroke="#8E8E93" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 1.5"/></svg>剩 30 天</span></div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px"><button style="height: 28px; padding: 0 12px; border-radius: 14px; border: none; background: rgba(118,118,128,0.14); font-size: 12px; font-weight: 500; color: #1D1D1F; white-space: nowrap; flex: none">打开</button><button aria-label="更多操作" style="width: 28px; height: 28px; border-radius: 14px; border: none; background: transparent; display: flex; align-items: center; justify-content: center; flex: none"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="#6E6E73"><circle cx="3.5" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="12.5" cy="8" r="1.3"/></svg></button></div>
 </div>
-<button aria-label="更多操作" style="width: 32px; height: 32px; border-radius: 16px; border: none; background: transparent; display: flex; align-items: center; justify-content: center">
-<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="#6E6E73"><circle cx="3.5" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="12.5" cy="8" r="1.3"/></svg>
-</button>
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 124px 150px 60px 84px 96px 104px 104px; column-gap: 16px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: transparent">
+<div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<div style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">react18-1</span></div>
+<div style="font-size: 12px; color: #3A3A3C; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">旧版 Suspense 的行为对照</div></div>
+<div style="display: flex; align-items: center; gap: 7px; white-space: nowrap; color: #C4001A; font-weight: 500"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 2px; box-sizing: border-box; flex: none; background: #D70015; border: 1.5px solid #D70015"></span>已崩溃</div>
+<div style="display: flex; align-items: center; gap: 8px; color: #3A3A3C; white-space: nowrap; overflow: hidden; "><span aria-hidden="true" data-tile="Re" style="width: 22px; height: 22px; box-sizing: border-box; border-radius: 6px; background-color: #F0F0F3; background-position: center; background-repeat: no-repeat; background-size: 60% 60%; border: 1px solid rgba(0,0,0,0.06); box-shadow: inset 0 1px 0 rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; letter-spacing: -0.01em; color: #087EA4; flex: none">Re</span><span style="overflow: hidden; text-overflow: ellipsis">React 18 + Vite</span></div>
+<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #3A3A3C; ">:7104</div>
+<div style="text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: #3A3A3C; ">412 MB</div>
+<div style="color: #6E6E73; white-space: nowrap; ">3 小时前</div>
+<div style=""><span style="color: #8E8E93">—</span></div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px"></div>
 </div>
-</sc-for>
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 124px 150px 60px 84px 96px 104px 104px; column-gap: 16px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: rgba(0,0,0,0.065)">
+<div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<div style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">go-channels</span></div>
+<div style="font-size: 12px; color: #3A3A3C; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">带缓冲的 channel 与 worker 协作</div></div>
+<div style="display: flex; align-items: center; gap: 7px; white-space: nowrap; color: #6E6E73; font-weight: 400"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; box-sizing: border-box; flex: none; background: transparent; border: 1.5px solid #8E8E93"></span>已停止</div>
+<div style="display: flex; align-items: center; gap: 8px; color: #3A3A3C; white-space: nowrap; overflow: hidden; "><span aria-hidden="true" data-tile="Go" style="width: 22px; height: 22px; box-sizing: border-box; border-radius: 6px; background-color: #F0F0F3; background-position: center; background-repeat: no-repeat; background-size: 60% 60%; border: 1px solid rgba(0,0,0,0.06); box-shadow: inset 0 1px 0 rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; letter-spacing: -0.01em; color: #007D9C; flex: none">Go</span><span style="overflow: hidden; text-overflow: ellipsis">Go 程序</span></div>
+<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #3A3A3C; ">—</div>
+<div style="text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: #3A3A3C; ">24 KB</div>
+<div style="color: #6E6E73; white-space: nowrap; ">1 天前</div>
+<div style=""><span style="color: #8E8E93">—</span></div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px"><button style="height: 28px; padding: 0 12px; border-radius: 14px; border: none; background: rgba(118,118,128,0.14); font-size: 12px; font-weight: 500; color: #1D1D1F; white-space: nowrap; flex: none">打开</button><button aria-label="更多操作" style="width: 28px; height: 28px; border-radius: 14px; border: none; background: transparent; display: flex; align-items: center; justify-content: center; flex: none"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="#6E6E73"><circle cx="3.5" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="12.5" cy="8" r="1.3"/></svg></button></div>
+</div>
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 124px 150px 60px 84px 96px 104px 104px; column-gap: 16px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: transparent">
+<div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<div style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">vue-drag-list</span></div>
+<div style="font-size: 12px; color: #3A3A3C; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">拖拽排序列表</div></div>
+<div style="display: flex; align-items: center; gap: 7px; white-space: nowrap; color: #8A4B00; font-weight: 500"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 16 16" style="flex: none" fill="none" stroke="#C27400" stroke-width="1.6" stroke-linecap="round"><path d="M8 1.8 15 14H1z" stroke-linejoin="round"/><path d="M8 6.3v3.4M8 11.8v.1"/></svg>找不到文件夹</div>
+<div style="display: flex; align-items: center; gap: 8px; color: #3A3A3C; white-space: nowrap; overflow: hidden; opacity: 0.45;"><span aria-hidden="true" data-tile="Vu" style="width: 22px; height: 22px; box-sizing: border-box; border-radius: 6px; background-color: #F0F0F3; background-position: center; background-repeat: no-repeat; background-size: 60% 60%; border: 1px solid rgba(0,0,0,0.06); box-shadow: inset 0 1px 0 rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; letter-spacing: -0.01em; color: #3A3A3C; flex: none">Vu</span><span style="overflow: hidden; text-overflow: ellipsis">Vue 3 + Vite</span></div>
+<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #3A3A3C; opacity: 0.45;">:7101</div>
+<div style="text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: #3A3A3C; opacity: 0.45;">—</div>
+<div style="color: #6E6E73; white-space: nowrap; opacity: 0.45;">2 天前</div>
+<div style="opacity: 0.45;"><span style="color: #8E8E93">—</span></div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px"></div>
+</div>
+<div style="margin: 2px 0 6px 0px; padding: 10px 10px 10px 14px; border-radius: 12px; background: rgba(194,116,0,0.08); display: flex; align-items: center; gap: 12px; font-size: 12px; color: #3A3A3C">
+<span style="flex: 1; min-width: 0"><span style="font-family: 'SF Mono', Menlo, monospace">~/Runyard/vue-drag-list</span> 不在原来的位置了。可能被移动、改名或删除。</span><button style="height: 28px; padding: 0 12px; border-radius: 14px; border: none; background: rgba(118,118,128,0.14); font-size: 12px; font-weight: 500; color: #1D1D1F; white-space: nowrap; flex: none">重新定位…</button><button style="height: 28px; padding: 0 12px; border-radius: 14px; border: none; background: rgba(118,118,128,0.14); font-size: 12px; font-weight: 500; color: #1D1D1F; white-space: nowrap; flex: none">从资源库移除</button><button style="height: 28px; padding: 0 12px; border-radius: 14px; border: none; background: rgba(118,118,128,0.14); font-size: 12px; font-weight: 500; color: #1D1D1F; white-space: nowrap; flex: none">在访达中显示上一级文件夹</button></div><div style="display: grid; grid-template-columns: minmax(0, 1fr) 124px 150px 60px 84px 96px 104px 104px; column-gap: 16px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: transparent">
+<div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<div style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">node-ts-1</span><span style="display: inline-flex; align-items: center; gap: 4px; height: 18px; padding: 0 7px; border-radius: 9px; font-size: 11px; font-weight: 500; white-space: nowrap; flex: none; color: #7A2E9E; background: rgba(175,82,222,0.12)"><svg aria-hidden="true" width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#7A2E9E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 1.5v2M6 8.5v2M1.5 6h2M8.5 6h2M3 3l1.2 1.2M7.8 7.8 9 9M9 3 7.8 4.2M4.2 7.8 3 9"/></svg>Codex</span></div>
+<div style="font-size: 12px; color: #3A3A3C; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">清洗 CSV，去掉重复行</div></div>
+<div style="display: flex; align-items: center; gap: 7px; white-space: nowrap; color: #6E6E73; font-weight: 400"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; box-sizing: border-box; flex: none; background: transparent; border: 1.5px solid #8E8E93"></span>已停止</div>
+<div style="display: flex; align-items: center; gap: 8px; color: #3A3A3C; white-space: nowrap; overflow: hidden; "><span aria-hidden="true" data-tile="NT" style="width: 22px; height: 22px; box-sizing: border-box; border-radius: 6px; background-color: #F0F0F3; background-position: center; background-repeat: no-repeat; background-size: 60% 60%; border: 1px solid rgba(0,0,0,0.06); box-shadow: inset 0 1px 0 rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; letter-spacing: -0.01em; color: #417E38; flex: none">NT</span><span style="overflow: hidden; text-overflow: ellipsis">Node + TypeScript</span></div>
+<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #3A3A3C; ">—</div>
+<div style="text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: #3A3A3C; ">48.9 MB</div>
+<div style="color: #6E6E73; white-space: nowrap; ">23 天前</div>
+<div style=""><span style="display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; color: #6E6E73"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 16 16" style="flex: none" fill="none" stroke="#8E8E93" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 1.5"/></svg>剩 7 天</span></div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px"></div>
+</div>
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 124px 150px 60px 84px 96px 104px 104px; column-gap: 16px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: transparent">
+<div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<div style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">python-1</span><span style="display: inline-flex; align-items: center; gap: 4px; height: 18px; padding: 0 7px; border-radius: 9px; font-size: 11px; font-weight: 500; white-space: nowrap; flex: none; color: #7A2E9E; background: rgba(175,82,222,0.12)"><svg aria-hidden="true" width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#7A2E9E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 1.5v2M6 8.5v2M1.5 6h2M8.5 6h2M3 3l1.2 1.2M7.8 7.8 9 9M9 3 7.8 4.2M4.2 7.8 3 9"/></svg>Claude Code</span></div>
+<div style="font-size: 12px; color: #3A3A3C; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">dataclass 和 pydantic 的校验差异</div></div>
+<div style="display: flex; align-items: center; gap: 7px; white-space: nowrap; color: #6E6E73; font-weight: 400"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; box-sizing: border-box; flex: none; background: transparent; border: 1.5px solid #8E8E93"></span>已停止</div>
+<div style="display: flex; align-items: center; gap: 8px; color: #3A3A3C; white-space: nowrap; overflow: hidden; "><span aria-hidden="true" data-tile="Py" style="width: 22px; height: 22px; box-sizing: border-box; border-radius: 6px; background-color: #F0F0F3; background-position: center; background-repeat: no-repeat; background-size: 60% 60%; border: 1px solid rgba(0,0,0,0.06); box-shadow: inset 0 1px 0 rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; letter-spacing: -0.01em; color: #3A3A3C; flex: none">Py</span><span style="overflow: hidden; text-overflow: ellipsis">Python 脚本</span></div>
+<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #3A3A3C; ">—</div>
+<div style="text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: #3A3A3C; ">61.4 MB</div>
+<div style="color: #6E6E73; white-space: nowrap; ">29 天前</div>
+<div style=""><span style="display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; font-weight: 500; color: #8A4B00"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 16 16" style="flex: none" fill="none" stroke="#C27400" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 1.5"/></svg>明天清理</span></div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px"></div>
 </div>
 </div>
-
-<!-- 悬停在大小上的提示（规格 DESKTOP-LIBRARY-VIEW-75） -->
-<div role="tooltip" style="position: absolute; right: 204px; top: 240px; z-index: 5; padding: 6px 12px; border-radius: 10px; font-size: 12px; line-height: 1.5; white-space: nowrap; background: rgba(250,250,252,0.86); backdrop-filter: blur(40px) saturate(190%); border: 1px solid rgba(255,255,255,0.95); box-shadow: 0 0 0 0.5px rgba(0,0,0,0.12), 0 16px 40px rgba(15,23,42,0.20), inset 0 1px 0 rgba(255,255,255,1); color: #1D1D1F">
-<div>依赖 <span style="font-family: 'SF Mono', Menlo, monospace">181.9 MB</span><span style="color: #6E6E73">（node_modules）</span></div>
-<div>其余 <span style="font-family: 'SF Mono', Menlo, monospace">4.4 MB</span></div>
 </div>
 
 <!-- floating glass toolbar -->
@@ -95,14 +170,14 @@ a{color:#0071E3}a:hover{color:#0058B0}
 <button style="height: 32px; padding: 0 16px; border-radius: 16px; border: none; background: rgba(0,0,0,0.065); font-weight: 600; display: flex; align-items: center; gap: 7px; flex: none">
 <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#1D1D1F" stroke-width="1.5" stroke-linejoin="round"><rect x="1.5" y="1.5" width="4.5" height="4.5" rx="1.2"/><rect x="8" y="1.5" width="4.5" height="4.5" rx="1.2"/><rect x="1.5" y="8" width="4.5" height="4.5" rx="1.2"/><rect x="8" y="8" width="4.5" height="4.5" rx="1.2"/></svg>资源库</button>
 <button style="height: 32px; padding: 0 12px 0 14px; border-radius: 16px; border: none; background: transparent; color: #3A3A3C; display: flex; align-items: center; gap: 8px; flex: none">
-<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: #28A745"></span>react-counter
+<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: #28A745"></span>landing-hero
 <svg role="img" aria-label="关闭并停止" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#6E6E73" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l6 6M8 2 2 8"/></svg></button>
 <button style="height: 32px; padding: 0 12px 0 14px; border-radius: 16px; border: none; background: transparent; color: #3A3A3C; display: flex; align-items: center; gap: 8px; flex: none">
-<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: #28A745"></span>hono-todo-api
+<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: #28A745"></span>hono-1
 <svg role="img" aria-label="关闭并停止" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#6E6E73" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l6 6M8 2 2 8"/></svg></button>
 </div>
 <button style="height: 32px; padding: 0 10px; border-radius: 16px; border: none; background: transparent; display: flex; align-items: center; gap: 8px; font-weight: 500; flex: none; white-space: nowrap">
-<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: #28A745; box-shadow: 0 0 0 3px rgba(40,167,69,0.18)"></span>4 个运行中</button>
+<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: #28A745; box-shadow: 0 0 0 3px rgba(40,167,69,0.18)"></span>2 个运行中</button>
 <button style="height: 32px; padding: 0 14px; border-radius: 16px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 8px; flex: none; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,113,227,0.28)">
 <svg aria-hidden="true" width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"><path d="M6 1.5v9M1.5 6h9"/></svg>新建</button>
 </div>
@@ -141,7 +216,7 @@ a{color:#0071E3}a:hover{color:#0058B0}
 <div style="flex: 1"></div>
 <div style="padding: 10px; border-radius: 9px; background: rgba(255,255,255,0.6); border: 1px solid rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 2px">
 <div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px">~/Runyard</div>
-<div style="font-size: 12px; color: #6E6E73">20 个项目 · 共 2.9 GB</div>
+<div style="font-size: 12px; color: #6E6E73">9 个项目 · 正在计算大小</div>
 </div>
 </nav>
 
@@ -173,10 +248,10 @@ const data = [
 ];
 const left = [0, 0, 30, 30, 0, 0, 29, 0, 0, 0, 24, 0];
 const rows0 = data.map((d, i) => Object.assign({ agentLabel: d[0] === 'node-ts-1' ? 'Codex' : 'Claude Code', name: d[0], badge: d[1], template: d[2], port: d[3], opened: d[4], note: d[8] || '未填写备注', noteColor: d[8] ? '#3A3A3C' : '#6E6E73', bg: i === 0 ? 'rgba(0,113,227,0.08)' : 'transparent', bar: i === 0 ? 'inset 3px 0 0 #0071E3' : 'none' }, d[5], d[6], d[7]));
-const navItems = [['全部', '20', true], ['运行中', '4', false], ['智能体创建', '6', false]];
+const navItems = [['全部', '9', true], ['运行中', '2', false], ['智能体创建', '4', false]];
 const nav = navItems.map((n) => ({ label: n[0], count: n[1], bg: n[2] ? '#0071E3' : 'transparent', color: n[2] ? '#FFFFFF' : '#1D1D1F', weight: n[2] ? 600 : 400, mark: n[2] ? '#FFFFFF' : '#8E8E93', countColor: n[2] ? '#FFFFFF' : '#6E6E73' }));
 const tipText = '30 天没打开就移到废纸篓，每次打开重新计时';
-const rows = rows0.map((r, i) => { const n = left[i]; return n ? Object.assign({}, r, { keep: '剩 ' + n + ' 天', tip: tipText }) : Object.assign({}, r, { tip: '' }); });
+const rows = [];
 const SIZES = {'react-counter': ['186.3 MB', '#3A3A3C'], 'hono-todo-api': ['38.6 MB', '#3A3A3C'], 'hono-1': ['38.2 MB', '#3A3A3C'], 'react19-3': ['214.7 MB', '#3A3A3C'], 'landing-hero': ['96 KB', '#3A3A3C'], 'go-channels': ['24 KB', '#3A3A3C'], 'python-2': ['61.4 MB', '#3A3A3C'], 'vue-drag-list': ['142.8 MB', '#3A3A3C'], 'vue3-2': ['141.5 MB', '#3A3A3C'], 'api-mock-1': ['12.3 MB', '#3A3A3C'], 'node-ts-1': ['48.9 MB', '#3A3A3C'], 'react18-1': ['412 MB', '#3A3A3C']};
 const withSize = (list) => list.map((r) => Object.assign({}, r, { size: (SIZES[r.name] || ['24 KB', '#3A3A3C'])[0], sizeColor: (SIZES[r.name] || ['24 KB', '#3A3A3C'])[1] }));
 return { rows: withSize(rows), nav };
