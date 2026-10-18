@@ -265,6 +265,22 @@
 
 可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`DATA_FROM_NEWER_VERSION`
 
+#### `playground.markOpened`
+
+记一次打开（资源库“上次打开”一列）；只写 lastOpenedAt，不算一次使用
+
+入参：
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `playground` | `string` | 是 | 项目的 id 或名称；非空 |
+
+出参：
+
+类型 `Playground`
+
+可能返回的错误码：`PLAYGROUND_NOT_FOUND`、`DATA_FROM_NEWER_VERSION`
+
 #### `playground.released`
 
 客户端回报“我已释放这个项目的句柄”，回应 playground.releaseRequested

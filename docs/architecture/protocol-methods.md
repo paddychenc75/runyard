@@ -46,6 +46,7 @@
 | `playground.trash` | `playground` | `{ trashed, deletedRegenerable }`（推，来自平台层 `fs.trash`；后者是直接删掉的可再生目录的相对路径列表） | 先停止，再走释放顺序；错误 `PATH_LOCKED` `PATH_TOO_LONG` `TRASH_UNAVAILABLE` |
 | `playground.relocate` | `playground`、`path` | `Playground` | 接受任意位置的文件夹，只要里面的 `id` 对得上（推自 PRD #prd-decision-table 第 19 项） |
 | `playground.forget` | `playground` | 空 | 从资源库移除，不动磁盘 |
+| `playground.markOpened` | `playground` | `Playground` | 记一次打开（应用里打开项目标签页，含“打开但不运行”），只写 `lastOpenedAt`，不动 `lastUsedAt`，不算一次使用 |
 | `playground.released` | `playgroundId` | 空 | 客户端回报“我已释放这个项目的句柄”（§4.3） |
 | `library.rescan` | 无 | 空 | 重新扫描资源库根目录 |
 

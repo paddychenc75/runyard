@@ -402,8 +402,8 @@
 | desktop.script.endedNoCode.label | {state} · {duration} | {state} · {duration} | state：运行状态的名字，来自 runState.<状态>；duration：这次运行的总耗时 |
 | desktop.script.failedTail.label | 已有的最后几行输出 | Last lines of output so far | — |
 | desktop.script.input.aria | 给程序的输入 | Input for the program | — |
-| desktop.script.input.placeholder | 输入内容后回车发送给程序 | Type and press Enter to send to the program | — |
-| desktop.script.inputDisabled.hint | 仅程序运行中可用 | Available while the program is running | — |
+| desktop.script.input.placeholder | 输入内容后回车发送给程序 | Type input and press Return to send to the program | — |
+| desktop.script.inputDisabled.hint | 仅程序运行中可用 | Only while the program runs | — |
 | desktop.script.running.label | {state} · 已 {duration} | {state} · {duration} | state：运行状态的名字，来自 runState.<状态>；duration：已经运行的时长，如 3.2 秒 |
 | desktop.script.stale.label | 过期 | Stale | — |
 | desktop.script.staleNotice.label | 代码有语法错误，没有重新运行。下面是上一次的输出。 | The code has a syntax error and was not re-run. Below is the previous output. | — |

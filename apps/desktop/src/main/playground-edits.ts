@@ -117,6 +117,11 @@ export class PlaygroundEdits {
     });
   }
 
+  /** 记“上次打开”（资源库那一列的来源）：用户打开项目时记，含“打开但不运行”；记不上不挡打开 */
+  async markOpened(id: string): Promise<void> {
+    await this.#client.call("playground.markOpened", { playground: id }).catch(() => undefined);
+  }
+
   /** 找不到文件夹的项目：只从资源库去掉这一项，不动磁盘（规格 DESKTOP-LIBRARY-VIEW“找不到项目文件夹”） */
   forget(id: string): Promise<EditResult> {
     return this.#guard(id, async () => {

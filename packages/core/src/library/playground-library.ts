@@ -248,6 +248,16 @@ export class PlaygroundLibrary {
     await this.#index.save(this.#deps.root);
   }
 
+  /**
+   * 记一次打开（应用里打开项目标签页，含“打开但不运行”）：只写 lastOpenedAt，
+   * 不动 lastUsedAt、提醒与顺延，所以不重置自动清理的计时
+   */
+  async markOpened(ref: string): Promise<void> {
+    const item = this.#known(ref);
+    this.#index.replace({ ...item.entry, lastOpenedAt: this.#deps.now() });
+    await this.#index.save(this.#deps.root);
+  }
+
   /** 只动索引的操作（提醒、使用）：文件夹找不到也可以做 */
   #known(ref: string): LibraryItem {
     const item = this.find(ref);

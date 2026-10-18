@@ -221,6 +221,7 @@ export class LibraryController {
    * 已经有它的标签就只切过去，不再启动。
    */
   async openProject(playgroundId: string): Promise<void> {
+    await this.edits.markOpened(playgroundId);
     const isNew = this.#workspace.open(playgroundId);
     this.#applyPreview();
     this.#emit();
@@ -249,10 +250,8 @@ export class LibraryController {
   /** “打开但不运行”（规格 DESKTOP-LIBRARY-VIEW-33）：已停止的只开标签页、不算一次使用；运行中的同“打开” */
   async openProjectWithoutRun(playgroundId: string): Promise<void> {
     const run = latestRunByPlayground(this.#runs).get(playgroundId);
-    if (run !== undefined && isActiveRun(run.state)) {
-      await this.openProject(playgroundId);
-      return;
-    }
+    if (run !== undefined && isActiveRun(run.state)) return this.openProject(playgroundId);
+    await this.edits.markOpened(playgroundId);
     const isNew = this.#workspace.open(playgroundId);
     this.#applyPreview();
     this.#emit();
