@@ -110,6 +110,7 @@ export function createFakePlatform(options: FakePlatformOptions = {}): FakePlatf
       readHead: async (file, length) => fs.readBytes(file)?.subarray(0, length) ?? null,
       listDirs: async (dir) => fs.listDirs(dir),
       listFiles: async (dir) => fs.listFiles(dir),
+      scanDir: (dir) => fs.scanDir(dir),
       exists: async (path) => fs.exists(path),
       makeDir: async (dir) => fs.mkdir(dir),
       writeFile: async (file, data) => fs.writeFileChecked(file, data),

@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { Icon } from "../../primitives/Icon/index.ts";
 import { ScrollArea } from "../../primitives/ScrollArea/index.ts";
 import styles from "./DataTable.module.css";
 
@@ -22,6 +23,10 @@ export interface DataTableColumn<Row> {
   width: DataTableColumnWidth;
   /** start：窗口变窄横向滚动时固定在左；end：固定在右 */
   pin?: "start" | "end";
+  /** end：表头和单元格靠右（数字列） */
+  align?: "end";
+  /** 可点的表头：点它等于在排序里选这一列；sorted 为 true 时表头旁显示向下的箭头 */
+  sort?: { sorted: boolean; onSort: () => void };
   render: (row: Row) => ReactNode;
 }
 
@@ -135,11 +140,25 @@ export function DataTable<Row>({
         <thead className={styles.head}>
           <tr className={styles.row}>
             {columns.map((column) => (
-              <th key={column.id} scope="col" className={styles.headerCell} data-pin={column.pin}>
-                {column.header ?? (
-                  <span className={styles.hidden} data-truncate="">
-                    {column.hiddenHeader}
-                  </span>
+              <th
+                key={column.id}
+                scope="col"
+                className={styles.headerCell}
+                data-pin={column.pin}
+                data-align={column.align}
+                aria-sort={column.sort?.sorted === true ? "descending" : undefined}
+              >
+                {column.sort !== undefined && column.header !== undefined ? (
+                  <button type="button" className={styles.sortButton} onClick={column.sort.onSort}>
+                    <span data-truncate="">{column.header}</span>
+                    {column.sort.sorted ? <Icon name="chevron-down" size={12} /> : null}
+                  </button>
+                ) : (
+                  (column.header ?? (
+                    <span className={styles.hidden} data-truncate="">
+                      {column.hiddenHeader}
+                    </span>
+                  ))
                 )}
               </th>
             ))}
@@ -171,6 +190,7 @@ export function DataTable<Row>({
                       className={styles.cell}
                       data-pin={column.pin}
                       data-column={column.id}
+                      data-align={column.align}
                       data-span={span > 1 ? span : undefined}
                     >
                       {column.render(row)}

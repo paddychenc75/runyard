@@ -27,6 +27,7 @@
 - 工具链的纯函数：`detectTool`、`extractVersion`、`evaluateRequirements`（对照 `requires` 出错误与提示，可单独用）、`toolsToDetect`、`judgeVersion` / `parseVersionNumbers`（范围比较只比范围里写了的几段）。
 - 创建副本（`src/library/duplicate-playground.ts`，#182）：`library.duplicate(ref, { name? })` 照抄文件夹内容但不抄 `node_modules`，新 id、新端口，名称缺省按“模板标识加序号”，备注、自动清理沿用，创建者记为用户，不运行；失败的半成品只进废纸篓。
 - 改名、移到废纸篓、自动清理（`src/library/`，#38）：`library.rename(ref, newName, { isBusy, beforeMove })` 与 `library.trash(ref, { beforeMove, regenerable? })` 只做技术设计 §4.3 固定顺序的第 5 步；停止、请客户端释放句柄、改名前在运行的项目改名后重新启动（持有者不变）由 supervisor 编排，经 `beforeMove` 接入。顺序是名称校验、`BUSY`、重名、`beforeMove`、平台层动作、改索引；平台层的错误码（`PATH_LOCKED`、`TRASH_UNAVAILABLE`、`NAME_EXISTS`、`FOLDER_MISSING`）原样抛出，失败时文件夹和索引都不动。`judgeAutoClean`（纯函数）与 `library.checkAutoClean(inUse)`（读设置、判断、把顺延记成 `snoozedUntil`）给出 `{ remind, clean, postponed, skipped? }`；`inUse` 是现在有运行的项目 id（开标签页即有运行，判断不认识标签页，规格措辞见 issue #73）。`readFile(item)`（读项目文件夹里的 `playground.json`，状态在返回值里）、`update(ref, { note, scriptAutoRun })`、`forget(ref)`（只从索引移除，下次扫描会重新登记那个文件夹），`setAutoClean(ref, days | null)`（从已保留打开时计时从现在起算）、`keep`、`ackReminder`、`markUsed`（记一次使用并清除提醒与顺延；只读命令和“打开但不运行”不调用）。
+- 磁盘占用（`src/library/disk-usage.ts`，#410）：`computeDiskUsage(fs, 项目文件夹, { shouldStop? })` 经平台层 `fs.scanDir` 一层层读，返回 `{ totalBytes, dependencyBytes, dependencyDirs, unreadable }`、`"missing"`（找不到文件夹）或 `"stopped"`。按占用的块算，同一份数据的硬链接只算一次，不跟随符号链接，不进入别的卷（设备号不同），读不了的文件夹记一处并继续，读到一半消失的当它不在；依赖目录是任意层级名为 `node_modules`、`.venv` 的文件夹，里面一切算依赖、套着的不重复数。
 - `nextDefaultName`、`createUlid` / `randomUlid`（项目 id）。
 
 ## 本包特有的规则

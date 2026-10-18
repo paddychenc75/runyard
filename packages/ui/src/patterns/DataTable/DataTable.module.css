@@ -85,6 +85,39 @@
   text-align: start;
 }
 
+.cell[data-align="end"],
+.headerCell[data-align="end"] {
+  text-align: end;
+}
+
+/* 数字列的单元格内容靠右：单元格里是 flex 或 inline 内容时也一样 */
+.cell[data-align="end"] > * {
+  margin-inline-start: auto;
+}
+
+.sortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-inline-size: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.headerCell[data-align="end"] .sortButton {
+  float: inline-end;
+}
+
+.sortButton:focus-visible {
+  outline: var(--space-1) solid var(--color-line-accent);
+  outline-offset: var(--space-1);
+  border-radius: var(--radius-row);
+}
+
 /* 固定的列要盖住横向滚过去的内容，所以要有不透明的底：取整行的底（含选中的淡色） */
 .cell[data-pin],
 .headerCell[data-pin] {

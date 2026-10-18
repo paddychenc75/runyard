@@ -16,6 +16,7 @@ import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { isDueTomorrow } from "../../shared/clean-due.ts";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { PlaygroundRow } from "../../shared/library-state.ts";
+import type { SortKey } from "../library-query.ts";
 import {
   brandOf,
   logoOf,
@@ -27,6 +28,7 @@ import {
 } from "../library-view.ts";
 import { ActionFailedDialog } from "./ActionFailedDialog.tsx";
 import { CreatorCell, CreatorDetails } from "./CreatorCell.tsx";
+import { sizeColumn } from "./LibrarySizeColumn.tsx";
 import styles from "./LibraryTable.module.css";
 import { MissingNote } from "./MissingNote.tsx";
 import { RenameInlineActions, RenameInlineFields } from "./RenameInline.tsx";
@@ -39,6 +41,9 @@ export interface LibraryTableProps {
   locale: Locale;
   rows: readonly PlaygroundRow[];
   now: number;
+  /** 当前排序，和“排序”下拉是同一个值；点“大小”表头等于选“大小” */
+  sort: SortKey;
+  onSortChange: (sort: SortKey) => void;
 }
 
 // 没有值的格子：端口、从没打开过的“上次打开”。设计稿画的是一条短横线
@@ -47,7 +52,7 @@ const NONE = "—";
 // 资源库列表（设计稿 Main、MainNarrow；PRD #prd-library-list）：依次是名称与备注、状态、模板、
 // 端口、保留、上次打开、创建者、操作。窗口变窄时名称与备注固定在左，圆点补进名称列。
 // 操作列是“打开”或“停止运行”加“更多”菜单（RowActions，#171）；重命名和编辑备注就地变成行内编辑（#182）。
-export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
+export function LibraryTable({ bridge, locale, rows, now, sort, onSortChange }: LibraryTableProps) {
   const t = useT();
   const format = useFormat();
   // 创建副本后选中它（规格 DESKTOP-LIBRARY-VIEW-42）
@@ -181,6 +186,7 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
           )
         ),
     },
+    sizeColumn(t("library.column.size.label"), sort === "size", () => onSortChange("size")),
     {
       id: "creator",
       header: t("library.column.creator.label"),

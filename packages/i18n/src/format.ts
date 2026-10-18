@@ -8,7 +8,7 @@ import { type Localized, markLocalized } from "./localized.ts";
 export interface Format {
   /** 整数、小数：Intl.NumberFormat，随语言加千分位 */
   number(value: number): Localized;
-  /** 文件大小：数字加不翻译的 B / KB / MB / GB / TB，中间一个空格，1024 进制，最多一位小数 */
+  /** 文件大小：数字加不翻译的 B / KB / MB / GB / TB，中间一个空格，1000 进制（与访达一致），最多一位小数 */
   fileSize(bytes: number): Localized;
   /** 技术性时长：不翻译的 ms / s（如 1180 ms、1.2 s） */
   technicalDuration(ms: number): Localized;
@@ -50,9 +50,9 @@ export function createFormat(translator: Translator): Format {
       if (bytes < 0) throw new RangeError(`file size must not be negative, got ${bytes}`);
       let unit = 0;
       let value = bytes;
-      // 进位按“四舍五入到一位小数之后”判断，避免出现 1,024 KB
-      while (unit < SIZE_UNITS.length - 1 && Math.round(value * 10) / 10 >= 1024) {
-        value /= 1024;
+      // 进位按“四舍五入到一位小数之后”判断，避免出现 1,000 KB
+      while (unit < SIZE_UNITS.length - 1 && Math.round(value * 10) / 10 >= 1000) {
+        value /= 1000;
         unit += 1;
       }
       const text = (unit === 0 ? integer : oneDecimal).format(value);

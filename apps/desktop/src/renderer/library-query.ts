@@ -25,8 +25,8 @@ export const typeFilters: readonly TypeFilter[] = [
 export type StatusFilter = "all" | "running" | "stopped" | "problem";
 export const statusFilters: readonly StatusFilter[] = ["all", "running", "stopped", "problem"];
 
-export type SortKey = "recent" | "name" | "created";
-export const sortKeys: readonly SortKey[] = ["recent", "name", "created"];
+export type SortKey = "recent" | "name" | "created" | "size";
+export const sortKeys: readonly SortKey[] = ["recent", "name", "created", "size"];
 
 export interface LibraryQuery {
   search: string;
@@ -89,6 +89,12 @@ function matchesSearch(row: PlaygroundRow, needle: string, locale: Locale): bool
 }
 
 function compare(sort: SortKey, a: PlaygroundRow, b: PlaygroundRow): number {
+  // 大小：从大到小；还在计算的和没有大小的排在最后（规格 DESKTOP-LIBRARY-VIEW-76）
+  if (sort === "size") {
+    const aSize = a.size?.totalBytes ?? -1;
+    const bSize = b.size?.totalBytes ?? -1;
+    return bSize - aSize || a.name.localeCompare(b.name);
+  }
   if (sort === "name") return a.name.localeCompare(b.name);
   if (sort === "created") return b.createdAt - a.createdAt || a.name.localeCompare(b.name);
   // 最近打开：从没打开过的按创建时间排（和主进程的默认顺序一致，规格 DESKTOP-LIBRARY-VIEW-01）

@@ -66,8 +66,32 @@
   "library.row.more.aria": {
     "name": "项目名（用户自己起的，不翻译）"
   },
+  "library.sidebar.calculating.label": {
+    "count": "资源库里项目的总数"
+  },
   "library.sidebar.footer.label": {
     "count": "资源库里项目的总数"
+  },
+  "library.sidebar.total.label": {
+    "count": "资源库里项目的总数",
+    "size": "所有项目大小之和（format.fileSize）"
+  },
+  "library.size.atLeast.label": {
+    "size": "项目总大小的写法（format.fileSize）；结果不完整时前面加“≥ ”"
+  },
+  "library.size.dependencies.tooltip": {
+    "size": "依赖目录的总大小",
+    "dirs": "找到的依赖目录名，用顿号（英文逗号）连起来"
+  },
+  "library.size.dirs.label": {
+    "first": "第一个依赖目录名",
+    "second": "第二个依赖目录名（依赖目录只有 node_modules 和 .venv 两种）"
+  },
+  "library.size.rest.tooltip": {
+    "size": "总大小减去依赖大小"
+  },
+  "library.size.unreadable.tooltip": {
+    "count": "没有权限读取而被跳过的文件夹个数"
   },
   "library.topbar.running.label": {
     "count": "正在运行的项目数（标签页和命令行持有的都算）"

@@ -387,7 +387,7 @@ describe("页概况与资源库位置", () => {
     ];
     setup(library(rows));
     expect(await screen.findByText("20 个项目 · 4 个正在运行 · 存放在 ~/Runyard")).toBeTruthy();
-    const footer = screen.getByText("20 个项目", { selector: "div" });
+    const footer = screen.getByText(/^20 个项目 · /, { selector: "div" });
     expect(footer.parentElement?.textContent).toContain("~/Runyard");
   });
 });
@@ -511,10 +511,11 @@ describe("行的选中与键盘", () => {
 
 describe("窗口变窄时表格横向滚动", () => {
   // 真实布局（1100 宽、滚动后的位置、对齐）由 e2e/library.e2e.ts 用真窗口量；这里守住结构：谁固定、状态圆点在哪
-  it("[DESKTOP-LIBRARY-VIEW-28] 名称列固定在左、操作列固定在右，中间各列不固定", async () => {
+  it("[DESKTOP-LIBRARY-VIEW-28] 名称列固定在左、操作列固定在右，中间各列（含“大小”）不固定", async () => {
     setup(library([row("demo")]));
     await names();
     const table = screen.getByRole("table", { name: "项目列表" });
+    expect(within(table).getByRole("columnheader", { name: "大小" })).toBeDefined();
     const pinned = [...table.querySelectorAll("tbody tr:first-child td")].map((cell) => [
       cell.getAttribute("data-column"),
       cell.getAttribute("data-pin"),
@@ -523,7 +524,7 @@ describe("窗口变窄时表格横向滚动", () => {
       ["name", "start"],
       ["actions", "end"],
     ]);
-    expect(pinned.length).toBe(8);
+    expect(pinned.length).toBe(9);
   });
 
   it("[DESKTOP-LIBRARY-VIEW-29] 固定的名称列里有每行的状态圆点（表放不下时显示）", async () => {

@@ -18,6 +18,7 @@ import {
 import { useLayoutPrefs } from "../shared/layout-prefs.ts";
 import { OverlayContext } from "../shared/overlay-context.tsx";
 import { OverlayCounter } from "../shared/overlay-counter.ts";
+import { sizeTotalOf } from "../size-view.ts";
 import styles from "./AppShell.module.css";
 import { CloseConfirmDialog } from "./CloseConfirmDialog.tsx";
 import { CreateDialog } from "./CreateDialog.tsx";
@@ -229,6 +230,7 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
             <Sidebar
               windowControls={windowControls}
               total={total}
+              sizeTotal={sizeTotalOf(library?.playgrounds ?? [])}
               counts={navCounts(library?.playgrounds ?? [])}
               nav={query.nav}
               onNavChange={(nav) => chooseNavFilter(nav, { activeTab, patchQuery, selectTab })}

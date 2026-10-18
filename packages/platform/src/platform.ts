@@ -81,6 +81,22 @@ export interface WatchOptions {
   readonly depth?: number;
 }
 
+/** 磁盘占用用的一项：bytes 是实际占用的块（块数 × 512），不是内容长度 */
+export interface DiskEntry {
+  readonly kind: "file" | "dir" | "symlink" | "other";
+  readonly bytes: number;
+  /** 设备号与 inode 合起来认同一份数据（硬链接）和别的卷 */
+  readonly dev: number;
+  readonly ino: number;
+  readonly nlink: number;
+}
+
+export interface DirScan {
+  /** 目录自己（跟随它本身是链接的情形：项目文件夹可以是指向别处的链接） */
+  readonly self: DiskEntry;
+  readonly entries: readonly (DiskEntry & { readonly name: string })[];
+}
+
 export interface WatchEvent {
   readonly kind: "add" | "change" | "remove";
   readonly path: PosixRelPath;
@@ -214,6 +230,13 @@ export interface Platform {
      * 目录被占用或权限不足抛 PATH_LOCKED，原目录保持原样
      */
     moveDir(from: AbsPath, to: AbsPath): Promise<void>;
+    /**
+     * 读一层目录用来算磁盘占用（只读）：目录自己和它直接子项的类型、占用的字节（块数 × 512）、设备号、inode、硬链接数。
+     * 不跟随符号链接（链接本身是 "symlink" 项，大小是链接自己的）；目录不存在返回 null；
+     * 没有权限读目录抛 PATH_LOCKED；读的过程中子项消失就当它不在。遍历由调用方一层层做，
+     * 这样一个大项目不会长时间占住事件循环，也可以随时放弃
+     */
+    scanDir(dir: AbsPath): Promise<DirScan | null>;
     /** 只进废纸篓或回收站，放不进就失败（TRASH_UNAVAILABLE），绝不退到永久删除 */
     trash(dir: AbsPath, opts?: { regenerable?: PosixRelPath[] }): Promise<TrashResult>;
     /**

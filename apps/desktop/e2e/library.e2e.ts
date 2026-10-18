@@ -170,7 +170,7 @@ test("[DESKTOP-LIBRARY-VIEW-28][DESKTOP-LIBRARY-VIEW-29] 窗口 1100 宽：横�
   expect(start.overflowing).toBe(true);
   expect(start.clipped).toEqual([]);
   const nameStart = round(start.headers[0] as Box);
-  const actionsStart = round(start.headers[7] as Box);
+  const actionsStart = round(start.headers[8] as Box);
 
   for (const fraction of [0.5, 1]) {
     await scrollTo(Math.floor(start.maxScroll * fraction));
@@ -182,7 +182,7 @@ test("[DESKTOP-LIBRARY-VIEW-28][DESKTOP-LIBRARY-VIEW-29] 窗口 1100 宽：横�
     expect(now.cells.map(round)).toEqual(now.headers.map(round));
     // 名称列和操作列不随滚动移动
     expect(round(now.headers[0] as Box)).toEqual(nameStart);
-    expect(round(now.headers[7] as Box)).toEqual(actionsStart);
+    expect(round(now.headers[8] as Box)).toEqual(actionsStart);
     // 状态圆点在名称列里看得见
     expect(now.dot).not.toBeNull();
     expect(now.dot?.dot.width).toBeGreaterThan(0);
@@ -190,11 +190,11 @@ test("[DESKTOP-LIBRARY-VIEW-28][DESKTOP-LIBRARY-VIEW-29] 窗口 1100 宽：横�
     expect(now.dot?.dot.right).toBeLessThanOrEqual(now.dot?.name.right ?? 0);
   }
 
-  // 滚到最右：“保留”“上次打开”“创建者”整列落在两根固定列之间，表头完整
+  // 滚到最右：“保留”“上次打开”“大小”“创建者”整列落在两根固定列之间，表头完整
   const end = await measure();
   const nameRight = (end.headers[0] as Box).right;
-  const actionsLeft = (end.headers[7] as Box).left;
-  for (const text of ["Retention", "Last opened", "Created by"]) {
+  const actionsLeft = (end.headers[8] as Box).left;
+  for (const text of ["Retention", "Last opened", "Size", "Created by"]) {
     const header = end.headers.find((h) => h.text === text);
     expect(header, text).toBeDefined();
     expect(header?.left).toBeGreaterThanOrEqual(nameRight - 1);
