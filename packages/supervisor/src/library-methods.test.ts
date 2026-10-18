@@ -194,6 +194,30 @@ describe("更新、忘记与被动过的文件夹", () => {
     expect(await read("other")).not.toHaveProperty("requestAutoResend");
   });
 
+  it("markOpened 写上次打开并发出 playground.changed，上次使用不变；落盘后重新读取仍在", async () => {
+    const app = await setup();
+    await lw.create(app, "demo");
+    const before = await app.result<{ lastUsedAt: number; lastOpenedAt?: number }>(
+      "playground.get",
+      { playground: "demo" },
+    );
+    expect(before.lastOpenedAt).toBeUndefined();
+    const opened = await app.result<{ lastUsedAt: number; lastOpenedAt?: number }>(
+      "playground.markOpened",
+      { playground: "demo" },
+    );
+    expect(opened.lastOpenedAt).toBeGreaterThan(0);
+    expect(opened.lastUsedAt).toBe(before.lastUsedAt);
+    const read = await app.result<{ lastOpenedAt?: number }>("playground.get", {
+      playground: "demo",
+    });
+    expect(read.lastOpenedAt).toBe(opened.lastOpenedAt);
+    expect(app.eventsOf("playground.changed").length).toBeGreaterThanOrEqual(1);
+    expect(await app.errorCode("playground.markOpened", { playground: "nope" })).toBe(
+      "PLAYGROUND_NOT_FOUND",
+    );
+  });
+
   it("forget 只从资源库移除，磁盘不动，发出 playground.removed", async () => {
     const app = await setup();
     const { playground } = await lw.create(app, "demo");

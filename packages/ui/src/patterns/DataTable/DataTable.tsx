@@ -68,6 +68,16 @@ const MIN: Record<DataTableColumnWidth, string> = {
   flex: "var(--size-column-flex-min)",
 };
 
+/**
+ * 放不放得下，看各列最小宽之和（表的 min-inline-size）与可见宽度，不看表现在实际多宽：
+ * 放不下时名称列会多出状态圆点、内容的 fit-content 随之变宽，实际宽度比最小宽大，
+ * 窗口放宽后若还拿它比，就会一直认为放不下（#404）。读不出最小宽（非浏览器环境）时才退回实际宽度
+ */
+export function tableOverflows(table: HTMLElement, root: HTMLElement): boolean {
+  const min = Number.parseFloat(getComputedStyle(table).minWidth);
+  return (Number.isFinite(min) ? min : table.offsetWidth) > root.clientWidth + 1;
+}
+
 // 一个自带滚动的表格：竖向滚动时表头钉在上面；窗口窄到放不下时整张表横向滚动，
 // 标了 pin 的列留在两侧（PRD #prd-library-list 的窄窗口规则，设计稿 MainNarrow）。
 // 放不下的时候给根元素加 data-overflowing；单元格里带 data-when-overflowing 的元素只在这时显示
@@ -96,7 +106,7 @@ export function DataTable<Row>({
     if (root === null || table === null) return;
     if (typeof ResizeObserver === "undefined") return;
     const measure = () => {
-      setOverflowing(table.offsetWidth > root.clientWidth + 1);
+      setOverflowing(tableOverflows(table, root));
       setViewport(root.clientWidth);
     };
     const observer = new ResizeObserver(measure);
@@ -108,7 +118,9 @@ export function DataTable<Row>({
 
   const vars = {
     "--table-columns": columns.map((column) => TRACK[column.width]).join(" "),
-    "--table-min": `calc(${columns.map((column) => MIN[column.width]).join(" + ")})`,
+    // 各列最小宽加上列间距和行两侧内边距（都是 space-6）：只算列宽会低估 108px，
+    // 1440 宽的窗口里表会比可见区宽出一截，横向滚动条一直留着（#404）
+    "--table-min": `calc(${columns.map((column) => MIN[column.width]).join(" + ")} + ${columns.length + 1} * var(--space-6))`,
     ...(viewport === null ? {} : { "--table-viewport": `${viewport}px` }),
   } as CSSProperties;
 

@@ -301,6 +301,21 @@ describe("自动清理的计时与一轮检查", () => {
     expect(library.find("demo")?.entry.lastUsedAt).toBe(used);
   });
 
+  it("markOpened 只写上次打开，不动上次使用，也不清除提醒状态（打开但不运行不重置计时）", async () => {
+    const { h, library } = await autoCleanSetup(7);
+    const used = library.find("demo")?.entry.lastUsedAt;
+    expect(library.find("demo")?.entry.lastOpenedAt).toBeUndefined();
+    await h.clock.advance(days(8));
+    await library.ackReminder("demo");
+    await h.clock.advance(days(1));
+    await library.markOpened("demo");
+    const entry = library.find("demo")?.entry;
+    expect(entry?.lastOpenedAt).toBe(h.clock.now());
+    expect(entry?.lastUsedAt).toBe(used);
+    expect(entry?.clean?.remindedAt).toBeDefined();
+    expect((await library.checkAutoClean(none)).clean).toHaveLength(1);
+  });
+
   it("[LIBRARY-AUTO-CLEAN-25] 正在运行的项目顺延一天，记成 snoozedUntil；停下后的下一轮可清理", async () => {
     const { h, library } = await autoCleanSetup(7);
     const id = library.find("demo")?.entry.id as string;

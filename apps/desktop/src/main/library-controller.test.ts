@@ -135,6 +135,43 @@ function setup(options: { libraryRoot?: string } = {}) {
   return { client, preview, system, controller };
 }
 
+describe("LibraryController 记上次打开", () => {
+  const opened = (client: FakeClient) =>
+    client.calls.filter((call) => call.method === "playground.markOpened");
+
+  it("打开项目记一次上次打开，且发生在启动运行之前", async () => {
+    const { client, controller } = setup();
+    await controller.start();
+    await controller.openProject("a");
+    expect(opened(client).map((call) => call.params)).toEqual([{ playground: "a" }]);
+    const methods = client.calls.map((call) => call.method);
+    expect(methods.indexOf("playground.markOpened")).toBeLessThan(methods.indexOf("run.start"));
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-33] 打开但不运行也记上次打开，但不启动运行", async () => {
+    const { client, controller } = setup();
+    await controller.start();
+    await controller.openProjectWithoutRun("a");
+    expect(opened(client)).toHaveLength(1);
+    expect(client.calls.some((call) => call.method === "run.start")).toBe(false);
+  });
+
+  it("切换已开着的标签页不记；记录失败不挡打开", async () => {
+    const { client, controller } = setup();
+    await controller.start();
+    await controller.openProject("a");
+    controller.selectTab("a");
+    expect(opened(client)).toHaveLength(1);
+    const call = client.call;
+    client.call = (async (method: MethodName, params: unknown) => {
+      if (method === "playground.markOpened") throw new Error("boom");
+      return call(method as never, params as never);
+    }) as typeof client.call;
+    await controller.openProject("b");
+    expect(controller.getState().tabs.map((tab) => tab.id)).toContain("b");
+  });
+});
+
 describe("LibraryController 实时更新", () => {
   it("[DESKTOP-LIBRARY-VIEW-05] 命令行新建的项目在事件到来后自动出现，创建者不是用户", async () => {
     const { client, controller } = setup();
