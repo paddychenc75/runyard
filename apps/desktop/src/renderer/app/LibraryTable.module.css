@@ -3,18 +3,56 @@
   min-block-size: 0;
 }
 
-.nameCell {
+.nameText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-inline-size: 0;
+}
+
+/* 名称加后面挂的创建徽标（智能体、命令行）：徽标不收缩，名称过长时省略 */
+.nameLine {
   display: flex;
   align-items: center;
   gap: var(--space-4);
   min-inline-size: 0;
 }
 
-.nameText {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: var(--space-1);
+.tag {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-2);
+  box-sizing: border-box;
+  block-size: calc(var(--size-badge) - var(--space-2));
+  padding: 0 calc(var(--space-3) + var(--space-1) / 2);
+  border: 0;
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: var(--text-caption-size);
+  font-weight: var(--text-control-weight);
+  line-height: var(--text-caption-line-height);
+  white-space: nowrap;
+}
+
+.tag[data-kind="agent"] {
+  background: var(--color-fill-agent-tint);
+  color: var(--color-agent-text);
+  cursor: pointer;
+}
+
+.tag[data-kind="cli"] {
+  background: var(--color-bg-chip);
+  color: var(--color-text-secondary);
+}
+
+.tag:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus-ring);
+}
+
+.tagText {
   min-inline-size: 0;
 }
 
@@ -53,12 +91,13 @@
   color: var(--color-text-secondary);
 }
 
+/* 找不到文件夹的行：除状态和名称外各格淡成 45% */
 .dim {
   display: inline-flex;
   align-items: center;
   max-inline-size: 100%;
   min-inline-size: 0;
-  opacity: 0.55;
+  opacity: 0.45;
 }
 
 .missingStatus {
@@ -70,16 +109,38 @@
   font-weight: var(--text-item-weight);
 }
 
-.tomorrow {
-  border-color: var(--color-status-warning-mark);
-  color: var(--color-status-warning-text);
+.statusCell {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  min-inline-size: 0;
 }
 
-.creator {
+.statusPort {
+  color: var(--color-text-secondary);
+  font-size: var(--text-secondary-size);
+}
+
+.tertiary {
+  color: var(--color-text-tertiary);
+}
+
+.clean {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  min-inline-size: 0;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+/* 到期前一天：图标和文字都用警示色，字重 500，不用胶囊 */
+.cleanSoon {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-status-warning-text);
+  font-weight: var(--text-control-weight);
+  white-space: nowrap;
 }
 
 .details {

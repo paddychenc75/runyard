@@ -1,4 +1,4 @@
-import type { Locale } from "@runyard/i18n";
+import type { Locale, Localized } from "@runyard/i18n";
 import { useFormat, useT } from "@runyard/i18n/react";
 import {
   Badge,
@@ -15,6 +15,7 @@ import {
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { isDueTomorrow } from "../../shared/clean-due.ts";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
+import { lastUsedAt } from "../../shared/last-used.ts";
 import type { PlaygroundRow } from "../../shared/library-state.ts";
 import {
   brandOf,
@@ -26,7 +27,7 @@ import {
   statusMarkOf,
 } from "../library-view.ts";
 import { ActionFailedDialog } from "./ActionFailedDialog.tsx";
-import { CreatorCell, CreatorDetails } from "./CreatorCell.tsx";
+import { CreatorDetails, CreatorTag } from "./CreatorCell.tsx";
 import styles from "./LibraryTable.module.css";
 import { MissingNote } from "./MissingNote.tsx";
 import { RenameInlineActions, RenameInlineFields } from "./RenameInline.tsx";
@@ -80,29 +81,29 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
       id: "name",
       header: t("library.column.name.label"),
       width: "fill",
-      pin: "start",
-      render: (row) =>
+      render: (row, { selected }) =>
         row.id === editingId ? (
           <RenameInlineFields draft={draft} />
         ) : (
-          <div className={styles.nameCell}>
-            <StatusMark
-              status={statusMarkOf(row.state)}
-              markLabel={t(stateLabelKey(row.state))}
-              data-when-overflowing=""
-            />
-            <div className={styles.nameText}>
+          <div className={styles.nameText}>
+            <div className={styles.nameLine}>
               <Truncate className={styles.name}>
                 <UserText>{row.name}</UserText>
               </Truncate>
-              {row.note === "" ? (
-                <Truncate className={styles.noteEmpty}>{t("library.note.empty.label")}</Truncate>
-              ) : (
-                <Truncate className={styles.note}>
-                  <UserText>{row.note}</UserText>
-                </Truncate>
-              )}
+              <CreatorTag
+                row={row}
+                expanded={expanded.has(row.id)}
+                onToggle={() => toggleExpanded(row.id)}
+                tabbable={selected}
+              />
             </div>
+            {row.note === "" ? (
+              <Truncate className={styles.noteEmpty}>{t("library.note.empty.label")}</Truncate>
+            ) : (
+              <Truncate className={styles.note}>
+                <UserText>{row.note}</UserText>
+              </Truncate>
+            )}
           </div>
         ),
     },
@@ -113,40 +114,53 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
       render: (row) =>
         row.missing ? (
           <span className={styles.missingStatus} data-missing-status="">
-            <Icon name="warning" size={14} />
+            <Icon name="warning" size={12} />
             <Truncate>{t("library.missing.status.label")}</Truncate>
           </span>
         ) : (
-          <StatusMark status={statusMarkOf(row.state)}>{t(stateLabelKey(row.state))}</StatusMark>
+          <span className={styles.statusCell}>
+            <StatusMark status={statusMarkOf(row.state)}>{t(stateLabelKey(row.state))}</StatusMark>
+            {/* 端口列收起后，运行中的行把端口写在状态后面（规格 DESKTOP-LIBRARY-VIEW-29） */}
+            {row.active && row.port !== null ? (
+              <UserText mono className={styles.statusPort} data-when-collapsed="port">
+                {portLabel(row.port)}
+              </UserText>
+            ) : null}
+          </span>
         ),
     },
     {
       id: "template",
       header: t("library.column.template.label"),
       width: "flex",
-      render: (row) =>
-        dim(
+      collapse: { order: 3, mode: "narrow", narrowWidth: "icon" },
+      render: (row, { collapsed }) => {
+        const name =
+          row.templateName === null ? row.templateId : pickLocalizedText(row.templateName, locale);
+        const tile = (
+          <MonogramTile
+            letters={monogramOf(row.templateId)}
+            logo={logoOf(row.templateId)}
+            brand={brandOf(row.templateId)}
+          />
+        );
+        return dim(
           row,
           <span className={styles.template}>
-            <MonogramTile
-              letters={monogramOf(row.templateId)}
-              logo={logoOf(row.templateId)}
-              brand={brandOf(row.templateId)}
-            />
-            <Truncate>
-              <UserText>
-                {row.templateName === null
-                  ? row.templateId
-                  : pickLocalizedText(row.templateName, locale)}
-              </UserText>
+            {/* 收成只有徽标时，悬停显示模板名（规格 DESKTOP-LIBRARY-VIEW-28） */}
+            {collapsed ? <Tooltip content={name as Localized}>{tile}</Tooltip> : tile}
+            <Truncate data-collapse-hide="">
+              <UserText>{name}</UserText>
             </Truncate>
           </span>,
-        ),
+        );
+      },
     },
     {
       id: "port",
       header: t("library.column.port.label"),
       width: "sm",
+      collapse: { order: 2, mode: "hide" },
       render: (row) =>
         dim(
           row,
@@ -160,52 +174,39 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
         ),
     },
     {
-      id: "retention",
-      header: t("library.column.retention.label"),
+      id: "lastUsed",
+      header: t("library.column.lastUsed.label"),
       width: "md",
-      render: (row) => dim(row, retentionCell(row, now, t)),
+      collapse: { order: 1, mode: "hide" },
+      render: (row) =>
+        dim(
+          row,
+          <span className={styles.secondary}>{format.relativeTime(lastUsedAt(row), now)}</span>,
+        ),
     },
     {
-      id: "lastOpened",
-      header: t("library.column.lastOpened.label"),
+      id: "retention",
+      header: t("library.column.retention.label"),
       width: "lg",
       render: (row) =>
         row.id === editingId ? (
           <RenameInlineActions draft={draft} />
         ) : (
-          dim(
-            row,
-            <span className={styles.secondary}>
-              {row.lastOpenedAt === null ? NONE : format.relativeTime(row.lastOpenedAt, now)}
-            </span>,
-          )
-        ),
-    },
-    {
-      id: "creator",
-      header: t("library.column.creator.label"),
-      width: "xxl",
-      render: (row) =>
-        dim(
-          row,
-          <CreatorCell
-            row={row}
-            expanded={expanded.has(row.id)}
-            onToggle={() => toggleExpanded(row.id)}
-          />,
+          dim(row, retentionCell(row, now, t))
         ),
     },
     {
       id: "actions",
       hiddenHeader: t("library.column.actions.aria"),
       width: "lg",
-      pin: "end",
-      render: (row) => (
+      reveal: true,
+      render: (row, { selected }) => (
         <RowActions
           bridge={bridge}
           row={row}
           taken={taken}
           now={now}
+          tabbable={selected}
           onInlineRename={(target, focus) =>
             draft.begin(
               { id: target.id, name: target.name, note: target.note, running: target.active },
@@ -228,9 +229,9 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
         getRowId={(row) => row.id}
         selectedId={selectedId}
         editingId={editingId}
-        // 编辑中的行：名称框占名称到模板三列，取消和保存占最后三列（设计稿 RenameInline）
+        // 编辑中的行：名称框占名称到模板三列，取消和保存占自动清理和操作两列（设计稿 RenameInline）
         cellSpan={(row, columnId) =>
-          row.id !== editingId ? 1 : columnId === "name" || columnId === "lastOpened" ? 3 : 1
+          row.id !== editingId ? 1 : columnId === "name" ? 3 : columnId === "retention" ? 2 : 1
         }
         renderDetail={(row): DataTableDetail | null => {
           if (row.missing) {
@@ -270,24 +271,31 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
 
 const portLabel = (port: number) => `:${port}`;
 
+// 自动清理列（规格 DESKTOP-LIBRARY-VIEW-03）：没开写淡灰的“—”，开了写时钟图标加“剩 N 天”，
+// 到期前一天图标和文字都用警示色写“明天清理”；不用胶囊
 function retentionCell(row: PlaygroundRow, now: number, t: ReturnType<typeof useT>): ReactNode {
-  // 离到期不足一天：警示色的“明天清理”（规格 DESKTOP-LIBRARY-VIEW-57）
   if (isDueTomorrow(row, now))
     return (
-      <Badge variant="dashed" className={styles.tomorrow} data-clean-tomorrow="">
+      <span className={styles.cleanSoon} data-clean-tomorrow="">
+        <Icon name="clock" size={12} />
         {t("library.retention.tomorrow.label")}
-      </Badge>
+      </span>
     );
   const retention = retentionOf(row, now);
-  if (retention.kind === "kept")
-    return <Badge variant="solid">{t("library.retention.kept.label")}</Badge>;
+  if (retention.kind === "kept") return <span className={styles.tertiary}>{NONE}</span>;
   if (retention.kind === "autoCleanUnknown")
-    return <Badge variant="dashed">{t("library.filter.autoClean.label")}</Badge>;
+    return (
+      <span className={styles.clean}>
+        <Icon name="clock" size={12} className={styles.tertiary} />
+        {t("library.filter.autoClean.label")}
+      </span>
+    );
   return (
     <Tooltip content={t("library.retention.autoClean.tooltip", { days: retention.daysLeft })}>
-      <Badge variant="dashed">
+      <span className={styles.clean}>
+        <Icon name="clock" size={12} className={styles.tertiary} />
         {t("library.retention.autoClean.label", { days: retention.daysLeft })}
-      </Badge>
+      </span>
     </Tooltip>
   );
 }

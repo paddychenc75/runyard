@@ -25,7 +25,6 @@ function columns(data: SampleData): DataTableColumn<SampleRow>[] {
       id: "name",
       header: data.items[0],
       width: "fill",
-      pin: "start",
       render: (row) => (
         <Truncate>
           <UserText>{row.name}</UserText>
@@ -56,7 +55,6 @@ function columns(data: SampleData): DataTableColumn<SampleRow>[] {
       id: "actions",
       hiddenHeader: data.label,
       width: "icon",
-      pin: "end",
       render: () => <IconButton icon="close" label={data.iconLabel as Localized} size="sm" />,
     },
   ];
