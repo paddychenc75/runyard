@@ -109,7 +109,7 @@ describe("缺少运行环境", () => {
     expect(calls.map(([method]) => method)).not.toContain("run.start");
   });
 
-  it("[DESKTOP-WORKSPACE-66] “在终端中运行”：先重新检测，再让主进程运行它记下的安装命令，界面不传命令", async () => {
+  it("[DESKTOP-WORKSPACE-68] “在终端中运行”：先重新检测，再让主进程运行它记下的安装命令，界面不传命令", async () => {
     const { calls } = setup(missing());
     fireEvent.click(screen.getByRole("button", { name: "在终端中运行" }));
     await waitFor(() => expect(calls).toContainEqual(["toolchain.runInstall", "go"]));
