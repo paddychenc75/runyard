@@ -1877,7 +1877,7 @@ openspec/
 | `protocol` | `handshake` | 双向握手、版本比对、错误只发“代码加参数” | `prd-decided-by-default`、`prd-cli-json`、`prd-cli-language` | `protocol`、`supervisor`、`client` | M1 |
 | `supervisor` | `lifecycle` | 单实例、谁先需要谁启动、空闲退出、崩溃后收拾残局 | `prd-decided-by-default`、`prd-run`、`prd-run-ownership` | `supervisor` | M1 |
 | `library` | `playgrounds` | 创建、命名、备注、重命名、删除进废纸篓 | `prd-create`、`prd-naming`、`prd-note`、`prd-rename` | `core` | M1 |
-| `library` | `auto-clean` | 已保留与自动清理、保留期、智能体创建的项目 | `prd-auto-clean`、`prd-retention`、`prd-agent-created` | `core` | M1 |
+| `library` | `auto-clean` | 自动清理开关、保留期、智能体创建的项目 | `prd-auto-clean`、`prd-retention`、`prd-agent-created` | `core` | M1 |
 | `templates` | `format` | `template.json`、`runner.json` 的规则、版本、校验与冒烟测试 | `prd-template-engineering`、`prd-template-versions`、`prd-template-lint-test` | `protocol`、`core`、`templates/` | M1 |
 | `templates` | `runners` | 七个运行器各自保证什么（Nuxt 暂缓） | `prd-first-templates` | `templates/`、`core` | M1 |
 | `templates` | `custom` | 另存为模板、手写模板 | `prd-custom-templates`、`prd-save-as-template` | `core` | M1 |

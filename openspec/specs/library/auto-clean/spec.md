@@ -2,15 +2,15 @@
 
 ## Purpose
 
-约定项目的“已保留”和“自动清理”：默认什么都不删，demo 是用户的资产；只有用户明确打开了自动清理的项目，超过所选天数没有使用，才会在应用里先提醒、再移到废纸篓。本规格约定什么算一次使用、什么时候提醒、什么时候才真的清理、哪些情形必须跳过或顺延。清理只通过平台层的“移到废纸篓”，可以恢复，没有永久删除；创建、命名、移到废纸篓本身的细节在 library/playgrounds。界面上的标签、提示条和 Dock 图标角标属于桌面应用，不在这里。
+约定项目的“自动清理”开关（开或关，开时带天数）：默认什么都不删，demo 是用户的资产；只有用户明确打开了自动清理的项目，超过所选天数没有使用，才会在应用里先提醒、再移到废纸篓。本规格约定什么算一次使用、什么时候提醒、什么时候才真的清理、哪些情形必须跳过或顺延。清理只通过平台层的“移到废纸篓”，可以恢复，没有永久删除；创建、命名、移到废纸篓本身的细节在 library/playgrounds。界面上的标签、提示条和 Dock 图标角标属于桌面应用，不在这里。
 
 ## Requirements
 
-### Requirement: 默认已保留，自动清理由用户明确打开
-每个项目 MUST 要么“已保留”，要么“自动清理”（带天数）。创建时没有明确打开自动清理的项目 MUST 是“已保留”，包括智能体经命令行创建的项目；命令行只有带 `--clean-after <N>d`（N 为正整数）才 MUST 开启自动清理。之后 MUST 能随时在两种之间切换。“已保留”的项目 MUST NOT 被提醒，也 MUST NOT 被清理，无论多久没有使用。`--clean-after` 的值不是“正整数加 `d`”的 MUST 报 `USAGE`，MUST NOT 创建项目。
+### Requirement: 默认关闭，自动清理由用户明确打开
+每个项目的自动清理 MUST 要么关闭，要么开启（带天数）；界面上 MUST NOT 把关闭的状态叫作“已保留”。创建时没有明确打开自动清理的项目 MUST 是关闭的，包括智能体经命令行创建的项目；命令行只有带 `--clean-after <N>d`（N 为正整数）才 MUST 开启自动清理。之后 MUST 能随时开启或关闭。没有开启自动清理的项目 MUST NOT 被提醒，也 MUST NOT 被清理，无论多久没有使用。`--clean-after` 的值不是“正整数加 `d`”的 MUST 报 `USAGE`，MUST NOT 创建项目。
 来源：PRD #prd-auto-clean；PRD #prd-retention；PRD #prd-cli-clean-after；PRD #prd-agent-created
 
-#### Scenario: [LIBRARY-AUTO-CLEAN-01] 默认已保留
+#### Scenario: [LIBRARY-AUTO-CLEAN-01] 默认关闭
 - **WHEN** 执行 `runyard new react19 demo --json`
 - **THEN** 结果里 `retention` 是 `"kept"`；这个项目的 `autoClean.enabled` 为 `false`
 - 验证：test
@@ -25,26 +25,26 @@
 - **THEN** 全部报 `USAGE`，退出码 2，没有创建任何文件夹
 - 验证：test
 
-#### Scenario: [LIBRARY-AUTO-CLEAN-04] 智能体创建的项目同样默认已保留
+#### Scenario: [LIBRARY-AUTO-CLEAN-04] 智能体创建的项目同样默认关闭
 - 前提：环境变量 `RUNYARD_AGENT` 为 `Claude Code`
 - **WHEN** 不带 `--clean-after` 创建项目
-- **THEN** 项目是已保留，永远不会进入提醒或清理
+- **THEN** 项目没有开启自动清理，永远不会进入提醒或清理
 - 验证：test
 
 #### Scenario: [LIBRARY-AUTO-CLEAN-05] 事后切换
-- 前提：一个已保留的项目
-- **WHEN** 把它改为自动清理 14 天，再改回已保留
-- **THEN** 两次切换都生效并发出 `playground.changed`；改回已保留后，之前为它记下的提醒状态被清除
+- 前提：一个没有开启自动清理的项目
+- **WHEN** 把它改为自动清理 14 天，再关闭自动清理
+- **THEN** 两次切换都生效并发出 `playground.changed`；关闭后，之前为它记下的提醒状态被清除
 - 验证：test
 
-#### Scenario: [LIBRARY-AUTO-CLEAN-06] 已保留的项目永不被清理
-- 前提：一个已保留的项目，上次使用是 400 天前
+#### Scenario: [LIBRARY-AUTO-CLEAN-06] 没开自动清理的项目永不被清理
+- 前提：一个没有开启自动清理的项目，上次使用是 400 天前
 - **WHEN** 判断哪些项目要提醒、要清理
 - **THEN** 两份清单里都没有它
 - 验证：test
 
 #### Scenario: [LIBRARY-AUTO-CLEAN-07] 给很久没用的老项目打开自动清理
-- 前提：一个已保留的项目，上次使用是 100 天前
+- 前提：一个没有开启自动清理的项目，上次使用是 100 天前
 - **WHEN** 把它改为自动清理 30 天
 - **THEN** 计时从打开自动清理的那一刻起算，而不是从 100 天前；当天它不在提醒清单里
 - 验证：test
@@ -95,7 +95,7 @@
 - 验证：test
 
 ### Requirement: 到期前一天只在应用内提醒一次
-离到期时间不足 24 小时的项目 MUST 进入“待提醒”清单。系统 MUST 只在界面确认提醒真的显示了（窗口可见、资源库页已显示）之后才记下“提醒已显示”及时间；已记下的提醒 MUST NOT 在之后的检查里重复进入待提醒清单。系统 MUST NOT 发系统通知。用户 MUST 能在提醒里一键“改为保留”，改后该项目 MUST 立即变为已保留并清除全部提醒状态。
+离到期时间不足 24 小时的项目 MUST 进入“待提醒”清单。系统 MUST 只在界面确认提醒真的显示了（窗口可见、资源库页已显示）之后才记下“提醒已显示”及时间；已记下的提醒 MUST NOT 在之后的检查里重复进入待提醒清单。系统 MUST NOT 发系统通知。用户 MUST 能在提醒里一键“关闭自动清理”，之后该项目 MUST 立即关闭自动清理并清除全部提醒状态。
 来源：PRD #prd-auto-clean；PRD #prd-decision-table（第 9 项）
 
 #### Scenario: [LIBRARY-AUTO-CLEAN-15] 到期前一天进入待提醒
@@ -116,10 +116,10 @@
 - **THEN** 项目记下提醒显示的时间，之后不再进入待提醒清单
 - 验证：test
 
-#### Scenario: [LIBRARY-AUTO-CLEAN-18] 一键改为保留
+#### Scenario: [LIBRARY-AUTO-CLEAN-18] 一键关闭自动清理
 - 前提：项目的提醒已显示
-- **WHEN** 用户点“改为保留”，回报 `clean.keep`
-- **THEN** 项目变为已保留，提醒状态清除，两份清单里都没有它
+- **WHEN** 用户点“关闭自动清理”，回报 `clean.keep`
+- **THEN** 项目的自动清理关闭，提醒状态清除，两份清单里都没有它
 - 验证：test
 
 #### Scenario: [LIBRARY-AUTO-CLEAN-19] 不发系统通知，也不通过命令行提醒

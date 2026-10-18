@@ -119,7 +119,7 @@ a{color:#0071E3}a:hover{color:#0058B0}
 <sc-if value="{{g.dot}}" hint-placeholder-val="{{false}}"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 4px; background: {{g.dotColor}}"></span></sc-if>{{g.text}}</span>
 </sc-for>
 </div>
-<div style="font-size: 12px; color: {{th.ink2}}">已保留、剩余天数（虚线）、智能体、状态胶囊、模板方块 22 和 40。标签高 22，内边距 9；方块圆角 7 和 12。</div>
+<div style="font-size: 12px; color: {{th.ink2}}">普通标签、剩余天数（虚线）、智能体、状态胶囊、模板方块 22 和 40。标签高 22，内边距 9；方块圆角 7 和 12。</div>
 </section>
 
 <!-- lower: two columns -->
@@ -139,7 +139,7 @@ a{color:#0071E3}a:hover{color:#0058B0}
 <span style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">react-counter</span>
 <span style="font-size: 12px; color: {{th.ink2}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">计数器练习</span>
 </div>
-<span style="display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 12px; box-sizing: border-box; flex: none; {{th.keptCss}}">已保留</span>
+<span style="display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 12px; box-sizing: border-box; flex: none; {{th.keptCss}}; color: #8E8E93; background: transparent; border: none">—</span>
 </div>
 </div>
 </sc-for>
@@ -345,7 +345,7 @@ const build = (t) => {
   const seg = (aria, labels, sel) => ({ aria: aria, items: labels.map((l, k) => ({ t: l, cur: k === sel ? 'true' : 'false', css: k === sel ? 'background:' + t.selBg + ';box-shadow:' + t.selShadow + ';font-weight:600;color:' + t.ink + ';' : 'background:transparent;color:' + t.ink3 + ';' })) });
   const segs = [
     seg('视图', ['列表', '网格'], 0),
-    seg('筛选', ['全部', '已保留', '到期'], 1),
+    seg('筛选', ['全部', '运行中', '自动清理'], 1),
     seg('多久没打开后清理', ['7 天', '30 天', '90 天', '自定义'], 1)
   ];
   const sw = (label, on, dis) => ({ label: label, aria: label, checked: on ? 'true' : 'false', dis: dis ? 'true' : 'false', track: on ? 'background:' + t.switchOn + ';' + (dis ? 'opacity:0.4;' : '') : 'background:' + t.offTrack + ';border:1px solid ' + t.mark + ';', knob: on ? 'right:2px;top:2px;' : 'left:1px;top:1px;' });
@@ -354,7 +354,7 @@ const build = (t) => {
   const checks = [ck('未选', 'off', false), ck('已选', 'on', false), ck('混合', 'mixed', false), ck('禁用', 'on', true)];
   const tagBase = 'height:22px;padding:0 9px;border-radius:11px;font-size:12px;';
   const tags = [
-    { css: tagBase + 'background:' + t.chip + ';border:1px solid ' + t.chipLine + ';color:' + t.ink + ';', text: '已保留', dot: false, dotColor: '' },
+    { css: tagBase + 'background:' + t.chip + ';border:1px solid ' + t.chipLine + ';color:' + t.ink + ';', text: '标签', dot: false, dotColor: '' },
     { css: tagBase + 'color:' + t.ink2 + ';border:1px dashed ' + t.dashLine + ';', text: '剩 29 天', dot: false, dotColor: '' },
     { css: tagBase + 'font-weight:500;color:' + t.agentText + ';background:' + t.agentBg + ';', text: '智能体', dot: false, dotColor: '' },
     { css: tagBase + 'font-weight:500;color:' + t.runText + ';background:' + t.runBg + ';', text: '运行中', dot: true, dotColor: t.run },
@@ -377,7 +377,7 @@ const build = (t) => {
   const menuItems = [
     mi('停止运行', '', ''),
     mi('打开', '回车', 'hi'),
-    mi('自动清理…', '现在：已保留', ''),
+    mi('自动清理…', '现在：关闭', ''),
     { line: true, item: false },
     mi('移到废纸篓', '', 'danger')
   ];
