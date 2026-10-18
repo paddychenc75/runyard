@@ -369,7 +369,8 @@ describe("项目文件只登记，不建模型", () => {
       return result?.entries.some((e: { name: string }) => e.name === "addTwo");
     }, "补全列表里出现 addTwo");
     const elapsed = Date.now() - started;
-    expect(Object.keys(runtime.typescript.typescriptDefaults.getExtraLibs())).toHaveLength(500);
+    // 500 个项目文件加一份内置的 Node 全局声明
+    expect(Object.keys(runtime.typescript.typescriptDefaults.getExtraLibs())).toHaveLength(501);
     expect(runtime.monaco.editor.getModels().length - before).toBe(1);
     process.stderr.write(`TIMING 500 files first completion ${elapsed} ms\n`);
     // K8：每个文件一个模型要 26 到 32 秒；登记成 extra lib 是 254 毫秒。给慢机器留足余量

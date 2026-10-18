@@ -172,6 +172,23 @@ describe("文件树：显示", () => {
   });
 });
 
+describe("文件树：右键菜单", () => {
+  it("右键一行后不选菜单项就关掉，选中回到右键之前，不留灰底（issue #443）", async () => {
+    const files = fakeFiles(PROJECT);
+    const { user } = setup(files);
+    await expandSrc(user);
+    await user.click(item("package.json"));
+    expect(item("package.json").hasAttribute("data-selected")).toBe(true);
+    fireEvent.contextMenu(item("src"));
+    await screen.findByRole("menuitem", { name: "新建文件" });
+    expect(item("src").hasAttribute("data-selected")).toBe(true);
+    await user.keyboard("{Escape}");
+    await waitFor(() => expect(screen.queryByRole("menuitem", { name: "新建文件" })).toBeNull());
+    expect(item("src").hasAttribute("data-selected")).toBe(false);
+    expect(item("package.json").hasAttribute("data-selected")).toBe(true);
+  });
+});
+
 describe("文件树：新建", () => {
   it("[DESKTOP-EDITOR-05] 在 src 上选“新建文件”，输入名字回车：磁盘上出现空文件，树选中它并打开", async () => {
     const files = fakeFiles(PROJECT);

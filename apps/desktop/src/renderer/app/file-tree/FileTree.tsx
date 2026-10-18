@@ -94,13 +94,25 @@ export function FileTree({ bridge, project, hooks, onCollapse }: FileTreeProps) 
     else host.openFile(entry.path);
   };
 
+  // 右键只是给菜单指个目标：菜单没选任何项就关了，选中状态要回到右键之前（issue #443），不留一块灰底
+  const beforeMenu = useRef<{ selected: string | null; chosen: boolean }>({
+    selected: null,
+    chosen: false,
+  });
   const openMenu = (path: string | null, x: number, y: number) => {
+    beforeMenu.current = { selected: tree.selected, chosen: false };
     if (path !== null) tree.select(path);
     setMenu({ x, y, path });
+  };
+  const closeMenu = () => {
+    if (!beforeMenu.current.chosen) tree.select(beforeMenu.current.selected);
+    beforeMenu.current.chosen = true;
+    setMenu(null);
   };
 
   const onMenuSelect = (id: "newFile" | "newFolder" | "rename" | "trash") => {
     const path = menu?.path ?? null;
+    beforeMenu.current.chosen = true;
     setMenu(null);
     if (id === "rename" && path !== null) tree.startRename(path);
     else if (id === "trash" && path !== null) void tree.trash(path);
@@ -227,7 +239,7 @@ export function FileTree({ bridge, project, hooks, onCollapse }: FileTreeProps) 
         )}
       </GlassSurface>
       {/* 菜单锚点用 fixed 定位；玻璃面板有 backdrop-filter，会成为 fixed 的参照，所以菜单要放在面板外面 */}
-      <FileTreeMenu target={menu} onSelect={onMenuSelect} onClose={() => setMenu(null)} />
+      <FileTreeMenu target={menu} onSelect={onMenuSelect} onClose={closeMenu} />
     </>
   );
 }

@@ -1,5 +1,6 @@
 import type { FileChange } from "../../../shared/editor-files.ts";
 import type { EditorRuntime } from "../../editor/runtime-types.ts";
+import { NODE_GLOBALS_PATH, NODE_GLOBALS_SOURCE } from "./node-globals.ts";
 import { isScriptPath, type ProjectSource, READ_PARALLEL } from "./project-source.ts";
 
 // 项目文件进语言服务（规格 DESKTOP-EDITOR-40、41、44；K8 证据“装法”第 7 条）：
@@ -46,6 +47,8 @@ export class TypeScriptProject {
   #timer: ReturnType<typeof setTimeout> | undefined;
   #stopWatching: (() => void) | undefined;
   #disposed = false;
+  /** 内置的 Node 全局声明是否已交给语言服务（没有任何项目脚本时第一次 flush 也要交） */
+  #builtinPushed = false;
   #loaded: Promise<void> = Promise.resolve();
 
   constructor(options: TypeScriptProjectOptions) {
@@ -149,11 +152,16 @@ export class TypeScriptProject {
     const next = new Map<string, string>();
     for (const [path, text] of this.#known) if (!this.#open.has(path)) next.set(path, text);
     const same =
+      this.#builtinPushed &&
       next.size === this.#pushed.size &&
       [...next].every(([path, text]) => this.#pushed.get(path) === text);
     if (same) return;
     const { typescriptDefaults, javascriptDefaults } = this.#runtime.typescript;
-    const libs = [...next].map(([path, text]) => ({ content: text, filePath: fileUriOf(path) }));
+    const libs = [
+      { content: NODE_GLOBALS_SOURCE, filePath: NODE_GLOBALS_PATH },
+      ...[...next].map(([path, text]) => ({ content: text, filePath: fileUriOf(path) })),
+    ];
+    this.#builtinPushed = true;
     typescriptDefaults.setExtraLibs(libs);
     javascriptDefaults.setExtraLibs(libs);
     // 每次 setExtraLibs 都让所有库的版本号加一；刚关掉的文件要超过它做模型时的最后版本，
