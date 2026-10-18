@@ -1,11 +1,13 @@
+import { join } from "node:path";
 import { absPath } from "@runyard/platform";
 import { createFakePlatform } from "@runyard/testing";
 import { describe, expect, it } from "vitest";
 import { computeDiskUsage } from "./disk-usage.ts";
 
 const BLOCK = 4096;
-const root = absPath("/lib/demo");
-const at = (...parts: string[]) => absPath([root, ...parts].join("/"));
+// 先过 join 归一化分隔符：内存文件系统按字符串比较路径，Windows 任务上要对得上
+const root = absPath(join("/lib", "demo"));
+const at = (...parts: string[]) => absPath(join(root, ...parts));
 
 function setup() {
   const fake = createFakePlatform();
@@ -53,7 +55,7 @@ describe("项目大小的计算", () => {
 
   it("[LIBRARY-DISK-USAGE-05] 找不到文件夹的项目没有大小", async () => {
     const fake = createFakePlatform();
-    expect(await computeDiskUsage(fake.platform.fs, absPath("/lib/gone"))).toBe("missing");
+    expect(await computeDiskUsage(fake.platform.fs, absPath(join("/lib", "gone")))).toBe("missing");
   });
 
   it("[LIBRARY-DISK-USAGE-06] 1 字节的文件按一整块算", async () => {
