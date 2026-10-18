@@ -1,4 +1,5 @@
 import { closePicker, expect, test } from "./support/fixtures.ts";
+import type { RunyardApp } from "./support/launch.ts";
 
 // 应用菜单（#432）：导出主进程里真实安装的菜单（不点系统菜单栏），核对结构、语言和开发项。
 // 打好的包（RUNYARD_E2E_APP）里不许有重新载入和开发者工具；从源码运行时它们在。
@@ -10,7 +11,7 @@ interface Dumped {
   items: { label: string; role?: string; accelerator?: string; visible: boolean }[];
 }
 
-async function dump(app: import("playwright").ElectronApplication): Promise<Dumped[]> {
+async function dump(app: RunyardApp["app"]): Promise<Dumped[]> {
   return app.evaluate(({ Menu }) =>
     (Menu.getApplicationMenu()?.items ?? []).map((top) => ({
       label: top.label,
