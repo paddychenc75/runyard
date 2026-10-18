@@ -114,13 +114,38 @@
   border-radius: 0;
 }
 
-/* 固定列和滚动过去的列之间画一条细线：表头里被固定列盖住的字（“创建者”只剩半截）才读得出是被盖住，不是错位 */
-.root[data-overflowing] .row > [data-pin="end"] {
-  box-shadow: inset 1px 0 0 var(--color-line-hairline);
+/* 固定列和滚动过去的列之间画一条细线：表头里被固定列盖住的字（“创建者”只剩半截）才读得出是被盖住，不是错位。
+   线画在固定格自己的内侧边上（不压住滚到旁边的列的内容）。格子在行里是垂直居中、只有内容那么高，
+   所以线按“行高”以格子的中心为中线画，并向下多画一段补上行与行之间的空隙，
+   从表头到表底连成一条（#385：原先是每行一段 box-shadow，行间断开） */
+.root[data-overflowing] .row > [data-pin]::after {
+  content: "";
+  position: absolute;
+  inset-block-start: calc(50% - var(--size-row) / 2);
+  block-size: calc(var(--size-row) + var(--space-1));
+  inline-size: 1px;
+  background: var(--color-line-hairline);
+  pointer-events: none;
 }
 
-.root[data-overflowing] .row > [data-pin="start"] {
-  box-shadow: inset -1px 0 0 var(--color-line-hairline);
+.root[data-overflowing] .row > [data-pin="end"]::after {
+  inset-inline-start: 0;
+}
+
+.root[data-overflowing] .row > [data-pin="start"]::after {
+  inset-inline-end: 0;
+}
+
+/* 表头的格子下面还隔着表头的下内边距、下边线和表体的上内边距；表头一行就是一行字那么高 */
+.root[data-overflowing] .head .row > [data-pin]::after {
+  inset-block-start: calc(50% - var(--text-secondary-line-height) / 2);
+  block-size: calc(
+    var(--text-secondary-line-height) +
+    var(--space-4) +
+    1px +
+    var(--space-3) +
+    var(--space-1)
+  );
 }
 
 .head .headerCell[data-pin] {
