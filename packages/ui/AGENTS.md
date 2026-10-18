@@ -15,7 +15,7 @@
 - 样式只用 `var(--…)` 语义变量加 CSS Modules：颜色、像素、圆角、字号、阴影、层级一律不写死；缺变量就改 `packages/tokens/src/tokens.json` 再 `pnpm tokens:build`。方向用逻辑属性（`padding-inline`，不用 `padding-left`）。
 - `backdrop-filter` 只许写在 `src/styles/materials.css`；组件用 `<GlassSurface material="…">`。
 - 一个组件一个文件夹，五个文件：`Name.tsx`、`Name.module.css`、`Name.fixture.tsx`、`Name.test.tsx`、`index.ts`；步骤见 `docs/guides/add-ui-component.md`。样例文件导出 `meta` 和 `samples`，样例里不写文字（走 `SampleData`），布局用 `src/fixtures/` 里的 `FixtureStack`、`FixtureBox`；新样例还要登记进 `workbench/registry.ts`。
-- 变体用字符串联合，不用互斥布尔；`ref` 当普通属性收；`className` 是唯一的样式入口；文字属性的类型是 `Localized`（`children` 是 `ReactNode`）；纯图标按钮的 `label` 必填。
+- 变体用字符串联合，不用互斥布尔；`ref` 当普通属性收；`className` 是唯一的样式入口；文字属性的类型是 `Localized`（`children` 是 `ReactNode`）；纯图标按钮的 `label` 必填。 按钮三档 `sm` 28 / `md` 32（默认）/ `lg` 40，与变体无关，主按钮没有彩色阴影；并排的按钮必须放进 `ButtonGroup`，组里 `Button` 不写 `size`（`button-groups` 检查拦；`Dialog`、`AlertDialog`、`Banner` 的 `actions` 已自带组）。全文见 `docs/design/visual-system.md` 第 12 节。
 - 悬停、按下、聚焦用 `data-force-state="hover|pressed|focus"` 在样例里强制显示。
 - 基准图只由 CI 生成，给 PR 加 `update-ui-baseline` 标签，不要在本地更新（本地写基准图会直接报错）；单张不超过 200 KB、总量不超过 30 MB（`visual/budget.ts`）；流程和 1× 的实测依据见 `docs/guides/ui-visual.md`。
 - 界面里不调 `usePlatform()`，快捷键用 `<Kbd shortcut="…">`（这两样随后续组件加入）。
@@ -78,7 +78,3 @@
 - `SearchField`：放大镜加无框输入加末端提示，`ref` 指向输入框；`Kbd` 是键帽，文字由使用处给。三者都是现成的通用组件，别在功能里再造。
 
 - 表单弹窗（#173）：`Dialog` 整块是一个 `form`，回车或 `type="submit"` 触发 `onSubmit`，输入法组词时的回车被拦掉；`TextField` 必须放在 `Field`（Base UI Field）里，有 `error` 时说明让位给错误；`SegmentedControl` 再点已选中的不取消；`MonogramTile` 新增 `xl`。新增设计变量取自 CreateDialog、CreateDialogOn、Empty：`size-switch-*`、`color-fill-switch-off`、`color-bg-field`、`color-bg-suggestion`、`color-line-field`、`color-line-card`、`shadow-field-focus`、`shadow-segment-selected`、`shadow-thumb`。
-
-## 按钮的约定（#419）
-
-- `Button` 三档高度 `sm` 28 / `md` 32（默认）/ `lg` 40，档位与变体无关；主按钮没有彩色阴影。并排的按钮必须放进 `ButtonGroup`（它把档位交给里面的按钮，按钮自己的 `size` 不起作用）；`Dialog`、`AlertDialog` 的 `actions` 自动是 `lg`，`Banner` 的 `actions` 自动是 `md`。`pnpm check` 的 `button-groups` 拦未成组的相邻按钮和组里写了 `size` 的按钮。规则全文见 `docs/design/visual-system.md` 第 12 节。
