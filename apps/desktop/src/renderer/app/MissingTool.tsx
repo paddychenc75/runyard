@@ -103,7 +103,7 @@ export function MissingTool({ bridge, tab, failure }: MissingToolProps) {
           </Button>
         )}
         {fields.installCommand === null ? null : (
-          <Button size="lg" onClick={() => void runInTerminal()}>
+          <Button onClick={() => void runInTerminal()}>
             {t("settings.runtime.runInstall.action")}
           </Button>
         )}
