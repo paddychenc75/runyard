@@ -1,0 +1,25 @@
+/* 一排按钮：间距随档位，对齐方式由调用方选；放不下时整排折行，而不是压扁按钮 */
+.root {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.root[data-size="sm"] {
+  gap: var(--space-4);
+}
+
+.root[data-align="end"] {
+  justify-content: flex-end;
+}
+
+.root[data-align="center"] {
+  justify-content: center;
+}
+
+.root[data-direction="column"] {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: stretch;
+}

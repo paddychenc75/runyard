@@ -25,7 +25,5 @@
 }
 
 .actions {
-  display: flex;
-  gap: var(--space-5);
   margin-block-start: calc(var(--space-8) + var(--space-1));
 }

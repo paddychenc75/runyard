@@ -3,7 +3,7 @@
 ## 用途
 
 界面的通用组件包：基础组件、图标、玻璃材质、组件工作台（技术设计 §6.7）。它不认识产品：不导入 `protocol`、`electron`、Node 接口（`src/` 里 Biome 的 `noNodejsModules` 拦），文件名、导出名、标识符里不出现产品词，不自己取数据。
-现状：骨架加组件 `Icon`、`Button`、`GlassSurface`、`UserText`，主窗口外壳用到的 `IconButton`、`Tooltip`、`ScrollArea`、`Menu`（#171，包 Base UI 的菜单，数据驱动：`entries` 加 `onSelect`；开合经 `onOpenChange` 通知，外壳靠它让原生预览让位），资源库列表用到的 `StatusMark`、`Badge`、`MonogramTile`、`Truncate`、`EmptyState`（基础层），以及 `NavList`、`TitleBar`、`TabStrip`、`DataTable`、`LogView`、`ConfirmDialog`（组合层，在 `src/patterns/`），`AlertDialog`、`Checkbox`（基础层，#174 的关闭确认用），`Dialog`、`Field`、`TextField`、`Switch`、`SegmentedControl`（基础层，#173 的新建弹窗用；设计稿里自动清理天数是分段选择，所以没有做 `Select`），`Banner`、`CopyableCommand`、`StepList`（基础层，#178 的失败画面用）；其余组件随第一个用到它的功能 PR 加（§6.7 规则 8），不提前做。截图比对（`ui-visual`，`visual/`）已就位；`Localized` 属性的 React 绑定随 #164。六项组件化检查（`ui-layers`、`ui-purity`、`style-tokens`、`ui-fixtures`、`icons`、`file-size`）已在 `pnpm check` 里（#165），下面的规则就是它们守的。
+现状：骨架加组件 `Icon`、`Button`、`ButtonGroup`、`GlassSurface`、`UserText`，主窗口外壳用到的 `IconButton`、`Tooltip`、`ScrollArea`、`Menu`（#171，包 Base UI 的菜单，数据驱动：`entries` 加 `onSelect`；开合经 `onOpenChange` 通知，外壳靠它让原生预览让位），资源库列表用到的 `StatusMark`、`Badge`、`MonogramTile`、`Truncate`、`EmptyState`（基础层），以及 `NavList`、`TitleBar`、`TabStrip`、`DataTable`、`LogView`、`ConfirmDialog`（组合层，在 `src/patterns/`），`AlertDialog`、`Checkbox`（基础层，#174 的关闭确认用），`Dialog`、`Field`、`TextField`、`Switch`、`SegmentedControl`（基础层，#173 的新建弹窗用；设计稿里自动清理天数是分段选择，所以没有做 `Select`），`Banner`、`CopyableCommand`、`StepList`（基础层，#178 的失败画面用）；其余组件随第一个用到它的功能 PR 加（§6.7 规则 8），不提前做。截图比对（`ui-visual`，`visual/`）已就位；`Localized` 属性的 React 绑定随 #164。六项组件化检查（`ui-layers`、`ui-purity`、`style-tokens`、`ui-fixtures`、`icons`、`file-size`）已在 `pnpm check` 里（#165），下面的规则就是它们守的。
 
 ## 对外暴露什么
 
@@ -78,3 +78,7 @@
 - `SearchField`：放大镜加无框输入加末端提示，`ref` 指向输入框；`Kbd` 是键帽，文字由使用处给。三者都是现成的通用组件，别在功能里再造。
 
 - 表单弹窗（#173）：`Dialog` 整块是一个 `form`，回车或 `type="submit"` 触发 `onSubmit`，输入法组词时的回车被拦掉；`TextField` 必须放在 `Field`（Base UI Field）里，有 `error` 时说明让位给错误；`SegmentedControl` 再点已选中的不取消；`MonogramTile` 新增 `xl`。新增设计变量取自 CreateDialog、CreateDialogOn、Empty：`size-switch-*`、`color-fill-switch-off`、`color-bg-field`、`color-bg-suggestion`、`color-line-field`、`color-line-card`、`shadow-field-focus`、`shadow-segment-selected`、`shadow-thumb`。
+
+## 按钮的约定（#419）
+
+- `Button` 三档高度 `sm` 28 / `md` 32（默认）/ `lg` 40，档位与变体无关；主按钮没有彩色阴影。并排的按钮必须放进 `ButtonGroup`（它把档位交给里面的按钮，按钮自己的 `size` 不起作用）；`Dialog`、`AlertDialog` 的 `actions` 自动是 `lg`，`Banner` 的 `actions` 自动是 `md`。`pnpm check` 的 `button-groups` 拦未成组的相邻按钮和组里写了 `size` 的按钮。规则全文见 `docs/design/visual-system.md` 第 12 节。

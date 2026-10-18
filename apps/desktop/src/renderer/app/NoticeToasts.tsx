@@ -1,5 +1,5 @@
 import { T, useFormat, useT } from "@runyard/i18n/react";
-import { Button, GlassSurface, Icon, IconButton, UserText } from "@runyard/ui";
+import { Button, ButtonGroup, GlassSurface, Icon, IconButton, UserText } from "@runyard/ui";
 import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
@@ -62,7 +62,6 @@ function Dismiss({ bridge, id }: { bridge: DesktopBridge; id: string }) {
   return (
     <IconButton
       icon="close"
-      size="sm"
       className={styles.close}
       label={t("desktop.notice.dismiss.aria")}
       onClick={() => void bridge.call("notice.dismiss", id)}
@@ -104,21 +103,17 @@ function AgentRunToast({ bridge, notice }: { bridge: DesktopBridge; notice: Agen
             })}
           </p>
         )}
-        <div className={styles.actions}>
+        <ButtonGroup size="md" className={styles.actions}>
           <Button
             variant="primary"
-            size="sm"
             onClick={() => void bridge.call("tab.open", notice.playgroundId).then(done)}
           >
             {t("library.row.open.action")}
           </Button>
-          <Button
-            size="sm"
-            onClick={() => void bridge.call("run.stop", notice.playgroundId).then(done)}
-          >
+          <Button onClick={() => void bridge.call("run.stop", notice.playgroundId).then(done)}>
             {t("desktop.stop.action")}
           </Button>
-        </div>
+        </ButtonGroup>
       </div>
       <Dismiss bridge={bridge} id={notice.id} />
     </GlassSurface>

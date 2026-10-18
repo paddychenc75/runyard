@@ -87,13 +87,9 @@ function CommandRow({ bridge, cli }: { bridge: DesktopBridge; cli: Cli }) {
           {label}
         </StatusLine>
         {installed ? (
-          <Button size="md" onClick={cli.removeCommand}>
-            {t("settings.cli.remove.action")}
-          </Button>
+          <Button onClick={cli.removeCommand}>{t("settings.cli.remove.action")}</Button>
         ) : status.state === "unavailable" || status.state === "conflict" ? null : (
-          <Button size="md" onClick={cli.installCommand}>
-            {t("settings.cli.install.action")}
-          </Button>
+          <Button onClick={cli.installCommand}>{t("settings.cli.install.action")}</Button>
         )}
       </SettingsRow>
       {installed && !status.onPath ? <PathHint bridge={bridge} status={status} /> : null}
@@ -114,7 +110,7 @@ function PathHint({ bridge, status }: { bridge: DesktopBridge; status: CliComman
           command={status.pathCommand}
           className={styles.command}
         />
-        <Button size="md" onClick={() => void bridge.call("clipboard.copy", status.pathCommand)}>
+        <Button onClick={() => void bridge.call("clipboard.copy", status.pathCommand)}>
           {t("settings.cli.copyCommand.action")}
         </Button>
       </div>
@@ -131,7 +127,7 @@ function DiagnosticsRow({ cli }: { cli: Cli }) {
       ) : cli.diagnostics === "failed" ? (
         <span className={styles.failed}>{t("settings.cli.exportFailed.label")}</span>
       ) : null}
-      <Button size="md" loading={cli.diagnostics === "busy"} onClick={cli.exportDiagnostics}>
+      <Button loading={cli.diagnostics === "busy"} onClick={cli.exportDiagnostics}>
         {t("settings.cli.diagnostics.action")}
       </Button>
     </SettingsRow>
@@ -161,7 +157,7 @@ function SupervisorRow({ cli }: { cli: Cli }) {
             ? t("settings.supervisor.running.label", { count: status.cliRuns })
             : t("settings.supervisor.stopped.label")}
         </StatusLine>
-        <Button size="md" disabled={!status.running} onClick={stop}>
+        <Button disabled={!status.running} onClick={stop}>
           {t("settings.supervisor.stop.action")}
         </Button>
       </SettingsRow>
@@ -216,7 +212,7 @@ function SkillsRow({ cli }: { cli: Cli }) {
           },
         ]}
         onSelect={(id) => cli.installSkill(id === "claude" ? "claude" : "agents")}
-        trigger={<Button size="md">{t("settings.skills.other.action")}</Button>}
+        trigger={<Button>{t("settings.skills.other.action")}</Button>}
       />
     </SettingsRow>
   );

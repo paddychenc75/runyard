@@ -1,5 +1,5 @@
 import type { Localized } from "@runyard/i18n";
-import { Button, Icon } from "@runyard/ui";
+import { Button, ButtonGroup, Icon } from "@runyard/ui";
 import styles from "./EditorBar.module.css";
 
 export interface EditorBarProps {
@@ -20,16 +20,18 @@ export function EditorBar({ tone, title, message, action, secondary }: EditorBar
         {title === undefined ? null : <strong className={styles.title}>{title}</strong>}
         {message}
       </span>
-      {action === undefined ? null : (
-        <Button variant="neutral" size="sm" onClick={action.onClick}>
-          {action.label}
-        </Button>
-      )}
-      {secondary === undefined ? null : (
-        <Button variant="neutral" size="sm" onClick={secondary.onClick}>
-          {secondary.label}
-        </Button>
-      )}
+      <ButtonGroup size="sm">
+        {action === undefined ? null : (
+          <Button variant="neutral" onClick={action.onClick}>
+            {action.label}
+          </Button>
+        )}
+        {secondary === undefined ? null : (
+          <Button variant="neutral" onClick={secondary.onClick}>
+            {secondary.label}
+          </Button>
+        )}
+      </ButtonGroup>
     </div>
   );
 }

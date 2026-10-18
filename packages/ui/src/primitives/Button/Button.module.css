@@ -1,5 +1,6 @@
 /*
- * 按钮：四个变体 × 三档高度。数字出自控件规范板（SpecControls）和设计变量。
+ * 按钮：四个变体 × 三档高度（28 / 32 / 40）。档位只管尺寸，变体只管颜色，两者互不影响；
+ * 主按钮没有彩色光晕（#419）。数字出自设计变量。
  * 悬停多一层填充，按下再多一层；聚焦是 1.5 px 强调线加 3 px 光环；禁用降到 40% 不透明度。
  * 工作台用 data-force-state 强制显示悬停、按下、聚焦。
  */
@@ -65,7 +66,6 @@
   --button-bg-pressed: var(--color-fill-accent-pressed);
   --button-color: var(--color-text-on-accent);
   --button-weight: var(--text-item-weight);
-  --button-shadow: var(--shadow-accent-button);
 }
 
 .root[data-variant="neutral"] {

@@ -1,5 +1,5 @@
 import { useT } from "@runyard/i18n/react";
-import { Button, CopyableCommand, GlassSurface, Icon } from "@runyard/ui";
+import { Button, ButtonGroup, CopyableCommand, GlassSurface, Icon } from "@runyard/ui";
 import { useEffect, useState } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { DesktopError, TabRow } from "../../shared/library-state.ts";
@@ -96,9 +96,9 @@ export function MissingTool({ bridge, tab, failure }: MissingToolProps) {
           </>
         )}
       </dl>
-      <div className={styles.actions}>
+      <ButtonGroup size="md" className={styles.actions}>
         {fields.installCommand === null ? null : (
-          <Button size="lg" onClick={() => copy(fields.installCommand ?? "")}>
+          <Button onClick={() => copy(fields.installCommand ?? "")}>
             {copied ? t("desktop.missing.copied.label") : t("desktop.missing.copy.action")}
           </Button>
         )}
@@ -109,14 +109,13 @@ export function MissingTool({ bridge, tab, failure }: MissingToolProps) {
         )}
         <Button
           variant="primary"
-          size="lg"
           icon="refresh"
           disabled={tab.busy}
           onClick={() => void bridge.call("run.start", tab.id)}
         >
           {t("desktop.missing.recheck.action")}
         </Button>
-      </div>
+      </ButtonGroup>
       <p className={styles.already}>
         <span>{t("settings.runtime.installed.label")}</span>
         <button type="button" className={styles.link} onClick={() => void setPath()}>
