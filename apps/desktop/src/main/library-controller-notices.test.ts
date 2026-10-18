@@ -274,6 +274,48 @@ describe("智能体创建并运行的提示（主进程）", () => {
     expect(preview.shown).not.toContain("n");
   });
 
+  it("[DESKTOP-LIBRARY-VIEW-101] 智能体标识带版本后缀（claude-code_2-1-2）：提示和持有者都写 Claude Code", async () => {
+    const { daemon, controller } = setup();
+    await controller.start();
+    const raw = "claude-code_2-1-2";
+    daemon.playgrounds = [
+      agentMade("n", "react19-5", {
+        createdBy: { kind: "agent", agent: raw, command: "runyard new" },
+      }),
+    ];
+    daemon.runs = [
+      run("n", "ready", {
+        owner: { kind: "cli", agent: raw, command: "runyard new" },
+        port: 7113,
+        startedAt: NOW - 1000,
+      }),
+    ];
+    await controller.refresh();
+    const state = controller.getState();
+    expect(state.notices).toMatchObject([{ kind: "agent-run", agent: "Claude Code" }]);
+    await controller.openProject("n");
+    expect(controller.getState().tabs[0]?.attached).toMatchObject({ agent: "Claude Code" });
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-102] 命令行用户（没有智能体名字）自己创建并运行：没有提示", async () => {
+    const { daemon, controller } = setup();
+    await controller.start();
+    daemon.playgrounds = [
+      agentMade("c", "landing-hero", {
+        createdBy: { kind: "cli", command: "runyard new react19 --run" },
+      }),
+    ];
+    daemon.runs = [
+      run("c", "ready", {
+        owner: { kind: "cli", command: "runyard new react19 --run" },
+        port: 7113,
+        startedAt: NOW - 1000,
+      }),
+    ];
+    await controller.refresh();
+    expect(controller.getState().notices).toEqual([]);
+  });
+
   it("[DESKTOP-LIBRARY-VIEW-55] 点“打开”：出现它的标签页，持有者仍是命令行，不另行启动；关掉提示后它消失", async () => {
     const { daemon, controller } = setup();
     await controller.start();

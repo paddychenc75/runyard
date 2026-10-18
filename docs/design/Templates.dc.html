@@ -125,34 +125,38 @@ a{color:#0071E3}a:hover{color:#0058B0}
 </div>
 
 <!-- floating glass sidebar -->
-<nav aria-label="资源库导航" style="position: absolute; left: 8px; top: 8px; bottom: 8px; width: 240px; box-sizing: border-box; border-radius: 20px; padding: 14px 10px 12px 10px; display: flex; flex-direction: column; gap: 4px; background: rgba(240,241,245,0.92); backdrop-filter: blur(40px) saturate(180%); box-shadow: 0 1px 2px rgba(15,23,42,0.05), 0 8px 24px rgba(15,23,42,0.09)">
-<div style="display: flex; align-items: center; gap: 8px; height: 28px; padding: 0 2px 0 8px">
+<nav aria-label="资源库导航" style="position: absolute; left: 8px; top: 8px; bottom: 8px; width: 240px; box-sizing: border-box; border-radius: 9px; padding: 4px 10px 12px 10px; display: flex; flex-direction: column; gap: 4px; background: rgba(240,241,245,0.92); backdrop-filter: blur(40px) saturate(180%); box-shadow: 0 1px 2px rgba(15,23,42,0.05), 0 8px 24px rgba(15,23,42,0.09)">
+<div style="display: flex; align-items: center; gap: 11px; height: 28px; padding: 0 2px 0 2px">
 <span aria-hidden="true" style="width: 12px; height: 12px; border-radius: 6px; background: #FF5F57; border: 0.5px solid rgba(0,0,0,0.12)"></span>
 <span aria-hidden="true" style="width: 12px; height: 12px; border-radius: 6px; background: #FEBC2E; border: 0.5px solid rgba(0,0,0,0.12)"></span>
 <span aria-hidden="true" style="width: 12px; height: 12px; border-radius: 6px; background: #28C840; border: 0.5px solid rgba(0,0,0,0.12)"></span>
-<span style="flex: 1"></span><button aria-label="收起侧栏" style="width: 28px; height: 28px; padding: 0; border-radius: 14px; border: none; background: transparent; display: flex; align-items: center; justify-content: center; flex: none"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#6E6E73" stroke-width="1.4"><rect x="1.75" y="2.75" width="12.5" height="10.5" rx="2.6"/><path d="M6.25 3v10"/></svg></button>
+<button aria-label="收起侧栏" style="margin-left: 1px; width: 28px; height: 28px; padding: 0; border-radius: 14px; border: none; background: transparent; display: flex; align-items: center; justify-content: center; flex: none"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#6E6E73" stroke-width="1.4"><rect x="1.75" y="2.75" width="12.5" height="10.5" rx="2.6"/><path d="M6.25 3v10"/></svg></button><span style="flex: 1"></span>
 </div>
 <div style="padding: 14px 10px 6px 10px; font-size: 20px; font-weight: 700; letter-spacing: -0.2px">Runyard</div>
 
 <div style="padding: 10px 10px 4px 10px; font-size: 12px; font-weight: 600; color: #6E6E73">资源库</div>
 <sc-for list="{{nav}}" as="item" hint-placeholder-count="4">
-<button style="height: 36px; padding: 0 10px; border-radius: 10px; border: none; background: {{item.bg}}; color: {{item.color}}; font-weight: {{item.weight}}; display: flex; align-items: center; gap: 10px; text-align: left; width: 100%">
+<button style="height: 36px; padding: 0 10px; border-radius: 9px; border: none; background: {{item.bg}}; color: {{item.color}}; font-weight: {{item.weight}}; display: flex; align-items: center; gap: 10px; text-align: left; width: 100%">
 <span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 3px; background: {{item.mark}}"></span>
 <span style="flex: 1">{{item.label}}</span>
 <span style="font-size: 12px; color: {{item.countColor}}">{{item.count}}</span>
 </button>
 </sc-for>
 
+<div style="padding: 16px 10px 4px 10px; font-size: 12px; font-weight: 600; color: #6E6E73">清理</div>
+<button style="height: 36px; padding: 0 10px; border-radius: 9px; border: none; background: transparent; color: #1D1D1F; font-weight: 400; display: flex; align-items: center; gap: 10px; text-align: left; width: 100%">
+<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 3px; background: #8E8E93"></span>
+<span style="flex: 1">自动清理</span>
+<span style="font-size: 12px; color: #6E6E73">4</span>
+</button>
 <div style="padding: 16px 10px 4px 10px; font-size: 12px; font-weight: 600; color: #6E6E73">管理</div>
-<button style="height: 36px; padding: 0 10px; border-radius: 10px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; display: flex; align-items: center; gap: 10px; text-align: left; width: 100%">
+<button style="height: 36px; padding: 0 10px; border-radius: 9px; border: none; background: #0071E3; color: #FFFFFF; font-weight: 600; display: flex; align-items: center; gap: 10px; text-align: left; width: 100%">
 <svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#FFFFFF" stroke-width="1.4" stroke-linejoin="round"><path d="M8 1.5 14 5v6l-6 3.5L2 11V5z"/><path d="M2 5l6 3.5L14 5M8 8.5v6"/></svg><span style="flex: 1">模板</span><span style="font-size: 12px; color: #FFFFFF">10</span></button>
-<button style="height: 36px; padding: 0 10px; border-radius: 10px; border: none; background: transparent; display: flex; align-items: center; gap: 10px; text-align: left; width: 100%">
-<svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#3A3A3C" stroke-width="1.4" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 1.5"/></svg><span style="flex: 1">长期未使用</span><span style="font-size: 12px; color: #6E6E73">7</span></button>
-<button style="height: 36px; padding: 0 10px; border-radius: 10px; border: none; background: transparent; display: flex; align-items: center; gap: 10px; text-align: left; width: 100%">
+<button style="height: 36px; padding: 0 10px; border-radius: 9px; border: none; background: transparent; display: flex; align-items: center; gap: 10px; text-align: left; width: 100%">
 <svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#3A3A3C" stroke-width="1.4" stroke-linecap="round"><path d="M2 4.5h7M12 4.5h2M2 11.5h2M7 11.5h7"/><circle cx="10.5" cy="4.5" r="1.5"/><circle cx="5.5" cy="11.5" r="1.5"/></svg><span style="flex: 1">设置</span></button>
 
 <div style="flex: 1"></div>
-<div style="padding: 10px; border-radius: 12px; background: rgba(255,255,255,0.6); border: 1px solid rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 2px">
+<div style="padding: 10px; border-radius: 9px; background: rgba(255,255,255,0.6); border: 1px solid rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 2px">
 <div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px">~/Runyard</div>
 <div style="font-size: 12px; color: #6E6E73">20 个项目 · 共 2.9 GB</div>
 </div>
@@ -196,7 +200,7 @@ const cmds = [
 { label: '就绪判断', text: 'http://127.0.0.1:{port}/' }
 ];
 const files = [['src', 0, true], ['App.css', 1, false], ['App.tsx', 1, false], ['main.tsx', 1, false], ['index.html', 0, false], ['package.json', 0, false], ['pnpm-lock.yaml', 0, false], ['tsconfig.json', 0, false], ['vite.config.ts', 0, false]].map((f) => ({ name: f[2] ? f[0] + '/' : f[0], indent: (f[1] * 18) + 'px', weight: f[2] ? 600 : 400, dir: f[2], file: !f[2], chev: f[2] ? '#6E6E73' : 'transparent', path: f[2] ? 'M1.5 4.5a1 1 0 0 1 1-1h3.2l1.5 1.6h6.3a1 1 0 0 1 1 1v6.4a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1z' : 'M4 1.5h5l3.5 3.5v9a.5.5 0 0 1-.5.5H4a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5zM9 1.5V5h3.5', icon: f[2] ? '#B8860B' : (/\.tsx?$/.test(f[0]) ? '#0F68A0' : /\.css$/.test(f[0]) ? '#7A2E9E' : /\.html$/.test(f[0]) ? '#B3470B' : /\.(json|yaml)$/.test(f[0]) ? '#8A6D00' : '#6E6E73') }));
-const navItems = [ ['全部', '20', true], ['已保留', '16', false], ['自动清理', '4', false], ['智能体创建', '6', false]];
+const navItems = [['全部', '20', true], ['运行中', '4', false], ['智能体创建', '6', false]];
 const nav = navItems.map((n) => ({ label: n[0], count: n[1], bg: 'transparent', color: '#1D1D1F', weight: 400, mark: '#8E8E93', countColor: '#6E6E73' }));
 return { nav, items, tags, deps, cmds, files };
 }

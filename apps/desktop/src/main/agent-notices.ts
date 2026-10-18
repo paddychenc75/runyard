@@ -1,4 +1,5 @@
 import type { Playground, RunSnapshot } from "@runyard/protocol";
+import { agentDisplayName } from "../shared/agent-name.ts";
 import type { AppNotice, LinkNoticeCode } from "../shared/library-state.ts";
 import { isActiveRun } from "./build-library-state.ts";
 
@@ -30,10 +31,7 @@ export class AgentNotices {
         id: `agent-${run.runId}`,
         playgroundId: playground.id,
         name: playground.name,
-        agent:
-          playground.createdBy.agent ??
-          (run.owner.kind === "cli" ? run.owner.agent : undefined) ??
-          null,
+        agent: agentOf(playground, run),
         url: urlOf(run),
         at: now,
       });
@@ -80,8 +78,16 @@ function urlOf(run: RunSnapshot): string | null {
   return run.port === undefined ? null : `http://127.0.0.1:${run.port}/`;
 }
 
+function agentOf(playground: Playground, run: RunSnapshot): string | null {
+  const raw =
+    playground.createdBy.agent ?? (run.owner.kind === "cli" ? run.owner.agent : undefined);
+  return raw === undefined ? null : agentDisplayName(raw);
+}
+
 function isAgentRun(playground: Playground, run: RunSnapshot): boolean {
   if (run.owner.kind !== "cli" || !isActiveRun(run.state)) return false;
-  if (playground.createdBy.kind === "user") return false;
+  // 命令行用户（没有智能体名字）自己建的项目不是智能体创建的，不提示（#418）
+  const { kind, agent } = playground.createdBy;
+  if (kind === "user" || (kind === "cli" && agent === undefined)) return false;
   return run.startedAt - playground.createdAt <= CREATE_RUN_WINDOW_MS;
 }

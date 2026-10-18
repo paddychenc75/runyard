@@ -1,5 +1,6 @@
 import type { Locale } from "@runyard/i18n";
 import type { Settings } from "@runyard/protocol";
+import type { CommandId } from "./commands.ts";
 import type { ConsoleAppend, ConsoleLine } from "./console-state.ts";
 import {
   type EditorFileMethods,
@@ -248,6 +249,8 @@ export interface DesktopEvents extends TerminalEvents {
    * （那是另一个网页，按键到不了界面）也有效，所以由主进程通知（规格 DESKTOP-EDITOR-65）
    */
   "palette.open": { mode: "commands" | "files" };
+  /** 应用菜单触发一条应用命令（shared/commands.ts 的登记表）：界面按命令此刻是否登记决定做不做 */
+  "command.run": { id: CommandId };
   /** 应用要退出了：编辑器先把未保存的修改写入（自动保存关着的先问用户），再用 app.quitReply 回话 */
   "app.quitRequested": { id: number };
   /**
@@ -270,6 +273,7 @@ export const desktopEventNames: readonly DesktopEventName[] = [
   "picker.open",
   "sidebar.toggle",
   "palette.open",
+  "command.run",
   "app.quitRequested",
   "project.flushRequested",
   "files.changed",

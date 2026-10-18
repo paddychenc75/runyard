@@ -1,0 +1,81 @@
+/*
+ * 选择器写两遍 .monaco-editor 是为了压过 Monaco 自带样式的先后顺序（打包后谁在前不可靠）。
+ * Monaco 的浮层（补全列表、悬停说明、参数提示）换成和菜单、命令面板同一套材质（视觉规范第 2 节第 3 档）：
+ * 圆角、0.5px 外圈加柔和阴影、玻璃底；选中行用强调色浅底，不用 VS Code 的饱和蓝整条填充。
+ * 颜色在 tokens 生成的 Monaco 主题里（editorWidget.* 等），这里只管形状、字体和链接。
+ * 模糊（backdrop-filter）只能写在 @runyard/ui 的 materials.css，这里不写。
+ */
+.monaco-editor.monaco-editor .suggest-widget,
+.monaco-editor.monaco-editor .monaco-hover,
+.monaco-editor.monaco-editor .parameter-hints-widget {
+  font-family: var(--font-sans);
+  font-size: var(--text-secondary-size);
+  line-height: var(--text-secondary-line-height);
+  border: 0;
+  box-shadow: var(--shadow-overlay);
+}
+
+.monaco-editor.monaco-editor .suggest-widget {
+  border-radius: var(--radius-lg);
+  padding: var(--space-3);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.monaco-editor.monaco-editor .monaco-resizable-hover,
+.monaco-editor.monaco-editor .monaco-hover,
+.monaco-editor.monaco-editor .parameter-hints-widget {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.monaco-editor.monaco-editor .monaco-hover .hover-row,
+.monaco-editor.monaco-editor .monaco-hover .hover-contents {
+  font-family: var(--font-sans);
+  font-size: var(--text-secondary-size);
+}
+
+/* 说明文字用界面字体，代码片段（代码块、标识符）才用等宽 */
+.monaco-editor.monaco-editor .monaco-hover code,
+.monaco-editor.monaco-editor .parameter-hints-widget code,
+.monaco-editor.monaco-editor .suggest-widget .monaco-icon-label .label-name,
+.monaco-editor.monaco-editor .suggest-widget .details-label {
+  font-family: var(--font-mono);
+}
+
+.monaco-editor.monaco-editor .suggest-widget .monaco-list .monaco-list-row {
+  border-radius: var(--radius-sm);
+}
+
+.monaco-editor.monaco-editor
+  .suggest-widget
+  .monaco-list
+  .monaco-list-row
+  > .contents
+  > .main
+  > .right
+  > .readMore,
+.monaco-editor.monaco-editor .suggest-widget .monaco-list .monaco-list-row .signature-label,
+.monaco-editor.monaco-editor .suggest-widget .monaco-list .monaco-list-row .qualifier-label {
+  font-family: var(--font-sans);
+  font-size: var(--text-secondary-size);
+  color: var(--color-text-secondary);
+}
+
+.monaco-editor.monaco-editor .suggest-details-container,
+.monaco-editor.monaco-editor .suggest-details {
+  font-family: var(--font-sans);
+  font-size: var(--text-secondary-size);
+}
+
+/* 链接：平时不画下划线（字符串是红色，带红线像报错）；按住 ⌘ 悬停时才出现，用链接色 */
+.monaco-editor.monaco-editor .detected-link {
+  text-decoration: none;
+}
+
+.monaco-editor.monaco-editor .detected-link-active {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  color: var(--color-text-link) !important;
+}

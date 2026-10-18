@@ -77,18 +77,26 @@ const missing = (extra: Record<string, unknown> = {}): TabRow =>
   });
 
 describe("缺少运行环境", () => {
+  it("[DESKTOP-WORKSPACE-18] 顶栏状态写“缺少 Go”，用警示色和三角图标，不是“启动失败”", () => {
+    const { container } = setup(missing());
+    const status = container.querySelector("[data-run-status=missing]");
+    expect(status?.textContent).toContain("缺少 Go");
+    expect(status?.querySelector("svg")).not.toBeNull();
+    expect(screen.queryByText("启动失败")).toBeNull();
+  });
+
   it("[DESKTOP-WORKSPACE-18] 写明缺哪个工具、需要的版本、当前没装、安装命令和官网，有“复制命令”和“重新检测”", () => {
     setup(missing());
-    const pane = screen.getByText("没有找到 go").closest("[data-failure-screen]") as HTMLElement;
+    const pane = screen.getByText("没有找到 Go").closest("[data-failure-screen]") as HTMLElement;
     const view = within(pane);
-    expect(view.getByText("go >=1.22 <2")).toBeTruthy();
+    expect(view.getByText("Go >=1.22 <2")).toBeTruthy();
     expect(view.getByText("未安装")).toBeTruthy();
     expect(view.getByText("brew install go")).toBeTruthy();
     expect(view.getByRole("button", { name: "go.dev/dl" })).toBeTruthy();
     expect(view.getByRole("button", { name: "复制命令" })).toBeTruthy();
     expect(view.getByRole("button", { name: "重新检测" })).toBeTruthy();
     // 运行条同样写明缺什么，主按钮也是“重新检测”
-    expect(within(screen.getByRole("group", { name: "运行条" })).getByText("缺少 go")).toBeTruthy();
+    expect(within(screen.getByRole("group", { name: "运行条" })).getByText("缺少 Go")).toBeTruthy();
   });
 
   it("[DESKTOP-WORKSPACE-18] “复制命令”把命令交给主进程放进剪贴板，从不执行；官网用系统浏览器打开", async () => {
@@ -101,9 +109,18 @@ describe("缺少运行环境", () => {
     expect(calls.map(([method]) => method)).not.toContain("run.start");
   });
 
+  it("[DESKTOP-WORKSPACE-66] “在终端中运行”：先重新检测，再让主进程运行它记下的安装命令，界面不传命令", async () => {
+    const { calls } = setup(missing());
+    fireEvent.click(screen.getByRole("button", { name: "在终端中运行" }));
+    await waitFor(() => expect(calls).toContainEqual(["toolchain.runInstall", "go"]));
+    expect(calls.map(([method]) => method).indexOf("toolchain.check")).toBeLessThan(
+      calls.map(([method]) => method).indexOf("toolchain.runInstall"),
+    );
+  });
+
   it("[DESKTOP-WORKSPACE-18] “重新检测”就是再启动一次", () => {
     const { calls } = setup(missing());
-    const pane = screen.getByText("没有找到 go").closest("[data-failure-screen]") as HTMLElement;
+    const pane = screen.getByText("没有找到 Go").closest("[data-failure-screen]") as HTMLElement;
     fireEvent.click(within(pane).getByRole("button", { name: "重新检测" }));
     expect(calls).toContainEqual(["run.start", "a"]);
   });
@@ -111,7 +128,7 @@ describe("缺少运行环境", () => {
   it("[DESKTOP-SETTINGS-17] “已经装了？指定路径…”和设置页是同一个入口：选的文件被接受后再启动一次", async () => {
     const { calls, view } = setupWith(missing(), { "toolchain.pickPath": { status: "set" } });
     const pane = within(
-      view.getByText("没有找到 go").closest("[data-failure-screen]") as HTMLElement,
+      view.getByText("没有找到 Go").closest("[data-failure-screen]") as HTMLElement,
     );
     fireEvent.click(pane.getByRole("button", { name: "指定路径…" }));
     await waitFor(() => expect(calls).toContainEqual(["run.start", "a"]));
@@ -123,11 +140,11 @@ describe("缺少运行环境", () => {
       "toolchain.pickPath": { status: "invalid", tool: "go", path: "/x" },
     });
     const pane = within(
-      view.getByText("没有找到 go").closest("[data-failure-screen]") as HTMLElement,
+      view.getByText("没有找到 Go").closest("[data-failure-screen]") as HTMLElement,
     );
     fireEvent.click(pane.getByRole("button", { name: "指定路径…" }));
     expect((await pane.findByRole("alert")).textContent).toBe(
-      "这个文件不是可用的 go，原来的路径没有改",
+      "这个文件不是可用的 Go，原来的路径没有改",
     );
     expect(calls.map(([method]) => method)).not.toContain("run.start");
   });
@@ -143,7 +160,7 @@ describe("缺少运行环境", () => {
         },
       }),
     );
-    expect(screen.getByText("node 的版本过低")).toBeTruthy();
+    expect(screen.getByText("Node 的版本过低")).toBeTruthy();
     expect(screen.getByText("18.2.0")).toBeTruthy();
     expect(screen.queryByRole("button", { name: "复制命令" })).toBeNull();
     expect(screen.queryByText("安装命令")).toBeNull();

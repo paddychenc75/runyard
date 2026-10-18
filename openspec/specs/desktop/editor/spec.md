@@ -1,7 +1,7 @@
 # desktop/editor Specification
 
 ## Purpose
-约定项目标签页里编辑器的行为：文件树（新建、重命名、移到废纸篓）、文件标签（编辑器里每个打开的文件一个，区别于项目的标签页）、自动保存三档、文件被外部修改时怎么办、语法高亮（包括 Vue 单文件组件）、TypeScript 和 JavaScript 的智能提示，以及编辑后预览、输出怎样跟着变。“实时”由磁盘上的文件变化驱动，编辑器保存和智能体、命令行写文件的效果一致；各运行器自己的重新加载规则见 templates/runners 和 run/scripts，本规格只管应用里看得见的部分。另含命令面板（应用命令和编辑器命令）、快速打开，以及重命名和移到废纸篓时编辑器怎样先写入并跟随；终端见 desktop/terminal。
+约定项目标签页里编辑器的行为：文件树（新建、重命名、移到废纸篓）、文件标签（编辑器里每个打开的文件一个，区别于项目的标签页）、自动保存三档、文件被外部修改时怎么办、语法高亮（包括 Vue 单文件组件）、TypeScript 和 JavaScript 的智能提示、Vue 单文件组件的智能提示，以及编辑后预览、输出怎样跟着变。“实时”由磁盘上的文件变化驱动，编辑器保存和智能体、命令行写文件的效果一致；各运行器自己的重新加载规则见 templates/runners 和 run/scripts，本规格只管应用里看得见的部分。另含命令面板（应用命令和编辑器命令）、快速打开，以及重命名和移到废纸篓时编辑器怎样先写入并跟随；终端见 desktop/terminal。
 
 ## Requirements
 
@@ -276,7 +276,7 @@
 - 验证：test
 
 ### Requirement: TypeScript 和 JavaScript 的智能提示
-TypeScript、JavaScript（含 TSX、JSX）文件 MUST 有补全、跳转到定义、重命名符号和错误提示，范围是项目自己的文件；另一个项目文件的修改（包括外部修改）MUST 在几秒内反映到提示里。来自依赖包（`node_modules`）的类型第一版没有，因此“找不到模块”一类的错误 MUST 被屏蔽，不显示。智能提示 MUST NOT 联网。Vue 单文件组件只有高亮，MUST NOT 显示补全或错误；Vue 文件里 MUST 关闭基于文字的建议（编辑器默认会从文件里已有的词给建议）。用户手动触发建议时可能弹出一个写着“没有建议”的空窗口，这是已接受的表现，不算缺陷（K8 实测，负责人 2026-10-17 决定）。
+TypeScript、JavaScript（含 TSX、JSX）文件 MUST 有补全、跳转到定义、重命名符号和错误提示，范围是项目自己的文件；另一个项目文件的修改（包括外部修改）MUST 在几秒内反映到提示里。来自依赖包（`node_modules`）的类型第一版没有，因此“找不到模块”一类的错误 MUST 被屏蔽，不显示。智能提示 MUST NOT 联网。Vue 单文件组件的智能提示见下一条要求。
 来源：PRD #prd-editor
 
 #### Scenario: [DESKTOP-EDITOR-40] 补全项目里的导出
@@ -313,11 +313,95 @@ TypeScript、JavaScript（含 TSX、JSX）文件 MUST 有补全、跳转到定�
 - **THEN** 没有任何发往本机以外地址的请求
 - 验证：test
 
+### Requirement: Vue 单文件组件的智能提示
+`.vue` 文件 MUST 有补全、悬停、跳转到定义和错误提示，模板和脚本（含 `<script setup>`、`lang="ts"`）都有：模板里 MUST 能补全项目里的组件名、组件的属性名和事件名；类型 MUST 来自用户项目里真实的依赖包（`node_modules`）和项目自己的 `tsconfig.json`。与 TS、JS 文件一样，“找不到模块”一类的错误 MUST 被屏蔽。智能提示 MUST NOT 联网，MUST NOT 写入任何文件，MUST 只读这个项目文件夹里的文件和应用自带的文件；它出错或停止时，编辑和保存 MUST 照常工作。Vue 文件里基于文字的建议（编辑器默认从文件里已有的词给建议）保持关闭。做法见决策记录 0021（与 VS Code 的官方 Vue 扩展用同一个语言服务，负责人 2026-10-18 决定）。
+来源：PRD #prd-editor
+
 #### Scenario: [DESKTOP-EDITOR-46] Vue 文件没有误报
-- 前提：`App.vue` 导入了 `vue` 和项目里的组件
+- 前提：`App.vue` 导入了 `vue` 和项目里的组件，用法都正确，依赖已安装
 - **WHEN** 打开 `App.vue`
-- **THEN** 有高亮，没有错误波浪线，输入时也没有补全弹出（基于文字的建议已关闭）
-- 说明：手动触发建议时允许出现空的“没有建议”窗口，不算缺陷
+- **THEN** 有高亮，没有错误波浪线
+- 验证：test
+
+#### Scenario: [DESKTOP-EDITOR-79] 模板里补全组件名
+- 前提：`src/components/Child.vue` 存在，`App.vue` 的 `<script setup>` 已导入它
+- **WHEN** 在 `App.vue` 的模板里输入 `<Chi`
+- **THEN** 补全列表里有 `Child`
+- 验证：test
+
+#### Scenario: [DESKTOP-EDITOR-80] 模板里补全组件的属性名
+- 前提：`Child.vue` 用 `defineProps` 声明了必填的 `title: string`、`count: number` 和可选的 `tone`
+- **WHEN** 在 `App.vue` 的模板里 `<Child ` 后面触发补全
+- **THEN** 补全列表里有 `title`、`count`、`tone`（含 `:title` 这类绑定写法），选中后插入属性名
+- 验证：test
+
+#### Scenario: [DESKTOP-EDITOR-81] 模板里补全组件的事件名
+- 前提：`Child.vue` 用 `defineEmits` 声明了 `select` 和 `close`
+- **WHEN** 在 `App.vue` 的模板里 `<Child @` 后面触发补全
+- **THEN** 补全列表里有 `select`、`close`
+- 验证：test
+
+#### Scenario: [DESKTOP-EDITOR-82] 用的是项目里真实的依赖类型
+- 前提：项目的依赖已安装（`node_modules/vue` 存在）
+- **WHEN** 在 `<script setup>` 里写 `const n = ref(1)` 后悬停 `n`，以及在 `import { } from "vue"` 的花括号里触发补全
+- **THEN** 悬停显示 `Ref<number>` 一类的类型；补全列表里有 `watch`、`computed` 等 `vue` 包导出的名字
+- 验证：test
+
+#### Scenario: [DESKTOP-EDITOR-83] 按项目的 tsconfig.json 解析
+- 前提：项目的 `tsconfig.json` 在 `paths` 里把 `@/*` 映射到 `src/*`
+- **WHEN** 在 `App.vue` 里写 `import Child from "@/components/Child.vue"`，然后在模板里对 `<Child` 用“跳转到定义”
+- **THEN** 没有错误提示；打开（或切到）`src/components/Child.vue` 的文件标签
+- 验证：test
+
+#### Scenario: [DESKTOP-EDITOR-84] 悬停显示类型
+- **WHEN** 在 `App.vue` 的模板里悬停 `<Child title="a">` 的 `title`
+- **THEN** 显示这个属性的类型（`title: string`）
+- 验证：test
+
+#### Scenario: [DESKTOP-EDITOR-85] 跳转到组件和属性的定义
+- **WHEN** 在 `App.vue` 的模板里对 `<Child` 用“跳转到定义”；再对属性 `title` 用一次
+- **THEN** 第一次打开（或切到）`Child.vue`；第二次光标落在 `Child.vue` 里声明 `title` 的地方
+- 验证：test
+
+#### Scenario: [DESKTOP-EDITOR-86] 脚本和模板里的类型错误有提示
+- **WHEN** `App.vue` 里有这几处错：脚本里 `const s: string = 1`；模板里给数字属性传字符串 `:count="'x'"`；漏传必填属性 `title`；模板里用了没有声明的变量
+- **THEN** 这四处各出现错误波浪线，悬停时显示说明
+- 验证：test
+
+#### Scenario: [DESKTOP-EDITOR-87] 依赖没装时不报“找不到模块”
+- 前提：`App.vue` 导入了 `vue`，项目的依赖还没有安装
+- **WHEN** 打开 `App.vue`
+- **THEN** 没有“找不到模块”一类的错误提示；项目自己的组件名、属性名照常能补全
+- 验证：test
+
+#### Scenario: [DESKTOP-EDITOR-88] 别的文件改了、依赖装好了，提示跟着变
+- 前提：`App.vue` 打开着，用了 `<Child title="a" :count="1" />`，没有错误
+- **WHEN** 命令行把 `Child.vue` 里的属性 `title` 改名为 `heading`；或者项目的依赖从没安装变为安装完成
+- **THEN** 几秒内 `App.vue` 里的 `title` 出现错误提示；依赖装好后几秒内，悬停能显示来自依赖包的类型，不用重新打开文件
+- 验证：test
+
+#### Scenario: [DESKTOP-EDITOR-89] 第一次提示的时间
+- 前提：打包后的应用，项目里不超过 500 个文件（依赖目录之外）
+- **WHEN** 打开项目里第一个 `.vue` 文件后立即在模板里触发补全；之后再触发补全
+- **THEN** 第一次 2 秒内出现补全列表；之后每次 300 ms 内出现
+- 验证：manual（性能目标，在打包后的应用上量，单元测试环境的计时不代表真实速度）
+
+#### Scenario: [DESKTOP-EDITOR-90] 不联网、不写文件、不读项目外的文件
+- 前提：应用的网络请求和语言服务的文件访问被记录
+- **WHEN** 打开 `.vue` 文件，触发补全、悬停、跳转和报错
+- **THEN** 没有任何网络连接；没有写入任何文件；读过的文件都在这个项目文件夹或应用自带的目录里；项目外的文件即使被引用也读不到
+- 验证：test
+
+#### Scenario: [DESKTOP-EDITOR-91] 关掉项目后不留进程
+- 前提：项目标签页里打开过 `.vue` 文件
+- **WHEN** 关闭这个项目标签页（或把项目改名、移到废纸篓，或退出应用）
+- **THEN** 为这个项目提供智能提示的进程都已退出，没有残留
+- 验证：test
+
+#### Scenario: [DESKTOP-EDITOR-92] 智能提示出错不影响编辑
+- 前提：`.vue` 文件打开着，有未保存的修改
+- **WHEN** 提供智能提示的进程意外退出
+- **THEN** 编辑和保存照常；几秒内提示自动恢复；连续失败 3 次后不再尝试，Vue 文件只剩高亮，直到重新打开项目
 - 验证：test
 
 ### Requirement: 编辑后的实时结果

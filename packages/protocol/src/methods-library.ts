@@ -144,6 +144,14 @@ export const libraryMethods = {
     errors: ["PLAYGROUND_NOT_FOUND", "DATA_FROM_NEWER_VERSION"],
     status: "defined",
   },
+  "playground.markOpened": {
+    group: "library",
+    summary: "记一次打开（资源库“上次打开”一列）；只写 lastOpenedAt，不算一次使用",
+    params: z.object({ playground: playgroundRefSchema }),
+    result: playgroundSchema,
+    errors: ["PLAYGROUND_NOT_FOUND", "DATA_FROM_NEWER_VERSION"],
+    status: "defined",
+  },
   "playground.released": {
     group: "library",
     summary: "客户端回报“我已释放这个项目的句柄”，回应 playground.releaseRequested",

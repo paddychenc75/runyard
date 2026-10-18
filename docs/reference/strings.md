@@ -123,6 +123,7 @@
 | cli.version.body | {version} | {version} | version：应用的版本号，如 0.2.0；输出里只有它 |
 | desktop.agentNotice.meta.label | {url} · {time} | {url} · {time} | url：运行的地址，如 http://127.0.0.1:7113/；还没有端口时不显示这一条；time：相对时间，如“刚刚” |
 | desktop.agentNotice.title.label | <user>{agent}</user> 创建并运行了 <user>{name}</user> | <user>{agent}</user> created and ran <user>{name}</user> | agent：智能体名称（用户或命令行给的，不翻译）；name：项目名称（不翻译）；user：包住用户内容的标签 |
+| desktop.agentNotice.unnamed.label | 智能体创建并运行了 <user>{name}</user> | An agent created and ran <user>{name}</user> | name：项目名称（不翻译）；user：包住用户内容的标签 |
 | desktop.category.frontend.label | 前端 | Front end | — |
 | desktop.category.fullstack.label | 全栈 | Full stack | — |
 | desktop.category.mine.label | 我的 | Mine | — |
@@ -130,6 +131,7 @@
 | desktop.category.script.label | 脚本 | Scripts | — |
 | desktop.category.service.label | 服务 | Services | — |
 | desktop.command.autoClean.label | 自动清理… | Auto-clean… | — |
+| desktop.command.closeProjectTab.label | 关闭标签页 | Close tab | — |
 | desktop.command.closeTab.label | 关闭文件标签 | Close file tab | — |
 | desktop.command.copyLink.label | 复制链接 | Copy link | — |
 | desktop.command.copyPath.label | 复制路径 | Copy path | — |
@@ -261,10 +263,52 @@
 | desktop.linkNotice.newThrottled.label | 新建得太频繁，这个链接已忽略 | Too many projects created too fast, so this link was ignored | — |
 | desktop.linkNotice.openInvalid.label | 链接里的项目名称不合法 | The playground name in the link is not valid | — |
 | desktop.linkNotice.openMissing.label | 没有叫 <user>{value}</user> 的项目 | There is no playground named <user>{value}</user> | value：链接里写的项目名称、模板标识或新名称（不翻译）；user：包住用户内容的标签 |
+| desktop.menu.about.label | 关于 Runyard | About Runyard | — |
+| desktop.menu.actualSize.label | 实际大小 | Actual Size | — |
+| desktop.menu.checkUpdates.label | 检查更新… | Check for Updates… | — |
+| desktop.menu.closeTab.label | 关闭标签页 | Close Tab | — |
+| desktop.menu.closeWindow.label | 关闭窗口 | Close Window | — |
+| desktop.menu.copy.label | 拷贝 | Copy | — |
+| desktop.menu.cut.label | 剪切 | Cut | — |
+| desktop.menu.delete.label | 删除 | Delete | — |
+| desktop.menu.devtools.label | 开发者工具 | Developer Tools | — |
+| desktop.menu.edit.title | 编辑 | Edit | — |
+| desktop.menu.file.title | 文件 | File | — |
+| desktop.menu.forceReload.label | 强制重新载入 | Force Reload | — |
+| desktop.menu.fullscreen.label | 切换全屏 | Toggle Full Screen | — |
+| desktop.menu.help.title | 帮助 | Help | — |
+| desktop.menu.helpPage.label | Runyard 帮助 | Runyard Help | — |
+| desktop.menu.hide.label | 隐藏 Runyard | Hide Runyard | — |
+| desktop.menu.hideOthers.label | 隐藏其他 | Hide Others | — |
+| desktop.menu.minimize.label | 最小化 | Minimize | — |
 | desktop.menu.new.label | 新建… | New… | — |
 | desktop.menu.palette.label | 命令面板 | Command Palette | — |
+| desktop.menu.paste.label | 粘贴 | Paste | — |
+| desktop.menu.pasteMatch.label | 粘贴并匹配样式 | Paste and Match Style | — |
+| desktop.menu.project.title | 项目 | Playground | — |
 | desktop.menu.quickOpen.label | 快速打开文件 | Quick Open File | — |
-| desktop.menu.sidebar.label | 切换侧栏 | Toggle Sidebar | — |
+| desktop.menu.quit.label | 退出 Runyard | Quit Runyard | — |
+| desktop.menu.redo.label | 重做 | Redo | — |
+| desktop.menu.reload.label | 重新载入 | Reload | — |
+| desktop.menu.reportIssue.label | 报告问题… | Report an Issue… | — |
+| desktop.menu.selectAll.label | 全选 | Select All | — |
+| desktop.menu.services.label | 服务 | Services | — |
+| desktop.menu.settings.label | 设置… | Settings… | — |
+| desktop.menu.showAll.label | 全部显示 | Show All | — |
+| desktop.menu.sidebar.label | 显示/隐藏侧栏 | Show/Hide Sidebar | — |
+| desktop.menu.trash.label | 移到{term_trash}… | Move to {term_trash}… | — |
+| desktop.menu.tree.label | 显示/隐藏文件树 | Show/Hide File Tree | — |
+| desktop.menu.undo.label | 撤销 | Undo | — |
+| desktop.menu.update.title | 检查更新 | Check for Updates | — |
+| desktop.menu.updateFailed.body | 没能连上更新服务，请稍后再试。 | Could not reach the update service. Please try again later. | — |
+| desktop.menu.updateLatest.body | 当前版本 {version} 已是最新版本。 | Version {version} is the latest version. | version：当前应用的版本号，如 0.3.0 |
+| desktop.menu.updateUnavailable.body | 从源码运行的版本不检查更新。 | Builds run from source do not check for updates. | — |
+| desktop.menu.view.title | 显示 | View | — |
+| desktop.menu.window.title | 窗口 | Window | — |
+| desktop.menu.windowFront.label | 前置全部窗口 | Bring All to Front | — |
+| desktop.menu.windowZoom.label | 缩放 | Zoom | — |
+| desktop.menu.zoomIn.label | 放大 | Zoom In | — |
+| desktop.menu.zoomOut.label | 缩小 | Zoom Out | — |
 | desktop.missing.command.label | 安装命令 | Install command | — |
 | desktop.missing.copied.label | 已复制 | Copied | — |
 | desktop.missing.copy.action | 复制命令 | Copy command | — |
@@ -402,11 +446,12 @@
 | desktop.script.endedNoCode.label | {state} · {duration} | {state} · {duration} | state：运行状态的名字，来自 runState.<状态>；duration：这次运行的总耗时 |
 | desktop.script.failedTail.label | 已有的最后几行输出 | Last lines of output so far | — |
 | desktop.script.input.aria | 给程序的输入 | Input for the program | — |
-| desktop.script.input.placeholder | 输入内容后回车发送给程序 | Type and press Enter to send to the program | — |
-| desktop.script.inputDisabled.hint | 仅程序运行中可用 | Available while the program is running | — |
+| desktop.script.input.placeholder | 输入内容后回车发送给程序 | Type input and press Return to send to the program | — |
+| desktop.script.inputDisabled.hint | 仅程序运行中可用 | Only while the program runs | — |
 | desktop.script.running.label | {state} · 已 {duration} | {state} · {duration} | state：运行状态的名字，来自 runState.<状态>；duration：已经运行的时长，如 3.2 秒 |
 | desktop.script.stale.label | 过期 | Stale | — |
 | desktop.script.staleNotice.label | 代码有语法错误，没有重新运行。下面是上一次的输出。 | The code has a syntax error and was not re-run. Below is the previous output. | — |
+| desktop.script.startFailed.body | 程序没能启动。项目文件原样保留，代码可以照常编辑。 | The program could not start. The playground files are untouched and you can still edit the code. | — |
 | desktop.slow.body | 启动比平时慢，进程还在运行。下面的输出可以看到进度。 | Starting is taking longer than usual, but the process is still running. The output below shows progress. | — |
 | desktop.slow.title | 启动中（较慢） | Starting (slow) | — |
 | desktop.start.body | 项目已经建好，放在 {folder}。页面准备好后会自动显示在这里。 | The playground is ready in {folder}. The page will appear here automatically once it is up. | folder：项目文件夹的显示路径，主目录缩成 ~ |
@@ -647,7 +692,7 @@
 | library.clean.later.action | 稍后再说 | Remind me later | — |
 | library.clean.now.action | 现在清理 | Clean now | — |
 | library.cleanBanner.end.label | 。 | . | — |
-| library.cleanBanner.idle.label | （已 {days, plural, other {# 天}}没打开） | (not opened for {days, plural, one {# day} other {# days}}) | days：已经几天没打开 |
+| library.cleanBanner.idle.label | {days, plural, =0 {（今天打开过）} other {（已 # 天没打开）}} | {days, plural, =0 {(opened today)} one {(not opened for # day)} other {(not opened for # days)}} | days：已经几天没打开 |
 | library.cleanBanner.lead.label | {count, plural, other {# 个项目}}明天会被自动清理： | {count, plural, one {# playground} other {# playgrounds}} will be cleaned up tomorrow: | count：明天会被自动清理的项目数 |
 | library.cleanBanner.region.aria | 自动清理提醒 | Auto-clean reminder | — |
 | library.cleanBanner.separator.label | ； | ; | — |

@@ -19,6 +19,7 @@ export interface LibraryService {
   trash(ref: string): Promise<MethodResult<"playground.trash">>;
   relocate(ref: string, path: string): Promise<Playground>;
   forget(ref: string): Promise<void>;
+  markOpened(ref: string): Promise<Playground>;
   rescan(): Promise<void>;
   due(): Promise<MethodResult<"clean.due">>;
   ackReminder(id: string): Promise<void>;
@@ -176,6 +177,13 @@ export function createLibraryService(ctx: LibraryContext): LibraryService {
         const item = await library.forget(ref);
         ctx.forgetSeen(item.entry.id);
         api.publish("playground.removed", { playgroundId: item.entry.id });
+      }),
+    markOpened: (ref) =>
+      mutex.run(async () => {
+        const { library } = await ctx.open();
+        const id = ctx.require(library, ref).entry.id;
+        await library.markOpened(id);
+        return ctx.changed(library, id);
       }),
     rescan: () =>
       mutex.run(async () => {

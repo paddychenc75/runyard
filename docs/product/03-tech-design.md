@@ -422,7 +422,7 @@ Windows 报告里写的 ESLint、stylelint 规则，改用 Biome 加检查脚本
 
 `errors` 里的第二条是为 Windows（以后）加的，第一版保留这条规则但不会在 macOS 上触发：干净的系统上，Vite、Next 的原生模块可能因为缺 VC++ 运行库（微软的 C++ 运行时组件）而加载失败【Windows 报告的说法，未核实】。匹配到时原因记为 `RUNTIME_MISSING`，界面和命令行给出安装命令 `winget install --id Microsoft.VCRedist.2015+.x64 -e --source winget`【包标识未核实】。这类报错多半出现在启动阶段而不是安装阶段，所以这组规则对启动阶段的输出同样生效（本文的补充，K10 时确认）。正则里的错误字样都来自记忆，要对着真实输出校对（M1 与模板一起落地时逐条校对，Windows 部分待 K10）。已经见过真实文字的三个 pnpm 错误码应加进匹配表（按错误码匹配比按英文句子稳）：`ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY`（无终端时 pnpm 要清空 `node_modules` 重装却无处确认：不卡住而是立即失败，当作可处理的“需要重装依赖”，带 `--config.confirmModulesPurge=false` 重试；不设 `CI=1`，环境变量 `npm_config_confirm_modules_purge=false` 无效）、`ERR_PNPM_IGNORED_BUILDS`、`ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`（K15 实测，决策记录 0011）（架构报告的未核实清单里已列）。
 
-运行的输出用管道（pipe，普通的输出通道）接收，不用伪终端。原因和代价见附录 A 第 1 行；K4 在 CI 上实测，日志质量成立，但要靠“存未清洗的整行、读取时清洗”和注入 Python 的两个环境变量（§4.5，决策记录 0008）。模板说明里要写明两条：Vite、Next 的报错代码框颜色去不掉；它们不支持 `--no-color`（会报错退出）。Vite 的运行器命令建议加 `--clearScreen false`，避免清屏序列。
+运行的输出用管道（pipe，普通的输出通道）接收，不用伪终端。原因和代价见附录 A 第 1 行；K4 在 CI 上实测，日志质量成立，但要靠“存未清洗的整行、读取时清洗”和注入 Python 的两个环境变量（§4.5，决策记录 0008）。模板自带的说明文件（`files/README.md`）里要写明两条：Vite、Next 的报错代码框颜色去不掉；它们不支持 `--no-color`（会报错退出）。`template.json` 的 `description` 只写给用户看的一句话，不写这类限制（负责人 2026-10-18，#396）。Vite 的运行器命令建议加 `--clearScreen false`，避免清屏序列。
 
 ### 4.5 端口、就绪、日志
 
@@ -469,7 +469,7 @@ Windows 报告里写的 ESLint、stylelint 规则，改用 Biome 加检查脚本
 | 主题 | 做法 |
 | --- | --- |
 | 何时检查 | 只在创建或打开项目时查这个项目用得到的工具。首次启动不检查（PRD §4.7）。检测命令和向 shell 要环境这一步（项目里有版本文件时）都以**项目文件夹为 cwd**：Volta、mise shims、asdf、pyenv、corepack 的垫片在执行时按 cwd 选版本，fnm 的 `--use-on-cd` 和 mise activate 在 shell 启动时按 cwd 改 `PATH`（K6，决策记录 0009） |
-| 模板选择器里的副标题 | PRD §4.1 要求选择器写“当前未安装”或“当前电脑上是 X”。选择器**只读** `state/toolchain.json` 里已有的缓存，不触发检测（`toolchain.check` 带参数 `cachedOnly: true`）；缓存里没有的工具，副标题留空。你第一次创建某类项目之后，缓存里就有了。PRD §4.1 要相应补一句（§14） |
+| 模板选择器里的副标题 | 只写模板的 `description`，不显示本机工具状态，不读 `state/toolchain.json`、不触发检测（负责人 2026-10-18，#396，取代原先“读缓存写‘当前未安装’或‘当前电脑上是 X’”的做法）。缺少工具在创建或打开项目时才提醒 |
 | 查找顺序 | 设置里手动指定的路径 → 用户登录环境的 `PATH` → 一组常见安装目录。最后一步只是“解析失败时先显示点什么”的临时答案：它与完整解析的一致率只有 61%（本机）、68%（CI），会给 nvm 选错版本，拿不到 mise activate 和懒加载 nvm |
 | macOS 的 `PATH` | 从访达启动的应用拿不到终端里的 `PATH`，连 `SHELL` 都可能缺，所以先用 `os.userInfo().shell` 找登录 shell（`dscl` 备用）。向它要环境：**登录加交互**（`-l -i`，不加 `-i` 读不到 `.zshrc`，nvm、fnm、Volta 常写在那里），在每次随机的起止标记之间用 `env -0` 打印；stdin 接 `/dev/null`，进程自成一组，硬超时 10 秒，看到结束标记就杀这一组，不等管道关闭；标记之外的字节全部忽略。命令里先“预热”（对 `node` `npm` `pnpm` `python3` `python` `uv` `go` 里 `command -v` 返回函数名的，调用一次，因为懒加载的 nvm 是函数），再手动跑 precmd 钩子（`mise activate` 只在提示符之前改 `PATH`）。尝试顺序：`-c` 带命令 → 命令写进 stdin（穿过 rc 里 `exec` 另一个 shell）→ 只用内建打印 `PATH`（单个变量超过 128 KB 时 `env` 无法执行）→ 非交互登录（读不到 `.zshrc`，结果标为降级）→ 全部失败或超时就扫描常见目录。nu、tcsh 等不能解析的 shell 直接走最后一步。nvm、fnm、Volta、mise、asdf、pyenv 靠这一步自然找到，不为每个写专门逻辑。算法的伪代码、数字和陷阱清单见决策记录 0009 的依据文档 |
 | 环境缓存 | 缓存的键是（登录 shell，启动文件 mtime 指纹；项目里有版本文件时再加项目路径和这些文件的 mtime）。版本文件指 `.node-version`、`.nvmrc`、`.tool-versions`、`mise.toml`、`.python-version`、`package.json`；没有版本文件的项目共用全局缓存。TTL 1 小时；应用启动时和每次“重新检测”在**后台**刷新，界面先用旧值，**不等待**。`which` 和版本命令永远实时执行（往 `PATH` 已有目录装新工具不用重新解析）。启动文件没变而 nvm 默认别名变了这类变化，只能靠 TTL 和“重新检测”发现 |
@@ -688,7 +688,7 @@ Monaco 0.57，语法高亮用 Shiki（一个用 VS Code 语法文件做高亮的
 | --- | --- | --- |
 | TypeScript、JavaScript（含 TSX、JSX） | 补全、跳转定义、重命名、报错，范围是**项目自己的文件** | `node_modules` 里的类型（以后做）。因此“找不到模块”一类的报错被屏蔽，代价是包名真写错了也不报 |
 | CSS、HTML、JSON | Monaco 自带的语言服务；`template.json`、`runner.json`、`package.json` 有字段提示 | — |
-| Vue 单文件组件 | 只有高亮 | 补全、报错 |
+| Vue 单文件组件 | 模板和脚本的补全（含组件属性名、事件名）、悬停、跳转、报错，读项目真实的类型和 `tsconfig.json`：官方的 Vue 语言服务器加带 Vue 插件的 tsserver，每个项目一组独立进程，经主进程接到 Monaco（负责人 2026-10-18 决定，决策记录 0021） | pug 模板、Emmet、格式化 |
 | Python、Go | 只有高亮 | 补全、报错（要接语言服务器，是更后面的事） |
 
 其他约定（架构 §6.4）：
@@ -1877,7 +1877,7 @@ openspec/
 | `protocol` | `handshake` | 双向握手、版本比对、错误只发“代码加参数” | `prd-decided-by-default`、`prd-cli-json`、`prd-cli-language` | `protocol`、`supervisor`、`client` | M1 |
 | `supervisor` | `lifecycle` | 单实例、谁先需要谁启动、空闲退出、崩溃后收拾残局 | `prd-decided-by-default`、`prd-run`、`prd-run-ownership` | `supervisor` | M1 |
 | `library` | `playgrounds` | 创建、命名、备注、重命名、删除进废纸篓 | `prd-create`、`prd-naming`、`prd-note`、`prd-rename` | `core` | M1 |
-| `library` | `auto-clean` | 已保留与自动清理、保留期、智能体创建的项目 | `prd-auto-clean`、`prd-retention`、`prd-agent-created` | `core` | M1 |
+| `library` | `auto-clean` | 自动清理开关、保留期、智能体创建的项目 | `prd-auto-clean`、`prd-retention`、`prd-agent-created` | `core` | M1 |
 | `templates` | `format` | `template.json`、`runner.json` 的规则、版本、校验与冒烟测试 | `prd-template-engineering`、`prd-template-versions`、`prd-template-lint-test` | `protocol`、`core`、`templates/` | M1 |
 | `templates` | `runners` | 七个运行器各自保证什么（Nuxt 暂缓） | `prd-first-templates` | `templates/`、`core` | M1 |
 | `templates` | `custom` | 另存为模板、手写模板 | `prd-custom-templates`、`prd-save-as-template` | `core` | M1 |
@@ -2346,7 +2346,7 @@ M0a 和 M0b 里凡是 Windows 的内容，都在 GitHub 的 Windows 机器上自
 | §4.6、§7 安全、§9 第 13 项、“负责人已确定”里的 `runyard://new` 一条、§10 | 某个来源第一次触发时确认，可勾选以后信任该来源 | 每次都确认，没有按来源的信任；来源是链接自称的，弹窗写“自称来自 X”；设置里有一个全局开关“内置模板免确认”，默认关 | §6.5。**等你对 §12 第 7 项点头后再改**，因为这是你选定的规则 |
 | §6 | CLI 通过 npm 安装，没有桌面应用也能工作 | 第一版只随桌面应用安装，不发 npm；从源码运行是给贡献者的方式 | §5.4（§12 第 9 项，负责人 2026-10-12 决定） |
 | §6、§4.7 设置 | `doctor` 只有检查 | `doctor --bundle` 导出诊断包；设置页“命令行与智能体”一组加“导出诊断信息” | §5.3（评审必须改 9） |
-| §4.1 模板选择器 | 缺少工具的模板副标题写“当前未安装”，已安装的写“当前电脑上是 X” | 补一句：副标题按已有的检测结果显示；还没有检测过的工具，副标题留空 | §4.8（评审必须改 6）。否则与“首次启动不检查”冲突 |
+| §4.1 模板选择器 | 缺少工具的模板副标题写“当前未安装”，已安装的写“当前电脑上是 X” | 补一句：副标题按已有的检测结果显示；还没有检测过的工具，副标题留空（2026-10-18 起作废：选择器不再显示工具状态，PRD 已改，#396） | §4.8（评审必须改 6）。否则与“首次启动不检查”冲突 |
 | 全文 | 说明文档用章节号引用 PRD | 每个三级及以上的标题加稳定的锚点，每条固定规则加标签；修订规则里写明锚点不改名、不复用、被引用时不能删 | §9.5（评审必须改 7） |
 | §5.1.1 的例子 | `"pnpm": { "version": ">=9", … }` | `>=10.34.6`（原定 `>=10`，2026-10-12 按依赖安全规则再提高：10.34.5 以前有高危公告）（**已做**，2026-10-12） | §8.3（评审建议改 19）、§8.6.6 |
 | §4.4 自动清理 | 没有写这三种情形 | 找不到文件夹的项目不清理也不提醒；资源库根目录不在时整轮跳过；恢复出来但没有启动的标签页不算一次使用 | §4.7（评审建议改 13、14） |
@@ -3032,3 +3032,16 @@ M1 的头几个包（`protocol`、`platform`、`i18n`、`core`）落地后，把
 - §8.6.5：`next16` 的固定版本由 16.3.8 改为 16.4.1（GHSA-2464-fhr4-w9xw、GHSA-673q-mjm6-r5xr、GHSA-p3m5-59mp-jv5r 的安全修复版，满 72 小时后才可选用）；`nuxt4`、`nuxt3` 两行标为第一版不做，加“Nuxt 暂缓”说明，原复核记录保留。
 - 第一版内置九个模板、七个运行器：§3 目录树、§4 运行器表、§11 预览版要求、附录规格清单里的“十一个”“八个”同步；§12 第 28 项和 §13 的 Nuxt 风险行注明 2026-10-16 的新决定，不改计数。
 - 脚本项目文件监听何时开始、何时停止（#138）：只补规格 run/scripts，不改本文的设计；已定的“运行中保存先停旧再跑新”（2026-10-12）不变。
+
+### 2026-10-18 的修改（模板选择器的副标题与模板说明）
+
+依据：负责人 2026-10-18 在 #396 的决定（选择器采用设计稿方案 A；开发备注移出模板说明；选择器不显示本机工具状态）。
+
+- §4.4：Vite、Next 报错框颜色去不掉、不支持 `--no-color` 这两条从“模板说明”改为写在模板自带的 `files/README.md`；`template.json` 的 `description` 只写给用户看的一句话。
+- §4.8“模板选择器里的副标题”一行：改为只写 `description`、不显示工具状态、不读工具缓存；§14 对应一行标为作废（PRD §4.1 已同步改）。
+
+### 2026-10-18 的修改（Vue 单文件组件的完整智能提示）
+
+依据：负责人 2026-10-18 决定 Vue 智能提示第一版做完整的（证据 `docs/architecture/evidence/vue-intellisense.md` 的选项 3），并问能否装官方的 Vue VS Code 扩展。
+
+- §6.2 语言表的 Vue 一行：由“只有高亮”改为完整的智能提示；做法见决策记录 0021（不装 VS Code 扩展，随应用带上官方扩展所用的同一个语言服务）。本文其余章节不改。

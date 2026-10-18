@@ -252,6 +252,21 @@ const agentRow = (extra: Partial<PlaygroundRow> = {}) =>
   });
 
 describe("智能体创建的项目", () => {
+  it("[DESKTOP-LIBRARY-VIEW-101] 创建者是带版本后缀的标识 claude-code_2-1-2：列里和展开的一行都写 Claude Code", async () => {
+    setup(
+      library([
+        agentRow({
+          createdBy: { kind: "agent", agent: "claude-code_2-1-2", command: "runyard new html" },
+        }),
+      ]),
+    );
+    expect(await screen.findByText("Claude Code")).toBeTruthy();
+    expect(screen.queryByText(/claude-code_2-1-2/)).toBeNull();
+    await user.click(screen.getByRole("button", { name: "展开创建信息" }));
+    const details = document.querySelector("[data-creator-details]") as HTMLElement;
+    expect(details.textContent).toContain("由 Claude Code 创建");
+  });
+
   it("[DESKTOP-LIBRARY-VIEW-53] 鼠标停在创建者徽标上：显示创建时间和这条命令", async () => {
     setup(library([agentRow()]));
     const badge = await screen.findByText("Claude Code");
@@ -285,6 +300,12 @@ const noticeOf = () => ({
 });
 
 describe("右下角的提示", () => {
+  it("[DESKTOP-LIBRARY-VIEW-103] 没有智能体名称时写“智能体创建并运行了 …”，中间不留空格", async () => {
+    setup(library([agentRow()], { notices: [{ ...noticeOf(), agent: null }] }));
+    const toast = await screen.findByRole("region", { name: "提示" });
+    expect(toast.textContent).toContain("智能体创建并运行了 react19-5");
+  });
+
   it("[DESKTOP-LIBRARY-VIEW-54] 出现“Claude Code 创建并运行了 react19-5”，有地址、“打开”“停止”；不抢焦点，也不动标签页", async () => {
     const focusBefore = document.activeElement;
     const { calls } = setup(library([agentRow()], { notices: [noticeOf()] }));
@@ -388,6 +409,13 @@ describe("自动清理的提示条", () => {
     cleanup();
     setup(library([fresh]));
     expect(within(await bodyRow("fresh")).getByText("剩 25 天")).toBeTruthy();
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-104] 今天打开过的写“今天打开过”，不写“已 0 天没打开”", async () => {
+    setup(remind({ cleanReminder: [{ id: "node-ts-1", name: "node-ts-1", idleDays: 0 }] }));
+    const banner = await screen.findByRole("status", { name: "自动清理提醒" });
+    expect(banner.textContent).toContain("1 个项目明天会被自动清理：node-ts-1（今天打开过）。");
+    expect(banner.textContent).not.toContain("0 天");
   });
 
   it("[DESKTOP-LIBRARY-VIEW-58] 窗口看不见时不回报“提醒已显示”；窗口出现、提示条真显示后才回报，且只回报一次", async () => {

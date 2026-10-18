@@ -1,7 +1,7 @@
 import type { Localized } from "@runyard/i18n";
 import { useFormat, useT } from "@runyard/i18n/react";
 import { LogView, type LogViewLine } from "@runyard/ui";
-import { useMemo } from "react";
+import { type ReactNode, useMemo } from "react";
 import type { ConsoleLine } from "../../shared/console-state.ts";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import { useConsoleLines } from "./use-console-lines.ts";
@@ -14,6 +14,8 @@ export interface ConsoleOutputProps {
   tail?: number;
   /** 没有输出时不写“还没有输出”（脚本启动失败时上面已经写明原因，规格 DESKTOP-WORKSPACE-41） */
   quietWhenEmpty?: boolean;
+  /** 小标题；一行输出都没有时不显示，免得标题下面是空的 */
+  heading?: ReactNode;
 }
 
 type NoticeText = (key: string, values: unknown) => Localized;
@@ -26,6 +28,7 @@ export function ConsoleOutput({
   className,
   tail,
   quietWhenEmpty,
+  heading,
 }: ConsoleOutputProps) {
   const t = useT();
   const fmt = useFormat();
@@ -53,11 +56,14 @@ export function ConsoleOutput({
     return (tail === undefined ? lines : lines.slice(-tail)).map(toItem);
   }, [lines, t, fmt, tail]);
   return (
-    <LogView
-      {...(className === undefined ? {} : { className })}
-      lines={items}
-      label={t("desktop.output.aria")}
-      {...(quietWhenEmpty === true ? {} : { empty: t("desktop.output.empty.label") })}
-    />
+    <>
+      {items.length === 0 ? null : heading}
+      <LogView
+        {...(className === undefined ? {} : { className })}
+        lines={items}
+        label={t("desktop.output.aria")}
+        {...(quietWhenEmpty === true ? {} : { empty: t("desktop.output.empty.label") })}
+      />
+    </>
   );
 }

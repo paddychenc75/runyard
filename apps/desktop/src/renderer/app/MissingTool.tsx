@@ -5,6 +5,7 @@ import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { DesktopError, TabRow } from "../../shared/library-state.ts";
 import styles from "./FailureScreen.module.css";
 import { missingToolOf, urlLabel } from "./failure-view.ts";
+import { toolName } from "./settings/tool-view.ts";
 import { useErrorText } from "./use-error-text.ts";
 
 export interface MissingToolProps {
@@ -33,6 +34,12 @@ export function MissingTool({ bridge, tab, failure }: MissingToolProps) {
     void bridge.call("clipboard.copy", command);
     setCopied(true);
   };
+  // 和设置里“运行环境”的“在终端中运行”是同一个入口：只运行最近一次检测报告的安装命令，
+  // 命令由主进程按工具标识查，界面传不进任何命令；先检测一次，保证“最近一次检测”是新的
+  const runInTerminal = async () => {
+    await bridge.call("toolchain.check", { cachedOnly: false });
+    await bridge.call("toolchain.runInstall", fields.tool);
+  };
   const setPath = async () => {
     const outcome = await bridge.call("toolchain.pickPath", fields.tool);
     setInvalidPath(outcome.status === "invalid" || outcome.status === "failed");
@@ -56,7 +63,10 @@ export function MissingTool({ bridge, tab, failure }: MissingToolProps) {
       <dl className={styles.facts}>
         <dt>{t("desktop.missing.need.label")}</dt>
         <dd>
-          {t("desktop.missing.requirement.label", { tool: fields.tool, required: fields.required })}
+          {t("desktop.missing.requirement.label", {
+            tool: toolName(fields.tool),
+            required: fields.required,
+          })}
         </dd>
         <dt>{t("desktop.missing.current.label")}</dt>
         <dd className={styles.warn}>{fields.found ?? t("desktop.missing.notInstalled.label")}</dd>
@@ -92,6 +102,11 @@ export function MissingTool({ bridge, tab, failure }: MissingToolProps) {
             {copied ? t("desktop.missing.copied.label") : t("desktop.missing.copy.action")}
           </Button>
         )}
+        {fields.installCommand === null ? null : (
+          <Button size="lg" onClick={() => void runInTerminal()}>
+            {t("settings.runtime.runInstall.action")}
+          </Button>
+        )}
         <Button
           variant="primary"
           size="lg"
@@ -110,7 +125,7 @@ export function MissingTool({ bridge, tab, failure }: MissingToolProps) {
       </p>
       {invalidPath ? (
         <p className={styles.invalid} role="alert">
-          {t("settings.runtime.invalidPath.body", { tool: fields.tool })}
+          {t("settings.runtime.invalidPath.body", { tool: toolName(fields.tool) })}
         </p>
       ) : null}
       <p className={styles.note}>{t("desktop.missing.promise.label")}</p>

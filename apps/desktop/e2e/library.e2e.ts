@@ -201,6 +201,14 @@ test("[DESKTOP-LIBRARY-VIEW-28][DESKTOP-LIBRARY-VIEW-29] 窗口 1100 宽：横�
     expect(header?.right).toBeLessThanOrEqual(actionsLeft + 1);
   }
   expect(end.clipped).toEqual([]);
+
+  // 缩窄之后放回 1440 宽：横向滚动条要消失，列宽回到一开始就是 1440 宽的样子（#404）
+  await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0]?.setSize(1440, 800));
+  await expect.poll(() => page.evaluate(() => window.innerWidth)).toBeGreaterThanOrEqual(1440);
+  await expect.poll(async () => (await measure()).overflowing).toBe(false);
+  const wide = await measure();
+  expect(wide.maxScroll).toBeLessThanOrEqual(1);
+  expect(wide.clipped).toEqual([]);
 });
 
 test("[#299] 主题蓝：浅色和深色下主按钮的渲染色都是设计稿的 #0071E3", async ({ launch }) => {

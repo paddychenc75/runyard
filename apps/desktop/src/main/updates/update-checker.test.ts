@@ -223,6 +223,38 @@ describe("检查更新", () => {
   });
 });
 
+describe("手动检查更新（菜单“检查更新…”）", () => {
+  it("今天已经查过、设置里关着开关也照样去查，查到新版本就显示提示条并忽略以前的“以后再说”", async () => {
+    const store = new MemoryStore({
+      checkedOn: "2026-10-18",
+      latest: {
+        version: "0.3.0",
+        url: "https://github.com/paddychenc75/runyard/releases/tag/v0.3.0",
+      },
+      dismissed: "0.3.0",
+    });
+    const { checker, requests, shown } = setup({ store, enabled: false });
+    expect(await checker.checkNow()).toBe("newer");
+    expect(requests).toHaveLength(1);
+    expect(shown.at(-1)).toEqual({ latest: "0.3.0", current: "0.2.0" });
+    expect(store.record?.dismissed).toBeNull();
+  });
+
+  it("没有新版本返回 latest，请求失败返回 failed，都不改提示条", async () => {
+    const latest = setup({ reply: () => release("v0.2.0") });
+    expect(await latest.checker.checkNow()).toBe("latest");
+    const failed = setup({ reply: () => new Response("", { status: 500 }) });
+    expect(await failed.checker.checkNow()).toBe("failed");
+    expect(failed.shown).toEqual([]);
+  });
+
+  it("不能联网的运行方式（从源码）不发请求，返回 unavailable", async () => {
+    const { checker, requests } = setup({ canFetch: false });
+    expect(await checker.checkNow()).toBe("unavailable");
+    expect(requests).toEqual([]);
+  });
+});
+
 describe("版本比较", () => {
   it("按数字而不是文字比较，预发布后缀不算正式版", () => {
     expect(isNewer("0.10.0", "0.9.0")).toBe(true);

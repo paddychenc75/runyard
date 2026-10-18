@@ -85,6 +85,28 @@ export class UpdateChecker {
     this.#present(record);
   }
 
+  /**
+   * 菜单里的“检查更新…”：用户主动要的，所以不受“一天一次”和设置开关限制，并且忽略以前的“以后再说”；
+   * 返回结果让调用方告诉用户（后台检查是静默的）。从源码运行（canFetch 为假）不联网。
+   */
+  async checkNow(): Promise<"newer" | "latest" | "failed" | "unavailable"> {
+    if (!this.#options.canFetch) return "unavailable";
+    this.#generation += 1;
+    const generation = this.#generation;
+    const latest = await this.#fetchLatest();
+    if (latest === undefined) return "failed";
+    // 结果被更晚的一次检查取代了：那一次会负责展示，这里不抢
+    if (generation !== this.#generation) return latest === null ? "latest" : "newer";
+    const record: UpdateRecord = {
+      checkedOn: dayOf(this.#options.now()),
+      latest,
+      dismissed: null,
+    };
+    await this.#options.store.save(record);
+    this.#present(record);
+    return latest === null ? "latest" : "newer";
+  }
+
   /** “以后再说”：这个版本不再提示（有更新的版本才会再出现） */
   async later(): Promise<void> {
     if (this.#shown === null) return;

@@ -7,7 +7,7 @@
 ## Requirements
 
 ### Requirement: 从模板创建项目
-创建项目 MUST 把模板文件复制到资源库根目录下以名称命名的文件夹，写入 `.runyard/playground.json`（含不变的 `id`、模板、创建者、备注、自动清理开关），分配端口（服务类），并登记到索引。创建后项目 MUST 默认是“已保留”。运行失败 MUST NOT 使创建失败。
+创建项目 MUST 把模板文件复制到资源库根目录下以名称命名的文件夹，写入 `.runyard/playground.json`（含不变的 `id`、模板、创建者、备注、自动清理开关），分配端口（服务类），并登记到索引。创建后项目 MUST 默认不开启自动清理。运行失败 MUST NOT 使创建失败。
 来源：PRD #prd-create；PRD #prd-note；PRD #prd-agent-created；PRD #prd-cli-clean-after
 
 #### Scenario: [LIBRARY-PLAYGROUNDS-01] 命令行创建

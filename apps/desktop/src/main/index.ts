@@ -3,7 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { absPath, getPlatform } from "@runyard/platform";
 import { windowBackground } from "@runyard/tokens";
-import { app, type BrowserWindow, ipcMain, Menu, nativeTheme, net, protocol } from "electron";
+import { app, type BrowserWindow, ipcMain, nativeTheme, net, protocol } from "electron";
 import { desktopChannels } from "../shared/desktop-bridge.ts";
 import { APP_ORIGIN, APP_SCHEME, resolveAppFile } from "./app-protocol.ts";
 import {
@@ -37,18 +37,12 @@ import { createSystemSettings } from "./integration/system-settings-host.ts";
 import { createTerminalService, runTerminalSmokeFlow } from "./integration/terminal-host.ts";
 import { resolveUserDataDir } from "./integration/user-data.ts";
 import { keepAliveAfterClose } from "./integration/window-lifecycle.ts";
-import {
-  type IpcHost,
-  registerBridgeHandlers,
-  requestPalette,
-  requestPicker,
-  requestSidebarToggle,
-} from "./ipc-handlers.ts";
+import { type IpcHost, registerBridgeHandlers } from "./ipc-handlers.ts";
 import { type LibraryClient, LibraryController } from "./library-controller.ts";
 import { LinkHandler } from "./links/link-handler.ts";
 import { createLinkHost } from "./links/link-host.ts";
 import { LinkInbox } from "./links/link-inbox.ts";
-import { buildAppMenu } from "./native-ui/app-menu.ts";
+import { createMenuHost } from "./native-ui/menu-host.ts";
 import {
   type DesktopArgs,
   parseDesktopArgs,
@@ -234,42 +228,27 @@ async function main(args: DesktopArgs): Promise<void> {
     folderOf: (id) => controller.folderOf(id),
     emit: (event, payload) => ipcHost.send(desktopChannels.event, event, payload),
   });
-  // 应用菜单：⌘N 打开模板选择器、⌘⇧P / F1 命令面板、⌘P 快速打开（焦点在预览视图里也有效）；语言变了、
-  // 切到或离开资源库页（⌘P 在资源库页灰掉，规格 DESKTOP-EDITOR-73）都重建
-  let menuLocale: typeof locale = locale;
-  let quickOpenEnabled = false;
-  // 预览是另一个网页：菜单触发时键盘焦点可能在它里面，先把焦点交回界面，输入框才收得到字
-  const openPalette = (mode: "commands" | "files"): void => {
-    window.webContents.focus();
-    requestPalette(ipcHost, mode);
-  };
-  const installMenu = (nextLocale: typeof locale = menuLocale): void => {
-    menuLocale = nextLocale;
-    Menu.setApplicationMenu(
-      Menu.buildFromTemplate(
-        buildAppMenu({
-          locale: nextLocale,
-          platform: currentPlatform(),
-          onNew: () => requestPicker(ipcHost),
-          onToggleSidebar: () => requestSidebarToggle(ipcHost),
-          onCommandPalette: () => openPalette("commands"),
-          onQuickOpen: () => openPalette("files"),
-          quickOpenEnabled,
-        }),
-      ),
-    );
-  };
-  installMenu(locale);
-  controller.onChange((state) => {
-    const onProject = state.activeTab !== "library";
-    if (onProject === quickOpenEnabled) return;
-    quickOpenEnabled = onProject;
-    installMenu();
+  // 应用菜单（安装、重建、菜单动作转给界面都在 native-ui/menu-host.ts）；语言变了、切到或离开项目标签页都重建
+  const menu = createMenuHost({
+    window,
+    ipcHost,
+    locale,
+    platform: currentPlatform(),
+    development: !app.isPackaged,
+    version: app.getVersion(),
+    openExternal: (url) => system.openExternal(url),
+    checkUpdates: () => updates.checkNow(),
   });
+  menu.install();
+  controller.onChange((state) => menu.setProjectTabActive(state.activeTab !== "library"));
   const home = args.root ?? homedir();
   const settings = new SettingsController({
     client,
-    host: createElectronSettingsHost({ home, window, onLocaleChanged: installMenu }),
+    host: createElectronSettingsHost({
+      home,
+      window,
+      onLocaleChanged: (next) => menu.install(next),
+    }),
     library: controller,
     home,
     fallbackLocale,

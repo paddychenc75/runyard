@@ -31,7 +31,7 @@ function setup() {
     for (const line of lines) logs.record(runId, typeof line === "string" ? out(line) : line);
   };
   const files = () => platform.fs.listFiles(dir);
-  return { fake, platform, dir, logs, make, run, files };
+  return { fake, platform, dir, logs, make, run, files, playgrounds };
 }
 
 const texts = (entries: readonly LogEntry[]) =>
@@ -149,6 +149,23 @@ describe("磁盘文件", () => {
     expect(texts(result.entries)).toEqual(["one", "two"]);
     expect(result.cursor).toBe("run-a-2:2");
     expect(result.state).toBeUndefined();
+  });
+
+  it("[RUN-LOGS-20] 新的一次运行没产生任何输出就失败：读到的是这次的空日志，不是上一次的输出", async () => {
+    const { logs, run, make, playgrounds } = setup();
+    run("run-a-1", ["Hello, Runyard!"]);
+    const old = (await logs.read(PG)).cursor;
+    playgrounds.set("run-a-2", PG);
+    logs.beginRun("run-a-2");
+    const result = await logs.read(PG);
+    expect(result.entries).toEqual([]);
+    expect(result.cursor).toBe("run-a-2:0");
+    // 带着上一次运行的游标来读：当作掐掉了，给的是这次运行的全部（空）
+    const again = await logs.read(PG, { since: old });
+    expect(again).toMatchObject({ entries: [], truncated: true });
+    // 管理进程重启后从磁盘读回来，最近一次仍是那次没有输出的运行
+    await logs.flush();
+    expect((await make().read(PG)).entries).toEqual([]);
   });
 
   it("崩溃留下的半行和坏行读到时跳过", async () => {

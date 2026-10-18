@@ -122,6 +122,12 @@ const examples: Record<MethodName, Example> = {
     result: empty,
     badResult: "done",
   },
+  "playground.markOpened": {
+    params: { playground: "demo" },
+    badParams: {},
+    result: samplePlayground,
+    badResult: "done",
+  },
   "playground.released": {
     params: { playgroundId: samplePlayground.id },
     badParams: { playgroundId: "" },
@@ -429,6 +435,7 @@ describe("方法登记表", () => {
       "playground.create",
       "playground.duplicate",
       "playground.forget",
+      "playground.markOpened",
       "playground.relocate",
       "playground.rename",
       "playground.trash",

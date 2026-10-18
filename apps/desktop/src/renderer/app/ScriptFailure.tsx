@@ -15,9 +15,13 @@ export function ScriptFailure({ failure }: { failure: DesktopError }) {
         <Icon name="close" size={16} />
         {errorText(failure, "title")}
       </p>
-      <p className={styles.failureBody}>{errorText(failure, "body")}</p>
+      {/* 脚本没有“就绪”：通用的“进程在就绪之前就退出了”只对网页和服务成立 */}
+      <p className={styles.failureBody}>
+        {failure.code === "RUN_FAILED"
+          ? t("desktop.script.startFailed.body")
+          : errorText(failure, "body")}
+      </p>
       <p className={styles.failureBody}>{errorText(failure, "hint")}</p>
-      <p className={styles.failureLabel}>{t("desktop.script.failedTail.label")}</p>
     </div>
   );
 }

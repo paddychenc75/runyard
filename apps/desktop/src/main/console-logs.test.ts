@@ -108,6 +108,25 @@ describe("ConsoleLogs", () => {
     expect(appended.at(-1)?.lines).toHaveLength(1);
   });
 
+  it("[DESKTOP-WORKSPACE-18] 新的运行没有输出就失败（缺工具）：没有新行的信号，sync 重读后上一次的输出被清掉", async () => {
+    const { logs, console: console_, appended } = setup();
+    logs.entries = [out("Hello, Runyard!")];
+    await console_.watch("a");
+    expect(texts(console_.lines("a"))).toEqual(["Hello, Runyard!"]);
+    // 新运行的日志是空的，游标属于上一次运行
+    logs.entries = [];
+    logs.truncateNext = true;
+    await console_.sync("a");
+    expect(console_.lines("a")).toEqual([]);
+    expect(appended.at(-1)).toMatchObject({ playground: "a", lines: [], reset: true });
+  });
+
+  it("sync 对没在跟的项目什么也不做", async () => {
+    const { logs, console: console_ } = setup();
+    await console_.sync("nope");
+    expect(logs.reads).toEqual([]);
+  });
+
   it("内存里每个项目最多留 MAX_LINES 行，丢最早的", async () => {
     const { logs, console: console_ } = setup();
     logs.entries = Array.from({ length: MAX_LINES + 10 }, (_, index) => out(`l${index}`));

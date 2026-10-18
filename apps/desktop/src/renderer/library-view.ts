@@ -1,6 +1,7 @@
 import type { Locale } from "@runyard/i18n";
 import type { LocalizedText, RunState } from "@runyard/protocol";
 import type { StatusMarkStatus, TechLogo, TileBrand } from "@runyard/ui";
+import { agentDisplayName } from "../shared/agent-name.ts";
 import type { PlaygroundRow } from "../shared/library-state.ts";
 
 // 资源库列表里每一格“显示什么”的纯判断，不碰 DOM、不生成文字（文字在组件里经文案包），所以可以直接测。
@@ -102,9 +103,10 @@ export type CreatorView = { kind: "me" } | { kind: "cli" } | { kind: "agent"; na
 export function creatorOf(row: PlaygroundRow): CreatorView {
   const { kind, agent } = row.createdBy;
   if (kind === "user") return { kind: "me" };
-  if (kind === "agent") return { kind: "agent", name: agent ?? null };
+  if (kind === "agent")
+    return { kind: "agent", name: agent === undefined ? null : agentDisplayName(agent) };
   // 命令行创建的也可能带了智能体名字（PRD #prd-agent-created）：有名字就按智能体显示
-  return agent === undefined ? { kind: "cli" } : { kind: "agent", name: agent };
+  return agent === undefined ? { kind: "cli" } : { kind: "agent", name: agentDisplayName(agent) };
 }
 
 export function runningCount(rows: readonly PlaygroundRow[]): number {

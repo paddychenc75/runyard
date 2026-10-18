@@ -15,8 +15,7 @@
 | 运行 | `run` | — | — | — | 技术设计 §4.1 |
 | 持有者 | `owner`（取值 `tab`、`cli`） | — | — | — | PRD #prd-run-ownership；技术设计 §4.1 |
 | 管理进程 | `supervisor` | — | — | — | PRD #prd-glossary；技术设计 §2.1 |
-| 已保留 | `autoClean`（关） | — | — | — | PRD #prd-retention；技术设计 §4.2 |
-| 自动清理 | `autoClean`（开，带天数） | — | 临时项目、到期清理 | scratch | PRD #prd-auto-clean；PRD #prd-revisions |
+| 自动清理 | `autoClean`（开，带天数；关） | — | 临时项目、到期清理 | scratch | PRD #prd-retention；PRD #prd-auto-clean；PRD #prd-revisions |
 | 备注 | `note` | — | — | — | PRD #prd-note；技术设计 §4.2 |
 | 工具链 | `toolchain` | — | — | — | PRD #prd-glossary；技术设计 §3.1 |
 | 平台层 | `platform` | — | — | — | 技术设计 §3.2、§7.1 |
@@ -33,7 +32,7 @@
 
 ## 说明
 
-- **已保留 / 自动清理**是同一个属性的两个取值，每个项目二者之一。PRD 的修订记录写明全文去掉了这个属性以前的三种叫法（“临时”“scratch”“到期清理”）；“临时”单独出现时还有“临时目录”这类正当用法，所以检查拦的是“临时项目”。标识符按技术设计 §4.2 的 `playground.json` 字段写；协议定稿时以协议为准并更新这一行。
+- **自动清理**是每个项目的一个开关（开时带天数），默认关闭。关闭的状态不另起名字：界面上写“—”“关闭”“现在：关闭”，不写“已保留”（负责人 2026-10-18，#395；英文写 Auto-clean，同样不写 Kept）。以前文档里的“已保留”只留在 PRD 修订记录这类历史记载里，所以暂不放进“禁用”列；界面文案改完（#395 的实现 issue）后再考虑加。PRD 的修订记录写明全文去掉了这个属性以前的三种叫法（“临时”“scratch”“到期清理”）；“临时”单独出现时还有“临时目录”这类正当用法，所以检查拦的是“临时项目”。标识符按技术设计 §4.2 的 `playground.json` 字段写；协议定稿时以协议为准并更新这一行。
 - **移到废纸篓**：第一版只有 macOS 的“废纸篓”；以后做 Windows 时是“移到回收站”。界面文案里不直接写这两个词，用占位符，由文案包按系统替换（按系统选词的机制第一版只填 macOS 一支）。
 - **界面英文**一列目前只有“项目”有明文规定（中文写“项目”，英文写 playground），其余在写界面文案时补。
 - **规格里的六个英文结构词**（Requirement、Scenario、WHEN、THEN、MUST、ADDED / MODIFIED / REMOVED Requirements）随规格驱动流程加入时补进这张表。

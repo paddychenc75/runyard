@@ -18,6 +18,7 @@ export function createLibraryHandlers(ctx: LibraryContext, service: LibraryServi
       await service.forget(playground);
       return {};
     },
+    "playground.markOpened": ({ playground }) => service.markOpened(playground),
     "playground.released": ({ playgroundId }, { session }) => {
       ctx.release.released(session.id, playgroundId);
       return {};

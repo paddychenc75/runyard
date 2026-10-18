@@ -59,6 +59,13 @@ export function ScriptOutput({ bridge, tab }: ScriptOutputProps) {
         playground={tab.id}
         className={styles.log}
         quietWhenEmpty={failure !== null}
+        {...(failure === null
+          ? {}
+          : {
+              heading: (
+                <p className={styles.failureLabel}>{t("desktop.script.failedTail.label")}</p>
+              ),
+            })}
         {...(failure === null ? {} : { tail: TAIL_LINES })}
       />
       <ScriptInput bridge={bridge} tab={tab} />

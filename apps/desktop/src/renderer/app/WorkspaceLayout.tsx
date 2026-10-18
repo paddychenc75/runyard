@@ -6,6 +6,8 @@ import { layoutPanes } from "../../shared/pane-sizes.ts";
 import type { LayoutPrefs } from "../shared/layout-prefs.ts";
 import type { OverlayCounter } from "../shared/overlay-counter.ts";
 import { ConsolePanel } from "./ConsolePanel.tsx";
+import { previewScreenOf } from "./failure-view.ts";
+import { MissingToolPane } from "./MissingToolPane.tsx";
 import { PaneToggleButton } from "./PaneToggleButton.tsx";
 import { PreviewPane } from "./PreviewPane.tsx";
 import { ResizeHandle } from "./ResizeHandle.tsx";
@@ -103,7 +105,12 @@ export function WorkspaceLayout({ bridge, tab, overlays, prefs, onPrefs }: Works
                   onReset={() => onPrefs({ previewWidth: null })}
                 />
                 <div className={styles.right}>
-                  {script ? (
+                  {/* 缺工具在任何类型的项目里都是同一个画面 */}
+                  {tab.failure !== null &&
+                  previewScreenOf(tab) === "missing" &&
+                  (script || tab.service === true) ? (
+                    <MissingToolPane bridge={bridge} tab={tab} failure={tab.failure} />
+                  ) : script ? (
                     <ScriptOutput bridge={bridge} tab={tab} />
                   ) : tab.service === true ? (
                     <RequestPanel key={tab.id} bridge={bridge} tab={tab} />

@@ -11,7 +11,7 @@
 | 类型 | 形状 | 出处 |
 | --- | --- | --- |
 | `Owner` | `{ kind: 'tab', clientId, tabId }` 或 `{ kind: 'cli', agent?, command }` | §5.1 |
-| `Playground` | 项目记录：合并 `playground.json` 与 `library.json` 里客户端用得到的字段（`id` `name` `path` `kind` `template` `runner` `packageManager?` `entry?` `note?` `createdAt` `createdBy` `autoClean { enabled, days? }` `scriptAutoRun?` `requestAutoResend?` `port?` `lastUsedAt` `lastOpenedAt?` `missingSince?`）；“已保留”不是字段，`autoClean.enabled` 为 `false` 即是。磁盘上才有的字段（`requires`、`toolchainAtCreate`、`open`、`trust`、清理提醒状态）不进协议 | storage.md 第 2 节 |
+| `Playground` | 项目记录：合并 `playground.json` 与 `library.json` 里客户端用得到的字段（`id` `name` `path` `kind` `template` `runner` `packageManager?` `entry?` `note?` `createdAt` `createdBy` `autoClean { enabled, days? }` `scriptAutoRun?` `requestAutoResend?` `port?` `lastUsedAt` `lastOpenedAt?` `missingSince?`）；自动清理关闭就是 `autoClean.enabled` 为 `false`，没有单独的“已保留”字段。磁盘上才有的字段（`requires`、`toolchainAtCreate`、`open`、`trust`、清理提醒状态）不进协议 | storage.md 第 2 节 |
 | `RunSnapshot` | `runId`、`playgroundId`、`name`、`kind`（`server` `static` `oneshot`）、`state`、`reason?`、`stale?`（脚本：语法错误，保留上次输出）、`owner`、`port?`、`url?`（字面量 `127.0.0.1`）、`portFallback?`（`{ wanted, reason, occupant? }`）、`pid?`、`exitCode?`、`startedAt`、`readyMs?`、`durationMs?`、`idleStopAt?`（只有命令行持有的有）、`cursor`、`alreadyRunning?` | §4.3、§4.5、§5.3 示例 |
 | `LogEntry` | 见 [protocol.md](protocol.md) 第 4 节 | §5.1 |
 | `LocalizedText` | 字符串，或“语言到文字”的对象（`en` 必填）；管理进程原样转发，不挑语言。**还没有代码**：随模板方法加 | §6.8 |
@@ -46,6 +46,7 @@
 | `playground.trash` | `playground` | `{ trashed, deletedRegenerable }`（推，来自平台层 `fs.trash`；后者是直接删掉的可再生目录的相对路径列表） | 先停止，再走释放顺序；错误 `PATH_LOCKED` `PATH_TOO_LONG` `TRASH_UNAVAILABLE` |
 | `playground.relocate` | `playground`、`path` | `Playground` | 接受任意位置的文件夹，只要里面的 `id` 对得上（推自 PRD #prd-decision-table 第 19 项） |
 | `playground.forget` | `playground` | 空 | 从资源库移除，不动磁盘 |
+| `playground.markOpened` | `playground` | `Playground` | 记一次打开（应用里打开项目标签页，含“打开但不运行”），只写 `lastOpenedAt`，不动 `lastUsedAt`，不算一次使用 |
 | `playground.released` | `playgroundId` | 空 | 客户端回报“我已释放这个项目的句柄”（§4.3） |
 | `library.rescan` | 无 | 空 | 重新扫描资源库根目录 |
 

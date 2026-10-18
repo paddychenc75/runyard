@@ -1,9 +1,9 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { Localized } from "@runyard/i18n";
-import { render, screen, within } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { DataTable, type DataTableColumn } from "./DataTable.tsx";
 
 const text = (value: string) => value as Localized;
@@ -128,5 +128,67 @@ describe("DataTable", () => {
   it("[#348] 窗口放不下时固定列的圆角收成直角，不漏出底下滚过去的列", () => {
     const css = readFileSync(join(import.meta.dirname, "DataTable.module.css"), "utf8");
     expect(css).toMatch(/\.root\[data-overflowing\] \.row > \[data-pin\] \{[^}]*border-radius: 0/);
+  });
+});
+
+describe("DataTable 放不放得下的判断（#404）", () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  // 假的布局：可见宽度、表的实际宽度和最小宽度都由测试给；ResizeObserver 由测试手动触发
+  function fakeLayout() {
+    const layout = { viewport: 1128, actual: 1144, min: 1036 };
+    const callbacks: (() => void)[] = [];
+    vi.stubGlobal(
+      "ResizeObserver",
+      class {
+        constructor(callback: () => void) {
+          callbacks.push(callback);
+        }
+        observe() {}
+        disconnect() {}
+      },
+    );
+    vi.spyOn(HTMLElement.prototype, "clientWidth", "get").mockImplementation(() => layout.viewport);
+    vi.spyOn(HTMLElement.prototype, "offsetWidth", "get").mockImplementation(() => layout.actual);
+    const real = window.getComputedStyle.bind(window);
+    vi.spyOn(window, "getComputedStyle").mockImplementation((element) =>
+      element.tagName === "TABLE"
+        ? ({ minWidth: `${layout.min}px` } as CSSStyleDeclaration)
+        : real(element),
+    );
+    const measure = () =>
+      act(() => {
+        for (const callback of callbacks) callback();
+      });
+    return { layout, measure };
+  }
+
+  const overflowing = () => document.querySelector("[data-overflowing]") !== null;
+
+  it("缩窄后放回：表的实际宽度仍比可见宽度大一点（窄窗口时多出的状态圆点撑的），但最小宽已放得下，滚动标记要消失", () => {
+    const { layout, measure } = fakeLayout();
+    setup();
+    expect(overflowing()).toBe(false);
+
+    layout.viewport = 800;
+    layout.actual = 1160;
+    measure();
+    expect(overflowing()).toBe(true);
+
+    layout.viewport = 1128;
+    layout.actual = 1144;
+    measure();
+    expect(overflowing()).toBe(false);
+  });
+
+  it("各列最小宽之和确实比可见宽度大时才算放不下", () => {
+    const { layout, measure } = fakeLayout();
+    setup();
+    layout.viewport = 1000;
+    measure();
+    expect(overflowing()).toBe(true);
+    layout.viewport = 1037;
+    measure();
+    expect(overflowing()).toBe(false);
   });
 });

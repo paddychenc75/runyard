@@ -50,8 +50,18 @@
   box-shadow: var(--shadow-floating);
 }
 
+/* 编辑器（Monaco）的浮层是第三方生成的 DOM，没法写 data-glass-material，所以配方在这里登记（形状见桌面应用的 monaco-widgets.css） */
+.monaco-editor .suggest-widget,
+.monaco-editor .monaco-hover,
+.monaco-editor .parameter-hints-widget {
+  backdrop-filter: var(--glass-blur-menu);
+}
+
 @media (prefers-reduced-transparency: reduce) {
-  [data-glass-material] {
+  [data-glass-material],
+  .monaco-editor .suggest-widget,
+  .monaco-editor .monaco-hover,
+  .monaco-editor .parameter-hints-widget {
     backdrop-filter: none;
   }
 }

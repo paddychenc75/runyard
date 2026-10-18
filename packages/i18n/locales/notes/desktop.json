@@ -8,6 +8,10 @@
     "name": "项目名称（不翻译）",
     "user": "包住用户内容的标签"
   },
+  "desktop.agentNotice.unnamed.label": {
+    "name": "项目名称（不翻译）",
+    "user": "包住用户内容的标签"
+  },
   "desktop.crashed.title": {
     "exitCode": "进程的退出码"
   },
@@ -92,6 +96,9 @@
   "desktop.linkNotice.openMissing.label": {
     "value": "链接里写的项目名称、模板标识或新名称（不翻译）",
     "user": "包住用户内容的标签"
+  },
+  "desktop.menu.updateLatest.body": {
+    "version": "当前应用的版本号，如 0.3.0"
   },
   "desktop.missing.requirement.label": {
     "tool": "工具标识，如 go、node",

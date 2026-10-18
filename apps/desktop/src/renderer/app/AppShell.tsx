@@ -9,7 +9,12 @@ import { PaletteHost } from "../features/palette/PaletteHost.tsx";
 import { forgetPanelMode } from "../features/terminal/panel-mode.ts";
 import { defaultQuery, type LibraryQuery, navCounts } from "../library-query.ts";
 import { runningCount } from "../library-view.ts";
-import { CommandContext, CommandHost, useCommands } from "../shared/command-host.tsx";
+import {
+  CommandContext,
+  CommandHost,
+  useCommandHost,
+  useCommands,
+} from "../shared/command-host.tsx";
 import { useLayoutPrefs } from "../shared/layout-prefs.ts";
 import { OverlayContext } from "../shared/overlay-context.tsx";
 import { OverlayCounter } from "../shared/overlay-counter.ts";
@@ -162,6 +167,12 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
     else patchLayout({ treeCollapsed: !layoutPrefs.treeCollapsed });
   }, [onLibraryPage, layoutPrefs.sidebarCollapsed, layoutPrefs.treeCollapsed, patchLayout]);
   useEffect(() => bridge.on("sidebar.toggle", toggleSidebar), [bridge, toggleSidebar]);
+  // 应用菜单触发的命令（设置、项目操作……）和命令面板走同一个宿主：此刻没登记的命令不会做任何事
+  const commandHost = useCommandHost();
+  useEffect(
+    () => bridge.on("command.run", ({ id }) => void commandHost.run(id)),
+    [bridge, commandHost],
+  );
   const selectTab = useCallback((id: string) => void bridge.call("tab.select", id), [bridge]);
   // 命令面板里的应用命令（规格“命令面板”）：和菜单、按钮里的同名项走同一个动作；
   // 当前页面上没有意义的不登记（已经在资源库页就没有“打开资源库”，资源库页没有“收起或展开文件树”）
@@ -182,6 +193,13 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
           showLibrary({ activeTab, selectTab });
           setPage("settings");
         },
+    // ⌘W：项目标签页里先关当前的文件标签，没有文件标签再关项目标签页（规格 DESKTOP-EDITOR-17）
+    "app.closeTab":
+      activeTab === "library"
+        ? null
+        : () => {
+            if (!commandHost.run("editor.closeTab")) void bridge.call("tab.close", activeTab);
+          },
     "app.stopAll": () => void bridge.call("run.stopAll"),
     "app.toggleSidebar": toggleSidebar,
     "app.toggleTree": onLibraryPage

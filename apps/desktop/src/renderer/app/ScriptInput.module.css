@@ -38,13 +38,21 @@
   font: inherit;
 }
 
+/* 设计稿：提示文字用正文字体（输入的内容仍是等宽），放不下时以省略号收尾 */
+.input {
+  text-overflow: ellipsis;
+}
+
 .input::placeholder {
   color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+  text-overflow: ellipsis;
 }
 
 .hint {
   flex: none;
   color: var(--color-text-secondary);
   font-family: var(--font-sans);
-  font-size: var(--text-item-size);
+  font-size: var(--text-secondary-size);
+  white-space: nowrap;
 }

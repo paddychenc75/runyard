@@ -246,7 +246,7 @@ disagree, `tokens.json` wins.
 | `--size-column-xl` | 132px | Table column: status |
 | `--size-column-xxl` | 144px | Table column: creator (agent badge plus its info button) |
 | `--size-column-flex-min` | 140px | Table column that shares leftover width, minimum |
-| `--size-column-fill-min` | 220px | Table name column, minimum |
+| `--size-column-fill-min` | 200px | Table name column, minimum |
 
 ### Spacing scale
 
