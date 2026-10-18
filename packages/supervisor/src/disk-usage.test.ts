@@ -81,14 +81,16 @@ describe("后台计算", () => {
     await quiet();
     expect(await sizeOf(app, "gone")).toBeDefined();
     // 文件夹被挪到资源库之外：找不到
-    lw.fs.moveDir(lw.at("gone"), absPath("/elsewhere/gone"), "gone");
+    // 先过 join 归一化分隔符：内存文件系统按字符串比较路径，Windows 上要对得上
+    const elsewhere = absPath(join("/elsewhere", "gone"));
+    lw.fs.moveDir(lw.at("gone"), elsewhere, "gone");
     await app.result("library.rescan", {});
     await quiet();
     const missing = await find(app, "gone");
     expect(missing?.missingSince).toBeDefined();
     expect(missing?.size).toBeUndefined();
     // 重新定位之后才计算
-    await app.result("playground.relocate", { playground: playground.id, path: "/elsewhere/gone" });
+    await app.result("playground.relocate", { playground: playground.id, path: elsewhere });
     await quiet();
     expect((await find(app, "gone"))?.size).toBeDefined();
   });
