@@ -613,8 +613,8 @@
 - 验证：test
 
 ### Requirement: 点侧栏任何一项都回到资源库
-点侧栏的任何一项（筛选、模板、设置）MUST 切到资源库标签（模板、设置切到对应页面）并显示结果，筛选随之生效；MUST NOT 只改筛选而停在项目标签页。
-来源：PRD #prd-search-filter；负责人 2026-10-17 要求（issue #309）
+点侧栏的筛选项和“模板”MUST 切到资源库标签（“模板”切到模板页）并显示结果，筛选随之生效；MUST NOT 只改筛选而停在项目标签页。“设置”是例外：点它 MUST 打开独立的设置窗口（见 desktop/settings），主窗口 MUST NOT 切换标签或页面，侧栏的选中项不变。
+来源：PRD #prd-search-filter；PRD #prd-settings-page；负责人 2026-10-17 要求（issue #309）
 
 #### Scenario: [DESKTOP-LIBRARY-VIEW-64] 在项目标签页点筛选
 - 前提：当前是项目 `demo` 的标签页，其余项目里有 2 个“智能体创建”
