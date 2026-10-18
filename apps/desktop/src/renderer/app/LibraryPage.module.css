@@ -8,21 +8,26 @@
   padding-inline: var(--space-10);
 }
 
+/* 标题和概况占它需要的宽度；和筛选一行放不下时，筛选整体换到下一行，而不是把概况截断或把右边的控件挤出边 */
 .header {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-end;
-  gap: var(--space-7);
+  justify-content: space-between;
+  gap: var(--space-6) var(--space-7);
   margin-block-end: var(--space-8);
 }
 
 .heading {
-  flex: 1;
+  flex: 0 1 auto;
+  max-inline-size: 100%;
   min-inline-size: 0;
 }
 
 .filters {
   display: flex;
   flex: none;
+  max-inline-size: 100%;
   align-items: center;
   gap: var(--space-4);
 }

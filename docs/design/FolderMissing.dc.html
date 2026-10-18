@@ -48,13 +48,13 @@ a{color:#0071E3}a:hover{color:#0058B0}
 </div>
 </div>
 
-<div style="margin: 18px 28px 0 28px; display: grid; grid-template-columns: minmax(0, 1.5fr) 132px minmax(0, 1fr) 84px 96px 110px 110px 36px; column-gap: 12px; padding: 0 14px 8px 14px; color: #6E6E73; font-size: 12px; border-bottom: 1px solid rgba(0,0,0,0.08)">
-<div>名称与备注</div><div>状态</div><div>模板</div><div>端口</div><div>保留</div><div>上次打开</div><div>创建者</div><div></div>
+<div style="margin: 18px 28px 0 28px; display: grid; grid-template-columns: minmax(0, 1.5fr) 132px minmax(0, 1fr) 84px 96px 110px 80px 110px 36px; column-gap: 12px; padding: 0 14px 8px 14px; color: #6E6E73; font-size: 12px; border-bottom: 1px solid rgba(0,0,0,0.08)">
+<div>名称与备注</div><div>状态</div><div>模板</div><div>端口</div><div>保留</div><div>上次打开</div><div style="text-align: right">大小</div><div>创建者</div><div></div>
 </div>
 
 <div style="margin: 6px 28px 0 28px; display: flex; flex-direction: column; gap: 2px">
 <sc-for list="{{rows}}" as="row" hint-placeholder-count="12">
-<div style="display: grid; grid-template-columns: minmax(0, 1.5fr) 132px minmax(0, 1fr) 84px 96px 110px 110px 36px; column-gap: 12px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: {{row.bg}}; box-shadow: {{row.bar}}">
+<div style="display: grid; grid-template-columns: minmax(0, 1.5fr) 132px minmax(0, 1fr) 84px 96px 110px 80px 110px 36px; column-gap: 12px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: {{row.bg}}; box-shadow: {{row.bar}}">
 <div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
 <div style="font-weight: 600; font-size: 14px; color: {{row.nameColor}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{row.name}}</div>
 <div style="font-size: 12px; color: {{row.noteColor}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{row.note}}</div>
@@ -67,7 +67,7 @@ a{color:#0071E3}a:hover{color:#0058B0}
 </div>
 <div style="opacity: {{row.op}}; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #3A3A3C">{{row.port}}</div>
 <div style="opacity: {{row.op}}"><span title="{{row.tip}}" style="display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 12px; color: {{row.keepColor}}; background: {{row.keepBg}}; border: 1px {{row.keepBorder}} rgba(0,0,0,0.16)">{{row.keep}}</span></div>
-<div style="opacity: {{row.op}}; color: #6E6E73">{{row.opened}}</div>
+<div style="opacity: {{row.op}}; color: #6E6E73">{{row.opened}}</div><div style="opacity: {{row.op}}; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: {{row.sizeColor}}; text-align: right; white-space: nowrap">{{row.size}}</div>
 <div>
 <sc-if value="{{row.agent}}" hint-placeholder-val="{{false}}">
 <span style="display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 12px; font-weight: 500; color: #7A2E9E; background: rgba(175,82,222,0.12)">
@@ -171,7 +171,9 @@ const navItems = [['全部', '20', true], ['已保留', '16', false], ['自动�
 const nav = navItems.map((n) => ({ label: n[0], count: n[1], bg: n[2] ? '#0071E3' : 'transparent', color: n[2] ? '#FFFFFF' : '#1D1D1F', weight: n[2] ? 600 : 400, mark: n[2] ? '#FFFFFF' : '#8E8E93', countColor: n[2] ? '#FFFFFF' : '#6E6E73' }));
 const tipText = '30 天没打开就移到废纸篓，每次打开重新计时';
 const rows = rows0.map((r, i) => { const n = left[i]; return n ? Object.assign({}, r, { keep: '剩 ' + n + ' 天', tip: tipText }) : Object.assign({}, r, { tip: '' }); });
-return { rows, nav };
+const SIZES = {'react-counter': ['186.3 MB', '#3A3A3C'], 'hono-todo-api': ['38.6 MB', '#3A3A3C'], 'hono-1': ['38.2 MB', '#3A3A3C'], 'react19-3': ['214.7 MB', '#3A3A3C'], 'landing-hero': ['96 KB', '#3A3A3C'], 'go-channels': ['24 KB', '#3A3A3C'], 'python-2': ['61.4 MB', '#3A3A3C'], 'vue-drag-list': ['—', '#6E6E73'], 'vue3-2': ['141.5 MB', '#3A3A3C'], 'api-mock-1': ['12.3 MB', '#3A3A3C'], 'node-ts-1': ['48.9 MB', '#3A3A3C'], 'react18-1': ['412 MB', '#3A3A3C']};
+const withSize = (list) => list.map((r) => Object.assign({}, r, { size: (SIZES[r.name] || ['24 KB', '#3A3A3C'])[0], sizeColor: (SIZES[r.name] || ['24 KB', '#3A3A3C'])[1] }));
+return { rows: withSize(rows), nav };
 }
 }
 </script>

@@ -49,12 +49,13 @@ a{color:#4DA3FF}a:hover{color:#7DBBFF}
 <div style="margin: 18px 28px 0 28px; display: flex; color: #A1A1A6; font-size: 12px">
 <div style="position: relative; z-index: 2; width: 240px; flex: none; box-sizing: border-box; padding: 0 14px 8px 14px; background: #1C1C1E; box-shadow: 8px 0 12px -8px rgba(0,0,0,0.55); border-bottom: 1px solid rgba(255,255,255,0.08)">Name and note</div>
 <div style="flex: 1; min-width: 0; overflow: hidden; border-bottom: 1px solid rgba(255,255,255,0.08)">
-<div style="width: 716px; margin-left: -215px; padding: 0 0 8px 12px; box-sizing: border-box; display: flex; gap: 12px">
+<div style="width: 808px; margin-left: -308px; padding: 0 0 8px 12px; box-sizing: border-box; display: flex; gap: 12px">
 <div style="width: 100px; flex: none">Status</div>
 <div style="width: 140px; flex: none">Template</div>
 <div style="width: 60px; flex: none">Port</div>
 <div style="width: 96px; flex: none">Retention</div>
 <div style="width: 96px; flex: none">Last opened</div>
+<div style="width: 80px; flex: none; text-align: right">Size</div>
 <div style="width: 124px; flex: none">Created by</div>
 </div>
 </div>
@@ -75,7 +76,7 @@ a{color:#4DA3FF}a:hover{color:#7DBBFF}
 </div>
 </div>
 <div style="flex: 1; min-width: 0; overflow: hidden">
-<div style="width: 716px; height: 54px; margin-left: -215px; padding-left: 12px; box-sizing: border-box; display: flex; align-items: center; gap: 12px">
+<div style="width: 808px; height: 54px; margin-left: -308px; padding-left: 12px; box-sizing: border-box; display: flex; align-items: center; gap: 12px">
 <div style="width: 100px; flex: none; min-width: 0">
 <div style="display: flex; align-items: center; gap: 8px; color: {{row.statusColor}}; font-weight: 500">
 <span aria-hidden="true" style="width: 9px; height: 9px; border-radius: {{row.dotRadius}}; box-sizing: border-box; background: {{row.dotFill}}; border: 1.5px solid {{row.dotColor}}"></span>{{row.status}}
@@ -94,6 +95,9 @@ a{color:#4DA3FF}a:hover{color:#7DBBFF}
 </div>
 <div style="width: 96px; flex: none; min-width: 0">
 <div style="color: #A1A1A6">{{row.opened}}</div>
+</div>
+<div style="width: 80px; flex: none; min-width: 0">
+<div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: {{row.sizeColor}}; text-align: right; white-space: nowrap">{{row.size}}</div>
 </div>
 <div style="width: 124px; flex: none; min-width: 0">
 <div>
@@ -119,7 +123,7 @@ a{color:#4DA3FF}a:hover{color:#7DBBFF}
 <div style="margin: 10px 28px 0 28px; display: flex; height: 6px">
 <div style="width: 240px; flex: none"></div>
 <div style="flex: 1; min-width: 0; height: 6px; border-radius: 3px; background: rgba(118,118,128,0.24)">
-<div style="width: 55%; height: 6px; margin-left: 20%; border-radius: 3px; background: #8E8E93"></div>
+<div style="width: 62%; height: 6px; margin-left: 38%; border-radius: 3px; background: #8E8E93"></div>
 </div>
 <div style="width: 48px; flex: none"></div>
 </div>
@@ -210,7 +214,9 @@ const navItems = [['All', '20', true], ['Kept', '16', false], ['Auto-clean', '4'
 const nav = navItems.map((n) => ({ label: n[0], count: n[1], bg: n[2] ? '#0071E3' : 'transparent', color: n[2] ? '#FFFFFF' : '#F5F5F7', weight: n[2] ? 600 : 400, mark: n[2] ? '#FFFFFF' : '#8E8E93', countColor: n[2] ? '#FFFFFF' : '#A1A1A6' }));
 const tipText = 'Moved to Trash after 30 days without being opened; the timer restarts each time you open it';
 const rows = rows0.map((r, i) => { const n = left[i]; return n ? Object.assign({}, r, { keep: n + ' d left', tip: tipText }) : Object.assign({}, r, { tip: '' }); });
-return { rows: rows.slice(0, 10), nav };
+const SIZES = {'react-counter': ['186.3 MB', '#D1D1D6'], 'hono-todo-api': ['38.6 MB', '#D1D1D6'], 'hono-1': ['38.2 MB', '#D1D1D6'], 'react19-3': ['214.7 MB', '#D1D1D6'], 'landing-hero': ['96 KB', '#D1D1D6'], 'go-channels': ['24 KB', '#D1D1D6'], 'python-2': ['61.4 MB', '#D1D1D6'], 'vue-drag-list': ['142.8 MB', '#D1D1D6'], 'vue3-2': ['141.5 MB', '#D1D1D6'], 'api-mock-1': ['12.3 MB', '#D1D1D6'], 'node-ts-1': ['48.9 MB', '#D1D1D6'], 'react18-1': ['412 MB', '#D1D1D6']};
+const withSize = (list) => list.map((r) => Object.assign({}, r, { size: (SIZES[r.name] || ['24 KB', '#D1D1D6'])[0], sizeColor: (SIZES[r.name] || ['24 KB', '#D1D1D6'])[1] }));
+return { rows: withSize(rows.slice(0, 10)), nav };
 }
 }
 </script>

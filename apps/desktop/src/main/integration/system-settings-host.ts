@@ -15,6 +15,7 @@ import {
   readCliLink,
   uninstallCliLink,
 } from "./cli-link.ts";
+import { runBundledCli } from "./run-bundled-cli.ts";
 
 // 设置页里“依赖与网络、运行环境、命令行与智能体”要的系统动作的接线：文件选择器、终端、访达、随包命令行的运行。
 // 这些在自动化测试里看不到真的发生，逻辑都在 toolchain-settings.ts、cli-settings.ts 里用假的宿主测，这里只做薄薄的转接。
@@ -75,23 +76,14 @@ export function createSystemSettings(options: SystemSettingsOptions): {
   const binDir = defaultCliBinDir(home);
   const launcher = runtime.kind === "packaged" ? cliLauncherPath(runtime.resourcesPath) : null;
   const host: CliHost = {
-    runCli: (args) => {
-      const proc = platform.exec.spawn({
-        argv: [process.execPath, cliEntry(runtime), ...args],
-        cwd: absPath(home),
-        env: {
-          ELECTRON_RUN_AS_NODE: "1",
-          HOME: home,
-          ...(process.env.PATH ? { PATH: process.env.PATH } : {}),
-        },
-        stdin: false,
-      });
-      let stdout = "";
-      proc.stdout.on("data", (chunk) => {
-        stdout += String(chunk);
-      });
-      return proc.exited.then((info) => ({ code: info.exitCode ?? 1, stdout }));
-    },
+    runCli: (args) =>
+      runBundledCli({
+        execPath: process.execPath,
+        entry: cliEntry(runtime),
+        args,
+        home,
+        parentEnv: process.env,
+      }),
     link:
       launcher === null
         ? null

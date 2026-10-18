@@ -28,7 +28,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-4);
-  block-size: var(--size-control-md);
+  block-size: var(--size-tab);
   margin: 0;
   padding-inline: var(--space-6);
   border: none;
@@ -64,12 +64,15 @@
   background: var(--color-line-hairline);
 }
 
-/* 设计稿 Main 的“新建”：和“N 个运行中”同在一行，44 高 */
+/* 设计稿 Main 的“新建”：和标签胶囊、“N 个运行中”同一个高度档（--size-tab）、同一条中线；
+   不带强调阴影，免得它比旁边两个控件重一截（#389） */
 .new[data-size] {
+  --button-shadow: var(--shadow-flat);
+
   flex: none;
-  block-size: var(--size-toolbar);
+  block-size: var(--size-tab);
   margin-inline-start: var(--space-4);
-  padding-inline: var(--space-8);
+  padding-inline: var(--space-7);
 }
 
 /* 命令行持有的运行：名字后面跟智能体名称的徽标（规格 DESKTOP-WORKSPACE-26） */
