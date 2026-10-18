@@ -2395,6 +2395,78 @@
    "y": 0,
    "title": "05C Library: no playgrounds from agents yet",
    "page": "enDark"
+  },
+  "MainSidebarHidden.dc.html": {
+   "w": 1100,
+   "h": 900,
+   "radius": 17,
+   "x": 0,
+   "y": 17160,
+   "title": "02b 侧栏收起：按钮留在红绿灯右边",
+   "page": "zh"
+  },
+  "SettingsNarrow.dc.html": {
+   "w": 1100,
+   "h": 900,
+   "radius": 26,
+   "x": 1180,
+   "y": 17160,
+   "title": "33b 设置 · 窗口变窄、滚动到“编辑与运行”",
+   "page": "zh"
+  },
+  "MainSidebarHiddenDark.dc.html": {
+   "w": 1100,
+   "h": 900,
+   "radius": 17,
+   "x": 0,
+   "y": 17160,
+   "title": "02b 侧栏收起：按钮留在红绿灯右边",
+   "page": "zhDark"
+  },
+  "SettingsNarrowDark.dc.html": {
+   "w": 1100,
+   "h": 900,
+   "radius": 26,
+   "x": 1180,
+   "y": 17160,
+   "title": "33b 设置 · 窗口变窄、滚动到“编辑与运行”",
+   "page": "zhDark"
+  },
+  "MainSidebarHiddenEn.dc.html": {
+   "w": 1100,
+   "h": 900,
+   "radius": 17,
+   "x": 0,
+   "y": 17160,
+   "title": "02b Sidebar hidden: the button stays right of the window buttons",
+   "page": "en"
+  },
+  "SettingsNarrowEn.dc.html": {
+   "w": 1100,
+   "h": 900,
+   "radius": 26,
+   "x": 1180,
+   "y": 17160,
+   "title": "33b Settings · narrow window, scrolled to Editing and running",
+   "page": "en"
+  },
+  "MainSidebarHiddenDarkEn.dc.html": {
+   "w": 1100,
+   "h": 900,
+   "radius": 17,
+   "x": 0,
+   "y": 17160,
+   "title": "02b Sidebar hidden: the button stays right of the window buttons",
+   "page": "enDark"
+  },
+  "SettingsNarrowDarkEn.dc.html": {
+   "w": 1100,
+   "h": 900,
+   "radius": 26,
+   "x": 1180,
+   "y": 17160,
+   "title": "33b Settings · narrow window, scrolled to Editing and running",
+   "page": "enDark"
   }
  },
  "createdOnFiles": {
@@ -2962,6 +3034,7 @@
  "order": [
   "Main.dc.html",
   "MainNarrow.dc.html",
+  "MainSidebarHidden.dc.html",
   "Empty.dc.html",
   "NoResults.dc.html",
   "FolderMissing.dc.html",
@@ -2996,6 +3069,7 @@
   "SaveTemplate.dc.html",
   "Unused.dc.html",
   "Settings.dc.html",
+  "SettingsNarrow.dc.html",
   "EditorTreeMenu.dc.html",
   "EditorNameTaken.dc.html",
   "EditorTrashNotice.dc.html",
@@ -3020,6 +3094,7 @@
   "UpdateBanner.dc.html",
   "MainEn.dc.html",
   "MainNarrowEn.dc.html",
+  "MainSidebarHiddenEn.dc.html",
   "EmptyEn.dc.html",
   "NoResultsEn.dc.html",
   "FolderMissingEn.dc.html",
@@ -3054,6 +3129,7 @@
   "SaveTemplateEn.dc.html",
   "UnusedEn.dc.html",
   "SettingsEn.dc.html",
+  "SettingsNarrowEn.dc.html",
   "EditorTreeMenuEn.dc.html",
   "EditorNameTakenEn.dc.html",
   "EditorTrashNoticeEn.dc.html",
@@ -3078,6 +3154,7 @@
   "UpdateBannerEn.dc.html",
   "MainDark.dc.html",
   "MainNarrowDark.dc.html",
+  "MainSidebarHiddenDark.dc.html",
   "EmptyDark.dc.html",
   "NoResultsDark.dc.html",
   "FolderMissingDark.dc.html",
@@ -3112,6 +3189,7 @@
   "SaveTemplateDark.dc.html",
   "UnusedDark.dc.html",
   "SettingsDark.dc.html",
+  "SettingsNarrowDark.dc.html",
   "EditorTreeMenuDark.dc.html",
   "EditorNameTakenDark.dc.html",
   "EditorTrashNoticeDark.dc.html",
@@ -3136,6 +3214,7 @@
   "UpdateBannerDark.dc.html",
   "MainDarkEn.dc.html",
   "MainNarrowDarkEn.dc.html",
+  "MainSidebarHiddenDarkEn.dc.html",
   "EmptyDarkEn.dc.html",
   "NoResultsDarkEn.dc.html",
   "FolderMissingDarkEn.dc.html",
@@ -3170,6 +3249,7 @@
   "SaveTemplateDarkEn.dc.html",
   "UnusedDarkEn.dc.html",
   "SettingsDarkEn.dc.html",
+  "SettingsNarrowDarkEn.dc.html",
   "EditorTreeMenuDarkEn.dc.html",
   "EditorNameTakenDarkEn.dc.html",
   "EditorTrashNoticeDarkEn.dc.html",
