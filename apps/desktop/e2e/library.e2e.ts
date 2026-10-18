@@ -215,3 +215,31 @@ test("[#299] 主题蓝：浅色和深色下主按钮的渲染色都是设计稿�
     await runyard.shutdown();
   }
 });
+
+test("资源库：窗口矮时最后一行的更多菜单不被截断，最后一项可见可点（#405）", async ({ launch }) => {
+  const runyard = await launch();
+  const { page, app } = runyard;
+  await closePicker(page);
+  await app.evaluate(({ BrowserWindow }) => {
+    BrowserWindow.getAllWindows()[0]?.setContentSize(1440, 900);
+  });
+  for (const name of ["m1", "m2", "m3", "m4", "m5", "m6", "m7", "m8"]) {
+    await runyard.cli("new", "html", name);
+  }
+  const rows = page.getByRole("table", { name: "Playgrounds" }).getByRole("row");
+  await expect(rows.filter({ hasText: "m8" })).toHaveCount(1);
+  // 最后一行（按名称排在最下面的那个）打开菜单：菜单要翻到上方或压低高度，不能伸出窗口
+  const lastName = (await rows.last().innerText()).split("\n")[0]?.trim() ?? "";
+  await page.getByRole("button", { name: `More actions for ${lastName}` }).click();
+  const menu = page.getByRole("menu");
+  const trash = menu.getByRole("menuitem", { name: "Move to Trash" });
+  await trash.scrollIntoViewIfNeeded();
+  const viewport = page.viewportSize() ?? { width: 0, height: 0 };
+  const box = await menu.boundingBox();
+  expect(box).not.toBeNull();
+  expect((box?.y ?? 0) + (box?.height ?? 0)).toBeLessThanOrEqual(viewport.height);
+  const itemBox = await trash.boundingBox();
+  expect((itemBox?.y ?? 0) + (itemBox?.height ?? 0)).toBeLessThanOrEqual(viewport.height);
+  await expect(trash).toBeVisible();
+  await trash.click({ trial: true });
+});

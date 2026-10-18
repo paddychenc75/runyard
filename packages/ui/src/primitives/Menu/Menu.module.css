@@ -12,6 +12,8 @@
   font-size: var(--text-body-size);
   line-height: var(--text-body-line-height);
   color: var(--color-text-primary);
+  /* 可用高度由定位器给出（Base UI 的 --available-height）；放得下时不起作用 */
+  max-block-size: var(--available-height, none);
   outline: none;
   opacity: 1;
   transition: opacity var(--motion-duration-fast) linear;
@@ -20,6 +22,11 @@
 .popup[data-starting-style],
 .popup[data-ending-style] {
   opacity: 0;
+}
+
+.scroll {
+  flex: 1 1 auto;
+  min-block-size: 0;
 }
 
 .item {
