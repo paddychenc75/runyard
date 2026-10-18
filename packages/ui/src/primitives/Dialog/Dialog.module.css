@@ -123,7 +123,8 @@
 }
 
 .hint {
-  flex: 1;
+  /* 基准取内容宽度：放不下就换行独占一行，不会被按钮挤成 1px 宽（伪语言下抓到过） */
+  flex: 1 1 auto;
   min-inline-size: 0;
   font-size: var(--text-secondary-size);
   line-height: var(--text-secondary-line-height);
