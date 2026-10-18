@@ -24,7 +24,6 @@
   display: grid;
   grid-template-rows: minmax(0, 1fr);
   overflow: hidden;
-  border: var(--glass-border-width) solid var(--glass-border-color);
   color: var(--color-text-primary);
   transform: translate(-50%, -50%);
   opacity: 1;

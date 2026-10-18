@@ -2,8 +2,8 @@ import type { ComponentProps } from "react";
 import "../../styles/materials.css";
 import styles from "./GlassSurface.module.css";
 
-/** 五种玻璃配方，对应材质规范板：工具栏胶囊、侧栏、文件树面板、对话框、菜单 */
-export type GlassMaterial = "toolbar" | "sidebar" | "filetree" | "dialog" | "menu";
+/** 六种玻璃配方，对应材质规范板：工具栏胶囊、侧栏、文件树面板、对话框、菜单、提示条 */
+export type GlassMaterial = "toolbar" | "sidebar" | "filetree" | "dialog" | "menu" | "toast";
 
 export interface GlassSurfaceProps extends ComponentProps<"div"> {
   /** 玻璃只用于浮层，不用于内容本身（规范板“玻璃只用在浮层”） */

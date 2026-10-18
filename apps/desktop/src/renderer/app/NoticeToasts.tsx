@@ -76,7 +76,7 @@ function AgentRunToast({ bridge, notice }: { bridge: DesktopBridge; notice: Agen
   const now = useNow(30_000);
   const done = () => bridge.call("notice.dismiss", notice.id);
   return (
-    <GlassSurface material="menu" className={styles.toast} data-notice={notice.id}>
+    <GlassSurface material="toast" className={styles.toast} data-notice={notice.id}>
       <span aria-hidden="true" className={styles.tile} data-kind="agent">
         <Icon name="spark" size={18} />
       </span>
@@ -120,7 +120,7 @@ function AgentRunToast({ bridge, notice }: { bridge: DesktopBridge; notice: Agen
 function PathToast({ bridge, notice }: { bridge: DesktopBridge; notice: PathNearLimitNotice }) {
   const t = useT();
   return (
-    <GlassSurface material="menu" className={styles.toast} data-notice={notice.id}>
+    <GlassSurface material="toast" className={styles.toast} data-notice={notice.id}>
       <span aria-hidden="true" className={styles.tile} data-kind="warning">
         <Icon name="warning" size={18} />
       </span>
@@ -144,7 +144,7 @@ function PathToast({ bridge, notice }: { bridge: DesktopBridge; notice: PathNear
 // 链接没能照做的提示（规格 DESKTOP-LINKS-03、04、10、11、14、16）：一句话，说明原因
 function LinkToast({ bridge, notice }: { bridge: DesktopBridge; notice: LinkNotice }) {
   return (
-    <GlassSurface material="menu" className={styles.toast} data-notice={notice.id}>
+    <GlassSurface material="toast" className={styles.toast} data-notice={notice.id}>
       <span aria-hidden="true" className={styles.tile} data-kind="warning">
         <Icon name="info" size={18} />
       </span>

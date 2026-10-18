@@ -24,7 +24,6 @@
   max-inline-size: calc(100% - var(--space-10) * 2);
   padding-block: calc(var(--space-9) + var(--space-1)) calc(var(--space-8) + var(--space-1));
   padding-inline: var(--space-10);
-  border: var(--glass-border-width) solid var(--glass-border-color);
   color: var(--color-text-primary);
   transform: translateX(-50%);
   opacity: 1;

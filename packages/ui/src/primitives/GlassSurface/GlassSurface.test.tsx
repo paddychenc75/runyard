@@ -1,10 +1,11 @@
+import { readFileSync } from "node:fs";
 import { render, screen } from "@testing-library/react";
 import { createRef } from "react";
 import { describe, expect, it } from "vitest";
 import { type GlassMaterial, GlassSurface } from "./GlassSurface.tsx";
 
 describe("GlassSurface", () => {
-  const materials: GlassMaterial[] = ["toolbar", "sidebar", "filetree", "dialog", "menu"];
+  const materials: GlassMaterial[] = ["toolbar", "sidebar", "filetree", "dialog", "menu", "toast"];
 
   it.each(materials)(
     "%s 材质写成 data-glass-material，样式由 materials.css 按它选取",
@@ -33,5 +34,13 @@ describe("GlassSurface", () => {
       <GlassSurface />
     );
     expect(typeOnly).toBeTypeOf("function");
+  });
+
+  it("[#392] 浮层材质不叠轮廓：材质表没有 border，阴影里没有顶边高光", () => {
+    const css = readFileSync("src/styles/materials.css", "utf8");
+    expect(css).not.toMatch(/^\s*border\s*:/m);
+    const tokens = readFileSync("../tokens/generated/tokens.css", "utf8");
+    expect(tokens).not.toMatch(/--shadow-(dialog|overlay|floating):[^;]*inset/);
+    expect(tokens).not.toContain("--glass-border");
   });
 });

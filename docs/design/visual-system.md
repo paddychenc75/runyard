@@ -38,8 +38,8 @@
 | 0 平面 flat | 卡片里的内嵌块、表格行、输入框 | 不透明 | 无阴影 | 无阴影 |
 | 1 卡片 card | 编辑区、预览区、输出面板、脚本输出、设置卡片 | 不透明（`--color-bg-card`） | 无阴影，只有 1px 细线 `rgba(0,0,0,0.06)` | 无阴影，1px 细线 `rgba(255,255,255,0.08)` |
 | 2 浮动 floating | 侧栏、（贴窗口边的）文件树 | 玻璃，**只有填充和一层柔和阴影，没有描边、外圈和顶边高光** | `0 1px 2px rgba(15,23,42,0.05), 0 8px 24px rgba(15,23,42,0.09)` | `0 1px 2px rgba(0,0,0,0.30), 0 10px 28px rgba(0,0,0,0.42)` |
-| 3 浮层 overlay | 菜单、弹出层、提示（tooltip） | 玻璃 | `0 0 0 0.5px rgba(0,0,0,0.12), 0 16px 40px rgba(15,23,42,0.20)` + 顶边高光 | `0 0 0 0.5px rgba(255,255,255,0.10), 0 16px 40px rgba(0,0,0,0.50)` + 顶边高光 |
-| 4 弹窗 dialog | 对话框、模板选择器 | 玻璃 + 背后遮罩 | `0 0 0 0.5px rgba(0,0,0,0.14), 0 40px 90px rgba(15,23,42,0.32)` + 顶边高光 | `0 0 0 0.5px rgba(255,255,255,0.10), 0 40px 90px rgba(0,0,0,0.60)` + 顶边高光 |
+| 3 浮层 overlay | 菜单、弹出层、提示（tooltip） | 玻璃 | `0 0 0 0.5px rgba(0,0,0,0.12), 0 16px 40px rgba(15,23,42,0.20)` | `0 0 0 0.5px rgba(255,255,255,0.10), 0 16px 40px rgba(0,0,0,0.50)` |
+| 4 弹窗 dialog | 对话框、模板选择器 | 玻璃 + 背后遮罩 | `0 0 0 0.5px rgba(0,0,0,0.14), 0 40px 90px rgba(15,23,42,0.32)` | `0 0 0 0.5px rgba(255,255,255,0.10), 0 40px 90px rgba(0,0,0,0.60)` |
 
 - **顶栏不是浮动层**（负责人 2026-10-18 同意方案 A）：标签、“N 个运行中”、运行条的图标按钮直接放在窗口背景上，没有胶囊外壳、没有描边、静止时没有底色，悬停才出现控件填充；只有选中的标签有一块浅底色（`glass-tab-selected-bg`），蓝色“新建”是顶栏里唯一的实心按钮。
 - **不叠边**：第 2 档只用填充加阴影，第 1 档只用细线，两样不在同一个东西上同时出现；带轮廓（描边、外圈或阴影）的东西里面不再放另一个带轮廓的东西（例：标签条外壳里的选中标签、侧栏里的玻璃胶囊）。现状的深色顶栏一处能看到四层轮廓，负责人说的“多重边框”就是这个。
@@ -55,7 +55,7 @@
 | 卡片、表格行之间的细线 | 1px | `rgba(0,0,0,0.06)` | `rgba(255,255,255,0.08)` | `--color-line-hairline` |
 | 分隔线、键帽、徽标边 | 1px | `rgba(0,0,0,0.10)` | `rgba(255,255,255,0.14)` | `--color-line-strong` |
 | 文本框 | 1px（聚焦时 1.5px 强调色加 3px 光环） | `rgba(0,0,0,0.12)` | `rgba(255,255,255,0.14)` | `--color-line-field` |
-| ~~玻璃面板的边~~ | — | — | — | `--glass-border-color` 第 2 档不再使用（2026-10-18）；第 3、4 档的浮层和弹窗保留 0.5px 外圈，它们单独浮起，里面不再套带轮廓的东西 |
+| ~~玻璃面板的边~~ | — | — | — | `--glass-border-color`、`--glass-border-width` 已删除（#392）：所有浮层和弹窗都不再有 1px 描边，也没有顶边高光；第 3、4 档只剩阴影自带的 0.5px 外圈，之前外圈、描边、高光叠在一起，顶边出现两三条线 |
 
 第 2 档（侧栏、文件树）和顶栏控件都没有描边；筛选按钮（类型、状态、排序）和页头搜索框也只用控件填充，不加 1px 边。不新增描边颜色。画板上卡片的细线是 0.07，`tokens.json` 是 0.06，按 `tokens.json`（差别看不出来）。
 
@@ -203,7 +203,7 @@ Node/TypeScript 选 Node 的绿而不是 TypeScript 的蓝：蓝色已经给了 
 ## 9. 变量提议（确认后才写进 `tokens.json`）
 
 - 圆角：新增 `radius.xs = 6`、`radius.sm = 9`、`radius.md = 12`、`radius.lg = 16`、`radius.xl = 20`、`radius.2xl = 28`，保留 `radius.capsule`。现有的按角色命名的变量改成指向档位（`--radius-sidebar` → xl，`--radius-card`、`--radius-menu` → lg，`--radius-dialog` → 2xl，`--radius-row` → md，`--radius-control` → sm），组件里只写档位或角色变量，不写数字。`--radius-checkbox` 保留。
-- 顶栏与第 2 档（2026-10-18，负责人已同意，已写进 `tokens.json`）：`shadow-floating` 浅色改为 `0 1px 2px rgba(15, 23, 42, 0.05), 0 8px 24px rgba(15, 23, 42, 0.09)`，深色改为 `0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 28px rgba(0, 0, 0, 0.42)`（去掉 0.5px 外圈和顶边高光）；`glass-tab-selected-bg` 浅色改为 `rgba(0, 0, 0, 0.065)`、深色改为 `rgba(255, 255, 255, 0.1)`；`shadow-tab-selected` 删除；`glass-border-color`、`glass-border-width` 只留给第 3、4 档；`glass-sidebar-bg` 浅色改为 `rgba(240, 241, 245, 0.92)`、深色改为 `rgba(44, 44, 48, 0.92)`，`glass-filetree-bg` 浅色改为 `rgba(255, 255, 255, 0.72)`、深色改为 `rgba(40, 40, 44, 0.92)`（去掉描边后靠底色和阴影与背景分开）。顶栏不再用 `glass-toolbar-bg` 做外壳；应用里已没有地方用它，`toolbar` 材质只留在材质规范板和组件工作台里。
+- 顶栏与第 2 档（2026-10-18，负责人已同意，已写进 `tokens.json`）：`shadow-floating` 浅色改为 `0 1px 2px rgba(15, 23, 42, 0.05), 0 8px 24px rgba(15, 23, 42, 0.09)`，深色改为 `0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 28px rgba(0, 0, 0, 0.42)`（去掉 0.5px 外圈和顶边高光）；`glass-tab-selected-bg` 浅色改为 `rgba(0, 0, 0, 0.065)`、深色改为 `rgba(255, 255, 255, 0.1)`；`shadow-tab-selected` 删除；`glass-border-color`、`glass-border-width` 已在 #392 删除；`glass-sidebar-bg` 浅色改为 `rgba(240, 241, 245, 0.92)`、深色改为 `rgba(44, 44, 48, 0.92)`，`glass-filetree-bg` 浅色改为 `rgba(255, 255, 255, 0.72)`、深色改为 `rgba(40, 40, 44, 0.92)`（去掉描边后靠底色和阴影与背景分开）。顶栏不再用 `glass-toolbar-bg` 做外壳；应用里已没有地方用它，`toolbar` 材质只留在材质规范板和组件工作台里。
 - 阴影：新增 `elevation.floating`（= 上面改过的 `shadow-floating`）、`elevation.overlay`（= `shadow-menu`）、`elevation.dialog`（= `shadow-3`）；`shadow-2` 删掉，侧栏和文件树改用 `elevation.floating`。第 1 档没有阴影变量（只有细线）。
 - 滚动条：新增 `scrollbar.thumb-size = 6`、`scrollbar.thumb-size-hover = 10`、`scrollbar.hit-size = 14`、`scrollbar.inset = 2`、`scrollbar.min-length = 32`、`scrollbar.idle-delay = 800ms`，颜色 `color.scrollbar-thumb` / `color.scrollbar-thumb-hover`（浅深两套，见第 5 节），并生成到 Monaco 的配色。
 - 模板徽标：新增 `color.brand-react`、`color.brand-go`、`color.brand-node`、`color.brand-hono`（浅深两套，见第 7 节），大方块沿用 `--size-dialog-icon`（40）。
