@@ -56,7 +56,7 @@ pnpm --filter @runyard/desktop smoke             # 冒烟自检：窗口不显�
 - 开关（fuse）取值只在 `packaging/fuses.ts` 写一次（技术设计 §6.5、决策记录 0007）。校验读的是打好的可执行文件里的真实取值（`packaging/verify-fuses.ts`，用 `@electron/fuses`），正式构建断言 `nodeCliInspect` 是关的；出厂的 Electron 反过来是它的反例测试。
 - 签名：`mac.identity: "-"`（ad-hoc）加 `resetAdHocDarwinSignature`，打包后 `codesign --verify --deep --strict`，不过就失败。electron-builder 会警告 hardened runtime 与 ad-hoc 签名要 `disable-library-validation`；实测包能正常启动，真机 Gatekeeper 的画面未验证。
 - 图标：`build/icon.png` 是 `docs/design/logo/final/png/icon-dock-1024.png` 的副本，`packaging/icon.test.ts` 核对没有脱节；electron-builder 自己转 `.icns`。
-- 用户第一次打开的步骤：`docs/guides/first-open-unsigned-app.md`。
+- 用户第一次打开的步骤：`docs/guides/first-open-unsigned-app.md`。 随包的 Vue 语言服务目录（#411）见 `packaging/AGENTS.md`。
 
 ## 随包的运行时（#194）
 
