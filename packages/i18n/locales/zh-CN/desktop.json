@@ -1,6 +1,7 @@
 {
   "desktop.agentNotice.meta.label": "{url} · {time}",
   "desktop.agentNotice.title.label": "<user>{agent}</user> 创建并运行了 <user>{name}</user>",
+  "desktop.agentNotice.unnamed.label": "智能体创建并运行了 <user>{name}</user>",
   "desktop.category.frontend.label": "前端",
   "desktop.category.fullstack.label": "全栈",
   "desktop.category.mine.label": "我的",

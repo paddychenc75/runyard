@@ -3,8 +3,8 @@
   "id": "hono",
   "name": { "en": "Hono", "zh-CN": "Hono" },
   "description": {
-    "en": "A small HTTP service with Hono 4.13 and @hono/node-server, written in TypeScript. Saving a file restarts the service on the same port.",
-    "zh-CN": "用 Hono 4.13 和 @hono/node-server 写的小型 HTTP 服务，TypeScript。保存文件后在同一个端口上重启服务。"
+    "en": "TypeScript HTTP service · built-in request panel · restarts on save",
+    "zh-CN": "TypeScript HTTP 服务 · 自带请求面板 · 保存后自动重启"
   },
   "category": "service",
   "runner": "hono",

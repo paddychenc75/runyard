@@ -6,6 +6,7 @@ import type {
   RunState,
   TemplateRecord,
 } from "@runyard/protocol";
+import { agentDisplayName } from "../shared/agent-name.ts";
 import { idleDaysOf, isDueTomorrow } from "../shared/clean-due.ts";
 import type {
   AppNotice,
@@ -266,7 +267,7 @@ function cleanReminderOf(
 
 function attachedOf(run: RunSnapshot | undefined): TabRow["attached"] {
   if (run === undefined || run.owner.kind !== "cli" || !isActiveRun(run.state)) return null;
-  return { agent: run.owner.agent ?? null, startedAt: run.startedAt };
+  return { agent: ownerAgentOf(run), startedAt: run.startedAt };
 }
 
 /** 运行视图的列表：仍在进行的运行，标签页持有的在前，同类按开始先后；已结束的脚本不列出 */
@@ -285,9 +286,7 @@ export function runningRows(
         port: run.port ?? null,
         startedAt: run.startedAt,
         source:
-          run.owner.kind === "tab"
-            ? { kind: "tab" }
-            : { kind: "cli", agent: run.owner.agent ?? null },
+          run.owner.kind === "tab" ? { kind: "tab" } : { kind: "cli", agent: ownerAgentOf(run) },
       }),
     );
   const rank = (row: RunningRow) => (row.source.kind === "tab" ? 0 : 1);
@@ -390,4 +389,10 @@ function portFallbackOf(run: RunSnapshot | undefined): TabRow["portFallback"] {
     reason: fallback.reason,
     occupant: fallback.occupant ?? null,
   };
+}
+
+/** 命令行持有的运行带的智能体名：去掉标识里的版本后缀再交给界面（规格 DESKTOP-LIBRARY-VIEW-101） */
+function ownerAgentOf(run: RunSnapshot): string | null {
+  if (run.owner.kind !== "cli" || run.owner.agent === undefined) return null;
+  return agentDisplayName(run.owner.agent);
 }

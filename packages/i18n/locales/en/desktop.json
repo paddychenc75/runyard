@@ -1,6 +1,7 @@
 {
   "desktop.agentNotice.meta.label": "{url} · {time}",
   "desktop.agentNotice.title.label": "<user>{agent}</user> created and ran <user>{name}</user>",
+  "desktop.agentNotice.unnamed.label": "An agent created and ran <user>{name}</user>",
   "desktop.category.frontend.label": "Front end",
   "desktop.category.fullstack.label": "Full stack",
   "desktop.category.mine.label": "Mine",

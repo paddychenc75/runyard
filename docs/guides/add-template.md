@@ -7,7 +7,7 @@
 ## 步骤
 
 1. 建 `templates/builtin/<id>/`，文件夹名就是模板 `id`（小写字母、数字、连字符）。
-2. 写 `template.json`：字段见 `templates/schema/template.schema.json`；`name`、`description` 中英文都写（`en` 必填，另写 `zh-CN`）；内置模板必须有 `maintainer`；`requires` 必填，不依赖工具写 `{}`，版本范围写下限和上限，如 `>=22.18 <27`。
+2. 写 `template.json`：字段见 `templates/schema/template.schema.json`；`name`、`description` 中英文都写（`en` 必填，另写 `zh-CN`）；`description` 是模板选择器里给用户看的一句话（如 `React 19 · TypeScript · Vite 8 · 改代码即时刷新`），不写开发备注和工具限制，限制写进 `files/README.md`；内置模板必须有 `maintainer`；`requires` 必填，不依赖工具写 `{}`，版本范围写下限和上限，如 `>=22.18 <27`。
 3. 把要复制给用户的文件放进 `files/`；`entry` 和 `substitute` 里的路径相对 `files/`，用 `/`。
 4. Node 类模板（`files/` 里有 `package.json`）还要有：精确版本的依赖（不写 `^`、`~`、`latest`，取值见技术设计 §8.6.5）、只放 `allowBuilds` 的 `pnpm-workspace.yaml`、锁文件。
 5. `requires` 里用到的工具必须有 `templates/tools/<tool>.json`，或在该项里自己写 `install`。

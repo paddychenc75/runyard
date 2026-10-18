@@ -213,9 +213,9 @@
 来源：PRD #prd-workspace-menu；PRD #prd-retention；PRD #prd-decision-table（第 14 项）
 
 #### Scenario: [DESKTOP-WORKSPACE-28] 菜单项与顺序
-- 前提：`react-counter` 的标签页，项目是已保留
+- 前提：`react-counter` 的标签页，项目没有开启自动清理
 - **WHEN** 点运行条的“更多”
-- **THEN** 菜单按上面的顺序列出全部项，“自动清理…”右侧写“现在：已保留”
+- **THEN** 菜单按上面的顺序列出全部项，“自动清理…”右侧写“现在：关闭”
 - 验证：test
 
 #### Scenario: [DESKTOP-WORKSPACE-29] 在工作区里重命名
