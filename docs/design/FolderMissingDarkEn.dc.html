@@ -48,13 +48,13 @@ a{color:#4DA3FF}a:hover{color:#7DBBFF}
 </div>
 </div>
 
-<div style="margin: 18px 28px 0 28px; display: grid; grid-template-columns: minmax(0, 1.5fr) 132px minmax(0, 1fr) 84px 96px 110px 110px 36px; column-gap: 12px; padding: 0 14px 8px 14px; color: #A1A1A6; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.08)">
-<div>Name and note</div><div>Status</div><div>Template</div><div>Port</div><div>Retention</div><div>Last opened</div><div>Created by</div><div></div>
+<div style="margin: 18px 28px 0 28px; display: grid; grid-template-columns: minmax(0, 1.5fr) 132px minmax(0, 1fr) 84px 96px 110px 80px 110px 36px; column-gap: 12px; padding: 0 14px 8px 14px; color: #A1A1A6; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.08)">
+<div>Name and note</div><div>Status</div><div>Template</div><div>Port</div><div>Retention</div><div>Last opened</div><div style="text-align: right">Size</div><div>Created by</div><div></div>
 </div>
 
 <div style="margin: 6px 28px 0 28px; display: flex; flex-direction: column; gap: 2px">
 <sc-for list="{{rows}}" as="row" hint-placeholder-count="12">
-<div style="display: grid; grid-template-columns: minmax(0, 1.5fr) 132px minmax(0, 1fr) 84px 96px 110px 110px 36px; column-gap: 12px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: {{row.bg}}; box-shadow: {{row.bar}}">
+<div style="display: grid; grid-template-columns: minmax(0, 1.5fr) 132px minmax(0, 1fr) 84px 96px 110px 80px 110px 36px; column-gap: 12px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: {{row.bg}}; box-shadow: {{row.bar}}">
 <div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
 <div style="font-weight: 600; font-size: 14px; color: {{row.nameColor}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{row.name}}</div>
 <div style="font-size: 12px; color: {{row.noteColor}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{row.note}}</div>
@@ -67,7 +67,7 @@ a{color:#4DA3FF}a:hover{color:#7DBBFF}
 </div>
 <div style="opacity: {{row.op}}; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #D1D1D6">{{row.port}}</div>
 <div style="opacity: {{row.op}}"><span title="{{row.tip}}" style="display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 12px; color: {{row.keepColor}}; background: {{row.keepBg}}; border: 1px {{row.keepBorder}} rgba(255,255,255,0.14)">{{row.keep}}</span></div>
-<div style="opacity: {{row.op}}; color: #A1A1A6">{{row.opened}}</div>
+<div style="opacity: {{row.op}}; color: #A1A1A6">{{row.opened}}</div><div style="opacity: {{row.op}}; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: {{row.sizeColor}}; text-align: right; white-space: nowrap">{{row.size}}</div>
 <div>
 <sc-if value="{{row.agent}}" hint-placeholder-val="{{false}}">
 <span style="display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 12px; font-weight: 500; color: #D0A8FF; background: rgba(191,90,242,0.24)">
@@ -171,7 +171,9 @@ const navItems = [['All', '20', true], ['Kept', '16', false], ['Auto-clean', '4'
 const nav = navItems.map((n) => ({ label: n[0], count: n[1], bg: n[2] ? '#0071E3' : 'transparent', color: n[2] ? '#FFFFFF' : '#F5F5F7', weight: n[2] ? 600 : 400, mark: n[2] ? '#FFFFFF' : '#8E8E93', countColor: n[2] ? '#FFFFFF' : '#A1A1A6' }));
 const tipText = 'Moved to Trash after 30 days without being opened; the timer restarts each time you open it';
 const rows = rows0.map((r, i) => { const n = left[i]; return n ? Object.assign({}, r, { keep: n + ' d left', tip: tipText }) : Object.assign({}, r, { tip: '' }); });
-return { rows, nav };
+const SIZES = {'react-counter': ['186.3 MB', '#D1D1D6'], 'hono-todo-api': ['38.6 MB', '#D1D1D6'], 'hono-1': ['38.2 MB', '#D1D1D6'], 'react19-3': ['214.7 MB', '#D1D1D6'], 'landing-hero': ['96 KB', '#D1D1D6'], 'go-channels': ['24 KB', '#D1D1D6'], 'python-2': ['61.4 MB', '#D1D1D6'], 'vue-drag-list': ['—', '#A1A1A6'], 'vue3-2': ['141.5 MB', '#D1D1D6'], 'api-mock-1': ['12.3 MB', '#D1D1D6'], 'node-ts-1': ['48.9 MB', '#D1D1D6'], 'react18-1': ['412 MB', '#D1D1D6']};
+const withSize = (list) => list.map((r) => Object.assign({}, r, { size: (SIZES[r.name] || ['24 KB', '#D1D1D6'])[0], sizeColor: (SIZES[r.name] || ['24 KB', '#D1D1D6'])[1] }));
+return { rows: withSize(rows), nav };
 }
 }
 </script>

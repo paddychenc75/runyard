@@ -48,13 +48,13 @@ a{color:#4DA3FF}a:hover{color:#7DBBFF}
 </div>
 </div>
 
-<div style="margin: 18px 28px 0 28px; display: grid; grid-template-columns: minmax(0, 1.5fr) 132px minmax(0, 1fr) 84px 96px 110px 110px 36px; column-gap: 12px; padding: 0 14px 8px 14px; color: #A1A1A6; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.08)">
-<div>名称与备注</div><div>状态</div><div>模板</div><div>端口</div><div>保留</div><div>上次打开</div><div>创建者</div><div></div>
+<div style="margin: 18px 28px 0 28px; display: grid; grid-template-columns: minmax(0, 1.5fr) 132px minmax(0, 1fr) 84px 96px 110px 80px 110px 36px; column-gap: 12px; padding: 0 14px 8px 14px; color: #A1A1A6; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.08)">
+<div>名称与备注</div><div>状态</div><div>模板</div><div>端口</div><div>保留</div><div>上次打开</div><div style="text-align: right">大小</div><div>创建者</div><div></div>
 </div>
 
 <div style="margin: 6px 28px 0 28px; display: flex; flex-direction: column; gap: 2px">
 <sc-for list="{{rows}}" as="row" hint-placeholder-count="12">
-<div style="display: grid; grid-template-columns: minmax(0, 1.5fr) 132px minmax(0, 1fr) 84px 96px 110px 110px 36px; column-gap: 12px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: {{row.bg}}; box-shadow: {{row.bar}}">
+<div style="display: grid; grid-template-columns: minmax(0, 1.5fr) 132px minmax(0, 1fr) 84px 96px 110px 80px 110px 36px; column-gap: 12px; align-items: center; height: 54px; padding: 0 14px; border-radius: 12px; background: {{row.bg}}; box-shadow: {{row.bar}}">
 <div style="min-width: 0; display: flex; flex-direction: column; gap: 1px">
 <div style="font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{row.name}}</div>
 <div style="font-size: 12px; color: {{row.noteColor}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{row.note}}</div>
@@ -67,7 +67,7 @@ a{color:#4DA3FF}a:hover{color:#7DBBFF}
 </div>
 <div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #D1D1D6">{{row.port}}</div>
 <div><span title="{{row.tip}}" style="display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 12px; color: {{row.keepColor}}; background: {{row.keepBg}}; border: 1px {{row.keepBorder}} rgba(255,255,255,0.14)">{{row.keep}}</span></div>
-<div style="color: #A1A1A6">{{row.opened}}</div>
+<div style="color: #A1A1A6">{{row.opened}}</div><div style="font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: {{row.sizeColor}}; text-align: right; white-space: nowrap">{{row.size}}</div>
 <div>
 <sc-if value="{{row.agent}}" hint-placeholder-val="{{false}}">
 <span style="display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 9px; border-radius: 11px; font-size: 12px; font-weight: 500; color: #D0A8FF; background: rgba(191,90,242,0.24)">
@@ -81,6 +81,12 @@ a{color:#4DA3FF}a:hover{color:#7DBBFF}
 </div>
 </sc-for>
 </div>
+</div>
+
+<!-- 悬停在大小上的提示（规格 DESKTOP-LIBRARY-VIEW-75） -->
+<div role="tooltip" style="position: absolute; right: 204px; top: 240px; z-index: 5; padding: 6px 12px; border-radius: 10px; font-size: 12px; line-height: 1.5; white-space: nowrap; background: rgba(44,44,48,0.78); backdrop-filter: blur(40px) saturate(190%); border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 0 0 0.5px rgba(255,255,255,0.10), 0 16px 40px rgba(0,0,0,0.50), inset 0 1px 0 rgba(255,255,255,0.14); color: #F5F5F7">
+<div>依赖 <span style="font-family: 'SF Mono', Menlo, monospace">181.9 MB</span><span style="color: #A1A1A6">（node_modules）</span></div>
+<div>其余 <span style="font-family: 'SF Mono', Menlo, monospace">4.4 MB</span></div>
 </div>
 
 <!-- floating glass toolbar -->
@@ -167,7 +173,9 @@ const navItems = [['全部', '20', true], ['已保留', '16', false], ['自动�
 const nav = navItems.map((n) => ({ label: n[0], count: n[1], bg: n[2] ? '#0071E3' : 'transparent', color: n[2] ? '#FFFFFF' : '#F5F5F7', weight: n[2] ? 600 : 400, mark: n[2] ? '#FFFFFF' : '#8E8E93', countColor: n[2] ? '#FFFFFF' : '#A1A1A6' }));
 const tipText = '30 天没打开就移到废纸篓，每次打开重新计时';
 const rows = rows0.map((r, i) => { const n = left[i]; return n ? Object.assign({}, r, { keep: '剩 ' + n + ' 天', tip: tipText }) : Object.assign({}, r, { tip: '' }); });
-return { rows, nav };
+const SIZES = {'react-counter': ['186.3 MB', '#D1D1D6'], 'hono-todo-api': ['38.6 MB', '#D1D1D6'], 'hono-1': ['38.2 MB', '#D1D1D6'], 'react19-3': ['214.7 MB', '#D1D1D6'], 'landing-hero': ['96 KB', '#D1D1D6'], 'go-channels': ['24 KB', '#D1D1D6'], 'python-2': ['61.4 MB', '#D1D1D6'], 'vue-drag-list': ['142.8 MB', '#D1D1D6'], 'vue3-2': ['141.5 MB', '#D1D1D6'], 'api-mock-1': ['12.3 MB', '#D1D1D6'], 'node-ts-1': ['48.9 MB', '#D1D1D6'], 'react18-1': ['412 MB', '#D1D1D6']};
+const withSize = (list) => list.map((r) => Object.assign({}, r, { size: (SIZES[r.name] || ['24 KB', '#D1D1D6'])[0], sizeColor: (SIZES[r.name] || ['24 KB', '#D1D1D6'])[1] }));
+return { rows: withSize(rows), nav };
 }
 }
 </script>
