@@ -84,7 +84,6 @@ export function PickerDialog({ library, onPick, onClose }: PickerDialogProps) {
           label={t("desktop.picker.list.aria")}
           groups={groups}
           rail={rail}
-          chooseLabel={t("desktop.picker.choose.action")}
           onChoose={onPick}
           renderHeader={(props) => (
             <SearchField

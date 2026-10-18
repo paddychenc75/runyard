@@ -22,7 +22,7 @@ export function SearchField({
 }: SearchFieldProps) {
   return (
     <div className={className === undefined ? styles.root : `${styles.root} ${className}`}>
-      <Icon name="search" size={16} className={styles.icon} />
+      <Icon name="search" size={18} className={styles.icon} />
       <input
         {...rest}
         type="text"

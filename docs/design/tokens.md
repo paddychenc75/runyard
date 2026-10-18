@@ -218,7 +218,6 @@ disagree, `tokens.json` wins.
 | `--size-card-gap` | 8px | Gap between cards |
 | `--size-dialog-width` | 580px | Dialog width |
 | `--size-dialog-width-wide` | 720px | Width of the wide form dialog (save as template) |
-| `--size-picker-width` | 860px | Width of the template picker (search, category rail, list) |
 | `--size-picker-rail-width` | 190px | Width of the template picker's category rail |
 | `--size-popover-width` | 420px | Width of the running-list popover |
 | `--size-palette-width` | 680px | Width of the command palette and quick open |
