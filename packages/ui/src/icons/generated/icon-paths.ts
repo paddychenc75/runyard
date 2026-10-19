@@ -1,6 +1,12 @@
 // 由 pnpm icons:build 生成，不要手改。来源：src/icons/svg/*.svg（技术设计 §6.7）。
 
 export const iconPaths = {
+  bell: {
+    viewBox: "0 0 16 16",
+    paths: [
+      "M12 5.5a4 4 0 0 0-8 0c0 4-1.5 4-1.5 5.5h11c0-1.5-1.5-1.5-1.5-5.5M6.5 13.5a1.7 1.7 0 0 0 3 0",
+    ],
+  },
   browser: {
     viewBox: "0 0 16 16",
     paths: ["M8 14a6 6 0 1 0 0-12 6 6 0 0 0 0 12zM10.5 5.5l-1.2 3.8-3.8 1.2 1.2-3.8z"],

@@ -63,7 +63,7 @@
   "desktop.create.cancel.action": "Cancel",
   "desktop.create.changeTemplate.action": "Change template",
   "desktop.create.cleanAfter.label": "Clean up after unused for",
-  "desktop.create.cleanSummary.hint": "Moves to the {term_trash} after {days, plural, one {# day} other {# days}} unused. You get a reminder the day before, and can switch to Kept any time.",
+  "desktop.create.cleanSummary.hint": "Moves to the {term_trash} after {days, plural, one {# day} other {# days}} unused. You get a reminder the day before, and can turn off auto-clean at any time.",
   "desktop.create.custom.label": "Custom",
   "desktop.create.customDays.label": "Custom number of days",
   "desktop.create.customDaysInvalid.hint": "Enter a whole number above 0",
@@ -427,5 +427,10 @@
   "desktop.urlConfirm.warning.label": "The link wrote this source itself and Runyard cannot verify it. Creating the project installs dependencies and runs the template's code, so continue only if you trust it.",
   "desktop.window.title": "Runyard",
   "desktop.request.stoppedResponse.label": "The service has stopped. This response was received before it stopped.",
-  "desktop.request.previousResponse.label": "The service is not ready. This is the previous response."
+  "desktop.request.previousResponse.label": "The service is not ready. This is the previous response.",
+  "desktop.notifications.title": "Notifications",
+  "desktop.notifications.required.label": "Needs attention",
+  "desktop.notifications.recent.label": "Recent",
+  "desktop.notifications.clear.action": "Clear all",
+  "desktop.notifications.empty.label": "No notifications"
 }

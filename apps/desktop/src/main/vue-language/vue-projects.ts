@@ -5,9 +5,16 @@ export interface LanguageDocument {
   version: number;
 }
 export interface VueSession {
-  request(target: LanguageTarget, method: string, params: unknown): Promise<unknown>;
+  request(
+    target: LanguageTarget,
+    method: string,
+    params: unknown,
+    signal?: AbortSignal,
+  ): Promise<unknown>;
   sync(document: LanguageDocument): Promise<void>;
   closeDocument(file: string): Promise<void>;
+  reloadProjects(): void;
+  changed(files: { uri: string; type: number }[]): void;
   stop(): Promise<void>;
 }
 interface Project {
@@ -36,6 +43,9 @@ export class VueProjects {
     const result = this.#tail.then(task);
     this.#tail = result.catch(() => undefined);
     return result;
+  }
+  current(id: string): VueSession | null {
+    return this.#projects.get(id)?.session ?? null;
   }
   idle(): Promise<unknown> {
     return this.#tail;
