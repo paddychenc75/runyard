@@ -11,7 +11,8 @@ import { useErrorText } from "./use-error-text.ts";
 export interface AutoCleanDialogProps {
   bridge: DesktopBridge;
   id: string;
-  /** 现在的设置：null 是已保留 */
+  name: string;
+  /** 现在的设置：null 是关闭自动清理 */
   days: number | null;
   onClose: () => void;
 }
@@ -25,9 +26,9 @@ function choiceOf(days: number | null): string {
   return (PRESET_DAYS as readonly number[]).includes(days) ? String(days) : CUSTOM;
 }
 
-// “自动清理…”（规格 DESKTOP-LIBRARY-VIEW-40）：在“已保留”和 7、30、90 天或自定义天数之间切换，
-// 当前的选项是选中状态。设计稿没有这一屏（待补板子），沿用新建弹窗里的分段控件。
-export function AutoCleanDialog({ bridge, id, days, onClose }: AutoCleanDialogProps) {
+// “自动清理…”（规格 DESKTOP-LIBRARY-VIEW-40）：在“关闭”和 7、30、90 天或自定义天数之间切换，
+// 当前的选项是选中状态。对应设计稿 AutoCleanDialog，使用共享分段控件。
+export function AutoCleanDialog({ bridge, id, name, days, onClose }: AutoCleanDialogProps) {
   const t = useT();
   const errorText = useErrorText();
   useOverlay(true);
@@ -78,6 +79,9 @@ export function AutoCleanDialog({ bridge, id, days, onClose }: AutoCleanDialogPr
         </>
       }
     >
+      {days === null ? (
+        <p className={styles.hint}>{t("library.autoClean.off.hint", { name })}</p>
+      ) : null}
       <SegmentedControl
         label={t("library.autoClean.dialog.title")}
         items={items}

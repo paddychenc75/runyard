@@ -63,7 +63,7 @@
   "desktop.create.cancel.action": "取消",
   "desktop.create.changeTemplate.action": "换一个模板",
   "desktop.create.cleanAfter.label": "多久没打开后清理",
-  "desktop.create.cleanSummary.hint": "{days, plural, other {# 天}}没打开就移到{term_trash}，清理前一天会提醒你，可以随时改成保留。",
+  "desktop.create.cleanSummary.hint": "{days, plural, other {# 天}}没打开就移到{term_trash}，清理前一天会提醒你，可以随时关闭。",
   "desktop.create.custom.label": "自定义",
   "desktop.create.customDays.label": "自定义天数",
   "desktop.create.customDaysInvalid.hint": "请填大于 0 的整数",

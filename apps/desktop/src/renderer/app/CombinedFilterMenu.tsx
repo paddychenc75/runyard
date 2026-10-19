@@ -8,6 +8,7 @@ export interface CombinedFilterGroup {
   title: Localized;
   options: readonly { id: string; label: Localized }[];
   value: string;
+  disabled?: boolean;
 }
 
 export interface CombinedFilterMenuProps {
@@ -34,6 +35,7 @@ export function CombinedFilterMenu({
       id: `${group.id}:${option.id}`,
       label: option.label,
       checked: option.id === group.value,
+      disabled: group.disabled,
     })),
   ]);
   return (
