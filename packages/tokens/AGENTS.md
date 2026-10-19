@@ -11,7 +11,7 @@
 - `themes.light|dark`：随主题变的变量（颜色、阴影）的最终值，没有 CSS 变量引用。
 - `constants`、`numbers`：两个主题下相同的变量，前者带单位的字符串，后者能当数字用的（像素、毫秒、字重、层级）。
 - `windowBackground`：主进程建窗口前设 `backgroundColor` 用，避免启动闪白。
-- `monacoThemes`、`shikiThemes`、`xtermThemes`：Monaco、Shiki、xterm 不认 CSS 变量，要真实色值。
+- `shikiThemes`、`xtermThemes`：编辑器和终端使用的真实色值。编辑器配色只生成 Shiki 这一份（含 Monaco 滚动条和浮层角色），运行时经 `shikiToMonaco` 注册给 Monaco；不再导出无人消费的另一份 Monarch 主题。
 - 类型 `TokenName`、`ThemedTokenName`、`ConstantTokenName`、`NumericTokenName`（不带 `--`）。
 
 ## 本包特有的规则
