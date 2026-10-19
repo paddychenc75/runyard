@@ -1,0 +1,35 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-block-size: var(--size-notification-toast);
+  padding-inline: var(--space-7);
+  border-radius: var(--radius-capsule);
+  font-size: var(--text-body-size);
+  font-weight: var(--text-item-weight);
+  animation: enter var(--motion-duration-popover) linear;
+}
+.root > svg {
+  color: var(--color-status-running-mark);
+  flex: none;
+}
+@keyframes enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.root[data-closing] {
+  animation: leave var(--motion-duration-notice-out) linear forwards;
+}
+@keyframes leave {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

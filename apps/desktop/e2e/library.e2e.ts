@@ -190,11 +190,11 @@ test("[DESKTOP-LIBRARY-VIEW-28][DESKTOP-LIBRARY-VIEW-29] 窗口 1100 宽：横�
     expect(now.dot?.dot.right).toBeLessThanOrEqual(now.dot?.name.right ?? 0);
   }
 
-  // 滚到最右：“保留”“上次打开”“创建者”整列落在两根固定列之间，表头完整
+  // 滚到最右：“自动清理”“上次打开”“创建者”整列落在两根固定列之间，表头完整
   const end = await measure();
   const nameRight = (end.headers[0] as Box).right;
   const actionsLeft = (end.headers[7] as Box).left;
-  for (const text of ["Retention", "Last opened", "Created by"]) {
+  for (const text of ["Auto-clean", "Last opened", "Created by"]) {
     const header = end.headers.find((h) => h.text === text);
     expect(header, text).toBeDefined();
     expect(header?.left).toBeGreaterThanOrEqual(nameRight - 1);

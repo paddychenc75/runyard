@@ -20,8 +20,9 @@ import { FilterMenu } from "./FilterMenu.tsx";
 import styles from "./LibraryPage.module.css";
 import { LibraryTable } from "./LibraryTable.tsx";
 import { navLabel, sortLabel, statusLabel, typeLabel } from "./library-labels.ts";
+import { NavEmptyState } from "./NavEmptyState.tsx";
 import { NoResults } from "./NoResults.tsx";
-import { SearchBox, type SearchSize } from "./SearchBox.tsx";
+import { SearchBox } from "./SearchBox.tsx";
 import { UpdateBanner } from "./UpdateBanner.tsx";
 import { useNow } from "./use-now.ts";
 
@@ -80,6 +81,7 @@ export function LibraryPage({
   const { playgrounds, templates, locale } = library;
   const visible = filterRows(playgrounds, templates, locale, query);
   const filtering = isFiltering(query);
+  const status = query.nav === "running" ? "running" : query.status;
   const common = COMMON_TEMPLATES.flatMap((id) => {
     const template = templates.find((candidate) => candidate.id === id);
     return template === undefined ? [] : [template];
@@ -122,11 +124,12 @@ export function LibraryPage({
                 />
                 <FilterMenu
                   buttonLabel={t("library.filter.status.label", {
-                    value: statusLabel(query.status, t),
+                    value: statusLabel(status, t),
                   })}
                   menuLabel={t("library.menu.status.aria")}
                   options={statusFilters.map((id) => ({ id, label: statusLabel(id, t) }))}
-                  value={query.status}
+                  value={status}
+                  disabled={query.nav === "running"}
                   onValueChange={(status) =>
                     onQueryChange({ status: status as LibraryQuery["status"] })
                   }
@@ -147,7 +150,8 @@ export function LibraryPage({
                     id: "status",
                     title: t("library.menu.status.aria"),
                     options: statusFilters.map((id) => ({ id, label: statusLabel(id, t) })),
-                    value: query.status,
+                    value: status,
+                    disabled: query.nav === "running",
                   },
                 ]}
                 onValueChange={(group, id) =>
@@ -180,7 +184,13 @@ export function LibraryPage({
           {t("desktop.error.title.label", { title: errorTitle(library, t) })}
         </p>
       )}
-      {playgrounds.length === 0 ? (
+      {visible.length === 0 &&
+      query.nav !== "all" &&
+      query.search === "" &&
+      query.type === "all" &&
+      (query.nav === "running" || query.status === "all") ? (
+        <NavEmptyState nav={query.nav} />
+      ) : playgrounds.length === 0 ? (
         <EmptyState
           className={styles.empty}
           title={t("library.empty.title")}

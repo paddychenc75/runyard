@@ -191,7 +191,7 @@ describe("新建弹窗", () => {
     expect(created()).toHaveLength(0);
   });
 
-  it("[DESKTOP-CREATE-FLOW-11] 全部默认值直接回车：按默认名称创建，弹窗关闭，没有自动清理（已保留）", async () => {
+  it("[DESKTOP-CREATE-FLOW-11] 全部默认值直接回车：按默认名称创建，弹窗关闭，没有自动清理（关闭）", async () => {
     const { nameBox, created } = await openCreateDialog(["react19-1", "react19-3"]);
     expect(document.activeElement).toBe(nameBox);
     await user.keyboard("{Enter}");

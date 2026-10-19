@@ -78,5 +78,8 @@
   },
   "library.trash.title": {
     "name": "项目名（用户自己起的，不翻译）"
+  },
+  "library.autoClean.off.hint": {
+    "name": "项目名称"
   }
 }
