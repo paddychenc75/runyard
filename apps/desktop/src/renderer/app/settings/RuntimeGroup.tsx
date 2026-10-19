@@ -74,7 +74,6 @@ export function RuntimeGroup({ bridge }: { bridge: DesktopBridge }) {
             <th scope="col" data-col="status">
               {t("settings.runtime.status.label")}
             </th>
-            <td data-col="link" />
           </tr>
         </thead>
         <tbody>
@@ -128,7 +127,6 @@ function ToolRows({
   busy,
   ...actions
 }: ToolRowsProps) {
-  const t = useT();
   const name = toolName(check.tool);
   return (
     <>
@@ -158,14 +156,6 @@ function ToolRows({
         </td>
         <td data-col="status">
           <ToolStatus status={check.status} />
-        </td>
-        <td className={styles.setPath} data-col="link">
-          <SettingsLink
-            aria-label={`${t("settings.runtime.setPath.action")} ${name}`}
-            onClick={actions.onSetPath}
-          >
-            {t("settings.runtime.setPath.action")}
-          </SettingsLink>
         </td>
       </tr>
       {expanded ? (

@@ -152,7 +152,7 @@ describe("运行环境", () => {
     expect(document.activeElement).toBe(screen.getByRole("textbox", { name: "Go 可执行文件路径" }));
   });
 
-  it("[DESKTOP-SETTINGS-15] 表里只有用到的工具（node、pnpm、python、go），每行有版本、路径、芯片架构、状态和“指定路径…”", async () => {
+  it("[DESKTOP-SETTINGS-15] 表里只有用到的工具（node、pnpm、python、go），每行有版本、路径、芯片架构、状态和完整路径输入", async () => {
     const w = world({ on: { "toolchain.check": () => ({ tools: four }) } });
     await openRuntime(w);
     await screen.findByRole("rowheader", { name: "Node" });
@@ -168,7 +168,12 @@ describe("运行环境", () => {
     expect(node.getByText("已找到")).toBeTruthy();
     expect(within(rowOf("Python")).getByText("x64")).toBeTruthy();
     for (const tool of ["Node", "pnpm", "Python", "Go"]) {
-      expect(within(rowOf(tool)).getByRole("button", { name: `指定路径… ${tool}` })).toBeTruthy();
+      expect(
+        within(rowOf(tool)).getByRole("textbox", { name: `${tool} 可执行文件路径` }),
+      ).toBeTruthy();
+      expect(
+        within(rowOf(tool)).getByRole("button", { name: `选择 ${tool} 可执行文件` }),
+      ).toBeTruthy();
     }
     expect(within(rowOf("Go")).getByText("未安装")).toBeTruthy();
   });
