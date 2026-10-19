@@ -92,3 +92,33 @@ it("[LIBRARY-DISK-USAGE-14] 遍历中目录被替换：保留旧缓存，安静�
     await service.dispose();
   }
 });
+
+it("[LIBRARY-DISK-USAGE-11] 遍历结束前资源库根变为不可读：保留旧结果，不发布新大小", async () => {
+  const fake = createFakePlatform();
+  const root = absPath(join("/library"));
+  const project = absPath(join(root, "demo"));
+  fake.fs.mkdir(project);
+  const changed = vi.fn();
+  const service = createDiskUsageService(
+    { platform: fake.platform, clock: fake.clock },
+    { onChange: changed, log: vi.fn() },
+  );
+  try {
+    service.sync(root, [{ id: "p", path: project, missing: false }]);
+    await service.idle();
+    const before = service.get("p");
+    fake.fs.writeFile(absPath(join(project, "new")), "x");
+    const original = fake.platform.fs.scanDir;
+    vi.spyOn(fake.platform.fs, "scanDir").mockImplementation(async (dir, expected) => {
+      const scan = await original(dir, expected);
+      if (dir === project) fake.fs.denyRead(root);
+      return scan;
+    });
+    service.refresh("p");
+    await service.idle();
+    expect(service.get("p")).toEqual(before);
+    expect(changed).toHaveBeenCalledTimes(1);
+  } finally {
+    await service.dispose();
+  }
+});

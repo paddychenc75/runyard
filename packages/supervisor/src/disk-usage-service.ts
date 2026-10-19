@@ -124,6 +124,14 @@ export function createDiskUsageService(
       touch(id);
       return;
     }
+    // 遍历期间根目录可能失去权限；这次异步检查也可能遇到改名或移除，接纳前再核对一次。
+    if (
+      !(await rootReadable()) ||
+      disposed ||
+      tracked.get(id) !== entry ||
+      entry.generation !== generation
+    )
+      return;
     const next: PlaygroundSize | undefined =
       result === "missing"
         ? undefined

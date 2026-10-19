@@ -1,4 +1,4 @@
-import type { Stats } from "node:fs";
+import type { BigIntStats } from "node:fs";
 import { lstat, readdir, stat } from "node:fs/promises";
 import { join } from "node:path";
 import { type AbsPath, absPath } from "../../path-types.ts";
@@ -12,27 +12,31 @@ import { errnoOf, fsError } from "./map-fs-error.ts";
 const STAT_BATCH = 64;
 
 interface ScanDirIo {
-  stat(path: AbsPath): Promise<Stats>;
-  lstat(path: AbsPath): Promise<Stats>;
+  stat(path: AbsPath): Promise<BigIntStats>;
+  lstat(path: AbsPath): Promise<BigIntStats>;
   readdir(path: AbsPath): Promise<string[]>;
 }
 
-const diskIo: ScanDirIo = { stat, lstat, readdir };
+const diskIo: ScanDirIo = {
+  stat: (path) => stat(path, { bigint: true }),
+  lstat: (path) => lstat(path, { bigint: true }),
+  readdir,
+};
 
-function kindOf(info: Stats): DiskEntry["kind"] {
+function kindOf(info: BigIntStats): DiskEntry["kind"] {
   if (info.isSymbolicLink()) return "symlink";
   if (info.isDirectory()) return "dir";
   if (info.isFile()) return "file";
   return "other";
 }
 
-function toEntry(info: Stats): DiskEntry {
+function toEntry(info: BigIntStats): DiskEntry {
   return {
     kind: kindOf(info),
-    bytes: info.blocks * 512,
-    dev: info.dev,
-    ino: info.ino,
-    nlink: info.nlink,
+    bytes: Number(info.blocks) * 512,
+    dev: Number(info.dev),
+    ino: Number(info.ino),
+    nlink: Number(info.nlink),
   };
 }
 
@@ -42,7 +46,7 @@ export async function scanDirPosix(
   io: ScanDirIo = diskIo,
 ): Promise<DirScan | null> {
   let names: string[];
-  let self: Stats;
+  let self: BigIntStats;
   try {
     // 只有根项目允许链接；子目录必须仍是父扫描里看到的那一个，不能跟随后来替换的链接。
     self = await (expected === undefined ? io.stat(dir) : io.lstat(dir));
@@ -71,7 +75,7 @@ export async function scanDirPosix(
       if (info !== null && info !== undefined) entries.push({ name, ...toEntry(info) });
     });
   }
-  // 路径可能在 readdir/lstat 期间被替换；混合两份目录得出的数字不能覆盖缓存。
+  // 临时换成外链后又还原时 inode 不变，但 ctime 会变；保留纳秒精度才能拒绝这次混合结果。
   const after = await (expected === undefined ? io.stat(dir) : io.lstat(dir)).catch(
     (error: unknown) => {
       const code = errnoOf(error);
@@ -79,14 +83,26 @@ export async function scanDirPosix(
       throw fsError(error, dir, "scan");
     },
   );
-  if (after === null || !sameDirectory(after, self)) return changed(self);
+  if (after === null || !sameSnapshot(after, self)) return changed(self);
   return { self: toEntry(self), entries };
 }
 
-function sameDirectory(info: Stats, expected: Pick<DiskEntry, "dev" | "ino">): boolean {
-  return info.isDirectory() && info.dev === expected.dev && info.ino === expected.ino;
+function sameDirectory(info: BigIntStats, expected: Pick<DiskEntry, "dev" | "ino">): boolean {
+  return (
+    info.isDirectory() && Number(info.dev) === expected.dev && Number(info.ino) === expected.ino
+  );
 }
 
-function changed(info: Stats): DirScan {
+function sameSnapshot(info: BigIntStats, before: BigIntStats): boolean {
+  return (
+    info.isDirectory() &&
+    info.dev === before.dev &&
+    info.ino === before.ino &&
+    info.ctimeNs === before.ctimeNs &&
+    info.mtimeNs === before.mtimeNs
+  );
+}
+
+function changed(info: BigIntStats): DirScan {
   return { self: toEntry(info), entries: [], changed: true };
 }
