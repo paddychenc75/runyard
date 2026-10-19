@@ -14,7 +14,7 @@
 
 ## 子目录地图
 
-- `RequestPanel.tsx`（发送行、页签与开关行、请求内容、响应）、`JsonText.tsx`（JSON 上色）、`RequestPanel.module.css`
+- `RequestPanel.tsx` 组合 `RequestForm`（发送行）、`RequestToolbar`（页签、自动重发与图标操作）、`AutoGrowText`（请求内容）、`ResponseView`（响应和未就绪时的历史提示）；`JsonText.tsx`（JSON 上色）、`RequestPanel.module.css`。窄窗固定地址前缀可省略并悬停查看完整值，保留路径输入；工具栏不换行，辅助操作统一28图标按钮。
 - `use-request-panel.ts`（状态：在途、响应、恢复、自动重发）
 - 纯逻辑在 `src/shared/request-model.ts`（主进程测试也要用它跑真的 curl）
 

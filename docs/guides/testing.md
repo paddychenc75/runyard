@@ -135,3 +135,7 @@ Node 24 下先 `pnpm --filter @runyard/desktop build`，再运行 `pnpm --filter
 设计对照先运行 `node tooling/design-render/render.mjs Web WebEn WebLight WebLightEn --no-shots`，再运行 `node apps/desktop/e2e/preview-refresh-design.measure.ts`。默认在独立临时目录输出八组浅深 × 中英 × 1440/1100 的静止、加载中、设计并排图与尺寸记录；`RUNYARD_REFRESH_OUTPUT` 可指定独立输出目录，`RUNYARD_E2E_APP` 可切换到端到端包。CI 上传 `preview-refresh-design-comparison`，下载后打开八张 comparison.png 和 loading.png。
 
 Web 系列只有 1440 画板，1100 对照保留原布局裁取，不代表存在窄窗设计稿。原生预览另附 preview.png；静态项目和设计的 React 示例内容不同，原有顶栏/侧栏差异分别由 #446/#448 追踪，停止图标沿用已合并 #475。动效是 #477 批准的新增行为，不能用静止图证明动效生命周期，须结合真实端到端结果。
+
+### 请求与预览工具栏取证（#436）
+
+渲染 Service/ServiceDark/ServiceEn/ServiceDarkEn 和 Web/WebEn/WebLight/WebLightEn，再运行 `node apps/desktop/e2e/request-layout.measure.ts`。临时 HOME/root 中的真实 Hono 项目发送请求后停止，覆盖当前响应与历史响应提示；另建 HTML 验证预览图标按钮。浅深、中英、1440/1100共24图写入 `RUNYARD_REQUEST_REVIEW_OUTPUT` 或临时目录。原生预览单独抓取后按占位坐标合成并保留原图。`request-status.e2e.ts` 使用方向键将面板收至280，断言地址不溢出、路径可输入、工具栏不换行、停止后的响应明确标旧。CI上传request-layout-design-comparison。
