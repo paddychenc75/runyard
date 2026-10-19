@@ -106,6 +106,12 @@ Node 24 下运行 `node tooling/design-render/icon-review.ts`，默认在新临�
 - 新的平台接口成员在契约测试里出现过。
 - 测试在 macOS 和 Ubuntu 上通过，Windows 任务只跑平台无关的部分。
 
+## 品牌 A 的实际侧栏取证
+
+Node 24 下运行 `pnpm --filter @runyard/desktop build`，然后 `node apps/desktop/e2e/sidebar-brand.measure.ts`。默认产物写入独立临时目录，`RUNYARD_BRAND_OUTPUT` 可指定目录；`RUNYARD_E2E_APP` 可指定端到端包。CI 上传 `sidebar-brand-a-comparison`。
+
+取证以 2026-10-19 负责人批准的品牌 A 局部（`apps/desktop/e2e/brand-a-reference.html`）和官方明暗 `icon-32.svg` 对照真实 Electron Sidebar，输出浅深 × 中英 × 1440/1100 八组完整窗口、品牌局部、并排图与尺寸/资产哈希。参考稿是放大预览；真实标题使用现有28px字号与32px图标适配侧栏，差异写在产物README。脚本同时验证图标已解码、与官方SVG逐字节一致、主题对应、读屏不重复及无溢出。本次不代表 #448 其他侧栏设计已完成。 额外四张 `theme-*.png` 验证跟随系统浅/深以及显式主题覆盖相反系统主题；`pnpm --filter @runyard/desktop e2e:run sidebar-brand.e2e.ts` 单独运行同一组真实样式断言。
+
 ## 设置页的设计对照证据
 
 Node 24 下先运行 `node tooling/design-render/render.mjs Settings SettingsDark SettingsEn SettingsDarkEn SettingsNarrow SettingsNarrowDark SettingsNarrowEn SettingsNarrowDarkEn`，再运行 `pnpm --filter @runyard/desktop build` 和 `node apps/desktop/e2e/settings-design.measure.ts`。脚本每次新建临时 HOME/root，顺序启动自己的 Electron 应用并核对收尾，输出八组 1440/1100 × 浅深 × 中英文的原图、并排图和测量 JSON；1100 宽滚到“编辑与运行”，1440 宽停在最上面。
