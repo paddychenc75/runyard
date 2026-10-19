@@ -112,6 +112,10 @@ Node 24 下先运行 `node tooling/design-render/render.mjs Settings SettingsDar
 
 `RUNYARD_SETTINGS_REVIEW_OUTPUT` 指定产物目录，不设时新建临时目录；`RUNYARD_REVIEW_CHROME` 可覆盖生成并排图用的 Chrome 路径。原图保留原始像素，并排图按相同 CSS 逻辑像素展示（设计渲染器输出 2× 图，按 820×900 显示），设计稿与设置窗口都为 820×900；主窗口分别设为1440/1100宽以核对两者独立。设置窗口没有侧栏或标签条；截图只包含网页内容，原生红绿灯位置/全屏能力在窗口e2e核对。测量核对 720 内容列居中、140 标题区、至少 54 行高、至少 24 文字与控件间距、说明不超过两行、没有横向溢出。真实设置值、工具检测结果取当前临时环境；内容不同应在评审里说明。`settings.e2e.ts` 另测最小 760 宽英文导航的 Tab 顺序、末按钮完整可见、焦点环四边至少 4px 留白，以及主页面不横向溢出。
 
+设置窗口的端到端操作先用 `e2e/support/settings-window.ts` 的 `openSettingsWindow` 取得该窗口，
+不要把主窗口的 `page` 当作设置页。主窗口与设置窗口共享进程但网页不同；用例分别核对焦点、
+主题重开后切回系统、关闭设置后主窗口状态，以及原生选择框属于发起操作的前台窗口。
+
 ## 预览刷新动效的真实应用取证
 
 Node 24 下先 `pnpm --filter @runyard/desktop build`，再运行 `pnpm --filter @runyard/desktop e2e:run preview-refresh.e2e.ts`。用例在临时主目录创建真实静态页面，先点击页面计数器，再点击应用刷新按钮并确认计数归零；以网络请求挂起/放行验证慢加载持续旋转、失败恢复及减少动态偏好，不用固定睡眠。
