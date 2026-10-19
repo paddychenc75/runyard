@@ -77,4 +77,4 @@ pnpm --filter @runyard/desktop smoke             # 冒烟自检：窗口不显�
 
 界面测试（jsdom 文件）共用一份热身：`vitest.setup.tsx` 在每个文件的用例开始前先画一遍外壳并做一次角色查询，再走一遍选择器、新建弹窗、开关和输入，把冷启动的代价（加载、即时编译、jsdom 样式计算）付在装载阶段，不落在该文件第一个用例的时限里（#219、#234、#277）。新增界面测试文件不需要再写自己的热身；不要为此放宽用例的时限。
 ## 通知中心骨架（#462）
-- `renderer/app/notifications/`：`NotificationStore` 只保存通知事实（文案键/参数、分组、时间、动作标识），最多三张卡片，同次启动关闭后不补弹；待处理跨重启恢复，最近保留 7 天。主窗 `TopBar` 才初始化 `NotificationService`，独立设置窗不读写通知记录。持久键 `runyard.notifications.v1` 在界面本地存储；损坏记录过滤，存储失败记录诊断并保留会话内通知。数据源用 `store.add/resolve` 更新事实、`registerAction` 注册当前动作，成功结果走 `showToast` 不进历史；动作自己确认成功后 `resolve`，失败不删待处理。现有更新/清理/智能体/链接提示的接入留给 #463，本 PR 不迁移。
+- `renderer/app/notifications/`：`NotificationStore` 只保存通知事实（文案键/参数、分组、时间、动作标识），最多三张卡片，同次启动关闭后不补弹；待处理跨重启恢复，最近保留 7 天。主窗 `TopBar` 才初始化 `NotificationService`，独立设置窗不读写通知记录。持久键 `runyard.notifications.v1` 在界面本地存储；损坏记录过滤，存储失败记录诊断并保留会话内通知。数据源用 `store.add/resolve` 更新事实、`registerAction` 注册当前动作，成功结果走 `showToast` 不进历史；动作自己确认成功后 `resolve`，失败不删待处理。`NotificationSources` / `NotificationSourcesController` 已把更新、自动清理、智能体、链接、路径和一次性错误迁入；旧顶栏下方横幅和右下角区域已移除。关闭只收卡片，处理动作返回后核对主进程事实；清理只在实际可见卡片回报 ack，移到废纸篓失败/取消保留通知；成功复制链接、移到废纸篓走底部小提示。

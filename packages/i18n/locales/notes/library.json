@@ -1,7 +1,4 @@
 {
-  "library.cleanBanner.idle.label": {
-    "days": "已经几天没打开"
-  },
   "library.cleanBanner.lead.label": {
     "count": "明天会被自动清理的项目数"
   },

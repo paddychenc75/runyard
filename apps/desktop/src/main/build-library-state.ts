@@ -75,6 +75,7 @@ export interface LibraryInputs {
   notices?: readonly AppNotice[];
   linkConfirm?: LinkConfirmView | null;
   update?: UpdateBannerView | null;
+  updateReady?: boolean;
 }
 
 /**
@@ -246,6 +247,7 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
     notices: [...(inputs.notices ?? [])],
     linkConfirm: inputs.linkConfirm ?? null,
     update: inputs.update ?? null,
+    updateReady: inputs.updateReady ?? false,
   };
 }
 

@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { _electron, type ElectronApplication, expect, type Page } from "@playwright/test";
 import { absPath, getPlatform, type Platform, type ProcRef } from "@runyard/platform";
+import { type PrepareE2eHome, prepareE2eHome } from "./prepare-home.ts";
 
 // 启动一份真正的桌面应用，所有数据都落在临时主目录里：HOME 指向它，--root 也在它里面，
 // 即使 --root 丢了也碰不到真实的 ~/.runyard 和 ~/Runyard。收尾时应用和它拉起的管理进程都按“进程号加启动时间”确认已退出。
@@ -14,6 +15,8 @@ const cliMain = join(desktopDir, "..", "..", "packages", "cli", "src", "main.ts"
 const electronPath = createRequire(join(desktopDir, "package.json"))("electron") as string;
 
 export interface LaunchOptions {
+  /** 默认隔离更新联网之后、应用启动之前，专门用例可覆盖自己的临时文件。 */
+  prepare?: PrepareE2eHome;
   lang?: "en" | "zh-CN";
   theme?: "light" | "dark" | "system";
 }
@@ -80,6 +83,7 @@ export async function launchRunyard(options: LaunchOptions = {}): Promise<Runyar
   // 路径要短：管理进程的 unix 套接字路径有长度上限
   const home = mkdtempSync(join(tmpdir(), "rye-"));
   const root = join(home, "r");
+  await prepareE2eHome({ home, root }, options.prepare);
   const platform = getPlatform({ home: absPath(home) });
   // 缺省跑源码构建（dist/main）；设了 RUNYARD_E2E_APP 就跑打好的包（CI 用，--e2e 构建，保留 nodeCliInspect）
   const packaged = process.env.RUNYARD_E2E_APP;
