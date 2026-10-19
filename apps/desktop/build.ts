@@ -59,6 +59,8 @@ await Promise.all([
     platform: "browser",
     format: "iife",
     target: "chrome140",
+    // 品牌图标内联为 data URL，沿用现有 img-src data:，不扩大资源访问范围。
+    loader: { ".svg": "dataurl" },
   }),
   // 编辑器（Monaco、Shiki）：单独的脚本、样式、字体、后台线程文件，见 build-editor.ts
   buildEditor("dist/renderer"),

@@ -101,3 +101,9 @@ Node 24 下运行 `node tooling/design-render/icon-review.ts`，默认在新临�
 - 测试里没有系统判断，也没有没带编号的跳过。
 - 新的平台接口成员在契约测试里出现过。
 - 测试在 macOS 和 Ubuntu 上通过，Windows 任务只跑平台无关的部分。
+
+## 品牌 A 的实际侧栏取证
+
+Node 24 下运行 `pnpm --filter @runyard/desktop build`，然后 `node apps/desktop/e2e/sidebar-brand.measure.ts`。默认产物写入独立临时目录，`RUNYARD_BRAND_OUTPUT` 可指定目录；`RUNYARD_E2E_APP` 可指定端到端包。CI 上传 `sidebar-brand-a-comparison`。
+
+取证以 2026-10-19 负责人批准的品牌 A 局部（`apps/desktop/e2e/brand-a-reference.html`）和官方明暗 `icon-32.svg` 对照真实 Electron Sidebar，输出浅深 × 中英 × 1440/1100 八组完整窗口、品牌局部、并排图与尺寸/资产哈希。参考稿是放大预览；真实标题使用现有28px字号与32px图标适配侧栏，差异写在产物README。脚本同时验证图标已解码、与官方SVG逐字节一致、主题对应、读屏不重复及无溢出。本次不代表 #448 其他侧栏设计已完成。
