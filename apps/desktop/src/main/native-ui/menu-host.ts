@@ -18,6 +18,7 @@ export const REPORT_ISSUE_URL = "https://github.com/paddychenc75/runyard/issues/
 
 export interface MenuHostDeps {
   window: BrowserWindow;
+  settingsWindow?: { open(): void; close(): void };
   ipcHost: Pick<IpcHost, "send">;
   locale: Locale;
   platform: "darwin" | "win32" | "linux";
@@ -34,12 +35,14 @@ export interface MenuHost {
   install: (locale?: Locale) => void;
   /** 切到或离开项目标签页：项目相关的菜单项跟着可用或灰掉（规格 DESKTOP-EDITOR-73） */
   setProjectTabActive: (active: boolean) => void;
+  setSettingsWindowActive: (active: boolean) => void;
 }
 
 export function createMenuHost(deps: MenuHostDeps): MenuHost {
   const { window, ipcHost } = deps;
   let locale = deps.locale;
   let projectTabActive = false;
+  let settingsWindowActive = false;
   const translator = () =>
     createTranslator({
       locale,
@@ -48,6 +51,10 @@ export function createMenuHost(deps: MenuHostDeps): MenuHost {
     }).t;
   // 预览是另一个网页：菜单触发时键盘焦点可能在它里面，先把焦点交回界面，输入框才收得到字
   const toInterface = (send: () => void): void => {
+    if (window.isDestroyed()) return;
+    if (window.isMinimized()) window.restore();
+    window.show();
+    window.focus();
     window.webContents.focus();
     send();
   };
@@ -75,24 +82,40 @@ export function createMenuHost(deps: MenuHostDeps): MenuHost {
           locale,
           platform: deps.platform,
           development: deps.development,
-          runCommand: (id) =>
+          runCommand: (id) => {
+            if (id === "app.settings" && deps.settingsWindow) {
+              deps.settingsWindow.open();
+              return;
+            }
+            if (id === "app.closeTab" && settingsWindowActive) {
+              deps.settingsWindow?.close();
+              return;
+            }
             toInterface(() => {
               if (id === "app.new") requestPicker(ipcHost);
               else if (id === "app.toggleSidebar") requestSidebarToggle(ipcHost);
               else requestCommand(ipcHost, id);
-            }),
+            });
+          },
           onCommandPalette: () => toInterface(() => requestPalette(ipcHost, "commands")),
           onQuickOpen: () => toInterface(() => requestPalette(ipcHost, "files")),
           onCheckUpdates: () => void checkUpdates(),
           onOpenHelp: () => deps.openExternal(HELP_URL),
           onReportIssue: () => deps.openExternal(REPORT_ISSUE_URL),
-          projectTabActive,
+          projectTabActive: projectTabActive && !settingsWindowActive,
+          settingsWindowActive,
         }),
       ),
     );
   };
   return {
     install,
+    setSettingsWindowActive: (active) => {
+      if (active !== settingsWindowActive) {
+        settingsWindowActive = active;
+        install();
+      }
+    },
     setProjectTabActive: (active) => {
       if (active === projectTabActive) return;
       projectTabActive = active;

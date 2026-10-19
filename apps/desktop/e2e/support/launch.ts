@@ -15,7 +15,7 @@ const electronPath = createRequire(join(desktopDir, "package.json"))("electron")
 
 export interface LaunchOptions {
   lang?: "en" | "zh-CN";
-  theme?: "light" | "dark";
+  theme?: "light" | "dark" | "system";
 }
 
 export interface RunyardApp {

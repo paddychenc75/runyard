@@ -3,6 +3,7 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { chromium, expect } from "@playwright/test";
 import { launchRunyard } from "./support/launch.ts";
+import { openSettingsWindow } from "./support/settings-window.ts";
 
 // 先用设计渲染器生成八张 Settings* 画板，再运行本脚本。每份应用只有临时 HOME/root。
 const out =
@@ -24,14 +25,12 @@ try {
         const name = `${width}-${theme}-${lang}`;
         const board = `Settings${width === 1100 ? "Narrow" : ""}${theme === "dark" ? "Dark" : ""}${lang === "en" ? "En" : ""}`;
         try {
-          const { page } = instance;
-          await expect(page.getByRole("combobox")).toBeFocused();
-          await page.keyboard.press("Escape");
-          await expect(page.getByRole("dialog")).toHaveCount(0);
-          await page.setViewportSize({ width, height: 900 });
-          await page
-            .getByRole("button", { name: lang === "en" ? "Settings" : "设置", exact: true })
-            .click();
+          await expect(instance.page.getByRole("combobox")).toBeFocused();
+          await instance.page.keyboard.press("Escape");
+          await expect(instance.page.getByRole("dialog")).toHaveCount(0);
+          await instance.page.setViewportSize({ width, height: 900 });
+          const page = await openSettingsWindow(instance);
+          await page.setViewportSize({ width: 820, height: 900 });
           await expect(page.locator("[data-settings-row]").first()).toBeVisible();
           if (width === 1100) {
             await page
@@ -89,10 +88,10 @@ try {
           const design = readFileSync(
             join(repo, "tooling/design-render/png", `${board}.png`),
           ).toString("base64");
-          const html = `<!doctype html><meta charset="utf-8"><style>body{margin:0;font:16px sans-serif;background:#ddd}header{padding:12px}main{display:flex;align-items:flex-start;gap:16px}figure{margin:0}figcaption{height:30px}img{display:block}</style><header>#445 ${name} — 左为820宽独立窗口设计，右为主窗口真实设置页；独立窗口外框由#465另做，两图按相同 CSS 逻辑像素展示（设计原图为 2×）。</header><main><figure><figcaption>${board} 设计</figcaption><img width="820" height="900" src="data:image/png;base64,${design}"></figure><figure><figcaption>实际 ${width}×900</figcaption><img src="data:image/png;base64,${actual}"></figure></main>`;
+          const html = `<!doctype html><meta charset="utf-8"><style>body{margin:0;font:16px sans-serif;background:#ddd}header{padding:12px}main{display:flex;align-items:flex-start;gap:16px}figure{margin:0}figcaption{height:30px}img{display:block}</style><header>#445 ${name} — 左为820宽独立窗口设计，右为真实独立设置窗口；主窗口宽度为${width}，两图按相同 CSS 逻辑像素展示（设计原图为 2×）。</header><main><figure><figcaption>${board} 设计</figcaption><img width="820" height="900" src="data:image/png;base64,${design}"></figure><figure><figcaption>实际设置窗口 820×900</figcaption><img src="data:image/png;base64,${actual}"></figure></main>`;
           writeFileSync(join(out, `${name}.html`), html);
           const comparison = await chrome.newPage({
-            viewport: { width: 820 + width + 16, height: 990 },
+            viewport: { width: 820 * 2 + 16, height: 990 },
             deviceScaleFactor: 1,
           });
           await comparison.setContent(html);

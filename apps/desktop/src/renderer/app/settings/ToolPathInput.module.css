@@ -1,0 +1,24 @@
+.field {
+  min-inline-size: 0;
+  padding-block-start: var(--space-3);
+}
+.controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.input {
+  flex: 1;
+  min-inline-size: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-code-small-size);
+}
+.hint,
+.problem {
+  margin: 0;
+  font-size: var(--text-secondary-size);
+  color: var(--color-text-secondary);
+}
+.problem {
+  color: var(--color-status-danger-text);
+}

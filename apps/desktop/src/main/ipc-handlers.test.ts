@@ -13,7 +13,7 @@ import type { SettingsController } from "./settings-controller.ts";
 
 type Handler = (sender: IpcSender, ...args: unknown[]) => unknown;
 
-function setup() {
+function setup(dynamicBootstrap = false) {
   const handlers = new Map<string, Handler>();
   const sent: { channel: string; event: string; state: unknown }[] = [];
   const syncHandlers = new Map<string, (sender: IpcSender) => unknown>();
@@ -85,7 +85,7 @@ function setup() {
     send: (channel, event, next) => void sent.push({ channel, event, state: next }),
   };
   const info = { platform: "darwin", locale: "en" } as BootstrapInfo;
-  registerBridgeHandlers(host, controller, info);
+  registerBridgeHandlers(host, controller, dynamicBootstrap ? () => info : info);
   const call = (sender: IpcSender, method: unknown, param?: unknown) =>
     handlers.get(desktopChannels.call)?.(sender, method, param);
   return {
@@ -187,6 +187,18 @@ describe("registerBridgeHandlers", () => {
   it("本应用界面同步拿到启动信息", () => {
     const { syncHandlers, info } = setup();
     expect(syncHandlers.get(desktopChannels.bootstrap)?.(app)).toBe(info);
+  });
+
+  it("[DESKTOP-SETTINGS-01] 设置入口获得独立窗口标记和最新语言主题，主入口不变", () => {
+    const { syncHandlers, info } = setup(true);
+    const bootstrap = syncHandlers.get(desktopChannels.bootstrap);
+    info.locale = "zh-CN";
+    info.theme = "dark";
+    expect(bootstrap?.({ url: "app://runyard/?view=settings" })).toEqual({
+      ...info,
+      windowKind: "settings",
+    });
+    expect(bootstrap?.(app)).toBe(info);
   });
 
   it("参数不是非空字符串时不调用控制器", async () => {
@@ -376,6 +388,10 @@ describe("设置通道", () => {
           seen.push(["pick", tool]);
           return { status: "cancelled" };
         },
+        setPath: async (tool: string, path: string) => {
+          seen.push(["setPath", tool, path]);
+          return { status: "set", report: { tools: [] } };
+        },
         runInstall: (tool: string) => void seen.push(["install", tool]),
         onChange: (listener: () => void) => {
           pushToolchain = listener;
@@ -448,6 +464,28 @@ describe("设置通道", () => {
       ["install", "go"],
       ["skill", "agents"],
     ]);
+  });
+
+  it("[DESKTOP-SETTINGS-42] 输入路径桥只接受字符串工具与路径，额外字段不会作为命令传递", async () => {
+    const { call, seen } = withSettings();
+    for (const value of [
+      null,
+      "node",
+      [],
+      { tool: 7, path: "/node" },
+      { tool: "node", path: 7 },
+      { tool: "", path: "/node" },
+    ])
+      expect(await call(app, "toolchain.setPath", value)).toEqual({ status: "failed" });
+    expect(seen).toEqual([]);
+    expect(
+      await call(app, "toolchain.setPath", {
+        tool: "node",
+        path: "/Node Tools/node",
+        command: "ignored",
+      }),
+    ).toEqual({ status: "set", report: { tools: [] } });
+    expect(seen).toEqual([["setPath", "node", "/Node Tools/node"]]);
   });
 
   it("检测结果变了作为 toolchain.changed 事件推给界面", () => {

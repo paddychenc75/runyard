@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import type { ToolCheck } from "@runyard/protocol";
-import { act, cleanup, render, screen, waitFor, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 import { App } from "../App.tsx";
@@ -32,8 +32,8 @@ const four = [
 
 async function openRuntime(w: World) {
   const user = userEvent.setup();
+  w.bridge.bootstrap.windowKind = "settings";
   render(<App bridge={w.bridge} />);
-  await user.click(await screen.findByRole("button", { name: "设置" }));
   await screen.findByRole("heading", { name: "运行环境" });
   return user;
 }
@@ -41,7 +41,118 @@ const rowOf = (name: string) =>
   screen.getByRole("rowheader", { name }).closest("tr") as HTMLElement;
 
 describe("运行环境", () => {
-  it("[DESKTOP-SETTINGS-15] 表里只有用到的工具（node、pnpm、python、go），每行有版本、路径、芯片架构、状态和“指定路径…”", async () => {
+  it("[DESKTOP-SETTINGS-41] 输入和粘贴期间不检测，回车保存新路径并更新版本架构", async () => {
+    const w = world({
+      on: {
+        "toolchain.check": () => ({ tools: four }),
+        "toolchain.setPath": () => ({
+          status: "set",
+          report: {
+            tools: [found("node", "26.0.0", "/opt/Node Tools/node", "x64"), ...four.slice(1)],
+          },
+        }),
+      },
+    });
+    const user = await openRuntime(w);
+    const input = await screen.findByRole("textbox", { name: "Node 可执行文件路径" });
+    const before = w.calls.length;
+    await user.clear(input);
+    await user.paste("/opt/Node Tools/node");
+    expect(w.calls).toHaveLength(before);
+    await user.keyboard("{Enter}");
+    expect(w.calls.at(-1)).toEqual({
+      method: "toolchain.setPath",
+      param: { tool: "node", path: "/opt/Node Tools/node" },
+    });
+    await screen.findByText("26.0.0");
+    expect(within(rowOf("Node")).getByText("x64")).toBeTruthy();
+  });
+
+  it("[DESKTOP-SETTINGS-42] 无效路径保留草稿和已生效版本，Esc 撤销且不保存", async () => {
+    const w = world({
+      on: {
+        "toolchain.check": () => ({ tools: four }),
+        "toolchain.setPath": (value) => ({ status: "invalid", ...(value as object) }),
+      },
+    });
+    const user = await openRuntime(w);
+    const input = await screen.findByRole("textbox", { name: "Node 可执行文件路径" });
+    await user.clear(input);
+    await user.type(input, "~/node{Enter}");
+    expect(w.calls.some((call) => call.method === "toolchain.setPath")).toBe(false);
+    expect(await screen.findByRole("alert")).toBeTruthy();
+    await user.clear(input);
+    await user.type(input, "/not-node{Enter}");
+    expect(await screen.findByText("这个文件不是可用的 Node，原来的路径没有改")).toBeTruthy();
+    expect((input as HTMLInputElement).value).toBe("/not-node");
+    expect(within(rowOf("Node")).getByText("25.6.0")).toBeTruthy();
+    const count = w.calls.length;
+    await user.keyboard("{Escape}");
+    expect((input as HTMLInputElement).value).toBe(four[0]?.path);
+    expect(screen.queryByRole("alert")).toBeNull();
+    expect(w.calls).toHaveLength(count);
+  });
+
+  it("[DESKTOP-SETTINGS-41] 检测更新和旧保存回包不覆盖新草稿，保存中回车不重复提交", async () => {
+    let report = { tools: four };
+    let finish = (_value: unknown) => {};
+    const waiting = new Promise((resolve) => {
+      finish = resolve;
+    });
+    const w = world({
+      on: { "toolchain.check": () => report, "toolchain.setPath": () => waiting },
+    });
+    const user = await openRuntime(w);
+    const input = await screen.findByRole("textbox", { name: "Node 可执行文件路径" });
+    await user.clear(input);
+    await user.type(input, "/draft/node");
+    report = { tools: [found("node", "26.0.0", "/detected/node"), ...four.slice(1)] };
+    act(() => w.emit("toolchain.changed", undefined));
+    await screen.findByText("26.0.0");
+    expect((input as HTMLInputElement).value).toBe("/draft/node");
+    await user.keyboard("{Enter}{Enter}");
+    expect(w.calls.filter((call) => call.method === "toolchain.setPath")).toHaveLength(1);
+    await user.clear(input);
+    await user.type(input, "/newer/node");
+    await act(async () =>
+      finish({
+        status: "set",
+        report: { tools: [found("node", "26.1.0", "/draft/node"), ...four.slice(1)] },
+      }),
+    );
+    await screen.findByText("26.1.0");
+    expect((input as HTMLInputElement).value).toBe("/newer/node");
+    await user.keyboard("{Escape}");
+    expect((input as HTMLInputElement).value).toBe("/draft/node");
+  });
+
+  it("[DESKTOP-SETTINGS-43] 输入法回车不提交，Tab 可达文件按钮，取消选择不改草稿，详情入口聚焦输入", async () => {
+    const w = world({
+      on: {
+        "toolchain.check": () => ({ tools: four }),
+        "toolchain.pickPath": () => ({ status: "cancelled" }),
+      },
+    });
+    const user = await openRuntime(w);
+    const input = await screen.findByRole("textbox", { name: "Node 可执行文件路径" });
+    await user.clear(input);
+    await user.type(input, "/draft/node");
+    fireEvent.keyDown(input, { key: "Enter", isComposing: true });
+    expect(w.calls.some((call) => call.method === "toolchain.setPath")).toBe(false);
+    await user.tab();
+    expect(document.activeElement).toBe(
+      screen.getByRole("button", { name: "选择 Node 可执行文件" }),
+    );
+    await user.keyboard("{Enter}");
+    expect((input as HTMLInputElement).value).toBe("/draft/node");
+    await user.click(screen.getByRole("button", { name: "Go" }));
+    await user.click(
+      within(screen.getByRole("region", { name: "Go" })).getByRole("button", { name: "指定路径…" }),
+    );
+    expect(document.activeElement).toBe(screen.getByRole("textbox", { name: "Go 可执行文件路径" }));
+  });
+
+  it("[DESKTOP-SETTINGS-15] 表里只有用到的工具（node、pnpm、python、go），每行有版本、路径、芯片架构、状态和完整路径输入", async () => {
     const w = world({ on: { "toolchain.check": () => ({ tools: four }) } });
     await openRuntime(w);
     await screen.findByRole("rowheader", { name: "Node" });
@@ -50,14 +161,19 @@ describe("运行环境", () => {
     expect(screen.queryByRole("rowheader", { name: "ruby" })).toBeNull();
     const node = within(rowOf("Node"));
     expect(node.getByText("25.6.0")).toBeTruthy();
-    expect(node.getByText("~/.nvm/…/v25.6.0/bin/node").getAttribute("title")).toBe(
-      "/Users/me/.nvm/versions/node/v25.6.0/bin/node",
-    );
+    expect(
+      (node.getByRole("textbox", { name: "Node 可执行文件路径" }) as HTMLInputElement).value,
+    ).toBe("/Users/me/.nvm/versions/node/v25.6.0/bin/node");
     expect(node.getByText("arm64")).toBeTruthy();
     expect(node.getByText("已找到")).toBeTruthy();
     expect(within(rowOf("Python")).getByText("x64")).toBeTruthy();
     for (const tool of ["Node", "pnpm", "Python", "Go"]) {
-      expect(within(rowOf(tool)).getByRole("button", { name: `指定路径… ${tool}` })).toBeTruthy();
+      expect(
+        within(rowOf(tool)).getByRole("textbox", { name: `${tool} 可执行文件路径` }),
+      ).toBeTruthy();
+      expect(
+        within(rowOf(tool)).getByRole("button", { name: `选择 ${tool} 可执行文件` }),
+      ).toBeTruthy();
     }
     expect(within(rowOf("Go")).getByText("未安装")).toBeTruthy();
   });
@@ -148,10 +264,12 @@ describe("运行环境", () => {
       },
     });
     const user = await openRuntime(w);
-    await user.click(await screen.findByRole("button", { name: "指定路径… Node" }));
+    await user.click(await screen.findByRole("button", { name: "选择 Node 可执行文件" }));
     const alert = await screen.findByRole("alert");
     expect(alert.textContent).toBe("这个文件不是可用的 Node，原来的路径没有改");
-    expect(within(rowOf("Node")).getByText("~/.nvm/…/v25.6.0/bin/node")).toBeTruthy();
+    expect((within(rowOf("Node")).getByRole("textbox") as HTMLInputElement).value).toBe(
+      four[0]?.path,
+    );
     expect(w.calls.find((c) => c.method === "toolchain.pickPath")?.param).toBe("node");
   });
 
@@ -161,7 +279,7 @@ describe("运行环境", () => {
       on: { "toolchain.check": () => ({ tools: four }), "toolchain.pickPath": () => answer },
     });
     const user = await openRuntime(w);
-    const button = await screen.findByRole("button", { name: "指定路径… Node" });
+    const button = await screen.findByRole("button", { name: "选择 Node 可执行文件" });
     await user.click(button);
     expect(screen.queryByRole("alert")).toBeNull();
     answer = {

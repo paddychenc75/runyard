@@ -124,3 +124,36 @@ describe("在终端中运行安装命令", () => {
     expect(fixed.terminal).toEqual([]);
   });
 });
+
+it("[DESKTOP-SETTINGS-41] 输入完整含空格路径沿用既有验证，作为单个 path 字段提交", async () => {
+  const h = setup({ setPath: () => ({ tools: [] }) });
+  expect(await h.settings.setPath("node", "/Applications/Node Tools/bin/node")).toEqual({
+    status: "set",
+    report: { tools: [] },
+  });
+  expect(h.calls).toEqual([
+    {
+      method: "toolchain.setPath",
+      params: { tool: "node", path: "/Applications/Node Tools/bin/node" },
+    },
+  ]);
+});
+
+it("[DESKTOP-SETTINGS-42] 非绝对路径和控制字符在调用管理进程前拒绝，不执行 shell 展开", async () => {
+  const h = setup({});
+  for (const path of [
+    "",
+    "node",
+    "~/bin/node",
+    "$HOME/bin/node",
+    "/bin/node\n--version",
+    "/bin/node\0",
+  ]) {
+    expect(await h.settings.setPath("node", path)).toEqual({
+      status: "invalid",
+      tool: "node",
+      path,
+    });
+  }
+  expect(h.calls).toEqual([]);
+});

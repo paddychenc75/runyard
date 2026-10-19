@@ -96,6 +96,24 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+      - name: 工具路径输入八组设计对照
+        if: always()
+        env:
+          RUNYARD_E2E_APP: ${{ github.workspace }}/apps/desktop/release/e2e/mac-arm64/Runyard.app/Contents/MacOS/Runyard
+          RUNYARD_TOOL_PATH_REVIEW_OUTPUT: ${{ runner.temp }}/tool-path-design-comparison
+        run: |
+          node tooling/design-render/render.mjs SettingsNarrow SettingsNarrowDark SettingsNarrowEn SettingsNarrowDarkEn
+          node apps/desktop/e2e/tool-path-design.measure.ts
+
+      - name: 上传工具路径输入设计对照
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: tool-path-design-comparison
+          path: ${{ runner.temp }}/tool-path-design-comparison/
+          if-no-files-found: error
+          retention-days: 14
+
       - name: 生成刷新动效八组设计对照
         if: always()
         env:

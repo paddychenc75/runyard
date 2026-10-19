@@ -1,5 +1,6 @@
 import type { ToolchainReport } from "@runyard/protocol";
 import type { LocalNetwork, PickToolPathResult } from "../shared/settings-bridge.ts";
+import { isToolPathInput } from "../shared/tool-path-input.ts";
 import type { LibraryClient } from "./library-controller.ts";
 
 // 设置页“依赖与网络”“运行环境”背后的主进程一侧（规格 DESKTOP-SETTINGS-12 至 19）：
@@ -93,6 +94,14 @@ export class ToolchainSettings {
   async pickPath(tool: string): Promise<PickToolPathResult> {
     const path = await this.#host.chooseExecutable();
     if (path === null) return { status: "cancelled" };
+    return this.setPath(tool, path);
+  }
+
+  /** 输入和文件选择共用同一个验证入口；路径作为单个字段传递，从不交给 shell。 */
+  async setPath(tool: string, path: string): Promise<PickToolPathResult> {
+    if (!isToolPathInput(path)) {
+      return { status: "invalid", tool, path };
+    }
     try {
       const report = await this.#client.call("toolchain.setPath", { tool, path });
       return { status: "set", report: this.#remember(report) };

@@ -34,5 +34,11 @@
   },
   "settings.supervisor.running.label": {
     "count": "命令行持有的运行个数"
+  },
+  "settings.runtime.pathInput.aria": {
+    "tool": "工具显示名称，如 Node"
+  },
+  "settings.runtime.choosePath.aria": {
+    "tool": "工具显示名称，如 Node"
   }
 }

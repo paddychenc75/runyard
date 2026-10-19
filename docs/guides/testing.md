@@ -116,7 +116,17 @@ Node 24 下运行 `pnpm --filter @runyard/desktop build`，然后 `node apps/des
 
 Node 24 下先运行 `node tooling/design-render/render.mjs Settings SettingsDark SettingsEn SettingsDarkEn SettingsNarrow SettingsNarrowDark SettingsNarrowEn SettingsNarrowDarkEn`，再运行 `pnpm --filter @runyard/desktop build` 和 `node apps/desktop/e2e/settings-design.measure.ts`。脚本每次新建临时 HOME/root，顺序启动自己的 Electron 应用并核对收尾，输出八组 1440/1100 × 浅深 × 中英文的原图、并排图和测量 JSON；1100 宽滚到“编辑与运行”，1440 宽停在最上面。
 
-`RUNYARD_SETTINGS_REVIEW_OUTPUT` 指定产物目录，不设时新建临时目录；`RUNYARD_REVIEW_CHROME` 可覆盖生成并排图用的 Chrome 路径。原图保留原始像素，并排图按相同 CSS 逻辑像素展示（设计渲染器输出 2× 图，按 820×900 显示），设计稿是 820 宽独立窗口；#465 接入前应用仍带主窗口侧栏，不能拉伸设计图来掩盖差异。测量核对 720 内容列居中、140 标题区、至少 54 行高、至少 24 文字与控件间距、说明不超过两行、没有横向溢出。真实设置值、工具检测结果取当前临时环境；内容不同应在评审里说明。`settings.e2e.ts` 另测 720 宽英文导航的 Tab 顺序、末按钮完整可见、焦点环四边至少 4px 留白，以及主页面不横向溢出。
+`RUNYARD_SETTINGS_REVIEW_OUTPUT` 指定产物目录，不设时新建临时目录；`RUNYARD_REVIEW_CHROME` 可覆盖生成并排图用的 Chrome 路径。原图保留原始像素，并排图按相同 CSS 逻辑像素展示（设计渲染器输出 2× 图，按 820×900 显示），设计稿与设置窗口都为 820×900；主窗口分别设为1440/1100宽以核对两者独立。设置窗口没有侧栏或标签条；截图只包含网页内容，原生红绿灯位置/全屏能力在窗口e2e核对。测量核对 720 内容列居中、140 标题区、至少 54 行高、至少 24 文字与控件间距、说明不超过两行、没有横向溢出。真实设置值、工具检测结果取当前临时环境；内容不同应在评审里说明。`settings.e2e.ts` 另测最小 760 宽英文导航的 Tab 顺序、末按钮完整可见、焦点环四边至少 4px 留白，以及主页面不横向溢出。
+
+设置窗口的端到端操作先用 `e2e/support/settings-window.ts` 的 `openSettingsWindow` 取得该窗口，
+不要把主窗口的 `page` 当作设置页。主窗口与设置窗口共享进程但网页不同；用例分别核对焦点、
+主题重开后切回系统、关闭设置后主窗口状态，以及原生选择框属于发起操作的前台窗口。
+
+## 工具路径输入的设计对照
+
+#484 的 `apps/desktop/e2e/tool-path.e2e.ts` 在临时 HOME 内生成只输出版本号的可执行文件，验证含空格路径输入、保存、无效文件不覆盖、Escape、Tab 和重新装载后读取。它走真实工具验证，不执行用户的工具路径。
+
+Node 24 下先运行 `node tooling/design-render/render.mjs SettingsNarrow SettingsNarrowDark SettingsNarrowEn SettingsNarrowDarkEn` 和桌面构建，再运行 `node apps/desktop/e2e/tool-path-design.measure.ts`。脚本固定四个工具的检测报告（含 universal 架构和缺失工具），仅供画面取证；主窗口 1440/1100 分别搭配真实独立设置窗口 820/760，浅深×中英共八组。设计图抽取现有 SettingsNarrow 的运行环境区域，保留内部样式；新增完整输入框、辅助选择按钮和输入说明是批准的差异，版本及架构用固定测试状态。量尺检查架构与状态至少 8px、各行状态列对齐、输入可用宽度和无横向溢出。`RUNYARD_TOOL_PATH_REVIEW_OUTPUT` 指定新临时产物目录；CI 上传 `tool-path-design-comparison`。
 
 ## 预览刷新动效的真实应用取证
 

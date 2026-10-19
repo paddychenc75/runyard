@@ -127,5 +127,10 @@
   "settings.theme.system.label": "System",
   "settings.theme.title": "Theme",
   "settings.updateCheck.hint": "Once a day, reads the public GitHub releases page only and sends no identifier",
-  "settings.updateCheck.title": "Check for updates automatically"
+  "settings.updateCheck.title": "Check for updates automatically",
+  "settings.runtime.pathInput.aria": "{tool} executable path",
+  "settings.runtime.pathInput.placeholder": "Enter the full executable path",
+  "settings.runtime.pathInput.hint": "Press Enter to save the full path; Esc to cancel",
+  "settings.runtime.choosePath.aria": "Choose {tool} executable",
+  "settings.runtime.absolutePath.body": "Enter an absolute path without ~ or environment variables"
 }
