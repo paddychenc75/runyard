@@ -106,8 +106,8 @@ export class RunBarActions {
     this.#hooks.system.openExternal(url);
   }
 
-  reloadPreview(playgroundId: string): void {
-    this.#hooks.preview.reload(playgroundId);
+  async reloadPreview(playgroundId: string): Promise<void> {
+    await this.#hooks.preview.reload(playgroundId);
   }
 
   /** 用系统默认浏览器打开预览此刻的地址；预览里点进别的页面后就是那个页面（规格 DESKTOP-WORKSPACE-32） */

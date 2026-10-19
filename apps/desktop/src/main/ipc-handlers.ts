@@ -149,9 +149,9 @@ export function registerBridgeHandlers(
       const playground = text(id);
       if (playground !== null) await controller.runBar.clearConsole(playground);
     },
-    "preview.reload": (id) => {
+    "preview.reload": async (id) => {
       const playground = text(id);
-      if (playground !== null) controller.runBar.reloadPreview(playground);
+      if (playground !== null) await controller.runBar.reloadPreview(playground);
     },
     "preview.openExternal": (id) => {
       const playground = text(id);
