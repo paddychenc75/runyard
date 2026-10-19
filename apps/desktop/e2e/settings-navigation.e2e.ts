@@ -1,6 +1,7 @@
 import { closePicker, expect, pressMenuShortcut, test } from "./support/fixtures.ts";
 import { showLibrarySidebar } from "./support/library-sidebar.ts";
 import { openSettingsPage } from "./support/settings-page.ts";
+import { installWindowFocusProbe, windowFocusProbe } from "./support/window-focus-probe.ts";
 
 test("[DESKTOP-SETTINGS-47] 窄窗口覆盖侧栏展开时菜单打开设置会收回导航", async ({ launch }) => {
   const runyard = await launch();
@@ -52,11 +53,19 @@ test("[DESKTOP-SETTINGS-48] 隐藏主窗口时菜单打开设置先显示原窗�
   const runyard = await launch();
   await closePicker(runyard.page);
   const main = await runyard.app.browserWindow(runyard.page);
+  await installWindowFocusProbe(runyard);
   await main.evaluate((window) => window.hide());
+  console.log("SETTINGS_FOCUS_AFTER_HIDE", JSON.stringify(await windowFocusProbe(runyard)));
   await pressMenuShortcut(runyard.app, "CmdOrCtrl+,");
-  await expect
-    .poll(() => main.evaluate((window) => window.isVisible() && window.isFocused()))
-    .toBe(true);
+  try {
+    await expect
+      .poll(() =>
+        main.evaluate((window) => ({ visible: window.isVisible(), focused: window.isFocused() })),
+      )
+      .toEqual({ visible: true, focused: true });
+  } finally {
+    console.log("SETTINGS_FOCUS_AFTER_MENU", JSON.stringify(await windowFocusProbe(runyard)));
+  }
   await expect(runyard.page.getByRole("heading", { name: "Settings", level: 1 })).toBeVisible();
   expect(
     await runyard.app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows().length),
