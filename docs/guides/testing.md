@@ -117,3 +117,11 @@ Node 24 下先运行 `node tooling/design-render/render.mjs Settings SettingsDar
 #484 的 `apps/desktop/e2e/tool-path.e2e.ts` 在临时 HOME 内生成只输出版本号的可执行文件，验证含空格路径输入、保存、无效文件不覆盖、Escape、Tab 和重新装载后读取。它走真实工具验证，不执行用户的工具路径。
 
 Node 24 下先运行 `node tooling/design-render/render.mjs SettingsNarrow SettingsNarrowDark SettingsNarrowEn SettingsNarrowDarkEn` 和桌面构建，再运行 `node apps/desktop/e2e/tool-path-design.measure.ts`。脚本固定四个工具的检测报告（含 universal 架构和缺失工具），仅供画面取证；主窗口 1440/1100 分别搭配真实独立设置窗口 820/760，浅深×中英共八组。设计图抽取现有 SettingsNarrow 的运行环境区域，保留内部样式；新增完整输入框、辅助选择按钮和输入说明是批准的差异，版本及架构用固定测试状态。量尺检查架构与状态至少 8px、各行状态列对齐、输入可用宽度和无横向溢出。`RUNYARD_TOOL_PATH_REVIEW_OUTPUT` 指定新临时产物目录；CI 上传 `tool-path-design-comparison`。
+
+## 预览刷新动效的真实应用取证
+
+Node 24 下先 `pnpm --filter @runyard/desktop build`，再运行 `pnpm --filter @runyard/desktop e2e:run preview-refresh.e2e.ts`。用例在临时主目录创建真实静态页面，先点击页面计数器，再点击应用刷新按钮并确认计数归零；以网络请求挂起/放行验证慢加载持续旋转、失败恢复及减少动态偏好，不用固定睡眠。
+
+设计对照先运行 `node tooling/design-render/render.mjs Web WebEn WebLight WebLightEn --no-shots`，再运行 `node apps/desktop/e2e/preview-refresh-design.measure.ts`。默认在独立临时目录输出八组浅深 × 中英 × 1440/1100 的静止、加载中、设计并排图与尺寸记录；`RUNYARD_REFRESH_OUTPUT` 可指定独立输出目录，`RUNYARD_E2E_APP` 可切换到端到端包。CI 上传 `preview-refresh-design-comparison`，下载后打开八张 comparison.png 和 loading.png。
+
+Web 系列只有 1440 画板，1100 对照保留原布局裁取，不代表存在窄窗设计稿。原生预览另附 preview.png；静态项目和设计的 React 示例内容不同，原有顶栏/侧栏差异分别由 #446/#448 追踪，停止图标沿用已合并 #475。动效是 #477 批准的新增行为，不能用静止图证明动效生命周期，须结合真实端到端结果。

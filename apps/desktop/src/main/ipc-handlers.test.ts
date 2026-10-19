@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { type BootstrapInfo, desktopChannels } from "../shared/desktop-bridge.ts";
 import type { LibraryState } from "../shared/library-state.ts";
 import {
@@ -90,6 +90,7 @@ function setup(dynamicBootstrap = false) {
     handlers.get(desktopChannels.call)?.(sender, method, param);
   return {
     call,
+    controller,
     syncHandlers,
     info,
     sent,
@@ -104,6 +105,28 @@ const app: IpcSender = { url: "app://runyard/" };
 const outsider: IpcSender = { url: "http://127.0.0.1:7101/" };
 
 const validCreate = { template: "html", name: "demo-1", note: "", autoClean: null };
+
+it("[DESKTOP-WORKSPACE-71] 刷新桥等待原生加载完成，不在请求送达时提前回复", async () => {
+  const { call, controller } = setup();
+  let finish = () => {};
+  vi.spyOn(controller.runBar, "reloadPreview").mockImplementation(
+    () =>
+      new Promise<void>((resolve) => {
+        finish = resolve;
+      }),
+  );
+  let finished = false;
+  const pending = Promise.resolve(
+    call({ url: "app://runyard/index.html" }, "preview.reload", "a"),
+  ).then(() => {
+    finished = true;
+  });
+  await Promise.resolve();
+  expect(finished).toBe(false);
+  finish();
+  await pending;
+  expect(finished).toBe(true);
+});
 
 describe("registerBridgeHandlers", () => {
   it("来自本应用界面的调用转给控制器", async () => {
