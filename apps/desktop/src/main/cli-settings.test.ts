@@ -16,7 +16,7 @@ function setup(
     run?: (args: string[]) => { code: number; stdout: string };
     existing?: string[];
     packaged?: boolean;
-    openGuide?: (locale: "en" | "zh-CN") => Promise<boolean>;
+    openGuide?: (locale: "en" | "zh-CN") => Promise<string>;
     runs?: { owner: { kind: string } }[];
   } = {},
 ) {
@@ -181,11 +181,11 @@ it("[DESKTOP-SETTINGS-44] 只打开固定语言说明，未安装也可用且拒
   const { cli, ran } = setup({
     openGuide: async (locale) => {
       opened.push(locale);
-      return true;
+      return "guide";
     },
   });
-  expect(await cli.openSkillGuide("zh-CN")).toEqual({ ok: true });
-  expect(await cli.openSkillGuide("en")).toEqual({ ok: true });
+  expect(await cli.openSkillGuide("zh-CN")).toEqual({ ok: true, content: "guide" });
+  expect(await cli.openSkillGuide("en")).toEqual({ ok: true, content: "guide" });
   for (const bad of ["../../private.txt", "zh", "", undefined, {}, ["en"]])
     expect(await cli.openSkillGuide(bad)).toEqual({ ok: false });
   expect(opened).toEqual(["zh-CN", "en"]);
