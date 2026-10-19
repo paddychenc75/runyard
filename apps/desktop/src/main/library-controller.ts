@@ -220,6 +220,7 @@ export class LibraryController {
         loaded: this.#loaded,
       }),
       libraryReveal: this.#opening.reveal,
+      projectSelection: this.#opening.selection,
     };
   }
 

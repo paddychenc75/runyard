@@ -4,7 +4,7 @@ import { join, resolve } from "node:path";
 import { chromium, expect, type Page } from "@playwright/test";
 import { composeEvidence } from "./preview-image-comparison.ts";
 import { launchRunyard, type RunyardApp } from "./support/launch.ts";
-import { openSettingsWindow } from "./support/settings-window.ts";
+import { openSettingsPage } from "./support/settings-page.ts";
 
 const out = process.env.RUNYARD_HEADER_REVIEW_OUTPUT ?? mkdtempSync(join(tmpdir(), "ry-header-"));
 mkdirSync(out, { recursive: true });
@@ -117,13 +117,13 @@ try {
             width,
             app,
           );
-          const settings = await openSettingsWindow(app);
-          await settings.setViewportSize({ width: 820, height: 900 });
+          const settings = await openSettingsPage(app);
+          await settings.setViewportSize({ width, height: 900 });
           const settingsWindow = await app.app.browserWindow(settings);
           expect(await settingsWindow.evaluate((win) => win.getWindowButtonPosition())).toEqual(
             native,
           );
-          await capture(settings, `${name}-settings`, `Settings${suffix}`, 820);
+          await capture(settings, `${name}-settings`, `Settings${suffix}`, width);
           await settingsWindow.evaluate((win) => win.close());
           await app.page
             .getByRole("tab", { name: lang === "en" ? "Library" : "资源库", exact: true })

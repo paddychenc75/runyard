@@ -62,7 +62,7 @@ const existing: PlaygroundRow = {
 };
 
 function setup(state: LibraryState) {
-  const call = vi.fn(async (method: string) => {
+  const call = vi.fn(async (method: string, _param?: unknown) => {
     if (method === "library.get") return state;
     return method === "playground.create" ? { ok: true } : undefined;
   });
@@ -134,8 +134,9 @@ describe("模板选择器", () => {
     expect(option.getAttribute("aria-disabled")).toBeNull();
     await user.click(option);
     await screen.findByRole("dialog", { name: "新建项目" });
-    for (const [method] of call.mock.calls) {
-      expect(method).toBe("library.get");
+    for (const [method, param] of call.mock.calls) {
+      if (method === "settings.pageActive") expect(param).toBe(false);
+      else expect(method).toBe("library.get");
     }
   });
 
@@ -465,6 +466,9 @@ describe("模板选择器每行的内容", () => {
     for (const option of screen.getAllByRole("option")) {
       expect(option.textContent).not.toMatch(/未安装|3\.13/);
     }
-    for (const [method] of call.mock.calls) expect(method).toBe("library.get");
+    for (const [method, param] of call.mock.calls) {
+      if (method === "settings.pageActive") expect(param).toBe(false);
+      else expect(method).toBe("library.get");
+    }
   });
 });

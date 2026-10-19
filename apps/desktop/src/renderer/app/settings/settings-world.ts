@@ -38,10 +38,11 @@ export const library: LibraryState = {
   closeRequest: null,
   templates: [],
   runs: [],
-  loaded: true,
+  loaded: false,
   recentTemplates: [],
   tabs: [],
   activeTab: "library",
+  projectSelection: 0,
   playgrounds: [],
 };
 

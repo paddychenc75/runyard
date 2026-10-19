@@ -5,6 +5,7 @@ import { useAppliedTheme } from "../features/editor/use-applied-theme.ts";
 import { setPanelMode, usePanelMode } from "../features/terminal/panel-mode.ts";
 import { TerminalView, type TerminalViewHandle } from "../features/terminal/TerminalView.tsx";
 import { useCommand } from "../shared/command-host.tsx";
+import { useContentVisible } from "../shared/content-visibility.ts";
 import { requestEditorFocus } from "../shared/editor-focus.ts";
 import { ConsoleOutput } from "./ConsoleOutput.tsx";
 import styles from "./ConsolePanel.module.css";
@@ -19,6 +20,7 @@ export interface ConsolePanelProps {
 // 两类都在用户主动打开后才创建终端，避免打开项目就启动 shell。
 // “清除”只在“输出”下出现（规格 DESKTOP-WORKSPACE-42）。⌃` 在编辑器和终端之间切换焦点（DESKTOP-TERMINAL-05）。
 export function ConsolePanel({ bridge, tab }: ConsolePanelProps) {
+  const visible = useContentVisible();
   const mode = usePanelMode(tab.id);
   const script = tab.kind === "oneshot";
   const appearance = useAppliedTheme();
@@ -49,6 +51,7 @@ export function ConsolePanel({ bridge, tab }: ConsolePanelProps) {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      if (!visible) return;
       if (!event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
       if (event.key !== "`") return;
       event.preventDefault();
@@ -64,7 +67,7 @@ export function ConsolePanel({ bridge, tab }: ConsolePanelProps) {
     };
     window.addEventListener("keydown", onKeyDown, true);
     return () => window.removeEventListener("keydown", onKeyDown, true);
-  }, [mode, showTerminal]);
+  }, [mode, showTerminal, visible]);
 
   return (
     <section
