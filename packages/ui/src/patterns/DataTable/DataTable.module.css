@@ -66,8 +66,17 @@
   background-image: linear-gradient(var(--glass-tab-selected-bg), var(--glass-tab-selected-bg));
 }
 
+/* 键盘焦点与选中分开表达，鼠标选中时不增加一圈强调边。 */
+.table:focus-visible .row[data-selected] {
+  outline: 1px solid var(--color-line-accent);
+  outline-offset: -1px;
+}
+
 .root:focus-within .body .row[data-selected] {
-  background-image: linear-gradient(var(--color-fill-accent-tint), var(--color-fill-accent-tint));
+  background-image: linear-gradient(
+    var(--color-fill-table-selected),
+    var(--color-fill-table-selected)
+  );
 }
 
 /* 行内编辑（设计稿 RenameInline）：行高随内容，淡强调底加一圈强调线 */
@@ -79,7 +88,7 @@
 }
 
 .body .row:not([data-selected]):not([data-editing]):hover {
-  background-image: linear-gradient(var(--glass-tab-selected-bg), var(--glass-tab-selected-bg));
+  background-image: linear-gradient(var(--color-fill-table-hover), var(--color-fill-table-hover));
 }
 
 .cell,

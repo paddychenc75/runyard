@@ -81,6 +81,8 @@ disagree, `tokens.json` wins.
 | Accent line (focus ring, caret, non-text marks) (`--color-line-accent`) | #0071E3 | #0A84FF |
 | Accent text (`--color-text-accent`) | #0058B0 | #4DA3FF |
 | Link (`--color-text-link`) | #0071E3 | #4DA3FF |
+| Table hover: subtle neutral fill below selection (`--color-fill-table-hover`) | rgba(0, 0, 0, 0.03) | rgba(255, 255, 255, 0.04) |
+| Table selection: restrained accent fill (`--color-fill-table-selected`) | rgba(0, 113, 227, 0.08) | rgba(10, 132, 255, 0.14) |
 | Accent tint (selected row, focus ring) (`--color-fill-accent-tint`) | rgba(0, 113, 227, 0.08) | rgba(10, 132, 255, 0.32) |
 | Running: dot (`--color-status-running-mark`) | #28A745 | #30D158 |
 | Running: text (`--color-status-running-text`) | #1B7A34 | #30D158 |
