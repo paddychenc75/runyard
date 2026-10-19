@@ -66,8 +66,6 @@
 }
 
 .actions {
-  display: flex;
-  gap: var(--space-3);
   margin-block-start: var(--space-4);
 }
 

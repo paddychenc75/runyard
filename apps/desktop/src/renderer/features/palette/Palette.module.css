@@ -23,7 +23,6 @@
   inline-size: var(--size-palette-width);
   max-inline-size: calc(100% - var(--space-10) * 2);
   overflow: hidden;
-  border: var(--glass-border-width) solid var(--glass-border-color);
   color: var(--color-text-primary);
   font-size: var(--text-body-size);
   line-height: var(--text-body-line-height);

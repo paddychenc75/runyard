@@ -24,7 +24,6 @@
   max-inline-size: calc(100% - var(--space-10) * 2);
   padding-block: calc(var(--space-9) + var(--space-1)) calc(var(--space-8) + var(--space-1));
   padding-inline: var(--space-10);
-  border: var(--glass-border-width) solid var(--glass-border-color);
   color: var(--color-text-primary);
   transform: translateX(-50%);
   opacity: 1;
@@ -84,13 +83,6 @@
   line-height: var(--text-body-line-height);
   color: var(--color-text-secondary);
   overflow-wrap: anywhere;
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: var(--space-5);
 }
 
 @media (prefers-reduced-motion: reduce) {

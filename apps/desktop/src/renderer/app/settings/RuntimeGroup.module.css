@@ -210,12 +210,6 @@
   inline-size: 100%;
 }
 
-.detailActions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-}
-
 .already {
   display: flex;
   gap: var(--space-2);

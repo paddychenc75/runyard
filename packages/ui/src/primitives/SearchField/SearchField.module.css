@@ -4,7 +4,10 @@
   align-items: center;
   gap: var(--space-6);
   min-inline-size: 0;
-  padding-block: var(--space-5);
+  /* 设计稿 Picker 的搜索行：高 54（和命令面板输入行同高）、左右内边距 20 */
+  box-sizing: border-box;
+  block-size: var(--size-palette-input);
+  padding-block: 0;
   padding-inline: var(--space-8);
   color: var(--color-text-secondary);
 }
@@ -35,4 +38,10 @@
 .trailing {
   display: inline-flex;
   flex: none;
+}
+
+/* 末端的键帽（esc）：只用中性填充，不画边框 */
+.trailing kbd {
+  border: 0;
+  background: var(--color-fill-neutral);
 }

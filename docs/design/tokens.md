@@ -36,7 +36,6 @@ disagree, `tokens.json` wins.
 | Control on glass (secondary button), rest (`--glass-control-bg`) | rgba(255, 255, 255, 0.66) | rgba(72, 72, 78, 0.55) |
 | Control on glass, hover (one more fill layer) (`--glass-control-bg-hover`) | rgba(255, 255, 255, 0.78) | rgba(72, 72, 78, 0.68) |
 | Control on glass, pressed (`--glass-control-bg-pressed`) | rgba(255, 255, 255, 0.9) | rgba(72, 72, 78, 0.8) |
-| Border of dialogs and menus (elevation 3 and 4 only; width: glass-border-width) (`--glass-border-color`) | rgba(255, 255, 255, 0.9) | rgba(255, 255, 255, 0.14) |
 | Selected tab: a light fill only, no shadow or ring (`--glass-tab-selected-bg`) | rgba(0, 0, 0, 0.065) | rgba(255, 255, 255, 0.1) |
 
 ### Shadows
@@ -46,9 +45,8 @@ disagree, `tokens.json` wins.
 | Elevation 0: inset blocks, table rows, inputs (no shadow) (`--shadow-flat`) | none | none |
 | Elevation 1: content cards (no shadow, a 1 px hairline border instead) (`--shadow-card`) | none | none |
 | Elevation 2: sidebar, file tree (fill plus one soft shadow, no edge, ring or top highlight) (`--shadow-floating`) | 0 1px 2px rgba(15, 23, 42, 0.05), 0 8px 24px rgba(15, 23, 42, 0.09) | 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 28px rgba(0, 0, 0, 0.42) |
-| Elevation 4: dialogs, template picker (`--shadow-dialog`) | 0 0 0 0.5px rgba(0, 0, 0, 0.14), 0 40px 90px rgba(15, 23, 42, 0.32), inset 0 1px 0 rgba(255, 255, 255, 1) | 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 40px 90px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.14) |
-| Elevation 3: menus, popovers, tooltips (`--shadow-overlay`) | 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 16px 40px rgba(15, 23, 42, 0.2), inset 0 1px 0 rgba(255, 255, 255, 1) | 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.14) |
-| Primary button glow (`--shadow-accent-button`) | 0 4px 14px rgba(0, 113, 227, 0.25) | 0 4px 14px rgba(10, 132, 255, 0.35) |
+| Elevation 4: dialogs, template picker (`--shadow-dialog`) | 0 0 0 0.5px rgba(0, 0, 0, 0.14), 0 40px 90px rgba(15, 23, 42, 0.32) | 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 40px 90px rgba(0, 0, 0, 0.6) |
+| Elevation 3: menus, popovers, tooltips (`--shadow-overlay`) | 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 16px 40px rgba(15, 23, 42, 0.2) | 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 16px 40px rgba(0, 0, 0, 0.5) |
 | Focus ring: 1.5 px accent line plus 3 px halo (`--shadow-focus-ring`) | 0 0 0 1.5px #0071E3, 0 0 0 4.5px rgba(0, 113, 227, 0.18) | 0 0 0 1.5px #0A84FF, 0 0 0 4.5px rgba(10, 132, 255, 0.32) |
 | Text field focus halo (3 px, beside the 1.5 px accent border) (`--shadow-field-focus`) | 0 0 0 3px rgba(0, 113, 227, 0.18) | 0 0 0 3px rgba(10, 132, 255, 0.2) |
 | Selected segment in a segmented control (`--shadow-segment-selected`) | 0 1px 3px rgba(0, 0, 0, 0.14), 0 0 0 0.5px rgba(0, 0, 0, 0.05) | none |
@@ -163,7 +161,6 @@ disagree, `tokens.json` wins.
 
 | Variable | Value | Role |
 | --- | --- | --- |
-| `--glass-border-width` | 1px | Glass border width |
 | `--glass-blur-toolbar` | blur(28px) saturate(180%) | Backdrop filter, toolbar / capsule |
 | `--glass-blur-sidebar` | blur(40px) saturate(180%) | Backdrop filter, sidebar |
 | `--glass-blur-dialog` | blur(50px) saturate(190%) | Backdrop filter, dialog |
@@ -218,7 +215,6 @@ disagree, `tokens.json` wins.
 | `--size-card-gap` | 8px | Gap between cards |
 | `--size-dialog-width` | 580px | Dialog width |
 | `--size-dialog-width-wide` | 720px | Width of the wide form dialog (save as template) |
-| `--size-picker-width` | 860px | Width of the template picker (search, category rail, list) |
 | `--size-picker-rail-width` | 190px | Width of the template picker's category rail |
 | `--size-popover-width` | 420px | Width of the running-list popover |
 | `--size-palette-width` | 680px | Width of the command palette and quick open |

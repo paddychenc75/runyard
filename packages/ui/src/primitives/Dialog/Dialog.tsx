@@ -1,6 +1,7 @@
 import { Dialog as BaseDialog } from "@base-ui/react/dialog";
 import type { Localized } from "@runyard/i18n";
 import type { FormEvent, KeyboardEvent, ReactNode, RefObject } from "react";
+import { ButtonGroup } from "../ButtonGroup/index.ts";
 import { GlassSurface } from "../GlassSurface/index.ts";
 import { ScrollArea } from "../ScrollArea/index.ts";
 import styles from "./Dialog.module.css";
@@ -73,7 +74,9 @@ export function Dialog({
   const footer = (
     <>
       <span className={styles.hint}>{hint}</span>
-      {actions}
+      <ButtonGroup size="lg" align="end">
+        {actions}
+      </ButtonGroup>
     </>
   );
   return (

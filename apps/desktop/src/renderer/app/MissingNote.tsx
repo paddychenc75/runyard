@@ -1,5 +1,5 @@
 import { T, useT } from "@runyard/i18n/react";
-import { Button, Icon, UserText } from "@runyard/ui";
+import { Button, ButtonGroup, Icon, UserText } from "@runyard/ui";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import styles from "./MissingNote.module.css";
 
@@ -49,13 +49,11 @@ export function MissingNote({
           </p>
         ) : null}
       </div>
-      <div className={styles.actions}>
-        <Button variant="primary" size="sm" onClick={onRelocate}>
+      <ButtonGroup size="md" className={styles.actions}>
+        <Button variant="primary" onClick={onRelocate}>
           {t("library.row.relocate.action")}
         </Button>
-        <Button size="sm" onClick={onForget}>
-          {t("library.row.forget.action")}
-        </Button>
+        <Button onClick={onForget}>{t("library.row.forget.action")}</Button>
         <button
           type="button"
           className={styles.link}
@@ -63,7 +61,7 @@ export function MissingNote({
         >
           {t("library.missing.revealParent.action")}
         </button>
-      </div>
+      </ButtonGroup>
     </div>
   );
 }

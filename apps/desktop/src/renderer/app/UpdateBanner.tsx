@@ -1,5 +1,5 @@
 import { useT } from "@runyard/i18n/react";
-import { Button, Icon } from "@runyard/ui";
+import { Button, ButtonGroup, Icon } from "@runyard/ui";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { UpdateBannerView } from "../../shared/library-state.ts";
 import styles from "./UpdateBanner.module.css";
@@ -25,8 +25,8 @@ export function UpdateBanner({ bridge, update }: UpdateBannerProps) {
       <p className={styles.text}>
         {t("desktop.update.banner.label", { latest: update.latest, current: update.current })}
       </p>
-      <div className={styles.actions}>
-        <Button variant="primary" size="sm" onClick={() => void bridge.call("update.download")}>
+      <ButtonGroup size="md" className={styles.actions}>
+        <Button variant="primary" onClick={() => void bridge.call("update.download")}>
           {t("desktop.update.download.action")}
         </Button>
         <button
@@ -36,7 +36,7 @@ export function UpdateBanner({ bridge, update }: UpdateBannerProps) {
         >
           {t("desktop.update.later.action")}
         </button>
-      </div>
+      </ButtonGroup>
     </section>
   );
 }

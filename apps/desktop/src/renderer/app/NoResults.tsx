@@ -1,5 +1,5 @@
 import { useT } from "@runyard/i18n/react";
-import { Button, EmptyState } from "@runyard/ui";
+import { Button, ButtonGroup, EmptyState } from "@runyard/ui";
 import styles from "./NoResults.module.css";
 
 export interface NoResultsProps {
@@ -34,16 +34,16 @@ export function NoResults({
         }
         description={searching ? t("library.noResults.hint") : t("library.noResults.filtered.hint")}
       >
-        <div className={styles.actions}>
-          <Button size="lg" onClick={searching ? onClearSearch : onResetFilters}>
+        <ButtonGroup size="lg" className={styles.actions}>
+          <Button onClick={searching ? onClearSearch : onResetFilters}>
             {searching ? t("library.noResults.clear.action") : t("library.noResults.reset.action")}
           </Button>
           {canCreate ? (
-            <Button variant="primary" size="lg" onClick={onCreate}>
+            <Button variant="primary" onClick={onCreate}>
               {t("library.noResults.create.action", { query: search })}
             </Button>
           ) : null}
-        </div>
+        </ButtonGroup>
       </EmptyState>
     </div>
   );

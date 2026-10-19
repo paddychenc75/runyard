@@ -1,4 +1,5 @@
-/* 选择器浮层：幕布盖满窗口，对话框玻璃靠上居中（设计稿 Picker） */
+/* 选择器浮层（设计稿 Picker 方案 A）：幕布盖满窗口，对话框的位置和宽度与命令面板一致，
+   高度随内容变（输入行 54 + 列表最多 470 + 底栏 40），不再撑满窗口 */
 .scrim {
   position: fixed;
   inset: 0;
@@ -6,22 +7,22 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-block-start: var(--space-10);
+  padding-block-start: var(--size-palette-top);
   background: var(--color-scrim);
 }
 
 .dialog {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  inline-size: var(--size-picker-width);
-  max-inline-size: calc(100% - var(--space-10));
-  /* 设计稿的对话框贴着上下各留一段边距、始终撑满 */
-  block-size: calc(100vh - var(--space-10) * 2);
+  inline-size: var(--size-palette-width);
+  max-inline-size: calc(100% - var(--space-10) * 2);
+  max-block-size: calc(100% - var(--size-palette-top) - var(--space-10));
   overflow: hidden;
 }
 
 .picker {
-  flex: 1;
+  min-block-size: 0;
 }
 
 .empty {

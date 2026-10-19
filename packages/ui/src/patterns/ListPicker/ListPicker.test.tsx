@@ -28,7 +28,6 @@ function setup(onChoose = vi.fn()) {
     <ListPicker
       label={name("templates")}
       groups={groups}
-      chooseLabel={name("pick")}
       onChoose={onChoose}
       renderHeader={(props) => <SearchField {...props} label={name("search")} />}
     />,
@@ -69,10 +68,10 @@ describe("ListPicker", () => {
     expect(screen.getAllByRole("option")[0]?.getAttribute("aria-selected")).toBe("true");
   });
 
-  it("点击一行就选择它；高亮行显示选择文字", async () => {
+  it("点击一行就选择它；高亮行没有“选择”按钮", async () => {
     const user = userEvent.setup();
     const { onChoose } = setup();
-    expect(screen.getByText("pick")).toBeTruthy();
+    expect(screen.queryByText("pick")).toBeNull();
     await user.click(screen.getAllByRole("option")[1] as HTMLElement);
     expect(onChoose).toHaveBeenCalledWith("react19");
   });
@@ -91,7 +90,6 @@ describe("ListPicker", () => {
       <ListPicker
         label={name("templates")}
         groups={groups}
-        chooseLabel={name("pick")}
         onChoose={() => {}}
         renderHeader={(props) => <SearchField {...props} label={name("search")} />}
       />,
@@ -102,7 +100,6 @@ describe("ListPicker", () => {
       <ListPicker
         label={name("templates")}
         groups={groups.slice(1)}
-        chooseLabel={name("pick")}
         onChoose={() => {}}
         renderHeader={(props) => <SearchField {...props} label={name("search")} />}
       />,
@@ -129,7 +126,6 @@ describe("ListPicker 的分类栏和随高亮变的底部", () => {
         groups={groups}
         rail={rail}
         footer={footer}
-        chooseLabel={name("pick")}
         onChoose={onChoose}
         renderHeader={(props) => <SearchField {...props} label={name("search")} />}
       />,
@@ -212,7 +208,6 @@ describe("ListPicker 的分类栏和随高亮变的底部", () => {
         label={name("templates")}
         groups={[]}
         footer={(id) => <span>{`now:${String(id)}`}</span>}
-        chooseLabel={name("pick")}
         onChoose={() => {}}
         renderHeader={(props) => <SearchField {...props} label={name("search")} />}
       />,

@@ -1,6 +1,6 @@
 import { useT } from "@runyard/i18n/react";
 import type { SettingsPatch } from "@runyard/protocol";
-import { Button, ConfirmDialog, UserText } from "@runyard/ui";
+import { Button, ButtonGroup, ConfirmDialog, UserText } from "@runyard/ui";
 import { useState } from "react";
 import type { DesktopBridge } from "../../../shared/desktop-bridge.ts";
 import type { LibraryRootChoice } from "../../../shared/settings-bridge.ts";
@@ -35,10 +35,12 @@ export function LibraryRootRow({ bridge, display, update }: LibraryRootRowProps)
         hint={<UserText>{display}</UserText>}
         monoHint
       >
-        <Button onClick={() => void change()}>{t("settings.libraryRoot.change.action")}</Button>
-        <Button onClick={() => void bridge.call("settings.revealLibraryRoot")}>
-          {t("settings.libraryRoot.reveal.action")}
-        </Button>
+        <ButtonGroup>
+          <Button onClick={() => void change()}>{t("settings.libraryRoot.change.action")}</Button>
+          <Button onClick={() => void bridge.call("settings.revealLibraryRoot")}>
+            {t("settings.libraryRoot.reveal.action")}
+          </Button>
+        </ButtonGroup>
       </SettingsRow>
       {choice === null ? null : (
         <>

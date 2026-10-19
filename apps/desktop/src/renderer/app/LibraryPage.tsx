@@ -186,7 +186,13 @@ export function LibraryPage({
           title={t("library.empty.title")}
           description={t("library.empty.hint")}
         >
-          <Button variant="primary" icon="plus" className={styles.newButton} onClick={onNew}>
+          <Button
+            variant="primary"
+            size="lg"
+            icon="plus"
+            className={styles.newButton}
+            onClick={onNew}
+          >
             {t("desktop.create.newProject.action")}
           </Button>
           {common.length === 0 ? null : (

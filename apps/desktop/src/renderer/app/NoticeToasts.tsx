@@ -1,5 +1,5 @@
 import { T, useFormat, useT } from "@runyard/i18n/react";
-import { Button, GlassSurface, Icon, IconButton, UserText } from "@runyard/ui";
+import { Button, ButtonGroup, GlassSurface, Icon, IconButton, UserText } from "@runyard/ui";
 import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
@@ -62,7 +62,6 @@ function Dismiss({ bridge, id }: { bridge: DesktopBridge; id: string }) {
   return (
     <IconButton
       icon="close"
-      size="sm"
       className={styles.close}
       label={t("desktop.notice.dismiss.aria")}
       onClick={() => void bridge.call("notice.dismiss", id)}
@@ -76,7 +75,7 @@ function AgentRunToast({ bridge, notice }: { bridge: DesktopBridge; notice: Agen
   const now = useNow(30_000);
   const done = () => bridge.call("notice.dismiss", notice.id);
   return (
-    <GlassSurface material="menu" className={styles.toast} data-notice={notice.id}>
+    <GlassSurface material="toast" className={styles.toast} data-notice={notice.id}>
       <span aria-hidden="true" className={styles.tile} data-kind="agent">
         <Icon name="spark" size={18} />
       </span>
@@ -104,21 +103,17 @@ function AgentRunToast({ bridge, notice }: { bridge: DesktopBridge; notice: Agen
             })}
           </p>
         )}
-        <div className={styles.actions}>
+        <ButtonGroup size="md" className={styles.actions}>
           <Button
             variant="primary"
-            size="sm"
             onClick={() => void bridge.call("tab.open", notice.playgroundId).then(done)}
           >
             {t("library.row.open.action")}
           </Button>
-          <Button
-            size="sm"
-            onClick={() => void bridge.call("run.stop", notice.playgroundId).then(done)}
-          >
+          <Button onClick={() => void bridge.call("run.stop", notice.playgroundId).then(done)}>
             {t("desktop.stop.action")}
           </Button>
-        </div>
+        </ButtonGroup>
       </div>
       <Dismiss bridge={bridge} id={notice.id} />
     </GlassSurface>
@@ -128,7 +123,7 @@ function AgentRunToast({ bridge, notice }: { bridge: DesktopBridge; notice: Agen
 function PathToast({ bridge, notice }: { bridge: DesktopBridge; notice: PathNearLimitNotice }) {
   const t = useT();
   return (
-    <GlassSurface material="menu" className={styles.toast} data-notice={notice.id}>
+    <GlassSurface material="toast" className={styles.toast} data-notice={notice.id}>
       <span aria-hidden="true" className={styles.tile} data-kind="warning">
         <Icon name="warning" size={18} />
       </span>
@@ -152,7 +147,7 @@ function PathToast({ bridge, notice }: { bridge: DesktopBridge; notice: PathNear
 // 链接没能照做的提示（规格 DESKTOP-LINKS-03、04、10、11、14、16）：一句话，说明原因
 function LinkToast({ bridge, notice }: { bridge: DesktopBridge; notice: LinkNotice }) {
   return (
-    <GlassSurface material="menu" className={styles.toast} data-notice={notice.id}>
+    <GlassSurface material="toast" className={styles.toast} data-notice={notice.id}>
       <span aria-hidden="true" className={styles.tile} data-kind="warning">
         <Icon name="info" size={18} />
       </span>

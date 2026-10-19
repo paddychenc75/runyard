@@ -347,7 +347,6 @@
 | desktop.pathNotice.title.label | <user>{name}</user> 已创建 | <user>{name}</user> was created | name：新建项目的名称（不翻译）；user：包住用户内容的标签 |
 | desktop.picker.all.label | 全部 | All | — |
 | desktop.picker.arrowsKey.label | 上下键 | ↑ ↓ | — |
-| desktop.picker.choose.action | 选择 | Select | — |
 | desktop.picker.defaultName.label | 默认名称 | Default name | — |
 | desktop.picker.dialog.aria | 选择模板 | Choose a template | — |
 | desktop.picker.empty.hint | 没有可用的模板。 | No templates available. | — |

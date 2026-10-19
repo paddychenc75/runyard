@@ -1,5 +1,5 @@
 import { useFormat, useT } from "@runyard/i18n/react";
-import { Button, Icon, UserText } from "@runyard/ui";
+import { Button, ButtonGroup, Icon, UserText } from "@runyard/ui";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { TabRow } from "../../shared/library-state.ts";
 import styles from "./AttachedNotice.module.css";
@@ -39,19 +39,18 @@ export function AttachedNotice({ bridge, tab, attached }: AttachedNoticeProps) {
         </p>
         <p className={styles.hint}>{t("workspace.attached.hint")}</p>
       </div>
-      <div className={styles.actions}>
-        <Button size="sm" disabled={tab.busy} onClick={() => void bridge.call("run.adopt", tab.id)}>
+      <ButtonGroup size="md" direction="column" className={styles.actions}>
+        <Button disabled={tab.busy} onClick={() => void bridge.call("run.adopt", tab.id)}>
           {t("workspace.attached.adopt.action")}
         </Button>
         <Button
-          size="sm"
           icon="stop"
           disabled={tab.busy}
           onClick={() => void bridge.call("run.stop", tab.id)}
         >
           {t("workspace.attached.stop.action")}
         </Button>
-      </div>
+      </ButtonGroup>
     </section>
   );
 }

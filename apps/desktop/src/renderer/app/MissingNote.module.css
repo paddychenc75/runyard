@@ -34,11 +34,7 @@
 }
 
 .actions {
-  display: flex;
   flex: none;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-4);
 }
 
 .link {

@@ -88,6 +88,12 @@ pnpm check
 
 想确认 Windows 上的行为，不用 Windows 电脑：`tooling/vitest/base.test.ts` 用 `createConfig("win32")` 验证排除规则；`pnpm check` 里的 `platform-branching` 保证没人绕开后缀。
 
+## 图标改动的设计对照证据
+
+Node 24 下运行 `node tooling/design-render/icon-review.ts`，默认在新临时目录生成八组浅深 × 中英 × 1440/1100 的 PNG、HTML 和说明文件。`RUNYARD_ICON_REVIEW_BASE` 可指定基线提交（默认当前提交与 `origin/main` 的共同祖先），`RUNYARD_ICON_REVIEW_OUTPUT` 可指定产物目录，`RUNYARD_ICON_REVIEW_CHROME` 可指定 Chrome 可执行文件。
+
+样片读取基线与当前工作树的 SVG、`Icon` / `IconButton` 样式和设计变量，附上展开后的 `SpecType` 图标规范，并记录提交与样式哈希。这是静态 SVG/CSS 取证，真实 React 组件仍由 `ui-visual` 验证；不更新基准图。CI 的 `ui-visual` 会上传 `icon-design-comparison` 产物，评审时下载并打开八张 PNG，避免证据只留在开发者本机。
+
 ## 完成标准
 
 - 需要平台实现的测试都带 `.platform-dependent.test.ts` 后缀，其余不带。

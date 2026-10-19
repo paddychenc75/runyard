@@ -13,6 +13,8 @@ on:
       - packages/**
       - templates/**
       - tooling/scripts/package-desktop.ts
+      - tooling/scripts/vue-language-service-smoke.ts
+      - tooling/scripts/vue-smoke-fixture/**
       - .github/workflows/e2e.yml
       - pnpm-lock.yaml
   push:
@@ -102,6 +104,10 @@ jobs:
             echo "== $flag"
             HOME="$home" "$app" "$flag" --root "$home/r"
           done
+
+      # 从打好的 .app 里的语言服务目录起 Vue 语言服务的两个进程做一次属性名补全（#411）；脚本自己用临时主目录
+      - name: Vue 语言服务冒烟（打好的 .app）
+        run: node tooling/scripts/vue-language-service-smoke.ts --app "$GITHUB_WORKSPACE/apps/desktop/release/mac-arm64/Runyard.app"
 
       - name: 上传安装包（不发版）
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

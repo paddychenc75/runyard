@@ -38,7 +38,7 @@ export function ClosePrompt({ name, onAnswer }: ClosePromptProps) {
           <Button variant="neutral" onClick={() => onAnswer("discard")}>
             {t("desktop.editor.closeDiscard.action")}
           </Button>
-          <Button variant="primary" size="md" onClick={() => onAnswer("save")}>
+          <Button variant="primary" onClick={() => onAnswer("save")}>
             {t("desktop.editor.closeSave.action")}
           </Button>
         </>

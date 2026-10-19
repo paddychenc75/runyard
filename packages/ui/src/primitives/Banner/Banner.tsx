@@ -1,6 +1,7 @@
 import type { Localized } from "@runyard/i18n";
 import type { ComponentProps, ReactNode } from "react";
 import type { IconName } from "../../icons/generated/icon-paths.ts";
+import { ButtonGroup } from "../ButtonGroup/index.ts";
 import { Icon } from "../Icon/index.ts";
 import styles from "./Banner.module.css";
 
@@ -47,7 +48,7 @@ export function Banner({
         </div>
       </div>
       {children === undefined ? null : <div className={styles.body}>{children}</div>}
-      {actions === undefined ? null : <div className={styles.actions}>{actions}</div>}
+      {actions === undefined ? null : <ButtonGroup size="md">{actions}</ButtonGroup>}
     </section>
   );
 }

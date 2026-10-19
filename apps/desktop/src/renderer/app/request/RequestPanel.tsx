@@ -5,7 +5,7 @@ import {
   type RequestMethod,
   requestMethods,
 } from "@runyard/protocol";
-import { Button, Icon, Menu, ScrollArea, SegmentedControl } from "@runyard/ui";
+import { Button, ButtonGroup, Icon, Menu, ScrollArea, SegmentedControl } from "@runyard/ui";
 import { type ChangeEvent, useLayoutEffect, useRef, useState } from "react";
 import type { DesktopBridge } from "../../../shared/desktop-bridge.ts";
 import type { TabRow } from "../../../shared/library-state.ts";
@@ -62,6 +62,7 @@ export function RequestPanel({ bridge, tab }: RequestPanelProps) {
         <Button
           type="submit"
           variant="primary"
+          size="lg"
           disabled={!canSend}
           loading={panel.sending}
           onClick={(event) => {
@@ -98,16 +99,16 @@ export function RequestPanel({ bridge, tab }: RequestPanelProps) {
           />
           {t("desktop.request.autoResend.label")}
         </span>
-        <Button size="sm" disabled={tab.port === null} onClick={panel.copyCurl}>
-          {panel.copied ? t("desktop.request.copied.label") : t("desktop.request.copyCurl.action")}
-        </Button>
-        <Button
-          size="sm"
-          disabled={!canSend || draft.method !== "GET"}
-          onClick={panel.openInBrowser}
-        >
-          {t("desktop.request.openInBrowser.action")}
-        </Button>
+        <ButtonGroup size="sm">
+          <Button disabled={tab.port === null} onClick={panel.copyCurl}>
+            {panel.copied
+              ? t("desktop.request.copied.label")
+              : t("desktop.request.copyCurl.action")}
+          </Button>
+          <Button disabled={!canSend || draft.method !== "GET"} onClick={panel.openInBrowser}>
+            {t("desktop.request.openInBrowser.action")}
+          </Button>
+        </ButtonGroup>
       </div>
       <div className={styles.editor}>
         {requestTab === "headers" ? (

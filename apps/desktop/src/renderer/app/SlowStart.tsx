@@ -1,5 +1,5 @@
 import { useT } from "@runyard/i18n/react";
-import { Button, Icon } from "@runyard/ui";
+import { Button, ButtonGroup, Icon } from "@runyard/ui";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { TabRow } from "../../shared/library-state.ts";
 import styles from "./FailureScreen.module.css";
@@ -25,7 +25,7 @@ export function SlowStart({ bridge, tab }: SlowStartProps) {
           <p className={styles.description}>{t("desktop.slow.body")}</p>
         </div>
       </div>
-      <div className={styles.actions}>
+      <ButtonGroup size="md" className={styles.actions}>
         <Button
           icon="stop"
           disabled={tab.busy}
@@ -34,7 +34,7 @@ export function SlowStart({ bridge, tab }: SlowStartProps) {
           {t("desktop.stop.action")}
         </Button>
         <Button onClick={focusConsoleOutput}>{t("desktop.output.view.action")}</Button>
-      </div>
+      </ButtonGroup>
     </div>
   );
 }

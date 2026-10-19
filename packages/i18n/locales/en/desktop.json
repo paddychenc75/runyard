@@ -225,7 +225,6 @@
   "desktop.pathNotice.title.label": "<user>{name}</user> was created",
   "desktop.picker.all.label": "All",
   "desktop.picker.arrowsKey.label": "↑ ↓",
-  "desktop.picker.choose.action": "Select",
   "desktop.picker.defaultName.label": "Default name",
   "desktop.picker.dialog.aria": "Choose a template",
   "desktop.picker.empty.hint": "No templates available.",

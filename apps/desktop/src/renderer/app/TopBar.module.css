@@ -64,15 +64,10 @@
   background: var(--color-line-hairline);
 }
 
-/* 设计稿 Main 的“新建”：和标签胶囊、“N 个运行中”同一个高度档（--size-tab）、同一条中线；
-   不带强调阴影，免得它比旁边两个控件重一截（#389） */
+/* “新建”和标签、“N 个运行中”同一档（md，32）；没有彩色阴影（#419）。[data-size] 只为压过 Button 自带的 margin: 0 */
 .new[data-size] {
-  --button-shadow: var(--shadow-flat);
-
   flex: none;
-  block-size: var(--size-tab);
   margin-inline-start: var(--space-4);
-  padding-inline: var(--space-7);
 }
 
 /* 命令行持有的运行：名字后面跟智能体名称的徽标（规格 DESKTOP-WORKSPACE-26） */

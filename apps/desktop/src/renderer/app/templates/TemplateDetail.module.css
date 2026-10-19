@@ -87,11 +87,6 @@
   padding-inline: var(--space-10);
 }
 
-.actions {
-  display: flex;
-  gap: var(--space-4);
-}
-
 .hint {
   margin: 0;
   color: var(--color-text-secondary);

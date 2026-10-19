@@ -20,16 +20,12 @@ export const themes = {
     "glass-control-bg": "rgba(255, 255, 255, 0.66)",
     "glass-control-bg-hover": "rgba(255, 255, 255, 0.78)",
     "glass-control-bg-pressed": "rgba(255, 255, 255, 0.9)",
-    "glass-border-color": "rgba(255, 255, 255, 0.9)",
     "glass-tab-selected-bg": "rgba(0, 0, 0, 0.065)",
     "shadow-flat": "none",
     "shadow-card": "none",
     "shadow-floating": "0 1px 2px rgba(15, 23, 42, 0.05), 0 8px 24px rgba(15, 23, 42, 0.09)",
-    "shadow-dialog":
-      "0 0 0 0.5px rgba(0, 0, 0, 0.14), 0 40px 90px rgba(15, 23, 42, 0.32), inset 0 1px 0 rgba(255, 255, 255, 1)",
-    "shadow-overlay":
-      "0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 16px 40px rgba(15, 23, 42, 0.2), inset 0 1px 0 rgba(255, 255, 255, 1)",
-    "shadow-accent-button": "0 4px 14px rgba(0, 113, 227, 0.25)",
+    "shadow-dialog": "0 0 0 0.5px rgba(0, 0, 0, 0.14), 0 40px 90px rgba(15, 23, 42, 0.32)",
+    "shadow-overlay": "0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 16px 40px rgba(15, 23, 42, 0.2)",
     "shadow-focus-ring": "0 0 0 1.5px #0071E3, 0 0 0 4.5px rgba(0, 113, 227, 0.18)",
     "shadow-field-focus": "0 0 0 3px rgba(0, 113, 227, 0.18)",
     "shadow-segment-selected": "0 1px 3px rgba(0, 0, 0, 0.14), 0 0 0 0.5px rgba(0, 0, 0, 0.05)",
@@ -123,16 +119,12 @@ export const themes = {
     "glass-control-bg": "rgba(72, 72, 78, 0.55)",
     "glass-control-bg-hover": "rgba(72, 72, 78, 0.68)",
     "glass-control-bg-pressed": "rgba(72, 72, 78, 0.8)",
-    "glass-border-color": "rgba(255, 255, 255, 0.14)",
     "glass-tab-selected-bg": "rgba(255, 255, 255, 0.1)",
     "shadow-flat": "none",
     "shadow-card": "none",
     "shadow-floating": "0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 28px rgba(0, 0, 0, 0.42)",
-    "shadow-dialog":
-      "0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 40px 90px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.14)",
-    "shadow-overlay":
-      "0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.14)",
-    "shadow-accent-button": "0 4px 14px rgba(10, 132, 255, 0.35)",
+    "shadow-dialog": "0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 40px 90px rgba(0, 0, 0, 0.6)",
+    "shadow-overlay": "0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 16px 40px rgba(0, 0, 0, 0.5)",
     "shadow-focus-ring": "0 0 0 1.5px #0A84FF, 0 0 0 4.5px rgba(10, 132, 255, 0.32)",
     "shadow-field-focus": "0 0 0 3px rgba(10, 132, 255, 0.2)",
     "shadow-segment-selected": "none",
@@ -212,7 +204,6 @@ export const themes = {
 
 /** 两个主题下相同的变量，值与写进 CSS 的完全一致（带单位） */
 export const constants = {
-  "glass-border-width": "1px",
   "glass-blur-toolbar": "blur(28px) saturate(180%)",
   "glass-blur-sidebar": "blur(40px) saturate(180%)",
   "glass-blur-dialog": "blur(50px) saturate(190%)",
@@ -252,7 +243,6 @@ export const constants = {
   "size-card-gap": "8px",
   "size-dialog-width": "580px",
   "size-dialog-width-wide": "720px",
-  "size-picker-width": "860px",
   "size-picker-rail-width": "190px",
   "size-popover-width": "420px",
   "size-palette-width": "680px",
@@ -384,7 +374,6 @@ export const numbers = {
   "size-card-gap": 8,
   "size-dialog-width": 580,
   "size-dialog-width-wide": 720,
-  "size-picker-width": 860,
   "size-picker-rail-width": 190,
   "size-popover-width": 420,
   "size-palette-width": 680,

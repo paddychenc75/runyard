@@ -545,7 +545,6 @@ export type CatalogMessages = {
   };
   "desktop.picker.all.label": Record<never, never>;
   "desktop.picker.arrowsKey.label": Record<never, never>;
-  "desktop.picker.choose.action": Record<never, never>;
   "desktop.picker.defaultName.label": Record<never, never>;
   "desktop.picker.dialog.aria": Record<never, never>;
   "desktop.picker.empty.hint": Record<never, never>;

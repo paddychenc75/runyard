@@ -18,6 +18,7 @@
 | 自动清理 | `autoClean`（开，带天数；关） | — | 临时项目、到期清理 | scratch | PRD #prd-retention；PRD #prd-auto-clean；PRD #prd-revisions |
 | 备注 | `note` | — | — | — | PRD #prd-note；技术设计 §4.2 |
 | 最近使用 | `lastOpenedAt` 与 `lastUsedAt` 取较晚 | — | — | — | PRD #prd-library-list；docs/architecture/storage.md |
+| 通知 | `notification`（分 `actionable` 需要处理、`info` 其余） | notification | — | — | PRD #prd-notifications |
 | 工具链 | `toolchain` | — | — | — | PRD #prd-glossary；技术设计 §3.1 |
 | 平台层 | `platform` | — | — | — | 技术设计 §3.2、§7.1 |
 | 标签页 | `tab` | — | — | — | PRD #prd-run-ownership；技术设计 §4.1 |
