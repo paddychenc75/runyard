@@ -39,7 +39,7 @@ export interface SidebarProps {
 }
 
 // 侧栏：顶上给窗口按钮留位置，下面是品牌、资源库的筛选、管理的几个页面，底部是资源库的概况。
-// 资源库的四个固定筛选可点，右边是符合的项目数（#181）；管理里“设置”（#188）和“模板”（#291）可点，“长期未使用”随后续 issue，现在列出但点不了（设计稿 Main）。
+// 资源库的四个固定筛选可点，右边是符合的项目数（#181）；管理里“设置”（#188）和“模板”（#291）可点，“长期未使用”第一版不显示（设计稿 Main）。
 export function Sidebar({
   windowControls,
   total,
@@ -60,11 +60,24 @@ export function Sidebar({
     {
       id: "library",
       title: t("library.nav.library.title"),
-      items: navFilters.map((id) => ({
-        id,
-        label: navLabel(id, t),
-        count: format.number(counts[id]),
-      })),
+      items: navFilters
+        .filter((id) => id !== "autoClean")
+        .map((id) => ({
+          id,
+          label: navLabel(id, t),
+          count: format.number(counts[id]),
+        })),
+    },
+    {
+      id: "clean",
+      title: t("library.nav.clean.title"),
+      items: [
+        {
+          id: "autoClean",
+          label: navLabel("autoClean", t),
+          count: format.number(counts.autoClean),
+        },
+      ],
     },
     {
       id: "manage",
@@ -76,7 +89,6 @@ export function Sidebar({
           icon: "cube",
           count: format.number(templateCount),
         },
-        { id: "unused", label: t("library.nav.unused.label"), icon: "clock", disabled: true },
         {
           id: "settings",
           label: t("library.nav.settings.label"),

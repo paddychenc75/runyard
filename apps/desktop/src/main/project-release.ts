@@ -11,6 +11,7 @@ export type ReleaseReason = "rename" | "trash";
 /** 终端以外的那部分：编辑器的写入与文件监听（比控制器晚建，所以事后接） */
 export interface ReleaseExtras {
   /** 把项目里未保存的修改写入；ask 为真时自动保存关着的先问用户。false = 用户取消 */
+  closed?(id: string): Promise<void>;
   flush(id: string, ask: boolean): Promise<boolean>;
   release(id: string, reason: ReleaseReason): Promise<void>;
   /** 改名或移走没做成（或做完了）之后，把放掉的文件监听接回来 */
@@ -50,6 +51,7 @@ export class ProjectRelease {
 
   /** 标签关了或项目没了：终端和里面的命令一起结束（规格 DESKTOP-TERMINAL-27） */
   tabClosed(id: string): void {
+    void this.#extras.closed?.(id).catch(() => undefined);
     void this.#terminals?.end(id, "closed").catch(() => undefined);
   }
 

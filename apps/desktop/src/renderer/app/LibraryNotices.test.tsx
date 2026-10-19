@@ -383,7 +383,7 @@ describe("自动清理的提示条", () => {
     expect(within(line).getByText("明天清理")).toBeTruthy();
     const banner = document.querySelector("[data-clean-banner]") as HTMLElement;
     expect(banner.textContent).toContain("1 个项目明天会被自动清理：node-ts-1（已 29 天没打开）。");
-    expect(within(banner).getByRole("button", { name: "改为保留" })).toBeTruthy();
+    expect(within(banner).getByRole("button", { name: "关闭自动清理" })).toBeTruthy();
     expect(within(banner).getByRole("button", { name: "现在清理" })).toBeTruthy();
     expect(within(banner).getByRole("button", { name: "稍后再说" })).toBeTruthy();
   });
@@ -436,13 +436,15 @@ describe("自动清理的提示条", () => {
     expect(calledWith(calls, "clean.shown")).toEqual([["node-ts-1"]]);
   });
 
-  it("[DESKTOP-LIBRARY-VIEW-59] 点“改为保留”：请求把提示条里的项目都改为已保留；状态推来后提示条和行标签消失", async () => {
+  it("[DESKTOP-LIBRARY-VIEW-59] 点“关闭自动清理”：请求把提示条里的项目都改为关闭；状态推来后提示条和行标签消失", async () => {
     const { calls, push } = setup(remind());
-    await user.click(await screen.findByRole("button", { name: "改为保留" }));
+    await user.click(await screen.findByRole("button", { name: "关闭自动清理" }));
     expect(calledWith(calls, "clean.keep")).toEqual([["node-ts-1"]]);
     await push(library([row("node-ts-1"), row("kept")], { cleanReminder: [], cleanDueCount: 0 }));
     expect(document.querySelector("[data-clean-banner]")).toBeNull();
-    expect(within(await bodyRow("node-ts-1")).getByText("已保留")).toBeTruthy();
+    expect(
+      (await bodyRow("node-ts-1")).querySelector('[data-column="retention"]')?.textContent,
+    ).toBe("—");
   });
 
   it("[DESKTOP-LIBRARY-VIEW-60] 点“稍后再说”：请求收起，状态推来后提示条不见，该行仍写“明天清理”", async () => {

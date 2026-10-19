@@ -4,6 +4,8 @@ import * as dataTable from "../src/patterns/DataTable/DataTable.fixture.tsx";
 import * as listPicker from "../src/patterns/ListPicker/ListPicker.fixture.tsx";
 import * as logView from "../src/patterns/LogView/LogView.fixture.tsx";
 import * as navList from "../src/patterns/NavList/NavList.fixture.tsx";
+import * as noticeCard from "../src/patterns/NoticeCard/NoticeCard.fixture.tsx";
+import * as noticeList from "../src/patterns/NoticeList/NoticeList.fixture.tsx";
 import * as tabStrip from "../src/patterns/TabStrip/TabStrip.fixture.tsx";
 import * as titleBar from "../src/patterns/TitleBar/TitleBar.fixture.tsx";
 import * as alertDialog from "../src/primitives/AlertDialog/AlertDialog.fixture.tsx";
@@ -30,12 +32,16 @@ import * as statusMark from "../src/primitives/StatusMark/StatusMark.fixture.tsx
 import * as stepList from "../src/primitives/StepList/StepList.fixture.tsx";
 import * as switchControl from "../src/primitives/Switch/Switch.fixture.tsx";
 import * as textField from "../src/primitives/TextField/TextField.fixture.tsx";
+import * as toast from "../src/primitives/Toast/Toast.fixture.tsx";
 import * as tooltip from "../src/primitives/Tooltip/Tooltip.fixture.tsx";
 import * as truncate from "../src/primitives/Truncate/Truncate.fixture.tsx";
 import * as userText from "../src/primitives/UserText/UserText.fixture.tsx";
 
 // 工作台列出的组件。新增组件时在这里加一行；registry.test.ts 核对每个 *.fixture.tsx 都在这里
 export const fixtures: readonly FixtureModule[] = [
+  toast,
+  noticeList,
+  noticeCard,
   alertDialog,
   badge,
   banner,

@@ -346,6 +346,14 @@ export const constants = {
   "z-dialog": "300",
   "z-toast": "400",
   "z-tooltip": "500",
+  "size-notification-card": "360px",
+  "size-notification-list": "380px",
+  "size-notification-top": "50px",
+  "size-notification-count": "15px",
+  "size-notification-toast": "36px",
+  "size-notification-close-space": "36px",
+  "size-notification-title": "15px",
+  "motion-duration-notice-out": "180ms",
 } as const;
 
 /** 同一批变量里能当数字用的（像素、毫秒、字重、层级），截图测试按它取尺寸 */
@@ -480,6 +488,14 @@ export const numbers = {
   "z-dialog": 300,
   "z-toast": 400,
   "z-tooltip": 500,
+  "size-notification-card": 360,
+  "size-notification-list": 380,
+  "size-notification-top": 50,
+  "size-notification-count": 15,
+  "size-notification-toast": 36,
+  "size-notification-close-space": 36,
+  "size-notification-title": 15,
+  "motion-duration-notice-out": 180,
 } as const;
 
 export type ThemedTokenName = keyof typeof themes.light;
