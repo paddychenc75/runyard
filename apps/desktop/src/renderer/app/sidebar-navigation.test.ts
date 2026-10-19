@@ -12,7 +12,7 @@ describe("点侧栏的一项", () => {
 
   it("已经在资源库标签时不再重复切换", () => {
     const selectTab = vi.fn();
-    chooseNavFilter("kept", { activeTab: "library", patchQuery: vi.fn(), selectTab });
+    chooseNavFilter("running", { activeTab: "library", patchQuery: vi.fn(), selectTab });
     showLibrary({ activeTab: "library", selectTab });
     expect(selectTab).not.toHaveBeenCalled();
   });
