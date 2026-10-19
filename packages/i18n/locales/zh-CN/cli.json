@@ -113,5 +113,6 @@
   "cli.usage.unknownCommand.body": "不认识的命令：{command}。",
   "cli.usage.unknownOption.body": "不认识的选项：{option}。",
   "cli.usage.unknownSetting.body": "不认识的设置项：{name}。目前只有 lang。",
-  "cli.version.body": "{version}"
+  "cli.version.body": "{version}",
+  "cli.templateTest.step.body": "{step}：{status, select, ok {通过} other {失败}}（{ms} ms）"
 }

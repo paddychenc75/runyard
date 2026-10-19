@@ -113,5 +113,6 @@
   "cli.usage.unknownCommand.body": "Unknown command: {command}.",
   "cli.usage.unknownOption.body": "Unknown option: {option}.",
   "cli.usage.unknownSetting.body": "Unknown setting: {name}. The only setting is lang.",
-  "cli.version.body": "{version}"
+  "cli.version.body": "{version}",
+  "cli.templateTest.step.body": "{step}: {status, select, ok {passed} other {failed}} ({ms} ms)"
 }

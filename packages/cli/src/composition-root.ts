@@ -105,6 +105,14 @@ function createHost(config: CliConfig): CliDeps["host"] {
     templates: config.templates,
     tempDir: absPath(tmpdir()),
     clock: createRealClock(),
+    onCancel: (cancel) => {
+      process.once("SIGINT", cancel);
+      process.once("SIGTERM", cancel);
+      return () => {
+        process.removeListener("SIGINT", cancel);
+        process.removeListener("SIGTERM", cancel);
+      };
+    },
     // 另一份安装怎样自报版本要等桌面应用的安装方式定下来；现在只能按位置猜种类，版本未知
     probeInstall: async (path) => ({
       kind: path.includes(".app") ? "app" : "source",

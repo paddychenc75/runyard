@@ -211,6 +211,11 @@ export type CatalogMessages = {
   "cli.templateShow.path.body": {
     path: string | number;
   };
+  "cli.templateTest.step.body": {
+    ms: string | number;
+    status: string;
+    step: string | number;
+  };
   "cli.usage.invalidValue.body": {
     option: string | number;
     value: string | number;
