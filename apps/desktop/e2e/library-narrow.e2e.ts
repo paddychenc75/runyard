@@ -21,6 +21,8 @@ test("[DESKTOP-LIBRARY-VIEW-97][DESKTOP-LIBRARY-VIEW-98][DESKTOP-LIBRARY-VIEW-99
   const saved = () => page.evaluate(() => localStorage.getItem("runyard.layout.v1"));
   await resize(1440);
   const initialToggleBox = await page.getByRole("button", { name: "Hide sidebar" }).boundingBox();
+  expect(initialToggleBox?.x).toBe(90);
+  expect(initialToggleBox?.y).toBe(12);
   await search.focus();
   const before = await saved();
   await resize(720);

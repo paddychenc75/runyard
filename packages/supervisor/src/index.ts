@@ -1,6 +1,7 @@
 // 包的唯一入口：其他包只从 @runyard/supervisor 导入
 import { fileURLToPath } from "node:url";
 
+export type { TemplateCatalog } from "@runyard/core";
 export {
   createPlatformDiscoveryStore,
   type DiscoveryStore,
@@ -12,7 +13,7 @@ export {
   type MethodHandler,
   type RequestContext,
 } from "./dispatch.ts";
-export type { LibrarySeams, TemplateCatalog } from "./library-seams.ts";
+export type { LibrarySeams } from "./library-seams.ts";
 export { MethodFailure, methodFailure } from "./method-failure.ts";
 export { parseSupervisorArgs, type SupervisorArgs } from "./parse-args.ts";
 export { RELEASE_TIMEOUT_MS } from "./release-coordinator.ts";

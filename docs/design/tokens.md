@@ -176,9 +176,9 @@ disagree, `tokens.json` wins.
 | `--radius-sm` | 9px | Tier sm: 28-32 px rows and controls, menu items, file tabs |
 | `--radius-md` | 12px | Tier md: 40-54 px rows, fields, inset blocks |
 | `--radius-lg` | 16px | Tier lg: content cards, menus, popovers |
-| `--radius-xl` | 20px | Tier xl: floating panels at the window edge |
+| `--radius-xl` | 9px | Tier xl: floating panels at the window edge |
 | `--radius-2xl` | 28px | Tier 2xl: dialogs |
-| `--radius-sidebar` | 20px | Floating sidebar |
+| `--radius-sidebar` | 9px | Floating sidebar |
 | `--radius-card` | 16px | Content card |
 | `--radius-dialog` | 28px | Dialog |
 | `--radius-menu` | 16px | Menu |
@@ -202,6 +202,7 @@ disagree, `tokens.json` wins.
 | `--size-settings-window-min-height` | 420px | 设置窗口最小高度 |
 | `--size-settings-titlebar` | 52px | 设置窗口原生标题栏占位 |
 | `--size-window-buttons-inset` | 19px | 标准红绿灯按钮框离窗口左边和上边 |
+| `--size-titlebar` | 52px | Unified window title bar height |
 | `--size-toolbar` | 44px | Toolbar capsule height |
 | `--size-control-lg` | 40px | Primary button height |
 | `--size-control-md` | 32px | Secondary button height |
@@ -219,7 +220,7 @@ disagree, `tokens.json` wins.
 | `--size-tab-label-max` | 180px | Widest a tab name gets before it is truncated |
 | `--size-search-wide` | 240px | Library header search field, wide window |
 | `--size-search-short` | 180px | Library header search field, narrow window |
-| `--size-window-controls` | 72px | Space reserved for the native window buttons in a title bar |
+| `--size-window-controls` | 70px | Space reserved for the native window buttons in a title bar |
 | `--size-card-gap` | 8px | Gap between cards |
 | `--size-dialog-width` | 580px | Dialog width |
 | `--size-dialog-width-wide` | 720px | Width of the wide form dialog (save as template) |

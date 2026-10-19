@@ -277,4 +277,6 @@ export interface LibraryState {
   linkConfirm?: LinkConfirmView | null;
   /** 资源库页顶部的“有新版本”；没有是 null / 不写 */
   update?: UpdateBannerView | null;
+  /** 更新检查尚未读到本地记录时，不把初始 null 当作旧通知已失效。 */
+  updateReady?: boolean;
 }

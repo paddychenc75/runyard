@@ -14,7 +14,6 @@ import {
 } from "../library-query.ts";
 import { brandOf, logoOf, monogramOf, pickLocalizedText, runningCount } from "../library-view.ts";
 import { useElementWidth } from "../shared/viewport.ts";
-import { CleanBanner } from "./CleanBanner.tsx";
 import { CombinedFilterMenu } from "./CombinedFilterMenu.tsx";
 import { FilterMenu } from "./FilterMenu.tsx";
 import styles from "./LibraryPage.module.css";
@@ -23,7 +22,6 @@ import { navLabel, sortLabel, statusLabel, typeLabel } from "./library-labels.ts
 import { NavEmptyState } from "./NavEmptyState.tsx";
 import { NoResults } from "./NoResults.tsx";
 import { SearchBox } from "./SearchBox.tsx";
-import { UpdateBanner } from "./UpdateBanner.tsx";
 import { useNow } from "./use-now.ts";
 
 export interface LibraryPageProps {
@@ -177,13 +175,6 @@ export function LibraryPage({
           </div>
         )}
       </header>
-      <UpdateBanner bridge={bridge} update={library.update} />
-      <CleanBanner bridge={bridge} items={library.cleanReminder ?? []} playgrounds={playgrounds} />
-      {library.error === null ? null : (
-        <p className={styles.error}>
-          {t("desktop.error.title.label", { title: errorTitle(library, t) })}
-        </p>
-      )}
       {visible.length === 0 &&
       query.nav !== "all" &&
       query.search === "" &&
@@ -253,13 +244,4 @@ export function LibraryPage({
       )}
     </section>
   );
-}
-
-// 错误码到文案：键 errors.<码>.title 由协议登记表推出，参数类型随码变，所以按字符串键调用一次
-type LooseTranslate = (key: string, values?: unknown) => ReturnType<ReturnType<typeof useT>>;
-
-function errorTitle(library: LibraryState, t: ReturnType<typeof useT>) {
-  const error = library.error;
-  const loose = t as unknown as LooseTranslate;
-  return loose(`errors.${error?.code ?? "INTERNAL"}.title`, error?.params);
 }

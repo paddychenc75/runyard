@@ -13,9 +13,8 @@ export interface MainWindowOptions {
   platform: BootstrapInfo["platform"];
 }
 
-// 红黄绿三个按钮的左上角位置，对准设计稿 Main：悬浮侧栏左上角的一行（侧栏内边距 10、行内边距 8、
-// 按钮直径 12，所以按钮从窗口左边 26 起；行垂直居中在 36，所以顶边 30）
-const TRAFFIC_LIGHTS = { x: 26, y: 30 } as const;
+// macOS 统一工具栏位置：原生按钮框左上角19/19，圆心位于26/26。
+const TRAFFIC_LIGHTS = { x: 19, y: 19 } as const;
 
 function titleBarOptions(platform: BootstrapInfo["platform"]): BrowserWindowConstructorOptions {
   if (platform === "darwin") {

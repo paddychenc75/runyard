@@ -23,7 +23,9 @@ import styles from "./AppShell.module.css";
 import { CloseConfirmDialog } from "./CloseConfirmDialog.tsx";
 import { CreateDialog } from "./CreateDialog.tsx";
 import { LibraryPage } from "./LibraryPage.tsx";
-import { NoticeToasts } from "./NoticeToasts.tsx";
+import { NotificationSources } from "./notifications/NotificationSources.tsx";
+import { NotificationContext } from "./notifications/notification-context.tsx";
+import { createNotificationService } from "./notifications/notification-service.ts";
 import { PaneToggleButton } from "./PaneToggleButton.tsx";
 import { PickerDialog } from "./PickerDialog.tsx";
 import { QuitTerminalPrompt } from "./QuitTerminalPrompt.tsx";
@@ -49,10 +51,13 @@ export interface AppShellProps {
 export function AppShell(props: AppShellProps) {
   // 命令宿主在外壳最外面：下面各个部件（顶栏、运行条、编辑器……）显示期间登记自己的命令，命令面板读它
   const [commands] = useState(() => new CommandHost());
+  const [notifications] = useState(createNotificationService);
   return (
-    <CommandContext.Provider value={commands}>
-      <ShellBody {...props} />
-    </CommandContext.Provider>
+    <NotificationContext.Provider value={notifications}>
+      <CommandContext.Provider value={commands}>
+        <ShellBody {...props} />
+      </CommandContext.Provider>
+    </NotificationContext.Provider>
   );
 }
 
@@ -335,7 +340,7 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
               locale={library.locale}
             />
           )}
-          <NoticeToasts bridge={bridge} notices={library?.notices ?? []} />
+          <NotificationSources bridge={bridge} library={library} />
           {creating !== null && library !== null ? (
             <CreateDialog
               key={creating}

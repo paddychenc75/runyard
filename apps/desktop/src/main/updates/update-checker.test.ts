@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { UpdateBannerView } from "../../shared/library-state.ts";
 import { isNewer, RELEASES_API, UpdateChecker } from "./update-checker.ts";
 import type { UpdateRecord, UpdateStore } from "./update-record.ts";
@@ -32,6 +32,7 @@ function setup(
     reply?: () => Response | Promise<Response>;
     day?: Date;
     canFetch?: boolean;
+    openExternal?: (url: string) => void | Promise<void>;
   } = {},
 ) {
   const requests: { url: string; init: RequestInit | undefined }[] = [];
@@ -49,7 +50,7 @@ function setup(
     now: () => options.day ?? new Date(2026, 9, 18, 10, 0, 0),
     enabled: async () => options.enabled ?? true,
     publish: (view) => void shown.push(view),
-    openExternal: (url) => void opened.push(url),
+    openExternal: options.openExternal ?? ((url) => void opened.push(url)),
     canFetch: options.canFetch ?? true,
   });
   return { checker, requests, shown, opened, store };
@@ -60,7 +61,7 @@ describe("检查更新", () => {
     const { checker, shown, opened, requests } = setup();
     await checker.run();
     expect(shown.at(-1)).toEqual({ latest: "0.3.0", current: "0.2.0" });
-    checker.download();
+    await checker.download();
     expect(opened).toEqual(["https://github.com/paddychenc75/runyard/releases/tag/v0.3.0"]);
     // 唯一的请求是查发布信息，没有第二个地址（不下载安装包）
     expect(requests.map((request) => request.url)).toEqual([RELEASES_API]);
@@ -195,22 +196,51 @@ describe("检查更新", () => {
     expect(shown.at(-1)).toBeNull();
   });
 
-  it("“以后再说”：这个版本不再提示，更新的版本才会再出现", async () => {
+  it("[DESKTOP-NOTIFICATIONS-04] 以后再说不处理更新，下次启动仍可提示", async () => {
     const store = new MemoryStore();
     const first = setup({ store });
     await first.checker.run();
     await first.checker.later();
+    expect(first.shown.at(-1)).toEqual({ latest: "0.3.0", current: "0.2.0" });
+    const reopened = setup({ store });
+    await reopened.checker.run();
+    expect(reopened.shown.at(-1)).toEqual({ latest: "0.3.0", current: "0.2.0" });
+  });
+  it("[DESKTOP-NOTIFICATIONS-06] 下载请求成功后才处理，重启不再列同版本", async () => {
+    const store = new MemoryStore();
+    const first = setup({ store });
+    await first.checker.run();
+    await first.checker.download();
     expect(first.shown.at(-1)).toBeNull();
     const reopened = setup({ store });
     await reopened.checker.run();
     expect(reopened.shown.at(-1)).toBeNull();
-    const nextDay = setup({
+  });
+  it("[DESKTOP-NOTIFICATIONS-06] 浏览器打开失败保留待处理版本，随后可以重试", async () => {
+    const store = new MemoryStore();
+    let fail = true;
+    const first = setup({
       store,
-      day: new Date(2026, 9, 19),
-      reply: () => release("v0.4.0"),
+      openExternal: async () => {
+        if (fail) throw Error("open failed");
+      },
     });
-    await nextDay.checker.run();
-    expect(nextDay.shown.at(-1)).toEqual({ latest: "0.4.0", current: "0.2.0" });
+    await first.checker.run();
+    await expect(first.checker.download()).rejects.toThrow("open failed");
+    expect(first.shown.at(-1)).toEqual({ latest: "0.3.0", current: "0.2.0" });
+    fail = false;
+    await first.checker.download();
+    expect(first.shown.at(-1)).toBeNull();
+  });
+  it("[DESKTOP-NOTIFICATIONS-04] 旧记录的以后再说不再被当作已处理", async () => {
+    const store = new MemoryStore({
+      checkedOn: "2026-10-18",
+      latest: { version: "0.3.0", url: "https://github.com/paddychenc75/runyard/releases/latest" },
+      dismissed: "0.3.0",
+    });
+    const first = setup({ store });
+    await first.checker.run();
+    expect(first.shown.at(-1)).toEqual({ latest: "0.3.0", current: "0.2.0" });
   });
 
   it("发布页地址不在本仓库的发布页下时，“下载”打开默认的发布页", async () => {
@@ -218,7 +248,7 @@ describe("检查更新", () => {
       reply: () => release("v0.3.0", { html_url: "https://evil.example/phish" }),
     });
     await checker.run();
-    checker.download();
+    await checker.download();
     expect(opened).toEqual(["https://github.com/paddychenc75/runyard/releases/latest"]);
   });
 });
@@ -263,4 +293,28 @@ describe("版本比较", () => {
     expect(isNewer("0.3.0-rc.1", "0.2.0")).toBe(false);
     expect(isNewer("garbage", "0.2.0")).toBe(false);
   });
+});
+
+it("[DESKTOP-NOTIFICATIONS-06] 后台检查的旧回包不恢复已处理的同版本通知", async () => {
+  const store = new MemoryStore({
+    checkedOn: "2020-01-01",
+    latest: { version: "0.3.0", url: "https://github.com/paddychenc75/runyard/releases/latest" },
+    dismissed: null,
+  });
+  let respond: ((response: Response) => void) | undefined;
+  const h = setup({
+    store,
+    reply: () =>
+      new Promise<Response>((resolve) => {
+        respond = resolve;
+      }),
+  });
+  const checking = h.checker.run();
+  await vi.waitFor(() => expect(h.requests).toHaveLength(1));
+  await h.checker.download();
+  expect(h.shown.at(-1)).toBeNull();
+  respond?.(release("v0.3.0"));
+  await checking;
+  expect(store.record?.handledVersion).toBe("0.3.0");
+  expect(h.shown.at(-1)).toBeNull();
 });

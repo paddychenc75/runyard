@@ -132,5 +132,7 @@
   "settings.runtime.pathInput.placeholder": "Enter the full executable path",
   "settings.runtime.pathInput.hint": "Press Enter to save the full path; Esc to cancel",
   "settings.runtime.choosePath.aria": "Choose {tool} executable",
-  "settings.runtime.absolutePath.body": "Enter an absolute path without ~ or environment variables"
+  "settings.runtime.absolutePath.body": "Enter an absolute path without ~ or environment variables",
+  "settings.skills.guide.action": "View guide",
+  "settings.skills.guideFailed.hint": "Could not open the guide. Try again."
 }
