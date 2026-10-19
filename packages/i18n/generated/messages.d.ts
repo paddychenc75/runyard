@@ -517,6 +517,11 @@ export type CatalogMessages = {
   "desktop.missing.site.label": Record<never, never>;
   "desktop.notice.dismiss.aria": Record<never, never>;
   "desktop.notice.region.aria": Record<never, never>;
+  "desktop.notifications.clear.action": Record<never, never>;
+  "desktop.notifications.empty.label": Record<never, never>;
+  "desktop.notifications.recent.label": Record<never, never>;
+  "desktop.notifications.required.label": Record<never, never>;
+  "desktop.notifications.title": Record<never, never>;
   "desktop.output.aria": Record<never, never>;
   "desktop.output.empty.label": Record<never, never>;
   "desktop.output.view.action": Record<never, never>;
@@ -848,6 +853,9 @@ export type CatalogMessages = {
   "library.action.dismiss.action": Record<never, never>;
   "library.action.failed.title": Record<never, never>;
   "library.autoClean.dialog.title": Record<never, never>;
+  "library.autoClean.off.hint": {
+    name: string | number;
+  };
   "library.clean.keep.action": Record<never, never>;
   "library.clean.later.action": Record<never, never>;
   "library.clean.now.action": Record<never, never>;
@@ -889,11 +897,17 @@ export type CatalogMessages = {
   "library.empty.cli.label": Record<never, never>;
   "library.empty.hint": Record<never, never>;
   "library.empty.title": Record<never, never>;
+  "library.emptyAgent.command.label": Record<never, never>;
+  "library.emptyAgent.hint": Record<never, never>;
+  "library.emptyAgent.title": Record<never, never>;
+  "library.emptyAutoClean.hint": Record<never, never>;
+  "library.emptyAutoClean.title": Record<never, never>;
+  "library.emptyRunning.hint": Record<never, never>;
+  "library.emptyRunning.title": Record<never, never>;
   "library.filter.agent.label": Record<never, never>;
   "library.filter.all.label": Record<never, never>;
   "library.filter.autoClean.label": Record<never, never>;
   "library.filter.combined.label": Record<never, never>;
-  "library.filter.kept.label": Record<never, never>;
   "library.filter.sort.label": {
     value: string | number;
   };
@@ -917,11 +931,11 @@ export type CatalogMessages = {
   "library.missing.revealParent.action": Record<never, never>;
   "library.missing.status.label": Record<never, never>;
   "library.nav.aria": Record<never, never>;
+  "library.nav.clean.title": Record<never, never>;
   "library.nav.library.title": Record<never, never>;
   "library.nav.manage.title": Record<never, never>;
   "library.nav.settings.label": Record<never, never>;
   "library.nav.templates.label": Record<never, never>;
-  "library.nav.unused.label": Record<never, never>;
   "library.noResults.clear.action": Record<never, never>;
   "library.noResults.create.action": {
     query: string | number;
@@ -960,6 +974,7 @@ export type CatalogMessages = {
     days: number;
   };
   "library.retention.kept.label": Record<never, never>;
+  "library.retention.off.label": Record<never, never>;
   "library.retention.tomorrow.label": Record<never, never>;
   "library.row.autoClean.action": Record<never, never>;
   "library.row.autoCleanNow.hint": {

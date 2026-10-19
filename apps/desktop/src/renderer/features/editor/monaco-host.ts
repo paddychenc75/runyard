@@ -12,6 +12,7 @@ import type { SessionState } from "./session-types.ts";
 import { configureTypeScript, IGNORED_DIAGNOSTIC_CODES } from "./typescript-defaults.ts";
 import { TypeScriptDiagnostics } from "./typescript-diagnostics.ts";
 import { type ClosedFile, TypeScriptProject } from "./typescript-project.ts";
+import { VueModelSync } from "./vue-model-sync.ts";
 
 // 把编辑会话（EditorSession）摆进 Monaco：每个能编辑的文件标签一个模型，选中的那个放进编辑器。
 // 只给打开的文件建模型——给项目里每个文件都建会让 TS 线程同步慢到第一次补全等几十秒（K8 证据“装法”第 7 条）。
@@ -76,6 +77,7 @@ export function buildHost(
 ): EditorHost {
   const { monaco } = runtime;
   configureTypeScript(runtime);
+  const vue = source?.vue ? new VueModelSync(source.vue) : undefined;
   // 以文件标签的 id（不随改名变）为键：改名后 Monaco 的模型地址改不了，要用同样的内容另建一个模型接管，
   // 光标和滚动位置按 id 带过去（规格 DESKTOP-EDITOR-09、10；K8 证据“没有验证的”一栏）
   interface Entry {
@@ -239,6 +241,7 @@ export function buildHost(
     });
     if (tab.eol === "crlf") model.setEOL(monaco.editor.EndOfLineSequence.CRLF);
     else if (tab.eol === "lf") model.setEOL(monaco.editor.EndOfLineSequence.LF);
+    vue?.attach(tab.path, model);
     const entry: Entry = {
       path: tab.path,
       model,

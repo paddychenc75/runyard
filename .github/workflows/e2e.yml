@@ -60,6 +60,24 @@ jobs:
           RUNYARD_E2E_APP: ${{ github.workspace }}/apps/desktop/release/e2e/mac-arm64/Runyard.app/Contents/MacOS/Runyard
         run: pnpm --filter @runyard/desktop e2e:run
 
+      - name: 通知中心骨架设计对照
+        if: always()
+        env:
+          RUNYARD_E2E_APP: ${{ github.workspace }}/apps/desktop/release/e2e/mac-arm64/Runyard.app/Contents/MacOS/Runyard
+          RUNYARD_NOTIFICATION_OUTPUT: ${{ runner.temp }}/notifications-design-comparison
+        run: |
+          node tooling/design-render/render.mjs Notify NotifyDark NotifyEn NotifyDarkEn NotifyCenter NotifyCenterDark NotifyCenterEn NotifyCenterDarkEn --no-shots
+          node apps/desktop/e2e/notifications-design.measure.ts
+
+      - name: 上传通知中心骨架设计对照
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: notifications-design-comparison
+          path: ${{ runner.temp }}/notifications-design-comparison/
+          if-no-files-found: error
+          retention-days: 14
+
       - name: 生成品牌 A 八组设计对照
         if: always()
         env:
@@ -93,6 +111,24 @@ jobs:
         with:
           name: skill-guide-comparison
           path: ${{ runner.temp }}/skill-guide-comparison/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: 侧栏分类与自动清理设计对照
+        if: always()
+        env:
+          RUNYARD_E2E_APP: ${{ github.workspace }}/apps/desktop/release/e2e/mac-arm64/Runyard.app/Contents/MacOS/Runyard
+          RUNYARD_SIDEBAR_FILTERS_OUTPUT: ${{ runner.temp }}/sidebar-filters-comparison
+        run: |
+          node tooling/design-render/render.mjs Main MainDark MainEn MainDarkEn LibraryRunning LibraryRunningDark LibraryRunningEn LibraryRunningDarkEn LibraryAutoClean LibraryAutoCleanDark LibraryAutoCleanEn LibraryAutoCleanDarkEn LibraryAgentEmpty LibraryAgentEmptyDark LibraryAgentEmptyEn LibraryAgentEmptyDarkEn RowMenu RowMenuDark RowMenuEn RowMenuDarkEn AutoCleanDialog AutoCleanDialogDark AutoCleanDialogEn AutoCleanDialogDarkEn CleanReminder CleanReminderDark CleanReminderEn CleanReminderDarkEn --no-shots
+          node apps/desktop/e2e/sidebar-filters.measure.ts
+
+      - name: 上传侧栏分类与自动清理设计对照
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: sidebar-filters-comparison
+          path: ${{ runner.temp }}/sidebar-filters-comparison/
           if-no-files-found: error
           retention-days: 14
 

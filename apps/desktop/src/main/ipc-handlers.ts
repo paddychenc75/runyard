@@ -25,6 +25,8 @@ import { terminalMethods } from "./terminal/terminal-ipc.ts";
 import type { TerminalService } from "./terminal/terminal-service.ts";
 import { toolchainMethods } from "./toolchain-ipc.ts";
 import type { UpdateChecker } from "./updates/update-checker.ts";
+import type { VueChannel } from "./vue-language/vue-channel.ts";
+import { vueMethods } from "./vue-language/vue-ipc.ts";
 
 // 把界面发来的消息接到控制器上。Electron 的 ipcMain 通过 IpcHost 这个接口传进来，测试里换成假的。
 
@@ -108,6 +110,7 @@ export function registerBridgeHandlers(
   templates?: TemplatesView,
   appLinks?: AppLinks,
   openSettings?: () => void,
+  vue?: VueChannel,
 ): () => void {
   // 方法名到控制器的映射；参数不是预期类型时不调用控制器
   const methods: Record<DesktopMethod, (param: unknown) => unknown> = {
@@ -316,6 +319,7 @@ export function registerBridgeHandlers(
     // 文件服务（#257）；没接线时这些方法不可用
     ...templateMethods(templates),
     ...editorFileMethods(files, openers),
+    ...vueMethods(vue),
     // 集成终端（#263）；没接线时这些方法不可用
     ...terminalMethods(terminals),
   };
