@@ -1172,6 +1172,7 @@ export type CatalogMessages = {
   "settings.runtime.pathInput.placeholder": Record<never, never>;
   "settings.runtime.recheck.action": Record<never, never>;
   "settings.runtime.runInstall.action": Record<never, never>;
+  "settings.runtime.savePath.action": Record<never, never>;
   "settings.runtime.setPath.action": Record<never, never>;
   "settings.runtime.site.label": Record<never, never>;
   "settings.runtime.status.label": Record<never, never>;
@@ -1194,6 +1195,7 @@ export type CatalogMessages = {
   "settings.skills.both.label": Record<never, never>;
   "settings.skills.claude.label": Record<never, never>;
   "settings.skills.claudeName.label": Record<never, never>;
+  "settings.skills.closeGuide.action": Record<never, never>;
   "settings.skills.guide.action": Record<never, never>;
   "settings.skills.guideFailed.hint": Record<never, never>;
   "settings.skills.hint": Record<never, never>;

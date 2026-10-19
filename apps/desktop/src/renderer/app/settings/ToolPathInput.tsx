@@ -1,8 +1,9 @@
 import { useT } from "@runyard/i18n/react";
 import type { ToolchainReport } from "@runyard/protocol";
-import { Field, IconButton, TextField, Tooltip } from "@runyard/ui";
+import { Field, TextField } from "@runyard/ui";
 import { useId } from "react";
 import type { DesktopBridge } from "../../../shared/desktop-bridge.ts";
+import { ToolPathActions } from "./ToolPathActions.tsx";
 import styles from "./ToolPathInput.module.css";
 import { toolName } from "./tool-view.ts";
 import { useToolPathInput } from "./use-tool-path-input.ts";
@@ -63,15 +64,14 @@ export function ToolPathInput({
             }
           }}
         />
-        <Tooltip content={t("settings.runtime.choosePath.aria", { tool: toolName(tool) })}>
-          <IconButton
-            icon="more"
-            size="sm"
-            label={t("settings.runtime.choosePath.aria", { tool: toolName(tool) })}
-            disabled={busy}
-            onClick={() => void run(true)}
-          />
-        </Tooltip>
+        <ToolPathActions
+          tool={tool}
+          dirty={value !== (path ?? "")}
+          busy={busy}
+          onSave={() => void run(false)}
+          onCancel={() => edit(null)}
+          onChoose={() => void run(true)}
+        />
       </div>
       <p
         id={hintId}

@@ -210,15 +210,18 @@ it("[DESKTOP-SETTINGS-44] 未安装也能按界面语言查看说明，不触发
       "agents.status": () => ({ claude: false, agents: false }),
       "agents.openGuide": (locale: unknown) => {
         seen.push(locale);
-        return { ok: true };
+        return { ok: true, content: locale === "zh-CN" ? "中文技能说明" : "English skill guide" };
       },
     },
   });
   const user = await openCli(w);
   await user.click(await screen.findByRole("button", { name: "查看说明" }));
+  expect(await screen.findByText("中文技能说明")).toBeTruthy();
+  await user.click(screen.getByRole("button", { name: "关闭说明" }));
   expect(seen).toEqual(["zh-CN"]);
   await user.click(screen.getByRole("button", { name: "English" }));
   await user.click(await screen.findByRole("button", { name: "View guide" }));
+  expect(await screen.findByText("English skill guide")).toBeTruthy();
   expect(seen).toEqual(["zh-CN", "en"]);
   expect(w.calls.some(({ method }) => method === "agents.install")).toBe(false);
 });
