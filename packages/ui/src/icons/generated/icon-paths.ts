@@ -7,6 +7,10 @@ export const iconPaths = {
       "M12 5.5a4 4 0 0 0-8 0c0 4-1.5 4-1.5 5.5h11c0-1.5-1.5-1.5-1.5-5.5M6.5 13.5a1.7 1.7 0 0 0 3 0",
     ],
   },
+  browser: {
+    viewBox: "0 0 16 16",
+    paths: ["M8 14a6 6 0 1 0 0-12 6 6 0 0 0 0 12zM10.5 5.5l-1.2 3.8-3.8 1.2 1.2-3.8z"],
+  },
   check: {
     viewBox: "0 0 16 16",
     paths: ["M3.5 8.5l3 3 6-7"],
@@ -26,6 +30,10 @@ export const iconPaths = {
   close: {
     viewBox: "0 0 16 16",
     paths: ["M4 4l8 8M12 4l-8 8"],
+  },
+  copy: {
+    viewBox: "0 0 16 16",
+    paths: ["M5.5 5.5h7v8h-7zM3.5 10.5h-1v-8h7v1"],
   },
   cube: {
     viewBox: "0 0 16 16",
@@ -121,6 +129,12 @@ export const iconPaths = {
   stop: {
     viewBox: "0 0 16 16",
     paths: ["M3 3h10v10H3z"],
+  },
+  tools: {
+    viewBox: "0 0 16 16",
+    paths: [
+      "M3 2.5l3.5 3.5M2 3.5l1.5-1.5M5.5 6.5l1-1M8.5 9.5l4 4 1-1-4-4M8 6a3.5 3.5 0 0 1 5-3l-2 2 1 1 2-2a3.5 3.5 0 0 1-4 4L4 14l-2-2 6-6",
+    ],
   },
   trash: {
     viewBox: "0 0 16 16",
