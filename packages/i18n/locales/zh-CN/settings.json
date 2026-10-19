@@ -127,5 +127,10 @@
   "settings.theme.system.label": "跟随系统",
   "settings.theme.title": "主题",
   "settings.updateCheck.hint": "每天一次，只访问 GitHub 的公开发布页，不发送任何标识",
-  "settings.updateCheck.title": "自动检查更新"
+  "settings.updateCheck.title": "自动检查更新",
+  "settings.runtime.pathInput.aria": "{tool} 可执行文件路径",
+  "settings.runtime.pathInput.placeholder": "输入完整可执行文件路径",
+  "settings.runtime.pathInput.hint": "输入完整路径后按回车保存，Esc 撤销",
+  "settings.runtime.choosePath.aria": "选择 {tool} 可执行文件",
+  "settings.runtime.absolutePath.body": "请输入完整绝对路径，不使用 ~ 或环境变量"
 }

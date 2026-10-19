@@ -353,6 +353,10 @@ describe("设置通道", () => {
           seen.push(["pick", tool]);
           return { status: "cancelled" };
         },
+        setPath: async (tool: string, path: string) => {
+          seen.push(["setPath", tool, path]);
+          return { status: "set", report: { tools: [] } };
+        },
         runInstall: (tool: string) => void seen.push(["install", tool]),
         onChange: (listener: () => void) => {
           pushToolchain = listener;
@@ -425,6 +429,28 @@ describe("设置通道", () => {
       ["install", "go"],
       ["skill", "agents"],
     ]);
+  });
+
+  it("[DESKTOP-SETTINGS-42] 输入路径桥只接受字符串工具与路径，额外字段不会作为命令传递", async () => {
+    const { call, seen } = withSettings();
+    for (const value of [
+      null,
+      "node",
+      [],
+      { tool: 7, path: "/node" },
+      { tool: "node", path: 7 },
+      { tool: "", path: "/node" },
+    ])
+      expect(await call(app, "toolchain.setPath", value)).toEqual({ status: "failed" });
+    expect(seen).toEqual([]);
+    expect(
+      await call(app, "toolchain.setPath", {
+        tool: "node",
+        path: "/Node Tools/node",
+        command: "ignored",
+      }),
+    ).toEqual({ status: "set", report: { tools: [] } });
+    expect(seen).toEqual([["setPath", "node", "/Node Tools/node"]]);
   });
 
   it("检测结果变了作为 toolchain.changed 事件推给界面", () => {

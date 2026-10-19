@@ -90,6 +90,8 @@ export interface SettingsMethods {
   "toolchain.recheck": { param: undefined; result: ToolchainReport };
   /** 弹出文件选择器选这个工具的可执行文件，能读出版本号才接受 */
   "toolchain.pickPath": { param: string; result: PickToolPathResult };
+  /** 校验并保存输入的完整可执行文件路径，失败不改变已生效路径 */
+  "toolchain.setPath": { param: { tool: string; path: string }; result: PickToolPathResult };
   /** 在终端里运行这个工具的安装命令：只运行上一次检测结果里报告的那一条，不接受别的内容 */
   "toolchain.runInstall": { param: string; result: undefined };
   "cli.status": { param: undefined; result: CliCommandStatus };
@@ -115,6 +117,7 @@ export const settingsMethodNames: readonly SettingsMethod[] = [
   "toolchain.check",
   "toolchain.recheck",
   "toolchain.pickPath",
+  "toolchain.setPath",
   "toolchain.runInstall",
   "cli.status",
   "cli.install",

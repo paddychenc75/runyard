@@ -1105,8 +1105,12 @@ export type CatalogMessages = {
   "settings.registry.invalid.body": Record<never, never>;
   "settings.registry.title": Record<never, never>;
   "settings.runNote.label": Record<never, never>;
+  "settings.runtime.absolutePath.body": Record<never, never>;
   "settings.runtime.and.label": Record<never, never>;
   "settings.runtime.arch.label": Record<never, never>;
+  "settings.runtime.choosePath.aria": {
+    tool: string | number;
+  };
   "settings.runtime.command.label": Record<never, never>;
   "settings.runtime.copy.action": Record<never, never>;
   "settings.runtime.current.label": Record<never, never>;
@@ -1124,6 +1128,11 @@ export type CatalogMessages = {
   "settings.runtime.note.label": Record<never, never>;
   "settings.runtime.path.label": Record<never, never>;
   "settings.runtime.pathFailed.body": Record<never, never>;
+  "settings.runtime.pathInput.aria": {
+    tool: string | number;
+  };
+  "settings.runtime.pathInput.hint": Record<never, never>;
+  "settings.runtime.pathInput.placeholder": Record<never, never>;
   "settings.runtime.recheck.action": Record<never, never>;
   "settings.runtime.runInstall.action": Record<never, never>;
   "settings.runtime.setPath.action": Record<never, never>;

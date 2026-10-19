@@ -23,6 +23,7 @@ import { templateMethods } from "./template-ipc.ts";
 import type { TemplatesView } from "./templates-view.ts";
 import { terminalMethods } from "./terminal/terminal-ipc.ts";
 import type { TerminalService } from "./terminal/terminal-service.ts";
+import { toolchainMethods } from "./toolchain-ipc.ts";
 import type { UpdateChecker } from "./updates/update-checker.ts";
 
 // 把界面发来的消息接到控制器上。Electron 的 ipcMain 通过 IpcHost 这个接口传进来，测试里换成假的。
@@ -244,24 +245,7 @@ export function registerBridgeHandlers(
       if (playground !== null) await settings?.openInEditor(playground);
     },
     // 依赖与网络、运行环境、命令行与智能体（#189、#195）；没接线时这些项读到空
-    "settings.localNetwork": async () => (await settings?.toolchain?.localNetwork()) ?? {},
-    "toolchain.check": async (value) => {
-      const cachedOnly =
-        typeof value === "object" &&
-        value !== null &&
-        (value as { cachedOnly?: unknown }).cachedOnly === true;
-      return (await settings?.toolchain?.check(cachedOnly)) ?? { tools: [] };
-    },
-    "toolchain.recheck": async () => (await settings?.toolchain?.recheck()) ?? { tools: [] },
-    "toolchain.pickPath": async (tool) => {
-      const id = text(tool);
-      if (id === null) return { status: "failed" };
-      return (await settings?.toolchain?.pickPath(id)) ?? { status: "failed" };
-    },
-    "toolchain.runInstall": (tool) => {
-      const id = text(tool);
-      if (id !== null) settings?.toolchain?.runInstall(id);
-    },
+    ...toolchainMethods(settings?.toolchain),
     "cli.status": async () => (await settings?.cli?.status()) ?? unavailableCli,
     "cli.install": async () =>
       (await settings?.cli?.install()) ?? { result: "failed", status: unavailableCli },

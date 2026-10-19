@@ -1,6 +1,6 @@
 import { useT } from "@runyard/i18n/react";
-import type { ToolCheck } from "@runyard/protocol";
-import { Button, Icon, Menu, UserText } from "@runyard/ui";
+import type { ToolCheck, ToolchainReport } from "@runyard/protocol";
+import { Button, Icon, Menu } from "@runyard/ui";
 import { useState } from "react";
 import type { DesktopBridge } from "../../../shared/desktop-bridge.ts";
 import { RuntimeDetail } from "./RuntimeDetail.tsx";
@@ -8,13 +8,12 @@ import styles from "./RuntimeGroup.module.css";
 import { SettingsGroup, SettingsNote } from "./SettingsGroup.tsx";
 import { SettingsLink } from "./SettingsLink.tsx";
 import { StatusLine } from "./StatusLine.tsx";
-import { shortenPath, toolName } from "./tool-view.ts";
+import { focusToolPath, ToolPathInput } from "./ToolPathInput.tsx";
+import { toolName } from "./tool-view.ts";
 import { useToolchain } from "./use-toolchain.ts";
 
 /** 没有这一项时表格里的占位（不是文案） */
 const NONE = "—";
-
-type PathProblem = { kind: "invalid" | "failed"; tool: string };
 
 // 运行环境（设计稿 Settings，规格 DESKTOP-SETTINGS-15 至 19）：只列已有模板用到的工具，列为工具、版本、路径、
 // 芯片架构、状态，每行有“指定路径…”；缺少或过旧的行点开看安装方式。先显示缓存的结果，后台检测完再更新。
@@ -22,17 +21,6 @@ export function RuntimeGroup({ bridge }: { bridge: DesktopBridge }) {
   const t = useT();
   const { tools, checking, recheck, apply } = useToolchain(bridge);
   const [open, setOpen] = useState<ReadonlySet<string>>(new Set());
-  const [problem, setProblem] = useState<PathProblem | null>(null);
-
-  const setPath = async (tool: string) => {
-    const outcome = await bridge.call("toolchain.pickPath", tool);
-    if (outcome.status === "set") {
-      setProblem(null);
-      apply(outcome.report);
-    } else if (outcome.status === "invalid" || outcome.status === "failed") {
-      setProblem({ kind: outcome.status, tool });
-    }
-  };
   const toggle = (tool: string) =>
     setOpen((current) => {
       const next = new Set(current);
@@ -63,7 +51,7 @@ export function RuntimeGroup({ bridge }: { bridge: DesktopBridge }) {
               id: tool.tool,
               label: t("settings.runtime.toolName.label", { tool: toolName(tool.tool) }),
             }))}
-            onSelect={(tool) => void setPath(tool)}
+            onSelect={focusToolPath}
             trigger={<SettingsLink>{t("settings.runtime.setPath.action")}</SettingsLink>}
           />
         </div>
@@ -99,9 +87,10 @@ export function RuntimeGroup({ bridge }: { bridge: DesktopBridge }) {
                 expandable={expandable}
                 expanded={expandable && open.has(check.tool)}
                 busy={checking}
-                problem={problem?.tool === check.tool ? problem.kind : null}
+                bridge={bridge}
+                onApply={apply}
                 onToggle={() => toggle(check.tool)}
-                onSetPath={() => void setPath(check.tool)}
+                onSetPath={() => focusToolPath(check.tool)}
                 onCopy={(command) => void bridge.call("clipboard.copy", command)}
                 onRunInstall={() => void bridge.call("toolchain.runInstall", check.tool)}
                 onRecheck={recheck}
@@ -120,7 +109,8 @@ interface ToolRowsProps {
   expandable: boolean;
   expanded: boolean;
   busy: boolean;
-  problem: "invalid" | "failed" | null;
+  bridge: DesktopBridge;
+  onApply: (report: ToolchainReport) => void;
   onToggle: () => void;
   onSetPath: () => void;
   onCopy: (command: string) => void;
@@ -129,7 +119,15 @@ interface ToolRowsProps {
   onOpenSite: (url: string) => void;
 }
 
-function ToolRows({ check, expandable, expanded, problem, busy, ...actions }: ToolRowsProps) {
+function ToolRows({
+  check,
+  expandable,
+  expanded,
+  bridge,
+  onApply,
+  busy,
+  ...actions
+}: ToolRowsProps) {
   const t = useT();
   const name = toolName(check.tool);
   return (
@@ -152,13 +150,9 @@ function ToolRows({ check, expandable, expanded, problem, busy, ...actions }: To
         <td className={styles.mono} data-col="version">
           {check.version ?? NONE}
         </td>
-        {check.path === undefined ? null : (
-          <td className={styles.pathCell} data-col="path">
-            <UserText mono className={styles.path} title={check.path}>
-              {shortenPath(check.path)}
-            </UserText>
-          </td>
-        )}
+        <td className={styles.pathCell} data-col="path">
+          <ToolPathInput bridge={bridge} tool={check.tool} path={check.path} onApply={onApply} />
+        </td>
         <td className={styles.mono} data-col="arch">
           {check.arch ?? NONE}
         </td>
@@ -174,15 +168,6 @@ function ToolRows({ check, expandable, expanded, problem, busy, ...actions }: To
           </SettingsLink>
         </td>
       </tr>
-      {problem === null ? null : (
-        <tr className={styles.full}>
-          <td colSpan={6} className={styles.problem} role="alert">
-            {problem === "invalid"
-              ? t("settings.runtime.invalidPath.body", { tool: name })
-              : t("settings.runtime.pathFailed.body")}
-          </td>
-        </tr>
-      )}
       {expanded ? (
         <tr className={styles.full}>
           <td colSpan={6} className={styles.detailCell}>
