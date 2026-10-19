@@ -36,6 +36,7 @@
   box-sizing: border-box;
   inline-size: var(--mark-size);
   block-size: var(--mark-size);
+  margin-inline: calc((var(--size-status-error-mark) - var(--mark-size)) / 2);
   border: calc(var(--space-1) * 0.75) solid var(--mark-color);
   border-radius: var(--mark-radius);
   background: var(--mark-fill);
@@ -51,7 +52,7 @@
 
 .root[data-status="crashed"] .mark {
   position: relative;
-  margin-inline: calc((var(--size-status-mark) - var(--mark-size)) / 2);
+  margin-inline: 0;
   border: 0;
 }
 .root[data-status="crashed"] .mark::before,
