@@ -18,14 +18,42 @@
   margin-inline-start: auto;
 }
 
-/* 品牌名：设计稿 Main 里是 20 粗体 */
+/* 负责人批准方案 A：正式应用图标配紧凑字标，字号适配实际侧栏宽度。 */
 .brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
   padding-block: var(--space-6) var(--space-3);
   padding-inline: var(--space-5);
-  font-size: var(--text-dialog-title-size);
-  font-weight: var(--text-dialog-title-weight);
-  line-height: var(--text-dialog-title-line-height);
+  font-size: var(--text-page-title-size);
+  font-weight: var(--text-page-title-weight);
+  line-height: var(--text-page-title-line-height);
+  letter-spacing: calc(var(--space-1) * -0.3);
   user-select: none;
+}
+
+.mark {
+  display: flex;
+  flex: none;
+  inline-size: var(--size-control-md);
+  block-size: var(--size-control-md);
+}
+
+.mark img {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.darkMark {
+  display: none;
+}
+
+:global([data-theme="dark"]) .lightMark {
+  display: none;
+}
+
+:global([data-theme="dark"]) .darkMark {
+  display: block;
 }
 
 .nav {
