@@ -4,6 +4,7 @@ import {
   mkdirSync,
   mkdtempSync,
   realpathSync,
+  renameSync,
   rmSync,
   symlinkSync,
   writeFileSync,
@@ -20,6 +21,40 @@ afterAll(() => rmSync(home, { recursive: true, force: true }));
 const platform = getPlatform({ home: absPath(home) });
 
 describe("真磁盘上的大小", () => {
+  it("[LIBRARY-DISK-USAGE-08] 读过父目录后子目录被换成外部链接：拒绝混合两份目录的结果", async () => {
+    const project = absPath(join(home, "link-race"));
+    const sub = join(project, "sub");
+    const outside = join(home, "race-outside");
+    mkdirSync(sub, { recursive: true });
+    mkdirSync(outside);
+    writeFileSync(join(outside, "big"), new Uint8Array(1_000_000));
+    const result = await computeDiskUsage(
+      {
+        scanDir: async (dir, expected) => {
+          const scan = await platform.fs.scanDir(dir, expected);
+          if (dir === project) {
+            renameSync(sub, join(home, "race-original"));
+            symlinkSync(outside, sub);
+          }
+          return scan;
+        },
+      },
+      project,
+    );
+    expect(result).toBe("changed");
+  });
+
+  it("[LIBRARY-DISK-USAGE-08] 项目根本身是链接时保留既有行为，子链接仍不展开", async () => {
+    const project = absPath(join(home, "root-target"));
+    const linked = absPath(join(home, "root-link"));
+    mkdirSync(project);
+    writeFileSync(join(project, "file"), "x");
+    symlinkSync(project, linked);
+    expect(await computeDiskUsage(platform.fs, linked)).toEqual(
+      await computeDiskUsage(platform.fs, project),
+    );
+  });
+
   it("[LIBRARY-DISK-USAGE-07][LIBRARY-DISK-USAGE-08][LIBRARY-DISK-USAGE-11] 硬链接只算一次，链接不跟随不绕圈，读不了的文件夹记一处", async () => {
     const project = join(home, "proj");
     const outside = join(home, "outside");

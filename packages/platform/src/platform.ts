@@ -95,6 +95,8 @@ export interface DirScan {
   /** 目录自己（跟随它本身是链接的情形：项目文件夹可以是指向别处的链接） */
   readonly self: DiskEntry;
   readonly entries: readonly (DiskEntry & { readonly name: string })[];
+  /** 读取前后目录身份变化：entries 为空，调用方必须放弃本轮大小，稍后重算 */
+  readonly changed?: true;
 }
 
 export interface WatchEvent {
@@ -234,9 +236,11 @@ export interface Platform {
      * 读一层目录用来算磁盘占用（只读）：目录自己和它直接子项的类型、占用的字节（块数 × 512）、设备号、inode、硬链接数。
      * 不跟随符号链接（链接本身是 "symlink" 项，大小是链接自己的）；目录不存在返回 null；
      * 没有权限读目录抛 PATH_LOCKED；读的过程中子项消失就当它不在。遍历由调用方一层层做，
-     * 这样一个大项目不会长时间占住事件循环，也可以随时放弃
+     * 这样一个大项目不会长时间占住事件循环，也可以随时放弃。
+     * expected 是父扫描看到的目录身份：给了就不跟随目录本身的链接，读取前后身份不符则返回 changed。
+     * 不给 expected 时允许根项目本身是链接，但仍核对读取前后的目标身份
      */
-    scanDir(dir: AbsPath): Promise<DirScan | null>;
+    scanDir(dir: AbsPath, expected?: Pick<DiskEntry, "dev" | "ino">): Promise<DirScan | null>;
     /** 只进废纸篓或回收站，放不进就失败（TRASH_UNAVAILABLE），绝不退到永久删除 */
     trash(dir: AbsPath, opts?: { regenerable?: PosixRelPath[] }): Promise<TrashResult>;
     /**

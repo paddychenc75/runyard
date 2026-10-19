@@ -40,6 +40,7 @@ export interface DiskUsageService {
 
 interface Tracked {
   path: AbsPath;
+  generation: number;
   size: PlaygroundSize | undefined;
   /** 监听的建立（含失败后的 undefined）；换路径、移除、关闭时先等它再释放 */
   watching: Promise<Disposable | undefined>;
@@ -49,7 +50,7 @@ interface Tracked {
 }
 
 export function createDiskUsageService(
-  api: SupervisorApi,
+  api: Pick<SupervisorApi, "platform" | "clock">,
   hooks: { onChange(id: string): void; log(line: string): void },
 ): DiskUsageService {
   const { platform, clock } = api;
@@ -99,7 +100,8 @@ export function createDiskUsageService(
   async function rootReadable(): Promise<boolean> {
     if (root === undefined) return true;
     try {
-      return (await platform.fs.scanDir(root)) !== null;
+      const scan = await platform.fs.scanDir(root);
+      return scan !== null && !scan.changed;
     } catch (error) {
       if (isPlatformError(error) && error.error.code === "PATH_LOCKED") return false;
       throw error;
@@ -107,10 +109,21 @@ export function createDiskUsageService(
   }
 
   async function compute(id: string, entry: Tracked): Promise<void> {
+    const { path, generation } = entry;
     // 资源库根目录读不了：不报告任何新结果，旧的保留
     if (!(await rootReadable())) return;
-    const result = await computeDiskUsage(platform.fs, entry.path, { shouldStop: () => disposed });
-    if (result === "stopped" || disposed || tracked.get(id) !== entry) return;
+    const result = await computeDiskUsage(platform.fs, path, { shouldStop: () => disposed });
+    if (
+      result === "stopped" ||
+      disposed ||
+      tracked.get(id) !== entry ||
+      entry.generation !== generation
+    )
+      return;
+    if (result === "changed") {
+      touch(id);
+      return;
+    }
     const next: PlaygroundSize | undefined =
       result === "missing"
         ? undefined
@@ -190,6 +203,7 @@ export function createDiskUsageService(
         if (known === undefined) {
           const entry: Tracked = {
             path: folder.path,
+            generation: 0,
             size: undefined,
             watching: Promise.resolve(undefined),
             firstChange: undefined,
@@ -201,11 +215,14 @@ export function createDiskUsageService(
         } else if (known.path !== folder.path) {
           // 改名：结果保留（规格 -18），监听换到新路径
           known.path = folder.path;
+          known.generation += 1;
           const previous = known.watching;
           clearTimer(known);
           known.watching = previous
             .then((watcher) => watcher?.dispose())
             .then(() => startWatch(id, known));
+          // 旧路径的重算可能正在进行：不接纳它的结果，新路径另算，已有缓存始终保留。
+          enqueue(id);
         }
       }
     },

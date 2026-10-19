@@ -218,6 +218,21 @@ export function fsContract(ctx: ContractContext): void {
   });
 
   describe("fs.scanDir", () => {
+    it('"fs.scanDir" 带父扫描的目录身份，路径已换成另一目录时拒绝结果', async () => {
+      const at = await fresh();
+      await fs.makeDir(at("sub"));
+      const original = (await fs.scanDir(at("sub")))?.self;
+      if (original === undefined) throw new Error("缺少原目录的身份");
+      await fs.moveDir(at("sub"), at("original"));
+      const moved = await fs.scanDir(at("original"), original);
+      expect(moved?.changed).toBeUndefined();
+      expect(moved?.self).toMatchObject({ dev: original.dev, ino: original.ino });
+      await fs.makeDir(at("sub"));
+      const changed = await fs.scanDir(at("sub"), original);
+      expect(changed?.changed).toBe(true);
+      expect(changed?.entries).toEqual([]);
+    });
+
     it('"fs.scanDir" 列出直接子项的类型和占用的字节，1 字节的文件按整块算', async () => {
       const at = await fresh();
       await fs.writeFile(at("a.txt"), "x");

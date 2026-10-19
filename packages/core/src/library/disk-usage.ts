@@ -1,5 +1,11 @@
 import { join } from "node:path";
-import { type AbsPath, absPath, isPlatformError, type Platform } from "@runyard/platform";
+import {
+  type AbsPath,
+  absPath,
+  type DiskEntry,
+  isPlatformError,
+  type Platform,
+} from "@runyard/platform";
 
 // 项目占多少磁盘（规格 LIBRARY-DISK-USAGE-01 到 12）：一层层读目录，不跟随符号链接，
 // 按实际占用的块算，同一份数据的硬链接只算一次，不进入别的卷，读不了的目录跳过并记数。
@@ -24,12 +30,12 @@ export interface DiskUsageOptions {
   readonly shouldStop?: () => boolean;
 }
 
-/** 找不到文件夹返回 "missing"；被要求放弃返回 "stopped" */
+/** 找不到文件夹返回 missing；被要求放弃返回 stopped；目录身份变化返回 changed，不能用它覆盖旧结果 */
 export async function computeDiskUsage(
   fs: Pick<Platform["fs"], "scanDir">,
   root: AbsPath,
   options: DiskUsageOptions = {},
-): Promise<DiskUsageResult | "missing" | "stopped"> {
+): Promise<DiskUsageResult | "missing" | "stopped" | "changed"> {
   const rootScan = await fs.scanDir(root).catch((error: unknown) => {
     if (isNoPermission(error)) return "denied" as const;
     throw error;
@@ -38,13 +44,14 @@ export async function computeDiskUsage(
   if (rootScan === "denied") {
     return { totalBytes: 0, dependencyBytes: 0, dependencyDirs: [], unreadable: 1 };
   }
+  if (rootScan.changed) return "changed";
   const device = rootScan.self.dev;
   const seen = new Set<string>();
   const depNames = new Set<string>();
   let total = rootScan.self.bytes;
   let dependency = 0;
   let unreadable = 0;
-  const pending: { path: AbsPath; inDep: boolean; own: number }[] = [];
+  const pending: { path: AbsPath; inDep: boolean; entry: DiskEntry }[] = [];
 
   const visit = (scan: NonNullable<typeof rootScan>, dir: AbsPath, inDep: boolean) => {
     for (const entry of scan.entries) {
@@ -54,7 +61,7 @@ export async function computeDiskUsage(
         if (isDep && !inDep) depNames.add(entry.name);
         total += entry.bytes;
         if (isDep) dependency += entry.bytes;
-        pending.push({ path: absPath(join(dir, entry.name)), inDep: isDep, own: entry.bytes });
+        pending.push({ path: absPath(join(dir, entry.name)), inDep: isDep, entry });
         continue;
       }
       if (entry.kind === "file" && entry.nlink > 1) {
@@ -73,7 +80,7 @@ export async function computeDiskUsage(
     const next = pending.pop() as (typeof pending)[number];
     let scan: Awaited<ReturnType<typeof fs.scanDir>>;
     try {
-      scan = await fs.scanDir(next.path);
+      scan = await fs.scanDir(next.path, next.entry);
     } catch (error) {
       if (!isNoPermission(error)) throw error;
       unreadable += 1;
@@ -81,10 +88,17 @@ export async function computeDiskUsage(
     }
     if (scan === null) {
       // 读之前就被删了：它自己的块也不计
-      total -= next.own;
-      if (next.inDep) dependency -= next.own;
+      total -= next.entry.bytes;
+      if (next.inDep) dependency -= next.entry.bytes;
       continue;
     }
+    if (
+      scan.changed ||
+      scan.self.kind !== "dir" ||
+      scan.self.dev !== device ||
+      scan.self.ino !== next.entry.ino
+    )
+      return "changed";
     visit(scan, next.path, next.inDep);
   }
   return {

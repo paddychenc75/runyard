@@ -3,6 +3,7 @@ import {
   type AbsPath,
   absPath,
   type DirScan,
+  type DiskEntry,
   type PosixRelPath,
   platformError,
   posixRelPath,
@@ -182,7 +183,7 @@ export class MemoryFs {
   }
 
   /** 平台接口 scanDir */
-  scanDir(dir: AbsPath): Promise<DirScan | null> {
+  scanDir(dir: AbsPath, expected?: Pick<DiskEntry, "dev" | "ino">): Promise<DirScan | null> {
     this.scanCounts.set(dir, (this.scanCounts.get(dir) ?? 0) + 1);
     if (this.#hanging.has(dir)) return new Promise(() => {});
     this.onScanDir?.(dir);
@@ -238,6 +239,8 @@ export class MemoryFs {
       ino: this.#inodeOf(dir),
       nlink: 2,
     };
+    if (expected !== undefined && (self.dev !== expected.dev || self.ino !== expected.ino))
+      return Promise.resolve({ self, entries: [], changed: true });
     return Promise.resolve({ self, entries });
   }
 
@@ -271,6 +274,7 @@ export class MemoryFs {
   }
 
   remove(path: AbsPath): void {
+    for (const key of this.#inodes.keys()) if (within(path, key)) this.#inodes.delete(key);
     this.#symlinks.delete(path);
     for (const file of this.#under(path).files) {
       this.#files.delete(file);
@@ -301,6 +305,12 @@ export class MemoryFs {
       throw platformError("PATH_LOCKED", { name }, `EBUSY: ${from}`);
     }
     const { files, dirs } = this.#under(from);
+    // 改名不换 inode；原路径随后新建的目录要有新身份，才能复现扫描与改名的竞态。
+    for (const path of [...files, ...dirs]) {
+      const ino = this.#inodes.get(path);
+      if (ino !== undefined) this.#inodes.set(to + path.slice(from.length), ino);
+      this.#inodes.delete(path);
+    }
     for (const file of files) {
       const target = to + file.slice(from.length);
       this.#files.set(target, this.#files.get(file) as string | Uint8Array);

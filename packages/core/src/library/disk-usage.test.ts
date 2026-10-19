@@ -96,6 +96,15 @@ describe("项目大小的计算", () => {
     expect(result.totalBytes).toBe(2 * BLOCK);
   });
 
+  it("[LIBRARY-DISK-USAGE-09] 父扫描后子目录换成另一卷：拒绝结果，不把新卷的内容混进大小", async () => {
+    const { fs, scan } = setup();
+    fs.writeFile(at("sub", "external"), new Uint8Array(500_000));
+    fs.onScanDir = (dir) => {
+      if (dir === root) queueMicrotask(() => fs.mount(at("sub"), 2));
+    };
+    expect(await scan()).toBe("changed");
+  });
+
   it("[LIBRARY-DISK-USAGE-10] 遍历中途文件被删：结果正常、不记为读不了、删掉的不计", async () => {
     const { fs, scan } = setup();
     fs.writeFile(at("keep"), "x");
