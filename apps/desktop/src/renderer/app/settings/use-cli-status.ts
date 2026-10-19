@@ -18,12 +18,15 @@ export interface CliStatusView {
   installCommand: () => void;
   removeCommand: () => void;
   exportDiagnostics: () => void;
+  guideFailed: boolean;
+  openGuide: (locale: "en" | "zh-CN") => void;
   installSkill: (target: AgentSkillTarget) => void;
   stopSupervisor: () => void;
 }
 
 // “命令行与智能体”里几项的状态和动作：打开设置页时各读一次；命令行持有的运行个数随资源库的运行变化重读。
 export function useCliStatus(bridge: DesktopBridge, library: LibraryState | null): CliStatusView {
+  const [guideFailed, setGuideFailed] = useState(false);
   const [command, setCommand] = useState<CliCommandStatus | null>(null);
   const [failed, setFailed] = useState(false);
   const [skills, setSkills] = useState<AgentSkillStatus | null>(null);
@@ -72,6 +75,14 @@ export function useCliStatus(bridge: DesktopBridge, library: LibraryState | null
   );
 
   return {
+    guideFailed,
+    openGuide: (locale) => {
+      setGuideFailed(false);
+      void bridge.call("agents.openGuide", locale).then(
+        (result) => setGuideFailed(!result.ok),
+        () => setGuideFailed(true),
+      );
+    },
     command,
     failed,
     skills,

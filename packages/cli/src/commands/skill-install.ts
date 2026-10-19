@@ -1,6 +1,6 @@
 import { absPath, joinPath, posixRelPath } from "@runyard/platform";
 import { usageError } from "../cli-error.ts";
-import { SKILL_TEXT } from "../skill/skill-text.ts";
+import { skillText } from "../skill/skill-text.ts";
 import type { CommandHandler } from "./command-spec.ts";
 
 // skill install：把给智能体的说明写到约定位置（规格 CLI-COMMANDS-73 到 77）。
@@ -26,7 +26,11 @@ export const skillInstall: CommandHandler = async (context) => {
     const dir = joinPath(context.platform.paths.home, posixRelPath(TARGETS[target]));
     await context.platform.fs.makeDir(dir);
     const file = joinPath(dir, posixRelPath("SKILL.md"));
-    await context.platform.fs.writeAtomic(absPath(file), SKILL_TEXT);
+    await context.platform.fs.writeAtomic(absPath(file), skillText("en", context.platform.id));
+    await context.platform.fs.writeAtomic(
+      joinPath(dir, posixRelPath("SKILL.zh-CN.md")),
+      skillText("zh-CN", context.platform.id),
+    );
     installed.push({ target, path: file });
   }
   context.out.result(

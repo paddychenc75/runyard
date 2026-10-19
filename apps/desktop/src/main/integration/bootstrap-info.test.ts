@@ -12,7 +12,7 @@ describe("buildBootstrapInfo", () => {
   it("macOS：按钮在左，快捷键用 ⌘，语言与无障碍开关原样带上", () => {
     expect(buildBootstrapInfo("darwin", inputs)).toEqual({
       platform: "darwin",
-      windowControls: { side: "left", inset: 72 },
+      windowControls: { side: "left", inset: 70 },
       modKey: "meta",
       locale: "zh-CN",
       theme: "dark",

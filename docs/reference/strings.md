@@ -97,6 +97,7 @@
 | cli.run.ready.body | {name} 已就绪：{url} | {name} is ready at {url} | name：项目名称，原样显示；url：服务的地址，以 http://127.0.0.1: 开头，原样显示 |
 | cli.run.started.body | 已启动 {name}（运行 {runId}）。 | Started {name} (run {runId}). | name：项目名称，原样显示；runId：运行的标识，原样显示 |
 | cli.run.starting.body | 正在启动 {name} | Starting {name} | name：项目名称，原样显示 |
+| cli.skillGuide.body | 这是给人看的中文对照，智能体以 SKILL.md 为准。  # Runyard  Runyard 从模板创建小项目，在后台运行并保存日志。 始终添加 `--json`：标准输出就会恰好是一个可解析的 JSON 对象。  ## 工作流程  1. 不确定选哪个模板时，先列出模板：`runyard template list --json`。 2. 一步创建并启动项目，并说明它的用途：    `runyard new '<template>' [name] --run --note "what this is for" --json`    网页或服务的结果包含 `run.url`；脚本则在退出后返回输出。 3. 直接编辑结果里 `path` 下的文件。运行中的服务会自行重新加载。 4. 使用 `runyard logs '<name>' --since '<cursor>' --json` 检查结果。    使用上次结果中的 `cursor`，只读取新增内容。 5. 用完后停止：`runyard stop '<name>' --json`。  ## 规则  - 不要为这些项目自行启动开发服务器。使用 `runyard run '<name>' --json`。 - 只用于验证、无须长期保留的项目：添加 `--clean-after 30d` 到 `new`，   让它以后自动清理。如果用户说要留着，就不要添加这个选项。 - 命令失败时，JSON 包含 `error.code` 和 `error.hint`。按 `error.hint` 的说明处理，   不要盲目重复同一个命令。 - `runyard status --json` 显示正在运行的项目。`runyard doctor --json` 显示已安装的工具。 | --- name: runyard description: Create, run and inspect small throwaway code projects (web pages, React apps, scripts) with the runyard command line. Use it when you need to try out or show a piece of code instead of starting a dev server yourself. ---  # Runyard  Runyard creates small projects from templates, runs them in the background and keeps their logs. Always add `--json`: standard output is then exactly one JSON object that you can parse.  ## Workflow  1. List templates when you are unsure which one fits: `runyard template list --json`. 2. Create and start a project in one step, and say why it exists:    `runyard new '<template>' [name] --run --note "what this is for" --json`    For a server the result has `run.url`; for a script it has the output once it exits. 3. Edit the files under the `path` in the result directly. A running server reloads by itself. 4. Check what happened with `runyard logs '<name>' --since '<cursor>' --json`.    Use the `cursor` from the previous result to read only what is new. 5. Stop it when you are done: `runyard stop '<name>' --json`.  ## Rules  - Do not start your own dev server for these projects. Use `runyard run '<name>' --json`. - A project that only verifies something and is not meant to be kept: add `--clean-after 30d` to `new`   so it is cleaned up later. If the user says to keep it, leave the option out. - When a command fails, the JSON has `error.code` and `error.hint`. Do what `error.hint` says,   do not retry the same command blindly. - `runyard status --json` shows what is running. `runyard doctor --json` shows which tools are installed. | — |
 | cli.skillInstall.installed.body | 已写入 {target, select, claude {Claude} other {智能体}} 的说明：{path} | Wrote the {target, select, claude {Claude} other {agents}} instructions: {path} | target：claude 或 agents；用 select 选词；path：写入的 SKILL.md 绝对路径，原样显示 |
 | cli.status.empty.body | 没有项目。 | No playgrounds. | — |
 | cli.status.item.body | {name}　{state}{url, select, none {} other {　{url}}}{missing, select, yes {　（找不到文件夹）} other {}} | {name}  {state}{url, select, none {} other {  {url}}}{missing, select, yes {  (folder missing)} other {}} | name：项目名称，原样显示；state：运行状态（已按当前语言挑选的文字）；url：地址，原样显示；没有时是 none；missing：yes 或 no；yes 时加“找不到文件夹”标记 |
@@ -186,7 +187,7 @@
 | desktop.create.cancel.action | 取消 | Cancel | — |
 | desktop.create.changeTemplate.action | 换一个模板 | Change template | — |
 | desktop.create.cleanAfter.label | 多久没打开后清理 | Clean up after unused for | — |
-| desktop.create.cleanSummary.hint | {days, plural, other {# 天}}没打开就移到{term_trash}，清理前一天会提醒你，可以随时改成保留。 | Moves to the {term_trash} after {days, plural, one {# day} other {# days}} unused. You get a reminder the day before, and can switch to Kept any time. | days：天数 |
+| desktop.create.cleanSummary.hint | {days, plural, other {# 天}}没打开就移到{term_trash}，清理前一天会提醒你，可以随时关闭。 | Moves to the {term_trash} after {days, plural, one {# day} other {# days}} unused. You get a reminder the day before, and can turn off auto-clean at any time. | days：天数 |
 | desktop.create.custom.label | 自定义 | Custom | — |
 | desktop.create.customDays.label | 自定义天数 | Custom number of days | — |
 | desktop.create.customDaysInvalid.hint | 请填大于 0 的整数 | Enter a whole number above 0 | — |
@@ -322,6 +323,11 @@
 | desktop.missing.site.label | 官网 | Website | — |
 | desktop.notice.dismiss.aria | 关闭提示 | Dismiss notice | — |
 | desktop.notice.region.aria | 提示 | Notices | — |
+| desktop.notifications.clear.action | 全部清除 | Clear all | — |
+| desktop.notifications.empty.label | 暂无通知 | No notifications | — |
+| desktop.notifications.recent.label | 最近 | Recent | — |
+| desktop.notifications.required.label | 需要处理 | Needs attention | — |
+| desktop.notifications.title | 通知 | Notifications | — |
 | desktop.output.aria | 进程输出 | Process output | — |
 | desktop.output.empty.label | 还没有输出。 | No output yet. | — |
 | desktop.output.view.action | 查看完整输出 | View full output | — |
@@ -688,7 +694,8 @@
 | library.action.dismiss.action | 知道了 | Got it | — |
 | library.action.failed.title | 操作没有完成 | That did not finish | — |
 | library.autoClean.dialog.title | 自动清理 | Auto-clean | — |
-| library.clean.keep.action | 改为保留 | Keep them | — |
+| library.autoClean.off.hint | {name} 现在没有开启自动清理，会一直保留。 | Auto-clean is off for {name}. | name：项目名称 |
+| library.clean.keep.action | 关闭自动清理 | Turn off auto-clean | — |
 | library.clean.later.action | 稍后再说 | Remind me later | — |
 | library.clean.now.action | 现在清理 | Clean now | — |
 | library.cleanBanner.end.label | 。 | . | — |
@@ -701,7 +708,7 @@
 | library.column.lastOpened.label | 上次打开 | Last opened | — |
 | library.column.name.label | 名称与备注 | Name and note | — |
 | library.column.port.label | 端口 | Port | — |
-| library.column.retention.label | 保留 | Retention | — |
+| library.column.retention.label | 自动清理 | Auto-clean | — |
 | library.column.status.label | 状态 | Status | — |
 | library.column.template.label | 模板 | Template | — |
 | library.creator.agent.label | 智能体 | Agent | — |
@@ -714,11 +721,17 @@
 | library.empty.cli.label | 也可以让智能体用命令行创建： | Or let an agent create one from the command line: | — |
 | library.empty.hint | 选一个模板，新建你的第一个项目。 | Pick a template to create your first playground. | — |
 | library.empty.title | 还没有项目 | No playgrounds yet | — |
+| library.emptyAgent.command.label | runyard new html demo --note "说明这个项目做什么" | runyard new html demo --note "Describe what this playground does" | — |
+| library.emptyAgent.hint | 让智能体在终端里运行下面这样的命令，项目会出现在这里，并写明是哪个智能体。 | Ask an agent to run a command like this in the terminal. Its playground will appear here with the agent’s name. | — |
+| library.emptyAgent.title | 还没有智能体创建的项目 | No agent-created playgrounds yet | — |
+| library.emptyAutoClean.hint | 项目默认一直保留。想让试完就扔的项目自己离开，在“更多”菜单里选“自动清理…”。 | Playgrounds stay by default. For throwaway experiments, choose “Auto-clean…” in the More menu. | — |
+| library.emptyAutoClean.title | 没有开启自动清理的项目 | No playgrounds with auto-clean on | — |
+| library.emptyRunning.hint | 在列表里打开一个项目就会运行；命令行用 runyard run <名称>。 | Open a playground in the list to run it, or use runyard run '<name>' from the command line. | — |
+| library.emptyRunning.title | 没有在运行的项目 | No running playgrounds | — |
 | library.filter.agent.label | 智能体创建 | Created by agents | — |
 | library.filter.all.label | 全部 | All | — |
 | library.filter.autoClean.label | 自动清理 | Auto-clean | — |
 | library.filter.combined.label | 筛选 | Filter | — |
-| library.filter.kept.label | 已保留 | Kept | — |
 | library.filter.sort.label | 排序：{value} | Sort: {value} | value：当前选中的排序名 |
 | library.filter.status.label | 状态：{value} | Status: {value} | value：当前选中的状态名 |
 | library.filter.type.label | 类型：{value} | Type: {value} | value：当前选中的类型名 |
@@ -730,11 +743,11 @@
 | library.missing.revealParent.action | 在{term_fileManager}中显示上一级文件夹 | Show the parent folder in {term_fileManager} | — |
 | library.missing.status.label | 找不到文件夹 | Folder not found | — |
 | library.nav.aria | 资源库导航 | Library navigation | — |
+| library.nav.clean.title | 清理 | Clean up | — |
 | library.nav.library.title | 资源库 | Library | — |
 | library.nav.manage.title | 管理 | Manage | — |
 | library.nav.settings.label | 设置 | Settings | — |
 | library.nav.templates.label | 模板 | Templates | — |
-| library.nav.unused.label | 长期未使用 | Unused for a while | — |
 | library.noResults.clear.action | 清除搜索 | Clear search | — |
 | library.noResults.create.action | 新建项目，名称用“{query}” | New playground named “{query}” | query：用户输入的搜索文字，同时是新项目的名称 |
 | library.noResults.filtered.hint | 换一个筛选条件试试。 | Try different filters. | — |
@@ -754,7 +767,8 @@
 | library.rename.terminalCommand.hint | 终端里正在运行的 {command} 会被结束。 | The {command} running in the terminal will be ended. | command：终端里正在运行的命令名（程序名，不翻译） |
 | library.retention.autoClean.label | 剩 {days, plural, other {# 天}} | {days, plural, one {# day} other {# days}} left | days：距离自动清理还剩的天数 |
 | library.retention.autoClean.tooltip | {days, plural, other {# 天}}没打开就移到{term_trash}，每次打开重新计时 | Moved to the {term_trash} after {days, plural, one {# day} other {# days}} unopened; the count restarts on every open | days：自动清理设定的天数 |
-| library.retention.kept.label | 已保留 | Kept | — |
+| library.retention.kept.label | 关闭 | Off | — |
+| library.retention.off.label | — | — | — |
 | library.retention.tomorrow.label | 明天清理 | Tomorrow | — |
 | library.row.autoClean.action | 自动清理… | Auto-clean… | — |
 | library.row.autoCleanNow.hint | 现在：{state} | Now: {state} | state：当前保留状态的文字（已保留，或剩 N 天） |
@@ -947,6 +961,8 @@
 | settings.skills.both.label | 已安装到 Claude Code 和 Codex | Installed for Claude Code and Codex | — |
 | settings.skills.claude.label | 已安装到 Claude Code | Installed for Claude Code | — |
 | settings.skills.claudeName.label | Claude Code | Claude Code | — |
+| settings.skills.guide.action | 查看说明 | View guide | — |
+| settings.skills.guideFailed.hint | 没能打开说明，请重试。 | Could not open the guide. Try again. | — |
 | settings.skills.hint | 让 Claude Code、Codex 等知道怎么用 runyard 新建和运行项目 | Lets Claude Code, Codex and others create and run playgrounds | — |
 | settings.skills.none.label | 未安装 | Not installed | — |
 | settings.skills.other.action | 安装到其他智能体… | Install for another agent… | — |

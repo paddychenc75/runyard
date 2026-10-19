@@ -98,6 +98,7 @@ export function usePlaygroundEdits(options: UsePlaygroundEditsOptions): Playgrou
         <AutoCleanDialog
           bridge={bridge}
           id={row.id}
+          name={row.name}
           days={row.autoClean.enabled ? row.autoClean.days : null}
           onClose={close}
         />

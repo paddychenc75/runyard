@@ -202,3 +202,23 @@ describe("命令行与智能体", () => {
     expect(screen.queryByText(/#195/)).toBeNull();
   });
 });
+
+it("[DESKTOP-SETTINGS-44] 未安装也能按界面语言查看说明，不触发安装", async () => {
+  const seen: unknown[] = [];
+  const w = world({
+    on: {
+      "agents.status": () => ({ claude: false, agents: false }),
+      "agents.openGuide": (locale: unknown) => {
+        seen.push(locale);
+        return { ok: true };
+      },
+    },
+  });
+  const user = await openCli(w);
+  await user.click(await screen.findByRole("button", { name: "查看说明" }));
+  expect(seen).toEqual(["zh-CN"]);
+  await user.click(screen.getByRole("button", { name: "English" }));
+  await user.click(await screen.findByRole("button", { name: "View guide" }));
+  expect(seen).toEqual(["zh-CN", "en"]);
+  expect(w.calls.some(({ method }) => method === "agents.install")).toBe(false);
+});

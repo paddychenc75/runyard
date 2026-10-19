@@ -29,7 +29,7 @@
 ## 本包里已有行为的命令
 
 - `doctor`（`src/commands/doctor.ts`、`src/doctor/`）：`cli`、`supervisor`、`tools`、`library`、`system` 五项。`tools` 在本进程里用 `ToolchainService` 直接检测（不写缓存），所以管理进程连不上时也有；连不上时 `supervisor` 是 `{ running: false, reason: <错误码> }`，退出码 0。缺失或过低的工具带 `install` 提示（`src/doctor/install-hints.ts` 的 `installHints`：在用版本管理工具给它的命令，否则有 Homebrew 给 Homebrew 的，官网链接始终在，模板自己写的 `install` 标 `via: "template"`），**只展示，从不执行**；选哪条的核心规则（TEMPLATES-FORMAT-35）归 core 的安装模块（#36），合并后换掉这个函数体。`--bundle`：只收规格列的各项（`doctor.json`、去掉 `token` 的 `supervisor.json`、`toolchain.json`、`runs/` 下最近三个运行日志、`app.log`、`supervisor.log`、`system.json`），所有文本再抹掉口令和网址里的账号密码（`scrub-secrets.ts`，不依赖设置里代理字段的名字）；zip 自己写（`zip-writer.ts`，不加依赖）；写到 `host.tempDir/runyard-doctor-<时间>.zip`，没有 `--out`（规格没有）。运行日志文件的命名由 #43 定，现在假定“logs/ 下不是 `app.log`、`supervisor.log`（含轮转）的文件”，名字最大的三个。
-- `skill install`（`src/commands/skill-install.ts`、`src/skill/skill-text.ts`）：只写 `<主目录>/.claude/skills/runyard/SKILL.md` 和 `<主目录>/.agents/skills/runyard/SKILL.md`；全文是英文数据，不走文案包，有快照测试。
+- `skill install`（`src/commands/skill-install.ts`、`src/skill/skill-text.ts`）：每个目标同时写 `SKILL.md`（供智能体执行的英文）和 `SKILL.zh-CN.md`（供人阅读的中文对照）；返回路径仍是英文文件。正文同源于文案包 `cli.skillGuide.body`，英文快照保持原文，测试核对两份操作条目及命令示例一致。
 - `template list|show|save` 经管理进程（`template.list|get|save`）；`save` 在发请求前先校验 `--as`（`NAME_INVALID`）和 `--include|--exclude`（`USAGE`）。`template lint` 在本进程直接调 core 的 `lintTemplateRef`；有错误时先输出结果对象，再以 `TEMPLATE_INVALID`（2）结束。管理进程一侧的 `template.*` 处理不在本包。
 
 - `template test`（`src/template-test/`、`src/commands/template-test.ts`）：core 编排 create/install/start/ready/reload/stop/leftovers，脚本没有 ready；只操作系统临时目录里的副本，不连接管理进程。`--tool-version` 选择已安装的精确版本，`--keep-dir` 返回保留的项目路径。CLI 提供独占目录清理和中断接缝，core 只停止本次标记且核对 pid 加启动时间的进程。
