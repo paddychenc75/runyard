@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { desktopCatalogs } from "@runyard/i18n";
 import { I18nProvider } from "@runyard/i18n/react";
-import { act, cleanup, render, screen, within } from "@testing-library/react";
+import { act, cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { BootstrapInfo, DesktopBridge } from "../../shared/desktop-bridge.ts";
@@ -72,6 +72,7 @@ function setup(
   reply: Reply = () => undefined,
   locale: "zh-CN" | "en" = "zh-CN",
 ) {
+  window.localStorage.clear();
   const calls: [string, unknown][] = [];
   const call = vi.fn(async (method: string, param?: unknown) => {
     calls.push([method, param]);
@@ -80,6 +81,7 @@ function setup(
   const handlers: ((next: LibraryState) => void)[] = [];
   const push = (next: LibraryState) =>
     act(() => {
+      state = next;
       for (const handler of handlers) handler(next);
     });
   const bootstrap: BootstrapInfo = {
@@ -92,7 +94,7 @@ function setup(
     highContrast: false,
   };
   const on = (_event: string, handler: (next: LibraryState) => void) => {
-    handlers.push(handler);
+    if (_event === "library.changed") handlers.push(handler);
     return () => {};
   };
   const bridge = { bootstrap, call, on } as unknown as DesktopBridge;
@@ -301,7 +303,7 @@ const noticeOf = () => ({
   at: NOW,
 });
 
-describe("右下角的提示", () => {
+describe("通知按钮下方的卡片", () => {
   it("[DESKTOP-LIBRARY-VIEW-103] 没有智能体名称时写“智能体创建并运行了 …”，中间不留空格", async () => {
     setup(library([agentRow()], { notices: [{ ...noticeOf(), agent: null }] }));
     const toast = await screen.findByRole("region", { name: "提示" });
@@ -365,7 +367,7 @@ describe("右下角的提示", () => {
   });
 });
 
-describe("自动清理的提示条", () => {
+describe("自动清理通知", () => {
   const tomorrow = () =>
     row("node-ts-1", {
       autoClean: { enabled: true, days: 30 },
@@ -379,15 +381,15 @@ describe("自动清理的提示条", () => {
       ...extra,
     });
 
-  it("[DESKTOP-LIBRARY-VIEW-57] 保留列写“明天清理”；顶部提示条写“1 个项目明天会被自动清理：node-ts-1（已 29 天没打开）。”", async () => {
+  it("[DESKTOP-LIBRARY-VIEW-57] 保留列写“明天清理”；通知卡片写“1 个项目明天会被自动清理：node-ts-1（已 29 天没打开）。”", async () => {
     setup(remind());
     const line = await bodyRow("node-ts-1");
     expect(within(line).getByText("明天清理")).toBeTruthy();
-    const banner = document.querySelector("[data-clean-banner]") as HTMLElement;
+    const banner = document.querySelector("[data-notification-cards] [role=status]") as HTMLElement;
     expect(banner.textContent).toContain("1 个项目明天会被自动清理：node-ts-1（已 29 天没打开）。");
     expect(within(banner).getByRole("button", { name: "关闭自动清理" })).toBeTruthy();
     expect(within(banner).getByRole("button", { name: "现在清理" })).toBeTruthy();
-    expect(within(banner).getByRole("button", { name: "稍后再说" })).toBeTruthy();
+    expect(within(banner).getByRole("button", { name: "关闭提示" })).toBeTruthy();
   });
 
   it("[DESKTOP-LIBRARY-VIEW-57] 多个项目时列出名称；离到期还早的行不写“明天清理”", async () => {
@@ -399,9 +401,9 @@ describe("自动清理的提示条", () => {
         ],
       }),
     );
-    const banner = await screen.findByRole("status", { name: "自动清理提醒" });
+    const banner = await screen.findByRole("status", { name: /明天会被自动清理/ });
     expect(banner.textContent).toContain(
-      "2 个项目明天会被自动清理：node-ts-1（已 29 天没打开）；py-1（已 29 天没打开）。",
+      "2 个项目明天会被自动清理：node-ts-1（已 29 天没打开）。py-1（已 29 天没打开）。",
     );
     const fresh = row("fresh", {
       autoClean: { enabled: true, days: 30 },
@@ -415,7 +417,7 @@ describe("自动清理的提示条", () => {
 
   it("[DESKTOP-LIBRARY-VIEW-104] 今天打开过的写“今天打开过”，不写“已 0 天没打开”", async () => {
     setup(remind({ cleanReminder: [{ id: "node-ts-1", name: "node-ts-1", idleDays: 0 }] }));
-    const banner = await screen.findByRole("status", { name: "自动清理提醒" });
+    const banner = await screen.findByRole("status", { name: /明天会被自动清理/ });
     expect(banner.textContent).toContain("1 个项目明天会被自动清理：node-ts-1（今天打开过）。");
     expect(banner.textContent).not.toContain("0 天");
   });
@@ -423,7 +425,7 @@ describe("自动清理的提示条", () => {
   it("[DESKTOP-LIBRARY-VIEW-58] 窗口看不见时不回报“提醒已显示”；窗口出现、提示条真显示后才回报，且只回报一次", async () => {
     const visibility = vi.spyOn(document, "visibilityState", "get").mockReturnValue("hidden");
     const { calls } = setup(remind());
-    await screen.findByRole("status", { name: "自动清理提醒" });
+    await screen.findByRole("status", { name: /明天会被自动清理/ });
     expect(calledWith(calls, "clean.shown")).toEqual([]);
     visibility.mockReturnValue("visible");
     await act(async () => {
@@ -434,7 +436,7 @@ describe("自动清理的提示条", () => {
 
   it("[DESKTOP-LIBRARY-VIEW-57] 窗口看得见时提示条一显示就回报“提醒已显示”", async () => {
     const { calls } = setup(remind());
-    await screen.findByRole("status", { name: "自动清理提醒" });
+    await screen.findByRole("status", { name: /明天会被自动清理/ });
     expect(calledWith(calls, "clean.shown")).toEqual([["node-ts-1"]]);
   });
 
@@ -443,18 +445,27 @@ describe("自动清理的提示条", () => {
     await user.click(await screen.findByRole("button", { name: "关闭自动清理" }));
     expect(calledWith(calls, "clean.keep")).toEqual([["node-ts-1"]]);
     await push(library([row("node-ts-1"), row("kept")], { cleanReminder: [], cleanDueCount: 0 }));
-    expect(document.querySelector("[data-clean-banner]")).toBeNull();
+    expect(document.querySelector("[data-notification-cards] [role=status]")).toBeNull();
     expect(
       (await bodyRow("node-ts-1")).querySelector("td[data-column=retention]")?.textContent,
     ).toBe("—");
   });
 
-  it("[DESKTOP-LIBRARY-VIEW-60] 点“稍后再说”：请求收起，状态推来后提示条不见，该行仍写“明天清理”", async () => {
+  it("[DESKTOP-LIBRARY-VIEW-60] 关闭只收起卡片，待处理列表和行提醒保留", async () => {
     const { calls, push } = setup(remind());
-    await user.click(await screen.findByRole("button", { name: "稍后再说" }));
-    expect(calledWith(calls, "clean.later")).toEqual([["node-ts-1"]]);
-    await push(remind({ cleanReminder: [] }));
-    expect(document.querySelector("[data-clean-banner]")).toBeNull();
+    await user.click(await screen.findByRole("button", { name: "关闭提示" }));
+    await waitFor(() =>
+      expect(document.querySelector("[data-notification-cards] [role=status]")).toBeNull(),
+    );
+    expect(calledWith(calls, "clean.later")).toEqual([]);
+    await push(remind());
+    expect(document.querySelector("[data-notification-cards] [role=status]")).toBeNull();
+    await user.click(screen.getByRole("button", { name: "通知" }));
+    expect(
+      within(await screen.findByRole("dialog", { name: "通知" })).getByText(
+        "node-ts-1（已 29 天没打开）。",
+      ),
+    ).toBeTruthy();
     expect(within(await bodyRow("node-ts-1")).getByText("明天清理")).toBeTruthy();
   });
 

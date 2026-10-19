@@ -44,9 +44,9 @@
 /* 模板页没有顶栏，收起后只保留原位置的侧栏切换按钮。 */
 .standaloneToggle {
   position: absolute;
-  inset-block-start: calc(var(--size-window-inset) + var(--space-3));
+  inset-block-start: 0;
   inset-inline-start: var(--layout-topbar-start, var(--space-6));
-  block-size: var(--size-toolbar);
+  block-size: var(--size-titlebar);
   display: flex;
   align-items: center;
   z-index: var(--z-sticky);

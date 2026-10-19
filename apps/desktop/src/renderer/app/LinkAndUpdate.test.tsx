@@ -43,6 +43,7 @@ function library(extra: Partial<LibraryState> = {}): LibraryState {
 }
 
 function setup(state: LibraryState, locale: "zh-CN" | "en" = "zh-CN") {
+  window.localStorage.clear();
   const calls: [string, unknown][] = [];
   const call = vi.fn(async (method: string, param?: unknown) => {
     calls.push([method, param]);
@@ -169,7 +170,9 @@ describe("链接没能照做的提示", () => {
         ],
       }),
     );
-    const text = (await screen.findByRole("region", { name: "提示" }, SLOW)).textContent;
+    await screen.findByRole("region", { name: "提示" }, SLOW);
+    await user.click(screen.getByRole("button", { name: "通知" }));
+    const text = (await screen.findByRole("dialog", { name: "通知" })).textContent;
     expect(text).toContain("本机没有模板 rails");
     expect(text).toContain("名称 landing 已被占用");
     expect(text).toContain("已有一个待确认的新建请求");
@@ -177,23 +180,29 @@ describe("链接没能照做的提示", () => {
   });
 });
 
-describe("“有新版本”提示条", () => {
+describe("“有新版本”通知", () => {
   const update = { latest: "0.3.0", current: "0.2.0" };
 
-  it("[DESKTOP-SETTINGS-26] 资源库页顶部写新旧版本；“下载”请求打开发布页，“以后再说”收起", async () => {
+  it("[DESKTOP-SETTINGS-26] 通知卡片写新旧版本；“下载”请求打开发布页，“以后再说”收起", async () => {
     const { calls } = setup(library({ update }));
-    const banner = await screen.findByRole("status", { name: "新版本" }, SLOW);
-    expect(banner.textContent).toContain("Runyard 0.3.0 已发布，你现在用的是 0.2.0。");
+    const banner = await screen.findByRole("status", { name: "Runyard 0.3.0 可以更新了" }, SLOW);
+    expect(banner.textContent).toContain("Runyard 0.3.0 可以更新了你现在用的是 0.2.0。");
     await user.click(within(banner).getByRole("button", { name: "下载" }));
     expect(called(calls, "update.download")).toBe(1);
     await user.click(within(banner).getByRole("button", { name: "以后再说" }));
-    expect(called(calls, "update.later")).toBe(1);
+    expect(called(calls, "update.later")).toBe(0);
+    await user.click(screen.getByRole("button", { name: "通知" }));
+    expect(
+      within(await screen.findByRole("dialog", { name: "通知" })).getByText(
+        "Runyard 0.3.0 可以更新了",
+      ),
+    ).toBeTruthy();
   });
 
   it("[DESKTOP-SETTINGS-26] 英文界面", async () => {
     setup(library({ locale: "en", update }), "en");
-    const banner = await screen.findByRole("status", { name: "New version" }, SLOW);
-    expect(banner.textContent).toContain("Runyard 0.3.0 is out. You are using 0.2.0.");
+    const banner = await screen.findByRole("status", { name: "Runyard 0.3.0 is available" }, SLOW);
+    expect(banner.textContent).toContain("Runyard 0.3.0 is availableYou are using 0.2.0.");
     expect(within(banner).getByRole("button", { name: "Download" })).toBeTruthy();
     expect(within(banner).getByRole("button", { name: "Later" })).toBeTruthy();
   });
@@ -201,6 +210,6 @@ describe("“有新版本”提示条", () => {
   it("没有新版本时没有提示条", async () => {
     setup(library({ update: null }));
     await screen.findByRole("heading", { level: 1 }, SLOW);
-    expect(screen.queryByRole("status", { name: "新版本" })).toBeNull();
+    expect(screen.queryByRole("status", { name: "Runyard 0.3.0 可以更新了" })).toBeNull();
   });
 });

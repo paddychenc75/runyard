@@ -1,7 +1,9 @@
 import { closePicker, expect, test } from "./support/fixtures.ts";
 
 // 顶栏方案 A 的真实窗口检查（规格 DESKTOP-LIBRARY-VIEW-61、65 至 67）：搜索框在页头、侧栏按钮在侧栏顶部、窗口变窄时收紧
-test("版面：搜索在页头、侧栏按钮跟着红绿灯、1024 宽时页头收紧", async ({ launch }) => {
+test("[DESKTOP-WORKSPACE-68][DESKTOP-LIBRARY-VIEW-93] 版面：搜索在页头、侧栏按钮跟着红绿灯、1024 宽时页头收紧", async ({
+  launch,
+}) => {
   const runyard = await launch();
   const { page, app } = runyard;
   // 选择器只在应用读到空资源库时弹出：先等它出现并关掉，再让命令行建项目，否则命令行抢先时选择器根本不会出现
@@ -31,14 +33,20 @@ test("版面：搜索在页头、侧栏按钮跟着红绿灯、1024 宽时页头
   // 侧栏按钮在侧栏里；收起后在顶栏最左边，标签条在它右边
   const hide = page.getByRole("button", { name: "Hide sidebar" });
   const hideBox = await hide.boundingBox();
-  expect(hideBox?.x ?? 0).toBeLessThan(240);
+  expect(hideBox?.x).toBe(90);
+  expect(hideBox?.y).toBe(12);
+  expect(
+    await app.evaluate(({ BrowserWindow }) =>
+      BrowserWindow.getAllWindows()[0]?.getWindowButtonPosition(),
+    ),
+  ).toEqual({ x: 19, y: 19 });
   await hide.click();
   const show = page.getByRole("button", { name: "Show sidebar" });
   await expect(show).toBeVisible();
   const showBox = await show.boundingBox();
   const tabsAfter = await tabs.boundingBox();
-  expect(showBox?.x ?? 0).toBeLessThan(tabsAfter?.x ?? 0);
-  expect(showBox?.y ?? 0).toBeLessThan(60);
+  expect(showBox).toEqual(hideBox);
+  expect(tabsAfter?.x).toBe(134);
   await show.click();
 
   // 1024 宽自动隐藏侧栏，页头按可用空间显示完整筛选；极窄时才合并。

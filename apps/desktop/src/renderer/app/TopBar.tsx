@@ -131,14 +131,16 @@ export function TopBar({
     </button>
   );
   return (
-    <div className={styles.root}>
+    <div className={styles.root} data-window-toolbar="">
       {onToggleSidebar === undefined || sidebarVisible ? null : (
-        <PaneToggleButton
-          sidebar
-          label={t("library.sidebar.expand.label")}
-          expanded={false}
-          onClick={onToggleSidebar}
-        />
+        <span className={styles.sidebarToggle}>
+          <PaneToggleButton
+            sidebar
+            label={t("library.sidebar.expand.label")}
+            expanded={false}
+            onClick={onToggleSidebar}
+          />
+        </span>
       )}
       <TabStrip
         label={t("workspace.tabs.aria")}

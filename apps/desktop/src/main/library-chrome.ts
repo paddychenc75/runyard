@@ -16,6 +16,7 @@ export class LibraryChrome {
   /** 待确认的 runyard://new 请求和“有新版本”提示（links/、updates/ 设置它们） */
   linkConfirm: LinkConfirmView | null = null;
   update: UpdateBannerView | null = null;
+  updateReady = false;
   #root = "";
   #synced = false;
   #badge = -1;
@@ -53,6 +54,7 @@ export class LibraryChrome {
       notices: this.notices.list(),
       linkConfirm: this.linkConfirm,
       update: this.update,
+      updateReady: this.updateReady,
     };
   }
 
