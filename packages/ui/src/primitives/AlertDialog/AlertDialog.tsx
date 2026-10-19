@@ -1,6 +1,7 @@
 import { AlertDialog as BaseAlertDialog } from "@base-ui/react/alert-dialog";
 import type { Localized } from "@runyard/i18n";
 import type { ReactNode, RefObject } from "react";
+import { ButtonGroup } from "../ButtonGroup/index.ts";
 import { GlassSurface } from "../GlassSurface/index.ts";
 import styles from "./AlertDialog.module.css";
 
@@ -61,7 +62,9 @@ export function AlertDialog({
             </div>
           </div>
           {children}
-          <div className={styles.actions}>{actions}</div>
+          <ButtonGroup size="lg" align="end">
+            {actions}
+          </ButtonGroup>
         </BaseAlertDialog.Popup>
       </BaseAlertDialog.Portal>
     </BaseAlertDialog.Root>

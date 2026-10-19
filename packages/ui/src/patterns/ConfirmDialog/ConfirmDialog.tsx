@@ -62,18 +62,11 @@ export function ConfirmDialog({
       container={container}
       actions={
         <>
-          <Button
-            ref={cancelRef}
-            variant="neutral"
-            size="lg"
-            className={styles.cancel}
-            onClick={onCancel}
-          >
+          <Button ref={cancelRef} variant="neutral" className={styles.cancel} onClick={onCancel}>
             {cancelLabel}
           </Button>
           <Button
             variant={tone === "danger" ? "destructive" : "primary"}
-            size="lg"
             onClick={() => onConfirm(optOut === undefined ? false : checked)}
           >
             {confirmLabel}

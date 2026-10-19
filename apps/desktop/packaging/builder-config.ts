@@ -1,6 +1,8 @@
+import { cpSync } from "node:fs";
 import { join } from "node:path";
 import type { Configuration } from "electron-builder";
 import { electronFusesOption, type FuseSettings } from "./fuses.ts";
+import { VUE_LANGUAGE_SERVICE_DIR } from "./vue-language-service.ts";
 
 // electron-builder 的配置（只打 macOS；Windows 以后，技术设计 §8.2）。
 // 应用目录是临时拼出来的（package.ts 的 stage），里面只有 esbuild 的产物和一个最小的 package.json，
@@ -17,6 +19,8 @@ export interface BuilderInputs {
   fuses: Readonly<FuseSettings>;
   /** runtime-bundle.ts 的输出目录：里面的 runyard/ 和 bin/ 作为额外资源放进 Contents/Resources */
   runtimeDir: string;
+  /** vue-language-service.ts 生成的语言服务目录；放进 Contents/Resources，不进 asar（权限模型要按真实路径授权） */
+  vueLanguageServiceDir: string;
 }
 
 export function builderConfig(inputs: BuilderInputs): Configuration {
@@ -38,7 +42,28 @@ export function builderConfig(inputs: BuilderInputs): Configuration {
     extraResources: [
       { from: join(inputs.runtimeDir, "runyard"), to: "runyard" },
       { from: join(inputs.runtimeDir, "bin"), to: "bin" },
+      // 不含 node_modules：electron-builder 的额外资源无论怎么写过滤都会丢掉这个名字的目录，改在 afterPack 里补（见下）
+      {
+        from: inputs.vueLanguageServiceDir,
+        to: VUE_LANGUAGE_SERVICE_DIR,
+        filter: ["**/*", "!node_modules/**"],
+      },
     ],
+    // tsserver 从 <语言服务目录>/node_modules/@vue/typescript-plugin 找插件（--pluginProbeLocations 的固定写法），
+    // 所以这个目录名改不了；在签名之前补进 .app（afterPack 先于签名）
+    afterPack: (context) => {
+      const resources = join(
+        context.appOutDir,
+        `${context.packager.appInfo.productFilename}.app`,
+        "Contents",
+        "Resources",
+      );
+      cpSync(
+        join(inputs.vueLanguageServiceDir, "node_modules"),
+        join(resources, VUE_LANGUAGE_SERVICE_DIR, "node_modules"),
+        { recursive: true, dereference: true },
+      );
+    },
     npmRebuild: false,
     // runyard:// 链接：写进 Info.plist，系统在安装后的应用上登记它（规格 DESKTOP-LINKS-05）；
     // 应用自己不在运行时向系统登记

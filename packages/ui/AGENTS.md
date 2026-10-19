@@ -3,7 +3,7 @@
 ## 用途
 
 界面的通用组件包：基础组件、图标、玻璃材质、组件工作台（技术设计 §6.7）。它不认识产品：不导入 `protocol`、`electron`、Node 接口（`src/` 里 Biome 的 `noNodejsModules` 拦），文件名、导出名、标识符里不出现产品词，不自己取数据。
-现状：骨架加组件 `Icon`、`Button`、`GlassSurface`、`UserText`，主窗口外壳用到的 `IconButton`、`Tooltip`、`ScrollArea`、`Menu`（#171，包 Base UI 的菜单，数据驱动：`entries` 加 `onSelect`；开合经 `onOpenChange` 通知，外壳靠它让原生预览让位），资源库列表用到的 `StatusMark`、`Badge`、`MonogramTile`、`Truncate`、`EmptyState`（基础层），以及 `NavList`、`TitleBar`、`TabStrip`、`DataTable`、`LogView`、`ConfirmDialog`（组合层，在 `src/patterns/`），`AlertDialog`、`Checkbox`（基础层，#174 的关闭确认用），`Dialog`、`Field`、`TextField`、`Switch`、`SegmentedControl`（基础层，#173 的新建弹窗用；设计稿里自动清理天数是分段选择，所以没有做 `Select`），`Banner`、`CopyableCommand`、`StepList`（基础层，#178 的失败画面用）；其余组件随第一个用到它的功能 PR 加（§6.7 规则 8），不提前做。截图比对（`ui-visual`，`visual/`）已就位；`Localized` 属性的 React 绑定随 #164。六项组件化检查（`ui-layers`、`ui-purity`、`style-tokens`、`ui-fixtures`、`icons`、`file-size`）已在 `pnpm check` 里（#165），下面的规则就是它们守的。
+现状：骨架加组件 `Icon`、`Button`、`ButtonGroup`、`GlassSurface`、`UserText`，主窗口外壳用到的 `IconButton`、`Tooltip`、`ScrollArea`、`Menu`（#171，包 Base UI 的菜单，数据驱动：`entries` 加 `onSelect`；开合经 `onOpenChange` 通知，外壳靠它让原生预览让位），资源库列表用到的 `StatusMark`、`Badge`、`MonogramTile`、`Truncate`、`EmptyState`（基础层），以及 `NavList`、`TitleBar`、`TabStrip`、`DataTable`、`LogView`、`ConfirmDialog`（组合层，在 `src/patterns/`），`AlertDialog`、`Checkbox`（基础层，#174 的关闭确认用），`Dialog`、`Field`、`TextField`、`Switch`、`SegmentedControl`（基础层，#173 的新建弹窗用；设计稿里自动清理天数是分段选择，所以没有做 `Select`），`Banner`、`CopyableCommand`、`StepList`（基础层，#178 的失败画面用）；其余组件随第一个用到它的功能 PR 加（§6.7 规则 8），不提前做。截图比对（`ui-visual`，`visual/`）已就位；`Localized` 属性的 React 绑定随 #164。六项组件化检查（`ui-layers`、`ui-purity`、`style-tokens`、`ui-fixtures`、`icons`、`file-size`）已在 `pnpm check` 里（#165），下面的规则就是它们守的。
 
 ## 对外暴露什么
 
@@ -15,7 +15,7 @@
 - 样式只用 `var(--…)` 语义变量加 CSS Modules：颜色、像素、圆角、字号、阴影、层级一律不写死；缺变量就改 `packages/tokens/src/tokens.json` 再 `pnpm tokens:build`。方向用逻辑属性（`padding-inline`，不用 `padding-left`）。
 - `backdrop-filter` 只许写在 `src/styles/materials.css`；组件用 `<GlassSurface material="…">`。
 - 一个组件一个文件夹，五个文件：`Name.tsx`、`Name.module.css`、`Name.fixture.tsx`、`Name.test.tsx`、`index.ts`；步骤见 `docs/guides/add-ui-component.md`。样例文件导出 `meta` 和 `samples`，样例里不写文字（走 `SampleData`），布局用 `src/fixtures/` 里的 `FixtureStack`、`FixtureBox`；新样例还要登记进 `workbench/registry.ts`。
-- 变体用字符串联合，不用互斥布尔；`ref` 当普通属性收；`className` 是唯一的样式入口；文字属性的类型是 `Localized`（`children` 是 `ReactNode`）；纯图标按钮的 `label` 必填。
+- 变体用字符串联合，不用互斥布尔；`ref` 当普通属性收；`className` 是唯一的样式入口；文字属性的类型是 `Localized`（`children` 是 `ReactNode`）；纯图标按钮的 `label` 必填。 按钮三档 `sm` 28 / `md` 32（默认）/ `lg` 40，与变体无关，主按钮没有彩色阴影；并排的按钮必须放进 `ButtonGroup`，组里 `Button` 不写 `size`（`button-groups` 检查拦；`Dialog`、`AlertDialog`、`Banner` 的 `actions` 已自带组）。全文见 `docs/design/visual-system.md` 第 12 节。
 - 悬停、按下、聚焦用 `data-force-state="hover|pressed|focus"` 在样例里强制显示。
 - 基准图只由 CI 生成，给 PR 加 `update-ui-baseline` 标签，不要在本地更新（本地写基准图会直接报错）；单张不超过 200 KB、总量不超过 30 MB（`visual/budget.ts`）；流程和 1× 的实测依据见 `docs/guides/ui-visual.md`。
 - 界面里不调 `usePlatform()`，快捷键用 `<Kbd shortcut="…">`（这两样随后续组件加入）。

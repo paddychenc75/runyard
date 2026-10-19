@@ -26,6 +26,8 @@
     "@runyard/tokens": "workspace:*",
     "@runyard/ui": "workspace:*",
     "@shikijs/monaco": "catalog:",
+    "@vue/language-server": "catalog:",
+    "@vue/typescript-plugin": "catalog:",
     "@xterm/addon-fit": "catalog:",
     "@xterm/addon-search": "catalog:",
     "@xterm/addon-web-links": "catalog:",
@@ -34,7 +36,8 @@
     "node-pty": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "shiki": "catalog:"
+    "shiki": "catalog:",
+    "typescript": "catalog:"
   },
   "devDependencies": {
     "@electron/fuses": "catalog:",

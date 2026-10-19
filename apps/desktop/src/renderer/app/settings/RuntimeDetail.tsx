@@ -1,6 +1,6 @@
 import { useT } from "@runyard/i18n/react";
 import type { ToolCheck } from "@runyard/protocol";
-import { Button, CopyableCommand } from "@runyard/ui";
+import { Button, ButtonGroup, CopyableCommand } from "@runyard/ui";
 import styles from "./RuntimeGroup.module.css";
 import { SettingsLink } from "./SettingsLink.tsx";
 import { rangeParts, toolName } from "./tool-view.ts";
@@ -74,21 +74,19 @@ export function RuntimeDetail({
           </>
         )}
       </dl>
-      <div className={styles.detailActions}>
+      <ButtonGroup>
         {check.installCommand === undefined ? null : (
           <>
-            <Button size="md" onClick={() => onCopy(check.installCommand ?? "")}>
+            <Button onClick={() => onCopy(check.installCommand ?? "")}>
               {t("settings.runtime.copy.action")}
             </Button>
-            <Button size="md" onClick={onRunInstall}>
-              {t("settings.runtime.runInstall.action")}
-            </Button>
+            <Button onClick={onRunInstall}>{t("settings.runtime.runInstall.action")}</Button>
           </>
         )}
-        <Button size="md" variant="primary" loading={busy} onClick={onRecheck}>
+        <Button variant="primary" loading={busy} onClick={onRecheck}>
           {t("settings.runtime.recheck.action")}
         </Button>
-      </div>
+      </ButtonGroup>
       <div className={styles.already}>
         <span>{t("settings.runtime.installed.label")}</span>
         <SettingsLink onClick={onSetPath}>{t("settings.runtime.setPath.action")}</SettingsLink>

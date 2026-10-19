@@ -10,6 +10,7 @@ import * as alertDialog from "../src/primitives/AlertDialog/AlertDialog.fixture.
 import * as badge from "../src/primitives/Badge/Badge.fixture.tsx";
 import * as banner from "../src/primitives/Banner/Banner.fixture.tsx";
 import * as button from "../src/primitives/Button/Button.fixture.tsx";
+import * as buttonGroup from "../src/primitives/ButtonGroup/ButtonGroup.fixture.tsx";
 import * as checkbox from "../src/primitives/Checkbox/Checkbox.fixture.tsx";
 import * as copyableCommand from "../src/primitives/CopyableCommand/CopyableCommand.fixture.tsx";
 import * as dialog from "../src/primitives/Dialog/Dialog.fixture.tsx";
@@ -39,6 +40,7 @@ export const fixtures: readonly FixtureModule[] = [
   badge,
   banner,
   button,
+  buttonGroup,
   checkbox,
   confirmDialog,
   copyableCommand,

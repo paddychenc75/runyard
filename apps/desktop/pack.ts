@@ -9,6 +9,11 @@ import { syncIcon } from "./packaging/icon.ts";
 import { assertNodePty, stageNodePty } from "./packaging/node-pty.ts";
 import { buildRuntimeBundle } from "./packaging/runtime-bundle.ts";
 import { assertFuses } from "./packaging/verify-fuses.ts";
+import {
+  buildVueLanguageService,
+  VUE_LANGUAGE_SERVICE_DIR,
+  vueLanguageServiceProblems,
+} from "./packaging/vue-language-service.ts";
 
 // 打包本体：拼应用目录、electron-builder 出 .app（加 dmg、zip）、读二进制里的开关并断言（技术设计 §8.2、决策记录 0007）。
 // 不直接运行：入口是 tooling/scripts/package-desktop.ts（`pnpm --filter @runyard/desktop package`），
@@ -78,8 +83,12 @@ const manifest = await buildRuntimeBundle({
 });
 console.log(`版本 ${manifest.version}，构建标识 ${manifest.build}`);
 
+console.log("准备 Vue 语言服务目录");
+const vueLanguageServiceDir = await buildVueLanguageService(here, outDir);
+
 const config = builderConfig({
   runtimeDir,
+  vueLanguageServiceDir,
   outDir,
   buildResources: join(here, "build"),
   electronDist: electron.dist,
@@ -96,6 +105,12 @@ await build({
 
 console.log("校验终端的原生模块");
 assertNodePty(join(outDir, "mac-arm64", "Runyard.app", "Contents", "Resources"));
+
+console.log("校验 Vue 语言服务目录");
+const vueProblems = vueLanguageServiceProblems(
+  join(outDir, "mac-arm64", "Runyard.app", "Contents", "Resources", VUE_LANGUAGE_SERVICE_DIR),
+);
+if (vueProblems.length > 0) throw new Error(vueProblems.join("\n"));
 
 console.log("校验打包开关");
 const app = join(outDir, "mac-arm64", "Runyard.app");

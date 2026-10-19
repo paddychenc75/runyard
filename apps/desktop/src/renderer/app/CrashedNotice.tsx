@@ -1,5 +1,5 @@
 import { useFormat, useT } from "@runyard/i18n/react";
-import { Button, Icon } from "@runyard/ui";
+import { Button, ButtonGroup, Icon } from "@runyard/ui";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { TabRow } from "../../shared/library-state.ts";
 import { ConsoleOutput } from "./ConsoleOutput.tsx";
@@ -39,7 +39,7 @@ export function CrashedNotice({ bridge, tab }: CrashedNoticeProps) {
         </div>
       </div>
       <ConsoleOutput bridge={bridge} playground={tab.id} className={styles.log} tail={TAIL_LINES} />
-      <div className={styles.actions}>
+      <ButtonGroup size="md" className={styles.actions}>
         <Button
           variant="primary"
           icon="refresh"
@@ -49,7 +49,7 @@ export function CrashedNotice({ bridge, tab }: CrashedNoticeProps) {
           {t("desktop.rerun.action")}
         </Button>
         <Button onClick={focusConsoleOutput}>{t("desktop.output.view.action")}</Button>
-      </div>
+      </ButtonGroup>
     </div>
   );
 }

@@ -112,12 +112,6 @@
   background: var(--color-bg-inset);
 }
 
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-}
-
 .note {
   margin: 0;
   color: var(--color-text-secondary);

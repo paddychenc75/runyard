@@ -85,13 +85,6 @@
   overflow-wrap: anywhere;
 }
 
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: var(--space-5);
-}
-
 @media (prefers-reduced-motion: reduce) {
   .backdrop,
   .popup {

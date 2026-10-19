@@ -1,5 +1,5 @@
 import { useT } from "@runyard/i18n/react";
-import { Button, Icon, StepList, type StepListItem } from "@runyard/ui";
+import { Button, ButtonGroup, Icon, StepList, type StepListItem } from "@runyard/ui";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { DesktopError, TabRow } from "../../shared/library-state.ts";
 import { ConsoleOutput } from "./ConsoleOutput.tsx";
@@ -70,7 +70,7 @@ export function StartFailed({ bridge, tab, failure }: StartFailedProps) {
         />
       </section>
       <p className={styles.description}>{errorText(failure, "hint")}</p>
-      <div className={styles.actions}>
+      <ButtonGroup size="md" className={styles.actions}>
         <Button
           variant="primary"
           disabled={tab.busy}
@@ -79,7 +79,7 @@ export function StartFailed({ bridge, tab, failure }: StartFailedProps) {
           {t("desktop.failure.retry.action")}
         </Button>
         <Button onClick={focusConsoleOutput}>{t("desktop.output.view.action")}</Button>
-      </div>
+      </ButtonGroup>
     </div>
   );
 }

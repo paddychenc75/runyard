@@ -69,7 +69,7 @@ export function AutoCleanDialog({ bridge, id, days, onClose }: AutoCleanDialogPr
       title={t("library.autoClean.dialog.title")}
       actions={
         <>
-          <Button type="button" size="lg" onClick={onClose} disabled={busy}>
+          <Button type="button" onClick={onClose} disabled={busy}>
             {t("desktop.create.cancel.action")}
           </Button>
           <Button type="submit" variant="primary" loading={busy} disabled={!valid}>
