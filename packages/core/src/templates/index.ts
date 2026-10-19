@@ -5,6 +5,11 @@ export { decodeText, listFolderFiles, readTemplateFolder } from "./read-template
 export { readToolDefinitions } from "./read-tool-definitions.ts";
 export { type SavedTemplate, type SaveTemplateInput, saveTemplate } from "./save-template.ts";
 export {
+  createTemplateCatalog,
+  type TemplateCatalog,
+  type TemplateCatalogDeps,
+} from "./template-catalog.ts";
+export {
   parseToolDefinitions,
   type ToolDefinitionProblem,
   type ToolDefinitionProblemKind,

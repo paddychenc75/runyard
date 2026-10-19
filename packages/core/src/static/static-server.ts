@@ -1,13 +1,13 @@
 import { readFile, realpath } from "node:fs/promises";
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
-import type { StaticServer } from "@runyard/core";
 import { type Disposable, type Platform, posixRelPath } from "@runyard/platform";
+import type { StaticServer } from "../prepare/prepare-types.ts";
 import { contentTypeOf } from "./static-mime.ts";
 import { resolveStaticFile } from "./static-path.ts";
 import { injectReloadScript, RELOAD_EVENTS_PATH } from "./static-reload.ts";
 
 // 静态页面服务（规格 TEMPLATES-RUNNERS-08 到 11；技术设计 §4.4、§4.5）：`static` 运行器不起子进程，
-// 页面由管理进程自己托管。只绑 127.0.0.1；每次请求都现读文件，不缓存；文件变了经 SSE 通知页面刷新。
+// 页面由调用方所在进程托管。只绑 127.0.0.1；每次请求都现读文件，不缓存；文件变了经 SSE 通知页面刷新。
 
 const LOOPBACK = "127.0.0.1";
 /** 这些目录里的变化不触发刷新：应用自己的数据、依赖和版本库 */
