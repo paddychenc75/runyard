@@ -3,6 +3,7 @@
 /** 随浅色、深色变化的变量（颜色和阴影），值是最终写法，没有 CSS 变量引用 */
 export const themes = {
   light: {
+    "color-nav-selected-bg": "rgba(0, 0, 0, 0.08)",
     "color-bg-window": "#FFFFFF",
     "color-bg-workspace": "#F5F5F7",
     "color-bg-card": "#FFFFFF",
@@ -102,6 +103,7 @@ export const themes = {
     "color-tree-selected-icon": "#FFFFFF",
   },
   dark: {
+    "color-nav-selected-bg": "rgba(255, 255, 255, 0.1)",
     "color-bg-window": "#1C1C1E",
     "color-bg-workspace": "#161618",
     "color-bg-card": "#1E1E21",
@@ -262,6 +264,8 @@ export const constants = {
   "size-switch-height": "26px",
   "size-switch-thumb": "22px",
   "size-dialog-icon": "40px",
+  "size-status-error-mark": "12px",
+  "size-status-error-hero": "44px",
   "size-status-mark": "9px",
   "size-badge": "22px",
   "size-tile": "22px",
@@ -399,6 +403,8 @@ export const numbers = {
   "size-switch-height": 26,
   "size-switch-thumb": 22,
   "size-dialog-icon": 40,
+  "size-status-error-mark": 12,
+  "size-status-error-hero": 44,
   "size-status-mark": 9,
   "size-badge": 22,
   "size-tile": 22,

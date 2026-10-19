@@ -8,7 +8,7 @@ import styles from "./NavList.module.css";
 export interface NavListItem {
   id: string;
   label: Localized;
-  /** 不传就画一个小方块标记（设计稿里“全部”“已保留”这类筛选项） */
+  /** 不传就画一个圆点标记（设计稿里“全部”“运行中”这类筛选项） */
   icon?: IconName;
   /** 右侧的数字，已经过格式化函数 */
   count?: Localized;
@@ -29,6 +29,8 @@ export interface NavListProps extends Omit<ComponentProps<"nav">, "aria-label" |
   sections: readonly NavListSection[];
   /** 当前所在的项；不属于任何项就没有高亮 */
   value?: string;
+  /** 宿主窗口失焦时，选中项图标改用次要文字色 */
+  active?: boolean;
   onValueChange?: (id: string) => void;
 }
 
@@ -37,6 +39,7 @@ export function NavList({
   label,
   sections,
   value,
+  active = true,
   onValueChange,
   className,
   ...rest
@@ -46,6 +49,7 @@ export function NavList({
     <nav
       {...rest}
       aria-label={label}
+      data-active={active}
       className={className === undefined ? styles.root : `${styles.root} ${className}`}
     >
       {sections.map((section) => {

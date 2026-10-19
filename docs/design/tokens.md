@@ -14,6 +14,7 @@ disagree, `tokens.json` wins.
 
 | Role | Light | Dark |
 | --- | --- | --- |
+| 侧栏选中项的浅色填充 (`--color-nav-selected-bg`) | rgba(0, 0, 0, 0.08) | rgba(255, 255, 255, 0.1) |
 | Window background (library, dialogs' backdrop) (`--color-bg-window`) | #FFFFFF | #1C1C1E |
 | Window background (workspace) (`--color-bg-workspace`) | #F5F5F7 | #161618 |
 | Content card (editor, panels, tables, settings cards) (`--color-bg-card`) | #FFFFFF | #1E1E21 |
@@ -234,6 +235,8 @@ disagree, `tokens.json` wins.
 | `--size-switch-height` | 26px | Switch track height |
 | `--size-switch-thumb` | 22px | Switch thumb diameter |
 | `--size-dialog-icon` | 40px | Dialog icon block |
+| `--size-status-error-mark` | 12px | 出错状态圆圈叉 |
+| `--size-status-error-hero` | 44px | 失败画面圆圈叉 |
 | `--size-status-mark` | 9px | Status dot / square in a list row |
 | `--size-badge` | 22px | Badge (retention, creator) height |
 | `--size-tile` | 22px | Template monogram tile, in a table row |

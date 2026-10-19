@@ -11,6 +11,7 @@ import brandLight from "../../../../../docs/design/logo/final/icon-32.svg";
 import brandDark from "../../../../../docs/design/logo/final/icon-32-dark.svg";
 import type { BootstrapInfo } from "../../shared/desktop-bridge.ts";
 import { type NavFilter, navFilters } from "../library-query.ts";
+import { useWindowFocused } from "../shared/use-window-focused.ts";
 import { navLabel } from "./library-labels.ts";
 import { PaneToggleButton } from "./PaneToggleButton.tsx";
 import styles from "./Sidebar.module.css";
@@ -53,6 +54,7 @@ export function Sidebar({
   onCollapse,
 }: SidebarProps) {
   const t = useT();
+  const focused = useWindowFocused();
   const format = useFormat();
   const sections: NavListSection[] = [
     {
@@ -120,6 +122,7 @@ export function Sidebar({
         <NavList
           label={t("library.nav.aria")}
           sections={sections}
+          active={focused}
           value={page === "library" ? nav : page}
           onValueChange={(id) => {
             if (id === "settings") {

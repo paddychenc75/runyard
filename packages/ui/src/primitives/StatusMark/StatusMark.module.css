@@ -1,4 +1,5 @@
 .root {
+  --mark-size: var(--size-status-mark);
   --mark-color: var(--color-text-tertiary);
   --mark-fill: transparent;
   --mark-radius: var(--radius-capsule);
@@ -26,15 +27,15 @@
 .root[data-status="crashed"] {
   --mark-color: var(--color-status-danger-mark);
   --mark-fill: var(--color-status-danger-mark);
-  --mark-radius: var(--space-1);
+  --mark-size: var(--size-status-error-mark);
   --mark-text: var(--color-status-danger-text);
 }
 
 .mark {
   flex: none;
   box-sizing: border-box;
-  inline-size: var(--size-status-mark);
-  block-size: var(--size-status-mark);
+  inline-size: var(--mark-size);
+  block-size: var(--mark-size);
   border: calc(var(--space-1) * 0.75) solid var(--mark-color);
   border-radius: var(--mark-radius);
   background: var(--mark-fill);
@@ -46,4 +47,39 @@
   color: var(--mark-text);
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.root[data-status="crashed"] .mark {
+  position: relative;
+  margin-inline: calc((var(--size-status-mark) - var(--mark-size)) / 2);
+  border: 0;
+}
+.root[data-status="crashed"] .mark::before,
+.root[data-status="crashed"] .mark::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 25%;
+  inset-block-start: 50%;
+  inline-size: 50%;
+  block-size: calc(var(--space-1) * 0.75);
+  border-radius: var(--radius-capsule);
+  background: var(--color-text-on-accent);
+  transform: translateY(-50%) rotate(45deg);
+}
+.root[data-status="crashed"] .mark::after {
+  transform: translateY(-50%) rotate(-45deg);
+}
+.root[data-size="step"] {
+  --mark-size: var(--size-checkbox);
+}
+.root[data-size="hero"] {
+  --mark-size: var(--size-status-error-hero);
+}
+.root[data-size="step"] .mark,
+.root[data-size="hero"] .mark {
+  margin-inline: 0;
+}
+.root[data-size="hero"] .mark::before,
+.root[data-size="hero"] .mark::after {
+  block-size: calc(var(--space-1) * 1.1);
 }

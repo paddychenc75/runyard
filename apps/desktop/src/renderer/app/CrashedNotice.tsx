@@ -1,5 +1,5 @@
 import { useFormat, useT } from "@runyard/i18n/react";
-import { Button, ButtonGroup, Icon } from "@runyard/ui";
+import { Button, ButtonGroup, StatusMark } from "@runyard/ui";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { TabRow } from "../../shared/library-state.ts";
 import { ConsoleOutput } from "./ConsoleOutput.tsx";
@@ -26,9 +26,7 @@ export function CrashedNotice({ bridge, tab }: CrashedNoticeProps) {
       data-failure-screen="crashed"
     >
       <div className={styles.head}>
-        <span aria-hidden="true" className={styles.tile} data-tone="danger">
-          <Icon name="exclamation" size={20} />
-        </span>
+        <StatusMark status="crashed" size="hero" />
         <div className={styles.heading}>
           <h2 className={styles.title} data-tone="danger">
             {tab.exitCode === null

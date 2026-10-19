@@ -43,6 +43,7 @@
   --teal-500: #4eb0cc;
   --indigo-800: #1c00cf;
   --sand-300: #d9c97c;
+  --color-nav-selected-bg: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.1));
   --color-bg-window: light-dark(var(--white), var(--night-800));
   --color-bg-workspace: light-dark(var(--gray-50), var(--night-900));
   --color-bg-card: light-dark(var(--white), var(--night-700));
@@ -198,6 +199,8 @@
   --size-switch-height: 26px;
   --size-switch-thumb: 22px;
   --size-dialog-icon: 40px;
+  --size-status-error-mark: 12px;
+  --size-status-error-hero: 44px;
   --size-status-mark: 9px;
   --size-badge: 22px;
   --size-tile: 22px;
