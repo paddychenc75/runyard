@@ -13,8 +13,8 @@ export class ElectronSystemActions implements SystemActions {
     void shell.openPath(path);
   }
 
-  copyText(text: string): void {
-    clipboard.writeText(text);
+  copyText(text: string): Promise<void> {
+    return clipboard.writeText(text);
   }
 
   async readText(): Promise<string> {
@@ -29,6 +29,10 @@ export class ElectronSystemActions implements SystemActions {
   async chooseFolder(defaultPath: string): Promise<string | null> {
     const result = await dialog.showOpenDialog({ defaultPath, properties: ["openDirectory"] });
     return result.canceled ? null : (result.filePaths[0] ?? null);
+  }
+
+  openExternalChecked(url: string): Promise<void> {
+    return shell.openExternal(url);
   }
 
   openExternal(url: string): void {

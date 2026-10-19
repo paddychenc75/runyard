@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import type { Playground, RunSnapshot } from "@runyard/protocol";
 import { agentDisplayName } from "../shared/agent-name.ts";
 import type { AppNotice, LinkNoticeCode } from "../shared/library-state.ts";
@@ -16,6 +17,7 @@ export class AgentNotices {
   readonly #list: AppNotice[] = [];
   #baselined = false;
   #counter = 0;
+  readonly #session = randomUUID();
 
   /** 每次重读后调用；第一次只记下已有的运行，不提示 */
   observe(playgrounds: readonly Playground[], runs: readonly RunSnapshot[], now: number): void {
@@ -54,14 +56,20 @@ export class AgentNotices {
   /** 创建成功带回的路径提示（接近长度上限） */
   addPathNearLimit(name: string, length: number, limit: number): void {
     this.#counter += 1;
-    this.#list.push({ kind: "path-near-limit", id: `path-${this.#counter}`, name, length, limit });
+    this.#list.push({
+      kind: "path-near-limit",
+      id: `path-${this.#session}-${this.#counter}`,
+      name,
+      length,
+      limit,
+    });
   }
 
   /** 链接没能照做的提示（规格 DESKTOP-LINKS-03、04、10、11、14、16）；同一类同一个值的提示不叠加 */
   addLink(code: LinkNoticeCode, value: string | null): void {
     if (this.#list.some((n) => n.kind === "link" && n.code === code && n.value === value)) return;
     this.#counter += 1;
-    this.#list.push({ kind: "link", id: `link-${this.#counter}`, code, value });
+    this.#list.push({ kind: "link", id: `link-${this.#session}-${this.#counter}`, code, value });
   }
 
   dismiss(id: string): void {

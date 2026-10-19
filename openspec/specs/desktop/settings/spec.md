@@ -271,3 +271,13 @@
 - **WHEN** 发布页上有更新的版本，出现更新通知
 - **THEN** 通知里“你现在用的是”后面写的是这个应用自己的版本号，而不是 0.0.0
 - 验证：test
+
+### Requirement: 查看技能说明
+设置的智能体技能包一行 MUST 提供“查看说明”。中文界面 MUST 打开随包的中文对照，英文界面 MUST 打开随包的英文说明；未安装技能包时也 MUST 可以查看，MUST NOT 因查看而执行安装。
+来源：PRD #prd-settings-items
+
+#### Scenario: [DESKTOP-SETTINGS-44] 按界面语言查看说明
+- 前提：尚未安装技能包
+- **WHEN** 在中文界面点“查看说明”，再切到英文并再次点击
+- **THEN** 分别打开随包的 SKILL.zh-CN.md 和 SKILL.md，没有执行安装
+- 验证：test

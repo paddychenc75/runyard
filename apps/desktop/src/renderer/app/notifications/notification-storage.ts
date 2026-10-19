@@ -17,13 +17,24 @@ const validateText = createTranslator({
   platform: "darwin",
   catalogs: desktopCatalogs,
 }).t as (key: MessageKey, values?: MessageValues) => string;
-const icons = new Set(["info", "warning", "spark", "refresh", "check", "exclamation"]);
+const icons = new Set([
+  "info",
+  "warning",
+  "spark",
+  "refresh",
+  "check",
+  "exclamation",
+  "download",
+  "clock",
+]);
 function isText(value: unknown): value is NotificationText {
   if (typeof value !== "object" || value === null) return false;
-  const { key, values } = value as Record<string, unknown>;
+  const { key, values, relativeTime } = value as Record<string, unknown>;
   const valid =
     typeof key === "string" &&
     keys.has(key as MessageKey) &&
+    (relativeTime === undefined ||
+      (typeof relativeTime === "number" && Number.isFinite(relativeTime))) &&
     (values === undefined ||
       (typeof values === "object" &&
         values !== null &&
@@ -51,6 +62,7 @@ export function isNotificationRecord(value: unknown): value is NotificationRecor
     icons.has(String(row.icon)) &&
     isText(row.title) &&
     (row.description === undefined || isText(row.description)) &&
+    (row.details === undefined || (Array.isArray(row.details) && row.details.every(isText))) &&
     (row.actions === undefined ||
       (Array.isArray(row.actions) &&
         row.actions.length <= 2 &&
