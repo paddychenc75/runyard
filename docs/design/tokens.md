@@ -194,6 +194,12 @@ disagree, `tokens.json` wins.
 
 | Variable | Value | Role |
 | --- | --- | --- |
+| `--size-settings-window-width` | 820px | 设置窗口默认宽度 |
+| `--size-settings-window-height` | 900px | 设置窗口默认高度 |
+| `--size-settings-window-min-width` | 760px | 设置窗口最小宽度 |
+| `--size-settings-window-min-height` | 420px | 设置窗口最小高度 |
+| `--size-settings-titlebar` | 52px | 设置窗口原生标题栏占位 |
+| `--size-window-buttons-inset` | 19px | 标准红绿灯按钮框离窗口左边和上边 |
 | `--size-toolbar` | 44px | Toolbar capsule height |
 | `--size-control-lg` | 40px | Primary button height |
 | `--size-control-md` | 32px | Secondary button height |

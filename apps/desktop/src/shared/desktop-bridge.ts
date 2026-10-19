@@ -284,11 +284,15 @@ export const desktopEventNames: readonly DesktopEventName[] = [
 
 /** 启动信息：主进程建窗口时算好，预加载脚本同步交给界面（技术设计 §6.7；协议包建好该类型后移过去） */
 export interface BootstrapInfo {
+  /** 未写时是主窗口；设置窗口使用同一入口，只渲染设置页。 */
+  windowKind?: "main" | "settings";
   platform: "darwin" | "win32" | "linux";
   windowControls: { side: "left" | "right"; inset: number };
   modKey: "meta" | "ctrl";
   locale: Locale;
   theme: "system" | "light" | "dark";
+  /** 选择跟随系统时的启动参数回退；不能用重新开窗时的当前主题代替。 */
+  themeFallback?: "system" | "light" | "dark";
   reducedTransparency: boolean;
   highContrast: boolean;
 }

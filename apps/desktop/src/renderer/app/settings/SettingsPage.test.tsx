@@ -20,8 +20,8 @@ afterEach(cleanup);
 
 async function openSettings(w: World) {
   const user = userEvent.setup();
+  w.bridge.bootstrap.windowKind = "settings";
   render(<App bridge={w.bridge} />);
-  await user.click(await screen.findByRole("button", { name: "设置" }));
   await screen.findByRole("heading", { name: "通用" });
   return user;
 }
@@ -33,11 +33,17 @@ beforeEach(() => {
 });
 
 describe("设置页", () => {
-  it("[DESKTOP-SETTINGS-01] 点侧栏“设置”在主窗口里打开设置页，没有顶栏，五组的标题依次出现", async () => {
+  it("[DESKTOP-SETTINGS-01] 点侧栏“设置”请求独立窗口，主窗口保留，设置窗口只有五组", async () => {
     const w = world();
     render(<App bridge={w.bridge} />);
     expect(await screen.findByRole("tablist")).toBeTruthy();
     await userEvent.setup().click(await screen.findByRole("button", { name: "设置" }));
+    await waitFor(() => expect(w.calls.some((call) => call.method === "settings.open")).toBe(true));
+    expect(screen.queryByRole("heading", { name: "通用" })).toBeNull();
+    expect(screen.getByRole("tablist")).toBeTruthy();
+    cleanup();
+    w.bridge.bootstrap.windowKind = "settings";
+    render(<App bridge={w.bridge} />);
     await screen.findByRole("heading", { name: "通用" });
     expect(screen.queryByRole("tablist")).toBeNull();
     const page = screen.getByRole("region", { name: "设置" });
@@ -111,7 +117,7 @@ describe("设置页", () => {
     await user.click(screen.getByRole("button", { name: "English" }));
     expect(await screen.findByRole("heading", { name: "General" })).toBeTruthy();
     expect(screen.getByRole("heading", { level: 1, name: "Settings" })).toBeTruthy();
-    expect(within(screen.getByRole("navigation")).getByText("Library")).toBeTruthy();
+    expect(screen.queryByRole("navigation")).toBeNull();
     expect(document.documentElement.lang).toBe("en");
     expect(sets(w)).toEqual([{ language: "en" }]);
   });
@@ -124,6 +130,15 @@ describe("设置页", () => {
     await user.click(screen.getByRole("button", { name: "跟随系统" }));
     await waitFor(() => expect(document.documentElement.dataset.theme).toBe("system"));
     expect(sets(w)).toEqual([{ theme: "dark" }, { theme: "system" }]);
+  });
+
+  it("[DESKTOP-SETTINGS-04] 重开时的深色不能覆盖跟随系统的启动回退", async () => {
+    const w = world({ initial: { theme: "dark" } });
+    w.bridge.bootstrap.theme = "dark";
+    w.bridge.bootstrap.themeFallback = "system";
+    const user = await openSettings(w);
+    await user.click(screen.getByRole("button", { name: "跟随系统" }));
+    await waitFor(() => expect(document.documentElement.dataset.theme).toBe("system"));
   });
 
   it("[DESKTOP-SETTINGS-05] 资源库选在“文档”里先弹出隐私警告，点取消位置不变", async () => {
