@@ -4,7 +4,7 @@
   inline-size: 100%;
   min-inline-size: 0;
   box-sizing: border-box;
-  padding-block: calc(var(--space-8) + var(--space-1) * 1.5) 0;
+  padding-block: calc(var(--space-7) + var(--space-1)) 0;
   padding-inline: var(--space-10);
 }
 

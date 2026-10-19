@@ -56,12 +56,20 @@ describe("buildRuntimeBundle", () => {
     for (const file of [
       "supervisor.mjs",
       "cli.mjs",
+      "skill-guide/SKILL.md",
+      "skill-guide/SKILL.zh-CN.md",
       "templates/builtin/html/template.json",
       "templates/runners/static/runner.json",
       "templates/tools/node.json",
     ]) {
       expect(statSync(join(out, "runyard", file)).isFile()).toBe(true);
     }
+    expect(readFileSync(join(out, "runyard", "skill-guide", "SKILL.zh-CN.md"), "utf8")).toContain(
+      "这是给人看的中文对照",
+    );
+    expect(readFileSync(join(out, "runyard", "skill-guide", "SKILL.md"), "utf8")).toContain(
+      "## Workflow",
+    );
     expect(statSync(join(out, "bin", "runyard")).mode & 0o111).not.toBe(0);
   }, 60_000);
 });

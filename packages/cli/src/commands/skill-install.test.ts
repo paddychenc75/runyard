@@ -2,8 +2,9 @@ import { join } from "node:path";
 import { absPath } from "@runyard/platform";
 import { afterEach, describe, expect, it } from "vitest";
 import { Harness } from "../cli-harness.test.ts";
-import { SKILL_TEXT } from "../skill/skill-text.ts";
+import { skillText } from "../skill/skill-text.ts";
 
+const SKILL_TEXT = skillText("en", "darwin");
 const open: Harness[] = [];
 function harness(): Harness {
   const h = new Harness();
@@ -29,6 +30,12 @@ describe("skill install", () => {
     expect(installed.map((item) => item.path)).toEqual([claudePath(h), agentsPath(h)]);
     expect(await h.platform.fs.readText(claudePath(h))).toBe(SKILL_TEXT);
     expect(await h.platform.fs.readText(agentsPath(h))).toBe(SKILL_TEXT);
+    for (const target of [".claude", ".agents"])
+      expect(
+        await h.platform.fs.readText(
+          absPath(join(h.platform.paths.home, target, "skills", "runyard", "SKILL.zh-CN.md")),
+        ),
+      ).toBe(skillText("zh-CN", h.platform.id));
   });
 
   it("[CLI-COMMANDS-74] --target claude 只写 claude 的位置", async () => {
@@ -74,4 +81,32 @@ describe("skill install", () => {
     expect(result.code).toBe(0);
     expect(h.connectCalls).toEqual([]);
   });
+});
+
+it("[CLI-COMMANDS-91] 同时安装并覆盖中文对照，返回结构仍只有英文路径", async () => {
+  const h = harness();
+  const chinese = absPath(
+    join(h.platform.paths.home, ".claude", "skills", "runyard", "SKILL.zh-CN.md"),
+  );
+  h.fake.fs.writeFile(chinese, "旧中文");
+  const result = await h.run(["skill", "install", "--target", "claude", "--json"]);
+  expect(h.json(result).installed).toEqual([{ target: "claude", path: claudePath(h) }]);
+  expect(await h.platform.fs.readText(chinese)).toContain(
+    "这是给人看的中文对照，智能体以 SKILL.md 为准",
+  );
+  expect(await h.platform.fs.exists(agentsPath(h))).toBe(false);
+});
+it("[CLI-COMMANDS-92] 中文正文与英文操作条目、章节和命令示例对应", async () => {
+  const h = harness();
+  await h.run(["skill", "install", "--target", "agents", "--json"]);
+  const chinese = await h.platform.fs.readText(
+    absPath(join(h.platform.paths.home, ".agents", "skills", "runyard", "SKILL.zh-CN.md")),
+  );
+  expect(chinese).not.toBeNull();
+  const items = (s: string) => s.match(/^(?:\d+\.|-) /gm)?.length;
+  const headings = (s: string) => s.match(/^##? /gm)?.length;
+  const examples = (s: string) => [...s.matchAll(/`([^`]+)`/g)].map((m) => m[1]);
+  expect(items(chinese ?? "")).toBe(items(SKILL_TEXT));
+  expect(headings(chinese ?? "")).toBe(headings(SKILL_TEXT));
+  expect(examples(chinese ?? "")).toEqual(examples(SKILL_TEXT));
 });

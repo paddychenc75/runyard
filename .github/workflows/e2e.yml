@@ -96,6 +96,24 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+      - name: 技能说明入口八组设计对照
+        if: always()
+        env:
+          RUNYARD_E2E_APP: ${{ github.workspace }}/apps/desktop/release/e2e/mac-arm64/Runyard.app/Contents/MacOS/Runyard
+          RUNYARD_SKILL_GUIDE_OUTPUT: ${{ runner.temp }}/skill-guide-comparison
+        run: |
+          node tooling/design-render/render.mjs Settings SettingsDark SettingsEn SettingsDarkEn --no-shots
+          node apps/desktop/e2e/skill-guide.measure.ts
+
+      - name: 上传技能说明入口设计对照
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: skill-guide-comparison
+          path: ${{ runner.temp }}/skill-guide-comparison/
+          if-no-files-found: error
+          retention-days: 14
+
       - name: 侧栏分类与自动清理设计对照
         if: always()
         env:
@@ -184,6 +202,24 @@ jobs:
         with:
           name: script-output-design-comparison
           path: ${{ runner.temp }}/script-output-design-comparison/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: 窗口顶部三十二组设计对照
+        if: always()
+        env:
+          RUNYARD_E2E_APP: ${{ github.workspace }}/apps/desktop/release/e2e/mac-arm64/Runyard.app/Contents/MacOS/Runyard
+          RUNYARD_HEADER_REVIEW_OUTPUT: ${{ runner.temp }}/window-header-design-comparison
+        run: |
+          node tooling/design-render/render.mjs Main MainDark MainEn MainDarkEn MainSidebarHidden MainSidebarHiddenDark MainSidebarHiddenEn MainSidebarHiddenDarkEn Web WebEn WebLight WebLightEn Settings SettingsDark SettingsEn SettingsDarkEn
+          node apps/desktop/e2e/window-header.measure.ts
+
+      - name: 上传窗口顶部设计对照
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: window-header-design-comparison
+          path: ${{ runner.temp }}/window-header-design-comparison/
           if-no-files-found: error
           retention-days: 14
 

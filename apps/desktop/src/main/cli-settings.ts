@@ -41,6 +41,7 @@ export interface CliHost {
   /** 用户的登录 shell 名（zsh、bash…），决定“加入 PATH”那行命令写进哪个文件 */
   shellName(): string;
   revealInFileManager(path: string): void;
+  openSkillGuide?(locale: "en" | "zh-CN"): Promise<boolean>;
 }
 
 const SKILL_FOLDERS: Record<AgentSkillTarget, string> = {
@@ -122,6 +123,15 @@ export class CliSettings {
       if (run.code !== 0 || typeof bundle !== "string") return { ok: false };
       this.#host.revealInFileManager(bundle);
       return { ok: true };
+    } catch {
+      return { ok: false };
+    }
+  }
+
+  async openSkillGuide(locale: unknown): Promise<{ ok: boolean }> {
+    if (locale !== "en" && locale !== "zh-CN") return { ok: false };
+    try {
+      return { ok: (await this.#host.openSkillGuide?.(locale)) ?? false };
     } catch {
       return { ok: false };
     }

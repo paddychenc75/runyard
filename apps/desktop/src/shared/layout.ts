@@ -8,8 +8,8 @@ import { numbers } from "@runyard/tokens";
 export const SIDEBAR_WIDTH_PX = 240;
 /** 内容区左边到窗口左边：侧栏两侧各一份留白 */
 export const CONTENT_LEFT_PX = numbers["size-window-inset"] * 2 + SIDEBAR_WIDTH_PX;
-/** 顶栏占的高度：胶囊上方留 14、胶囊自己 44、下方留 10（设计稿 Main） */
-export const TOPBAR_HEIGHT_PX = 14 + numbers["size-toolbar"] + 12;
+/** 顶栏占的高度：统一窗口标题栏 52（设计稿 Main） */
+export const TOPBAR_HEIGHT_PX = numbers["size-titlebar"];
 /**
  * 内容区左边的列表宽度（开发期的朴素列表、标签页的信息栏）。预览占位区紧挨在它右边，
  * 位置和大小由界面里的占位区量出来报给主进程（PreviewSlot），不在这里算。
