@@ -7,6 +7,8 @@ import {
   TitleBar,
   UserText,
 } from "@runyard/ui";
+import brandLight from "../../../../../docs/design/logo/final/icon-32.svg";
+import brandDark from "../../../../../docs/design/logo/final/icon-32-dark.svg";
 import type { BootstrapInfo } from "../../shared/desktop-bridge.ts";
 import { type NavFilter, navFilters } from "../library-query.ts";
 import { navLabel } from "./library-labels.ts";
@@ -95,7 +97,25 @@ export function Sidebar({
           />
         </span>
       </TitleBar>
-      <div className={styles.brand}>{t("desktop.window.title")}</div>
+      <div className={styles.brand} data-sidebar-brand="">
+        <span className={styles.mark} aria-hidden="true">
+          <img
+            className={styles.lightMark}
+            src={brandLight}
+            alt={t("desktop.window.title")}
+            aria-hidden="true"
+            draggable={false}
+          />
+          <img
+            className={styles.darkMark}
+            src={brandDark}
+            alt={t("desktop.window.title")}
+            aria-hidden="true"
+            draggable={false}
+          />
+        </span>
+        <span>{t("desktop.window.title")}</span>
+      </div>
       <ScrollArea className={styles.nav}>
         <NavList
           label={t("library.nav.aria")}
