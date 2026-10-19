@@ -45,6 +45,7 @@ export function RuntimeGroup({ bridge }: { bridge: DesktopBridge }) {
   return (
     <SettingsGroup
       title={t("settings.runtime.title")}
+      note={<SettingsNote>{t("settings.runtime.note.label")}</SettingsNote>}
       action={
         <Button size="sm" icon="refresh" loading={checking} onClick={recheck}>
           {t("settings.runtime.recheck.action")}
@@ -110,7 +111,6 @@ export function RuntimeGroup({ bridge }: { bridge: DesktopBridge }) {
           })}
         </tbody>
       </table>
-      <SettingsNote>{t("settings.runtime.note.label")}</SettingsNote>
     </SettingsGroup>
   );
 }

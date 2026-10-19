@@ -1,5 +1,4 @@
 import { useT } from "@runyard/i18n/react";
-import { Icon } from "@runyard/ui";
 import type { SettingsApi } from "../../bridge/use-settings.ts";
 import { Segments } from "./Segments.tsx";
 import { SettingSwitch } from "./SettingSwitch.tsx";
@@ -15,7 +14,10 @@ export function EditRunGroup({ api }: { api: SettingsApi }) {
   if (settings === null) return null;
   const idle = String(settings.cliIdleStopMinutes);
   return (
-    <SettingsGroup title={t("settings.editRun.title")}>
+    <SettingsGroup
+      title={t("settings.editRun.title")}
+      note={<SettingsNote>{t("settings.runNote.label")}</SettingsNote>}
+    >
       <SettingsRow title={t("settings.autoSave.title")} hint={t("settings.autoSave.hint")}>
         <Segments
           label={t("settings.autoSave.title")}
@@ -68,9 +70,6 @@ export function EditRunGroup({ api }: { api: SettingsApi }) {
           ]}
         />
       </SettingsRow>
-      <SettingsNote icon={<Icon name="info" size={14} />}>
-        {t("settings.runNote.label")}
-      </SettingsNote>
     </SettingsGroup>
   );
 }
