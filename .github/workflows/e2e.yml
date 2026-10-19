@@ -60,6 +60,79 @@ jobs:
           RUNYARD_E2E_APP: ${{ github.workspace }}/apps/desktop/release/e2e/mac-arm64/Runyard.app/Contents/MacOS/Runyard
         run: pnpm --filter @runyard/desktop e2e:run
 
+      - name: 生成品牌 A 八组设计对照
+        if: always()
+        env:
+          RUNYARD_E2E_APP: ${{ github.workspace }}/apps/desktop/release/e2e/mac-arm64/Runyard.app/Contents/MacOS/Runyard
+        run: |
+          output="$(mktemp -d)"
+          echo "RUNYARD_BRAND_OUTPUT=$output" >> "$GITHUB_ENV"
+          RUNYARD_BRAND_OUTPUT="$output" node apps/desktop/e2e/sidebar-brand.measure.ts
+
+      - name: 上传品牌 A 设计对照
+        if: always() && env.RUNYARD_BRAND_OUTPUT != ''
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: sidebar-brand-a-comparison
+          path: ${{ env.RUNYARD_BRAND_OUTPUT }}
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: 设置页八组设计对照与测量
+        if: always()
+        env:
+          RUNYARD_E2E_APP: ${{ github.workspace }}/apps/desktop/release/e2e/mac-arm64/Runyard.app/Contents/MacOS/Runyard
+          RUNYARD_SETTINGS_REVIEW_OUTPUT: ${{ runner.temp }}/settings-design-comparison
+        run: |
+          node tooling/design-render/render.mjs Settings SettingsDark SettingsEn SettingsDarkEn SettingsNarrow SettingsNarrowDark SettingsNarrowEn SettingsNarrowDarkEn
+          node apps/desktop/e2e/settings-design.measure.ts
+
+      - name: 上传设置页设计对照
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: settings-design-comparison
+          path: ${{ runner.temp }}/settings-design-comparison/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: 工具路径输入八组设计对照
+        if: always()
+        env:
+          RUNYARD_E2E_APP: ${{ github.workspace }}/apps/desktop/release/e2e/mac-arm64/Runyard.app/Contents/MacOS/Runyard
+          RUNYARD_TOOL_PATH_REVIEW_OUTPUT: ${{ runner.temp }}/tool-path-design-comparison
+        run: |
+          node tooling/design-render/render.mjs SettingsNarrow SettingsNarrowDark SettingsNarrowEn SettingsNarrowDarkEn
+          node apps/desktop/e2e/tool-path-design.measure.ts
+
+      - name: 上传工具路径输入设计对照
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: tool-path-design-comparison
+          path: ${{ runner.temp }}/tool-path-design-comparison/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: 生成刷新动效八组设计对照
+        if: always()
+        env:
+          RUNYARD_E2E_APP: ${{ github.workspace }}/apps/desktop/release/e2e/mac-arm64/Runyard.app/Contents/MacOS/Runyard
+        run: |
+          node tooling/design-render/render.mjs Web WebEn WebLight WebLightEn --no-shots
+          output="$(mktemp -d)"
+          echo "RUNYARD_REFRESH_OUTPUT=$output" >> "$GITHUB_ENV"
+          RUNYARD_REFRESH_OUTPUT="$output" node apps/desktop/e2e/preview-refresh-design.measure.ts
+
+      - name: 上传刷新动效设计对照
+        if: always() && env.RUNYARD_REFRESH_OUTPUT != ''
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: preview-refresh-design-comparison
+          path: ${{ env.RUNYARD_REFRESH_OUTPUT }}
+          if-no-files-found: error
+          retention-days: 14
+
       - name: 上传失败截图和报告
         if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

@@ -6,3 +6,9 @@ declare module "*.module.css" {
 }
 
 declare module "*.css";
+
+// 品牌图标由 esbuild 内联，界面不依赖运行时文件路径。
+declare module "*.svg" {
+  const dataUrl: string;
+  export default dataUrl;
+}

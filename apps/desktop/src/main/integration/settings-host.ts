@@ -7,6 +7,7 @@ import { isInPrivacyProtectedFolder } from "./privacy-folders.ts";
 export interface ElectronSettingsHostOptions {
   home: string;
   window: BrowserWindow;
+  dialogWindow?: () => BrowserWindow;
   /** 语言变了：重建应用菜单 */
   onLocaleChanged: SettingsHost["localeChanged"];
 }
@@ -29,7 +30,7 @@ export function createElectronSettingsHost(options: ElectronSettingsHostOptions)
     openInEditor: (editorId, folder) => openFolderInEditor(editorId, folder),
     openDefault: (folder) => void shell.openPath(folder),
     chooseFolder: async (defaultPath) => {
-      const picked = await dialog.showOpenDialog(window, {
+      const picked = await dialog.showOpenDialog(options.dialogWindow?.() ?? window, {
         defaultPath,
         properties: ["openDirectory", "createDirectory"],
       });

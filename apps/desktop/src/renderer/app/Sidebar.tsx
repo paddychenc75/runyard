@@ -7,6 +7,8 @@ import {
   TitleBar,
   UserText,
 } from "@runyard/ui";
+import brandLight from "../../../../../docs/design/logo/final/icon-32.svg";
+import brandDark from "../../../../../docs/design/logo/final/icon-32-dark.svg";
 import type { BootstrapInfo } from "../../shared/desktop-bridge.ts";
 import { type NavFilter, navFilters } from "../library-query.ts";
 import { navLabel } from "./library-labels.ts";
@@ -27,9 +29,10 @@ export interface SidebarProps {
   templateCount: number;
   /** 资源库文件夹，主目录缩成 ~；还没读到是空串 */
   libraryRoot: string;
-  /** 当前显示的页：资源库、模板或设置（规格 DESKTOP-SETTINGS-01、DESKTOP-TEMPLATES-VIEW-01） */
+  /** 当前显示的页：资源库或模板；设置不改变此值（规格 DESKTOP-SETTINGS-01、DESKTOP-TEMPLATES-VIEW-01） */
   page: ShellPage;
   onNavigate: (page: ShellPage) => void;
+  onSettings?: () => void;
   /** 收起侧栏（顶部、红绿灯那一行的右端；规格 DESKTOP-LIBRARY-VIEW-61、66） */
   onCollapse: () => void;
 }
@@ -46,6 +49,7 @@ export function Sidebar({
   libraryRoot,
   page,
   onNavigate,
+  onSettings,
   onCollapse,
 }: SidebarProps) {
   const t = useT();
@@ -93,14 +97,36 @@ export function Sidebar({
           />
         </span>
       </TitleBar>
-      <div className={styles.brand}>{t("desktop.window.title")}</div>
+      <div className={styles.brand} data-sidebar-brand="">
+        <span className={styles.mark} aria-hidden="true">
+          <img
+            className={styles.lightMark}
+            src={brandLight}
+            alt={t("desktop.window.title")}
+            aria-hidden="true"
+            draggable={false}
+          />
+          <img
+            className={styles.darkMark}
+            src={brandDark}
+            alt={t("desktop.window.title")}
+            aria-hidden="true"
+            draggable={false}
+          />
+        </span>
+        <span>{t("desktop.window.title")}</span>
+      </div>
       <ScrollArea className={styles.nav}>
         <NavList
           label={t("library.nav.aria")}
           sections={sections}
           value={page === "library" ? nav : page}
           onValueChange={(id) => {
-            if (id === "settings" || id === "templates") {
+            if (id === "settings") {
+              onSettings?.();
+              return;
+            }
+            if (id === "templates") {
               onNavigate(id);
               return;
             }

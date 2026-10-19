@@ -13,7 +13,13 @@ export function App({ bridge }: { bridge: DesktopBridge }) {
     <AppFrame
       bridge={bridge}
       locale={settings.settings?.language ?? locale}
-      theme={chosen === undefined || chosen === "system" ? theme : chosen}
+      theme={
+        chosen === undefined
+          ? theme
+          : chosen === "system"
+            ? (bridge.bootstrap.themeFallback ?? theme)
+            : chosen
+      }
       settings={settings}
     />
   );

@@ -3,8 +3,8 @@
   flex: none;
 }
 
-/* 表头和每一行是同一套栅格：第一行工具、版本、芯片架构、状态、“指定路径…”，路径单独占第二行通栏
-   （设计稿把路径放在版本后面一列，应用里右列只有 400 多像素放不下，长路径会被挤没，所以换行） */
+/* 表头和每一行是同一套栅格：第一行工具、版本、芯片架构、状态，完整路径输入框单独占第二行通栏
+   （保留已有长路径第二行，避免版本、架构与状态互相挤压） */
 .table {
   inline-size: 100%;
   border-collapse: collapse;
@@ -19,13 +19,15 @@
   display: grid;
   grid-template-columns:
     calc(var(--space-9) * 2 + var(--space-2)) var(--size-column-sm)
-    calc(var(--space-9) * 2 + var(--space-4)) minmax(0, 1fr) max-content;
+    calc(var(--space-9) * 3) minmax(max-content, 1fr);
   grid-template-areas:
-    "tool version arch status link"
-    "path path path path path";
+    "tool version arch status"
+    "path path path path";
   column-gap: var(--space-4);
   align-items: center;
-  padding-block: var(--space-2);
+  min-block-size: var(--size-row);
+  box-sizing: border-box;
+  padding-block: var(--space-5);
   padding-inline: var(--space-7);
   border-block-start: 1px solid var(--color-line-hairline);
   font-size: var(--text-body-size);
@@ -47,10 +49,6 @@
   grid-area: status;
 }
 
-.row [data-col="link"] {
-  grid-area: link;
-}
-
 .row [data-col="path"] {
   grid-area: path;
 }
@@ -61,7 +59,7 @@
   border-block-start: none;
   color: var(--color-text-secondary);
   font-size: var(--text-secondary-size);
-  grid-template-areas: "tool version arch status link";
+  grid-template-areas: "tool version arch status";
 }
 
 .row[data-head] th {
@@ -108,20 +106,6 @@
   overflow: hidden;
 }
 
-.path {
-  display: block;
-  overflow: hidden;
-  font-size: var(--text-secondary-size);
-  color: var(--color-text-secondary-strong);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.setPath {
-  font-size: var(--text-secondary-size);
-  text-align: end;
-}
-
 .warnStatus {
   display: inline-flex;
   align-items: center;
@@ -130,14 +114,6 @@
   font-size: var(--text-secondary-size);
   font-weight: var(--text-control-weight);
   white-space: nowrap;
-}
-
-.problem {
-  display: block;
-  padding-block: var(--space-2);
-  padding-inline: var(--space-7);
-  color: var(--color-status-danger-text);
-  font-size: var(--text-secondary-size);
 }
 
 .degraded {

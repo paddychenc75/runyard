@@ -24,8 +24,8 @@ const installed: CliCommandStatus = {
 
 async function openCli(w: World) {
   const user = userEvent.setup();
+  w.bridge.bootstrap.windowKind = "settings";
   render(<App bridge={w.bridge} />);
-  await user.click(await screen.findByRole("button", { name: "设置" }));
   await screen.findByRole("heading", { name: "命令行与智能体" });
   return user;
 }

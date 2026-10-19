@@ -903,8 +903,10 @@
 | settings.registry.invalid.body | 地址不合法，要以 http:// 或 https:// 开头 | Not a valid address. Start with http:// or https:// | — |
 | settings.registry.title | npm 镜像源 | npm registry | — |
 | settings.runNote.label | 在应用里打开标签页即运行，关闭标签页即停止；命令行启动的不受影响，空闲后自动停止。 | Opening a tab in the app runs the playground and closing the tab stops it. Runs started from the CLI are not affected and stop automatically when idle. | — |
+| settings.runtime.absolutePath.body | 请输入完整绝对路径，不使用 ~ 或环境变量 | Enter an absolute path without ~ or environment variables | — |
 | settings.runtime.and.label | 且 | and | — |
 | settings.runtime.arch.label | 芯片架构 | Chip | — |
+| settings.runtime.choosePath.aria | 选择 {tool} 可执行文件 | Choose {tool} executable | tool：工具显示名称，如 Node |
 | settings.runtime.command.label | 安装命令 | Command | — |
 | settings.runtime.copy.action | 复制命令 | Copy command | — |
 | settings.runtime.current.label | 当前 | Current | — |
@@ -918,6 +920,9 @@
 | settings.runtime.note.label | 只有创建或打开项目时才会检查它需要的工具。Runyard 不会替你安装。 | Runyard only checks for the tools a playground needs when you create or open it. It never installs anything for you. | — |
 | settings.runtime.path.label | 路径 | Path | — |
 | settings.runtime.pathFailed.body | 没能指定这个路径 | Couldn't set that path | — |
+| settings.runtime.pathInput.aria | {tool} 可执行文件路径 | {tool} executable path | tool：工具显示名称，如 Node |
+| settings.runtime.pathInput.hint | 输入完整路径后按回车保存，Esc 撤销 | Press Enter to save the full path; Esc to cancel | — |
+| settings.runtime.pathInput.placeholder | 输入完整可执行文件路径 | Enter the full executable path | — |
 | settings.runtime.recheck.action | 重新检测 | Check again | — |
 | settings.runtime.runInstall.action | 在终端中运行 | Run in Terminal | — |
 | settings.runtime.setPath.action | 指定路径… | Set path… | — |

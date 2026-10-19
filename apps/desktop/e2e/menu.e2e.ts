@@ -68,9 +68,12 @@ test("应用菜单：英文，⌘, 打开设置页", async ({ launch }) => {
   for (const item of menu.flatMap((top) => top.items)) {
     expect(item.label).not.toMatch(/[一-鿿]/);
   }
+  const opened = runyard.app.waitForEvent("window");
   await runyard.app.evaluate(({ Menu }) => {
     const items = Menu.getApplicationMenu()?.items.flatMap((top) => top.submenu?.items ?? []) ?? [];
     items.find((item) => item.accelerator === "CmdOrCtrl+,")?.click();
   });
-  await expect(runyard.page.getByRole("heading", { name: "Settings", level: 1 })).toBeVisible();
+  const settings = await opened;
+  await expect(settings.getByRole("heading", { name: "Settings", level: 1 })).toBeVisible();
+  await expect(runyard.page.getByRole("tab", { name: /Library/ })).toBeVisible();
 });
