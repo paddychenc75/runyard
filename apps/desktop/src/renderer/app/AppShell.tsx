@@ -75,6 +75,12 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
   const [pendingName, setPendingName] = useState<string | null>(null);
   // 资源库页的搜索、侧栏筛选、下拉：在外壳里持有，顶栏的搜索框、侧栏和列表共用
   const [query, setQuery] = useState<LibraryQuery>(defaultQuery);
+  const revealSequence = library?.libraryReveal?.sequence;
+  useEffect(() => {
+    if (revealSequence === undefined) return;
+    setPage("library");
+    setQuery(defaultQuery);
+  }, [revealSequence]);
   const patchQuery = useCallback(
     (patch: Partial<LibraryQuery>) => setQuery((current) => ({ ...current, ...patch })),
     [],

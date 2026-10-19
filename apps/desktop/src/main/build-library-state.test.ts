@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { buildLibraryState, isActiveRun, previewUrlFor } from "./build-library-state.ts";
+import {
+  buildLibraryState,
+  isActiveRun,
+  previewUrlFor,
+  previewUrlForTab,
+} from "./build-library-state.ts";
 import { playground, run, template } from "./library-fixtures.ts";
 
 const base = {
@@ -282,4 +287,17 @@ describe("运行条与脚本页的数据", () => {
     });
     expect(withTab([run("a", "errored")])?.failure).toBeNull();
   });
+});
+
+it("[DESKTOP-LIBRARY-VIEW-49] 缺失文件夹即使仍有运行记录也不让原生预览覆盖说明", () => {
+  const runs = [run("a", "ready", { url: "http://127.0.0.1:7101" })];
+  const state = buildLibraryState({
+    ...base,
+    playgrounds: [{ ...playground("a"), missingSince: 1 }],
+    runs,
+    tabIds: ["a"],
+    activeTab: "a",
+  });
+  expect(state.tabs[0]?.previewUrl).toBeNull();
+  expect(previewUrlForTab(state.tabs, "a", runs)).toBeNull();
 });

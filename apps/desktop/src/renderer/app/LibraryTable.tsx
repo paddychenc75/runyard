@@ -31,6 +31,7 @@ import styles from "./LibraryTable.module.css";
 import { MissingNote } from "./MissingNote.tsx";
 import { RenameInlineActions, RenameInlineFields } from "./RenameInline.tsx";
 import { RowActions } from "./RowActions.tsx";
+import { useLibraryReveal } from "./use-library-reveal.ts";
 import { useRelocate } from "./use-relocate.ts";
 import { useRenameDraft } from "./use-rename-draft.ts";
 
@@ -39,6 +40,7 @@ export interface LibraryTableProps {
   locale: Locale;
   rows: readonly PlaygroundRow[];
   now: number;
+  reveal?: { id: string; sequence: number };
 }
 
 // 没有值的格子：端口、从没打开过的“上次打开”。设计稿画的是一条短横线
@@ -47,11 +49,12 @@ const NONE = "—";
 // 资源库列表（设计稿 Main、MainNarrow；PRD #prd-library-list）：依次是名称与备注、状态、模板、
 // 端口、保留、上次打开、创建者、操作。窗口变窄时名称与备注固定在左，圆点补进名称列。
 // 操作列是“打开”或“停止运行”加“更多”菜单（RowActions，#171）；重命名和编辑备注就地变成行内编辑（#182）。
-export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
+export function LibraryTable({ bridge, locale, rows, now, reveal }: LibraryTableProps) {
   const t = useT();
   const format = useFormat();
   // 创建副本后选中它（规格 DESKTOP-LIBRARY-VIEW-42）
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  useLibraryReveal(reveal, rows, setSelectedId);
   const taken = useMemo(() => rows.map((row) => row.name), [rows]);
   const draft = useRenameDraft(bridge, taken);
   const editingId = draft.session?.target.id ?? null;

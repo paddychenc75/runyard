@@ -200,7 +200,7 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
       startedAt: run?.startedAt ?? null,
       exitCode: run?.exitCode ?? null,
       durationMs: run?.durationMs ?? null,
-      previewUrl: previewUrlFor(row.id, inputs.runs),
+      previewUrl: row.missing ? null : previewUrlFor(row.id, inputs.runs),
       slow: run?.state === "starting" && run.slow === true,
       failure: failureOf(row, run, inputs.startErrors?.get(row.id)),
       portFallback: portFallbackOf(row.active ? run : undefined),
@@ -354,9 +354,8 @@ export function previewUrlForTab(
   previewId: string,
   runs: readonly RunSnapshot[],
 ): string | null {
-  return tabs.find((tab) => tab.id === previewId)?.service === true
-    ? null
-    : previewUrlFor(previewId, runs);
+  const tab = tabs.find((tab) => tab.id === previewId);
+  return tab?.missing === true || tab?.service === true ? null : previewUrlFor(previewId, runs);
 }
 
 function failureOf(

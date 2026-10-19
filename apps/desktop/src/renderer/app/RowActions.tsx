@@ -71,8 +71,16 @@ export function RowActions({
   const moreLabel = t("library.row.more.aria", { name: row.name });
   return (
     <div className={styles.root}>
-      <Button size="sm" disabled={row.busy} onClick={row.active ? stop : open}>
-        {row.active ? t("library.row.stop.action") : t("library.row.open.action")}
+      <Button
+        size="sm"
+        disabled={row.busy}
+        onClick={row.missing ? () => menu.select("relocate") : row.active ? stop : open}
+      >
+        {row.missing
+          ? t("library.row.relocate.action")
+          : row.active
+            ? t("library.row.stop.action")
+            : t("library.row.open.action")}
       </Button>
       <Menu
         label={moreLabel}

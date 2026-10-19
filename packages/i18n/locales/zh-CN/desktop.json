@@ -338,7 +338,7 @@
   "desktop.start.title": "正在启动 {name}",
   "desktop.state.idle.label": "未运行",
   "desktop.stop.action": "停止",
-  "desktop.stopped.body": "你手动停止了它。点“运行”重新启动；关闭标签页后再打开，也会自动运行。",
+  "desktop.stopped.body": "项目已停止。点“运行”重新启动；关闭标签页后再打开，也会自动运行。",
   "desktop.tab.cli.label": "命令行",
   "desktop.templates.create.action": "用它新建",
   "desktop.templates.detail.aria": "模板详情",
@@ -425,5 +425,6 @@
   "desktop.urlConfirm.title": "要新建并运行这个项目吗？",
   "desktop.urlConfirm.unknown.label": "未知来源",
   "desktop.urlConfirm.warning.label": "这个来源是链接自己写的，Runyard 无法核实。新建后会安装依赖并运行模板里的代码，只在你信任它时继续。",
-  "desktop.window.title": "Runyard"
+  "desktop.window.title": "Runyard",
+  "desktop.idle.body": "还没有运行。点“运行”启动这个项目。"
 }

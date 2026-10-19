@@ -239,6 +239,7 @@ async function main(args: DesktopArgs): Promise<void> {
   });
   menu.install();
   controller.onChange((state) => menu.setProjectTabActive(state.activeTab !== "library"));
+  window.on("focus", () => void controller.checkProjectFolders());
   const home = args.root ?? homedir();
   const settings = new SettingsController({
     client,
@@ -270,8 +271,10 @@ async function main(args: DesktopArgs): Promise<void> {
     platform: getPlatform(args.root === undefined ? {} : { home: absPath(args.root) }),
     projectFolder: (id) =>
       controller.getState().playgrounds.find((playground) => playground.id === id)?.path ?? null,
-    onChange: (project, changes) =>
-      ipcHost.send(desktopChannels.event, "files.changed", { project, changes }),
+    onChange: (project, changes) => {
+      ipcHost.send(desktopChannels.event, "files.changed", { project, changes });
+      void controller.checkProjectFolders(project);
+    },
   });
   app.once("will-quit", () => void files.dispose());
   // 改名、移到废纸篓前先写入未保存的修改、再放掉项目的文件监听（#265 的先后顺序）
