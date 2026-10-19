@@ -2,7 +2,7 @@
 
 ## 用途
 
-实现 ADR 0021 与 DESKTOP-EDITOR-90 至 92（#412）。不含 renderer/preload 通道；#413 从主进程取得 `VueProjects`，只允许已授权项目的文档操作和补全等窄请求，不把原始协议暴露给页面。
+实现 ADR 0021 与 DESKTOP-EDITOR-90 至 92（#412）。`VueChannel`（#413）把这层接到 preload 白名单，只允许已打开项目内 `.vue` 文档及补全、详情、悬停、跳转、诊断和取消，不把原始协议暴露给页面。
 
 ## 对外暴露什么
 
@@ -18,6 +18,8 @@
 
 ## 子目录地图
 
+- `vue-channel.ts` / `vue-ipc.ts`：路径约束、文档与请求调度、诊断节流、形状校验。
+- `vue-operations.ts`：窄请求转两套协议；详情必须来自主进程缓存候选，不接受任意服务器参数。
 - `vue-projects.ts`：项目组生命周期与文档重放。
 - `vue-session.ts`：双协议请求、同步与通知。
 - `language-frames.ts`：有界字节分帧。
@@ -26,3 +28,5 @@
 ## 测试
 
 单测覆盖权限参数、分帧、两组上限、三次失败、未保存文本重放；`integration/vue-process.platform-dependent.test.ts` 在临时 HOME/项目中以真实 Electron 验证属性补全、权限拒绝和无残留。改权限或协议必须重跑真实进程测试，不能只用假进程证明。
+
+文件变化来自现有 ChangeFeed；依赖安装另在 integration 里只监听项目根与 node_modules 的直接子项，不递归监听整个依赖树。后台变化只使用仍存活的组，不能复活已被淘汰的服务。每个模型有独立 session；open 建立它，sync/close 必须匹配，模型局部版本可从 1 重置。诊断事件带 session 和局部版本，旧回包不覆盖新文本。请求准备和 close 同序，取消后旧请求不能在关闭完成后复活服务。`vue-channel.platform-dependent.test.ts` 验证外部修改与依赖从无到有两条真实路径。

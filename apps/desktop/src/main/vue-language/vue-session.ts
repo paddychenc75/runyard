@@ -6,7 +6,7 @@ import type { LanguageDocument, LanguageTarget, VueSession } from "./vue-project
 interface Waiting {
   resolve(value: unknown): void;
   reject(error: Error): void;
-  timer: ReturnType<typeof setTimeout>;
+  clean(): void;
 }
 interface SessionInput {
   folder: string;
@@ -42,7 +42,7 @@ class ProtocolSession implements VueSession {
   #clear(error: Error) {
     for (const pending of Object.values(this.#waiting)) {
       for (const item of pending.values()) {
-        clearTimeout(item.timer);
+        item.clean();
         item.reject(error);
       }
       pending.clear();
@@ -62,15 +62,37 @@ class ProtocolSession implements VueSession {
   #notify(method: string, params: unknown) {
     this.#send("vue", { jsonrpc: "2.0", method, params });
   }
-  request(target: LanguageTarget, method: string, params: unknown): Promise<unknown> {
+  request(
+    target: LanguageTarget,
+    method: string,
+    params: unknown,
+    signal?: AbortSignal,
+  ): Promise<unknown> {
     if (this.#stopped || this.#failed) return Promise.reject(new Error("LANGUAGE_PROCESS_EXITED"));
+    if (signal?.aborted) return Promise.reject(new Error("LANGUAGE_CANCELLED"));
     const id = ++this.#sequence;
     return new Promise((resolve, reject) => {
-      const timer = setTimeout(() => {
+      const finish = (error: string) => {
         this.#waiting[target].delete(id);
-        reject(new Error("LANGUAGE_REQUEST_TIMEOUT"));
-      }, 10_000);
-      this.#waiting[target].set(id, { resolve, reject, timer });
+        clean();
+        reject(new Error(error));
+      };
+      const timer = setTimeout(() => finish("LANGUAGE_REQUEST_TIMEOUT"), 10_000);
+      const abort = () => {
+        try {
+          if (target === "vue" && !this.#stopped && !this.#failed)
+            this.#notify("$/cancelRequest", { id });
+        } catch {
+          /* 退出与取消交错时，仍立即结束本地等待。 */
+        }
+        finish("LANGUAGE_CANCELLED");
+      };
+      const clean = () => {
+        clearTimeout(timer);
+        signal?.removeEventListener("abort", abort);
+      };
+      this.#waiting[target].set(id, { resolve, reject, clean });
+      signal?.addEventListener("abort", abort, { once: true });
       try {
         this.#send(
           target,
@@ -79,11 +101,24 @@ class ProtocolSession implements VueSession {
             : { seq: id, type: "request", command: method, arguments: params },
         );
       } catch (error) {
-        clearTimeout(timer);
+        clean();
         this.#waiting[target].delete(id);
         reject(error);
       }
     });
+  }
+  reloadProjects(): void {
+    if (!this.#stopped && !this.#failed)
+      this.#send("ts", {
+        seq: ++this.#sequence,
+        type: "request",
+        command: "reloadProjects",
+        arguments: {},
+      });
+  }
+  changed(files: { uri: string; type: number }[]): void {
+    if (!this.#stopped && !this.#failed)
+      this.#notify("workspace/didChangeWatchedFiles", { changes: files });
   }
   async #receive(target: LanguageTarget, message: Record<string, unknown>) {
     if (target === "vue" && typeof message.method === "string") {
@@ -108,7 +143,7 @@ class ProtocolSession implements VueSession {
     const item = this.#waiting[target].get(id);
     if (!item) return;
     this.#waiting[target].delete(id);
-    clearTimeout(item.timer);
+    item.clean();
     if (message.error || message.success === false)
       item.reject(new Error("LANGUAGE_REQUEST_FAILED"));
     else item.resolve(target === "vue" ? message.result : message.body);
