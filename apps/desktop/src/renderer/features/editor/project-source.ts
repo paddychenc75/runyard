@@ -1,11 +1,13 @@
 import type { DesktopBridge } from "../../../shared/desktop-bridge.ts";
 import type { FileChange } from "../../../shared/editor-files.ts";
+import { bridgeVueLanguage, type VueDocumentBridge } from "../../bridge/vue-language.ts";
 import { watchProject } from "../../shared/project-watch.ts";
 
 // 智能提示要的项目文件来源：列出项目里的脚本文件、读内容、听磁盘变化。
 // 编辑器本身只认这个接口，所以测试里换成内存里的项目就行。
 
 export interface ProjectSource {
+  vue?: VueDocumentBridge;
   /** 项目里所有 TS、JS 脚本的相对路径（不含依赖文件夹和构建产物） */
   listScripts(): Promise<string[]>;
   /** 读文本内容；读不到、不是文本、太大都是 null */
@@ -50,6 +52,7 @@ export function bridgeProjectSource(bridge: DesktopBridge, project: string): Pro
     }
   }
   return {
+    vue: bridgeVueLanguage(bridge, project),
     async listScripts() {
       const found: string[] = [];
       await walk("", found);

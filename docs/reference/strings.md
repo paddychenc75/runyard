@@ -185,7 +185,7 @@
 | desktop.create.cancel.action | 取消 | Cancel | — |
 | desktop.create.changeTemplate.action | 换一个模板 | Change template | — |
 | desktop.create.cleanAfter.label | 多久没打开后清理 | Clean up after unused for | — |
-| desktop.create.cleanSummary.hint | {days, plural, other {# 天}}没打开就移到{term_trash}，清理前一天会提醒你，可以随时改成保留。 | Moves to the {term_trash} after {days, plural, one {# day} other {# days}} unused. You get a reminder the day before, and can switch to Kept any time. | days：天数 |
+| desktop.create.cleanSummary.hint | {days, plural, other {# 天}}没打开就移到{term_trash}，清理前一天会提醒你，可以随时关闭。 | Moves to the {term_trash} after {days, plural, one {# day} other {# days}} unused. You get a reminder the day before, and can turn off auto-clean at any time. | days：天数 |
 | desktop.create.custom.label | 自定义 | Custom | — |
 | desktop.create.customDays.label | 自定义天数 | Custom number of days | — |
 | desktop.create.customDaysInvalid.hint | 请填大于 0 的整数 | Enter a whole number above 0 | — |
@@ -321,6 +321,11 @@
 | desktop.missing.site.label | 官网 | Website | — |
 | desktop.notice.dismiss.aria | 关闭提示 | Dismiss notice | — |
 | desktop.notice.region.aria | 提示 | Notices | — |
+| desktop.notifications.clear.action | 全部清除 | Clear all | — |
+| desktop.notifications.empty.label | 暂无通知 | No notifications | — |
+| desktop.notifications.recent.label | 最近 | Recent | — |
+| desktop.notifications.required.label | 需要处理 | Needs attention | — |
+| desktop.notifications.title | 通知 | Notifications | — |
 | desktop.output.aria | 进程输出 | Process output | — |
 | desktop.output.empty.label | 还没有输出。 | No output yet. | — |
 | desktop.output.view.action | 查看完整输出 | View full output | — |
@@ -687,7 +692,8 @@
 | library.action.dismiss.action | 知道了 | Got it | — |
 | library.action.failed.title | 操作没有完成 | That did not finish | — |
 | library.autoClean.dialog.title | 自动清理 | Auto-clean | — |
-| library.clean.keep.action | 改为保留 | Keep them | — |
+| library.autoClean.off.hint | {name} 现在没有开启自动清理，会一直保留。 | Auto-clean is off for {name}. | name：项目名称 |
+| library.clean.keep.action | 关闭自动清理 | Turn off auto-clean | — |
 | library.clean.later.action | 稍后再说 | Remind me later | — |
 | library.clean.now.action | 现在清理 | Clean now | — |
 | library.cleanBanner.end.label | 。 | . | — |
@@ -710,11 +716,17 @@
 | library.empty.cli.label | 也可以让智能体用命令行创建： | Or let an agent create one from the command line: | — |
 | library.empty.hint | 选一个模板，新建你的第一个项目。 | Pick a template to create your first playground. | — |
 | library.empty.title | 还没有项目 | No playgrounds yet | — |
+| library.emptyAgent.command.label | runyard new html demo --note "说明这个项目做什么" | runyard new html demo --note "Describe what this playground does" | — |
+| library.emptyAgent.hint | 让智能体在终端里运行下面这样的命令，项目会出现在这里，并写明是哪个智能体。 | Ask an agent to run a command like this in the terminal. Its playground will appear here with the agent’s name. | — |
+| library.emptyAgent.title | 还没有智能体创建的项目 | No agent-created playgrounds yet | — |
+| library.emptyAutoClean.hint | 项目默认一直保留。想让试完就扔的项目自己离开，在“更多”菜单里选“自动清理…”。 | Playgrounds stay by default. For throwaway experiments, choose “Auto-clean…” in the More menu. | — |
+| library.emptyAutoClean.title | 没有开启自动清理的项目 | No playgrounds with auto-clean on | — |
+| library.emptyRunning.hint | 在列表里打开一个项目就会运行；命令行用 runyard run <名称>。 | Open a playground in the list to run it, or use runyard run '<name>' from the command line. | — |
+| library.emptyRunning.title | 没有在运行的项目 | No running playgrounds | — |
 | library.filter.agent.label | 智能体创建 | Created by agents | — |
 | library.filter.all.label | 全部 | All | — |
 | library.filter.autoClean.label | 自动清理 | Auto-clean | — |
 | library.filter.combined.label | 筛选 | Filter | — |
-| library.filter.kept.label | 已保留 | Kept | — |
 | library.filter.sort.label | 排序：{value} | Sort: {value} | value：当前选中的排序名 |
 | library.filter.status.label | 状态：{value} | Status: {value} | value：当前选中的状态名 |
 | library.filter.type.label | 类型：{value} | Type: {value} | value：当前选中的类型名 |
@@ -726,11 +738,11 @@
 | library.missing.revealParent.action | 在{term_fileManager}中显示上一级文件夹 | Show the parent folder in {term_fileManager} | — |
 | library.missing.status.label | 找不到文件夹 | Folder not found | — |
 | library.nav.aria | 资源库导航 | Library navigation | — |
+| library.nav.clean.title | 清理 | Clean up | — |
 | library.nav.library.title | 资源库 | Library | — |
 | library.nav.manage.title | 管理 | Manage | — |
 | library.nav.settings.label | 设置 | Settings | — |
 | library.nav.templates.label | 模板 | Templates | — |
-| library.nav.unused.label | 长期未使用 | Unused for a while | — |
 | library.noResults.clear.action | 清除搜索 | Clear search | — |
 | library.noResults.create.action | 新建项目，名称用“{query}” | New playground named “{query}” | query：用户输入的搜索文字，同时是新项目的名称 |
 | library.noResults.filtered.hint | 换一个筛选条件试试。 | Try different filters. | — |
@@ -750,7 +762,8 @@
 | library.rename.terminalCommand.hint | 终端里正在运行的 {command} 会被结束。 | The {command} running in the terminal will be ended. | command：终端里正在运行的命令名（程序名，不翻译） |
 | library.retention.autoClean.label | 剩 {days, plural, other {# 天}} | {days, plural, one {# day} other {# days}} left | days：距离自动清理还剩的天数 |
 | library.retention.autoClean.tooltip | {days, plural, other {# 天}}没打开就移到{term_trash}，每次打开重新计时 | Moved to the {term_trash} after {days, plural, one {# day} other {# days}} unopened; the count restarts on every open | days：自动清理设定的天数 |
-| library.retention.kept.label | 已保留 | Kept | — |
+| library.retention.kept.label | 关闭 | Off | — |
+| library.retention.off.label | — | — | — |
 | library.retention.tomorrow.label | 明天清理 | Tomorrow | — |
 | library.row.autoClean.action | 自动清理… | Auto-clean… | — |
 | library.row.autoCleanNow.hint | 现在：{state} | Now: {state} | state：当前保留状态的文字（已保留，或剩 N 天） |

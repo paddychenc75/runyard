@@ -261,6 +261,8 @@ describe("侧栏固定筛选与计数", () => {
   const twenty = () => {
     const rows = Array.from({ length: 20 }, (_, index) =>
       row(`p-${String(index).padStart(2, "0")}`, {
+        state: index < 3 ? "ready" : "idle",
+        active: index < 3,
         autoClean: index < 4 ? { enabled: true, days: 30 } : { enabled: false, days: null },
         createdBy: index >= 14 ? { kind: "agent", agent: "Claude Code" } : { kind: "user" },
       }),
@@ -268,11 +270,11 @@ describe("侧栏固定筛选与计数", () => {
     return library(rows);
   };
 
-  it("[DESKTOP-LIBRARY-VIEW-22] 全部 20、已保留 16、自动清理 4，两项互补", async () => {
+  it("[DESKTOP-LIBRARY-VIEW-22] 全部 20、运行中 3、自动清理 4，三组分类", async () => {
     setup(twenty());
     for (const [name, count] of [
       ["全部", "20"],
-      ["已保留", "16"],
+      ["运行中", "3"],
       ["自动清理", "4"],
     ] as const) {
       const item = await screen.findByRole("button", { name: new RegExp(`^${name}\\s*${count}$`) });
@@ -301,10 +303,10 @@ describe("侧栏固定筛选与计数", () => {
     expect(screen.getByRole("button", { name: /^智能体创建\s*7$/ })).toBeTruthy();
   });
 
-  it("“长期未使用”仍然点不了", async () => {
+  it("第一版不显示“长期未使用”和“已保留”", async () => {
     setup(twenty());
-    const unused = await screen.findByRole("button", { name: /^长期未使用/ });
-    expect((unused as HTMLButtonElement).disabled).toBe(true);
+    await names();
+    expect(screen.queryByRole("button", { name: /^长期未使用|^已保留/ })).toBeNull();
   });
 });
 
@@ -428,6 +430,7 @@ describe("窗口变窄时页头和顶栏收紧", () => {
     window.innerWidth = 1440;
     if (original !== undefined)
       Object.defineProperty(HTMLElement.prototype, "clientWidth", original);
+    else Reflect.deleteProperty(HTMLElement.prototype, "clientWidth");
   });
   const running = () =>
     library([
@@ -620,4 +623,20 @@ describe("窗口变窄时表格收起次要列", () => {
     expect(document.querySelector("[data-collapsed~=port]")).toBeNull();
     expect(headers()).toContain("port");
   });
+});
+
+it("[DESKTOP-LIBRARY-VIEW-90] 侧栏运行中锁定状态，返回全部恢复原状态", async () => {
+  const user = userEvent.setup();
+  setup(library([row("idle"), row("live", { state: "ready", active: true })]));
+  await choose(user, /^状态：全部/, "已停止");
+  await user.click(screen.getByRole("button", { name: /^运行中\s*1$/ }));
+  expect(await names()).toEqual(["live"]);
+  expect(
+    (screen.getByRole("button", { name: /^状态：运行中/ }) as HTMLButtonElement).disabled,
+  ).toBe(true);
+  await user.click(screen.getByRole("button", { name: /^全部\s*2$/ }));
+  expect(await names()).toEqual(["idle"]);
+  expect(
+    (screen.getByRole("button", { name: /^状态：已停止/ }) as HTMLButtonElement).disabled,
+  ).toBe(false);
 });

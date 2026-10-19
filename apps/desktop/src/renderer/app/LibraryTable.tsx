@@ -299,7 +299,8 @@ function retentionCell(row: PlaygroundRow, now: number, t: ReturnType<typeof use
       </span>
     );
   const retention = retentionOf(row, now);
-  if (retention.kind === "kept") return <span className={styles.tertiary}>{NONE}</span>;
+  if (retention.kind === "kept")
+    return <span className={styles.tertiary}>{t("library.retention.off.label")}</span>;
   if (retention.kind === "autoCleanUnknown")
     return (
       <span className={styles.clean}>

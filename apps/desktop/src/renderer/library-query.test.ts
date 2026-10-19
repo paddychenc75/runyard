@@ -46,14 +46,14 @@ describe("statusGroupOf", () => {
 });
 
 describe("navCounts", () => {
-  it("已保留和自动清理互补；智能体创建含带智能体名字的命令行创建", () => {
+  it("[DESKTOP-LIBRARY-VIEW-22] 运行中、自动清理和智能体创建分别计数", () => {
     const rows = [
-      row("a"),
+      row("a", { state: "installing" }),
       row("b", { autoClean: { enabled: true, days: 7 } }),
       row("c", { createdBy: { kind: "cli", agent: "Codex" } }),
       row("d", { createdBy: { kind: "cli" } }),
     ];
-    expect(navCounts(rows)).toEqual({ all: 4, kept: 3, autoClean: 1, agent: 1 });
+    expect(navCounts(rows)).toEqual({ all: 4, running: 1, autoClean: 1, agent: 1 });
   });
 });
 
@@ -82,4 +82,24 @@ describe("canCreateFromSearch", () => {
     expect(canCreateFromSearch("taken", rows)).toBe(false);
     expect(canCreateFromSearch("websocket", rows)).toBe(true);
   });
+});
+
+it("[DESKTOP-LIBRARY-VIEW-90] 运行中覆盖暂存的状态筛选，离开后恢复", () => {
+  const rows = [
+    row("idle"),
+    row("starting", { state: "starting" }),
+    row("script", { kind: "oneshot", state: "running" }),
+  ];
+  const query = { ...defaultQuery, status: "stopped" as const };
+  expect(filterRows(rows, [], "zh-CN", { ...query, nav: "running" }).map((r) => r.id)).toEqual([
+    "script",
+    "starting",
+  ]);
+  expect(filterRows(rows, [], "zh-CN", query).map((r) => r.id)).toEqual(["idle"]);
+});
+it("[DESKTOP-LIBRARY-VIEW-91] 自动清理仅显示已开启的项目", () => {
+  const rows = [row("off"), row("on", { autoClean: { enabled: true, days: 7 } })];
+  expect(
+    filterRows(rows, [], "zh-CN", { ...defaultQuery, nav: "autoClean" }).map((r) => r.id),
+  ).toEqual(["on"]);
 });

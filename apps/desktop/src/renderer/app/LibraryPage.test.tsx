@@ -306,7 +306,7 @@ describe("资源库一行的操作", () => {
     expect(names).toHaveLength(13);
   });
 
-  it("[DESKTOP-LIBRARY-VIEW-31] 运行中的行，更多菜单按设计稿的顺序列出全部项，含“停止运行”，自动清理右侧写“现在：已保留”", async () => {
+  it("[DESKTOP-LIBRARY-VIEW-31] 运行中的行，更多菜单按设计稿的顺序列出全部项，含“停止运行”，自动清理右侧写“现在：关闭”", async () => {
     const user = userEvent.setup();
     setup(library([row("demo", { state: "ready", active: true, port: 7101 })]));
     const menu = await openMenu(user, "demo");
@@ -319,7 +319,7 @@ describe("资源库一行的操作", () => {
       "停止运行",
       "重命名…",
       "编辑备注…",
-      "自动清理…现在：已保留",
+      "自动清理…现在：关闭",
       "另存为模板…",
       "创建副本",
       "在外部编辑器中打开",
@@ -356,4 +356,14 @@ describe("资源库一行的操作", () => {
     await user.keyboard("{Escape}");
     await vi.waitFor(() => expect(screen.queryByRole("menu")).toBeNull());
   });
+});
+
+it("[DESKTOP-LIBRARY-VIEW-92] 没有智能体项目时显示专用空状态和命令", async () => {
+  localStorage.clear();
+  setup(library([row("mine")]));
+  await table();
+  await userEvent.click(screen.getByRole("button", { name: /智能体创建/ }));
+  expect(await screen.findByText("还没有智能体创建的项目")).toBeTruthy();
+  expect(screen.getByText('runyard new html demo --note "说明这个项目做什么"')).toBeTruthy();
+  expect(screen.queryByText("长期未使用")).toBeNull();
 });
