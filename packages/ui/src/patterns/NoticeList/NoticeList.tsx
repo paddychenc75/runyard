@@ -44,7 +44,13 @@ export function NoticeList({
           <Popover.Popup render={<GlassSurface material="menu" />} className={styles.root}>
             <div className={styles.header}>
               <Popover.Title className={styles.title}>{title}</Popover.Title>
-              <Button size="sm" variant="neutral" disabled={!hasRecent} onClick={onClear}>
+              <Button
+                className={styles.clear}
+                size="sm"
+                variant="neutral"
+                disabled={!hasRecent}
+                onClick={onClear}
+              >
                 {clearLabel}
               </Button>
             </div>

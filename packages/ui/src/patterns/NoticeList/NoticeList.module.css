@@ -1,9 +1,12 @@
 .positioner {
   z-index: var(--z-popover);
+  inline-size: var(--size-notification-list);
+  max-inline-size: calc(100% - var(--space-7));
 }
 .root {
-  inline-size: var(--size-notification-list);
-  max-inline-size: calc(100vw - var(--space-9));
+  inline-size: 100%;
+  max-inline-size: 100%;
+  overflow-wrap: anywhere;
   box-sizing: border-box;
   padding: var(--space-4);
   border-radius: var(--radius-lg);
@@ -40,4 +43,9 @@
   color: var(--color-text-secondary);
   font-size: var(--text-secondary-size);
   margin: var(--space-4) 0;
+}
+
+.clear[data-size] {
+  background: none;
+  color: var(--color-text-accent);
 }
