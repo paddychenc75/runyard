@@ -282,7 +282,7 @@ export class LibraryController {
 
   /** 去掉标签并放掉预览和控制台，不碰运行 */
   #dropTab(playgroundId: string): boolean {
-    if (!this.#workspace.close(playgroundId)) return false;
+    if (!this.#opening.closeTab(playgroundId)) return false;
     this.#dropProject(playgroundId);
     this.#applyPreview();
     this.#emit();

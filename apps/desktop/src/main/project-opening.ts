@@ -34,6 +34,14 @@ export class ProjectOpening {
     this.reveal = undefined;
     return ++this.#navigation;
   }
+  /** 关闭后台标签不取消打开请求，只有关闭造成活动页变化才算新导航。 */
+  closeTab(id: string): boolean {
+    const workspace = this.#host.workspace;
+    const active = workspace.active;
+    if (!workspace.close(id)) return false;
+    if (workspace.active !== active) this.beginNavigation();
+    return true;
+  }
   async open(id: string, withoutRun = false): Promise<void> {
     const navigation = this.beginNavigation();
     const host = this.#host;
@@ -53,7 +61,8 @@ export class ProjectOpening {
     host.show();
     if (!isNew) return;
     await host.console.watch(id);
-    if (withoutRun) return;
+    // 初次订阅可以晚于用户关闭标签；关闭后的项目不能再凭旧请求启动。
+    if (withoutRun || !host.workspace.tabs.includes(id)) return;
     if (heldByCli(id, host.runs()) !== null) {
       await host.cliView.sync(host.workspace.tabs, host.runs());
       return;

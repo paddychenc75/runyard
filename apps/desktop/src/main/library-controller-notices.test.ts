@@ -577,3 +577,56 @@ it.each([false, true])(
     expect(daemon.count("run.start")).toBe(0);
   },
 );
+
+it.each([true, false])(
+  "[DESKTOP-WORKSPACE-04] 检查目录时关闭标签（活动=%s），只在活动页变化时取消旧导航",
+  async (active) => {
+    let finish: (exists: boolean) => void = () => {};
+    let checking = false;
+    const { daemon, controller } = setup({
+      directoryExists: (path) =>
+        path.endsWith("/a") && !checking
+          ? new Promise<boolean>((resolve) => {
+              checking = true;
+              finish = resolve;
+            })
+          : Promise.resolve(true),
+    });
+    daemon.playgrounds = [playground("a"), playground("b"), playground("c")];
+    await controller.start();
+    await controller.openProjectWithoutRun("c");
+    await controller.openProjectWithoutRun("b");
+    const opening = controller.openProjectWithoutRun("a");
+    expect(checking).toBe(true);
+    await controller.requestCloseTab(active ? "b" : "c");
+    finish(true);
+    await opening;
+    expect(controller.getState().activeTab).toBe(active ? "c" : "a");
+    expect(controller.getState().tabs.map((tab) => tab.id)).toEqual(active ? ["c"] : ["b", "a"]);
+  },
+);
+
+it("[DESKTOP-WORKSPACE-04] 控制台订阅晚到时已关闭该标签，不再启动无人持有的项目", async () => {
+  const { daemon, controller } = setup();
+  daemon.playgrounds = [playground("a")];
+  await controller.start();
+  let finish: () => void = () => {};
+  let started: () => void = () => {};
+  const watching = new Promise<void>((resolve) => {
+    started = resolve;
+  });
+  daemon.followLogs = async () => {
+    started();
+    await new Promise<void>((resolve) => {
+      finish = resolve;
+    });
+    return { sub: 2, unsubscribe: async () => {} };
+  };
+  const opening = controller.openProject("a");
+  await watching;
+  await controller.requestCloseTab("a");
+  finish();
+  await opening;
+  expect(controller.getState().tabs).toEqual([]);
+  expect(daemon.count("run.start")).toBe(0);
+});
