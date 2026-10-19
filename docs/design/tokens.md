@@ -355,6 +355,24 @@ disagree, `tokens.json` wins.
 | `--z-toast` | 400 | Toasts |
 | `--z-tooltip` | 500 | Tooltips |
 
+### Notifications
+
+| Variable | Value | Role |
+| --- | --- | --- |
+| `--size-notification-card` | 360px | Notification card width |
+| `--size-notification-list` | 380px | Notification list width |
+| `--size-notification-top` | 50px | Notification cards top inset |
+| `--size-notification-count` | 15px | Notification count height |
+| `--size-notification-toast` | 36px | Success toast height |
+| `--size-notification-close-space` | 36px | Notification close button clearance |
+| `--size-notification-title` | 15px | Notification list title |
+
+### Notification motion
+
+| Variable | Value | Role |
+| --- | --- | --- |
+| `--motion-duration-notice-out` | 180ms | Notification exit |
+
 <!-- generated:tokens 结束 -->
 
 ## Notes

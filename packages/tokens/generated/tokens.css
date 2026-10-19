@@ -278,6 +278,14 @@
   --z-dialog: 300;
   --z-toast: 400;
   --z-tooltip: 500;
+  --size-notification-card: 360px;
+  --size-notification-list: 380px;
+  --size-notification-top: 50px;
+  --size-notification-count: 15px;
+  --size-notification-toast: 36px;
+  --size-notification-close-space: 36px;
+  --size-notification-title: 15px;
+  --motion-duration-notice-out: 180ms;
 }
 
 :root[data-theme="light"] {

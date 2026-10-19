@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { createEditorRelease } from "./editor-release.ts";
 
 // 改名、移到废纸篓时编辑器那一份：写入、放监听、接回监听（规格 DESKTOP-EDITOR-75；技术设计 §6.4）
@@ -47,4 +47,15 @@ describe("编辑器的释放", () => {
     await again.release.restore("c");
     expect(again.timeline).toEqual(["unwatch(c)", "watch(c)"]);
   });
+});
+
+it("[DESKTOP-EDITOR-91] 改名、移到废纸篓和关闭标签都释放语言服务", async () => {
+  const close = vi.fn(async () => {});
+  const files = { isWatching: () => false, unwatch: async () => {}, watch: async () => {} };
+  const gate = { request: async () => true };
+  const release = createEditorRelease(files as never, gate, { close });
+  await release.release("a", "rename");
+  await release.release("b", "trash");
+  await release.closed?.("c");
+  expect(close.mock.calls).toEqual([["a"], ["b"], ["c"]]);
 });
