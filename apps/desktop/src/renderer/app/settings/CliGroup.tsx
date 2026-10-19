@@ -12,6 +12,7 @@ import type { SettingsApi } from "../../bridge/use-settings.ts";
 import styles from "./CliGroup.module.css";
 import { SettingSwitch } from "./SettingSwitch.tsx";
 import { SettingsGroup, SettingsRow } from "./SettingsGroup.tsx";
+import { SkillGuideDialog } from "./SkillGuideDialog.tsx";
 import { StatusLine } from "./StatusLine.tsx";
 import { useCliStatus } from "./use-cli-status.ts";
 
@@ -34,6 +35,7 @@ export function CliGroup({ bridge, api, library }: CliGroupProps) {
       <DiagnosticsRow cli={cli} />
       <SupervisorRow cli={cli} />
       <SkillsRow cli={cli} />
+      <SkillGuideDialog content={cli.guide} onClose={cli.closeGuide} />
       <SettingsRow
         title={t("settings.builtinSkip.title")}
         hint={t("settings.builtinSkip.hint")}
