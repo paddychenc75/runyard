@@ -1,34 +1,85 @@
-/* 设置页的版面（设计稿 Settings）：标题在上，下面两列等宽、列间距 20，组与组之间 10 或 12 */
+/* #445：标题区 140（含独立窗口预留 52），内容列最宽 720。窗口外框由 #465 接入。 */
 .root {
   inline-size: 100%;
   min-inline-size: 0;
+  min-block-size: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-workspace);
 }
-
-.viewport {
+.header {
   box-sizing: border-box;
-  padding-block-start: calc(var(--space-9) + var(--space-1));
+  flex: none;
+  block-size: calc(var(--space-10) * 5);
+  padding-block-start: calc(var(--space-9) * 2 + var(--space-2));
   padding-inline: var(--space-10);
+  background: var(--color-bg-workspace);
+  border-block-end: 1px solid transparent;
 }
-
+.header[data-scrolled="true"] {
+  border-block-end-color: var(--color-line-hairline);
+}
+.headingColumn,
+.column {
+  max-inline-size: var(--size-dialog-width-wide);
+  margin-inline: auto;
+}
 .title {
   margin: 0;
   font-size: var(--text-page-title-size);
   font-weight: var(--text-page-title-weight);
   letter-spacing: calc(var(--space-1) * -0.15);
-  line-height: 1.4;
+  line-height: var(--text-page-title-line-height);
 }
-
-.columns {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  column-gap: var(--space-8);
-  align-items: start;
+.sectionScroll {
   margin-block-start: var(--space-4);
-  padding-block-end: var(--space-9);
+  margin-inline-start: calc(var(--space-7) * -1);
+  margin-inline-end: calc(var(--space-2) * -1);
 }
-
+.sectionViewport {
+  box-sizing: border-box;
+  padding: var(--space-2);
+}
+.sections {
+  padding-inline-end: var(--space-1);
+  display: flex;
+  gap: var(--space-2);
+}
+.sectionButton {
+  flex: none;
+  block-size: var(--size-control-sm);
+  padding: 0 var(--space-6);
+  border: 0;
+  border-radius: var(--radius-capsule);
+  background: transparent;
+  color: var(--color-text-secondary-strong);
+  font: inherit;
+  font-size: var(--text-secondary-size);
+  font-weight: var(--text-control-weight);
+  white-space: nowrap;
+  scroll-margin-inline: var(--space-2);
+}
+.sectionButton[aria-current] {
+  background: var(--glass-tab-selected-bg);
+  color: var(--color-text-primary);
+  font-weight: var(--text-item-weight);
+}
+.sectionButton:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus-ring);
+}
+.scroll {
+  flex: 1;
+}
+.viewport {
+  overflow-anchor: none;
+  box-sizing: border-box;
+  padding-inline: var(--space-10);
+}
 .column {
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--space-10);
+  padding-block-start: calc(var(--space-8) + 1px);
+  padding-block-end: calc(var(--space-8) * 2);
 }

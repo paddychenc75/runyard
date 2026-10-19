@@ -1,9 +1,17 @@
 // @vitest-environment jsdom
 
 import type { Settings } from "@runyard/protocol";
-import { cleanup, render, renderHook, screen, waitFor, within } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  renderHook,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { App } from "../App.tsx";
 import { sampleSettings, type World, world } from "./settings-world.ts";
 import { useAutoSaveReader } from "./use-autosave-reader.ts";
@@ -38,6 +46,63 @@ describe("设置页", () => {
       .map((h) => h.textContent);
     expect(titles).toEqual(["通用", "编辑与运行", "依赖与网络", "运行环境", "命令行与智能体"]);
     expect(screen.getByRole("heading", { level: 1, name: "设置" })).toBeTruthy();
+  });
+
+  it("[DESKTOP-SETTINGS-35] 滚动更新分区与标题细线，回到顶部恢复通用", async () => {
+    await openSettings(world());
+    const viewport = document.getElementById("settings-viewport") as HTMLElement;
+    Object.defineProperties(viewport, {
+      scrollHeight: { value: 2000 },
+      clientHeight: { value: 600 },
+    });
+    const deps = document.getElementById("settings-deps") as HTMLElement;
+    for (const [index, element] of [
+      ...viewport.querySelectorAll("[data-settings-section]"),
+    ].entries()) {
+      vi.spyOn(element, "getBoundingClientRect").mockImplementation(
+        () => ({ top: index * 300 - viewport.scrollTop }) as DOMRect,
+      );
+    }
+    viewport.scrollTop = 600;
+    fireEvent.scroll(viewport);
+    expect(screen.getByRole("button", { name: "依赖与网络" }).getAttribute("aria-current")).toBe(
+      "location",
+    );
+    expect(deps.getBoundingClientRect().top).toBe(0);
+    expect(document.querySelector("[data-settings-header]")?.getAttribute("data-scrolled")).toBe(
+      "true",
+    );
+    viewport.scrollTop = 0;
+    fireEvent.scroll(viewport);
+    expect(screen.getByRole("button", { name: "通用" }).getAttribute("aria-current")).toBe(
+      "location",
+    );
+    expect(document.querySelector("[data-settings-header]")?.getAttribute("data-scrolled")).toBe(
+      "false",
+    );
+  });
+
+  it("[DESKTOP-SETTINGS-36] 点击分区以实际位置滚动而不改设置", async () => {
+    const w = world();
+    const user = await openSettings(w);
+    const viewport = document.getElementById("settings-viewport") as HTMLElement;
+    Object.defineProperties(viewport, {
+      scrollHeight: { value: 2000 },
+      clientHeight: { value: 600 },
+    });
+    for (const [index, element] of [
+      ...viewport.querySelectorAll("[data-settings-section]"),
+    ].entries()) {
+      vi.spyOn(element, "getBoundingClientRect").mockImplementation(
+        () => ({ top: index * 300 - viewport.scrollTop }) as DOMRect,
+      );
+    }
+    await user.click(screen.getByRole("button", { name: "编辑与运行" }));
+    expect(viewport.scrollTop).toBe(300);
+    expect(screen.getByRole("button", { name: "编辑与运行" }).getAttribute("aria-current")).toBe(
+      "location",
+    );
+    expect(sets(w)).toEqual([]);
   });
 
   it("[DESKTOP-SETTINGS-03] 在“语言”里点 English，不重启，侧栏和设置页的文字立即变成英文", async () => {

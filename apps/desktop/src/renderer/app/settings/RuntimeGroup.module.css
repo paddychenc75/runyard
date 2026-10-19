@@ -4,7 +4,7 @@
 }
 
 /* 表头和每一行是同一套栅格：第一行工具、版本、芯片架构、状态、“指定路径…”，路径单独占第二行通栏
-   （设计稿把路径放在版本后面一列，应用里右列只有 400 多像素放不下，长路径会被挤没，所以换行） */
+   （保留已有长路径第二行，避免版本、架构与状态互相挤压） */
 .table {
   inline-size: 100%;
   border-collapse: collapse;
@@ -25,7 +25,9 @@
     "path path path path path";
   column-gap: var(--space-4);
   align-items: center;
-  padding-block: var(--space-2);
+  min-block-size: var(--size-row);
+  box-sizing: border-box;
+  padding-block: var(--space-5);
   padding-inline: var(--space-7);
   border-block-start: 1px solid var(--color-line-hairline);
   font-size: var(--text-body-size);
