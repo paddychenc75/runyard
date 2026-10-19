@@ -1,6 +1,6 @@
 import { useT } from "@runyard/i18n/react";
 import type { ToolchainReport } from "@runyard/protocol";
-import { Field, IconButton, TextField } from "@runyard/ui";
+import { Field, IconButton, TextField, Tooltip } from "@runyard/ui";
 import { useId } from "react";
 import type { DesktopBridge } from "../../../shared/desktop-bridge.ts";
 import styles from "./ToolPathInput.module.css";
@@ -63,13 +63,15 @@ export function ToolPathInput({
             }
           }}
         />
-        <IconButton
-          icon="more"
-          size="sm"
-          label={t("settings.runtime.choosePath.aria", { tool: toolName(tool) })}
-          disabled={busy}
-          onClick={() => void run(true)}
-        />
+        <Tooltip content={t("settings.runtime.choosePath.aria", { tool: toolName(tool) })}>
+          <IconButton
+            icon="more"
+            size="sm"
+            label={t("settings.runtime.choosePath.aria", { tool: toolName(tool) })}
+            disabled={busy}
+            onClick={() => void run(true)}
+          />
+        </Tooltip>
       </div>
       <p
         id={hintId}
