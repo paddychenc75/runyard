@@ -112,6 +112,12 @@ Node 24 下运行 `pnpm --filter @runyard/desktop build`，然后 `node apps/des
 
 取证以 2026-10-19 负责人批准的品牌 A 局部（`apps/desktop/e2e/brand-a-reference.html`）和官方明暗 `icon-32.svg` 对照真实 Electron Sidebar，输出浅深 × 中英 × 1440/1100 八组完整窗口、品牌局部、并排图与尺寸/资产哈希。参考稿是放大预览；真实标题使用现有28px字号与32px图标适配侧栏，差异写在产物README。脚本同时验证图标已解码、与官方SVG逐字节一致、主题对应、读屏不重复及无溢出。本次不代表 #448 其他侧栏设计已完成。
 
+## 设置页的设计对照证据
+
+Node 24 下先运行 `node tooling/design-render/render.mjs Settings SettingsDark SettingsEn SettingsDarkEn SettingsNarrow SettingsNarrowDark SettingsNarrowEn SettingsNarrowDarkEn`，再运行 `pnpm --filter @runyard/desktop build` 和 `node apps/desktop/e2e/settings-design.measure.ts`。脚本每次新建临时 HOME/root，顺序启动自己的 Electron 应用并核对收尾，输出八组 1440/1100 × 浅深 × 中英文的原图、并排图和测量 JSON；1100 宽滚到“编辑与运行”，1440 宽停在最上面。
+
+`RUNYARD_SETTINGS_REVIEW_OUTPUT` 指定产物目录，不设时新建临时目录；`RUNYARD_REVIEW_CHROME` 可覆盖生成并排图用的 Chrome 路径。原图保留原始像素，并排图按相同 CSS 逻辑像素展示（设计渲染器输出 2× 图，按 820×900 显示），设计稿是 820 宽独立窗口；#465 接入前应用仍带主窗口侧栏，不能拉伸设计图来掩盖差异。测量核对 720 内容列居中、140 标题区、至少 54 行高、至少 24 文字与控件间距、说明不超过两行、没有横向溢出。真实设置值、工具检测结果取当前临时环境；内容不同应在评审里说明。`settings.e2e.ts` 另测 720 宽英文导航的 Tab 顺序、末按钮完整可见、焦点环四边至少 4px 留白，以及主页面不横向溢出。
+
 ## 预览刷新动效的真实应用取证
 
 Node 24 下先 `pnpm --filter @runyard/desktop build`，再运行 `pnpm --filter @runyard/desktop e2e:run preview-refresh.e2e.ts`。用例在临时主目录创建真实静态页面，先点击页面计数器，再点击应用刷新按钮并确认计数归零；以网络请求挂起/放行验证慢加载持续旋转、失败恢复及减少动态偏好，不用固定睡眠。

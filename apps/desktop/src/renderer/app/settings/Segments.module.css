@@ -1,3 +1,6 @@
+.segments {
+  border-radius: var(--radius-capsule);
+}
 .segments > button {
   padding-inline: var(--space-6);
   font-size: var(--text-secondary-size);
