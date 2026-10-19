@@ -98,7 +98,13 @@ export function createSettingsWindowHost(options: Options) {
       window.on("focus", () => options.onFocusChanged(true));
       window.on("blur", () => options.onFocusChanged(false));
       window.on("closed", () => options.onFocusChanged(false));
-      void window.loadURL(`${APP_ORIGIN}/?view=settings`);
+      void window.loadURL(`${APP_ORIGIN}/?view=settings`).catch((error: unknown) => {
+        // 页面还没载完就关窗会中止加载；这是正常关闭，不能变成未处理的进程异常。
+        if (window.isDestroyed()) return;
+        // i18n-allow: 仅写启动终端的开发者诊断，不向界面显示技术报错
+        process.stderr.write(`设置窗口加载失败：${String(error)}\n`);
+        window.close();
+      });
       return window;
     },
   });
