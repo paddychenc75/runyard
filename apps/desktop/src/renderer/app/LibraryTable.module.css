@@ -169,3 +169,10 @@
 .statusCell [data-status="stopped"] {
   font-weight: var(--text-body-weight);
 }
+
+@media (width <= 800px) {
+  .table {
+    --table-gap: var(--space-3);
+    --table-padding: var(--space-4);
+  }
+}

@@ -12,10 +12,12 @@
   overflow: hidden;
 }
 
-/* 收起钮在红绿灯那一行的最右端 */
+/* 收起钮与隐藏后的同一按钮对齐，临时覆盖也不改变它在窗口里的位置。 */
 .toggle {
+  position: absolute;
+  inset-block-start: calc(var(--space-6) + var(--space-1));
+  inset-inline-start: var(--space-6);
   display: flex;
-  margin-inline-start: auto;
 }
 
 /* 负责人批准方案 A：正式应用图标配紧凑字标，字号适配实际侧栏宽度。 */
@@ -86,4 +88,8 @@
   display: block;
   color: var(--color-text-primary);
   font-size: var(--text-code-small-size);
+}
+
+.root[data-sidebar-controls="start"] .toggle {
+  inset-inline-start: calc(var(--size-window-controls) + var(--space-6));
 }

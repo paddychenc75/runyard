@@ -438,7 +438,7 @@ describe("窗口变窄时页头和顶栏收紧", () => {
       row("hono-1", { templateId: "hono" }),
     ]);
 
-  it("[DESKTOP-LIBRARY-VIEW-67] 1024 宽：搜索框变短、类型和状态合成“筛选”、排序只写方式、运行数只写数字", async () => {
+  it("[DESKTOP-LIBRARY-VIEW-67] 页头可用680宽：搜索框变短、类型和状态合成“筛选”、排序只写方式、运行数只写数字", async () => {
     layout(1024, 680);
     setup(running());
     const box = await searchBox();

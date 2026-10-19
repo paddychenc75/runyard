@@ -106,6 +106,13 @@ async function captureApp(instance: RunyardApp, board: string, width: number, he
         ? null
         : element.parentElement.scrollWidth - element.parentElement.clientWidth,
   }));
+  expect(metrics.horizontalOverflow, `${board}: horizontal overflow`).toBeLessThanOrEqual(1);
+  expect(metrics.columns.find((column) => column.id === "name")?.width).toBeGreaterThanOrEqual(200);
+  for (const id of ["name", "status", "size", "retention", "actions"])
+    expect(
+      metrics.columns.some((column) => column.id === id),
+      `${board}: ${id}`,
+    ).toBe(true);
   measurements.push({ board, metrics });
   await instance.page.screenshot({ path: join(output, `${board}-app.png`), scale: "css" });
 }
@@ -170,10 +177,8 @@ async function main() {
             await captureApp(instance, board, width, height);
             await captureComparison(page, board, width, height);
           }
-          if (locale === "en" && theme === "light") {
-            // 保留旧测试的 900 宽以及应用最小宽 720 的证据，不能用验收尺寸遮住更窄时的回归。
-            await captureApp(instance, "Boundary900", 900, 800);
-            await captureApp(instance, "Boundary720", 720, 800);
+          for (const width of [1024, 900, 720]) {
+            await captureApp(instance, `Boundary${width}-${locale}-${theme}`, width, 800);
           }
         } catch (error) {
           await instance.page.screenshot({ path: join(output, `failure-${locale}-${theme}.png`) });
@@ -200,7 +205,7 @@ async function main() {
   }
   writeFileSync(
     join(output, "README.md"),
-    `# 资源库设计稿并排对照\n\n左：仓库设计稿；右：真实 Electron 应用，经过真实 IPC 事件注入固定演示状态。\n\n共八组：1440×900 / 1100×800，浅色 / 深色，中文 / 英文。九行覆盖两项运行中、崩溃、找不到文件夹、智能体和命令行徽标、空备注、自动清理、选中与悬停。截图仅验证界面，运行和磁盘行为另由端到端及单元测试验证。\n\n本次保留的范围差异：大小数据由 #410 接入；侧栏分组由 #448 实现；窗口顶部由 #446 实现。完整差异及负责人批准出处在 PR 描述中记录。\n\n应用和设计稿提交：${process.env.GITHUB_SHA ?? process.env.RUNYARD_DESIGN_COMMIT ?? "本地工作树，提交编号由 PR 记录"}\n\n真实 ~/.runyard 与 ~/Runyard 目录的修改时间未变，详见 measurements.json。\n`,
+    `# 资源库设计稿并排对照\n\n左：仓库设计稿；右：真实 Electron 应用，经过真实 IPC 事件注入固定演示状态。\n\n共八组：1440×900 / 1100×800，浅色 / 深色，中文 / 英文。九行覆盖两项运行中、崩溃、找不到文件夹、智能体和命令行徽标、空备注、自动清理、选中与悬停。截图仅验证界面，运行和磁盘行为另由端到端及单元测试验证。\n\n本次保留的范围差异：大小数据由 #410 接入；侧栏分组沿用 #448；窄窗口自动隐藏与压缩间距为负责人2026-10-19批准的方案A，另附720/900/1024中英浅深12图，三种宽度无横滚、名称至少200。侧栏切换按钮本分支固定x92/y22；#446后续整体迁移到新顶栏位置。完整差异及负责人批准出处在 PR 描述中记录。\n\n应用和设计稿提交：${process.env.GITHUB_SHA ?? process.env.RUNYARD_DESIGN_COMMIT ?? "本地工作树，提交编号由 PR 记录"}\n\n真实 ~/.runyard 与 ~/Runyard 目录的修改时间未变，详见 measurements.json。\n`,
   );
   console.log(`并排图已写入 ${output}`);
 }

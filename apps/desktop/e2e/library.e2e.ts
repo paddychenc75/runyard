@@ -82,7 +82,7 @@ test("资源库表格：每个宽度下表头和每一行逐列对齐，没有�
   const table = page.getByRole("table", { name: "Playgrounds" });
   await expect(table.getByRole("row").filter({ hasText: "alpha" })).toHaveCount(1);
 
-  for (const width of [1600, 1440, 1200, 1100, 900]) {
+  for (const width of [1600, 1440, 1200, 1100, 1024, 900, 720]) {
     await app.evaluate(
       ({ BrowserWindow }, w) => BrowserWindow.getAllWindows()[0]?.setContentSize(w, 800),
       width,
@@ -98,9 +98,11 @@ test("资源库表格：每个宽度下表头和每一行逐列对齐，没有�
     };
     // 用列标识等待完整的折叠状态，不能把瞬间经过的列数当成完成。
     const expected =
-      width <= 1200
-        ? ["name", "status", "template", "size", "retention", "actions"]
-        : ["name", "status", "template", "port", "size", "lastUsed", "retention", "actions"];
+      width === 1024
+        ? ["name", "status", "template", "port", "size", "retention", "actions"]
+        : width <= 1200
+          ? ["name", "status", "template", "size", "retention", "actions"]
+          : ["name", "status", "template", "port", "size", "lastUsed", "retention", "actions"];
     await expect
       .poll(() =>
         table

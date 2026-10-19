@@ -31,10 +31,10 @@
 .row {
   display: grid;
   grid-template-columns: var(--table-columns);
-  column-gap: var(--space-7);
+  column-gap: var(--table-gap, var(--space-7));
   align-items: center;
   box-sizing: border-box;
-  padding-inline: calc(var(--space-6) + var(--space-1));
+  padding-inline: var(--table-padding, calc(var(--space-6) + var(--space-1)));
 }
 
 .head .row {

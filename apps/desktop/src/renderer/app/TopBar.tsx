@@ -134,6 +134,7 @@ export function TopBar({
     <div className={styles.root}>
       {onToggleSidebar === undefined || sidebarVisible ? null : (
         <PaneToggleButton
+          sidebar
           label={t("library.sidebar.expand.label")}
           expanded={false}
           onClick={onToggleSidebar}

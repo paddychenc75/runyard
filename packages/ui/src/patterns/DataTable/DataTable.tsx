@@ -168,7 +168,7 @@ export function DataTable<Row>({
   const vars = {
     "--table-columns": visible.map((column) => trackOf(widthOf(column))).join(" "),
     // 各列最小宽加上列间距（space-7）和行两侧内边距（space-6 加 space-1，即 14）
-    "--table-min": `calc(${visible.map((column) => trackOf(widthOf(column), true)).join(" + ")} + ${visible.length - 1} * var(--space-7) + 2 * (var(--space-6) + var(--space-1)))`,
+    "--table-min": `calc(${visible.map((column) => trackOf(widthOf(column), true)).join(" + ")} + ${visible.length - 1} * var(--table-gap, var(--space-7)) + 2 * var(--table-padding, calc(var(--space-6) + var(--space-1))))`,
   } as CSSProperties;
 
   return (
