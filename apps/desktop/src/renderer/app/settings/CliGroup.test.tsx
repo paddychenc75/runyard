@@ -24,8 +24,8 @@ const installed: CliCommandStatus = {
 
 async function openCli(w: World) {
   const user = userEvent.setup();
-  w.bridge.bootstrap.windowKind = "settings";
   render(<App bridge={w.bridge} />);
+  await user.click(await screen.findByRole("button", { name: "\u8bbe\u7f6e" }));
   await screen.findByRole("heading", { name: "命令行与智能体" });
   return user;
 }
@@ -153,7 +153,7 @@ describe("命令行与智能体", () => {
       on: { "supervisor.status": () => ({ running: true, cliRuns: 0, tabRuns: 1 }) },
     });
     const user = await openCli(w);
-    await screen.findByText("运行中");
+    await within(group()).findByText("运行中");
     await user.click(within(group()).getByRole("button", { name: "停止" }));
     const dialog = await screen.findByRole("alertdialog");
     expect(within(dialog).getByText(/0 个由命令行启动，1 个在标签页里运行/)).toBeTruthy();
@@ -167,7 +167,7 @@ describe("命令行与智能体", () => {
       },
     });
     const user = await openCli(w);
-    await screen.findByText("运行中");
+    await within(group()).findByText("运行中");
     await user.click(within(group()).getByRole("button", { name: "停止" }));
     expect(await screen.findByText("未运行")).toBeTruthy();
     expect(screen.queryByRole("alertdialog")).toBeNull();

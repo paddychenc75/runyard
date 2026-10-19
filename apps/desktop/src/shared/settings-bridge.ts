@@ -72,8 +72,9 @@ export interface SupervisorStatus {
 }
 
 export interface SettingsMethods {
-  /** 打开或聚焦独立设置窗口；不改变主窗口。 */
+  /** 显示主窗口并导航到设置页面；不改变项目选择。 */
   "settings.open": { param: undefined; result: undefined };
+  "settings.pageActive": { param: boolean; result: undefined };
   "settings.get": { param: undefined; result: Settings };
   /** 只传要改的字段；返回改后的全部设置。不合法的值主进程拒绝（返回改之前的设置） */
   "settings.set": { param: SettingsPatch; result: Settings };
@@ -111,6 +112,7 @@ export type SettingsMethod = keyof SettingsMethods;
 
 export const settingsMethodNames: readonly SettingsMethod[] = [
   "settings.open",
+  "settings.pageActive",
   "settings.get",
   "settings.set",
   "settings.editors",

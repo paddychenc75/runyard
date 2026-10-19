@@ -1,4 +1,4 @@
-/* #445：标题区 140（含独立窗口预留 52），内容列最宽 720。窗口外框由 #465 接入。 */
+/* 主窗口顶栏已让开窗口按钮，设置标题只保留内容区自己的间距。 */
 .root {
   inline-size: 100%;
   min-inline-size: 0;
@@ -10,8 +10,8 @@
 .header {
   box-sizing: border-box;
   flex: none;
-  block-size: calc(var(--space-10) * 5);
-  padding-block-start: calc(var(--space-9) * 2 + var(--space-2));
+  block-size: calc(var(--space-10) * 5 - var(--size-titlebar));
+  padding-block-start: var(--space-6);
   padding-inline: var(--space-10);
   background: var(--color-bg-workspace);
   border-block-end: 1px solid transparent;
@@ -25,6 +25,7 @@
   margin-inline: auto;
 }
 .title {
+  outline: none;
   margin: 0;
   font-size: var(--text-page-title-size);
   font-weight: var(--text-page-title-weight);

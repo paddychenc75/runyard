@@ -139,6 +139,20 @@ describe("LibraryController 记上次打开", () => {
   const opened = (client: FakeClient) =>
     client.calls.filter((call) => call.method === "playground.markOpened");
 
+  it("[DESKTOP-SETTINGS-45] 成功重复打开同一项目产生导航序号，刷新和关闭不产生", async () => {
+    const { controller } = setup();
+    await controller.start();
+    await controller.openProjectWithoutRun("a");
+    const first = controller.getState().projectSelection;
+    await controller.openProjectWithoutRun("a");
+    const second = controller.getState().projectSelection;
+    expect(second).toBeGreaterThan(first ?? 0);
+    await controller.refresh();
+    expect(controller.getState().projectSelection).toBe(second);
+    await controller.requestCloseTab("a");
+    expect(controller.getState().projectSelection).toBe(second);
+  });
+
   it("打开项目记一次上次打开，且发生在启动运行之前", async () => {
     const { client, controller } = setup();
     await controller.start();

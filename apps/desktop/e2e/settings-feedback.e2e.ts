@@ -1,12 +1,12 @@
 import { expect, test } from "./support/fixtures.ts";
-import { openSettingsWindow } from "./support/settings-window.ts";
+import { openSettingsPage } from "./support/settings-page.ts";
 
 test("[DESKTOP-SETTINGS-44] 说明在设置窗口内显示并可关闭", async ({ launch }, testInfo) => {
   const runyard = await launch({ lang: "zh-CN", theme: "dark" });
   await expect(runyard.page.getByRole("combobox")).toBeFocused();
   await runyard.page.keyboard.press("Escape");
   await expect(runyard.page.getByRole("dialog")).toHaveCount(0);
-  const page = await openSettingsWindow(runyard);
+  const page = await openSettingsPage(runyard);
   await page.getByRole("button", { name: "查看说明" }).click();
   const dialog = page.getByRole("dialog", { name: "查看说明" });
   await expect(dialog).toBeVisible();

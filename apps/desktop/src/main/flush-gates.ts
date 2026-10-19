@@ -12,7 +12,7 @@ export interface FlushGates {
 export function createFlushGates(window: BrowserWindow): FlushGates {
   const quit = new QuitFlushGate((id) => {
     if (window.isDestroyed()) return false;
-    // 设置窗口可能在前台、主窗口已经隐藏；保存询问必须出现在用户看得到的窗口里。
+    // 当前可能是设置页或主窗口已经隐藏；保存询问必须出现在用户看得到的窗口里。
     if (window.isMinimized()) window.restore();
     window.show();
     window.focus();

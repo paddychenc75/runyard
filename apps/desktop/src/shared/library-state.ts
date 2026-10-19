@@ -240,6 +240,8 @@ export interface UpdateBannerView {
 export interface LibraryState {
   /** 打开缺失项目时定位资源库；序号使同一个项目的重复请求也能重新定位 */
   libraryReveal?: { id: string; sequence: number };
+  /** 显式打开成功的序号；同一项目也要从设置等页面返回工作区。 */
+  projectSelection?: number;
   locale: Locale;
   playgrounds: PlaygroundRow[];
   /** 打开的项目标签，按打开顺序；资源库标签固定在最前，不在这里 */
