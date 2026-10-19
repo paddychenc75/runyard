@@ -79,8 +79,11 @@ async function captureApp(instance: RunyardApp, board: string, width: number, he
     },
     [width, height] as const,
   );
+  // CI 的物理显示器可能把窗口高度限制在 679；固定网页视口，避免截短后拉伸成设计稿高度。
+  await instance.page.setViewportSize({ width, height });
   const table = instance.page.getByRole("table");
   await expect.poll(() => instance.page.evaluate(() => innerWidth)).toBe(width);
+  await expect.poll(() => instance.page.evaluate(() => innerHeight)).toBe(height);
   // 等可观察的收列状态，不用“睡一会儿应该好了”。
   if (width === 1100) {
     await expect(instance.page.locator('[data-collapsed~="template"]')).toBeVisible();
@@ -92,6 +95,7 @@ async function captureApp(instance: RunyardApp, board: string, width: number, he
   await instance.page.evaluate(() => document.fonts.ready);
   const metrics = await table.evaluate((element) => ({
     viewport: innerWidth,
+    viewportHeight: innerHeight,
     width: element.getBoundingClientRect().width,
     columns: [...element.querySelectorAll("thead th")].map((cell) => ({
       id: cell.getAttribute("data-column"),
@@ -103,7 +107,7 @@ async function captureApp(instance: RunyardApp, board: string, width: number, he
         : element.parentElement.scrollWidth - element.parentElement.clientWidth,
   }));
   measurements.push({ board, metrics });
-  await instance.page.screenshot({ path: join(output, `${board}-app.png`) });
+  await instance.page.screenshot({ path: join(output, `${board}-app.png`), scale: "css" });
 }
 
 async function captureComparison(page: Page, board: string, width: number, height: number) {
