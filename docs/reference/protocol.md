@@ -1007,6 +1007,7 @@
 | `lastUsedAt` | `integer` | 是 | ≥ 0 |
 | `lastOpenedAt` | `integer` | 否 | ≥ 0 |
 | `missingSince` | `integer` | 否 | 找不到文件夹的起始时间；≥ 0 |
+| `size` | `{ totalBytes: integer; dependencyBytes: integer; dependencyDirs: string[]; unreadable: integer }` | 否 | 磁盘占用；没有表示还在计算 |
 
 ### `RequestResult`
 

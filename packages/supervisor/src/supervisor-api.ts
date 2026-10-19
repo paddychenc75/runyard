@@ -28,6 +28,11 @@ export interface SupervisorApi {
   readSettings(): Promise<Settings>;
   /** 改设置（只传要改的字段）并发 settings.changed；和 settings.set 方法同一条路径 */
   updateSettings(patch: SettingsPatch): Promise<Settings>;
+  /**
+   * 这个项目文件夹里的内容可能变了（依赖安装结束、一次运行结束）：重新算磁盘占用，期间仍报旧结果。
+   * 不挡调用方，计算在后台排队
+   */
+  refreshSize(playgroundId: string): void;
   /** 握手完成的会话 */
   readySessions(): readonly Session[];
   /** 请管理进程退出（也是 supervisor.shutdown 走的路径）；重复调用返回同一个 Promise */

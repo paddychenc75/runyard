@@ -2,6 +2,7 @@ import { normalize } from "node:path";
 import { type LibraryItem, PlaygroundLibrary, type ScanReport } from "@runyard/core";
 import { absPath } from "@runyard/platform";
 import type { Playground, PlaygroundFile } from "@runyard/protocol";
+import { createDiskUsageService, type DiskUsageService } from "./disk-usage-service.ts";
 import type { LibrarySeams } from "./library-seams.ts";
 import { methodFailure } from "./method-failure.ts";
 import { fileFrom, toPlayground } from "./playground-view.ts";
@@ -18,6 +19,10 @@ export interface LibraryContext {
   readonly settings: ReturnType<typeof createSettingsStore>;
   readonly release: ReturnType<typeof createReleaseCoordinator>;
   readonly log: (line: string) => void;
+  /** 项目的磁盘占用（内存缓存加后台计算，disk-usage-service.ts） */
+  readonly sizes: DiskUsageService;
+  /** 资源库的项目表变了：让大小服务对账（新项目排队、改名保留、移除清掉） */
+  syncSizes(library: PlaygroundLibrary, root: ReturnType<typeof absPath>): void;
   seams(): LibrarySeams;
   runs(): RunsView;
   /** 资源库和它对应的根目录；设置里的 libraryRoot 变了就换一个新的 */
@@ -45,6 +50,15 @@ export function createLibraryContext(
   const runs = () => seams().runs ?? noRuns;
   // 最近一次读到的 playground.json：文件夹找不到时，事件和列表还靠它给出完整的项目
   const seen = new Map<string, PlaygroundFile>();
+  const publishChanged = (id: string) => {
+    void (async () => {
+      const { library } = await context.open();
+      const item = library.find(id);
+      if (item !== undefined)
+        api.publish("playground.changed", await context.describe(library, item));
+    })().catch((error: unknown) => log(`publishing size failed: ${String(error)}`));
+  };
+  const sizes = createDiskUsageService(api, { onChange: publishChanged, log });
   let opened: { rootText: string; value: ReturnType<LibraryContext["open"]> } | undefined;
 
   const context: LibraryContext = {
@@ -52,6 +66,17 @@ export function createLibraryContext(
     settings,
     release,
     log,
+    sizes,
+    syncSizes(library, root) {
+      sizes.sync(
+        root,
+        library.list().map((item) => ({
+          id: item.entry.id,
+          path: absPath(item.entry.path),
+          missing: item.entry.missingSince !== undefined,
+        })),
+      );
+    },
     seams,
     runs,
     async open() {
@@ -81,7 +106,12 @@ export function createLibraryContext(
     async describe(library, item) {
       const file = fileFrom(await library.readFile(item), seen.get(item.entry.id), item);
       seen.set(item.entry.id, file);
-      return toPlayground(item, file, seams().templates?.runnerKind(file.runner));
+      return toPlayground(
+        item,
+        file,
+        seams().templates?.runnerKind(file.runner),
+        sizes.get(item.entry.id),
+      );
     },
     remember: (id, file) => void seen.set(id, file),
     forgetSeen: (id) => void seen.delete(id),
@@ -115,10 +145,13 @@ export function createLibraryContext(
         );
       }
       for (const skip of report.skipped) log(`scan skipped ${skip.path}: ${skip.reason}`);
+      const { root } = await context.open();
+      context.syncSizes(library, root);
     },
     async releaseOrder(id, reason) {
       await runs().stop(id);
       await release.request(id, reason);
+      await sizes.pause(id);
     },
   };
   return context;

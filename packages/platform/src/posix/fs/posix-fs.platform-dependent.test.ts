@@ -1,6 +1,7 @@
 import {
   chmodSync,
   existsSync,
+  linkSync,
   mkdirSync,
   readdirSync,
   readFileSync,
@@ -134,5 +135,46 @@ describe("真磁盘", () => {
   it("exists：悬空的符号链接占着名字，算存在", async () => {
     symlinkSync(box.at("nowhere"), box.at("dangling"));
     expect(await fs.exists(absPath(box.at("dangling")))).toBe(true);
+  });
+});
+
+describe("scanDir（真磁盘）", () => {
+  it("符号链接只算链接本身，不跟随；指向自己根目录的环也不展开", async () => {
+    const dir = box.at("proj");
+    mkdirSync(join(dir, "real"), { recursive: true });
+    writeFileSync(join(dir, "real", "big.bin"), new Uint8Array(200_000));
+    symlinkSync(join(dir, "real"), join(dir, "to-real"));
+    symlinkSync(dir, join(dir, "self"));
+    const scan = await fs.scanDir(absPath(dir));
+    const byName = new Map((scan?.entries ?? []).map((entry) => [entry.name, entry]));
+    expect(byName.get("to-real")?.kind).toBe("symlink");
+    expect(byName.get("self")?.kind).toBe("symlink");
+    expect(byName.get("real")?.kind).toBe("dir");
+    // 链接自己占的块远小于它指向的 200 KB
+    expect(byName.get("to-real")?.bytes ?? Number.POSITIVE_INFINITY).toBeLessThan(100_000);
+  });
+
+  it("硬链接的两个名字有同一个设备号和 inode", async () => {
+    const dir = box.at("hl");
+    mkdirSync(dir);
+    writeFileSync(join(dir, "a.bin"), new Uint8Array(10_000));
+    linkSync(join(dir, "a.bin"), join(dir, "b.bin"));
+    const scan = await fs.scanDir(absPath(dir));
+    const a = scan?.entries.find((entry) => entry.name === "a.bin");
+    const b = scan?.entries.find((entry) => entry.name === "b.bin");
+    expect(a?.ino).toBe(b?.ino);
+    expect(a?.dev).toBe(b?.dev);
+    expect(a?.nlink).toBe(2);
+  });
+
+  it("没有读权限的文件夹抛 PATH_LOCKED；恢复后能读", async () => {
+    const dir = box.at("secret");
+    mkdirSync(dir);
+    writeFileSync(join(dir, "f.txt"), "x");
+    chmodSync(dir, 0o000);
+    const code = await codeOf(fs.scanDir(absPath(dir)));
+    chmodSync(dir, 0o755);
+    expect(code).toBe("PATH_LOCKED");
+    expect((await fs.scanDir(absPath(dir)))?.entries.length).toBe(1);
   });
 });
