@@ -56,6 +56,17 @@
   display: block;
 }
 
+/* 与 tokens 的系统主题选择条件一致；显式浅色不受系统暗色覆盖。 */
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme="light"])) .lightMark {
+    display: none;
+  }
+
+  :global(:root:not([data-theme="light"])) .darkMark {
+    display: block;
+  }
+}
+
 .nav {
   flex: 1;
 }

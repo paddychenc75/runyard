@@ -134,4 +134,4 @@ Web 系列只有 1440 画板，1100 对照保留原布局裁取，不代表存�
 
 Node 24 下运行 `pnpm --filter @runyard/desktop build`，然后 `node apps/desktop/e2e/sidebar-brand.measure.ts`。默认产物写入独立临时目录，`RUNYARD_BRAND_OUTPUT` 可指定目录；`RUNYARD_E2E_APP` 可指定端到端包。CI 上传 `sidebar-brand-a-comparison`。
 
-取证以 2026-10-19 负责人批准的品牌 A 局部（`apps/desktop/e2e/brand-a-reference.html`）和官方明暗 `icon-32.svg` 对照真实 Electron Sidebar，输出浅深 × 中英 × 1440/1100 八组完整窗口、品牌局部、并排图与尺寸/资产哈希。参考稿是放大预览；真实标题使用现有28px字号与32px图标适配侧栏，差异写在产物README。脚本同时验证图标已解码、与官方SVG逐字节一致、主题对应、读屏不重复及无溢出。本次不代表 #448 其他侧栏设计已完成。
+取证以 2026-10-19 负责人批准的品牌 A 局部（`apps/desktop/e2e/brand-a-reference.html`）和官方明暗 `icon-32.svg` 对照真实 Electron Sidebar，输出浅深 × 中英 × 1440/1100 八组完整窗口、品牌局部、并排图与尺寸/资产哈希。参考稿是放大预览；真实标题使用现有28px字号与32px图标适配侧栏，差异写在产物README。脚本同时验证图标已解码、与官方SVG逐字节一致、主题对应、读屏不重复及无溢出。本次不代表 #448 其他侧栏设计已完成。 额外四张 `theme-*.png` 验证跟随系统浅/深以及显式主题覆盖相反系统主题；`pnpm --filter @runyard/desktop e2e:run sidebar-brand.e2e.ts` 单独运行同一组真实样式断言。

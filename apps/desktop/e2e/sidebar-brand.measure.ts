@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, statSync, writeFileSy
 import { homedir, tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { chromium, expect, type Page } from "@playwright/test";
+import { brandThemeCases, checkBrandTheme } from "./sidebar-brand-theme.ts";
 import { launchRunyard } from "./support/launch.ts";
 
 // 只验证本次批准的品牌 A；不把其余侧栏旧设计差异当作这次已实现。
@@ -126,6 +127,16 @@ try {
             iconSha256: createHash("sha256").update(svg).digest("hex"),
           });
         }
+        if (lang === "en" && theme === "dark") {
+          for (const choice of brandThemeCases) {
+            const result = await checkBrandTheme(instance.page, choice);
+            const name = `theme-${choice.theme}-system-${choice.system}`;
+            await instance.page
+              .locator("[data-sidebar-brand]")
+              .screenshot({ path: join(output, `${name}.png`), scale: "css" });
+            measurements.push({ name, ...result });
+          }
+        }
       } finally {
         await instance.shutdown();
       }
@@ -144,6 +155,6 @@ try {
 }
 writeFileSync(
   join(output, "README.md"),
-  `# 品牌 A 八组对照\n\n2026-10-19 负责人选 A（#481）：官方应用图标配紧凑 Runyard 字标。本次只改变品牌标题，不改变侧栏筛选/导航；其他侧栏设计仍由 #448 跟进。参考局部保留获批 mock 的34px图标、28px/650字标、-1.15px字距、10px间距；真实Sidebar适配实际宽度为32px图标、28px/700现有字号/字重变量、-0.6px字距、8px间距。两个局部均按原像素2倍放大，完整窗口图另附。\n\n浅深×中英×1440/1100八组均读取真实Electron Sidebar，等待SVG解码，断言只有对应主题图标可见、读屏不重复、品牌不溢出；内联SVG与官方文件逐字节一致，哈希与尺寸见measurements.json。全部运行用临时HOME/root，真实数据目录mtime前后相同。\n\n提交：${process.env.GITHUB_SHA ?? "本地工作树"}。\n`,
+  `# 品牌 A 八组对照\n\n2026-10-19 负责人选 A（#481）：官方应用图标配紧凑 Runyard 字标。本次只改变品牌标题，不改变侧栏筛选/导航；其他侧栏设计仍由 #448 跟进。参考局部保留获批 mock 的34px图标、28px/650字标、-1.15px字距、10px间距；真实Sidebar适配实际宽度为32px图标、28px/700现有字号/字重变量、-0.6px字距、8px间距。两个局部均按原像素2倍放大，完整窗口图另附。\n\n浅深×中英×1440/1100八组均读取真实Electron Sidebar，等待SVG解码，断言只有对应主题图标可见、读屏不重复、品牌不溢出；内联SVG与官方文件逐字节一致，哈希与尺寸见measurements.json。另附四组真实CSS核对：system-light、system-dark、显式light/系统dark、显式dark/系统light；通过Playwright模拟系统媒体查询，仅设置真实根主题标记，不替换CSS或组件。全部运行用临时HOME/root，真实数据目录mtime前后相同。\n\n提交：${process.env.GITHUB_SHA ?? "本地工作树"}。\n`,
 );
 console.log(`八组品牌对照已保存：${output}`);
