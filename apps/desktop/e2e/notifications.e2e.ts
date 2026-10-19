@@ -142,3 +142,21 @@ test("[DESKTOP-NOTIFICATIONS-10] 通知入口在资源库、收起侧栏和项�
   );
   await expect.poll(async () => (await bell.boundingBox())?.x).toBe(original?.x);
 });
+
+test("[DESKTOP-NOTIFICATIONS-08] 复制链接只显示成功小提示，不进入通知历史", async ({ launch }) => {
+  const runyard = await launch();
+  await closePicker(runyard.page);
+  await runyard.cli("new", "html", "copy-demo");
+  await expect(runyard.page.getByRole("row", { name: /copy-demo/ })).toBeVisible();
+  await runyard.app.evaluate(({ clipboard }) => {
+    clipboard.writeText = async () => {};
+  });
+  await runyard.page.getByRole("button", { name: "More actions for copy-demo" }).click();
+  await runyard.page.getByRole("menuitem", { name: "Copy link", exact: true }).click();
+  await expect(runyard.page.getByRole("status").filter({ hasText: "Link copied" })).toBeVisible();
+  await expect(runyard.page.getByRole("status").filter({ hasText: "Link copied" })).toHaveCount(0);
+  await runyard.page.getByRole("button", { name: "Notifications" }).click();
+  await expect(runyard.page.getByRole("dialog", { name: "Notifications" })).not.toContainText(
+    "Link copied",
+  );
+});

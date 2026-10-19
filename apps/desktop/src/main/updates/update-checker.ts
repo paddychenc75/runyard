@@ -34,7 +34,7 @@ export interface UpdateCheckerOptions {
   enabled(): Promise<boolean>;
   /** 提示条要显示的内容；不显示是 null */
   publish(view: UpdateBannerView | null): void;
-  openExternal(url: string): void;
+  openExternal(url: string): void | Promise<void>;
   /** false 时只显示记录里已有的，绝不发请求（从源码运行和自动化测试里，不碰真实的 GitHub） */
   canFetch: boolean;
 }
@@ -49,6 +49,7 @@ export class UpdateChecker {
   #shown: UpdateRecord["latest"] = null;
   /** 开关连着拨两下会有两次 run 在途：只让最后一次落实，先发的结果作废 */
   #generation = 0;
+  #writes: Promise<void> = Promise.resolve();
 
   constructor(options: UpdateCheckerOptions) {
     this.#options = options;
@@ -72,17 +73,12 @@ export class UpdateChecker {
     const today = dayOf(this.#options.now());
     if (!this.#options.canFetch || record?.checkedOn === today) return;
     // 先记下今天查过：发出请求之后不管成败，今天都不再查
-    record = {
-      checkedOn: today,
-      latest: record?.latest ?? null,
-      dismissed: record?.dismissed ?? null,
-    };
-    await store.save(record);
+    await this.#writeRecord((current) => ({ ...current, checkedOn: today }));
+    if (generation !== this.#generation) return;
     const latest = await this.#fetchLatest();
     if (latest === undefined || generation !== this.#generation) return;
-    record = { ...record, latest };
-    await store.save(record);
-    this.#present(record);
+    record = await this.#writeRecord((current) => ({ ...current, latest }));
+    if (generation === this.#generation) this.#present(record);
   }
 
   /**
@@ -97,29 +93,51 @@ export class UpdateChecker {
     if (latest === undefined) return "failed";
     // 结果被更晚的一次检查取代了：那一次会负责展示，这里不抢
     if (generation !== this.#generation) return latest === null ? "latest" : "newer";
-    const record: UpdateRecord = {
+    const record = await this.#writeRecord((current) => ({
+      ...current,
       checkedOn: dayOf(this.#options.now()),
       latest,
       dismissed: null,
-    };
-    await this.#options.store.save(record);
-    this.#present(record);
+      handledVersion: null,
+    }));
+    if (generation === this.#generation) this.#present(record);
     return latest === null ? "latest" : "newer";
   }
 
-  /** “以后再说”：这个版本不再提示（有更新的版本才会再出现） */
-  async later(): Promise<void> {
-    if (this.#shown === null) return;
-    const record = await this.#options.store.load();
-    if (record === null) return;
-    await this.#options.store.save({ ...record, dismissed: this.#shown.version });
-    this.#shown = null;
-    this.#options.publish(null);
+  /** “以后再说”只由通知中心收起本次卡片，不改更新事实和持久处理记录。 */
+  async later(): Promise<void> {}
+
+  /** 浏览器拒绝打开时让调用方保留待处理；成功后只标记这次点击对应的版本。 */
+  async download(): Promise<void> {
+    const selected = this.#shown;
+    if (selected === null) return;
+    await this.#options.openExternal(selected.url);
+    const next = await this.#writeRecord((current) => ({
+      ...current,
+      handledVersion: selected.version,
+    }));
+    // 等待浏览器时用户可能关了更新检查，不把已经隐藏的来源重新发布。
+    if (this.#shown !== null) this.#present(next);
   }
 
-  /** “下载”：用系统浏览器打开发布页，应用自己什么都不下载 */
-  download(): void {
-    if (this.#shown !== null) this.#options.openExternal(this.#shown.url);
+  /** 检查回包与下载确认共享一次读改写队列，旧回包不能覆盖期间写下的处理结果。 */
+  #writeRecord(update: (current: UpdateRecord) => UpdateRecord): Promise<UpdateRecord> {
+    const next = this.#writes.then(async () => {
+      const current = (await this.#options.store.load()) ?? {
+        checkedOn: dayOf(this.#options.now()),
+        latest: null,
+        dismissed: null,
+      };
+      const result = update(current);
+      await this.#options.store.save(result);
+      return result;
+    });
+    // 调用者仍收到原始失败；队尾单独消费失败，让后续操作可以继续排队。
+    this.#writes = next.then(
+      () => undefined,
+      () => undefined,
+    );
+    return next;
   }
 
   #present(record: UpdateRecord | null): void {
@@ -127,7 +145,7 @@ export class UpdateChecker {
     const visible =
       latest !== null &&
       isNewer(latest.version, this.#options.current) &&
-      latest.version !== record?.dismissed;
+      latest.version !== record?.handledVersion;
     this.#shown = visible ? latest : null;
     this.#options.publish(
       visible ? { latest: latest.version, current: this.#options.current } : null,

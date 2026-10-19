@@ -1,12 +1,14 @@
-import type { Localized, MessageKey, MessageValues, Translate } from "@runyard/i18n";
+import type { Format, Localized, MessageKey, MessageValues, Translate } from "@runyard/i18n";
 import { useFormat, useT } from "@runyard/i18n/react";
 import { Button, ButtonGroup, Icon, IconButton, NoticeCard, NoticeList, Toast } from "@runyard/ui";
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import type { Bounds } from "../../../shared/layout.ts";
 import { useOverlay } from "../../shared/overlay-context.tsx";
+import { useWindowVisible } from "../use-window-visible.ts";
 import styles from "./NotificationCenter.module.css";
-import { getNotificationService, type NotificationService } from "./notification-service.ts";
+import { useNotificationService } from "./notification-context.tsx";
+import type { NotificationService } from "./notification-service.ts";
 import type {
   NotificationRecord,
   NotificationSnapshot,
@@ -14,14 +16,20 @@ import type {
 } from "./notification-store.ts";
 
 // 存储层只接受已有文案键和纯数据参数；翻译发生在当前语言的渲染期间。
-function translate(t: Translate, text: NotificationText): Localized {
-  return (t as (key: MessageKey, values?: MessageValues) => Localized)(text.key, text.values);
+function translate(t: Translate, text: NotificationText, format?: Format): Localized {
+  const values =
+    text.relativeTime === undefined
+      ? text.values
+      : { ...text.values, time: format?.relativeTime(text.relativeTime, Date.now()) ?? "" };
+  return (t as (key: MessageKey, values?: MessageValues) => Localized)(text.key, values);
 }
 export function NotificationCenter({
-  service = getNotificationService(),
+  service: suppliedService,
 }: {
   service?: NotificationService;
 }) {
+  const contextService = useNotificationService();
+  const service = suppliedService ?? contextService;
   const t = useT();
   const state = useSyncExternalStore(service.store.subscribe, service.store.snapshot);
   const toast = useSyncExternalStore(service.subscribeToast, service.getToast);
@@ -102,10 +110,15 @@ function NotificationMenu({
 }
 function NotificationCards({ service, state, open }: NotificationViewProps) {
   const t = useT();
-  const region = useRef<HTMLDivElement>(null);
+  const format = useFormat();
+  const region = useRef<HTMLElement>(null);
   const [bounds, setBounds] = useState<Bounds>();
   const records = [...state.required, ...state.recent];
   const cards = state.cards.flatMap((id) => records.filter((item) => item.id === id));
+  const visible = useWindowVisible();
+  useEffect(() => {
+    service.markShown(visible && !open ? state.cards : []);
+  }, [service, state, visible, open]);
   useLayoutEffect(() => {
     const element = region.current;
     if (!element) return;
@@ -125,27 +138,43 @@ function NotificationCards({ service, state, open }: NotificationViewProps) {
   }, [state.cards.length, open]);
   useOverlay(!open && cards.length > 0, bounds);
   return createPortal(
-    <div ref={region} className={styles.cards} data-notification-cards="" hidden={open}>
+    <section
+      ref={region}
+      className={styles.cards}
+      data-notification-cards=""
+      hidden={open || cards.length === 0}
+      aria-label={t("desktop.notice.region.aria")}
+      aria-live="polite"
+      aria-atomic={false}
+      aria-relevant="additions text"
+    >
       {cards.map((item) => (
         <NoticeCard
           key={item.id}
           title={translate(t, item.title)}
-          description={item.description ? translate(t, item.description) : undefined}
+          description={item.description ? translate(t, item.description, format) : undefined}
           tone={item.tone}
           icon={item.icon}
           dismissLabel={t("desktop.notice.dismiss.aria")}
           onDismiss={() => service.store.dismiss(item.id)}
           duration={item.required ? null : 8000}
-          actions={<Actions item={item} service={service} />}
-        />
+          actions={item.actions?.length ? <Actions item={item} service={service} /> : undefined}
+        >
+          {item.details?.map((text, index) => (
+            <p className={styles.detail} key={`${item.id}-${index}`}>
+              {translate(t, text)}
+            </p>
+          ))}
+        </NoticeCard>
       ))}
-    </div>,
+    </section>,
     document.body,
   );
 }
 
 function Entry({ item, service }: { item: NotificationRecord; service: NotificationService }) {
   const t = useT();
+  const format = useFormat();
   return (
     <div className={styles.entry}>
       <span className={styles.tile} data-tone={item.tone}>
@@ -154,11 +183,18 @@ function Entry({ item, service }: { item: NotificationRecord; service: Notificat
       <div className={styles.body}>
         <p className={styles.title}>{translate(t, item.title)}</p>
         {item.description ? (
-          <p className={styles.description}>{translate(t, item.description)}</p>
+          <p className={styles.description}>{translate(t, item.description, format)}</p>
         ) : null}
-        <ButtonGroup size="sm">
-          <Actions item={item} service={service} />
-        </ButtonGroup>
+        {item.details?.map((text, index) => (
+          <p className={styles.description} key={`${item.id}-${index}`}>
+            {translate(t, text)}
+          </p>
+        ))}
+        {item.required ? (
+          <ButtonGroup size="sm">
+            <Actions item={item} service={service} />
+          </ButtonGroup>
+        ) : null}
       </div>
     </div>
   );
@@ -176,7 +212,9 @@ function Actions({ item, service }: { item: NotificationRecord; service: Notific
         if (!handler) return;
         setPending(true);
         void handler()
-          .then(() => service.store.dismiss(item.id))
+          .then((result) => {
+            if (result !== false) service.store.dismiss(item.id);
+          })
           .catch((error) => console.error("NOTIFICATION_ACTION_FAILED", error))
           .finally(() => setPending(false));
       }}

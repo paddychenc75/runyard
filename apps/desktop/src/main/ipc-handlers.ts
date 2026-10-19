@@ -223,7 +223,7 @@ export function registerBridgeHandlers(
       if (playground !== null) controller.system.copyPath(playground);
     },
     "clipboard.copy": (value) => {
-      if (typeof value === "string") controller.system.copyText(value);
+      if (typeof value === "string") return controller.system.copyText(value);
     },
     "clipboard.read": () => controller.system.readText(),
     "link.openWeb": (value) => {

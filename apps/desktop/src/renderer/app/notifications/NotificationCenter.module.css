@@ -87,3 +87,7 @@
   visibility: hidden;
   pointer-events: none;
 }
+
+.detail {
+  margin: 0;
+}

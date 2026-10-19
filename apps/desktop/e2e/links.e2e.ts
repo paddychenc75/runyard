@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import type { Page } from "@playwright/test";
 import { attachScreenshot, closePicker, expect, test } from "./support/fixtures.ts";
@@ -84,9 +84,7 @@ test("链接：new 每次都确认，回车是取消，确认后新建并运行"
   });
 });
 
-test("更新提示：记录里有新版本就在资源库页顶部显示，“以后再说”后不再出现；从源码运行不联网", async ({
-  launch,
-}, info) => {
+test("更新通知：稍后再说只收卡片，列表保留，重新载入再次出现", async ({ launch }, info) => {
   const runyard = await launch({ lang: "zh-CN" });
   const { page } = runyard;
   await closeZhPicker(page);
@@ -97,7 +95,7 @@ test("更新提示：记录里有新版本就在资源库页顶部显示，“�
   writeFileSync(
     join(dir, "update-check.json"),
     JSON.stringify({
-      checkedOn: "2020-01-01",
+      checkedOn: JSON.parse(readFileSync(join(dir, "update-check.json"), "utf8")).checkedOn,
       latest: {
         version: "99.0.0",
         url: "https://github.com/paddychenc75/runyard/releases/tag/v99.0.0",
@@ -107,9 +105,24 @@ test("更新提示：记录里有新版本就在资源库页顶部显示，“�
   );
   await runyard.call("settings.set", { updateCheck: false });
   await runyard.call("settings.set", { updateCheck: true });
-  const banner = page.getByRole("status", { name: "新版本" });
-  await expect(banner).toContainText("Runyard 99.0.0 已发布");
+  const banner = page.getByRole("status", { name: "Runyard 99.0.0 可以更新了" });
+  await expect(banner).toContainText("Runyard 99.0.0 可以更新了");
   await attachScreenshot(page, info, "update-banner");
   await banner.getByRole("button", { name: "以后再说" }).click();
   await expect(banner).toHaveCount(0);
+  await page.getByRole("button", { name: "通知" }).click();
+  await expect(page.getByRole("dialog", { name: "通知" })).toContainText(
+    "Runyard 99.0.0 可以更新了",
+  );
+  await page.reload();
+  await expect(banner).toBeVisible();
+  await runyard.app.evaluate(({ shell }) => {
+    shell.openExternal = async () => {};
+  });
+  await banner.getByRole("button", { name: "下载" }).click();
+  await expect(banner).toHaveCount(0);
+  await page.getByRole("button", { name: "通知" }).click();
+  await expect(page.getByRole("dialog", { name: "通知" })).not.toContainText(
+    "Runyard 99.0.0 可以更新了",
+  );
 });
