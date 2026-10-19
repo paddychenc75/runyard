@@ -135,3 +135,7 @@ Node 24 下先 `pnpm --filter @runyard/desktop build`，再运行 `pnpm --filter
 设计对照先运行 `node tooling/design-render/render.mjs Web WebEn WebLight WebLightEn --no-shots`，再运行 `node apps/desktop/e2e/preview-refresh-design.measure.ts`。默认在独立临时目录输出八组浅深 × 中英 × 1440/1100 的静止、加载中、设计并排图与尺寸记录；`RUNYARD_REFRESH_OUTPUT` 可指定独立输出目录，`RUNYARD_E2E_APP` 可切换到端到端包。CI 上传 `preview-refresh-design-comparison`，下载后打开八张 comparison.png 和 loading.png。
 
 Web 系列只有 1440 画板，1100 对照保留原布局裁取，不代表存在窄窗设计稿。原生预览另附 preview.png；静态项目和设计的 React 示例内容不同，原有顶栏/侧栏差异分别由 #446/#448 追踪，停止图标沿用已合并 #475。动效是 #477 批准的新增行为，不能用静止图证明动效生命周期，须结合真实端到端结果。
+
+### 窗口顶部取证（#446）
+
+先渲染 Main、MainSidebarHidden、Web、Settings 的浅深中英画板，再运行 `node apps/desktop/e2e/window-header.measure.ts`。每个临时实例覆盖1440/1100、展开/收起/项目/独立设置四种状态，32组对照与 measurements.json 写到 `RUNYARD_HEADER_REVIEW_OUTPUT` 或新临时目录。原生红绿灯API坐标19/19；侧栏按钮90/12，展开收起恢复不移动；首标签134，标题70，文件树顶52/圆角9。项目原生预览单独截图后按占位实测坐标合成，保留原始图和预览图。没有窄版的画板使用完整参考，不把裁切稿当窄窗设计。

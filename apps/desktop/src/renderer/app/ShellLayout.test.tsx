@@ -137,7 +137,7 @@ describe("侧栏的收起与显示范围", () => {
     expect(sidebar()).toBeTruthy();
   });
 
-  it("[DESKTOP-LIBRARY-VIEW-66] 侧栏按钮在侧栏顶部；收起后跟着红绿灯留在顶栏最左边，标签条在它右边；展开后回到侧栏", async () => {
+  it("[DESKTOP-LIBRARY-VIEW-66][DESKTOP-LIBRARY-VIEW-93] 侧栏按钮在侧栏顶部；收起后跟着红绿灯留在顶栏最左边，标签条在它右边；展开后回到侧栏", async () => {
     const user = userEvent.setup();
     setup(libraryState());
     const collapse = await screen.findByRole("button", { name: "收起侧栏" });
@@ -148,7 +148,7 @@ describe("侧栏的收起与显示范围", () => {
     // 顶栏里：侧栏按钮在标签条前面
     const tabs = screen.getByRole("tablist");
     expect(expand.compareDocumentPosition(tabs) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(expand.parentElement).toBe(tabs.parentElement?.parentElement);
+    expect(expand.closest("[data-window-toolbar]")).toBe(tabs.closest("[data-window-toolbar]"));
     await user.click(expand);
     expect(screen.queryByRole("button", { name: "显示侧栏" })).toBeNull();
     expect(

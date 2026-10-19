@@ -34,6 +34,8 @@ test("[DESKTOP-SETTINGS-41] [DESKTOP-SETTINGS-42] [DESKTOP-SETTINGS-43] 输入�
     .poll(() => runyard.call("settings.get"))
     .toMatchObject({ toolPaths: { node: executable } });
   await expect(page.getByRole("table", { name: "Runtime" })).toContainText("24.21.0");
+  // #491：设置已落盘不等于校验回包结束，下一次提交必须等输入恢复可保存。
+  await expect(input).toHaveAttribute("aria-busy", "false");
   await input.fill(invalid);
   await input.press("Enter");
   await expect(page.getByRole("alert")).toContainText("previous path is unchanged");

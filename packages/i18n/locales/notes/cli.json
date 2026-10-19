@@ -169,5 +169,9 @@
   },
   "cli.version.body": {
     "version": "应用的版本号，如 0.2.0；输出里只有它"
+  },
+  "cli.skillGuide.body": {
+    "glossarySkip": ["项目"],
+    "glossarySkipReason": "#468 要求供智能体执行的英文 SKILL.md 保持原文，原文使用 project；中文对照按产品术语使用“项目”。"
   }
 }

@@ -11,19 +11,6 @@ const HEADER =
 
 type Pick = (name: string) => string;
 
-// Monaco 的词法名（monarch 的 token 名）到变量
-const monacoRoles: [string, string][] = [
-  ["keyword", "color-code-keyword"],
-  ["string", "color-code-string"],
-  ["number", "color-code-number"],
-  ["comment", "color-code-punctuation"],
-  ["delimiter", "color-code-punctuation"],
-  ["tag", "color-code-tag"],
-  ["attribute.name", "color-code-function"],
-  ["type", "color-code-function"],
-  ["predefined", "color-code-function"],
-];
-
 // Shiki（TextMate 范围）到变量
 const shikiRoles: [string[], string][] = [
   [["keyword", "storage"], "color-code-keyword"],
@@ -129,25 +116,6 @@ function monacoWidgetColors(pick: Pick): [string, string][] {
 
 const q = quote;
 
-function monaco(theme: Theme, pick: Pick): string[] {
-  return [
-    `  ${theme}: {`,
-    `    base: ${q(theme === "light" ? "vs" : "vs-dark")},`,
-    "    inherit: true,",
-    "    rules: [",
-    ...monacoRoles.map(
-      ([token, name]) => `      { token: ${q(token)}, foreground: ${q(pick(name).slice(1))} },`,
-    ),
-    "    ],",
-    "    colors: {",
-    ...[...editorColors(pick), ...monacoScrollbarColors(pick), ...monacoWidgetColors(pick)].map(
-      ([key, value]) => `      ${q(key)}: ${q(value)},`,
-    ),
-    "    },",
-    "  },",
-  ];
-}
-
 // 一行放得下就写一行，放不下每项占一行（和 Biome 的排版一致）
 function scopeLines(scopes: string[]): string[] {
   const oneLine = `        scope: [${scopes.map(q).join(", ")}],`;
@@ -162,7 +130,7 @@ function shiki(theme: Theme, pick: Pick): string[] {
     `    type: ${q(theme)},`,
     "    colors: {",
     // 运行时真正用的是这一份（@shikijs/monaco 把它转成 Monaco 主题），所以浮层的颜色也要在这里
-    ...[...editorColors(pick), ...monacoWidgetColors(pick)].map(
+    ...[...editorColors(pick), ...monacoScrollbarColors(pick), ...monacoWidgetColors(pick)].map(
       ([key, value]) => `      ${q(key)}: ${q(value)},`,
     ),
     "    },",
@@ -194,11 +162,10 @@ export function renderEditorThemes(source: TokensSource): string {
   const lines = [HEADER, ""];
   const sections: [string, (theme: Theme, pick: Pick) => string[], string][] = [
     [
-      "monacoThemes",
-      monaco,
-      "Monaco：monaco.editor.defineTheme(名字, monacoThemes.light)，base 和 inherit 已写好",
+      "shikiThemes",
+      shiki,
+      "Shiki：唯一的编辑器配色，交给 createHighlighter 并经 shikiToMonaco 注册",
     ],
-    ["shikiThemes", shiki, "Shiki：交给 createHighlighter 的 themes"],
     ["xtermThemes", xterm, "xterm：赋给 terminal.options.theme"],
   ];
   for (const [name, render, doc] of sections) {

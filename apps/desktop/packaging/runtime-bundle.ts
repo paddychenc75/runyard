@@ -10,6 +10,7 @@ import {
 } from "node:fs";
 import { join, relative } from "node:path";
 import { build } from "esbuild";
+import { buildSkillGuide } from "./skill-guide.ts";
 
 // 随应用安装的运行时（技术设计 §8.2）：管理进程和命令行各打成单个文件，内置模板数据和一份清单放在旁边，
 // 加上 PATH 上要链接的启动脚本。这些文件由 electron-builder 作为 extraResources 放进 Contents/Resources，
@@ -65,6 +66,7 @@ export async function buildRuntimeBundle(inputs: RuntimeBundleInputs): Promise<R
   const { repoRoot, outDir, version } = inputs;
   const runtimeDir = join(outDir, "runyard");
   mkdirSync(runtimeDir, { recursive: true });
+  buildSkillGuide(join(runtimeDir, "skill-guide"));
 
   const entries = [
     ["packages/supervisor/src/main-packaged.ts", "supervisor.mjs"],

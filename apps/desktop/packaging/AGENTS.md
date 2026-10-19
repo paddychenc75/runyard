@@ -17,7 +17,7 @@
 
 ## 子目录地图
 
-- `bin/`：随包的启动脚本 `runyard`。
+- `bin/`：随包的启动脚本 `runyard`。`skill-guide.ts` 从文案包同源生成中英文 Markdown：源码构建放 `dist/skill-guide`，打包放 `Contents/Resources/runyard/skill-guide`，不依赖用户是否安装技能包。
 - `*.platform-dependent.test.ts`：起真文件或真进程的测试，只在 macOS 和 Ubuntu 跑。
 
 ## 测试

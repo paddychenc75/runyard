@@ -2,10 +2,9 @@ import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:f
 import { createServer, get as httpGet } from "node:http";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { createStaticServer, RELOAD_EVENTS_PATH } from "../../packages/core/src/index.ts";
 import { absPath, getPlatform } from "../../packages/platform/src/index.ts";
 import type { Template } from "../../packages/protocol/src/index.ts";
-import { RELOAD_EVENTS_PATH } from "../../packages/supervisor/src/static-reload.ts";
-import { createStaticServer } from "../../packages/supervisor/src/static-server.ts";
 
 // 静态页面模板（运行器 static，如 html）的冒烟：用管理进程自己的页面服务托管模板，
 // 确认首页可取且带自动刷新脚本、改入口文件后新内容可取并经 SSE 通知刷新、只监听 127.0.0.1、停止后端口释放。
