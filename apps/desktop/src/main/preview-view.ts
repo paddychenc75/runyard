@@ -7,6 +7,7 @@ import {
   isLocalPreviewUrl,
   isPermissionAllowed,
 } from "./preview-policy.ts";
+import { PreviewReload } from "./preview-reload.ts";
 
 // 预览：每个有页面的标签页一个 WebContentsView，摆在界面占位区上面（技术设计 §6.1、§6.5）。
 // 隔离：沙箱、没有预加载脚本、没有 Node，每个项目一个独立的内存存储分区，权限默认拒绝。
@@ -15,6 +16,7 @@ import {
 interface Entry {
   view: WebContentsView;
   url: string;
+  reload: PreviewReload;
 }
 
 export class ElectronPreviewHost implements PreviewHost {
@@ -45,7 +47,8 @@ export class ElectronPreviewHost implements PreviewHost {
       entry = undefined;
     }
     if (entry === undefined) {
-      entry = { view: this.#createView(playgroundId), url };
+      const view = this.#createView(playgroundId);
+      entry = { view, url, reload: new PreviewReload(view.webContents) };
       this.#views.set(playgroundId, entry);
       void entry.view.webContents.loadURL(url);
     }
@@ -65,6 +68,7 @@ export class ElectronPreviewHost implements PreviewHost {
     if (entry === undefined) return;
     if (this.#current === playgroundId) this.#detach();
     this.#views.delete(playgroundId);
+    entry.reload.dispose();
     entry.view.webContents.close();
   }
 
@@ -90,8 +94,8 @@ export class ElectronPreviewHost implements PreviewHost {
     this.#apply();
   }
 
-  reload(playgroundId: string): void {
-    this.#views.get(playgroundId)?.view.webContents.reload();
+  async reload(playgroundId: string): Promise<void> {
+    await this.#views.get(playgroundId)?.reload.start();
   }
 
   openDevTools(playgroundId: string): void {
