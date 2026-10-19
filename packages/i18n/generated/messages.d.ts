@@ -864,6 +864,7 @@ export type CatalogMessages = {
   "library.column.name.label": Record<never, never>;
   "library.column.port.label": Record<never, never>;
   "library.column.retention.label": Record<never, never>;
+  "library.column.size.label": Record<never, never>;
   "library.column.status.label": Record<never, never>;
   "library.column.template.label": Record<never, never>;
   "library.creator.agent.label": Record<never, never>;

@@ -15,6 +15,7 @@
   "library.column.name.label": "名称与备注",
   "library.column.port.label": "端口",
   "library.column.retention.label": "自动清理",
+  "library.column.size.label": "大小",
   "library.column.status.label": "状态",
   "library.column.template.label": "模板",
   "library.creator.agent.label": "智能体",

@@ -700,6 +700,7 @@
 | library.column.name.label | 名称与备注 | Name and note | — |
 | library.column.port.label | 端口 | Port | — |
 | library.column.retention.label | 自动清理 | Auto-clean | — |
+| library.column.size.label | 大小 | Size | — |
 | library.column.status.label | 状态 | Status | — |
 | library.column.template.label | 模板 | Template | — |
 | library.creator.agent.label | 智能体 | Agent | — |

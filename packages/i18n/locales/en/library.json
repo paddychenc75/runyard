@@ -15,6 +15,7 @@
   "library.column.name.label": "Name and note",
   "library.column.port.label": "Port",
   "library.column.retention.label": "Auto-clean",
+  "library.column.size.label": "Size",
   "library.column.status.label": "Status",
   "library.column.template.label": "Template",
   "library.creator.agent.label": "Agent",

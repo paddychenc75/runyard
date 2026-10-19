@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { act, cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { BootstrapInfo, DesktopBridge } from "../../shared/desktop-bridge.ts";
@@ -92,11 +92,16 @@ describe("最近使用", () => {
       table.querySelector(`tr[data-row-id=${id}] td[data-column=lastUsed]`)?.textContent;
     expect([used("a"), used("b"), used("c")]).toEqual(["1 小时前", "30 分钟前", "10 分钟前"]);
     expect(screen.getByRole("columnheader", { name: "最近使用" })).toBeTruthy();
+    expect(screen.getByRole("columnheader", { name: "大小" })).toBeTruthy();
+    expect(table.querySelector("td[data-column=size]")?.textContent).toBe("—");
   });
 });
 
 describe("行内操作", () => {
-  const rows = () => [row("demo"), row("web", { state: "ready", active: true, port: 7100 })];
+  const rows = () => [
+    row("demo", { createdBy: { kind: "agent", agent: "Claude Code" } }),
+    row("web", { state: "ready", active: true, port: 7100 }),
+  ];
   const revealed = (el: HTMLElement) => el.hasAttribute("data-revealed");
 
   it("[DESKTOP-LIBRARY-VIEW-95] 操作悬停或选中时才出现，一直在无障碍树里；运行中的行是“停止运行”和“更多”", async () => {

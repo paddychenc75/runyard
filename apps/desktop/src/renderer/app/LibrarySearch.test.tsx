@@ -565,16 +565,25 @@ describe("窗口变窄时表格收起次要列", () => {
       "status",
       "template",
       "port",
+      "size",
       "lastUsed",
       "retention",
       "actions",
     ]);
-    resize(900);
-    expect(headers()).toEqual(["name", "status", "template", "port", "retention", "actions"]);
-    resize(740);
-    expect(headers()).toEqual(["name", "status", "template", "retention", "actions"]);
-    resize(520);
-    expect(headers()).toEqual(["name", "status", "template", "retention", "actions"]);
+    resize(1060);
+    expect(headers()).toEqual([
+      "name",
+      "status",
+      "template",
+      "port",
+      "size",
+      "retention",
+      "actions",
+    ]);
+    resize(910);
+    expect(headers()).toEqual(["name", "status", "template", "size", "retention", "actions"]);
+    resize(790);
+    expect(headers()).toEqual(["name", "status", "template", "size", "retention", "actions"]);
     const template = document.querySelector("tr[data-row-id=demo] td[data-column=template]");
     expect(template?.hasAttribute("data-collapsed")).toBe(true);
     expect(document.querySelector("[data-pin]")).toBeNull();

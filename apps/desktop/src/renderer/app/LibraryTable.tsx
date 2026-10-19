@@ -1,7 +1,6 @@
 import type { Locale, Localized } from "@runyard/i18n";
 import { useFormat, useT } from "@runyard/i18n/react";
 import {
-  Badge,
   DataTable,
   type DataTableColumn,
   type DataTableDetail,
@@ -42,12 +41,10 @@ export interface LibraryTableProps {
   now: number;
 }
 
-// 没有值的格子：端口、从没打开过的“上次打开”。设计稿画的是一条短横线
+// 没有值的格子用短横线；大小数据由 #410 接入。
 const NONE = "—";
 
-// 资源库列表（设计稿 Main、MainNarrow；PRD #prd-library-list）：依次是名称与备注、状态、模板、
-// 端口、保留、上次打开、创建者、操作。窗口变窄时名称与备注固定在左，圆点补进名称列。
-// 操作列是“打开”或“停止运行”加“更多”菜单（RowActions，#171）；重命名和编辑备注就地变成行内编辑（#182）。
+// 资源库方案 A：列宽取设计稿组合已有变量；窄窗口先收最近使用、端口，再把模板收为徽标。
 export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
   const t = useT();
   const format = useFormat();
@@ -81,7 +78,7 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
       id: "name",
       header: t("library.column.name.label"),
       width: "fill",
-      render: (row, { selected }) =>
+      render: (row) =>
         row.id === editingId ? (
           <RenameInlineFields draft={draft} />
         ) : (
@@ -94,7 +91,6 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
                 row={row}
                 expanded={expanded.has(row.id)}
                 onToggle={() => toggleExpanded(row.id)}
-                tabbable={selected}
               />
             </div>
             {row.note === "" ? (
@@ -110,7 +106,10 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
     {
       id: "status",
       header: t("library.column.status.label"),
-      width: "xl",
+      width: {
+        size: "calc(var(--size-column-xl) - var(--space-4))",
+        compact: { whenCollapsed: "port", size: "var(--size-column-flex-min)" },
+      },
       render: (row) =>
         row.missing ? (
           <span className={styles.missingStatus} data-missing-status="">
@@ -132,8 +131,8 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
     {
       id: "template",
       header: t("library.column.template.label"),
-      width: "flex",
-      collapse: { order: 3, mode: "narrow", narrowWidth: "icon" },
+      width: { size: "calc(var(--size-column-flex-min) + var(--space-5))" },
+      collapse: { order: 3, mode: "narrow", narrowWidth: { size: "var(--size-tile)" } },
       render: (row, { collapsed }) => {
         const name =
           row.templateName === null ? row.templateId : pickLocalizedText(row.templateName, locale);
@@ -159,7 +158,7 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
     {
       id: "port",
       header: t("library.column.port.label"),
-      width: "sm",
+      width: { size: "calc(var(--size-column-sm) - var(--space-9))" },
       collapse: { order: 2, mode: "hide" },
       render: (row) =>
         dim(
@@ -172,6 +171,18 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
             </UserText>
           ),
         ),
+    },
+    {
+      id: "size",
+      header: t("library.column.size.label"),
+      width: {
+        size: "var(--size-column-sm)",
+        compact: {
+          whenCollapsed: "template",
+          size: "calc(var(--size-column-sm) - var(--space-4))",
+        },
+      },
+      render: (row) => dim(row, <span className={styles.size}>{NONE}</span>),
     },
     {
       id: "lastUsed",
@@ -187,7 +198,13 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
     {
       id: "retention",
       header: t("library.column.retention.label"),
-      width: "lg",
+      width: {
+        size: "calc(var(--size-column-lg) - var(--space-3))",
+        compact: {
+          whenCollapsed: "template",
+          size: "calc(var(--size-column-md) - var(--space-2))",
+        },
+      },
       render: (row) =>
         row.id === editingId ? (
           <RenameInlineActions draft={draft} />
@@ -198,7 +215,7 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
     {
       id: "actions",
       hiddenHeader: t("library.column.actions.aria"),
-      width: "lg",
+      width: { size: "calc(var(--size-column-lg) - var(--space-3))" },
       reveal: true,
       render: (row, { selected }) => (
         <RowActions

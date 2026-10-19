@@ -21,11 +21,6 @@
   min-inline-size: var(--table-min);
 }
 
-/* 能收的列都收了还放不下：最小宽让出来，名称等用省略号 */
-.table[data-squeeze] {
-  min-inline-size: 0;
-}
-
 .head {
   position: sticky;
   inset-block-start: 0;
@@ -39,7 +34,7 @@
   column-gap: var(--space-7);
   align-items: center;
   box-sizing: border-box;
-  padding-inline: var(--space-6);
+  padding-inline: calc(var(--space-6) + var(--space-1));
 }
 
 .head .row {

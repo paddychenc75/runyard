@@ -150,3 +150,22 @@
   line-height: var(--text-secondary-line-height);
   overflow-wrap: anywhere;
 }
+
+.size {
+  display: block;
+  color: var(--color-text-secondary-strong);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+.table th[data-column="size"] {
+  text-align: end;
+}
+
+.statusCell [data-status] {
+  gap: calc(var(--space-3) + var(--space-1) / 2);
+}
+
+.statusCell [data-status="stopped"] {
+  font-weight: var(--text-body-weight);
+}

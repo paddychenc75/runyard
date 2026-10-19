@@ -82,12 +82,12 @@ test("资源库表格：每个宽度下表头和每一行逐列对齐，没有�
   const table = page.getByRole("table", { name: "Playgrounds" });
   await expect(table.getByRole("row").filter({ hasText: "alpha" })).toHaveCount(1);
 
-  for (const width of [1600, 1200, 900]) {
+  for (const width of [1600, 1440, 1200, 1100, 900]) {
     await app.evaluate(
-      ({ BrowserWindow }, w) => BrowserWindow.getAllWindows()[0]?.setSize(w, 800),
+      ({ BrowserWindow }, w) => BrowserWindow.getAllWindows()[0]?.setContentSize(w, 800),
       width,
     );
-    await expect.poll(() => page.evaluate(() => window.innerWidth)).toBeLessThanOrEqual(width);
+    await expect.poll(() => page.evaluate(() => window.innerWidth)).toBe(width);
     const boxes = async (cells: Locator): Promise<{ left: number; width: number }[]> => {
       const out: { left: number; width: number }[] = [];
       for (const cell of await cells.all()) {
@@ -96,13 +96,28 @@ test("资源库表格：每个宽度下表头和每一行逐列对齐，没有�
       }
       return out;
     };
-    // 收列是放不下时才发生的：等表头的列数稳定后再逐列比
+    // 用列标识等待完整的折叠状态，不能把瞬间经过的列数当成完成。
+    const expected =
+      width <= 1200
+        ? ["name", "status", "template", "size", "retention", "actions"]
+        : ["name", "status", "template", "port", "size", "lastUsed", "retention", "actions"];
     await expect
-      .poll(async () => (await boxes(table.getByRole("columnheader"))).length)
-      .toBeGreaterThanOrEqual(5);
-    const header = await boxes(table.getByRole("columnheader"));
+      .poll(() =>
+        table
+          .locator("thead th")
+          .evaluateAll((cells) => cells.map((cell) => cell.getAttribute("data-column"))),
+      )
+      .toEqual(expected);
+    const header = await boxes(table.locator("thead th"));
     const firstRow = await boxes(table.getByRole("row").nth(1).getByRole("cell"));
     expect(firstRow).toEqual(header);
+    const visibleWidth = await table.evaluate((el) => {
+      const root = el.closest("[data-orientation]");
+      if (root === null) throw new Error("no table viewport");
+      return root.getBoundingClientRect().width;
+    });
+    const tableWidth = (await table.boundingBox())?.width ?? 0;
+    expect(tableWidth, `${width} 宽：所有列必须落在可见区内`).toBeLessThanOrEqual(visibleWidth);
     const scrolls = await page.evaluate(() => {
       const tableEl = document.querySelector("table[aria-label='Playgrounds']");
       let scroller: Element | null = tableEl?.parentElement ?? null;
@@ -127,7 +142,9 @@ test("[DESKTOP-LIBRARY-VIEW-28][DESKTOP-LIBRARY-VIEW-29] 窗口 1100 宽：收�
   await runyard.cli("run", "alpha");
   const table = page.getByRole("table", { name: "Playgrounds" });
   await expect(table.getByRole("row").filter({ hasText: "alpha" })).toHaveCount(1);
-  await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0]?.setSize(1100, 800));
+  await app.evaluate(({ BrowserWindow }) =>
+    BrowserWindow.getAllWindows()[0]?.setContentSize(1100, 800),
+  );
   await expect.poll(() => page.evaluate(() => window.innerWidth)).toBeLessThanOrEqual(1100);
 
   // 一次取出：滚动区有没有横向滚动、表头的字、每格有没有被截断、运行中的行的状态格写了什么
@@ -150,6 +167,10 @@ test("[DESKTOP-LIBRARY-VIEW-28][DESKTOP-LIBRARY-VIEW-29] 窗口 1100 宽：收�
         return { left: rect.left, right: rect.right, width: rect.width };
       };
       return {
+        collapsed: tableEl.closest("[data-collapsed]")?.getAttribute("data-collapsed") ?? null,
+        templateCollapsed: tableEl
+          .querySelector("th[data-column=template]")
+          ?.hasAttribute("data-collapsed"),
         scrolls: scroller !== null && scroller.scrollWidth > scroller.clientWidth + 1,
         headers: [...tableEl.querySelectorAll("th")].map((th) => ({
           text: th.textContent ?? "",
@@ -169,13 +190,23 @@ test("[DESKTOP-LIBRARY-VIEW-28][DESKTOP-LIBRARY-VIEW-29] 窗口 1100 宽：收�
       };
     });
 
-  await expect.poll(async () => (await measure()).headers.length).toBe(5);
+  await expect.poll(async () => (await measure()).headers.length).toBe(6);
   const narrow = await measure();
+  expect(narrow.collapsed).toBe("lastUsed port template");
+  expect(narrow.templateCollapsed).toBe(true);
+  expect(narrow.headers.find((header) => header.column === "name")?.width).toBeGreaterThanOrEqual(
+    200,
+  );
+  expect(narrow.headers.find((header) => header.column === "template")?.width).toBe(22);
+  expect(
+    narrow.headers.filter((header) => header.column !== "name").map((header) => header.width),
+  ).toEqual([140, 22, 76, 92, 104]);
   expect(narrow.scrolls).toBe(false);
   expect(narrow.headers.map((h) => h.column)).toEqual([
     "name",
     "status",
     "template",
+    "size",
     "retention",
     "actions",
   ]);
@@ -183,6 +214,7 @@ test("[DESKTOP-LIBRARY-VIEW-28][DESKTOP-LIBRARY-VIEW-29] 窗口 1100 宽：收�
     "Name and note",
     "Status",
     "Template",
+    "Size",
     "Auto-clean",
   ]);
   expect(narrow.clipped).toEqual([]);
@@ -193,16 +225,27 @@ test("[DESKTOP-LIBRARY-VIEW-28][DESKTOP-LIBRARY-VIEW-29] 窗口 1100 宽：收�
   for (const header of narrow.headers as Box[]) expect(header.width).toBeGreaterThan(0);
 
   // 拉宽：端口和最近使用回到自己的列，状态里不再写端口
-  await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0]?.setSize(1440, 800));
+  await app.evaluate(({ BrowserWindow }) =>
+    BrowserWindow.getAllWindows()[0]?.setContentSize(1440, 800),
+  );
   await expect.poll(() => page.evaluate(() => window.innerWidth)).toBeGreaterThanOrEqual(1440);
-  await expect.poll(async () => (await measure()).headers.length).toBe(7);
+  await expect.poll(async () => (await measure()).headers.length).toBe(8);
   const wide = await measure();
+  expect(wide.collapsed).toBeNull();
+  expect(wide.templateCollapsed).toBe(false);
+  expect(wide.headers.find((header) => header.column === "name")?.width).toBeGreaterThanOrEqual(
+    200,
+  );
+  expect(
+    wide.headers.filter((header) => header.column !== "name").map((header) => header.width),
+  ).toEqual([124, 150, 60, 84, 96, 104, 104]);
   expect(wide.scrolls).toBe(false);
   expect(wide.headers.filter((h) => h.column !== "actions").map((h) => h.text)).toEqual([
     "Name and note",
     "Status",
     "Template",
     "Port",
+    "Size",
     "Last used",
     "Auto-clean",
   ]);
@@ -250,4 +293,71 @@ test("资源库：窗口矮时最后一行的更多菜单不被截断，最后�
   expect((itemBox?.y ?? 0) + (itemBox?.height ?? 0)).toBeLessThanOrEqual(viewport.height);
   await expect(trash).toBeVisible();
   await trash.click({ trial: true });
+});
+
+test("[DESKTOP-LIBRARY-VIEW-94] 命令行运行与只打开都刷新最近使用，并按同一时间排序", async ({
+  launch,
+}) => {
+  const r = await launch();
+  const { page, app } = r;
+  await closePicker(page);
+  await app.evaluate(({ BrowserWindow }) =>
+    BrowserWindow.getAllWindows()[0]?.setContentSize(1600, 900),
+  );
+  await r.cli("new", "html", "first");
+  await r.cli("new", "html", "second");
+  await r.cli("run", "first");
+  await r.cli("stop", "first");
+  const table = page.getByRole("table", { name: "Playgrounds" });
+  const rows = table.locator("tbody tr[data-row-id]");
+  await expect(rows.first()).toContainText("first");
+  for (const name of ["first", "second"]) {
+    await expect(rows.filter({ hasText: name }).locator("[data-column=lastUsed]")).not.toHaveText(
+      "—",
+    );
+  }
+  await r.call(
+    "tab.openWithoutRun",
+    await rows.filter({ hasText: "second" }).getAttribute("data-row-id"),
+  );
+  await page.getByRole("tab", { name: "Library", exact: true }).click();
+  await expect(rows.first()).toContainText("second");
+  await expect(rows.first().locator("[data-column=lastUsed]")).not.toHaveText("—");
+});
+
+test("[DESKTOP-LIBRARY-VIEW-95][DESKTOP-LIBRARY-VIEW-96] 透明操作仍可读屏找到，选中行的 Tab 依次到打开与更多并显示焦点环", async ({
+  launch,
+}) => {
+  const r = await launch();
+  const { page } = r;
+  await closePicker(page);
+  await r.cli("new", "html", "alpha");
+  await r.cli("new", "html", "beta");
+  const table = page.getByRole("table", { name: "Playgrounds" });
+  const alpha = table.getByRole("row").filter({ hasText: "alpha" });
+  const beta = table.getByRole("row").filter({ hasText: "beta" });
+  const actions = alpha.locator("[data-column=actions] > div");
+  const open = alpha.getByRole("button", { name: "Open", exact: true });
+  const more = alpha.getByRole("button", { name: "More actions for alpha" });
+  // #471：上一份窗口可能把指针留在新行出现的位置；先明确移到另一行，保证随后真的跨入 alpha。
+  await page.bringToFront();
+  await beta.hover();
+  await expect(open).toHaveCount(1);
+  await expect(more).toHaveCount(1);
+  await expect(actions).toHaveCSS("opacity", "0");
+  await alpha.hover();
+  await expect(actions).toHaveCSS("opacity", "1");
+  await beta.hover();
+  await expect(actions).toHaveCSS("opacity", "0");
+  await alpha.locator("[data-column=name]").click();
+  await beta.hover();
+  await expect(actions).toHaveCSS("opacity", "1");
+  await expect(table).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(open).toBeFocused();
+  await expect.poll(() => open.evaluate((el) => getComputedStyle(el).boxShadow)).not.toBe("none");
+  await page.keyboard.press("Tab");
+  await expect(more).toBeFocused();
+  await expect.poll(() => more.evaluate((el) => getComputedStyle(el).boxShadow)).not.toBe("none");
+  expect(await beta.locator("button[tabindex='0']").count()).toBe(0);
 });

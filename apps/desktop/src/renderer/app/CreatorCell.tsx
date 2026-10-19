@@ -15,13 +15,12 @@ const commandOf = (row: PlaygroundRow) => {
 
 // 名称后面的创建徽标（设计稿 Main、AgentActivity，规格 DESKTOP-LIBRARY-VIEW-04、53）：智能体建的挂写智能体名称的徽标，
 // 命令行（不是智能体）建的挂“命令行”，在应用里建的不挂。智能体徽标悬停显示创建时间和命令，点它展开或收起行下面的
-// “由 … 创建”一行；徽标是按钮，Tab 只在选中的行里才停（表格只占一个 Tab 停点）。
+// “由 … 创建”一行；徽标是按钮，Tab 顺序保留给选中行的打开与更多（规格 96）。
 export function CreatorTag({
   row,
   expanded,
   onToggle,
-  tabbable,
-}: CreatorProps & { expanded: boolean; onToggle: () => void; tabbable: boolean }) {
+}: CreatorProps & { expanded: boolean; onToggle: () => void }) {
   const t = useT();
   const format = useFormat();
   const creator = creatorOf(row);
@@ -46,7 +45,7 @@ export function CreatorTag({
         className={styles.tag}
         data-kind="agent"
         aria-expanded={expanded}
-        tabIndex={tabbable ? 0 : -1}
+        tabIndex={-1}
         onClick={(event) => {
           // 行的单击和双击是选中与打开，展开徽标不触发它们
           event.stopPropagation();
