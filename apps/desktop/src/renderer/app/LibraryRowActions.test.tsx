@@ -9,6 +9,7 @@ import { AppFrame } from "./AppFrame.tsx";
 afterEach(() => {
   cleanup();
   vi.useRealTimers();
+  vi.unstubAllGlobals();
 });
 
 // 最近使用列、行内操作的出现与键盘（规格 DESKTOP-LIBRARY-VIEW-94 至 96）
@@ -75,6 +76,27 @@ function setup(playgrounds: PlaygroundRow[]) {
 const tableOf = () => screen.findByRole("table", { name: "项目列表" });
 const rowEl = async (id: string) =>
   (await tableOf()).querySelector(`tr[data-row-id="${id}"]`) as HTMLElement;
+
+it("[DESKTOP-SETTINGS-45] 设置标题的方向键与回车不操作隐藏的资源库选中行", async () => {
+  vi.stubGlobal(
+    "ResizeObserver",
+    class {
+      observe() {}
+      disconnect() {}
+    },
+  );
+  const { call } = setup([row("a"), row("b")]);
+  const user = userEvent.setup();
+  await user.click(await rowEl("a"));
+  await user.click(screen.getByRole("button", { name: "设置" }));
+  const title = await screen.findByRole("heading", { level: 1, name: "设置" });
+  expect(document.activeElement).toBe(title);
+  await user.keyboard("{ArrowDown}{Enter}");
+  expect(call).not.toHaveBeenCalledWith("tab.open", expect.anything());
+  await user.click(screen.getByRole("tab", { name: "资源库" }));
+  await user.keyboard("{Enter}");
+  expect((await rowEl("a")).getAttribute("data-selected")).not.toBeNull();
+});
 
 describe("最近使用", () => {
   it("[DESKTOP-LIBRARY-VIEW-94] 打开、命令行运行、创建里最近的一次：从没在应用里打开过的也有时间，按它排序", async () => {

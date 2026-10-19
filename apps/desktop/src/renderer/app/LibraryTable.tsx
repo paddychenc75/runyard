@@ -26,6 +26,7 @@ import {
   stateLabelKey,
   statusMarkOf,
 } from "../library-view.ts";
+import { useContentVisible } from "../shared/content-visibility.ts";
 import { ActionFailedDialog } from "./ActionFailedDialog.tsx";
 import { CreatorDetails, CreatorTag } from "./CreatorCell.tsx";
 import { sizeColumn } from "./LibrarySizeColumn.tsx";
@@ -332,7 +333,9 @@ function useRowKeyboard(
   editingId: string | null,
   open: (id: string) => void,
 ) {
+  const visible = useContentVisible();
   useEffect(() => {
+    if (!visible) return;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return;
       if (editingId !== null || rows.length === 0) return;
@@ -365,5 +368,5 @@ function useRowKeyboard(
     };
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [rows, selectedId, select, editingId, open]);
+  }, [rows, selectedId, select, editingId, open, visible]);
 }

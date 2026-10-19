@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { chromium, expect } from "@playwright/test";
 import { launchRunyard } from "./support/launch.ts";
-import { openSettingsWindow } from "./support/settings-window.ts";
+import { openSettingsPage } from "./support/settings-page.ts";
 
 // 先用设计渲染器生成八张 Settings* 画板，再运行本脚本。每份应用只有临时 HOME/root。
 const out =
@@ -28,9 +28,9 @@ try {
           await expect(instance.page.getByRole("combobox")).toBeFocused();
           await instance.page.keyboard.press("Escape");
           await expect(instance.page.getByRole("dialog")).toHaveCount(0);
-          await instance.page.setViewportSize({ width, height: 900 });
-          const page = await openSettingsWindow(instance);
-          await page.setViewportSize({ width: 820, height: 900 });
+          const main = await instance.app.browserWindow(instance.page);
+          await main.evaluate((window, width) => window.setContentSize(width, 900), width);
+          const page = await openSettingsPage(instance);
           await expect(page.locator("[data-settings-row]").first()).toBeVisible();
           if (width === 1100) {
             await page
@@ -65,6 +65,8 @@ try {
               };
             });
             return {
+              titleOutline: getComputedStyle(header.querySelector("h1") as HTMLElement)
+                .outlineStyle,
               headerHeight: header.getBoundingClientRect().height,
               columnWidth: rect.width,
               centerOffset: rect.x + rect.width / 2 - view.x - view.width / 2,
@@ -73,7 +75,8 @@ try {
               rows,
             };
           });
-          expect(measurement.headerHeight).toBe(140);
+          expect(measurement.headerHeight).toBe(88);
+          expect(measurement.titleOutline).toBe("none");
           expect(measurement.columnWidth).toBe(720);
           expect(Math.abs(measurement.centerOffset)).toBeLessThanOrEqual(1);
           expect(measurement.overflow).toBe(0);
@@ -88,10 +91,10 @@ try {
           const design = readFileSync(
             join(repo, "tooling/design-render/png", `${board}.png`),
           ).toString("base64");
-          const html = `<!doctype html><meta charset="utf-8"><style>body{margin:0;font:16px sans-serif;background:#ddd}header{padding:12px}main{display:flex;align-items:flex-start;gap:16px}figure{margin:0}figcaption{height:30px}img{display:block}</style><header>#445 ${name} — 左为820宽独立窗口设计，右为真实独立设置窗口；主窗口宽度为${width}，两图按相同 CSS 逻辑像素展示（设计原图为 2×）。</header><main><figure><figcaption>${board} 设计</figcaption><img width="820" height="900" src="data:image/png;base64,${design}"></figure><figure><figcaption>实际设置窗口 820×900</figcaption><img src="data:image/png;base64,${actual}"></figure></main>`;
+          const html = `<!doctype html><meta charset="utf-8"><style>body{margin:0;font:16px sans-serif;background:#ddd}header{padding:12px}main{display:flex;align-items:flex-start;gap:16px}figure{margin:0}figcaption{height:30px}img{display:block}</style><header>#523 ${name} — 左为原820宽独立设置参考，右为主窗口页面；保留顶部项目导航是本次批准的差异，移除重复52px窗口留白。按相同CSS逻辑像素展示。</header><main><figure><figcaption>${board} 设计</figcaption><img width="820" height="900" src="data:image/png;base64,${design}"></figure><figure><figcaption>实际主窗口 ${width}×900</figcaption><img src="data:image/png;base64,${actual}"></figure></main>`;
           writeFileSync(join(out, `${name}.html`), html);
           const comparison = await chrome.newPage({
-            viewport: { width: 820 * 2 + 16, height: 990 },
+            viewport: { width: 820 + width + 16, height: 990 },
             deviceScaleFactor: 1,
           });
           await comparison.setContent(html);

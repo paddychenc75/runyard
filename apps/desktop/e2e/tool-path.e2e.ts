@@ -1,7 +1,7 @@
 import { chmodSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { closePicker, expect, test } from "./support/fixtures.ts";
-import { openSettingsWindow } from "./support/settings-window.ts";
+import { closePicker, expect, pressMenuShortcut, test } from "./support/fixtures.ts";
+import { openSettingsPage } from "./support/settings-page.ts";
 
 // 真正的工具校验只执行临时 HOME 中的固定脚本，不改用户工具或真实设置。
 test("[DESKTOP-SETTINGS-41] [DESKTOP-SETTINGS-42] [DESKTOP-SETTINGS-43] 输入路径校验保存、错误保留、重新读取与撤销", async ({
@@ -21,7 +21,7 @@ test("[DESKTOP-SETTINGS-41] [DESKTOP-SETTINGS-42] [DESKTOP-SETTINGS-43] 输入�
     chmodSync(file, 0o755);
   }
   await closePicker(mainPage);
-  const page = await openSettingsWindow(runyard);
+  const page = await openSettingsPage(runyard);
   await page
     .locator("[data-settings-header]")
     .getByRole("button", { name: "Runtime", exact: true })
@@ -50,6 +50,8 @@ test("[DESKTOP-SETTINGS-41] [DESKTOP-SETTINGS-42] [DESKTOP-SETTINGS-43] 输入�
   await expect(page.getByRole("button", { name: "Choose Node executable" })).toBeFocused();
   // 页面重新装载会重建所有草稿和检测视图，验证已保存路径从后台读回。
   await page.reload();
+  await closePicker(page);
+  await pressMenuShortcut(runyard.app, "CmdOrCtrl+,");
   await expect(page.getByRole("heading", { name: "Settings", level: 1 })).toBeVisible();
   await page
     .locator("[data-settings-header]")

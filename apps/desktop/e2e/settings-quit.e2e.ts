@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { createWithKeyboard, expect, test } from "./support/fixtures.ts";
-import { openSettingsWindow } from "./support/settings-window.ts";
+import { openSettingsPage } from "./support/settings-page.ts";
 
 test("[DESKTOP-EDITOR-28] 设置前台且主窗隐藏时退出：显示保存询问，取消保留修改，保存后退出", async ({
   launch,
@@ -19,12 +19,9 @@ test("[DESKTOP-EDITOR-28] 设置前台且主窗隐藏时退出：显示保存询
   const file = join(runyard.library, "html-1", "index.html");
   expect(readFileSync(file, "utf8")).not.toContain("UNSAVED-SETTINGS-QUIT");
   const main = await runyard.app.browserWindow(page);
-  const settingsPage = await openSettingsWindow(runyard);
-  const settings = await runyard.app.browserWindow(settingsPage);
+  const settingsPage = await openSettingsPage(runyard);
   try {
     await main.evaluate((window) => window.hide());
-    await settings.evaluate((window) => window.focus());
-    await expect.poll(() => settings.evaluate((window) => window.isFocused())).toBe(true);
     // 与⌘Q同一条原生退出路径；先请求，不等待进程退出，因为要回答保存询问。
     await runyard.app.evaluate(({ app }) => app.quit());
     const prompt = page.getByRole("alertdialog");
@@ -37,6 +34,7 @@ test("[DESKTOP-EDITOR-28] 设置前台且主窗隐藏时退出：显示保存询
     expect(page.isClosed()).toBe(false);
     expect(settingsPage.isClosed()).toBe(false);
     expect(readFileSync(file, "utf8")).not.toContain("UNSAVED-SETTINGS-QUIT");
+    await page.getByRole("tab", { name: /html-1/ }).click();
     await expect(page.getByRole("tab", { name: "index.html (unsaved)" })).toBeVisible();
     await runyard.app.evaluate(({ app }) => app.quit());
     await expect(prompt).toBeVisible();

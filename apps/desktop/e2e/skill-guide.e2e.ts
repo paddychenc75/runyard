@@ -1,7 +1,7 @@
-import { existsSync, readFileSync } from "node:fs";
-import { basename, join } from "node:path";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { expect, test } from "./support/fixtures.ts";
-import { openSettingsWindow } from "./support/settings-window.ts";
+import { openSettingsPage } from "./support/settings-page.ts";
 
 test("[DESKTOP-SETTINGS-44] 未安装也能查看随包中英文说明，拒绝路径输入", async ({ launch }) => {
   const instance = await launch({ lang: "zh-CN", theme: "light" });
@@ -16,7 +16,7 @@ test("[DESKTOP-SETTINGS-44] 未安装也能查看随包中英文说明，拒绝�
       return "";
     };
   });
-  const page = await openSettingsWindow(instance);
+  const page = await openSettingsPage(instance);
   await page
     .locator("[data-settings-header]")
     .getByRole("button", { name: "命令行与智能体", exact: true })
@@ -26,16 +26,14 @@ test("[DESKTOP-SETTINGS-44] 未安装也能查看随包中英文说明，拒绝�
     instance.app.evaluate(
       () => (globalThis as unknown as { skillGuideOpened: string[] }).skillGuideOpened,
     );
-  await expect.poll(opened).toHaveLength(1);
+  const guide = page.getByRole("dialog");
+  await expect(guide).toContainText("\u8fd9\u662f\u7ed9\u4eba\u770b\u7684\u4e2d\u6587\u5bf9\u7167");
+  await page.keyboard.press("Escape");
   await instance.call("settings.set", { language: "en" });
   await page.getByRole("button", { name: "View guide", exact: true }).click();
-  await expect.poll(opened).toHaveLength(2);
-  const files = await opened();
-  expect(files.map((file) => basename(file))).toEqual(["SKILL.zh-CN.md", "SKILL.md"]);
-  expect(readFileSync(files[0] ?? "", "utf8")).toContain("这是给人看的中文对照");
-  expect(readFileSync(files[1] ?? "", "utf8")).toContain("## Workflow");
+  await expect(guide).toContainText("## Workflow");
   expect(await instance.call("agents.openGuide", "../../private.md")).toEqual({ ok: false });
-  expect(await opened()).toHaveLength(2);
+  expect(await opened()).toHaveLength(0);
   for (const home of [instance.home, instance.root])
     for (const target of [".claude", ".agents"])
       expect(existsSync(join(home, target, "skills", "runyard", "SKILL.md"))).toBe(false);

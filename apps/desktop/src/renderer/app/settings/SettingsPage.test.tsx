@@ -20,8 +20,8 @@ afterEach(cleanup);
 
 async function openSettings(w: World) {
   const user = userEvent.setup();
-  w.bridge.bootstrap.windowKind = "settings";
   render(<App bridge={w.bridge} />);
+  await user.click(await screen.findByRole("button", { name: "\u8bbe\u7f6e" }));
   await screen.findByRole("heading", { name: "通用" });
   return user;
 }
@@ -33,19 +33,13 @@ beforeEach(() => {
 });
 
 describe("设置页", () => {
-  it("[DESKTOP-SETTINGS-01] 点侧栏“设置”请求独立窗口，主窗口保留，设置窗口只有五组", async () => {
+  it("[DESKTOP-SETTINGS-01] 点侧栏“设置”显示主窗口页面，保留顶部标签和五组设置", async () => {
     const w = world();
     render(<App bridge={w.bridge} />);
     expect(await screen.findByRole("tablist")).toBeTruthy();
     await userEvent.setup().click(await screen.findByRole("button", { name: "设置" }));
-    await waitFor(() => expect(w.calls.some((call) => call.method === "settings.open")).toBe(true));
-    expect(screen.queryByRole("heading", { name: "通用" })).toBeNull();
+    await screen.findByRole("heading", { name: "\u901a\u7528" });
     expect(screen.getByRole("tablist")).toBeTruthy();
-    cleanup();
-    w.bridge.bootstrap.windowKind = "settings";
-    render(<App bridge={w.bridge} />);
-    await screen.findByRole("heading", { name: "通用" });
-    expect(screen.queryByRole("tablist")).toBeNull();
     const page = screen.getByRole("region", { name: "设置" });
     const titles = within(page)
       .getAllByRole("heading", { level: 2 })
@@ -117,7 +111,7 @@ describe("设置页", () => {
     await user.click(screen.getByRole("button", { name: "English" }));
     expect(await screen.findByRole("heading", { name: "General" })).toBeTruthy();
     expect(screen.getByRole("heading", { level: 1, name: "Settings" })).toBeTruthy();
-    expect(screen.queryByRole("navigation")).toBeNull();
+    expect(screen.getByRole("navigation")).toBeTruthy();
     expect(document.documentElement.lang).toBe("en");
     expect(sets(w)).toEqual([{ language: "en" }]);
   });

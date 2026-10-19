@@ -26,6 +26,7 @@ export class ProjectOpening {
   #sequence = 0;
   #navigation = 0;
   reveal: LibraryReveal | undefined;
+  selection = 0;
   constructor(host: OpeningHost) {
     this.#host = host;
   }
@@ -58,6 +59,7 @@ export class ProjectOpening {
     await host.markOpened(id);
     if (navigation !== this.#navigation) return;
     const isNew = host.workspace.open(id);
+    this.selection = navigation;
     host.show();
     if (!isNew) return;
     await host.console.watch(id);
