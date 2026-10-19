@@ -78,7 +78,7 @@ jobs:
         run: |
           output=$(mktemp -d)
           echo "RUNYARD_ICON_REVIEW_OUTPUT=$output" >> "$GITHUB_ENV"
-          RUNYARD_ICON_REVIEW_OUTPUT="$output" node tooling/design-render/icon-review.mjs
+          RUNYARD_ICON_REVIEW_OUTPUT="$output" node tooling/design-render/icon-review.ts
 
       - name: 上传图标与设计稿对照证据
         if: always()

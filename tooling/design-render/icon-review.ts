@@ -13,24 +13,30 @@ const output = process.env.RUNYARD_ICON_REVIEW_OUTPUT
   : mkdtempSync(path.join(tmpdir(), "runyard-icon-review-"));
 mkdirSync(output, { recursive: true });
 const temporary = mkdtempSync(path.join(tmpdir(), "runyard-icon-render-"));
-const git = (...args) => execFileSync("git", args, { cwd: repo, encoding: "utf8" }).trim();
+const git = (...args: string[]): string =>
+  execFileSync("git", args, { cwd: repo, encoding: "utf8" }).trim();
 const head = git("rev-parse", "HEAD");
 const base = git(
   "rev-parse",
   process.env.RUNYARD_ICON_REVIEW_BASE || git("merge-base", "HEAD", "origin/main"),
 );
-const read = (file, before = false) =>
+const read = (file: string, before = false): string =>
   before ? git("show", `${base}:${file}`) : readFileSync(path.join(repo, file), "utf8");
-const escapeHtml = (value) =>
+const escapeHtml = (value: string): string =>
   value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll('"', "&quot;");
-const chrome =
-  process.env.RUNYARD_ICON_REVIEW_CHROME ||
-  [
-    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-    "/usr/bin/google-chrome",
-    "/usr/bin/chromium",
-  ].find(existsSync);
-if (!chrome) throw new Error("没有找到 Chrome；请用 RUNYARD_ICON_REVIEW_CHROME 指定可执行文件。");
+function findChrome(): string {
+  const executable =
+    process.env.RUNYARD_ICON_REVIEW_CHROME ||
+    [
+      "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+      "/usr/bin/google-chrome",
+      "/usr/bin/chromium",
+    ].find(existsSync);
+  if (!executable)
+    throw new Error("没有找到 Chrome；请用 RUNYARD_ICON_REVIEW_CHROME 指定可执行文件。");
+  return executable;
+}
+const chrome = findChrome();
 
 // 复用现有展开器，不修改设计源；临时副本只把设计输入指回仓库，产物留在临时目录。
 const renderer = read("tooling/design-render/render.mjs").replace(
@@ -51,7 +57,7 @@ const sourceFiles = [
   "packages/ui/src/primitives/Icon/Icon.module.css",
   "packages/ui/src/primitives/IconButton/IconButton.module.css",
 ];
-function copiedStyles(before) {
+function copiedStyles(before: boolean): string {
   return sourceFiles
     .map((file) => {
       const css = read(file, before);
@@ -61,17 +67,20 @@ function copiedStyles(before) {
     })
     .join("\n");
 }
-const names = ["refresh", "stop", "more"];
+const names = ["refresh", "stop", "more"] as const;
+type ReviewIcon = (typeof names)[number];
+type ReviewLocale = "zh-CN" | "en";
+type ReviewTheme = "light" | "dark";
 const svgFiles = names.map((name) => `packages/ui/src/icons/svg/${name}.svg`);
 const difference = git("diff", base, "--", ...svgFiles, ...sourceFiles);
-function icon(name, size, before) {
+function icon(name: ReviewIcon, size: number, before: boolean): string {
   const source = read(`packages/ui/src/icons/svg/${name}.svg`, before);
   return source.replace(
     "<svg ",
     `<svg class="icon" data-icon="${name}" width="${size}" height="${size}" `,
   );
 }
-function sample(before, locale) {
+function sample(before: boolean, locale: ReviewLocale): string {
   const labels = locale === "zh-CN" ? ["重启", "停止", "更多"] : ["Restart", "Stop", "More"];
   const states = locale === "zh-CN" ? ["静止", "悬停", "禁用"] : ["Normal", "Hover", "Disabled"];
   const rows = states
@@ -93,7 +102,7 @@ function sample(before, locale) {
     .join("");
   return `${rows}<hr>${sizes}`;
 }
-function designSection(locale) {
+function designSection(locale: ReviewLocale): string {
   const board = locale === "zh-CN" ? "SpecType" : "SpecTypeEn";
   const html = readFileSync(path.join(temporary, "build", `${board}.html`), "utf8");
   const section = [...html.matchAll(/<section\b[^>]*>[\s\S]*?<\/section>/g)]
@@ -102,13 +111,13 @@ function designSection(locale) {
   if (!section) throw new Error(`${board} 没有找到图标规范；请检查设计展开器与画板结构。`);
   return section;
 }
-function sampleDocument(before, theme, locale) {
+function sampleDocument(before: boolean, theme: ReviewTheme, locale: ReviewLocale): string {
   return `<!doctype html><html lang="${locale}" data-theme="${theme}"><meta charset="utf-8"><style>
 ${copiedStyles(before)}
 body{padding:24px}.row{display:flex;align-items:center;gap:12px;min-height:32px;margin-bottom:12px}.row>span{width:76px}hr{border:0;border-top:1px solid var(--color-text-secondary);opacity:.2;margin:20px 0}
 </style>${sample(before, locale)}</html>`;
 }
-function screenshot(html, png, width, height) {
+function screenshot(html: string, png: string, width: number, height: number): void {
   execFileSync(
     chrome,
     [
@@ -128,8 +137,8 @@ function screenshot(html, png, width, height) {
 }
 
 for (const width of [1440, 1100]) {
-  for (const theme of ["light", "dark"]) {
-    for (const locale of ["zh-CN", "en"]) {
+  for (const theme of ["light", "dark"] as const) {
+    for (const locale of ["zh-CN", "en"] as const) {
       const name = `${width}-${theme}-${locale}`;
       for (const before of [true, false]) {
         writeFileSync(
@@ -139,7 +148,7 @@ for (const width of [1440, 1100]) {
       }
       const title = `图标对照 · ${width} · ${theme} · ${locale}`;
       const paths = [true, false]
-        .map((before) => escapeHtml(read(svgFiles[1], before)))
+        .map((before) => escapeHtml(read("packages/ui/src/icons/svg/stop.svg", before)))
         .map((svg, i) => `<p>${i === 0 ? "基线" : "当前"}停止图标：</p><pre>${svg}</pre>`)
         .join("");
       const html = `<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>${title}</title><style>
@@ -178,7 +187,7 @@ ${hashes}
 
 ## 复现
 
-Node 24：运行 node tooling/design-render/icon-review.mjs。
+Node 24：运行 node tooling/design-render/icon-review.ts。
 RUNYARD_ICON_REVIEW_BASE 可指定基线提交；RUNYARD_ICON_REVIEW_OUTPUT 可指定产物目录；RUNYARD_ICON_REVIEW_CHROME 可指定 Chrome 可执行文件。默认目录由 mkdtemp 创建，浏览器配置单独放在临时目录。
 `,
 );
