@@ -516,6 +516,11 @@ export type CatalogMessages = {
   "desktop.missing.site.label": Record<never, never>;
   "desktop.notice.dismiss.aria": Record<never, never>;
   "desktop.notice.region.aria": Record<never, never>;
+  "desktop.notifications.clear.action": Record<never, never>;
+  "desktop.notifications.empty.label": Record<never, never>;
+  "desktop.notifications.recent.label": Record<never, never>;
+  "desktop.notifications.required.label": Record<never, never>;
+  "desktop.notifications.title": Record<never, never>;
   "desktop.output.aria": Record<never, never>;
   "desktop.output.empty.label": Record<never, never>;
   "desktop.output.view.action": Record<never, never>;

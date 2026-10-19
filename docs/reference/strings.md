@@ -321,6 +321,11 @@
 | desktop.missing.site.label | 官网 | Website | — |
 | desktop.notice.dismiss.aria | 关闭提示 | Dismiss notice | — |
 | desktop.notice.region.aria | 提示 | Notices | — |
+| desktop.notifications.clear.action | 全部清除 | Clear all | — |
+| desktop.notifications.empty.label | 暂无通知 | No notifications | — |
+| desktop.notifications.recent.label | 最近 | Recent | — |
+| desktop.notifications.required.label | 需要处理 | Needs attention | — |
+| desktop.notifications.title | 通知 | Notifications | — |
 | desktop.output.aria | 进程输出 | Process output | — |
 | desktop.output.empty.label | 还没有输出。 | No output yet. | — |
 | desktop.output.view.action | 查看完整输出 | View full output | — |

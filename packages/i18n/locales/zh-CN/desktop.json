@@ -425,5 +425,10 @@
   "desktop.urlConfirm.title": "要新建并运行这个项目吗？",
   "desktop.urlConfirm.unknown.label": "未知来源",
   "desktop.urlConfirm.warning.label": "这个来源是链接自己写的，Runyard 无法核实。新建后会安装依赖并运行模板里的代码，只在你信任它时继续。",
-  "desktop.window.title": "Runyard"
+  "desktop.window.title": "Runyard",
+  "desktop.notifications.title": "通知",
+  "desktop.notifications.required.label": "需要处理",
+  "desktop.notifications.recent.label": "最近",
+  "desktop.notifications.clear.action": "全部清除",
+  "desktop.notifications.empty.label": "暂无通知"
 }
