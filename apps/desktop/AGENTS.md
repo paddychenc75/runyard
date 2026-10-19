@@ -74,7 +74,7 @@ pnpm --filter @runyard/desktop smoke             # 冒烟自检：窗口不显�
 - `src/shared/`：主进程、预加载脚本、界面共用的类型和版面常量。
 
 ## 测试
-
+地址栏刷新和命令面板共用 `use-preview-refresh.ts`：图标立即旋转，页面正常加载，快加载独立补足设计变量 `motion-duration-spin` 的一圈；真实加载结束后即可再次刷新，动画收尾不禁用按钮。`prefers-reduced-motion` 下图标静止，不增加状态文字。`preview.reload` 经 `RunBarActions` 等待 `ElectronPreviewHost` 的 `PreviewReload`：监听先于 reload 安装，仅主框架加载失败、加载停止或视图销毁/崩溃结束等待。替换或释放预览要 dispose；界面用预览作用域对象拒绝旧回调，加载结束后等实际 CSS 动画完成整圈，不用计时器提前打断；卸载清理媒体查询监听，不能用 IPC 已送达冒充加载结束。生命周期假事件和界面回归验证规格 DESKTOP-WORKSPACE-71，真实 Electron 与设计取证见测试手册。
 纯逻辑用 Vitest 加假客户端（`library-controller.test.ts` 等，测试里不连真管理进程）。Electron 的接线靠 `smoke` 和上面的端到端测试：Ubuntu 没有显示环境，窗口也不该出现在别人的屏幕上，所以只在 macOS 的 `.github/workflows/e2e.yml` 里跑（本机手动跑也行；用法和规矩见 `e2e/AGENTS.md`，#180、#196）。测试和手动试验一律用临时 `--root`，试完用进程号加启动时间确认并结束管理进程。
 
 界面测试（jsdom 文件）共用一份热身：`vitest.setup.tsx` 在每个文件的用例开始前先画一遍外壳并做一次角色查询，再走一遍选择器、新建弹窗、开关和输入，把冷启动的代价（加载、即时编译、jsdom 样式计算）付在装载阶段，不落在该文件第一个用例的时限里（#219、#234、#277）。新增界面测试文件不需要再写自己的热身；不要为此放宽用例的时限。
