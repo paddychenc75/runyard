@@ -114,7 +114,7 @@ export const iconPaths = {
   },
   stop: {
     viewBox: "0 0 16 16",
-    paths: ["M4.5 4.5h7v7h-7z"],
+    paths: ["M3 3h10v10H3z"],
   },
   trash: {
     viewBox: "0 0 16 16",
