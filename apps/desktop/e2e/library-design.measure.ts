@@ -88,6 +88,15 @@ async function captureApp(instance: RunyardApp, board: string, width: number, he
   if (width === 1100) {
     await expect(instance.page.locator('[data-collapsed~="template"]')).toBeVisible();
   }
+  // 窄化会同时改变页头换行与表格收列；先等页头档位，避免鼠标坐标落到换行前的相邻行。
+  await expect
+    .poll(() =>
+      instance.page
+        .locator("input[aria-label]")
+        .first()
+        .evaluate((el) => el.closest("[data-size]")?.getAttribute("data-size")),
+    )
+    .toBe(width === 720 || width === 1100 ? "short" : "wide");
   const selected = instance.page.locator('tr[data-row-id="react19-1"]');
   await selected.locator('td[data-column="name"]').click();
   await expect(selected).toHaveAttribute("data-selected", "");
@@ -125,7 +134,7 @@ async function captureApp(instance: RunyardApp, board: string, width: number, he
   await instance.page.screenshot({ path: join(output, `${board}-app.png`), scale: "css" });
   if (width === 720) {
     await instance.page
-      .locator('tr[data-row-id="node-ts-1"] td[data-column="size"] [data-user-content]')
+      .locator('tr[data-row-id="hono-1"] td[data-column="size"] [data-user-content]')
       .hover();
     await expect(instance.page.getByText(/node_modules/)).toBeVisible();
     await instance.page.screenshot({

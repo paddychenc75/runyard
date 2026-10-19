@@ -188,8 +188,8 @@ export function libraryDesignFixture(base: LibraryState, root: string, now: numb
         ? undefined
         : {
             totalBytes: sizes[index] as number,
-            dependencyBytes: index === 7 ? 120_000_000_000 : 0,
-            dependencyDirs: index === 7 ? ["node_modules"] : [],
+            dependencyBytes: index === 7 ? 120_000_000_000 : index === 1 ? 35_000_000 : 0,
+            dependencyDirs: index === 7 || index === 1 ? ["node_modules"] : [],
             unreadable: index === 7 ? 1 : 0,
           },
   }));
