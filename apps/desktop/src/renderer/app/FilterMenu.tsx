@@ -14,6 +14,7 @@ export interface FilterMenuProps {
   menuLabel: Localized;
   options: readonly FilterMenuOption[];
   value: string;
+  disabled?: boolean;
   onValueChange: (id: string) => void;
 }
 
@@ -23,6 +24,7 @@ export function FilterMenu({
   menuLabel,
   options,
   value,
+  disabled,
   onValueChange,
 }: FilterMenuProps) {
   const entries: MenuEntry[] = options.map((option) => ({
@@ -36,7 +38,7 @@ export function FilterMenu({
       entries={entries}
       onSelect={onValueChange}
       trigger={
-        <button type="button" className={styles.root}>
+        <button disabled={disabled} type="button" className={styles.root}>
           <span>{buttonLabel}</span>
           <Icon name="chevron-down" size={12} className={styles.caret} />
         </button>

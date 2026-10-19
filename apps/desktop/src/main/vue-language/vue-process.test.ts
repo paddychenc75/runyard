@@ -114,5 +114,7 @@ function fakeSession(failed: () => void) {
     request: vi.fn(async () => null),
     sync: vi.fn(async () => {}),
     closeDocument: vi.fn(async () => {}),
+    changed: vi.fn(),
+    reloadProjects: vi.fn(),
   };
 }

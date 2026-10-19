@@ -38,7 +38,7 @@ import { ElectronSystemActions } from "./integration/system-actions.ts";
 import { createSystemSettings } from "./integration/system-settings-host.ts";
 import { createTerminalService, runTerminalSmokeFlow } from "./integration/terminal-host.ts";
 import { resolveUserDataDir } from "./integration/user-data.ts";
-import { createVueLanguageHost } from "./integration/vue-language-host.ts";
+import { createVueChannelHost } from "./integration/vue-channel-host.ts";
 import { keepAliveAfterClose } from "./integration/window-lifecycle.ts";
 import { registerBridgeHandlers } from "./ipc-handlers.ts";
 import { type LibraryClient, LibraryController } from "./library-controller.ts";
@@ -266,7 +266,7 @@ async function main(args: DesktopArgs): Promise<void> {
     ...(initial === undefined ? {} : { initial }),
   });
   // 编辑器的文件服务：只认项目 id 加项目内相对路径，文件夹每次从当前列表里查
-  const language = createVueLanguageHost(home, distDir);
+  const language = createVueChannelHost(home, distDir, controller, ipcHost);
   const files = new EditorFileService({
     platform: getPlatform(args.root === undefined ? {} : { home: absPath(args.root) }),
     projectFolder: (id) =>
@@ -274,6 +274,7 @@ async function main(args: DesktopArgs): Promise<void> {
     onChange: (project, changes) => {
       ipcHost.send(desktopChannels.event, "files.changed", { project, changes });
       void controller.checkProjectFolders(project);
+      void language.filesChanged(project, changes);
     },
   });
   app.once("will-quit", () => void files.dispose());
@@ -336,6 +337,7 @@ async function main(args: DesktopArgs): Promise<void> {
     }),
     { links, updates },
     () => settingsWindow.controller.open(),
+    language,
   );
   await window.loadURL(`${APP_ORIGIN}/`);
   await controller.start();

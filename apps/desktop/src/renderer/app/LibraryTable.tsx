@@ -283,7 +283,7 @@ function retentionCell(row: PlaygroundRow, now: number, t: ReturnType<typeof use
     );
   const retention = retentionOf(row, now);
   if (retention.kind === "kept")
-    return <Badge variant="solid">{t("library.retention.kept.label")}</Badge>;
+    return <span className={styles.secondary}>{t("library.retention.off.label")}</span>;
   if (retention.kind === "autoCleanUnknown")
     return <Badge variant="dashed">{t("library.filter.autoClean.label")}</Badge>;
   return (

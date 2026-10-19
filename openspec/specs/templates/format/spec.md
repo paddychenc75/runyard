@@ -332,18 +332,18 @@
 - **THEN** 临时目录在系统临时目录下，仓库目录里没有任何新文件
 - 验证：test
 
-### Requirement: 九个内置模板和它们固定的版本
-第一版内置模板 MUST 恰好是这九个：`html`、`react19`、`react18`、`vue3`、`next16`、`node-ts`、`python`、`go`、`hono`。`nuxt4`、`nuxt3` 暂缓，第一版 MUST NOT 内置（它们的依赖树里有没有合规修复版本的公告），修复版出来后再加回内置目录。不同版本 MUST 是不同的模板；同一框架 MUST 最多保留两个版本的模板。模板自带的依赖 MUST 是精确版本，取值以技术设计 §8.6.5 为准：React 19.3.0、React 18.3.1、Vite 8.3.3、`@vitejs/plugin-react` 6.1.1、TypeScript 6.0.3、Vue 3.5.43、`@vitejs/plugin-vue` 6.0.9、Next.js 16.4.1（安全修复版，取代 16.3.8）、Hono 4.13.11、`@hono/node-server` 2.1.3。用户机器上的工具下限 MUST 是：`node-ts` 的 Node `>=22.18`，`python` 的 Python `>=3.12`，`go` 的 Go `>=1.26`，用 pnpm 的模板的 pnpm `>=10.34.6`；使用 Node 的其他模板的 Node 下限 MUST NOT 低于 22 这条版本线。Nuxt 加回内置目录之后：`nuxt3` MUST 带“已停止维护”的标签（固定标签标识 `unmaintained`）；出现 Nuxt 3 自身代码上的、没有修复版本的高危公告时 MUST 自动从内置目录移除。这两条规则在第一版没有可作用的模板，保留给 Nuxt 回来的时候。已移除或退役的模板 MUST NOT 影响此前创建的项目：项目创建时已把 `runner` 和 `requires` 复制进自己的 `playground.json`，MUST 继续可用。
+### Requirement: 八个内置模板和它们固定的版本
+第一版内置模板 MUST 恰好是这八个：`html`、`react19`、`react18`、`vue3`、`node-ts`、`python`、`go`、`hono`。`next16` 暂缓，第一版 MUST NOT 内置；以后按需恢复，不再等待原安全修复版的 72 小时窗口。`nuxt4`、`nuxt3` 暂缓，第一版 MUST NOT 内置（它们的依赖树里有没有合规修复版本的公告），修复版出来后再加回内置目录。不同版本 MUST 是不同的模板；同一框架 MUST 最多保留两个版本的模板。模板自带的依赖 MUST 是精确版本，取值以技术设计 §8.6.5 为准：React 19.3.0、React 18.3.1、Vite 8.3.3、`@vitejs/plugin-react` 6.1.1、TypeScript 6.0.3、Vue 3.5.43、`@vitejs/plugin-vue` 6.0.9、Hono 4.13.11、`@hono/node-server` 2.1.3。用户机器上的工具下限 MUST 是：`node-ts` 的 Node `>=22.18`，`python` 的 Python `>=3.12`，`go` 的 Go `>=1.26`，用 pnpm 的模板的 pnpm `>=10.34.6`；使用 Node 的其他模板的 Node 下限 MUST NOT 低于 22 这条版本线。Nuxt 加回内置目录之后：`nuxt3` MUST 带“已停止维护”的标签（固定标签标识 `unmaintained`）；出现 Nuxt 3 自身代码上的、没有修复版本的高危公告时 MUST 自动从内置目录移除。这两条规则在第一版没有可作用的模板，保留给 Nuxt 回来的时候。已移除或退役的模板 MUST NOT 影响此前创建的项目：项目创建时已把 `runner` 和 `requires` 复制进自己的 `playground.json`，MUST 继续可用。
 来源：PRD #prd-first-templates；PRD #prd-template-versions；PRD #prd-runtime-requirements；技术设计 §8.6.5；技术设计 §12 第 28 项（2026-10-16 改定：Nuxt 暂缓）
 
-#### Scenario: [TEMPLATES-FORMAT-51] 目录恰好九个
+#### Scenario: [TEMPLATES-FORMAT-51] 目录恰好八个
 - **WHEN** 读取内置模板目录
-- **THEN** 标识恰好是上面九个，没有多余的，其中没有 `nuxt4`、`nuxt3`
+- **THEN** 标识恰好是上面八个，没有多余的，其中没有 `next16`、`nuxt4`、`nuxt3`
 - 验证：test
 
 #### Scenario: [TEMPLATES-FORMAT-52] 依赖是技术设计里的精确版本
 - **WHEN** 读取每个内置模板的 `package.json`
-- **THEN** 其中的 React、Vite、Vue、Next.js、Hono 等的版本与上面列出的完全一致，没有 `^`、`~`、`latest`
+- **THEN** 其中的 React、Vite、Vue、Hono 等的版本与上面列出的完全一致，没有 `^`、`~`、`latest`
 - 验证：test
 
 #### Scenario: [TEMPLATES-FORMAT-53] 工具下限

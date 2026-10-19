@@ -1,0 +1,105 @@
+.root {
+  position: relative;
+  display: flex;
+  gap: var(--space-5);
+  inline-size: var(--size-notification-card);
+  max-inline-size: 100%;
+  box-sizing: border-box;
+  padding: var(--space-6);
+  padding-inline-end: var(--size-notification-close-space);
+  border-radius: var(--radius-lg);
+  animation: enter var(--motion-duration-popover) var(--motion-easing-standard);
+}
+.tile {
+  display: grid;
+  place-items: center;
+  flex: none;
+  inline-size: var(--size-control-md);
+  block-size: var(--size-control-md);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-accent);
+  background: var(--color-fill-accent-tint);
+}
+.root[data-tone="warning"] .tile {
+  color: var(--color-status-warning-text);
+  background: var(--color-fill-warning-tint);
+}
+.root[data-tone="danger"] .tile {
+  color: var(--color-status-danger-text);
+  background: var(--color-fill-danger-tint);
+}
+.root[data-tone="violet"] .tile {
+  color: var(--color-agent-text);
+  background: var(--color-fill-agent-tint);
+}
+.content {
+  min-inline-size: 0;
+  flex: 1;
+}
+.title {
+  margin: 0;
+  font-size: var(--text-body-size);
+  font-weight: var(--text-item-weight);
+  line-height: var(--text-body-line-height);
+  overflow-wrap: anywhere;
+}
+.description {
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-secondary-size);
+  line-height: var(--text-secondary-line-height);
+  color: var(--color-text-secondary);
+  overflow-wrap: anywhere;
+}
+.actions {
+  margin-block-start: var(--space-4);
+  flex-wrap: wrap;
+}
+.close {
+  position: absolute;
+  inset-block-start: var(--space-6);
+  inset-inline-end: var(--space-6);
+}
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(calc(0 - var(--space-6)));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  @keyframes enter {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+.root[data-closing] {
+  animation: leave var(--motion-duration-notice-out) var(--motion-easing-standard) forwards;
+}
+@keyframes leave {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  @keyframes leave {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+}
