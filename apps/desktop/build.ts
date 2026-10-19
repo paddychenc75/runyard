@@ -1,6 +1,7 @@
 import { cpSync, mkdirSync } from "node:fs";
 import { build } from "esbuild";
 import { buildEditor } from "./build-editor.ts";
+import { buildSkillGuide } from "./packaging/skill-guide.ts";
 
 // 把主进程、预加载脚本、界面三部分打包到 dist/。不用 electron-vite：它要 Vite 7，
 // 而 Vite 7.3.7 属于安全修复例外、需要放宽安装的年龄限制，改用已批准的 esbuild（docs/architecture/dependencies.md）。
@@ -9,6 +10,7 @@ import { buildEditor } from "./build-editor.ts";
 const common = { bundle: true, sourcemap: true, logLevel: "info" } as const;
 
 mkdirSync("dist/renderer", { recursive: true });
+buildSkillGuide("dist/skill-guide");
 
 await Promise.all([
   build({

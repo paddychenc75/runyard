@@ -16,6 +16,7 @@ function setup(
     run?: (args: string[]) => { code: number; stdout: string };
     existing?: string[];
     packaged?: boolean;
+    openGuide?: (locale: "en" | "zh-CN") => Promise<boolean>;
     runs?: { owner: { kind: string } }[];
   } = {},
 ) {
@@ -23,6 +24,7 @@ function setup(
   const ran: string[][] = [];
   const revealed: string[] = [];
   const host: CliHost = {
+    openSkillGuide: options.openGuide,
     runCli: async (args) => {
       ran.push(args);
       return options.run?.(args) ?? { code: 0, stdout: "{}" };
@@ -172,4 +174,29 @@ describe("后台管理进程", () => {
       ["supervisor.shutdown", { ifIdle: false, reason: "user" }],
     ]);
   });
+});
+
+it("[DESKTOP-SETTINGS-44] 只打开固定语言说明，未安装也可用且拒绝任意路径", async () => {
+  const opened: string[] = [];
+  const { cli, ran } = setup({
+    openGuide: async (locale) => {
+      opened.push(locale);
+      return true;
+    },
+  });
+  expect(await cli.openSkillGuide("zh-CN")).toEqual({ ok: true });
+  expect(await cli.openSkillGuide("en")).toEqual({ ok: true });
+  for (const bad of ["../../private.txt", "zh", "", undefined, {}, ["en"]])
+    expect(await cli.openSkillGuide(bad)).toEqual({ ok: false });
+  expect(opened).toEqual(["zh-CN", "en"]);
+  expect(ran).toEqual([]);
+});
+it("查看说明失败反馈失败结果，不执行安装", async () => {
+  const { cli, ran } = setup({
+    openGuide: async () => {
+      throw new Error("missing");
+    },
+  });
+  expect(await cli.openSkillGuide("en")).toEqual({ ok: false });
+  expect(ran).toEqual([]);
 });
