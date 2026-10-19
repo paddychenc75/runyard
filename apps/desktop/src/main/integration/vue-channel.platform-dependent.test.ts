@@ -262,4 +262,26 @@ describe("Vue 项目窄通道", () => {
     expect(projects.current("p")).toBeNull();
     await channel.dispose();
   });
+  it("[DESKTOP-EDITOR-91] 最后一个Vue文档关闭后，退出仍释放依赖监听", async () => {
+    const home = realpathSync(mkdtempSync(join(tmpdir(), "ry-vue-watch-release-")));
+    const stopWatch = vi.fn();
+    const projects = new VueProjects(async () => ({
+      request: async () => ({}),
+      sync: async () => {},
+      closeDocument: async () => {},
+      stop: async () => {},
+      changed: () => {},
+      reloadProjects: () => {},
+    }));
+    const channel = new VueChannel({
+      projects,
+      folderOf: () => home,
+      diagnostics: () => {},
+      watchDependencies: async () => stopWatch,
+    });
+    await channel.open({ project: "p", path: "Use.vue", text: "", version: 1, session: "one" });
+    await channel.closeDocument({ project: "p", path: "Use.vue", version: 1, session: "one" });
+    await channel.dispose();
+    expect(stopWatch).toHaveBeenCalledOnce();
+  });
 });

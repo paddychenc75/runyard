@@ -256,8 +256,12 @@ export class VueChannel {
     });
   }
   async dispose(): Promise<void> {
-    for (const project of new Set([...this.#documents.values()].map((item) => item.input.project)))
-      await this.close(project);
+    const projects = new Set([
+      ...[...this.#documents.values()].map((item) => item.input.project),
+      ...this.#dependencyWatches.keys(),
+      ...this.#timers.keys(),
+    ]);
+    for (const project of projects) await this.close(project);
     await this.#options.projects.dispose();
   }
 }
