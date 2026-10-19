@@ -151,6 +151,7 @@ export function createLibraryContext(
     async releaseOrder(id, reason) {
       await runs().stop(id);
       await release.request(id, reason);
+      await sizes.pause(id);
     },
   };
   return context;

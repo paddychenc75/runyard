@@ -68,3 +68,5 @@ pnpm test --filter @runyard/supervisor
 ```
 
 单元测试用假平台（`127.0.0.1` 上的 socket）、假时钟，Windows 任务也跑。`*.platform-dependent.test.ts` 把真实入口当单独的 Node 进程跑（临时主目录，绝不碰 `~/.runyard`）：并发启动、强杀后恢复、原始 socket 上握手成败、超长行、管理进程崩溃后下次启动清理（`crash-recovery.platform-dependent.test.ts`：上一个管理进程用“只关监听、不停运行”模拟崩溃）；每个进程按 pid 加启动时间记账，teardown 时核对无遗留。
+
+磁盘占用监听在改名/移到废纸篓的 beforeMove 阶段经 sizes.pause 等待底层释放，缓存按 id 保留；成功或失败后 sync 恢复仍存在项目的监听。已移除项尚未结束的监听释放也登记到服务的退出等待中，不能从 tracked 删除后丢失收尾。

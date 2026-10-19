@@ -33,6 +33,8 @@ export interface DiskUsageService {
   sync(root: AbsPath, folders: readonly SizedFolder[]): void;
   /** 这个项目的内容可能变了（重新定位、依赖安装结束、运行结束）：马上排队重算，期间仍报旧结果 */
   refresh(id: string): void;
+  /** 移动目录前等待自身监听释放；缓存保留，下次 sync 恢复监听 */
+  pause(id: string): Promise<void>;
   /** 此刻有没有排队或正在算的任务（测试等“算完”用） */
   idle(): Promise<void>;
   dispose(): Promise<void>;
@@ -40,6 +42,7 @@ export interface DiskUsageService {
 
 interface Tracked {
   path: AbsPath;
+  paused: boolean;
   generation: number;
   size: PlaygroundSize | undefined;
   /** 监听的建立（含失败后的 undefined）；换路径、移除、关闭时先等它再释放 */
@@ -56,6 +59,9 @@ export function createDiskUsageService(
   const { platform, clock } = api;
   const tracked = new Map<string, Tracked>();
   const queue: string[] = [];
+  const releasing = new Set<Promise<void>>();
+  const releaseErrors: unknown[] = [];
+  const failedReleases = new Set<Tracked>();
   let root: AbsPath | undefined;
   let running = false;
   let current: Promise<void> = Promise.resolve();
@@ -66,7 +72,7 @@ export function createDiskUsageService(
   let computing: string | undefined;
 
   function enqueue(id: string): void {
-    if (disposed || !tracked.has(id)) return;
+    if (disposed || !tracked.has(id) || tracked.get(id)?.paused) return;
     if (id === computing) {
       rerun = true;
       return;
@@ -81,7 +87,7 @@ export function createDiskUsageService(
       while (queue.length > 0 && !disposed) {
         const id = queue.shift() as string;
         const entry = tracked.get(id);
-        if (entry === undefined) continue;
+        if (entry === undefined || entry.paused) continue;
         computing = id;
         rerun = false;
         try {
@@ -149,7 +155,7 @@ export function createDiskUsageService(
   // 变化：最后一次变化之后 SIZE_QUIET_MS 没有新的就算；持续变化时最迟第一次变化之后 SIZE_MAX_WAIT_MS
   function touch(id: string): void {
     const entry = tracked.get(id);
-    if (entry === undefined || disposed) return;
+    if (entry === undefined || entry.paused || disposed) return;
     const now = clock.now();
     entry.firstChange ??= now;
     const due = Math.min(now + SIZE_QUIET_MS, entry.firstChange + SIZE_MAX_WAIT_MS);
@@ -181,9 +187,26 @@ export function createDiskUsageService(
     entry.firstChange = undefined;
   }
 
-  async function stopWatch(entry: Tracked): Promise<void> {
+  function stopWatch(entry: Tracked): Promise<void> {
     clearTimer(entry);
-    await (await entry.watching)?.dispose();
+    const previous = entry.watching;
+    const stopped = previous.then(async (watcher) => {
+      await watcher?.dispose();
+      failedReleases.delete(entry);
+    });
+    entry.watching = stopped.then(
+      () => undefined,
+      () => previous,
+    );
+    // 立即挂拒绝处理；removed 项不再在 tracked 中，退出仍必须等它交还句柄。
+    const settled = stopped.catch((error: unknown) => {
+      releaseErrors.push(error);
+      failedReleases.add(entry);
+      hooks.log(`closing disk watcher failed: ${String(error)}`);
+    });
+    releasing.add(settled);
+    void settled.then(() => releasing.delete(settled));
+    return stopped;
   }
 
   function sweep(): void {
@@ -204,13 +227,14 @@ export function createDiskUsageService(
         if (wanted.has(id)) continue;
         // 找不到文件夹的项目没有大小，客户端靠 missingSince 知道；移除的项目由调用方发 removed
         tracked.delete(id);
-        void stopWatch(entry);
+        void stopWatch(entry).catch(() => {});
       }
       for (const [id, folder] of wanted) {
         const known = tracked.get(id);
         if (known === undefined) {
           const entry: Tracked = {
             path: folder.path,
+            paused: false,
             generation: 0,
             size: undefined,
             watching: Promise.resolve(undefined),
@@ -220,19 +244,34 @@ export function createDiskUsageService(
           tracked.set(id, entry);
           entry.watching = startWatch(id, entry);
           enqueue(id);
-        } else if (known.path !== folder.path) {
+        } else if (known.path !== folder.path || known.paused) {
           // 改名：结果保留（规格 -18），监听换到新路径
           known.path = folder.path;
+          known.paused = false;
           known.generation += 1;
           const previous = known.watching;
           clearTimer(known);
-          known.watching = previous
-            .then((watcher) => watcher?.dispose())
-            .then(() => startWatch(id, known));
+          known.watching = previous.then(async (watcher) => {
+            try {
+              await watcher?.dispose();
+            } catch (error) {
+              known.paused = true;
+              hooks.log(`replacing disk watcher failed: ${String(error)}`);
+              return watcher;
+            }
+            return disposed || tracked.get(id) !== known ? undefined : startWatch(id, known);
+          });
           // 旧路径的重算可能正在进行：不接纳它的结果，新路径另算，已有缓存始终保留。
           enqueue(id);
         }
       }
+    },
+    async pause(id) {
+      const entry = tracked.get(id);
+      if (!entry) return;
+      entry.paused = true;
+      entry.generation += 1;
+      await stopWatch(entry);
     },
     refresh(id) {
       const entry = tracked.get(id);
@@ -248,9 +287,12 @@ export function createDiskUsageService(
       disposed = true;
       if (sweepTimer !== undefined) clock.clearTimeout(sweepTimer);
       queue.length = 0;
-      const entries = [...tracked.values()];
+      const entries = new Set([...tracked.values(), ...failedReleases]);
       tracked.clear();
-      await Promise.all(entries.map(stopWatch));
+      for (const entry of entries) void stopWatch(entry).catch(() => {});
+      await Promise.all(releasing);
+      if (releaseErrors.length)
+        throw new AggregateError(releaseErrors, "disk watcher release failed");
     },
   };
 }

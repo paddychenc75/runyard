@@ -50,7 +50,7 @@ export async function computeDiskUsage(
   const depNames = new Set<string>();
   let total = rootScan.self.bytes;
   let dependency = 0;
-  let unreadable = 0;
+  let unreadable = rootScan.unreadable ?? 0;
   const pending: { path: AbsPath; inDep: boolean; entry: DiskEntry }[] = [];
 
   const visit = (scan: NonNullable<typeof rootScan>, dir: AbsPath, inDep: boolean) => {
@@ -99,6 +99,7 @@ export async function computeDiskUsage(
       scan.self.ino !== next.entry.ino
     )
       return "changed";
+    unreadable += scan.unreadable ?? 0;
     visit(scan, next.path, next.inDep);
   }
   return {

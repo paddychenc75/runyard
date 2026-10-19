@@ -149,3 +149,27 @@ describe("项目大小的计算", () => {
     expect(await scan(() => true)).toBe("stopped");
   });
 });
+
+it("[LIBRARY-DISK-USAGE-11] 根层和依赖目录的拒绝子项累计不完整数，可读项仍相加", async () => {
+  const fake = createFakePlatform();
+  const root = absPath(join("/project"));
+  const dependency = absPath(join(root, "node_modules"));
+  fake.fs.mkdir(dependency);
+  fake.fs.writeFile(absPath(join(root, "ok")), "x");
+  fake.fs.writeFile(absPath(join(dependency, "ok")), "x");
+  const original = fake.platform.fs.scanDir;
+  const result = await computeDiskUsage(
+    {
+      scanDir: async (path, expected) => {
+        const scan = await original(path, expected);
+        return scan && { ...scan, unreadable: path === root ? 1 : 2 };
+      },
+    },
+    root,
+  );
+  expect(result).toMatchObject({
+    totalBytes: 4 * BLOCK,
+    dependencyBytes: 2 * BLOCK,
+    unreadable: 3,
+  });
+});

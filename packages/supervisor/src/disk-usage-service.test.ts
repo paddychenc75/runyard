@@ -177,3 +177,109 @@ it("[LIBRARY-DISK-USAGE-14] [LIBRARY-DISK-USAGE-16] [LIBRARY-DISK-USAGE-17] 嵌�
     await service.dispose();
   }
 });
+
+it("[LIBRARY-DISK-USAGE-18] 释放监听等待底层关闭，保留缓存，同路径恢复后重新监听", async () => {
+  const fake = createFakePlatform();
+  const root = absPath(join("/library"));
+  const project = absPath(join(root, "demo"));
+  fake.fs.mkdir(project);
+  let release = () => {};
+  const blocked = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  const close = vi.fn(() => blocked);
+  const watches = vi.spyOn(fake.platform, "watch").mockResolvedValue({ dispose: close });
+  const service = createDiskUsageService(
+    { platform: fake.platform, clock: fake.clock },
+    { onChange: vi.fn(), log: vi.fn() },
+  );
+  service.sync(root, [{ id: "p", path: project, missing: false }]);
+  await service.idle();
+  const before = service.get("p");
+  const pause = service.pause("p");
+  let finished = false;
+  void pause.then(() => {
+    finished = true;
+  });
+  await Promise.resolve();
+  expect(close).toHaveBeenCalledOnce();
+  expect(finished).toBe(false);
+  expect(service.get("p")).toEqual(before);
+  release();
+  await pause;
+  service.sync(root, [{ id: "p", path: project, missing: false }]);
+  await service.idle();
+  expect(watches).toHaveBeenCalledTimes(2);
+  await service.dispose();
+});
+
+it("[LIBRARY-DISK-USAGE-20] 移除项正在释放监听时退出仍等待该次释放", async () => {
+  const fake = createFakePlatform();
+  const root = absPath(join("/library"));
+  const project = absPath(join(root, "demo"));
+  fake.fs.mkdir(project);
+  let release = () => {};
+  const blocked = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  vi.spyOn(fake.platform, "watch").mockResolvedValue({ dispose: () => blocked });
+  const service = createDiskUsageService(
+    { platform: fake.platform, clock: fake.clock },
+    { onChange: vi.fn(), log: vi.fn() },
+  );
+  service.sync(root, [{ id: "p", path: project, missing: false }]);
+  await service.idle();
+  service.sync(root, []);
+  let finished = false;
+  const done = service.dispose().then(() => {
+    finished = true;
+  });
+  await Promise.resolve();
+  await Promise.resolve();
+  await Promise.resolve();
+  expect(finished).toBe(false);
+  release();
+  await done;
+});
+
+it("[LIBRARY-DISK-USAGE-20] 已移除项释放失败不能让退出假成功，仍等另一项释放结束", async () => {
+  const fake = createFakePlatform();
+  const root = absPath(join("/library"));
+  const first = absPath(join(root, "first"));
+  const second = absPath(join(root, "second"));
+  fake.fs.mkdir(first);
+  fake.fs.mkdir(second);
+  let release = () => {};
+  const blocked = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  vi.spyOn(fake.platform, "watch").mockImplementation(async (path) => ({
+    dispose: () => (path === first ? Promise.reject(new Error("close failed")) : blocked),
+  }));
+  const service = createDiskUsageService(
+    { platform: fake.platform, clock: fake.clock },
+    { onChange: vi.fn(), log: vi.fn() },
+  );
+  service.sync(root, [
+    { id: "a", path: first, missing: false },
+    { id: "b", path: second, missing: false },
+  ]);
+  await service.idle();
+  service.sync(root, []);
+  let finished = false;
+  const done = service.dispose();
+  void done.then(
+    () => {
+      finished = true;
+    },
+    () => {
+      finished = true;
+    },
+  );
+  await Promise.resolve();
+  await Promise.resolve();
+  await Promise.resolve();
+  expect(finished).toBe(false);
+  release();
+  await expect(done).rejects.toThrow("disk watcher release failed");
+});

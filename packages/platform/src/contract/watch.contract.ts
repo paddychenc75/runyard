@@ -18,10 +18,11 @@ export function watchContract(ctx: ContractContext): void {
   const { fs, watch } = ctx.create(home);
   let counter = 0;
 
-  async function setup(opts: WatchOptions = {}) {
+  async function setup(opts: WatchOptions = {}, existingDirs: readonly string[][] = []) {
     const base = absPath(join(home, `case-${++counter}`));
     const root = absPath(join(base, "root"));
     await fs.makeDir(root);
+    for (const parts of existingDirs) await fs.makeDir(absPath(join(root, ...parts)));
     const seen: WatchEvent[] = [];
     const handle = await watch(root, opts, (events) => seen.push(...events));
     return { base, root, seen, handle };
@@ -58,10 +59,18 @@ export function watchContract(ctx: ContractContext): void {
     });
 
     it('"watch" ignoreNames 在任意层级按完整名称忽略，ignore 仍只匹配根相对路径 [#472]', async () => {
-      const { root, seen, handle } = await setup({
-        ignore: [posixRelPath("skip")],
-        ignoreNames: ["node_modules", ".venv"],
-      });
+      // #514：本条测过滤语义，普通目录先具备监听；文件与依赖目录仍在监听后新建。
+      // 通用的“新建 sub 后立即写文件”契约保留在第一条，不把动态目录竞态说成已修复。
+      const { root, seen, handle } = await setup(
+        {
+          ignore: [posixRelPath("skip")],
+          ignoreNames: ["node_modules", ".venv"],
+        },
+        [
+          ["web", "skip"],
+          ["web", "node_modules-old"],
+        ],
+      );
       try {
         for (const parts of [
           ["node_modules"],
@@ -95,6 +104,12 @@ export function watchContract(ctx: ContractContext): void {
               event.path.startsWith("skip/"),
           ),
         ).toEqual([]);
+      } catch (error) {
+        // #514：保留实际事件与磁盘状态，不以空超时日志猜测剪枝或监听就绪竞态。
+        throw new Error(
+          `${String(error)}; sentinelExists=${await fs.exists(absPath(join(root, "sentinel.txt")))}; nestedExists=${await fs.exists(absPath(join(root, "web", "skip", "index.txt")))}; seen=${JSON.stringify(seen)}`,
+          { cause: error },
+        );
       } finally {
         await handle.dispose();
       }

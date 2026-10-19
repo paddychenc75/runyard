@@ -85,3 +85,55 @@ it("[LIBRARY-DISK-USAGE-08] 目录读取过程中被换成外部链接：末尾�
   expect(result?.changed).toBe(true);
   expect(result?.entries).toEqual([]);
 });
+
+it.each(["EACCES", "EPERM"])(
+  "[LIBRARY-DISK-USAGE-11] 子项 %s 只跳过该项，保留同层可读文件",
+  async (code) => {
+    const root = absPath(box.at("project"));
+    mkdirSync(root);
+    writeFileSync(join(root, "ok"), "readable");
+    writeFileSync(join(root, "secret"), "denied");
+    const result = await scanDirPosix(root, undefined, {
+      stat: statBig,
+      readdir,
+      lstat: async (path) => {
+        if (path === join(root, "secret")) throw Object.assign(new Error(code), { code });
+        return lstatBig(path);
+      },
+    });
+    expect(result?.entries.map((entry) => entry.name)).toEqual(["ok"]);
+    expect(result).toMatchObject({ unreadable: 1 });
+  },
+);
+
+it("[LIBRARY-DISK-USAGE-08] 根本身是链接，目标临时切换再恢复也拒绝混合结果", async () => {
+  const root = absPath(box.at("project"));
+  const originalLink = box.at("original-link");
+  const inside = box.at("inside");
+  const outside = box.at("outside");
+  mkdirSync(inside);
+  mkdirSync(outside);
+  writeFileSync(join(inside, "file"), "inside");
+  writeFileSync(join(outside, "file"), new Uint8Array(1_000_000));
+  symlinkSync(inside, root);
+  expect((await scanDirPosix(root))?.entries.map((entry) => entry.name)).toEqual(["file"]);
+  const result = await scanDirPosix(root, undefined, {
+    stat: statBig,
+    readdir: async (dir) => {
+      const names = await readdir(dir);
+      renameSync(root, originalLink);
+      symlinkSync(outside, root);
+      return names;
+    },
+    lstat: async (path) => {
+      const info = await lstatBig(path);
+      if (path === join(root, "file")) {
+        renameSync(root, box.at("temporary-link"));
+        renameSync(originalLink, root);
+      }
+      return info;
+    },
+  });
+  expect(result?.changed).toBe(true);
+  expect(result?.entries).toEqual([]);
+});

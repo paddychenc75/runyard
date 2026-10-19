@@ -35,16 +35,21 @@ export function createLibraryService(ctx: LibraryContext): LibraryService {
     const playground = await mutex.run(async () => {
       const { library, root } = await ctx.open();
       const id = ctx.require(library, ref).entry.id;
-      await library.rename(ref, newName, {
-        isBusy: () => ctx.runs().isBusy(id),
-        beforeMove: async () => {
-          const owner = ctx.runs().activePlaygrounds().has(id) ? ctx.runs().ownerOf(id) : undefined;
-          if (owner !== undefined) restart = { id, owner };
-          await ctx.releaseOrder(id, "rename");
-        },
-      });
-      // 改名：大小的结果按 id 保留，监听换到新路径
-      ctx.syncSizes(library, root);
+      try {
+        await library.rename(ref, newName, {
+          isBusy: () => ctx.runs().isBusy(id),
+          beforeMove: async () => {
+            const owner = ctx.runs().activePlaygrounds().has(id)
+              ? ctx.runs().ownerOf(id)
+              : undefined;
+            if (owner !== undefined) restart = { id, owner };
+            await ctx.releaseOrder(id, "rename");
+          },
+        });
+      } finally {
+        // 移动失败也恢复旧路径监听，缓存始终按 id 保留。
+        ctx.syncSizes(library, root);
+      }
       return ctx.changed(library, id);
     });
     // 第 6 步：改名前在运行的，用新名称再启动，持有者不变。不占着排队的锁；
@@ -162,9 +167,11 @@ export function createLibraryService(ctx: LibraryContext): LibraryService {
       mutex.run(async () => {
         const { library, root } = await ctx.open();
         const id = ctx.require(library, ref).entry.id;
-        const outcome = await library.trash(ref, {
-          beforeMove: () => ctx.releaseOrder(id, "trash"),
-        });
+        const outcome = await library
+          .trash(ref, {
+            beforeMove: () => ctx.releaseOrder(id, "trash"),
+          })
+          .finally(() => ctx.syncSizes(library, root));
         ctx.forgetSeen(id);
         ctx.syncSizes(library, root);
         api.publish("playground.removed", { playgroundId: id });
@@ -182,7 +189,9 @@ export function createLibraryService(ctx: LibraryContext): LibraryService {
     forget: (ref) =>
       mutex.run(async () => {
         const { library, root } = await ctx.open();
-        const item = await library.forget(ref);
+        const id = ctx.require(library, ref).entry.id;
+        await ctx.sizes.pause(id);
+        const item = await library.forget(ref).finally(() => ctx.syncSizes(library, root));
         ctx.forgetSeen(item.entry.id);
         ctx.syncSizes(library, root);
         api.publish("playground.removed", { playgroundId: item.entry.id });

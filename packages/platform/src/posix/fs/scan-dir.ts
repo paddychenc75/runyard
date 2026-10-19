@@ -47,8 +47,10 @@ export async function scanDirPosix(
 ): Promise<DirScan | null> {
   let names: string[];
   let self: BigIntStats;
+  let pathIdentity: BigIntStats;
   try {
     // 只有根项目允许链接；子目录必须仍是父扫描里看到的那一个，不能跟随后来替换的链接。
+    pathIdentity = await io.lstat(dir);
     self = await (expected === undefined ? io.stat(dir) : io.lstat(dir));
     if (expected !== undefined && !sameDirectory(self, expected)) return changed(self);
     if (!self.isDirectory()) return null;
@@ -59,13 +61,19 @@ export async function scanDirPosix(
     throw fsError(error, dir, "scan");
   }
   const entries: (DiskEntry & { name: string })[] = [];
+  let unreadable = 0;
   for (let i = 0; i < names.length; i += STAT_BATCH) {
     const batch = names.slice(i, i + STAT_BATCH);
     const infos = await Promise.all(
       batch.map((name) =>
         io.lstat(absPath(join(dir, name))).catch((error: unknown) => {
           // 读到一半被删了：当它不在
-          if (errnoOf(error) === "ENOENT") return null;
+          const code = errnoOf(error);
+          if (code === "ENOENT") return null;
+          if (code === "EACCES" || code === "EPERM") {
+            unreadable += 1;
+            return null;
+          }
           throw fsError(error, join(dir, name), "scan");
         }),
       ),
@@ -83,8 +91,18 @@ export async function scanDirPosix(
       throw fsError(error, dir, "scan");
     },
   );
-  if (after === null || !sameSnapshot(after, self)) return changed(self);
-  return { self: toEntry(self), entries };
+  const pathAfter = await io.lstat(dir).catch((error: unknown) => {
+    if (errnoOf(error) === "ENOENT" || errnoOf(error) === "ENOTDIR") return null;
+    throw fsError(error, dir, "scan");
+  });
+  if (
+    after === null ||
+    pathAfter === null ||
+    !sameSnapshot(after, self) ||
+    !sameIdentity(pathAfter, pathIdentity)
+  )
+    return changed(self);
+  return { self: toEntry(self), entries, ...(unreadable ? { unreadable } : {}) };
 }
 
 function sameDirectory(info: BigIntStats, expected: Pick<DiskEntry, "dev" | "ino">): boolean {
@@ -94,8 +112,11 @@ function sameDirectory(info: BigIntStats, expected: Pick<DiskEntry, "dev" | "ino
 }
 
 function sameSnapshot(info: BigIntStats, before: BigIntStats): boolean {
+  return info.isDirectory() && sameIdentity(info, before);
+}
+
+function sameIdentity(info: BigIntStats, before: BigIntStats): boolean {
   return (
-    info.isDirectory() &&
     info.dev === before.dev &&
     info.ino === before.ino &&
     info.ctimeNs === before.ctimeNs &&

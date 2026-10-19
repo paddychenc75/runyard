@@ -94,6 +94,8 @@ export interface DiskEntry {
 }
 
 export interface DirScan {
+  /** 子项元数据读取被权限拒绝的数量；其余可读子项仍返回 */
+  readonly unreadable?: number;
   /** 目录自己（跟随它本身是链接的情形：项目文件夹可以是指向别处的链接） */
   readonly self: DiskEntry;
   readonly entries: readonly (DiskEntry & { readonly name: string })[];
