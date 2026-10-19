@@ -31,6 +31,7 @@ export interface AppMenuOptions {
   onReportIssue: () => void;
   /** 当前是项目标签页：资源库页上“快速打开文件”和整个“项目”菜单的操作灰掉（规格 DESKTOP-EDITOR-73） */
   projectTabActive: boolean;
+  settingsWindowActive?: boolean;
 }
 
 const APP_NAME = "Runyard";
@@ -93,12 +94,24 @@ export function buildAppMenu(options: AppMenuOptions): MenuItemConstructorOption
       },
       separator,
       // ⌘W 关当前标签页（先关文件标签，没有再关项目标签页）；关整个窗口是 ⇧⌘W
-      command("app.closeTab", t("desktop.menu.closeTab.label"), { enabled: onProject }),
-      {
-        role: "close",
-        label: t("desktop.menu.closeWindow.label"),
-        accelerator: "CmdOrCtrl+Shift+W",
-      },
+      command(
+        "app.closeTab",
+        options.settingsWindowActive
+          ? t("desktop.menu.closeWindow.label")
+          : t("desktop.menu.closeTab.label"),
+        {
+          enabled: onProject || options.settingsWindowActive === true,
+        },
+      ),
+      ...(options.settingsWindowActive
+        ? []
+        : [
+            {
+              role: "close" as const,
+              label: t("desktop.menu.closeWindow.label"),
+              accelerator: "CmdOrCtrl+Shift+W",
+            },
+          ]),
       ...(mac
         ? []
         : [

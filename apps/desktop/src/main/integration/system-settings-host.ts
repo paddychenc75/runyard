@@ -26,6 +26,7 @@ export interface SystemSettingsOptions {
   /** 主目录（--root 或真实的）；技能包、命令行链接、.npmrc 都在它下面 */
   home: string;
   window: BrowserWindow;
+  dialogWindow?: () => BrowserWindow;
 }
 
 const exists = (path: string): Promise<boolean> =>
@@ -52,7 +53,7 @@ export function createSystemSettings(options: SystemSettingsOptions): {
   const platform = getPlatform({ home: absPath(home) });
   const toolchain = new ToolchainSettings(client, {
     chooseExecutable: async () => {
-      const picked = await dialog.showOpenDialog(window, {
+      const picked = await dialog.showOpenDialog(options.dialogWindow?.() ?? window, {
         defaultPath: home,
         properties: ["openFile", "showHiddenFiles"],
       });

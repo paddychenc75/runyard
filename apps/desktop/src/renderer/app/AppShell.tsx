@@ -26,7 +26,6 @@ import { NoticeToasts } from "./NoticeToasts.tsx";
 import { PickerDialog } from "./PickerDialog.tsx";
 import { QuitTerminalPrompt } from "./QuitTerminalPrompt.tsx";
 import { Sidebar } from "./Sidebar.tsx";
-import { SettingsPage } from "./settings/SettingsPage.tsx";
 import { useAutoSaveReader } from "./settings/use-autosave-reader.ts";
 import { chooseNavFilter, type ShellPage, showLibrary } from "./sidebar-navigation.ts";
 import { TopBar } from "./TopBar.tsx";
@@ -61,14 +60,11 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
   useEffect(() => {
     document.title = title;
   }, [title]);
-  // 设置和模板是主窗口里的两页（规格 DESKTOP-SETTINGS-01、DESKTOP-TEMPLATES-VIEW-01）：侧栏点“设置”或“模板”进，点“全部”或打开别的标签回到资源库
+  // 模板仍在主窗口；设置通过独立窗口打开，不参与当前页面或标签选择。
   const [page, setPage] = useState<ShellPage>("library");
   const activeTabId = library?.activeTab ?? "library";
-  // 命令面板在项目标签页上执行“设置”：先切回资源库标签，标签变了之后落到设置页而不是资源库页
-  const pageAfterSwitch = useRef<"settings" | null>(null);
   useEffect(() => {
-    setPage(pageAfterSwitch.current ?? "library");
-    pageAfterSwitch.current = null;
+    setPage("library");
   }, [activeTabId]);
   // 编辑器按设置里的自动保存档位存（规格 DESKTOP-SETTINGS-11）
   const readAutoSave = useAutoSaveReader(settings.settings);
@@ -176,7 +172,6 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
   const selectTab = useCallback((id: string) => void bridge.call("tab.select", id), [bridge]);
   // 命令面板里的应用命令（规格“命令面板”）：和菜单、按钮里的同名项走同一个动作；
   // 当前页面上没有意义的不登记（已经在资源库页就没有“打开资源库”，资源库页没有“收起或展开文件树”）
-  const onSettings = page === "settings";
   useCommands({
     "app.new": openPicker,
     "app.openLibrary":
@@ -186,13 +181,7 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
             showLibrary({ activeTab, selectTab });
             setPage("library");
           },
-    "app.settings": onSettings
-      ? null
-      : () => {
-          if (activeTab !== "library") pageAfterSwitch.current = "settings";
-          showLibrary({ activeTab, selectTab });
-          setPage("settings");
-        },
+    "app.settings": () => void bridge.call("settings.open"),
     // ⌘W：项目标签页里先关当前的文件标签，没有文件标签再关项目标签页（规格 DESKTOP-EDITOR-17）
     "app.closeTab":
       activeTab === "library"
@@ -236,6 +225,7 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
               libraryRoot={library?.libraryRoot ?? ""}
               page={page}
               onCollapse={toggleSidebar}
+              onSettings={() => void bridge.call("settings.open")}
               onNavigate={(next) => {
                 showLibrary({ activeTab, selectTab });
                 setPage(next);
@@ -259,11 +249,7 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
               onClose={(id) => void bridge.call("tab.close", id)}
             />
           ) : null}
-          {page === "settings" ? (
-            <main className={styles.settings}>
-              <SettingsPage bridge={bridge} api={settings} library={library} />
-            </main>
-          ) : page === "templates" ? (
+          {page === "templates" ? (
             <main className={styles.settings}>
               <TemplatesPage
                 bridge={bridge}

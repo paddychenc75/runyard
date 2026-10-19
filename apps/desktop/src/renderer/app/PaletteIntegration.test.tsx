@@ -190,7 +190,8 @@ describe("命令面板在外壳里", () => {
     await vi.waitFor(() => expect(update).toHaveBeenCalledWith({ theme: "dark" }));
     await user.keyboard("{F1}");
     await user.keyboard("设置{Enter}");
-    await vi.waitFor(() => expect(call).toHaveBeenCalledWith("tab.select", "library"));
+    await vi.waitFor(() => expect(call).toHaveBeenCalledWith("settings.open"));
+    expect(call).not.toHaveBeenCalledWith("tab.select", "library");
   });
 
   it("[DESKTOP-EDITOR-65] 主进程菜单发 palette.open（焦点在预览里）：命令面板和快速打开都能打开", async () => {
@@ -203,11 +204,12 @@ describe("命令面板在外壳里", () => {
     expect(await screen.findByRole("dialog", { name: "快速打开" })).toBeTruthy();
   });
 
-  it("应用菜单发 command.run：和命令面板同一个“打开设置”命令；项目标签页上进的是资源库标签里的设置页", async () => {
+  it("[DESKTOP-SETTINGS-38] 应用菜单打开独立设置窗口，不切换项目标签页", async () => {
     const { emit, call } = setup(projectState());
     await screen.findByRole("group", { name: "运行条" });
     emit("command.run", { id: "app.settings" });
-    await vi.waitFor(() => expect(call).toHaveBeenCalledWith("tab.select", "library"));
+    await vi.waitFor(() => expect(call).toHaveBeenCalledWith("settings.open"));
+    expect(call).not.toHaveBeenCalledWith("tab.select", "library");
   });
 
   it("应用菜单发 command.run 的命令此刻没登记（资源库页上的“运行”）：什么都不发生", async () => {

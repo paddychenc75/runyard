@@ -99,7 +99,7 @@ export interface AppLinks {
 export function registerBridgeHandlers(
   host: IpcHost,
   controller: LibraryController,
-  bootstrap: BootstrapInfo,
+  bootstrap: BootstrapInfo | (() => BootstrapInfo),
   files?: EditorFileService,
   openers?: FileOpeners,
   gates?: FlushGates,
@@ -107,6 +107,7 @@ export function registerBridgeHandlers(
   terminals?: TerminalService,
   templates?: TemplatesView,
   appLinks?: AppLinks,
+  openSettings?: () => void,
 ): () => void {
   // 方法名到控制器的映射；参数不是预期类型时不调用控制器
   const methods: Record<DesktopMethod, (param: unknown) => unknown> = {
@@ -233,6 +234,7 @@ export function registerBridgeHandlers(
       return request === null ? rejectedCreate : await controller.create(request);
     },
     // 设置页（#188）；没接线时设置读不到，界面显示默认值
+    "settings.open": () => openSettings?.(),
     "settings.get": () => settings?.get(),
     "settings.set": (patch) => settings?.set(patch),
     "settings.editors": async () => (await settings?.editors()) ?? [],
@@ -331,7 +333,10 @@ export function registerBridgeHandlers(
   });
   host.handleSync(desktopChannels.bootstrap, (sender) => {
     trusted(sender);
-    return bootstrap;
+    const info = typeof bootstrap === "function" ? bootstrap() : bootstrap;
+    return new URL(sender.url).searchParams.get("view") === "settings"
+      ? { ...info, windowKind: "settings" as const }
+      : info;
   });
   const stopState = controller.onChange((state) =>
     host.send(desktopChannels.event, "library.changed", state),
