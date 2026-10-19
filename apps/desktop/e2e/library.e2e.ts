@@ -191,6 +191,8 @@ test("[DESKTOP-LIBRARY-VIEW-28][DESKTOP-LIBRARY-VIEW-29] 窗口 1100 宽：收�
     });
 
   await expect.poll(async () => (await measure()).headers.length).toBe(6);
+  // 命令行返回与界面收到就绪事件是两件事；先等同一行进入运行中，再冻结测量快照（#476）。
+  await expect.poll(async () => (await measure()).runningStatus).toMatch(/^Running\s+:\d+$/);
   const narrow = await measure();
   expect(narrow.collapsed).toBe("lastUsed port template");
   expect(narrow.templateCollapsed).toBe(true);
