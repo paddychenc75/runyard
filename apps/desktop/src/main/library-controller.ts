@@ -304,6 +304,7 @@ export class LibraryController {
     this.#playgrounds.find((playground) => playground.id === id)?.path ?? null;
 
   async selectTab(id: string): Promise<void> {
+    this.#opening.beginNavigation();
     this.#workspace.select(id);
     this.#applyPreview();
     this.#emit();

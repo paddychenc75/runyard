@@ -24,13 +24,22 @@ interface OpeningHost {
 export class ProjectOpening {
   readonly #host: OpeningHost;
   #sequence = 0;
+  #navigation = 0;
   reveal: LibraryReveal | undefined;
   constructor(host: OpeningHost) {
     this.#host = host;
   }
+  /** 新导航取消旧打开请求的界面落点；目录检查仍会完成并更新资源库。 */
+  beginNavigation(): number {
+    this.reveal = undefined;
+    return ++this.#navigation;
+  }
   async open(id: string, withoutRun = false): Promise<void> {
+    const navigation = this.beginNavigation();
     const host = this.#host;
-    if (!(await host.present(id))) {
+    const present = await host.present(id);
+    if (navigation !== this.#navigation) return;
+    if (!present) {
       this.reveal = { id, sequence: ++this.#sequence };
       host.workspace.select(LIBRARY_TAB);
       host.show();
@@ -39,6 +48,7 @@ export class ProjectOpening {
     const run = latestRunByPlayground(host.runs()).get(id);
     if (withoutRun && run !== undefined && isActiveRun(run.state)) return this.open(id);
     await host.markOpened(id);
+    if (navigation !== this.#navigation) return;
     const isNew = host.workspace.open(id);
     host.show();
     if (!isNew) return;

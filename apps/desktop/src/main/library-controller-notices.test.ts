@@ -541,3 +541,39 @@ it("[DESKTOP-LIBRARY-VIEW-49] 打开前发现目录刚移走，更新索引并�
   expect(daemon.count("library.rescan")).toBe(3);
   expect(controller.getState().playgrounds[0]?.missing).toBe(false);
 });
+
+it.each([false, true])(
+  "[DESKTOP-LIBRARY-VIEW-49] 目录检查晚到（存在=%s）不覆盖后来选择的标签",
+  async (present) => {
+    let finish: (exists: boolean) => void = () => {};
+    let checking = false;
+    const { daemon, controller } = setup({
+      directoryExists: (path) =>
+        path.endsWith("/a") && !checking
+          ? new Promise<boolean>((resolve) => {
+              checking = true;
+              finish = resolve;
+            })
+          : Promise.resolve(true),
+    });
+    const original = playground("a", "a");
+    daemon.playgrounds = [original, playground("b", "b")];
+    daemon.onRescan = () => {
+      if (!present && checking)
+        daemon.playgrounds = [{ ...original, missingSince: NOW }, playground("b", "b")];
+    };
+    await controller.start();
+    await controller.openProjectWithoutRun("b");
+    await controller.selectTab("library");
+    const opening = controller.openProject("a");
+    expect(checking).toBe(true);
+    await controller.selectTab("b");
+    finish(present);
+    await opening;
+    expect(controller.getState().activeTab).toBe("b");
+    expect(controller.getState().libraryReveal).toBeUndefined();
+    expect(controller.getState().tabs.map((tab) => tab.id)).toEqual(["b"]);
+    expect(controller.getState().playgrounds.find((row) => row.id === "a")?.missing).toBe(!present);
+    expect(daemon.count("run.start")).toBe(0);
+  },
+);
