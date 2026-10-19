@@ -3,6 +3,7 @@ import { homedir, tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { chromium, expect } from "@playwright/test";
+import { composeEvidence } from "./preview-image-comparison.ts";
 import {
   holdPreviewRequest,
   openRefreshFixture,
@@ -134,18 +135,12 @@ try {
             scale: "css",
           });
           await comparison.setViewportSize({ width, height });
-          // 按同一窗口的真实占位坐标合成，保留主界面与原生预览的原图。
-          await comparison.setContent(
-            `<!doctype html><style>body{margin:0}img{position:absolute}</style><img width="${width}" height="${height}" src="data:image/png;base64,${appImage.toString("base64")}"><img style="left:${slot.x}px;top:${slot.y}px;width:${slot.width}px;height:${slot.height}px" src="data:image/png;base64,${previewPng}">`,
-          );
-          await comparison
-            .locator("img")
-            .evaluateAll((images) =>
-              Promise.all(images.map((image) => (image as HTMLImageElement).decode())),
-            );
-          appImage = await comparison.screenshot({
-            path: join(output, `${name}-app-composited.png`),
-          });
+          // 原生图与主界面都已核对尺寸；按真实占位坐标直接合成像素。
+          appImage = await composeEvidence(comparison, width, height, [
+            { png: appImage.toString("base64"), x: 0, y: 0, width, height },
+            { png: previewPng, ...slot },
+          ]);
+          writeFileSync(join(output, `${name}-app-composited.png`), appImage);
           await comparison.goto(pathToFileURL(designPath).href);
           await comparison.evaluate(() => document.fonts.ready);
           // Web 系列没有 1100 画板；保留原1440布局并裁取，明确它不是窄窗设计验收。
@@ -161,7 +156,24 @@ try {
             .evaluateAll((images) =>
               Promise.all(images.map((image) => (image as HTMLImageElement).decode())),
             );
-          await comparison.screenshot({ path: join(output, `${name}-comparison.png`) });
+          const paired = await composeEvidence(
+            comparison,
+            width * 2,
+            height + 40,
+            [
+              { png: designImage.toString("base64"), x: 0, y: 40, width, height },
+              { png: appImage.toString("base64"), x: width, y: 40, width, height },
+            ],
+            [
+              { text: `${board} 设计稿${width === 1100 ? "（原1440画板裁取）" : ""}`, x: 8, y: 26 },
+              {
+                text: `真实应用（原生预览按坐标合成） · ${lang} · ${theme} · ${width}`,
+                x: width + 8,
+                y: 26,
+              },
+            ],
+          );
+          writeFileSync(join(output, `${name}-comparison.png`), paired);
           measurements.push({ name, width, height, geometry, previewBounds: expectedBounds });
         }
       } finally {
