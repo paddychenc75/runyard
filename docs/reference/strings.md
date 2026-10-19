@@ -175,6 +175,7 @@
 | desktop.console.tab.label | 输出 | Output | — |
 | desktop.console.tabs.aria | 底部面板 | Bottom panel | — |
 | desktop.console.terminal.label | 终端 | Terminal | — |
+| desktop.console.terminalStart.action | 点这里或按 ⌃` 打开终端 | Click here or press ⌃` to open a terminal | — |
 | desktop.crashed.log.label | 最后的日志 | Last output | — |
 | desktop.crashed.overlay.aria | 崩溃提示 | Crash notice | — |
 | desktop.crashed.title | 已崩溃 · 退出码 {exitCode} | Crashed · exit code {exitCode} | exitCode：进程的退出码 |

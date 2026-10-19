@@ -135,3 +135,7 @@ Node 24 下先 `pnpm --filter @runyard/desktop build`，再运行 `pnpm --filter
 设计对照先运行 `node tooling/design-render/render.mjs Web WebEn WebLight WebLightEn --no-shots`，再运行 `node apps/desktop/e2e/preview-refresh-design.measure.ts`。默认在独立临时目录输出八组浅深 × 中英 × 1440/1100 的静止、加载中、设计并排图与尺寸记录；`RUNYARD_REFRESH_OUTPUT` 可指定独立输出目录，`RUNYARD_E2E_APP` 可切换到端到端包。CI 上传 `preview-refresh-design-comparison`，下载后打开八张 comparison.png 和 loading.png。
 
 Web 系列只有 1440 画板，1100 对照保留原布局裁取，不代表存在窄窗设计稿。原生预览另附 preview.png；静态项目和设计的 React 示例内容不同，原有顶栏/侧栏差异分别由 #446/#448 追踪，停止图标沿用已合并 #475。动效是 #477 批准的新增行为，不能用静止图证明动效生命周期，须结合真实端到端结果。
+
+### 脚本输出布局取证（#464）
+
+先构建桌面应用，运行 `node tooling/design-render/render.mjs Script ScriptDark ScriptEn ScriptDarkEn`，再运行 `node apps/desktop/e2e/script-output-design.measure.ts`。脚本在临时 HOME/root 中创建 Node 脚本项目，覆盖浅深、中英、1440/1100八组；输出目录由 `RUNYARD_SCRIPT_REVIEW_OUTPUT` 指定，否则新建临时目录。只验证右侧输出与底部终端入口，未点击前不创建 shell；示例程序与设计的 Python 示例不同，PR 中列明差异。CI 上传 script-output-design-comparison。

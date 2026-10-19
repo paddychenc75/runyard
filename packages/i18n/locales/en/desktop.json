@@ -425,5 +425,6 @@
   "desktop.urlConfirm.title": "Create and run this playground?",
   "desktop.urlConfirm.unknown.label": "Unknown source",
   "desktop.urlConfirm.warning.label": "The link wrote this source itself and Runyard cannot verify it. Creating the project installs dependencies and runs the template's code, so continue only if you trust it.",
-  "desktop.window.title": "Runyard"
+  "desktop.window.title": "Runyard",
+  "desktop.console.terminalStart.action": "Click here or press ⌃` to open a terminal"
 }
