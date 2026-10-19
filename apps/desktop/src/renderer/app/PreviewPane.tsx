@@ -18,6 +18,7 @@ import { PreviewStopped } from "./PreviewStopped.tsx";
 import { SlowStart } from "./SlowStart.tsx";
 import { StartFailed } from "./StartFailed.tsx";
 import { StartProgress } from "./StartProgress.tsx";
+import { usePreviewRefresh } from "./use-preview-refresh.ts";
 import { usePreviewSuspension } from "./use-preview-suspension.ts";
 
 export interface PreviewPaneProps {
@@ -39,6 +40,7 @@ export function addressLabel(url: string | null): string {
 // 地址栏左边是“刷新”，右边是“在浏览器中打开”和“开发者工具”（规格 DESKTOP-WORKSPACE-31 至 33）。
 export function PreviewPane({ bridge, tab, overlays }: PreviewPaneProps) {
   const t = useT();
+  const refresh = usePreviewRefresh(bridge, tab.id, tab.previewUrl);
   const [slot, setSlot] = useState<Bounds | null>(null);
   // 用户点了“知道了”的端口说明：记下是哪一次改用，换了端口或再次改用会重新出现
   const [dismissed, setDismissed] = useState<string | null>(null);
@@ -47,7 +49,7 @@ export function PreviewPane({ bridge, tab, overlays }: PreviewPaneProps) {
   // 命令面板里的刷新预览、在浏览器中打开、打开开发者工具：与地址栏上的按钮同一个条件（有页面可看）
   const hasPage = tab.previewUrl !== null && screen !== "starting";
   useCommands({
-    "project.reloadPreview": hasPage ? () => void bridge.call("preview.reload", tab.id) : null,
+    "project.reloadPreview": hasPage && !refresh.loading ? refresh.reload : null,
     "project.openInBrowser": hasPage
       ? () => void bridge.call("preview.openExternal", tab.id)
       : null,
@@ -107,8 +109,12 @@ export function PreviewPane({ bridge, tab, overlays }: PreviewPaneProps) {
             icon="refresh"
             size="sm"
             label={t("desktop.preview.reload.action")}
-            disabled={tab.previewUrl === null}
-            onClick={() => void bridge.call("preview.reload", tab.id)}
+            className={styles.refresh}
+            aria-busy={refresh.refreshing}
+            data-refreshing={refresh.refreshing}
+            disabled={tab.previewUrl === null || refresh.loading}
+            onClick={refresh.reload}
+            onAnimationIteration={refresh.onAnimationIteration}
           />
           <span className={styles.url}>{addressLabel(tab.previewUrl)}</span>
           <button

@@ -147,6 +147,10 @@ jobs:
       - name: 类型检查
         run: pnpm typecheck
 
+      # Electron 44 不再通过 postinstall 下载；二进制开关测试需要真实的出厂文件（#483）。
+      - name: 准备 Electron 二进制
+        run: pnpm --filter @runyard/desktop electron:download
+
       # 测试分两个阶段，放在同一个任务的两个步骤里（任务名是必过检查，不能改）：
       # 先跑单元测试（一次一个包，包内文件并行），再跑起真实进程的测试（一次一个包，包内一个工作进程），
       # 这样进程测试不再和别的测试抢 CPU（docs/guides/testing.md）。

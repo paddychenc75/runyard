@@ -7,10 +7,11 @@ export interface SettingsGroupProps {
   /** 组名行右边的按钮（运行环境的“重新检测”） */
   action?: ReactNode;
   children: ReactNode;
+  note?: ReactNode;
 }
 
 // 设置里的一组（设计稿 Settings）：组名在卡片上方，卡片里是一行行设置，行与行之间一条细线。
-export function SettingsGroup({ title, action, children }: SettingsGroupProps) {
+export function SettingsGroup({ title, action, children, note }: SettingsGroupProps) {
   return (
     <section className={styles.group}>
       <div className={styles.header}>
@@ -18,6 +19,7 @@ export function SettingsGroup({ title, action, children }: SettingsGroupProps) {
         {action}
       </div>
       <div className={styles.card}>{children}</div>
+      {note}
     </section>
   );
 }
@@ -35,7 +37,7 @@ export interface SettingsRowProps {
 
 export function SettingsRow({ title, hint, monoHint, wrapHint, children }: SettingsRowProps) {
   return (
-    <div className={styles.row}>
+    <div className={styles.row} data-settings-row="">
       <div className={styles.text}>
         <div className={styles.name}>{title}</div>
         {hint === undefined ? null : (

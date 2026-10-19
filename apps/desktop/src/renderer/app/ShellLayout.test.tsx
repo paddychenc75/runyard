@@ -15,6 +15,7 @@ let observers: (() => void)[] = [];
 
 beforeEach(() => {
   observers = [];
+  CONTAINER.width = 1200;
   (Element.prototype as { getAnimations?: () => unknown[] }).getAnimations = () => [];
   vi.stubGlobal(
     "ResizeObserver",
@@ -86,6 +87,7 @@ function setup(state: LibraryState) {
   const events = new Map<string, (payload?: unknown) => void>();
   const call = vi.fn(async (method: string, _param?: unknown) => {
     if (method === "library.get") return state;
+    if (method === "template.list") return [];
     return method === "console.get" ? [] : undefined;
   });
   const bootstrap: BootstrapInfo = {
@@ -106,7 +108,12 @@ function setup(state: LibraryState) {
     },
   } as unknown as DesktopBridge;
   const view = render(<AppFrame bridge={bridge} locale="zh-CN" theme="light" />);
-  return { ...view, call, bridge, emit: (event: string) => act(() => events.get(event)?.()) };
+  return {
+    ...view,
+    call,
+    bridge,
+    emit: (event: string, payload?: unknown) => act(() => events.get(event)?.(payload)),
+  };
 }
 
 const sidebar = () => screen.queryByRole("navigation", { name: "资源库导航" });
@@ -310,4 +317,137 @@ describe("项目标签页的可拖面板", () => {
     await userEvent.setup().keyboard("{Enter}");
     expect(treeWidth(container)).toBe("216px");
   });
+});
+
+function resizeShell(width: number) {
+  act(() => {
+    CONTAINER.width = width;
+    for (const notify of observers) notify();
+  });
+}
+it("[DESKTOP-LIBRARY-VIEW-97] [DESKTOP-LIBRARY-VIEW-67] 自动隐藏只移动侧栏内焦点，不改手动偏好", async () => {
+  setup(
+    libraryState({
+      playgrounds: [
+        {
+          id: "test",
+          name: "test",
+          path: "/lib/test",
+          kind: "server",
+          state: "idle",
+          active: false,
+          previewing: false,
+          busy: false,
+          note: "",
+          templateId: "html",
+          templateName: null,
+          port: null,
+          autoClean: { enabled: false, days: null },
+          lastUsedAt: 1,
+          lastOpenedAt: 1,
+          createdBy: { kind: "user" },
+          createdAt: 1,
+          missing: false,
+        },
+      ],
+    }),
+  );
+  const nav = await screen.findByRole("navigation", { name: "资源库导航" });
+  nav.querySelector<HTMLElement>('[aria-current="page"]')?.focus();
+  resizeShell(1024);
+  expect(sidebar()).toBeNull();
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "显示侧栏" }));
+  expect(window.localStorage.getItem("runyard.layout.v1")).toBeNull();
+  resizeShell(1440);
+  const search = screen.getByRole("textbox", { name: "搜索项目" });
+  search.focus();
+  resizeShell(720);
+  expect(document.activeElement).toBe(search);
+  const table = screen.getByRole("table", { name: "项目列表" });
+  table.focus();
+  resizeShell(900);
+  expect(document.activeElement).toBe(table);
+});
+it("[DESKTOP-LIBRARY-VIEW-98] 自动收起后1100恢复，手动收起偏好跨宽度和重开保留", async () => {
+  const user = userEvent.setup();
+  let view = setup(libraryState({ loaded: false }));
+  await screen.findByRole("navigation", { name: "资源库导航" });
+  resizeShell(720);
+  expect(sidebar()).toBeNull();
+  resizeShell(1100);
+  expect(sidebar()).toBeTruthy();
+  await user.click(screen.getByRole("button", { name: "收起侧栏" }));
+  const saved = window.localStorage.getItem("runyard.layout.v1");
+  resizeShell(720);
+  resizeShell(1440);
+  expect(sidebar()).toBeNull();
+  expect(window.localStorage.getItem("runyard.layout.v1")).toBe(saved);
+  view.unmount();
+  view = setup(libraryState({ loaded: false }));
+  await screen.findByRole("button", { name: "显示侧栏" });
+  expect(sidebar()).toBeNull();
+});
+it("[DESKTOP-LIBRARY-VIEW-99] 覆盖侧栏按钮与快捷键可开关，分类和Esc收回并归还焦点", async () => {
+  const user = userEvent.setup();
+  const { container, emit } = setup(libraryState({ loaded: false }));
+  await screen.findByRole("navigation", { name: "资源库导航" });
+  resizeShell(720);
+  await user.click(screen.getByRole("button", { name: "显示侧栏" }));
+  expect(container.querySelector("[data-sidebar-overlay]")).toBeTruthy();
+  expect(document.activeElement).toBe(sidebar()?.querySelector('[aria-current="page"]'));
+  await user.keyboard("{Escape}");
+  expect(sidebar()).toBeNull();
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "显示侧栏" }));
+  emit("sidebar.toggle");
+  await user.click(screen.getByRole("button", { name: /自动清理/ }));
+  expect(sidebar()).toBeNull();
+  expect(window.localStorage.getItem("runyard.layout.v1")).toBeNull();
+});
+
+it("[DESKTOP-LIBRARY-VIEW-98] 收起偏好的临时侧栏拉宽后焦点返回切换按钮", async () => {
+  window.localStorage.setItem("runyard.layout.v1", JSON.stringify({ sidebarCollapsed: true }));
+  const { emit } = setup(libraryState({ loaded: false }));
+  await screen.findByRole("button", { name: "显示侧栏" });
+  resizeShell(720);
+  emit("sidebar.toggle");
+  expect(sidebar()).toBeTruthy();
+  resizeShell(1440);
+  expect(sidebar()).toBeNull();
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "显示侧栏" }));
+});
+it("[DESKTOP-LIBRARY-VIEW-99] 收起偏好从临时侧栏进入模板仍保留原导航，不写偏好", async () => {
+  window.localStorage.setItem("runyard.layout.v1", JSON.stringify({ sidebarCollapsed: true }));
+  const saved = window.localStorage.getItem("runyard.layout.v1");
+  const user = userEvent.setup();
+  const { emit } = setup(libraryState({ loaded: false }));
+  await screen.findByRole("button", { name: "显示侧栏" });
+  resizeShell(720);
+  emit("sidebar.toggle");
+  await user.click(screen.getByRole("button", { name: /^模板/ }));
+  expect(sidebar()).toBeTruthy();
+  await user.click(screen.getByRole("button", { name: "收起侧栏" }));
+  expect(screen.getByRole("heading", { name: "模板" })).toBeTruthy();
+  expect(sidebar()).toBeNull();
+  await user.click(screen.getByRole("button", { name: "显示侧栏" }));
+  expect(sidebar()).toBeTruthy();
+  await user.click(screen.getByRole("button", { name: /^全部/ }));
+  expect(sidebar()).toBeNull();
+  expect(window.localStorage.getItem("runyard.layout.v1")).toBe(saved);
+});
+
+it("[DESKTOP-LIBRARY-VIEW-98] 从临时模板导航打开项目再回库不遗留展开状态", async () => {
+  window.localStorage.setItem("runyard.layout.v1", JSON.stringify({ sidebarCollapsed: true }));
+  const user = userEvent.setup();
+  const { emit } = setup(libraryState({ loaded: false }));
+  await screen.findByRole("button", { name: "显示侧栏" });
+  resizeShell(720);
+  emit("sidebar.toggle");
+  await user.click(screen.getByRole("button", { name: /^模板/ }));
+  emit("library.changed", projectState());
+  emit("library.changed", libraryState({ loaded: false }));
+  resizeShell(1440);
+  expect(sidebar()).toBeNull();
+  expect(
+    JSON.parse(window.localStorage.getItem("runyard.layout.v1") ?? "{}").sidebarCollapsed,
+  ).toBe(true);
 });

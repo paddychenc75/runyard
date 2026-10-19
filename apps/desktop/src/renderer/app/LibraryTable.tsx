@@ -1,7 +1,6 @@
-import type { Locale } from "@runyard/i18n";
+import type { Locale, Localized } from "@runyard/i18n";
 import { useFormat, useT } from "@runyard/i18n/react";
 import {
-  Badge,
   DataTable,
   type DataTableColumn,
   type DataTableDetail,
@@ -15,6 +14,7 @@ import {
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { isDueTomorrow } from "../../shared/clean-due.ts";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
+import { lastUsedAt } from "../../shared/last-used.ts";
 import type { PlaygroundRow } from "../../shared/library-state.ts";
 import type { SortKey } from "../library-query.ts";
 import {
@@ -27,7 +27,7 @@ import {
   statusMarkOf,
 } from "../library-view.ts";
 import { ActionFailedDialog } from "./ActionFailedDialog.tsx";
-import { CreatorCell, CreatorDetails } from "./CreatorCell.tsx";
+import { CreatorDetails, CreatorTag } from "./CreatorCell.tsx";
 import { sizeColumn } from "./LibrarySizeColumn.tsx";
 import styles from "./LibraryTable.module.css";
 import { MissingNote } from "./MissingNote.tsx";
@@ -46,12 +46,10 @@ export interface LibraryTableProps {
   onSortChange: (sort: SortKey) => void;
 }
 
-// 没有值的格子：端口、从没打开过的“上次打开”。设计稿画的是一条短横线
+// 没有值的格子用短横线。
 const NONE = "—";
 
-// 资源库列表（设计稿 Main、MainNarrow；PRD #prd-library-list）：依次是名称与备注、状态、模板、
-// 端口、保留、上次打开、创建者、操作。窗口变窄时名称与备注固定在左，圆点补进名称列。
-// 操作列是“打开”或“停止运行”加“更多”菜单（RowActions，#171）；重命名和编辑备注就地变成行内编辑（#182）。
+// 资源库方案 A：列宽取设计稿组合已有变量；窄窗口先收最近使用、端口，再把模板收为徽标。
 export function LibraryTable({ bridge, locale, rows, now, sort, onSortChange }: LibraryTableProps) {
   const t = useT();
   const format = useFormat();
@@ -85,73 +83,88 @@ export function LibraryTable({ bridge, locale, rows, now, sort, onSortChange }: 
       id: "name",
       header: t("library.column.name.label"),
       width: "fill",
-      pin: "start",
       render: (row) =>
         row.id === editingId ? (
           <RenameInlineFields draft={draft} />
         ) : (
-          <div className={styles.nameCell}>
-            <StatusMark
-              status={statusMarkOf(row.state)}
-              markLabel={t(stateLabelKey(row.state))}
-              data-when-overflowing=""
-            />
-            <div className={styles.nameText}>
+          <div className={styles.nameText}>
+            <div className={styles.nameLine}>
               <Truncate className={styles.name}>
                 <UserText>{row.name}</UserText>
               </Truncate>
-              {row.note === "" ? (
-                <Truncate className={styles.noteEmpty}>{t("library.note.empty.label")}</Truncate>
-              ) : (
-                <Truncate className={styles.note}>
-                  <UserText>{row.note}</UserText>
-                </Truncate>
-              )}
+              <CreatorTag
+                row={row}
+                expanded={expanded.has(row.id)}
+                onToggle={() => toggleExpanded(row.id)}
+              />
             </div>
+            {row.note === "" ? (
+              <Truncate className={styles.noteEmpty}>{t("library.note.empty.label")}</Truncate>
+            ) : (
+              <Truncate className={styles.note}>
+                <UserText>{row.note}</UserText>
+              </Truncate>
+            )}
           </div>
         ),
     },
     {
       id: "status",
       header: t("library.column.status.label"),
-      width: "xl",
+      width: {
+        size: "calc(var(--size-column-xl) - var(--space-4))",
+        compact: { whenCollapsed: "port", size: "var(--size-column-flex-min)" },
+      },
       render: (row) =>
         row.missing ? (
           <span className={styles.missingStatus} data-missing-status="">
-            <Icon name="warning" size={14} />
+            <Icon name="warning" size={12} />
             <Truncate>{t("library.missing.status.label")}</Truncate>
           </span>
         ) : (
-          <StatusMark status={statusMarkOf(row.state)}>{t(stateLabelKey(row.state))}</StatusMark>
+          <span className={styles.statusCell}>
+            <StatusMark status={statusMarkOf(row.state)}>{t(stateLabelKey(row.state))}</StatusMark>
+            {/* 端口列收起后，运行中的行把端口写在状态后面（规格 DESKTOP-LIBRARY-VIEW-29） */}
+            {row.active && row.port !== null ? (
+              <UserText mono className={styles.statusPort} data-when-collapsed="port">
+                {portLabel(row.port)}
+              </UserText>
+            ) : null}
+          </span>
         ),
     },
     {
       id: "template",
       header: t("library.column.template.label"),
-      width: "flex",
-      render: (row) =>
-        dim(
+      width: { size: "calc(var(--size-column-flex-min) + var(--space-5))" },
+      collapse: { order: 3, mode: "narrow", narrowWidth: { size: "var(--size-tile)" } },
+      render: (row, { collapsed }) => {
+        const name =
+          row.templateName === null ? row.templateId : pickLocalizedText(row.templateName, locale);
+        const tile = (
+          <MonogramTile
+            letters={monogramOf(row.templateId)}
+            logo={logoOf(row.templateId)}
+            brand={brandOf(row.templateId)}
+          />
+        );
+        return dim(
           row,
           <span className={styles.template}>
-            <MonogramTile
-              letters={monogramOf(row.templateId)}
-              logo={logoOf(row.templateId)}
-              brand={brandOf(row.templateId)}
-            />
-            <Truncate>
-              <UserText>
-                {row.templateName === null
-                  ? row.templateId
-                  : pickLocalizedText(row.templateName, locale)}
-              </UserText>
+            {/* 收成只有徽标时，悬停显示模板名（规格 DESKTOP-LIBRARY-VIEW-28） */}
+            {collapsed ? <Tooltip content={name as Localized}>{tile}</Tooltip> : tile}
+            <Truncate data-collapse-hide="">
+              <UserText>{name}</UserText>
             </Truncate>
           </span>,
-        ),
+        );
+      },
     },
     {
       id: "port",
       header: t("library.column.port.label"),
-      width: "sm",
+      width: { size: "calc(var(--size-column-sm) - var(--space-9))" },
+      collapse: { order: 2, mode: "hide" },
       render: (row) =>
         dim(
           row,
@@ -164,54 +177,47 @@ export function LibraryTable({ bridge, locale, rows, now, sort, onSortChange }: 
           ),
         ),
     },
+    sizeColumn(t("library.column.size.label"), sort === "size", () => onSortChange("size")),
+    {
+      id: "lastUsed",
+      header: t("library.column.lastUsed.label"),
+      width: "md",
+      collapse: { order: 1, mode: "hide" },
+      render: (row) =>
+        dim(
+          row,
+          <span className={styles.secondary}>{format.relativeTime(lastUsedAt(row), now)}</span>,
+        ),
+    },
     {
       id: "retention",
       header: t("library.column.retention.label"),
-      width: "md",
-      render: (row) => dim(row, retentionCell(row, now, t)),
-    },
-    {
-      id: "lastOpened",
-      header: t("library.column.lastOpened.label"),
-      width: "lg",
+      width: {
+        size: "calc(var(--size-column-lg) - var(--space-3))",
+        compact: {
+          whenCollapsed: "template",
+          size: "calc(var(--size-column-md) - var(--space-2))",
+        },
+      },
       render: (row) =>
         row.id === editingId ? (
           <RenameInlineActions draft={draft} />
         ) : (
-          dim(
-            row,
-            <span className={styles.secondary}>
-              {row.lastOpenedAt === null ? NONE : format.relativeTime(row.lastOpenedAt, now)}
-            </span>,
-          )
-        ),
-    },
-    sizeColumn(t("library.column.size.label"), sort === "size", () => onSortChange("size")),
-    {
-      id: "creator",
-      header: t("library.column.creator.label"),
-      width: "xxl",
-      render: (row) =>
-        dim(
-          row,
-          <CreatorCell
-            row={row}
-            expanded={expanded.has(row.id)}
-            onToggle={() => toggleExpanded(row.id)}
-          />,
+          dim(row, retentionCell(row, now, t))
         ),
     },
     {
       id: "actions",
       hiddenHeader: t("library.column.actions.aria"),
-      width: "lg",
-      pin: "end",
-      render: (row) => (
+      width: { size: "calc(var(--size-column-lg) - var(--space-3))" },
+      reveal: true,
+      render: (row, { selected }) => (
         <RowActions
           bridge={bridge}
           row={row}
           taken={taken}
           now={now}
+          tabbable={selected}
           onInlineRename={(target, focus) =>
             draft.begin(
               { id: target.id, name: target.name, note: target.note, running: target.active },
@@ -234,9 +240,9 @@ export function LibraryTable({ bridge, locale, rows, now, sort, onSortChange }: 
         getRowId={(row) => row.id}
         selectedId={selectedId}
         editingId={editingId}
-        // 编辑中的行：名称框占名称到模板三列，取消和保存占最后三列（设计稿 RenameInline）
+        // 编辑中的行：名称框占名称到模板三列，取消和保存占自动清理和操作两列（设计稿 RenameInline）
         cellSpan={(row, columnId) =>
-          row.id !== editingId ? 1 : columnId === "name" || columnId === "lastOpened" ? 3 : 1
+          row.id !== editingId ? 1 : columnId === "name" ? 3 : columnId === "retention" ? 2 : 1
         }
         renderDetail={(row): DataTableDetail | null => {
           if (row.missing) {
@@ -276,24 +282,32 @@ export function LibraryTable({ bridge, locale, rows, now, sort, onSortChange }: 
 
 const portLabel = (port: number) => `:${port}`;
 
+// 自动清理列（规格 DESKTOP-LIBRARY-VIEW-03）：没开写淡灰的“—”，开了写时钟图标加“剩 N 天”，
+// 到期前一天图标和文字都用警示色写“明天清理”；不用胶囊
 function retentionCell(row: PlaygroundRow, now: number, t: ReturnType<typeof useT>): ReactNode {
-  // 离到期不足一天：警示色的“明天清理”（规格 DESKTOP-LIBRARY-VIEW-57）
   if (isDueTomorrow(row, now))
     return (
-      <Badge variant="dashed" className={styles.tomorrow} data-clean-tomorrow="">
+      <span className={styles.cleanSoon} data-clean-tomorrow="">
+        <Icon name="clock" size={12} />
         {t("library.retention.tomorrow.label")}
-      </Badge>
+      </span>
     );
   const retention = retentionOf(row, now);
   if (retention.kind === "kept")
-    return <Badge variant="solid">{t("library.retention.kept.label")}</Badge>;
+    return <span className={styles.tertiary}>{t("library.retention.off.label")}</span>;
   if (retention.kind === "autoCleanUnknown")
-    return <Badge variant="dashed">{t("library.filter.autoClean.label")}</Badge>;
+    return (
+      <span className={styles.clean}>
+        <Icon name="clock" size={12} className={styles.tertiary} />
+        {t("library.filter.autoClean.label")}
+      </span>
+    );
   return (
     <Tooltip content={t("library.retention.autoClean.tooltip", { days: retention.daysLeft })}>
-      <Badge variant="dashed">
+      <span className={styles.clean}>
+        <Icon name="clock" size={12} className={styles.tertiary} />
         {t("library.retention.autoClean.label", { days: retention.daysLeft })}
-      </Badge>
+      </span>
     </Tooltip>
   );
 }

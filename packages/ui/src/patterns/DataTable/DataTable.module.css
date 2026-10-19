@@ -1,5 +1,5 @@
 /* 列宽是 --table-columns（由组件按列的档位拼出，值都是设计变量）；
-   表宽取视口宽，但不小于各列最小宽之和，窄了就比视口宽，由滚动区横向滚动。
+   表宽取视口宽，但不小于各列最小宽之和：放不下时组件先按 collapse 收列，不横向滚动。
    不用 max(100%, …)：百分比取决于滚动区的内容宽，内容宽又取决于表，会循环成“按文字最长算” */
 .root {
   --row-bg: var(--color-bg-window);
@@ -31,10 +31,10 @@
 .row {
   display: grid;
   grid-template-columns: var(--table-columns);
-  column-gap: var(--space-6);
+  column-gap: var(--table-gap, var(--space-7));
   align-items: center;
   box-sizing: border-box;
-  padding-inline: var(--space-6);
+  padding-inline: var(--table-padding, calc(var(--space-6) + var(--space-1)));
 }
 
 .head .row {
@@ -61,8 +61,22 @@
   margin-block-start: var(--space-1);
 }
 
+/* 悬停比选中淡；表格有焦点时选中是淡强调色，失焦后改成灰底 */
 .body .row[data-selected] {
-  background-image: linear-gradient(var(--color-fill-accent-tint), var(--color-fill-accent-tint));
+  background-image: linear-gradient(var(--glass-tab-selected-bg), var(--glass-tab-selected-bg));
+}
+
+/* 键盘焦点与选中分开表达，鼠标选中时不增加一圈强调边。 */
+.table:focus-visible .row[data-selected] {
+  outline: 1px solid var(--color-line-accent);
+  outline-offset: -1px;
+}
+
+.root:focus-within .body .row[data-selected] {
+  background-image: linear-gradient(
+    var(--color-fill-table-selected),
+    var(--color-fill-table-selected)
+  );
 }
 
 /* 行内编辑（设计稿 RenameInline）：行高随内容，淡强调底加一圈强调线 */
@@ -74,7 +88,7 @@
 }
 
 .body .row:not([data-selected]):not([data-editing]):hover {
-  background-image: linear-gradient(var(--color-fill-neutral), var(--color-fill-neutral));
+  background-image: linear-gradient(var(--color-fill-table-hover), var(--color-fill-table-hover));
 }
 
 .cell,
@@ -118,58 +132,24 @@
   border-radius: var(--radius-row);
 }
 
-/* 固定的列要盖住横向滚过去的内容，所以要有不透明的底：取整行的底（含选中的淡色） */
-.cell[data-pin],
-.headerCell[data-pin] {
-  position: sticky;
-  z-index: var(--z-base);
-  background: inherit;
+/* 表格是一个 Tab 停点；焦点环不画在整张表上（选中行就是焦点的位置），没有选中行时才画 */
+.table:focus-visible {
+  outline: none;
 }
 
-/* 行的左右内边距要让固定列贴着行边：固定列自己补回这一段，选中的强调线画在它上面 */
-.row > [data-pin="start"] {
-  margin-inline-start: calc(var(--space-6) * -1);
-  padding-inline-start: var(--space-6);
-  border-start-start-radius: var(--radius-row);
-  border-end-start-radius: var(--radius-row);
+.table:not([data-has-selection]):focus-visible {
+  border-radius: var(--radius-row);
+  box-shadow: var(--shadow-focus-ring);
 }
 
-.row > [data-pin="end"] {
-  margin-inline-end: calc(var(--space-6) * -1);
-  padding-inline-end: var(--space-6);
-  border-start-end-radius: var(--radius-row);
-  border-end-end-radius: var(--radius-row);
+/* 操作列（reveal）平时不显示：用 opacity 而不是 display 或 visibility，按钮要留在无障碍树里 */
+.cell[data-reveal] > * {
+  opacity: 0;
+  transition: opacity var(--motion-duration-fast) linear;
 }
 
-/* 窗口放不下、固定列贴在可见区域的边上时，圆角会漏出被盖在底下的列（右缘的括号状碎片，#348）：
-   此时固定列的角收成直角，圆角只在整行放得下、固定列正好是行首行尾时才要 */
-.root[data-overflowing] .row > [data-pin] {
-  border-radius: 0;
-}
-
-/* 固定列和滚动过去的列之间画一条细线：表头里被固定列盖住的字（“创建者”只剩半截）才读得出是被盖住，不是错位 */
-.root[data-overflowing] .row > [data-pin="end"] {
-  box-shadow: inset 1px 0 0 var(--color-line-hairline);
-}
-
-.root[data-overflowing] .row > [data-pin="start"] {
-  box-shadow: inset -1px 0 0 var(--color-line-hairline);
-}
-
-.head .headerCell[data-pin] {
-  background: var(--color-bg-window);
-}
-
-[data-pin="start"] {
-  inset-inline-start: 0;
-}
-
-[data-pin="end"] {
-  inset-inline-end: 0;
-}
-
-.body .row[data-selected] > [data-pin="start"] {
-  box-shadow: inset calc(var(--space-1) + 1px) 0 0 var(--color-line-accent);
+.row[data-revealed] .cell[data-reveal] > * {
+  opacity: 1;
 }
 
 .hidden {
@@ -180,13 +160,18 @@
   clip-path: inset(50%);
 }
 
-/* 选择器要比被隐藏的组件自己的 .root 规则更具体，否则 display 谁先谁后说了算 */
-.table [data-when-overflowing] {
+/* 收窄的列：内容里标了 data-collapse-hide 的部分不画（模板列只剩徽标）；
+   标了 data-when-collapsed 的部分只在对应的列被收起时才显示。选择器要比组件自己的规则更具体 */
+.table [data-collapsed] [data-collapse-hide] {
   display: none;
 }
 
-.root[data-overflowing] .table [data-when-overflowing] {
-  display: inline-flex;
+.table [data-when-collapsed] {
+  display: none;
+}
+
+.root[data-collapsed~="port"] .table [data-when-collapsed~="port"] {
+  display: inline;
 }
 
 /* 横跨几列的格子（行内编辑的输入框）；最多跨 4 列 */
@@ -222,11 +207,8 @@
 }
 
 .detailCell {
-  position: sticky;
-  inset-inline-start: 0;
   display: block;
   box-sizing: border-box;
-  inline-size: var(--table-viewport, 100%);
-  max-inline-size: 100%;
+  inline-size: 100%;
   padding: var(--space-4) var(--space-6);
 }

@@ -81,6 +81,8 @@ disagree, `tokens.json` wins.
 | Accent line (focus ring, caret, non-text marks) (`--color-line-accent`) | #0071E3 | #0A84FF |
 | Accent text (`--color-text-accent`) | #0058B0 | #4DA3FF |
 | Link (`--color-text-link`) | #0071E3 | #4DA3FF |
+| Table hover: subtle neutral fill below selection (`--color-fill-table-hover`) | rgba(0, 0, 0, 0.03) | rgba(255, 255, 255, 0.04) |
+| Table selection: restrained accent fill (`--color-fill-table-selected`) | rgba(0, 113, 227, 0.08) | rgba(10, 132, 255, 0.14) |
 | Accent tint (selected row, focus ring) (`--color-fill-accent-tint`) | rgba(0, 113, 227, 0.08) | rgba(10, 132, 255, 0.32) |
 | Running: dot (`--color-status-running-mark`) | #28A745 | #30D158 |
 | Running: text (`--color-status-running-text`) | #1B7A34 | #30D158 |
@@ -194,6 +196,12 @@ disagree, `tokens.json` wins.
 
 | Variable | Value | Role |
 | --- | --- | --- |
+| `--size-settings-window-width` | 820px | 设置窗口默认宽度 |
+| `--size-settings-window-height` | 900px | 设置窗口默认高度 |
+| `--size-settings-window-min-width` | 760px | 设置窗口最小宽度 |
+| `--size-settings-window-min-height` | 420px | 设置窗口最小高度 |
+| `--size-settings-titlebar` | 52px | 设置窗口原生标题栏占位 |
+| `--size-window-buttons-inset` | 19px | 标准红绿灯按钮框离窗口左边和上边 |
 | `--size-toolbar` | 44px | Toolbar capsule height |
 | `--size-control-lg` | 40px | Primary button height |
 | `--size-control-md` | 32px | Secondary button height |
@@ -348,6 +356,24 @@ disagree, `tokens.json` wins.
 | `--z-dialog` | 300 | Dialogs |
 | `--z-toast` | 400 | Toasts |
 | `--z-tooltip` | 500 | Tooltips |
+
+### Notifications
+
+| Variable | Value | Role |
+| --- | --- | --- |
+| `--size-notification-card` | 360px | Notification card width |
+| `--size-notification-list` | 380px | Notification list width |
+| `--size-notification-top` | 50px | Notification cards top inset |
+| `--size-notification-count` | 15px | Notification count height |
+| `--size-notification-toast` | 36px | Success toast height |
+| `--size-notification-close-space` | 36px | Notification close button clearance |
+| `--size-notification-title` | 15px | Notification list title |
+
+### Notification motion
+
+| Variable | Value | Role |
+| --- | --- | --- |
+| `--motion-duration-notice-out` | 180ms | Notification exit |
 
 <!-- generated:tokens 结束 -->
 

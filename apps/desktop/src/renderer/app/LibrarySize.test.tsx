@@ -258,11 +258,11 @@ describe("按大小排序", () => {
     expect(await order()).toEqual(["zeta", "alpha", "beta", "gamma"]);
   });
 
-  it("[DESKTOP-LIBRARY-VIEW-77] 按最近打开排序时数字实时变化、行不动；改为按大小排序才按新数字排位", async () => {
+  it("[DESKTOP-LIBRARY-VIEW-77] 按最近使用排序时数字实时变化、行不动；改为按大小排序才按新数字排位", async () => {
     const user = userEvent.setup();
     const before = [
       row("react-counter", { size: size(186_300_000), lastOpenedAt: NOW }),
-      row("other", { size: size(300 * MB), lastOpenedAt: NOW - 60_000 }),
+      row("other", { size: size(300 * MB), lastOpenedAt: NOW - 60_000, lastUsedAt: NOW - 60_000 }),
     ];
     const { push } = setup(before);
     expect((await sizeCell("react-counter")).textContent).toBe("186.3 MB");

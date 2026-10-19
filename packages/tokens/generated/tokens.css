@@ -75,6 +75,8 @@
   --color-line-accent: light-dark(var(--blue-600), var(--blue-500));
   --color-text-accent: light-dark(var(--blue-700), var(--blue-400));
   --color-text-link: light-dark(var(--blue-600), var(--blue-400));
+  --color-fill-table-hover: light-dark(rgba(0, 0, 0, 0.03), rgba(255, 255, 255, 0.04));
+  --color-fill-table-selected: light-dark(rgba(0, 113, 227, 0.08), rgba(10, 132, 255, 0.14));
   --color-fill-accent-tint: light-dark(rgba(0, 113, 227, 0.08), rgba(10, 132, 255, 0.32));
   --color-status-running-mark: light-dark(var(--green-600), var(--green-500));
   --color-status-running-text: light-dark(var(--green-800), var(--green-500));
@@ -158,6 +160,12 @@
   --radius-control: 9px;
   --radius-checkbox: 5px;
   --radius-capsule: 9999px;
+  --size-settings-window-width: 820px;
+  --size-settings-window-height: 900px;
+  --size-settings-window-min-width: 760px;
+  --size-settings-window-min-height: 420px;
+  --size-settings-titlebar: 52px;
+  --size-window-buttons-inset: 19px;
   --size-toolbar: 44px;
   --size-control-lg: 40px;
   --size-control-md: 32px;
@@ -272,6 +280,14 @@
   --z-dialog: 300;
   --z-toast: 400;
   --z-tooltip: 500;
+  --size-notification-card: 360px;
+  --size-notification-list: 380px;
+  --size-notification-top: 50px;
+  --size-notification-count: 15px;
+  --size-notification-toast: 36px;
+  --size-notification-close-space: 36px;
+  --size-notification-title: 15px;
+  --motion-duration-notice-out: 180ms;
 }
 
 :root[data-theme="light"] {

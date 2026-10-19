@@ -18,6 +18,17 @@
 5. **写测试。** 管理进程一侧用 `supervisor-harness.test.ts` 的假平台和 `TestClient` 走真的连接：断言成功的出参、每个错误码的 `code` 和 `params`、非法入参得 `USAGE`、多出的未知字段被忽略。每个 `验证：test` 场景的测试标题带编号，如 `[RUN-OWNERSHIP-01]`。
 6. **接客户端。** 在客户端包（`client`）加带类型的调用，类型取自登记表；命令行的命令在 `packages/cli`，做法见 `docs/guides/add-cli-command.md`。桌面应用的界面进程只能调白名单内的方法，`supervisor.shutdown` 一类不在白名单。
 
+## 只在桌面应用内的界面通道
+
+renderer 到主进程的专用能力不经过管理进程，不登记到 protocol 的管理方法表：
+
+1. 在 `apps/desktop/src/shared/` 定义带类型的方法/事件，加入 `desktop-bridge.ts` 的两份白名单；预加载脚本只用现有 `createBridge` 转发，不暴露原始 ipcRenderer。
+2. 主进程为不可信入参做形状与能力范围校验，并保留 `registerBridgeHandlers` 对来源页面的检查。涉及文件先经 `confine` 解符号链接并限定项目；只接项目 id 加相对路径。
+3. renderer 仅经 `bridge/` 获取能力；功能模块不直接碰 window.runyard。耗时请求应可取消，失效文档和关闭项目的晚回包丢弃。
+4. 同一 PR 补白名单、非法参数/路径与能力真实路径测试。修改共享类型后跑 typecheck 与完整 verify；不要为此修改管理进程协议版本。
+
+Vue 通道例子：`shared/vue-language.ts`、`main/vue-language/vue-ipc.ts`、`renderer/bridge/vue-language.ts`。
+
 ## 验证
 
 - `pnpm test --filter @runyard/protocol --filter @runyard/supervisor`

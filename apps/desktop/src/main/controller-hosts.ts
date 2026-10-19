@@ -16,8 +16,8 @@ export interface PreviewHost {
   /** 截当前预览的一帧；没有预览是 null */
   capture(): Promise<string | null>;
   setVisible(visible: boolean): void;
-  /** 重新加载这个项目预览里的当前页面（规格 DESKTOP-WORKSPACE-31） */
-  reload(playgroundId: string): void;
+  /** 重新加载当前预览；真实宿主的 Promise 等到加载结束或视图销毁（规格 DESKTOP-WORKSPACE-31、71） */
+  reload(playgroundId: string): void | Promise<void>;
   /** 这个项目预览此刻加载着的地址；没有预览是 undefined（规格 DESKTOP-WORKSPACE-32） */
   currentUrl(playgroundId: string): string | undefined;
   /** 打开这个项目预览页面自己的开发者工具，不是应用界面的（规格 DESKTOP-WORKSPACE-33） */

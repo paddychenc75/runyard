@@ -63,7 +63,10 @@ export function sizeColumn(
   return {
     id: "size",
     header,
-    width: "sm",
+    width: {
+      size: "var(--size-column-sm)",
+      compact: { whenCollapsed: "template", size: "calc(var(--size-column-sm) - var(--space-4))" },
+    },
     align: "end",
     sort: { sorted, onSort },
     render: (row) => <SizeCell row={row} />,

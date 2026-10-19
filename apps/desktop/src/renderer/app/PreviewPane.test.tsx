@@ -1,11 +1,12 @@
 // @vitest-environment jsdom
 import { desktopCatalogs } from "@runyard/i18n";
 import { I18nProvider } from "@runyard/i18n/react";
-import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { TabRow } from "../../shared/library-state.ts";
+import { CommandContext, CommandHost } from "../shared/command-host.tsx";
 import { OverlayCounter } from "../shared/overlay-counter.ts";
 import { addressLabel, PreviewPane } from "./PreviewPane.tsx";
 import { sampleTab } from "./sample-tab.ts";
@@ -63,22 +64,181 @@ function setup(row: TabRow, capture: string | null | Error = "data:image/png;bas
     on: () => () => {},
   } as unknown as DesktopBridge;
   const overlays = new OverlayCounter();
+  const commands = new CommandHost();
   const view = (next: TabRow) => (
     <I18nProvider locale="zh-CN" platform="darwin" catalogs={desktopCatalogs}>
-      <PreviewPane bridge={bridge} tab={next} overlays={overlays} />
+      <CommandContext.Provider value={commands}>
+        <PreviewPane bridge={bridge} tab={next} overlays={overlays} />
+      </CommandContext.Provider>
     </I18nProvider>
   );
   const utils = render(view(row));
   return {
     ...utils,
     calls,
+    bridge,
+    commands,
     frameShownWhenHidden,
     overlays,
     rerender: (next: TabRow) => utils.rerender(view(next)),
   };
 }
 
+// jsdom 没有 AnimationEvent，React 在初始化时选择 webkitAnimationIteration；真实 Electron 用标准事件。
+function completedCircle(button: HTMLElement): void {
+  fireEvent(button, new Event("webkitAnimationIteration", { bubbles: true }));
+}
+
 describe("预览区", () => {
+  it("[DESKTOP-WORKSPACE-71] 刷新立即忙碌，真实请求结束前不重复发送，快速完成仍保留一圈", async () => {
+    const { bridge, calls } = setup(tab("http://127.0.0.1:7101/"));
+    let finish = () => {};
+    vi.mocked(bridge.call).mockImplementationOnce(
+      () =>
+        new Promise<undefined>((resolve) => {
+          finish = () => resolve(undefined);
+        }),
+    );
+    const button = screen.getByRole("button", { name: "刷新" });
+    vi.useFakeTimers();
+    vi.spyOn(performance, "now").mockImplementation(() => Date.now());
+    try {
+      fireEvent.click(button);
+      expect(button.getAttribute("aria-busy")).toBe("true");
+      fireEvent.click(button);
+      expect(
+        vi.mocked(bridge.call).mock.calls.filter(([name]) => name === "preview.reload"),
+      ).toHaveLength(1);
+      await act(async () => finish());
+      expect(button.getAttribute("aria-busy")).toBe("true");
+      expect((button as HTMLButtonElement).disabled).toBe(false);
+      await act(async () => vi.advanceTimersByTime(900));
+      expect(button.getAttribute("aria-busy")).toBe("true");
+      completedCircle(button);
+      expect(button.getAttribute("aria-busy")).toBe("false");
+      expect(calls.filter(([name]) => name === "run.restart")).toHaveLength(0);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("[DESKTOP-WORKSPACE-71] 命令入口同样旋转，慢加载不提前结束，失败后可重试", async () => {
+    const { bridge, commands } = setup(tab("http://127.0.0.1:7101/"));
+    let fail = () => {};
+    vi.mocked(bridge.call).mockImplementationOnce(
+      () =>
+        new Promise<undefined>((_resolve, reject) => {
+          fail = () => reject(new Error("disconnected"));
+        }),
+    );
+    const button = screen.getByRole("button", { name: "刷新" });
+    vi.useFakeTimers();
+    vi.spyOn(performance, "now").mockImplementation(() => Date.now());
+    try {
+      act(() => {
+        expect(commands.run("project.reloadPreview")).toBe(true);
+      });
+      await act(async () => vi.advanceTimersByTime(2000));
+      expect(button.getAttribute("aria-busy")).toBe("true");
+      expect((button as HTMLButtonElement).disabled).toBe(true);
+      expect(commands.run("project.reloadPreview")).toBe(false);
+      await act(async () => fail());
+      await act(async () => vi.advanceTimersByTime(900));
+      completedCircle(button);
+      expect(button.getAttribute("aria-busy")).toBe("false");
+      expect((button as HTMLButtonElement).disabled).toBe(false);
+      act(() => {
+        commands.run("project.reloadPreview");
+      });
+      expect(button.getAttribute("aria-busy")).toBe("true");
+      await act(async () => vi.runOnlyPendingTimers());
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("[DESKTOP-WORKSPACE-71] 切换项目或替换地址后旧回调不能结束新的旋转，卸载不遗留计时器", async () => {
+    const { bridge, rerender, unmount } = setup(tab("http://127.0.0.1:7101/"));
+    const finishes: (() => void)[] = [];
+    vi.mocked(bridge.call).mockImplementation((method) => {
+      if (method === "preview.reload")
+        return new Promise<undefined>((resolve) => {
+          finishes.push(() => resolve(undefined));
+        });
+      return Promise.resolve(undefined);
+    });
+    vi.useFakeTimers();
+    vi.spyOn(performance, "now").mockImplementation(() => Date.now());
+    try {
+      const button = () => screen.getByRole("button", { name: "刷新" });
+      fireEvent.click(button());
+      rerender({ ...tab("http://127.0.0.1:7102/"), id: "b" });
+      expect(button().getAttribute("aria-busy")).toBe("false");
+      fireEvent.click(button());
+      await act(async () => finishes[0]?.());
+      await act(async () => vi.runOnlyPendingTimers());
+      expect(button().getAttribute("aria-busy")).toBe("true");
+      rerender({ ...tab("http://127.0.0.1:7103/"), id: "b" });
+      fireEvent.click(button());
+      await act(async () => finishes[1]?.());
+      expect(button().getAttribute("aria-busy")).toBe("true");
+      await act(async () => finishes[2]?.());
+      unmount();
+      expect(vi.getTimerCount()).toBe(0);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("[DESKTOP-WORKSPACE-71] 快速刷新收尾可再点，本圈剩余不足一圈时继续旋转", async () => {
+    const { bridge } = setup(tab("http://127.0.0.1:7101/"));
+    const button = screen.getByRole("button", { name: "刷新" });
+    vi.useFakeTimers();
+    vi.spyOn(performance, "now").mockImplementation(() => Date.now());
+    try {
+      await act(async () => fireEvent.click(button));
+      await act(async () => vi.advanceTimersByTime(800));
+      expect((button as HTMLButtonElement).disabled).toBe(false);
+      await act(async () => fireEvent.click(button));
+      expect(
+        vi.mocked(bridge.call).mock.calls.filter(([name]) => name === "preview.reload"),
+      ).toHaveLength(2);
+      await act(async () => vi.advanceTimersByTime(100));
+      completedCircle(button);
+      expect(button.getAttribute("aria-busy")).toBe("true");
+      await act(async () => vi.advanceTimersByTime(800));
+      completedCircle(button);
+      expect(button.getAttribute("aria-busy")).toBe("false");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("[DESKTOP-WORKSPACE-71] 减少动态效果不等动画事件，偏好中途改变也不会卡住", async () => {
+    let changed = () => {};
+    const media = {
+      matches: true,
+      addEventListener: vi.fn((_event, listener) => {
+        changed = listener;
+      }),
+      removeEventListener: vi.fn(),
+    };
+    vi.stubGlobal("matchMedia", () => media);
+    const { unmount } = setup(tab("http://127.0.0.1:7101/"));
+    const button = screen.getByRole("button", { name: "刷新" });
+    await act(async () => fireEvent.click(button));
+    expect(button.getAttribute("aria-busy")).toBe("false");
+    media.matches = false;
+    act(changed);
+    await act(async () => fireEvent.click(button));
+    expect(button.getAttribute("aria-busy")).toBe("true");
+    media.matches = true;
+    act(changed);
+    expect(button.getAttribute("aria-busy")).toBe("false");
+    unmount();
+    expect(media.removeEventListener).toHaveBeenCalledWith("change", changed);
+  });
+
   it("[DESKTOP-WORKSPACE-13] 没就绪时占位区显示说明；就绪后地址栏显示地址，占位区把位置报给主进程", () => {
     const { calls, rerender } = setup(tab(null));
     expect(screen.getByRole("heading", { name: "正在启动 react-counter" })).toBeTruthy();

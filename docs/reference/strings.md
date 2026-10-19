@@ -185,7 +185,7 @@
 | desktop.create.cancel.action | 取消 | Cancel | — |
 | desktop.create.changeTemplate.action | 换一个模板 | Change template | — |
 | desktop.create.cleanAfter.label | 多久没打开后清理 | Clean up after unused for | — |
-| desktop.create.cleanSummary.hint | {days, plural, other {# 天}}没打开就移到{term_trash}，清理前一天会提醒你，可以随时改成保留。 | Moves to the {term_trash} after {days, plural, one {# day} other {# days}} unused. You get a reminder the day before, and can switch to Kept any time. | days：天数 |
+| desktop.create.cleanSummary.hint | {days, plural, other {# 天}}没打开就移到{term_trash}，清理前一天会提醒你，可以随时关闭。 | Moves to the {term_trash} after {days, plural, one {# day} other {# days}} unused. You get a reminder the day before, and can turn off auto-clean at any time. | days：天数 |
 | desktop.create.custom.label | 自定义 | Custom | — |
 | desktop.create.customDays.label | 自定义天数 | Custom number of days | — |
 | desktop.create.customDaysInvalid.hint | 请填大于 0 的整数 | Enter a whole number above 0 | — |
@@ -321,6 +321,11 @@
 | desktop.missing.site.label | 官网 | Website | — |
 | desktop.notice.dismiss.aria | 关闭提示 | Dismiss notice | — |
 | desktop.notice.region.aria | 提示 | Notices | — |
+| desktop.notifications.clear.action | 全部清除 | Clear all | — |
+| desktop.notifications.empty.label | 暂无通知 | No notifications | — |
+| desktop.notifications.recent.label | 最近 | Recent | — |
+| desktop.notifications.required.label | 需要处理 | Needs attention | — |
+| desktop.notifications.title | 通知 | Notifications | — |
 | desktop.output.aria | 进程输出 | Process output | — |
 | desktop.output.empty.label | 还没有输出。 | No output yet. | — |
 | desktop.output.view.action | 查看完整输出 | View full output | — |
@@ -687,7 +692,8 @@
 | library.action.dismiss.action | 知道了 | Got it | — |
 | library.action.failed.title | 操作没有完成 | That did not finish | — |
 | library.autoClean.dialog.title | 自动清理 | Auto-clean | — |
-| library.clean.keep.action | 改为保留 | Keep them | — |
+| library.autoClean.off.hint | {name} 现在没有开启自动清理，会一直保留。 | Auto-clean is off for {name}. | name：项目名称 |
+| library.clean.keep.action | 关闭自动清理 | Turn off auto-clean | — |
 | library.clean.later.action | 稍后再说 | Remind me later | — |
 | library.clean.now.action | 现在清理 | Clean now | — |
 | library.cleanBanner.end.label | 。 | . | — |
@@ -696,29 +702,31 @@
 | library.cleanBanner.region.aria | 自动清理提醒 | Auto-clean reminder | — |
 | library.cleanBanner.separator.label | ； | ; | — |
 | library.column.actions.aria | 操作 | Actions | — |
-| library.column.creator.label | 创建者 | Created by | — |
-| library.column.lastOpened.label | 上次打开 | Last opened | — |
+| library.column.lastUsed.label | 最近使用 | Last used | — |
 | library.column.name.label | 名称与备注 | Name and note | — |
 | library.column.port.label | 端口 | Port | — |
-| library.column.retention.label | 保留 | Retention | — |
+| library.column.retention.label | 自动清理 | Auto-clean | — |
 | library.column.size.label | 大小 | Size | — |
 | library.column.status.label | 状态 | Status | — |
 | library.column.template.label | 模板 | Template | — |
 | library.creator.agent.label | 智能体 | Agent | — |
 | library.creator.cli.label | 命令行 | Command line | — |
-| library.creator.collapse.aria | 收起创建信息 | Hide creation details | — |
 | library.creator.details.label | 由 <user>{agent}</user> 创建 · {time}{hasCommand, select, yes { · 命令：<code>{command}</code>} other {}} | Created by <user>{agent}</user> · {time}{hasCommand, select, yes { · Command: <code>{command}</code>} other {}} | time：创建时间（已格式化）；hasCommand：有创建命令是 yes，否则 no；command：创建时的命令行（用 code 标签包成等宽）；user：包住智能体名称的标签；code：包住命令的标签，显示成等宽字体；agent：智能体名称（不翻译） |
-| library.creator.expand.aria | 展开创建信息 | Show creation details | — |
-| library.creator.me.label | 我 | Me | — |
 | library.creator.tooltip.label | {time} 创建{hasCommand, select, yes { · 命令：{command}} other {}} | Created {time}{hasCommand, select, yes { · Command: {command}} other {}} | time：创建时间（已格式化）；hasCommand：有创建命令是 yes，否则 no；command：创建时的命令行（用 code 标签包成等宽） |
 | library.empty.cli.label | 也可以让智能体用命令行创建： | Or let an agent create one from the command line: | — |
 | library.empty.hint | 选一个模板，新建你的第一个项目。 | Pick a template to create your first playground. | — |
 | library.empty.title | 还没有项目 | No playgrounds yet | — |
+| library.emptyAgent.command.label | runyard new html demo --note "说明这个项目做什么" | runyard new html demo --note "Describe what this playground does" | — |
+| library.emptyAgent.hint | 让智能体在终端里运行下面这样的命令，项目会出现在这里，并写明是哪个智能体。 | Ask an agent to run a command like this in the terminal. Its playground will appear here with the agent’s name. | — |
+| library.emptyAgent.title | 还没有智能体创建的项目 | No agent-created playgrounds yet | — |
+| library.emptyAutoClean.hint | 项目默认一直保留。想让试完就扔的项目自己离开，在“更多”菜单里选“自动清理…”。 | Playgrounds stay by default. For throwaway experiments, choose “Auto-clean…” in the More menu. | — |
+| library.emptyAutoClean.title | 没有开启自动清理的项目 | No playgrounds with auto-clean on | — |
+| library.emptyRunning.hint | 在列表里打开一个项目就会运行；命令行用 runyard run <名称>。 | Open a playground in the list to run it, or use runyard run '<name>' from the command line. | — |
+| library.emptyRunning.title | 没有在运行的项目 | No running playgrounds | — |
 | library.filter.agent.label | 智能体创建 | Created by agents | — |
 | library.filter.all.label | 全部 | All | — |
 | library.filter.autoClean.label | 自动清理 | Auto-clean | — |
 | library.filter.combined.label | 筛选 | Filter | — |
-| library.filter.kept.label | 已保留 | Kept | — |
 | library.filter.sort.label | 排序：{value} | Sort: {value} | value：当前选中的排序名 |
 | library.filter.status.label | 状态：{value} | Status: {value} | value：当前选中的状态名 |
 | library.filter.type.label | 类型：{value} | Type: {value} | value：当前选中的类型名 |
@@ -730,11 +738,11 @@
 | library.missing.revealParent.action | 在{term_fileManager}中显示上一级文件夹 | Show the parent folder in {term_fileManager} | — |
 | library.missing.status.label | 找不到文件夹 | Folder not found | — |
 | library.nav.aria | 资源库导航 | Library navigation | — |
+| library.nav.clean.title | 清理 | Clean up | — |
 | library.nav.library.title | 资源库 | Library | — |
 | library.nav.manage.title | 管理 | Manage | — |
 | library.nav.settings.label | 设置 | Settings | — |
 | library.nav.templates.label | 模板 | Templates | — |
-| library.nav.unused.label | 长期未使用 | Unused for a while | — |
 | library.noResults.clear.action | 清除搜索 | Clear search | — |
 | library.noResults.create.action | 新建项目，名称用“{query}” | New playground named “{query}” | query：用户输入的搜索文字，同时是新项目的名称 |
 | library.noResults.filtered.hint | 换一个筛选条件试试。 | Try different filters. | — |
@@ -754,7 +762,8 @@
 | library.rename.terminalCommand.hint | 终端里正在运行的 {command} 会被结束。 | The {command} running in the terminal will be ended. | command：终端里正在运行的命令名（程序名，不翻译） |
 | library.retention.autoClean.label | 剩 {days, plural, other {# 天}} | {days, plural, one {# day} other {# days}} left | days：距离自动清理还剩的天数 |
 | library.retention.autoClean.tooltip | {days, plural, other {# 天}}没打开就移到{term_trash}，每次打开重新计时 | Moved to the {term_trash} after {days, plural, one {# day} other {# days}} unopened; the count restarts on every open | days：自动清理设定的天数 |
-| library.retention.kept.label | 已保留 | Kept | — |
+| library.retention.kept.label | 关闭 | Off | — |
+| library.retention.off.label | — | — | — |
 | library.retention.tomorrow.label | 明天清理 | Tomorrow | — |
 | library.row.autoClean.action | 自动清理… | Auto-clean… | — |
 | library.row.autoCleanNow.hint | 现在：{state} | Now: {state} | state：当前保留状态的文字（已保留，或剩 N 天） |
@@ -796,7 +805,7 @@
 | library.size.unreadable.tooltip | 有 {count, plural, other {# 处}}没有权限读取，没有计入 | {count, plural, one {# location} other {# locations}} could not be read and {count, plural, one {is} other {are}} not counted | count：没有权限读取而被跳过的文件夹个数 |
 | library.sort.created.label | 创建时间 | Created | — |
 | library.sort.name.label | 名称 | Name | — |
-| library.sort.recent.label | 最近打开 | Recently opened | — |
+| library.sort.recent.label | 最近使用 | Last used | — |
 | library.sort.size.label | 大小 | Size | — |
 | library.status.problem.label | 有问题 | Has a problem | — |
 | library.status.running.label | 运行中 | Running | — |
@@ -917,8 +926,10 @@
 | settings.registry.invalid.body | 地址不合法，要以 http:// 或 https:// 开头 | Not a valid address. Start with http:// or https:// | — |
 | settings.registry.title | npm 镜像源 | npm registry | — |
 | settings.runNote.label | 在应用里打开标签页即运行，关闭标签页即停止；命令行启动的不受影响，空闲后自动停止。 | Opening a tab in the app runs the playground and closing the tab stops it. Runs started from the CLI are not affected and stop automatically when idle. | — |
+| settings.runtime.absolutePath.body | 请输入完整绝对路径，不使用 ~ 或环境变量 | Enter an absolute path without ~ or environment variables | — |
 | settings.runtime.and.label | 且 | and | — |
 | settings.runtime.arch.label | 芯片架构 | Chip | — |
+| settings.runtime.choosePath.aria | 选择 {tool} 可执行文件 | Choose {tool} executable | tool：工具显示名称，如 Node |
 | settings.runtime.command.label | 安装命令 | Command | — |
 | settings.runtime.copy.action | 复制命令 | Copy command | — |
 | settings.runtime.current.label | 当前 | Current | — |
@@ -932,6 +943,9 @@
 | settings.runtime.note.label | 只有创建或打开项目时才会检查它需要的工具。Runyard 不会替你安装。 | Runyard only checks for the tools a playground needs when you create or open it. It never installs anything for you. | — |
 | settings.runtime.path.label | 路径 | Path | — |
 | settings.runtime.pathFailed.body | 没能指定这个路径 | Couldn't set that path | — |
+| settings.runtime.pathInput.aria | {tool} 可执行文件路径 | {tool} executable path | tool：工具显示名称，如 Node |
+| settings.runtime.pathInput.hint | 输入完整路径后按回车保存，Esc 撤销 | Press Enter to save the full path; Esc to cancel | — |
+| settings.runtime.pathInput.placeholder | 输入完整可执行文件路径 | Enter the full executable path | — |
 | settings.runtime.recheck.action | 重新检测 | Check again | — |
 | settings.runtime.runInstall.action | 在终端中运行 | Run in Terminal | — |
 | settings.runtime.setPath.action | 指定路径… | Set path… | — |

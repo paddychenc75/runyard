@@ -230,13 +230,13 @@ describe("类型、状态筛选与排序", () => {
     const user = userEvent.setup();
     setup(
       library([
-        row("zeta", { state: "ready", active: true, lastOpenedAt: 1 }),
-        row("beta", { lastOpenedAt: NOW }),
-        row("alpha", { lastOpenedAt: 2 }),
+        row("zeta", { state: "ready", active: true, lastOpenedAt: 1, lastUsedAt: 1 }),
+        row("beta", { lastOpenedAt: NOW, lastUsedAt: NOW }),
+        row("alpha", { lastOpenedAt: 2, lastUsedAt: 2 }),
       ]),
     );
     expect(await names()).toEqual(["zeta", "beta", "alpha"]);
-    await choose(user, /^排序：最近打开/, "名称");
+    await choose(user, /^排序：最近使用/, "名称");
     expect(await names()).toEqual(["zeta", "alpha", "beta"]);
     await choose(user, /^排序：名称/, "创建时间");
     expect(screen.getByRole("button", { name: /^排序：创建时间/ })).toBeTruthy();
@@ -252,7 +252,7 @@ describe("类型、状态筛选与排序", () => {
         row("mid", { createdAt: 20 }),
       ]),
     );
-    await choose(user, /^排序：最近打开/, "创建时间");
+    await choose(user, /^排序：最近使用/, "创建时间");
     expect(await names()).toEqual(["running-old", "new", "mid", "old"]);
   });
 });
@@ -261,6 +261,8 @@ describe("侧栏固定筛选与计数", () => {
   const twenty = () => {
     const rows = Array.from({ length: 20 }, (_, index) =>
       row(`p-${String(index).padStart(2, "0")}`, {
+        state: index < 3 ? "ready" : "idle",
+        active: index < 3,
         autoClean: index < 4 ? { enabled: true, days: 30 } : { enabled: false, days: null },
         createdBy: index >= 14 ? { kind: "agent", agent: "Claude Code" } : { kind: "user" },
       }),
@@ -268,11 +270,11 @@ describe("侧栏固定筛选与计数", () => {
     return library(rows);
   };
 
-  it("[DESKTOP-LIBRARY-VIEW-22] 全部 20、已保留 16、自动清理 4，两项互补", async () => {
+  it("[DESKTOP-LIBRARY-VIEW-22] 全部 20、运行中 3、自动清理 4，三组分类", async () => {
     setup(twenty());
     for (const [name, count] of [
       ["全部", "20"],
-      ["已保留", "16"],
+      ["运行中", "3"],
       ["自动清理", "4"],
     ] as const) {
       const item = await screen.findByRole("button", { name: new RegExp(`^${name}\\s*${count}$`) });
@@ -301,10 +303,10 @@ describe("侧栏固定筛选与计数", () => {
     expect(screen.getByRole("button", { name: /^智能体创建\s*7$/ })).toBeTruthy();
   });
 
-  it("“长期未使用”仍然点不了", async () => {
+  it("第一版不显示“长期未使用”和“已保留”", async () => {
     setup(twenty());
-    const unused = await screen.findByRole("button", { name: /^长期未使用/ });
-    expect((unused as HTMLButtonElement).disabled).toBe(true);
+    await names();
+    expect(screen.queryByRole("button", { name: /^长期未使用|^已保留/ })).toBeNull();
   });
 });
 
@@ -428,6 +430,7 @@ describe("窗口变窄时页头和顶栏收紧", () => {
     window.innerWidth = 1440;
     if (original !== undefined)
       Object.defineProperty(HTMLElement.prototype, "clientWidth", original);
+    else Reflect.deleteProperty(HTMLElement.prototype, "clientWidth");
   });
   const running = () =>
     library([
@@ -435,7 +438,7 @@ describe("窗口变窄时页头和顶栏收紧", () => {
       row("hono-1", { templateId: "hono" }),
     ]);
 
-  it("[DESKTOP-LIBRARY-VIEW-67] 1024 宽：搜索框变短、类型和状态合成“筛选”、排序只写方式、运行数只写数字", async () => {
+  it("[DESKTOP-LIBRARY-VIEW-67] 页头可用680宽：搜索框变短、类型和状态合成“筛选”、排序只写方式、运行数只写数字", async () => {
     layout(1024, 680);
     setup(running());
     const box = await searchBox();
@@ -444,7 +447,7 @@ describe("窗口变窄时页头和顶栏收紧", () => {
     expect(screen.getByRole("button", { name: "筛选" })).toBeTruthy();
     expect(screen.queryByRole("button", { name: /^类型：/ })).toBeNull();
     expect(screen.queryByRole("button", { name: /^状态：/ })).toBeNull();
-    expect(screen.getByRole("button", { name: "最近打开" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "最近使用" })).toBeTruthy();
     const count = screen.getByRole("button", { name: "1 个运行中" });
     expect(count.textContent).toBe("1");
   });
@@ -509,28 +512,131 @@ describe("行的选中与键盘", () => {
   });
 });
 
-describe("窗口变窄时表格横向滚动", () => {
-  // 真实布局（1100 宽、滚动后的位置、对齐）由 e2e/library.e2e.ts 用真窗口量；这里守住结构：谁固定、状态圆点在哪
-  it("[DESKTOP-LIBRARY-VIEW-28] 名称列固定在左、操作列固定在右，中间各列（含“大小”）不固定", async () => {
-    setup(library([row("demo")]));
-    await names();
-    const table = screen.getByRole("table", { name: "项目列表" });
-    expect(within(table).getByRole("columnheader", { name: "大小" })).toBeDefined();
-    const pinned = [...table.querySelectorAll("tbody tr:first-child td")].map((cell) => [
-      cell.getAttribute("data-column"),
-      cell.getAttribute("data-pin"),
-    ]);
-    expect(pinned.filter(([, pin]) => pin !== null)).toEqual([
-      ["name", "start"],
-      ["actions", "end"],
-    ]);
-    expect(pinned.length).toBe(9);
+describe("窗口变窄时表格收起次要列", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
   });
 
-  it("[DESKTOP-LIBRARY-VIEW-29] 固定的名称列里有每行的状态圆点（表放不下时显示）", async () => {
-    setup(library([row("demo", { state: "ready", active: true })]));
+  // 假的布局：每个可见列最小 150，模板收成徽标后省 110；可见宽度由测试给，ResizeObserver 由测试手动触发。
+  // 真实布局（1100 宽、没有横向滚动条）由 e2e/library.e2e.ts 用真窗口量
+  function fakeLayout(viewport: number) {
+    const state = { viewport };
+    const callbacks: (() => void)[] = [];
+    vi.stubGlobal(
+      "ResizeObserver",
+      class {
+        constructor(callback: () => void) {
+          callbacks.push(callback);
+        }
+        observe() {}
+        disconnect() {}
+      },
+    );
+    vi.spyOn(HTMLElement.prototype, "clientWidth", "get").mockImplementation(() => state.viewport);
+    const real = window.getComputedStyle.bind(window);
+    vi.spyOn(window, "getComputedStyle").mockImplementation((element) => {
+      if (element.tagName !== "TABLE") return real(element);
+      const narrow = element.querySelector("th[data-column=template][data-collapsed]") !== null;
+      const heads = element.querySelectorAll("th").length;
+      const minWidth = `${heads * 150 - (narrow ? 110 : 0)}px`;
+      return new Proxy(real(element), {
+        get(target, key) {
+          if (key === "minWidth") return minWidth;
+          const value = Reflect.get(target, key);
+          return typeof value === "function" ? value.bind(target) : value;
+        },
+      });
+    });
+    return (width: number) => {
+      state.viewport = width;
+      act(() => {
+        for (const callback of callbacks) callback();
+      });
+    };
+  }
+
+  const headers = () =>
+    [...document.querySelectorAll("thead th")].map((th) => th.getAttribute("data-column"));
+
+  it("[DESKTOP-LIBRARY-VIEW-28] 放得下全部列；窄了先收“最近使用”，再收端口，再把模板收成徽标；没有横向固定的列", async () => {
+    const resize = fakeLayout(1400);
+    setup(library([row("demo")]));
     await names();
-    const name = document.querySelector('tr[data-row-id="demo"] td[data-column="name"]');
-    expect(name?.querySelector("[data-when-overflowing]")).not.toBeNull();
+    expect(headers()).toEqual([
+      "name",
+      "status",
+      "template",
+      "port",
+      "size",
+      "lastUsed",
+      "retention",
+      "actions",
+    ]);
+    resize(1060);
+    expect(headers()).toEqual([
+      "name",
+      "status",
+      "template",
+      "port",
+      "size",
+      "retention",
+      "actions",
+    ]);
+    resize(910);
+    expect(headers()).toEqual(["name", "status", "template", "size", "retention", "actions"]);
+    resize(790);
+    expect(headers()).toEqual(["name", "status", "template", "size", "retention", "actions"]);
+    const template = document.querySelector("tr[data-row-id=demo] td[data-column=template]");
+    expect(template?.hasAttribute("data-collapsed")).toBe(true);
+    expect(document.querySelector("[data-pin]")).toBeNull();
+    // 变宽按相反顺序恢复
+    resize(1400);
+    expect(headers()).toContain("lastUsed");
+    expect(
+      document
+        .querySelector("tr[data-row-id=demo] td[data-column=template]")
+        ?.hasAttribute("data-collapsed"),
+    ).toBe(false);
   });
+
+  it("[DESKTOP-LIBRARY-VIEW-29] 收起端口后运行中的行在状态后面写端口，已停止的只写状态；拉宽后端口回到自己的列", async () => {
+    const resize = fakeLayout(1400);
+    setup(
+      library([
+        row("landing-hero", { state: "ready", active: true, port: 7100 }),
+        row("idle-one", { port: 7101 }),
+      ]),
+    );
+    await names();
+    const status = (id: string) =>
+      document.querySelector(`tr[data-row-id=${id}] td[data-column=status]`) as HTMLElement;
+    const portHint = (id: string) => status(id).querySelector("[data-when-collapsed=port]");
+    resize(740);
+    expect(headers()).not.toContain("port");
+    // 状态格里的端口只在端口列被收起时显示（样式据根元素的 data-collapsed），已停止的行没有
+    expect(document.querySelector("[data-collapsed~=port]")).not.toBeNull();
+    expect(portHint("landing-hero")?.textContent).toBe(":7100");
+    expect(portHint("idle-one")).toBeNull();
+    expect(status("idle-one").textContent).toBe("已停止");
+    resize(1400);
+    expect(document.querySelector("[data-collapsed~=port]")).toBeNull();
+    expect(headers()).toContain("port");
+  });
+});
+
+it("[DESKTOP-LIBRARY-VIEW-90] 侧栏运行中锁定状态，返回全部恢复原状态", async () => {
+  const user = userEvent.setup();
+  setup(library([row("idle"), row("live", { state: "ready", active: true })]));
+  await choose(user, /^状态：全部/, "已停止");
+  await user.click(screen.getByRole("button", { name: /^运行中\s*1$/ }));
+  expect(await names()).toEqual(["live"]);
+  expect(
+    (screen.getByRole("button", { name: /^状态：运行中/ }) as HTMLButtonElement).disabled,
+  ).toBe(true);
+  await user.click(screen.getByRole("button", { name: /^全部\s*2$/ }));
+  expect(await names()).toEqual(["idle"]);
+  expect(
+    (screen.getByRole("button", { name: /^状态：已停止/ }) as HTMLButtonElement).disabled,
+  ).toBe(false);
 });

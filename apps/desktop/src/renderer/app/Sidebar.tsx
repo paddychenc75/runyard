@@ -7,6 +7,8 @@ import {
   TitleBar,
   UserText,
 } from "@runyard/ui";
+import brandLight from "../../../../../docs/design/logo/final/icon-32.svg";
+import brandDark from "../../../../../docs/design/logo/final/icon-32-dark.svg";
 import type { BootstrapInfo } from "../../shared/desktop-bridge.ts";
 import { type NavFilter, navFilters } from "../library-query.ts";
 import { navLabel } from "./library-labels.ts";
@@ -29,15 +31,16 @@ export interface SidebarProps {
   templateCount: number;
   /** 资源库文件夹，主目录缩成 ~；还没读到是空串 */
   libraryRoot: string;
-  /** 当前显示的页：资源库、模板或设置（规格 DESKTOP-SETTINGS-01、DESKTOP-TEMPLATES-VIEW-01） */
+  /** 当前显示的页：资源库或模板；设置不改变此值（规格 DESKTOP-SETTINGS-01、DESKTOP-TEMPLATES-VIEW-01） */
   page: ShellPage;
   onNavigate: (page: ShellPage) => void;
+  onSettings?: () => void;
   /** 收起侧栏（顶部、红绿灯那一行的右端；规格 DESKTOP-LIBRARY-VIEW-61、66） */
   onCollapse: () => void;
 }
 
 // 侧栏：顶上给窗口按钮留位置，下面是品牌、资源库的筛选、管理的几个页面，底部是资源库的概况。
-// 资源库的四个固定筛选可点，右边是符合的项目数（#181）；管理里“设置”（#188）和“模板”（#291）可点，“长期未使用”随后续 issue，现在列出但点不了（设计稿 Main）。
+// 资源库的四个固定筛选可点，右边是符合的项目数（#181）；管理里“设置”（#188）和“模板”（#291）可点，“长期未使用”第一版不显示（设计稿 Main）。
 export function Sidebar({
   windowControls,
   total,
@@ -49,6 +52,7 @@ export function Sidebar({
   libraryRoot,
   page,
   onNavigate,
+  onSettings,
   onCollapse,
 }: SidebarProps) {
   const t = useT();
@@ -57,11 +61,24 @@ export function Sidebar({
     {
       id: "library",
       title: t("library.nav.library.title"),
-      items: navFilters.map((id) => ({
-        id,
-        label: navLabel(id, t),
-        count: format.number(counts[id]),
-      })),
+      items: navFilters
+        .filter((id) => id !== "autoClean")
+        .map((id) => ({
+          id,
+          label: navLabel(id, t),
+          count: format.number(counts[id]),
+        })),
+    },
+    {
+      id: "clean",
+      title: t("library.nav.clean.title"),
+      items: [
+        {
+          id: "autoClean",
+          label: navLabel("autoClean", t),
+          count: format.number(counts.autoClean),
+        },
+      ],
     },
     {
       id: "manage",
@@ -73,7 +90,6 @@ export function Sidebar({
           icon: "cube",
           count: format.number(templateCount),
         },
-        { id: "unused", label: t("library.nav.unused.label"), icon: "clock", disabled: true },
         {
           id: "settings",
           label: t("library.nav.settings.label"),
@@ -95,24 +111,52 @@ export function Sidebar({
     });
   };
   return (
-    <GlassSurface material="sidebar" className={styles.root}>
+    <GlassSurface
+      material="sidebar"
+      className={styles.root}
+      data-library-sidebar=""
+      data-sidebar-controls={controls}
+    >
       <TitleBar controls={controls}>
         <span className={styles.toggle}>
           <PaneToggleButton
             label={t("library.sidebar.collapse.label")}
             expanded
+            sidebar
             onClick={onCollapse}
           />
         </span>
       </TitleBar>
-      <div className={styles.brand}>{t("desktop.window.title")}</div>
+      <div className={styles.brand} data-sidebar-brand="">
+        <span className={styles.mark} aria-hidden="true">
+          <img
+            className={styles.lightMark}
+            src={brandLight}
+            alt={t("desktop.window.title")}
+            aria-hidden="true"
+            draggable={false}
+          />
+          <img
+            className={styles.darkMark}
+            src={brandDark}
+            alt={t("desktop.window.title")}
+            aria-hidden="true"
+            draggable={false}
+          />
+        </span>
+        <span>{t("desktop.window.title")}</span>
+      </div>
       <ScrollArea className={styles.nav}>
         <NavList
           label={t("library.nav.aria")}
           sections={sections}
           value={page === "library" ? nav : page}
           onValueChange={(id) => {
-            if (id === "settings" || id === "templates") {
+            if (id === "settings") {
+              onSettings?.();
+              return;
+            }
+            if (id === "templates") {
               onNavigate(id);
               return;
             }

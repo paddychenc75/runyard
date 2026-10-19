@@ -93,13 +93,19 @@ function bodyRows(root: HTMLElement) {
 }
 
 describe("资源库列表", () => {
-  it("[DESKTOP-LIBRARY-VIEW-01] 运行中的排在最前，其余按上次打开的先后排在后面", async () => {
+  it("[DESKTOP-LIBRARY-VIEW-01] 运行中的排在最前，其余按最近使用的先后排在后面", async () => {
     // 主进程已经排好序给界面（见 build-library-state.test.ts）；界面必须原样按这个顺序画
     setup(
       library([
-        row("oldest-running", { state: "ready", active: true, port: 7101, lastOpenedAt: 1 }),
-        row("recent", { lastOpenedAt: NOW - MINUTE }),
-        row("older", { lastOpenedAt: NOW - DAY }),
+        row("oldest-running", {
+          state: "ready",
+          active: true,
+          port: 7101,
+          lastOpenedAt: 1,
+          lastUsedAt: 1,
+        }),
+        row("recent", { lastOpenedAt: NOW - MINUTE, lastUsedAt: NOW - MINUTE }),
+        row("older", { lastOpenedAt: NOW - DAY, lastUsedAt: NOW - DAY }),
       ]),
     );
     const rows = bodyRows(await table());
@@ -129,11 +135,12 @@ describe("资源库列表", () => {
       .getByText("pricing", { selector: "span" })
       .closest("td") as HTMLElement;
     expect(nameCell.textContent).toMatch(/pricing\s*pricing table layout test/);
-    expect(pricing.getByText(":7101")).toBeTruthy();
-    expect(within(rows[1] as HTMLElement).queryByText(/^:\d+$/)).toBeNull();
+    const portOf = (row: HTMLElement) => row.querySelector("td[data-column=port]")?.textContent;
+    expect(portOf(rows[0] as HTMLElement)).toBe(":7101");
+    expect(portOf(rows[1] as HTMLElement)).not.toMatch(/\d/);
   });
 
-  it("[DESKTOP-LIBRARY-VIEW-03] 已保留的显示“已保留”，开启自动清理的显示剩余天数", async () => {
+  it("[DESKTOP-LIBRARY-VIEW-03] 没开自动清理的显示淡灰的“—”（不是胶囊），开启的显示剩余天数", async () => {
     setup(
       library([
         row("kept"),
@@ -144,18 +151,28 @@ describe("资源库列表", () => {
       ]),
     );
     const rows = bodyRows(await table());
-    expect(within(rows[0] as HTMLElement).getByText("已保留")).toBeTruthy();
-    expect(within(rows[1] as HTMLElement).getByText("剩 12 天")).toBeTruthy();
+    const cleanOf = (row: HTMLElement) => row.querySelector("td[data-column=retention]");
+    expect(cleanOf(rows[0] as HTMLElement)?.textContent).toBe("—");
+    expect(within(rows[0] as HTMLElement).queryByText("已保留")).toBeNull();
+    expect(cleanOf(rows[1] as HTMLElement)?.textContent).toBe("剩 12 天");
   });
 
-  it("[DESKTOP-LIBRARY-VIEW-04] 用户创建的显示“我”，智能体创建的显示智能体的名字", async () => {
+  it("[DESKTOP-LIBRARY-VIEW-04] 用户创建的名称后没有徽标，智能体创建的挂智能体名字的徽标，命令行创建的挂“命令行”，没有“创建者”列", async () => {
     setup(
-      library([row("mine"), row("theirs", { createdBy: { kind: "agent", agent: "Claude Code" } })]),
+      library([
+        row("mine"),
+        row("theirs", { createdBy: { kind: "agent", agent: "Claude Code" } }),
+        row("typed", { createdBy: { kind: "cli" } }),
+      ]),
     );
     const rows = bodyRows(await table());
-    expect(within(rows[0] as HTMLElement).getByText("我")).toBeTruthy();
-    expect(within(rows[1] as HTMLElement).getByText("Claude Code")).toBeTruthy();
-    expect(within(rows[1] as HTMLElement).queryByText("我")).toBeNull();
+    const nameCell = (index: number) =>
+      (rows[index] as HTMLElement).querySelector("td[data-column=name]") as HTMLElement;
+    expect(nameCell(0).querySelector("[data-kind]")).toBeNull();
+    expect(nameCell(1).querySelector("[data-kind=agent]")?.textContent).toBe("Claude Code");
+    expect(nameCell(2).querySelector("[data-kind=cli]")?.textContent).toBe("命令行");
+    expect(screen.queryByRole("columnheader", { name: "创建者" })).toBeNull();
+    expect(within(rows[0] as HTMLElement).queryByText("我")).toBeNull();
   });
 
   it("[DESKTOP-LIBRARY-VIEW-05] 别处新建的项目出现在列表里，创建者不是“我”", async () => {
@@ -191,7 +208,13 @@ describe("资源库列表", () => {
   it("英文界面下同样完整显示各列", async () => {
     setup(
       library(
-        [row("demo", { autoClean: { enabled: true, days: 30 }, createdBy: { kind: "cli" } })],
+        [
+          row("demo", {
+            autoClean: { enabled: true, days: 30 },
+            createdBy: { kind: "cli" },
+            lastUsedAt: NOW - 5 * MINUTE,
+          }),
+        ],
         "en",
       ),
       "en",
@@ -283,7 +306,7 @@ describe("资源库一行的操作", () => {
     expect(names).toHaveLength(13);
   });
 
-  it("[DESKTOP-LIBRARY-VIEW-31] 运行中的行，更多菜单按设计稿的顺序列出全部项，含“停止运行”，自动清理右侧写“现在：已保留”", async () => {
+  it("[DESKTOP-LIBRARY-VIEW-31] 运行中的行，更多菜单按设计稿的顺序列出全部项，含“停止运行”，自动清理右侧写“现在：关闭”", async () => {
     const user = userEvent.setup();
     setup(library([row("demo", { state: "ready", active: true, port: 7101 })]));
     const menu = await openMenu(user, "demo");
@@ -296,7 +319,7 @@ describe("资源库一行的操作", () => {
       "停止运行",
       "重命名…",
       "编辑备注…",
-      "自动清理…现在：已保留",
+      "自动清理…现在：关闭",
       "另存为模板…",
       "创建副本",
       "在外部编辑器中打开",
@@ -333,4 +356,14 @@ describe("资源库一行的操作", () => {
     await user.keyboard("{Escape}");
     await vi.waitFor(() => expect(screen.queryByRole("menu")).toBeNull());
   });
+});
+
+it("[DESKTOP-LIBRARY-VIEW-92] 没有智能体项目时显示专用空状态和命令", async () => {
+  localStorage.clear();
+  setup(library([row("mine")]));
+  await table();
+  await userEvent.click(screen.getByRole("button", { name: /智能体创建/ }));
+  expect(await screen.findByText("还没有智能体创建的项目")).toBeTruthy();
+  expect(screen.getByText('runyard new html demo --note "说明这个项目做什么"')).toBeTruthy();
+  expect(screen.queryByText("长期未使用")).toBeNull();
 });

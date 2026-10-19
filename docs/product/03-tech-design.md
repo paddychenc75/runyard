@@ -199,7 +199,7 @@ runyard/
 │  ├─ i18n/                 文案：locales/ 中英文文案，src/ 格式化，generated/ 类型
 │  └─ testing/              测试用的假进程、假时钟、假平台、样例模板
 ├─ templates/               纯数据，没有代码
-│  ├─ builtin/<id>/         九个内置模板（第一版；Nuxt 两个暂缓）：template.json + files/
+│  ├─ builtin/<id>/         八个内置模板（第一版；Next、Nuxt 暂缓）：template.json + files/
 │  ├─ runners/<id>/         运行器：runner.json
 │  ├─ tools/<tool>.json     工具定义：怎么检测、各系统怎么安装
 │  └─ schema/               JSON Schema（由 protocol 生成）
@@ -297,7 +297,7 @@ Windows 报告里写的 ESLint、stylelint 规则，改用 Biome 加检查脚本
 | --- | --- | --- |
 | playground（项目） | 一个普通文件夹加一份元数据。名称不单独存，永远取文件夹名 | 文件夹里的 `.runyard/playground.json`，加本机索引 |
 | 模板 | `template.json` 加 `files/`。指定一个运行器，自己不含命令 | 内置的随应用；用户的在 `~/.runyard/templates/<id>/` |
-| 运行器 | `runner.json`：怎么安装、启动、判断就绪、停止 | 随应用（七个；Nuxt 运行器随 Nuxt 模板暂缓） |
+| 运行器 | `runner.json`：怎么安装、启动、判断就绪、停止 | 随应用（六个；Next、Nuxt 运行器随模板暂缓） |
 | 工具定义 | 怎么检测一个工具、各系统怎么安装 | 随应用，`templates/tools/` |
 | 运行（run） | 一个项目的一次启动。一个项目同时只有一次运行 | 管理进程的内存；另写一个小文件供崩溃后清理 |
 | 持有者（owner） | 运行上的一个字段：`tab`（绑定到应用的那条连接）或 `cli`（不绑定任何连接） | 同上 |
@@ -1189,7 +1189,7 @@ export function getPlatform(): Platform;   // 除 integration/ 外，整个代�
 - K2 已用 170 行 C 验证可行（18 KB，只依赖 `KERNEL32.dll` 和系统通用 C 运行库）。产品版本的三条要求：用创建进程时就指定 Job 的系统接口（`PROC_THREAD_ATTRIBUTE_JOB_LIST`），因为辅助程序刚启动就被结束会漏掉还没放进 Job 的子进程（实测 5 次里 1 次）；停止一律走标准输入的指令（先 `ctrlc`，等 `graceMs`，再 `kill`），不直接结束它；发 Ctrl+C 之前先拿到自己的控制台，并用 `SetConsoleCtrlHandler(NULL, FALSE)` 清掉从父进程继承来的“忽略 Ctrl+C”。arm64 的 Windows 没有测。
 - 这个辅助程序和文件操作所需的 Windows 辅助程序合并为同一个可执行文件（决策记录 0010），在 Windows 预览版的里程碑里一起做。
 
-十一个模板逐个的检查结果见 Windows §2.6（第一版只做其中九个，Nuxt 两个暂缓，见 §8.6.5）。要改的主要是：`next16` 加 `-H 127.0.0.1`，`nuxt`（暂缓，回来时）加 `--host 127.0.0.1`，`hono` 的模板代码里写明主机名。
+十一个模板逐个的检查结果见 Windows §2.6（第一版只做其中八个，Next、Nuxt 暂缓，见 §8.6.5）。要改的主要是：`next16`（暂缓，恢复时）加 `-H 127.0.0.1`，`nuxt`（暂缓，恢复时）加 `--host 127.0.0.1`，`hono` 的模板代码里写明主机名。
 
 ### 7.3 Windows（以后）：界面
 
@@ -1316,7 +1316,7 @@ export function getPlatform(): Platform;   // 除 integration/ 外，整个代�
 
 Windows 预览版（以后做 Windows 时的范围备忘）明确不包含：自动更新、代码签名、对 Windows 10 的保证、Mica 背景、设计稿样式的菜单、运行限制、WSL（Windows 里的 Linux 子系统）里的工具、fnm 和 mise 默认用法的自动探测、系统通知、与 macOS 相同的速度目标、多种配置真机上的测试（只在你那一台上测过）、国内杀毒软件的兼容。
 
-预览版（同上）必须做到：九个模板（第一版，Nuxt 两个暂缓）能创建、运行、停止，停止后没有残留进程、端口已释放；命令行的 P0 命令全部可用；命令行启动的运行在应用退出后继续；`runyard://` 链接可用；删除进回收站；不弹防火墙；覆盖安装和卸载在管理进程还活着时也能成功，卸载后 `PATH` 里不留东西（§8.2）；`doctor --bundle` 可用。
+预览版（同上）必须做到：八个模板（第一版，Next、Nuxt 暂缓）能创建、运行、停止，停止后没有残留进程、端口已释放；命令行的 P0 命令全部可用；命令行启动的运行在应用退出后继续；`runyard://` 链接可用；删除进回收站；不弹防火墙；覆盖安装和卸载在管理进程还活着时也能成功，卸载后 `PATH` 里不留东西（§8.2）；`doctor --bundle` 可用。
 
 ## 8. 工程化
 
@@ -1601,7 +1601,7 @@ owner_approved = "§12 第 30 项，2026-10-12"
 | | Vite / 插件 / TypeScript | 同 `react19` | | | | | |
 | `vue3` | Vue | 3.5.43 | 2026-09-17 | 25 | 3.5.41 及以前的 `@vue/server-renderer` 有高危 XSS（GHSA-g2v6-rqmx-r4w6，只在 C）；本版本不受影响 | 满足规则 2，且不能退回 3.5.41 | Vue 3.5 |
 | | Vite / @vitejs/plugin-vue / TypeScript | 8.3.3 / 6.0.9 / 6.0.3 | 2026-10-06 / 2026-09-14 / 2026-04-16 | 6 / 28 / 179 | 无 | plugin-vue 6.0.10 发布 2 天 | — |
-| `next16` | Next.js | **16.4.1**（负责人 2026-10-16 决定，取代 16.3.8） | 2026-10-14 | 2 | **16.3.8 和 16.4.0 受三条公告影响**：GHSA-2464-fhr4-w9xw（严重）、GHSA-673q-mjm6-r5xr（严重）、GHSA-p3m5-59mp-jv5r（高）；16.4.1 修复。此前 16.3.7 及以前另有 7 条公告（GHSA-cjq9-62q9-8jv4 高等），16.3.8 起已修复；更早还有 GHSA-vcvr-r3jv-pc5j（严重，`next/og` 远程代码执行，16.3.6 修）等 | 安全修复例外（规则 3）：发布 2026-10-14 17:43 UTC，满 72 小时（2026-10-17 17:43 UTC）后才可真正选用。`@next/swc-*` 平台包要逐个加进例外列表（实测过，名字通配带版本号会被 pnpm 拒绝） | Next.js 16.4 |
+| `next16`（**第一版不做**，见下“Next 暂缓”） | Next.js | **16.4.1**（负责人 2026-10-16 决定，取代 16.3.8） | 2026-10-14 | 2 | **16.3.8 和 16.4.0 受三条公告影响**：GHSA-2464-fhr4-w9xw（严重）、GHSA-673q-mjm6-r5xr（严重）、GHSA-p3m5-59mp-jv5r（高）；16.4.1 修复。此前 16.3.7 及以前另有 7 条公告（GHSA-cjq9-62q9-8jv4 高等），16.3.8 起已修复；更早还有 GHSA-vcvr-r3jv-pc5j（严重，`next/og` 远程代码执行，16.3.6 修）等 | 安全修复例外（规则 3）：发布 2026-10-14 17:43 UTC，满 72 小时（2026-10-17 17:43 UTC）后才可真正选用。`@next/swc-*` 平台包要逐个加进例外列表（实测过，名字通配带版本号会被 pnpm 拒绝） | Next.js 16.4 |
 | | React | 19.3.0 | 2026-09-09 | 33 | 无 | 同 `react19` | — |
 | `nuxt4`（**第一版不做**，负责人 2026-10-16，见下“Nuxt”；以下是 2026-10-12 的复核记录） | Nuxt | **4.5.2** | 2026-08-05 | 68 | Nuxt 自身：4.5.1 以前有多条高危（含 `GHSA-9473-5f9j-94wq` 服务端代码执行），4.5.1 起全部修复；本版本不受影响。**但依赖树审计不干净**：用 pnpm 10.30.1 对一个只装 `nuxt@4.5.2` 的项目实测，5 条高危加 3 条严重（simple-git、shell-quote、node-forge、braces、source-map-js）；连最新的 4.6.1 在不设年龄限制时仍有 4 条高危加 2 条严重 | 4.6.0 发布 7 天，退到 4.5 线最新补丁。依赖树里的告警大多经 `@nuxt/devtools`（开发模式）；node-forge 和 braces **没有任何修复版本**。这些要走允许清单（见下“Nuxt”） | Nuxt 4.6 |
 | `nuxt3`（**第一版不做**，同上） | Nuxt | **3.21.11** | 2026-08-05 | 68 | Nuxt 自身 3.21.10 起修复了全部已公布的公告，本版本不受影响。依赖树审计同样不干净：5 条高危加 3 条严重（取不设年龄限制：4 条高危加 2 条严重），其中 simple-git 的修复在 4.x 大版本，node-forge、braces 无修复。**这一条线已停止维护（2026-07-31），以后出现的问题上游不会再修** | 最后一个 3.x 版本。保留与否见 §12 第 28 项 | Nuxt 3 的最后一个版本 |
@@ -1611,7 +1611,9 @@ owner_approved = "§12 第 30 项，2026-10-12"
 | `python` | 用户的 Python | ≥ 3.12 | — | — | 3.12 线安全支持到 2028-10-31，最新 3.12.15（2026-10-01） | 规则 6，下限保持 | 需要 Python 3.12 以上 |
 | `go` | 用户的 Go | **≥ 1.26** | — | — | Go 1.22 在 2025-02 停止支持（endoflife.date），1.23 到 1.25 也都已停止；受支持的只有 1.26（最新 1.26.9）和 1.27（1.27.2，2026-10-08） | 规则 6。Go 1.21 起默认（`GOTOOLCHAIN=auto`）按 `go.mod` 自动下载所需工具链，K15 已实测：本机 Go 旧不会失败，只要能访问 `proxy.golang.org`（或 `GOPROXY`）就静默联网下载，第一次多约 9 秒、占约 253 MB；`GOTOOLCHAIN=local` 时报 `go: go.mod requires go >= … (running go …; GOTOOLCHAIN=local)`，退出码 1。检测 Go 的界面要区分“本机够新”和“靠自动下载”（决策记录 0011） | 需要 Go 1.22 以上 |
 
-**Nuxt 暂缓（负责人 2026-10-16 决定）：**`nuxt4`、`nuxt3` 第一版不做，也不加安全例外；第一版内置九个模板（`html`、`react19`、`react18`、`vue3`、`next16`、`node-ts`、`python`、`go`、`hono`），运行器七个。原因：`nuxt@4.5.2` 的锁文件 `pnpm audit` 有 2 严重 4 高，`node-forge`（GHSA-86w9-cpqp-85rv）、`braces`（GHSA-vfj7-8cjw-p6xm）无修复版本，`simple-git` 的修复只在不满 90 天的 4.0 大版本，而允许清单目前只认 root 范围。修复版出来后再加回，协调人每周复查公告；下面 Nuxt 3 的“已停止维护”标签和自动下架规则，在 Nuxt 回来时沿用（规格 templates/format 里作为暂缓的规则保留）。下面的实测记录和处理办法是 2026-10-12 的原文，留作 Nuxt 回来时的起点。
+**Next 暂缓（负责人 2026-10-16 的最新决定）：**[原话](https://github.com/paddychenc75/runyard/issues/53#issuecomment-6216393933)是“优先把软件做出来，模板可以先做一个，后续再慢慢增加”；`next16` 暂缓，不再等待 72 小时窗口后自动加入。第一版保持八个模板（`html`、`react19`、`react18`、`vue3`、`node-ts`、`python`、`go`、`hono`）和六个运行器（`static`、`vite`、`node-ts`、`python-file`、`go`、`hono`）。上表 Next 的版本和安全修复例外只保留为历史记录，恢复时重新审查。
+
+**Nuxt 暂缓（负责人 2026-10-16 决定）：**`nuxt4`、`nuxt3` 第一版不做，也不加安全例外；原决定将范围缩为九个模板，随后又暂缓 Next；当前范围以上面的八模板决定为准。原因：`nuxt@4.5.2` 的锁文件 `pnpm audit` 有 2 严重 4 高，`node-forge`（GHSA-86w9-cpqp-85rv）、`braces`（GHSA-vfj7-8cjw-p6xm）无修复版本，`simple-git` 的修复只在不满 90 天的 4.0 大版本，而允许清单目前只认 root 范围。修复版出来后再加回，协调人每周复查公告；下面 Nuxt 3 的“已停止维护”标签和自动下架规则，在 Nuxt 回来时沿用（规格 templates/format 里作为暂缓的规则保留）。下面的实测记录和处理办法是 2026-10-12 的原文，留作 Nuxt 回来时的起点。
 
 **Nuxt：这是一个真问题，不只是 Nuxt 3 的问题。**2026-10-12 在临时目录里实际装了依赖并跑了 `pnpm audit`：
 
@@ -1879,7 +1881,7 @@ openspec/
 | `library` | `playgrounds` | 创建、命名、备注、重命名、删除进废纸篓 | `prd-create`、`prd-naming`、`prd-note`、`prd-rename` | `core` | M1 |
 | `library` | `auto-clean` | 自动清理开关、保留期、智能体创建的项目 | `prd-auto-clean`、`prd-retention`、`prd-agent-created` | `core` | M1 |
 | `templates` | `format` | `template.json`、`runner.json` 的规则、版本、校验与冒烟测试 | `prd-template-engineering`、`prd-template-versions`、`prd-template-lint-test` | `protocol`、`core`、`templates/` | M1 |
-| `templates` | `runners` | 七个运行器各自保证什么（Nuxt 暂缓） | `prd-first-templates` | `templates/`、`core` | M1 |
+| `templates` | `runners` | 六个运行器各自保证什么（Next、Nuxt 暂缓） | `prd-first-templates` | `templates/`、`core` | M1 |
 | `templates` | `custom` | 另存为模板、手写模板 | `prd-custom-templates`、`prd-save-as-template` | `core` | M1 |
 | `toolchain` | `detection` | 找工具、缺工具时的提示、手动指定路径、回退 | `prd-runtime-requirements`、`prd-missing-runtime-prompt`、`prd-settings-toolchain` | `core` | M1 |
 | `cli` | `commands` | P0 命令的行为、`--json` 输出、退出码、创建者标记 | `prd-cli`、`prd-cli-commands`、`prd-cli-json`、`prd-cli-creator`、`prd-cli-clean-after` | `cli` | M1 |
@@ -3045,3 +3047,8 @@ M1 的头几个包（`protocol`、`platform`、`i18n`、`core`）落地后，把
 依据：负责人 2026-10-18 决定 Vue 智能提示第一版做完整的（证据 `docs/architecture/evidence/vue-intellisense.md` 的选项 3），并问能否装官方的 Vue VS Code 扩展。
 
 - §6.2 语言表的 Vue 一行：由“只有高亮”改为完整的智能提示；做法见决策记录 0021（不装 VS Code 扩展，随应用带上官方扩展所用的同一个语言服务）。本文其余章节不改。
+
+### 2026-10-19 的修改（补齐八模板范围）
+
+- 依据 #53 中负责人 2026-10-16 最后决定，将当前目录、运行器数量、预览版退出标准、能力索引同步为八个模板和六个运行器。
+- Next 版本表注明第一版不做；安全复核结果与之前九模板修订记录保留为历史，不自动恢复 Next/Nuxt。

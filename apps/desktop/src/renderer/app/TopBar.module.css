@@ -80,3 +80,9 @@
     transition: none;
   }
 }
+
+/* 项目标签用标签条内的加号；保留同宽位置，通知入口不随标签切换移动。 */
+.new[data-reserved] {
+  visibility: hidden;
+  pointer-events: none;
+}

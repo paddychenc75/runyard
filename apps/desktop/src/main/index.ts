@@ -3,7 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { absPath, getPlatform } from "@runyard/platform";
 import { windowBackground } from "@runyard/tokens";
-import { app, type BrowserWindow, ipcMain, nativeTheme, net, protocol } from "electron";
+import { app, type BrowserWindow, nativeTheme, net, protocol } from "electron";
 import { desktopChannels } from "../shared/desktop-bridge.ts";
 import { APP_ORIGIN, APP_SCHEME, resolveAppFile } from "./app-protocol.ts";
 import {
@@ -28,16 +28,19 @@ import {
   installCliLink,
   uninstallCliLink,
 } from "./integration/cli-link.ts";
+import { createDesktopIpcHost, settingsDialogOwner } from "./integration/desktop-ipc-host.ts";
 import { CLEAN_CHECK_INTERVAL_MS, createDockBadge } from "./integration/dock-badge.ts";
 import { createMainWindow } from "./integration/main-window.ts";
 import { createElectronSettingsHost } from "./integration/settings-host.ts";
+import { createSettingsWindowHost } from "./integration/settings-window-host.ts";
 import { claimSingleInstance, focusWindow } from "./integration/single-instance.ts";
 import { ElectronSystemActions } from "./integration/system-actions.ts";
 import { createSystemSettings } from "./integration/system-settings-host.ts";
 import { createTerminalService, runTerminalSmokeFlow } from "./integration/terminal-host.ts";
 import { resolveUserDataDir } from "./integration/user-data.ts";
+import { createVueChannelHost } from "./integration/vue-channel-host.ts";
 import { keepAliveAfterClose } from "./integration/window-lifecycle.ts";
-import { type IpcHost, registerBridgeHandlers } from "./ipc-handlers.ts";
+import { registerBridgeHandlers } from "./ipc-handlers.ts";
 import { type LibraryClient, LibraryController } from "./library-controller.ts";
 import { LinkHandler } from "./links/link-handler.ts";
 import { createLinkHost } from "./links/link-host.ts";
@@ -154,7 +157,11 @@ async function main(args: DesktopArgs): Promise<void> {
         reconnecting.stopReconnecting();
         try {
           // 终端和运行一起收尾：⌘Q 后 5 秒内不留下 shell 和里面的命令（规格 DESKTOP-TERMINAL-30）
-          await Promise.all([reconnecting.call("session.bye", {}), terminals.dispose()]);
+          await Promise.all([
+            reconnecting.call("session.bye", {}),
+            terminals.dispose(),
+            language.dispose(),
+          ]);
         } finally {
           close();
         }
@@ -168,7 +175,7 @@ async function main(args: DesktopArgs): Promise<void> {
     registerQuitFlow(
       app,
       async () => {
-        await terminals.dispose();
+        await Promise.all([terminals.dispose(), language.dispose()]);
       },
       () => quitGate.request(),
     );
@@ -204,24 +211,14 @@ async function main(args: DesktopArgs): Promise<void> {
     session: new FileSessionStore(join(app.getPath("userData"), "workspace-session.json")),
     terminals: terminalHooks,
   });
-  const ipcHost: IpcHost = {
-    handle: (channel, handler) =>
-      ipcMain.handle(channel, (event, ...rest) =>
-        handler({ url: event.senderFrame?.url ?? "" }, ...rest),
-      ),
-    handleSync: (channel, handler) =>
-      ipcMain.on(channel, (event) => {
-        try {
-          event.returnValue = handler({ url: event.senderFrame?.url ?? "" });
-        } catch {
-          // 发送者不可信：返回 null，界面拿不到启动信息
-          event.returnValue = null;
-        }
-      }),
-    send: (channel, name, payload) => {
-      if (!window.isDestroyed()) window.webContents.send(channel, name, payload);
-    },
-  };
+  const settingsWindow = createSettingsWindowHost({
+    preloadPath: join(distDir, "preload", "index.cjs"),
+    statePath: join(app.getPath("userData"), "settings-window.json"),
+    platform: currentPlatform(),
+    locale,
+    onFocusChanged: (focused) => menu.setSettingsWindowActive(focused),
+  });
+  const ipcHost = createDesktopIpcHost(window, () => settingsWindow.controller.current);
   const terminals = createTerminalService({
     root: args.root,
     distDir,
@@ -231,6 +228,7 @@ async function main(args: DesktopArgs): Promise<void> {
   // 应用菜单（安装、重建、菜单动作转给界面都在 native-ui/menu-host.ts）；语言变了、切到或离开项目标签页都重建
   const menu = createMenuHost({
     window,
+    settingsWindow: settingsWindow.controller,
     ipcHost,
     locale,
     platform: currentPlatform(),
@@ -247,26 +245,39 @@ async function main(args: DesktopArgs): Promise<void> {
     host: createElectronSettingsHost({
       home,
       window,
-      onLocaleChanged: (next) => menu.install(next),
+      dialogWindow: () => settingsDialogOwner(window, settingsWindow.controller.current),
+      onLocaleChanged: (next) => {
+        menu.install(next);
+        settingsWindow.setLocale(next);
+      },
     }),
     library: controller,
     home,
     fallbackLocale,
-    ...createSystemSettings({ client, runtime: runtime(), home, window }),
+    ...createSystemSettings({
+      client,
+      runtime: runtime(),
+      home,
+      window,
+      dialogWindow: () => settingsDialogOwner(window, settingsWindow.controller.current),
+    }),
     ...(args.theme === undefined ? {} : { fallbackTheme: args.theme }),
     ...(initial === undefined ? {} : { initial }),
   });
   // 编辑器的文件服务：只认项目 id 加项目内相对路径，文件夹每次从当前列表里查
+  const language = createVueChannelHost(home, distDir, controller, ipcHost);
   const files = new EditorFileService({
     platform: getPlatform(args.root === undefined ? {} : { home: absPath(args.root) }),
     projectFolder: (id) =>
       controller.getState().playgrounds.find((playground) => playground.id === id)?.path ?? null,
-    onChange: (project, changes) =>
-      ipcHost.send(desktopChannels.event, "files.changed", { project, changes }),
+    onChange: (project, changes) => {
+      ipcHost.send(desktopChannels.event, "files.changed", { project, changes });
+      void language.filesChanged(project, changes);
+    },
   });
   app.once("will-quit", () => void files.dispose());
   // 改名、移到废纸篓前先写入未保存的修改、再放掉项目的文件监听（#265 的先后顺序）
-  controller.onProjectRelease(createEditorRelease(files, projectGate));
+  controller.onProjectRelease(createEditorRelease(files, projectGate, language));
   const links = new LinkHandler(
     createLinkHost({
       controller,
@@ -289,8 +300,12 @@ async function main(args: DesktopArgs): Promise<void> {
     openExternal: (url) => system.openExternal(url),
     canFetch: app.isPackaged && !args.smoke,
   });
+  let currentLocale = locale;
+  let currentTheme = theme;
   let updateCheckOn = initial?.updateCheck ?? true;
   settings.onChange((next) => {
+    currentLocale = settings.localeOf(next);
+    currentTheme = settings.themeOf(next);
     if (next.updateCheck === updateCheckOn) return;
     updateCheckOn = next.updateCheck;
     void updates.run();
@@ -298,11 +313,14 @@ async function main(args: DesktopArgs): Promise<void> {
   registerBridgeHandlers(
     ipcHost,
     controller,
-    buildBootstrapInfo(currentPlatform(), {
-      locale,
-      theme,
-      reducedTransparency: nativeTheme.prefersReducedTransparency,
-      highContrast: nativeTheme.shouldUseHighContrastColors,
+    () => ({
+      ...buildBootstrapInfo(currentPlatform(), {
+        locale: currentLocale,
+        theme: currentTheme,
+        reducedTransparency: nativeTheme.prefersReducedTransparency,
+        highContrast: nativeTheme.shouldUseHighContrastColors,
+      }),
+      themeFallback: args.theme ?? "system",
     }),
     files,
     { reveal: (path) => system.revealInFileManager(path), open: (path) => system.openPath(path) },
@@ -316,6 +334,8 @@ async function main(args: DesktopArgs): Promise<void> {
       refresh: controller.refresh,
     }),
     { links, updates },
+    () => settingsWindow.controller.open(),
+    language,
   );
   await window.loadURL(`${APP_ORIGIN}/`);
   await controller.start();

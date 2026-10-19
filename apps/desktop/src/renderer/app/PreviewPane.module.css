@@ -72,3 +72,20 @@
 .action:disabled {
   opacity: 0.4;
 }
+
+/* 只旋转图标，按钮的点击区域与焦点环保持静止。 */
+.refresh[data-refreshing="true"] svg {
+  animation: preview-refresh var(--motion-duration-spin) linear infinite;
+}
+
+@keyframes preview-refresh {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .refresh[data-refreshing="true"] svg {
+    animation: none;
+  }
+}

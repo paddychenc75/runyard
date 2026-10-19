@@ -10,8 +10,8 @@ afterEach(cleanup);
 
 async function openDeps(w: World) {
   const user = userEvent.setup();
+  w.bridge.bootstrap.windowKind = "settings";
   render(<App bridge={w.bridge} />);
-  await user.click(await screen.findByRole("button", { name: "设置" }));
   await screen.findByRole("heading", { name: "依赖与网络" });
   return user;
 }

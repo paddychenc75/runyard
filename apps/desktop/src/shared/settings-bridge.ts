@@ -72,6 +72,8 @@ export interface SupervisorStatus {
 }
 
 export interface SettingsMethods {
+  /** 打开或聚焦独立设置窗口；不改变主窗口。 */
+  "settings.open": { param: undefined; result: undefined };
   "settings.get": { param: undefined; result: Settings };
   /** 只传要改的字段；返回改后的全部设置。不合法的值主进程拒绝（返回改之前的设置） */
   "settings.set": { param: SettingsPatch; result: Settings };
@@ -90,6 +92,8 @@ export interface SettingsMethods {
   "toolchain.recheck": { param: undefined; result: ToolchainReport };
   /** 弹出文件选择器选这个工具的可执行文件，能读出版本号才接受 */
   "toolchain.pickPath": { param: string; result: PickToolPathResult };
+  /** 校验并保存输入的完整可执行文件路径，失败不改变已生效路径 */
+  "toolchain.setPath": { param: { tool: string; path: string }; result: PickToolPathResult };
   /** 在终端里运行这个工具的安装命令：只运行上一次检测结果里报告的那一条，不接受别的内容 */
   "toolchain.runInstall": { param: string; result: undefined };
   "cli.status": { param: undefined; result: CliCommandStatus };
@@ -105,6 +109,7 @@ export interface SettingsMethods {
 export type SettingsMethod = keyof SettingsMethods;
 
 export const settingsMethodNames: readonly SettingsMethod[] = [
+  "settings.open",
   "settings.get",
   "settings.set",
   "settings.editors",
@@ -115,6 +120,7 @@ export const settingsMethodNames: readonly SettingsMethod[] = [
   "toolchain.check",
   "toolchain.recheck",
   "toolchain.pickPath",
+  "toolchain.setPath",
   "toolchain.runInstall",
   "cli.status",
   "cli.install",

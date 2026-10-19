@@ -120,16 +120,14 @@ describe("主窗口外壳", () => {
     expect(document.title).toBe("Runyard");
   });
 
-  it("侧栏显示项目总数，“模板”可点，还没做的“长期未使用”列出但点不了", async () => {
+  it("侧栏显示项目总数，“模板”可点，第一版不显示“长期未使用”", async () => {
     const { bridge } = fakeBridge();
     render(<AppFrame bridge={bridge} locale="zh-CN" theme="system" />);
     expect(await screen.findByRole("button", { name: /^全部\s*2$/ })).toBeTruthy();
     expect((screen.getByRole("button", { name: /^模板/ }) as HTMLButtonElement).disabled).toBe(
       false,
     );
-    expect(
-      (screen.getByRole("button", { name: /^长期未使用/ }) as HTMLButtonElement).disabled,
-    ).toBe(true);
+    expect(screen.queryByRole("button", { name: /^长期未使用/ })).toBeNull();
   });
 
   it("资源库行的打开、停止运行、双击行都发给主进程；开发期的“用模板新建”按钮行已经没有了", async () => {

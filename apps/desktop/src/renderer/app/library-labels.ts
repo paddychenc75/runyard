@@ -8,8 +8,8 @@ export function navLabel(nav: NavFilter, t: Translate) {
   switch (nav) {
     case "all":
       return t("library.filter.all.label");
-    case "kept":
-      return t("library.filter.kept.label");
+    case "running":
+      return t("library.status.running.label");
     case "autoClean":
       return t("library.filter.autoClean.label");
     case "agent":

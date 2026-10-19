@@ -1,5 +1,9 @@
 # 写测试
 
+全新工作区在运行包含桌面端的测试前，先执行 `pnpm --filter @runyard/desktop electron:download`。
+Electron 44 的包没有安装后自动下载步骤；二进制开关测试需要真实程序文件，不能依赖本机旧缓存。
+CI 的三个系统测试任务显式执行这一步（#483），不跳过开关测试。
+
 ## 何时用
 
 写或改任何测试之前；尤其是测试要用到 `@runyard/platform` 的实现（真的启动进程、绑端口、碰文件系统、读系统路径）时。
@@ -72,6 +76,22 @@ expect(await fake.platform.ports.isFree(7100)).toBe("free");
 
 规格 `DESKTOP-EDITOR-04`（150 ms，手工验证）在打好的包上量，不在单元测试里量。脚本是 `apps/desktop/e2e/editor-latency.measure.ts`（文件名不是 `*.e2e.ts`，CI 不跑），用法和历次结果见 `docs/architecture/evidence/editor-150ms.md`。
 
+## 资源库与设计稿并排取证
+
+`apps/desktop/e2e/library-design.measure.ts` 在真实 Electron 应用里通过资源库事件注入固定的九行演示状态，拍摄 Main / MainNarrow 的浅色、深色、中文、英文八组画面。它用于核对画面；真实项目的创建、运行、改名等行为仍由端到端测试验证。不要把固定状态的截图当成后台运行成功的证据。
+
+和设计稿渲染器一样，需要 macOS 的 `/Applications/Google Chrome.app`。在仓库根目录用 Node 24 运行：
+
+```sh
+pnpm --filter @runyard/desktop build
+node tooling/design-render/render.mjs Main MainDark MainEn MainDarkEn MainNarrow MainNarrowDark MainNarrowEn MainNarrowDarkEn --no-shots
+node apps/desktop/e2e/library-design.measure.ts
+```
+
+脚本打印自己的临时产物目录，包含原图、并排图、列宽测量、提交编号和真实数据目录修改时间。每份应用都使用临时 `HOME` 和 `--root`，收尾沿用端到端工具的进程身份核对；不使用固定睡眠。指定 `RUNYARD_E2E_APP` 时可对打好的包取证，与端到端测试相同。需要标注本地提交时传入 `RUNYARD_DESIGN_COMMIT`。
+
+CI 的 e2e 任务在打包后运行同一脚本，无论原端到端测试成功还是失败，都上传 `library-design-comparison` 产物（保留 14 天）。在 PR 描述链接到对应运行，逐项记录剩余差异；协调人必须下载并打开图核对。图片不进仓库。历史产物到期后可用对应提交重新生成。
+
 ## 偶发失败的规则
 
 - 必过检查失败了，不许直接重跑了事：先开一个带 `flaky` 标签的 issue，写上失败的运行链接、哪个测试、哪个系统，再重跑。
@@ -101,3 +121,33 @@ Node 24 下运行 `node tooling/design-render/icon-review.ts`，默认在新临�
 - 测试里没有系统判断，也没有没带编号的跳过。
 - 新的平台接口成员在契约测试里出现过。
 - 测试在 macOS 和 Ubuntu 上通过，Windows 任务只跑平台无关的部分。
+
+## 品牌 A 的实际侧栏取证
+
+Node 24 下运行 `pnpm --filter @runyard/desktop build`，然后 `node apps/desktop/e2e/sidebar-brand.measure.ts`。默认产物写入独立临时目录，`RUNYARD_BRAND_OUTPUT` 可指定目录；`RUNYARD_E2E_APP` 可指定端到端包。CI 上传 `sidebar-brand-a-comparison`。
+
+取证以 2026-10-19 负责人批准的品牌 A 局部（`apps/desktop/e2e/brand-a-reference.html`）和官方明暗 `icon-32.svg` 对照真实 Electron Sidebar，输出浅深 × 中英 × 1440/1100 八组完整窗口、品牌局部、并排图与尺寸/资产哈希。参考稿是放大预览；真实标题使用现有28px字号与32px图标适配侧栏，差异写在产物README。脚本同时验证图标已解码、与官方SVG逐字节一致、主题对应、读屏不重复及无溢出。本次不代表 #448 其他侧栏设计已完成。 额外四张 `theme-*.png` 验证跟随系统浅/深以及显式主题覆盖相反系统主题；`pnpm --filter @runyard/desktop e2e:run sidebar-brand.e2e.ts` 单独运行同一组真实样式断言。
+
+## 设置页的设计对照证据
+
+Node 24 下先运行 `node tooling/design-render/render.mjs Settings SettingsDark SettingsEn SettingsDarkEn SettingsNarrow SettingsNarrowDark SettingsNarrowEn SettingsNarrowDarkEn`，再运行 `pnpm --filter @runyard/desktop build` 和 `node apps/desktop/e2e/settings-design.measure.ts`。脚本每次新建临时 HOME/root，顺序启动自己的 Electron 应用并核对收尾，输出八组 1440/1100 × 浅深 × 中英文的原图、并排图和测量 JSON；1100 宽滚到“编辑与运行”，1440 宽停在最上面。
+
+`RUNYARD_SETTINGS_REVIEW_OUTPUT` 指定产物目录，不设时新建临时目录；`RUNYARD_REVIEW_CHROME` 可覆盖生成并排图用的 Chrome 路径。原图保留原始像素，并排图按相同 CSS 逻辑像素展示（设计渲染器输出 2× 图，按 820×900 显示），设计稿与设置窗口都为 820×900；主窗口分别设为1440/1100宽以核对两者独立。设置窗口没有侧栏或标签条；截图只包含网页内容，原生红绿灯位置/全屏能力在窗口e2e核对。测量核对 720 内容列居中、140 标题区、至少 54 行高、至少 24 文字与控件间距、说明不超过两行、没有横向溢出。真实设置值、工具检测结果取当前临时环境；内容不同应在评审里说明。`settings.e2e.ts` 另测最小 760 宽英文导航的 Tab 顺序、末按钮完整可见、焦点环四边至少 4px 留白，以及主页面不横向溢出。
+
+设置窗口的端到端操作先用 `e2e/support/settings-window.ts` 的 `openSettingsWindow` 取得该窗口，
+不要把主窗口的 `page` 当作设置页。主窗口与设置窗口共享进程但网页不同；用例分别核对焦点、
+主题重开后切回系统、关闭设置后主窗口状态，以及原生选择框属于发起操作的前台窗口。
+
+## 工具路径输入的设计对照
+
+#484 的 `apps/desktop/e2e/tool-path.e2e.ts` 在临时 HOME 内生成只输出版本号的可执行文件，验证含空格路径输入、保存、无效文件不覆盖、Escape、Tab 和重新装载后读取。它走真实工具验证，不执行用户的工具路径。
+
+Node 24 下先运行 `node tooling/design-render/render.mjs SettingsNarrow SettingsNarrowDark SettingsNarrowEn SettingsNarrowDarkEn` 和桌面构建，再运行 `node apps/desktop/e2e/tool-path-design.measure.ts`。脚本固定四个工具的检测报告（含 universal 架构和缺失工具），仅供画面取证；主窗口 1440/1100 分别搭配真实独立设置窗口 820/760，浅深×中英共八组。设计图抽取现有 SettingsNarrow 的运行环境区域，保留内部样式；新增完整输入框、辅助选择按钮和输入说明是批准的差异，版本及架构用固定测试状态。量尺检查架构与状态至少 8px、各行状态列对齐、输入可用宽度和无横向溢出。`RUNYARD_TOOL_PATH_REVIEW_OUTPUT` 指定新临时产物目录；CI 上传 `tool-path-design-comparison`。
+
+## 预览刷新动效的真实应用取证
+
+Node 24 下先 `pnpm --filter @runyard/desktop build`，再运行 `pnpm --filter @runyard/desktop e2e:run preview-refresh.e2e.ts`。用例在临时主目录创建真实静态页面，先点击页面计数器，再点击应用刷新按钮并确认计数归零；以网络请求挂起/放行验证慢加载持续旋转、失败恢复及减少动态偏好，不用固定睡眠。
+
+设计对照先运行 `node tooling/design-render/render.mjs Web WebEn WebLight WebLightEn --no-shots`，再运行 `node apps/desktop/e2e/preview-refresh-design.measure.ts`。默认在独立临时目录输出八组浅深 × 中英 × 1440/1100 的静止、加载中、设计并排图与尺寸记录；`RUNYARD_REFRESH_OUTPUT` 可指定独立输出目录，`RUNYARD_E2E_APP` 可切换到端到端包。CI 上传 `preview-refresh-design-comparison`，下载后打开八张 comparison.png 和 loading.png。
+
+Web 系列只有 1440 画板，1100 对照保留原布局裁取，不代表存在窄窗设计稿。原生预览另附 preview.png；静态项目和设计的 React 示例内容不同，原有顶栏/侧栏差异分别由 #446/#448 追踪，停止图标沿用已合并 #475。动效是 #477 批准的新增行为，不能用静止图证明动效生命周期，须结合真实端到端结果。
