@@ -15,6 +15,7 @@ import type { PlaygroundRow, RunningRow, TabRow } from "../../shared/library-sta
 import { useFlushProject } from "../features/editor/EditorWorkspace.tsx";
 import { useCommand } from "../shared/command-host.tsx";
 import { useWindowWidth } from "../shared/viewport.ts";
+import { NotificationCenter } from "./notifications/NotificationCenter.tsx";
 import { PaneToggleButton } from "./PaneToggleButton.tsx";
 import { RunBar } from "./RunBar.tsx";
 import { RunningPopover } from "./RunningPopover.tsx";
@@ -169,11 +170,18 @@ export function TopBar({
           />
         ) : null}
       </div>
-      {activeTabRow === undefined ? (
-        <Button variant="primary" icon="plus" className={styles.new} onClick={onNew}>
-          {t("desktop.create.title")}
-        </Button>
-      ) : null}
+      <NotificationCenter />
+      <Button
+        variant="primary"
+        icon="plus"
+        className={styles.new}
+        onClick={onNew}
+        data-reserved={activeTabRow === undefined ? undefined : ""}
+        aria-hidden={activeTabRow === undefined ? undefined : true}
+        tabIndex={activeTabRow === undefined ? undefined : -1}
+      >
+        {t("desktop.create.title")}
+      </Button>
     </div>
   );
 }

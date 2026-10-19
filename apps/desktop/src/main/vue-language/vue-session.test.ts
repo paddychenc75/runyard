@@ -88,4 +88,29 @@ describe("Vue 双协议会话", () => {
     expect(vue.link.stop).toHaveBeenCalledOnce();
     expect(ts.link.stop).toHaveBeenCalledOnce();
   });
+  it("取消请求发送窄的取消通知，晚到响应不会恢复等待", async () => {
+    const vue = fakeProcess("vue");
+    const ts = fakeProcess("ts");
+    const session = await createVueSession({
+      folder: "/project",
+      launch: async (target) => (target === "vue" ? vue.link : ts.link),
+      failed: () => {},
+    });
+    try {
+      const abort = new AbortController();
+      const pending = session.request("vue", "textDocument/completion", {}, abort.signal);
+      const rejection = expect(pending).rejects.toThrow("LANGUAGE_CANCELLED");
+      abort.abort();
+      await rejection;
+      const request = vue.messages.find((message) => message.method === "textDocument/completion");
+      expect(vue.messages).toContainEqual({
+        jsonrpc: "2.0",
+        method: "$/cancelRequest",
+        params: { id: request?.id },
+      });
+      vue.emit({ id: request?.id, result: { items: [] } });
+    } finally {
+      await session.stop();
+    }
+  });
 });
