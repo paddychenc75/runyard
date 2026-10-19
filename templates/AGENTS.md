@@ -3,7 +3,7 @@
 ## 用途
 
 随应用发布的数据文件：模板、运行器、工具定义。它们是数据，不是代码，格式的唯一出处是 `packages/protocol` 里的 zod 定义（规格 `openspec/specs/templates/format`）。
-现状：目录骨架、六份工具定义，内置模板 `html`（运行器 `static`，#50）、`react19`、`react18`、`vue3`（共用运行器 `vite`，#51）和脚本类的 `node-ts`、`python`、`go`（运行器 `node-ts`、`python-file`、`go`，#52）和 `hono`（运行器 `hono`，#53）已有；其余内置模板和运行器随后续 issue 放进来。`next16`（#53 的另一个）暂缺，等 Next.js 16.4.1 满 72 小时后做（安全修复版，2026-10-17 17:43 UTC 起）；`nuxt4`、`nuxt3` 第一版不做（依赖树里有没有合规修复版本的公告，负责人 2026-10-16 决定），修复版出来后再加回，原因见 #53。
+现状：目录骨架、六份工具定义，内置模板 `html`（运行器 `static`，#50）、`react19`、`react18`、`vue3`（共用运行器 `vite`，#51）和脚本类的 `node-ts`、`python`、`go`（运行器 `node-ts`、`python-file`、`go`，#52）和 `hono`（运行器 `hono`，#53）已有；其余内置模板和运行器随后续 issue 放进来。`next16`、`nuxt4`、`nuxt3` 第一版都暂缓，现有八个模板和六个运行器保持（[负责人在 #53 的最新决定](https://github.com/paddychenc75/runyard/issues/53#issuecomment-6216393933)；该决定晚于 PR #145 的九模板范围）。不要因为旧 issue 正文或安全修复版年龄已够就恢复模板；以 `docs/product/02-prd.md` 的 #prd-first-templates 和置顶交接 issue 为准。现有模板的 `template test` 命令缺口跟踪 #146，模板 CI/每晚任务与验收跟踪 #54。
 
 ## 对外暴露什么
 
