@@ -451,3 +451,15 @@ it("[DESKTOP-LIBRARY-VIEW-98] 从临时模板导航打开项目再回库不遗�
     JSON.parse(window.localStorage.getItem("runyard.layout.v1") ?? "{}").sidebarCollapsed,
   ).toBe(true);
 });
+
+it.each([1100, 1440])(
+  "[DESKTOP-LIBRARY-VIEW-98] 拉宽到%s后切换按钮焦点随侧栏恢复",
+  async (width) => {
+    setup(libraryState({ loaded: false }));
+    await screen.findByRole("navigation", { name: "资源库导航" });
+    resizeShell(720);
+    screen.getByRole("button", { name: "显示侧栏" }).focus();
+    resizeShell(width);
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "收起侧栏" }));
+  },
+);

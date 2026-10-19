@@ -26,10 +26,15 @@ export function useResponsiveSidebar(
     const measure = () => {
       const width = node.getBoundingClientRect().width;
       const next = width > 0 && width < MIN_WITH_SIDEBAR;
-      if (
-        ((next && enabled) || (!next && collapsed)) &&
-        node.querySelector("[data-library-sidebar]")?.contains(document.activeElement)
-      )
+      const focused = document.activeElement;
+      const inSidebar = node.querySelector("[data-library-sidebar]")?.contains(focused);
+      const restoringToggle =
+        !next &&
+        enabled &&
+        !collapsed &&
+        !inSidebar &&
+        focused?.hasAttribute("data-sidebar-toggle");
+      if (restoringToggle || (((next && enabled) || (!next && collapsed)) && inSidebar))
         returnFocus.current = true;
       setNarrow(next);
     };
