@@ -111,3 +111,11 @@ Node 24 下运行 `node tooling/design-render/icon-review.ts`，默认在新临�
 Node 24 下先运行 `node tooling/design-render/render.mjs Settings SettingsDark SettingsEn SettingsDarkEn SettingsNarrow SettingsNarrowDark SettingsNarrowEn SettingsNarrowDarkEn`，再运行 `pnpm --filter @runyard/desktop build` 和 `node apps/desktop/e2e/settings-design.measure.ts`。脚本每次新建临时 HOME/root，顺序启动自己的 Electron 应用并核对收尾，输出八组 1440/1100 × 浅深 × 中英文的原图、并排图和测量 JSON；1100 宽滚到“编辑与运行”，1440 宽停在最上面。
 
 `RUNYARD_SETTINGS_REVIEW_OUTPUT` 指定产物目录，不设时新建临时目录；`RUNYARD_REVIEW_CHROME` 可覆盖生成并排图用的 Chrome 路径。原图保留原始像素，并排图按相同 CSS 逻辑像素展示（设计渲染器输出 2× 图，按 820×900 显示），设计稿与设置窗口都为 820×900；主窗口分别设为1440/1100宽以核对两者独立。设置窗口没有侧栏或标签条；截图只包含网页内容，原生红绿灯位置/全屏能力在窗口e2e核对。测量核对 720 内容列居中、140 标题区、至少 54 行高、至少 24 文字与控件间距、说明不超过两行、没有横向溢出。真实设置值、工具检测结果取当前临时环境；内容不同应在评审里说明。`settings.e2e.ts` 另测最小 760 宽英文导航的 Tab 顺序、末按钮完整可见、焦点环四边至少 4px 留白，以及主页面不横向溢出。
+
+## 预览刷新动效的真实应用取证
+
+Node 24 下先 `pnpm --filter @runyard/desktop build`，再运行 `pnpm --filter @runyard/desktop e2e:run preview-refresh.e2e.ts`。用例在临时主目录创建真实静态页面，先点击页面计数器，再点击应用刷新按钮并确认计数归零；以网络请求挂起/放行验证慢加载持续旋转、失败恢复及减少动态偏好，不用固定睡眠。
+
+设计对照先运行 `node tooling/design-render/render.mjs Web WebEn WebLight WebLightEn --no-shots`，再运行 `node apps/desktop/e2e/preview-refresh-design.measure.ts`。默认在独立临时目录输出八组浅深 × 中英 × 1440/1100 的静止、加载中、设计并排图与尺寸记录；`RUNYARD_REFRESH_OUTPUT` 可指定独立输出目录，`RUNYARD_E2E_APP` 可切换到端到端包。CI 上传 `preview-refresh-design-comparison`，下载后打开八张 comparison.png 和 loading.png。
+
+Web 系列只有 1440 画板，1100 对照保留原布局裁取，不代表存在窄窗设计稿。原生预览另附 preview.png；静态项目和设计的 React 示例内容不同，原有顶栏/侧栏差异分别由 #446/#448 追踪，停止图标沿用已合并 #475。动效是 #477 批准的新增行为，不能用静止图证明动效生命周期，须结合真实端到端结果。
