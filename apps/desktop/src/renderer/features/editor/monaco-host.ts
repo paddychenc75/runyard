@@ -12,7 +12,7 @@ import type { SessionState } from "./session-types.ts";
 import { configureTypeScript, IGNORED_DIAGNOSTIC_CODES } from "./typescript-defaults.ts";
 import { TypeScriptDiagnostics } from "./typescript-diagnostics.ts";
 import { type ClosedFile, TypeScriptProject } from "./typescript-project.ts";
-import { registerVueCompletion } from "./vue-completion-provider.ts";
+import { createVueEditorServices } from "./vue-editor-services.ts";
 import { VueModelSync } from "./vue-model-sync.ts";
 
 // 把编辑会话（EditorSession）摆进 Monaco：每个能编辑的文件标签一个模型，选中的那个放进编辑器。
@@ -87,10 +87,11 @@ export function buildHost(
     subscription: Monaco.IDisposable;
   }
   const entries = new Map<string, Entry>();
-  const completion =
+  const vueServices =
     source?.vue && vue
-      ? registerVueCompletion({
+      ? createVueEditorServices({
           runtime,
+          models: () => [...entries.values()].map((entry) => entry.model),
           bridge: source.vue,
           owns: (model) => [...entries.values()].some((entry) => entry.model === model),
           synced: (model) => vue.synced(model),
@@ -196,7 +197,8 @@ export function buildHost(
       if (editor.getModel()?.uri.toString() === resource.toString()) return false;
       if (handlers.onOpenFile === undefined) return false;
       const path = resource.path.slice(1);
-      if (project?.isKnownScript(path) !== true && !isOpenPath(path)) return false;
+      if (project?.isKnownScript(path) !== true && !isOpenPath(path) && !vueServices?.canOpen(path))
+        return false;
       const at =
         selectionOrPosition === undefined
           ? undefined
@@ -368,7 +370,7 @@ export function buildHost(
     focus: () => editor.focus(),
     run: (operation) => runEditorOperation(editor, operation),
     dispose() {
-      completion?.dispose();
+      vueServices?.dispose();
       opener.dispose();
       createdListener.dispose();
       for (const listener of composing) listener.dispose();
