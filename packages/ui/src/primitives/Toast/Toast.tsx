@@ -7,7 +7,7 @@ import styles from "./Toast.module.css";
 export interface ToastProps {
   message: Localized;
   onDismiss: () => void;
-  duration?: number;
+  duration?: number | null;
   className?: string;
 }
 export function Toast({ message, onDismiss, duration = 2000, className }: ToastProps) {
@@ -20,6 +20,7 @@ export function Toast({ message, onDismiss, duration = 2000, className }: ToastP
     return () => clearTimeout(timer);
   }, [closing]);
   useEffect(() => {
+    if (duration === null) return;
     const timer = setTimeout(() => setClosing(true), duration);
     return () => clearTimeout(timer);
   }, [duration]);

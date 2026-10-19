@@ -1,4 +1,9 @@
-import { desktopCatalogs, type MessageKey } from "@runyard/i18n";
+import {
+  createTranslator,
+  desktopCatalogs,
+  type MessageKey,
+  type MessageValues,
+} from "@runyard/i18n";
 import type {
   NotificationRecord,
   NotificationStorage,
@@ -7,11 +12,16 @@ import type {
 
 export const NOTIFICATION_STORAGE_KEY = "runyard.notifications.v1";
 const keys = new Set(desktopCatalogs.flatMap((catalog) => Object.keys(catalog.en)));
+const validateText = createTranslator({
+  locale: "en",
+  platform: "darwin",
+  catalogs: desktopCatalogs,
+}).t as (key: MessageKey, values?: MessageValues) => string;
 const icons = new Set(["info", "warning", "spark", "refresh", "check", "exclamation"]);
 function isText(value: unknown): value is NotificationText {
   if (typeof value !== "object" || value === null) return false;
   const { key, values } = value as Record<string, unknown>;
-  return (
+  const valid =
     typeof key === "string" &&
     keys.has(key as MessageKey) &&
     (values === undefined ||
@@ -19,8 +29,14 @@ function isText(value: unknown): value is NotificationText {
         values !== null &&
         Object.values(values).every(
           (item) => typeof item === "string" || typeof item === "number",
-        )))
-  );
+        )));
+  if (!valid) return false;
+  try {
+    validateText(key as MessageKey, values as MessageValues | undefined);
+    return true;
+  } catch {
+    return false;
+  }
 }
 export function isNotificationRecord(value: unknown): value is NotificationRecord {
   if (typeof value !== "object" || value === null) return false;

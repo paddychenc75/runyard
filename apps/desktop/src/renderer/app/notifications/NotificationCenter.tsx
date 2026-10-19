@@ -7,7 +7,11 @@ import type { Bounds } from "../../../shared/layout.ts";
 import { useOverlay } from "../../shared/overlay-context.tsx";
 import styles from "./NotificationCenter.module.css";
 import { getNotificationService, type NotificationService } from "./notification-service.ts";
-import type { NotificationRecord, NotificationText } from "./notification-store.ts";
+import type {
+  NotificationRecord,
+  NotificationSnapshot,
+  NotificationText,
+} from "./notification-store.ts";
 
 // 存储层只接受已有文案键和纯数据参数；翻译发生在当前语言的渲染期间。
 function translate(t: Translate, text: NotificationText): Localized {
@@ -19,18 +23,89 @@ export function NotificationCenter({
   service?: NotificationService;
 }) {
   const t = useT();
-  const format = useFormat();
   const state = useSyncExternalStore(service.store.subscribe, service.store.snapshot);
   const toast = useSyncExternalStore(service.subscribeToast, service.getToast);
   const [open, setOpen] = useState(false);
-  const region = useRef<HTMLDivElement>(null);
-  const [bounds, setBounds] = useState<Bounds>();
-  const records = [...state.required, ...state.recent];
-  const cards = state.cards.flatMap((id) => records.filter((item) => item.id === id));
   useEffect(() => {
     const timer = setInterval(() => service.store.prune(), 60_000);
     return () => clearInterval(timer);
   }, [service]);
+  useOverlay(open);
+  useOverlay(toast !== null);
+  return (
+    <>
+      <NotificationMenu service={service} state={state} open={open} setOpen={setOpen} />
+      <NotificationCards service={service} state={state} open={open} />
+      {toast === null
+        ? null
+        : createPortal(
+            <div className={styles.toast}>
+              <Toast
+                key={toast.id}
+                message={translate(t, toast.message)}
+                onDismiss={service.dismissToast}
+              />
+            </div>,
+            document.body,
+          )}
+    </>
+  );
+}
+interface NotificationViewProps {
+  service: NotificationService;
+  state: NotificationSnapshot;
+  open: boolean;
+}
+function NotificationMenu({
+  service,
+  state,
+  open,
+  setOpen,
+}: NotificationViewProps & { setOpen: (open: boolean) => void }) {
+  const t = useT();
+  const format = useFormat();
+  return (
+    <NoticeList
+      open={open}
+      onOpenChange={setOpen}
+      title={t("desktop.notifications.title")}
+      clearLabel={t("desktop.notifications.clear.action")}
+      requiredLabel={t("desktop.notifications.required.label")}
+      recentLabel={t("desktop.notifications.recent.label")}
+      emptyLabel={t("desktop.notifications.empty.label")}
+      hasRecent={state.recent.length > 0}
+      onClear={() => service.store.clearRecent()}
+      trigger={
+        <IconButton
+          className={styles.trigger}
+          icon="bell"
+          label={t("desktop.notifications.title")}
+          data-notifications-toggle=""
+          data-count={
+            state.required.length === 0 ? undefined : format.number(state.required.length)
+          }
+          variant={open ? "neutral" : "ghost"}
+        />
+      }
+      required={
+        state.required.length === 0
+          ? null
+          : state.required.map((item) => <Entry key={item.id} item={item} service={service} />)
+      }
+      recent={
+        state.recent.length === 0
+          ? null
+          : state.recent.map((item) => <Entry key={item.id} item={item} service={service} />)
+      }
+    />
+  );
+}
+function NotificationCards({ service, state, open }: NotificationViewProps) {
+  const t = useT();
+  const region = useRef<HTMLDivElement>(null);
+  const [bounds, setBounds] = useState<Bounds>();
+  const records = [...state.required, ...state.recent];
+  const cards = state.cards.flatMap((id) => records.filter((item) => item.id === id));
   useLayoutEffect(() => {
     const element = region.current;
     if (!element) return;
@@ -47,78 +122,28 @@ export function NotificationCenter({
       observer.disconnect();
       window.removeEventListener("resize", update);
     };
-  }, [state.cards.length, open, toast]);
-  useOverlay(open);
+  }, [state.cards.length, open]);
   useOverlay(!open && cards.length > 0, bounds);
-  useOverlay(toast !== null);
-  return (
-    <>
-      <NoticeList
-        open={open}
-        onOpenChange={setOpen}
-        title={t("desktop.notifications.title")}
-        clearLabel={t("desktop.notifications.clear.action")}
-        requiredLabel={t("desktop.notifications.required.label")}
-        recentLabel={t("desktop.notifications.recent.label")}
-        emptyLabel={t("desktop.notifications.empty.label")}
-        hasRecent={state.recent.length > 0}
-        onClear={() => service.store.clearRecent()}
-        trigger={
-          <IconButton
-            className={styles.trigger}
-            icon="bell"
-            label={t("desktop.notifications.title")}
-            data-notifications-toggle=""
-            data-count={
-              state.required.length === 0 ? undefined : format.number(state.required.length)
-            }
-            variant={open ? "neutral" : "ghost"}
-          />
-        }
-        required={
-          state.required.length === 0
-            ? null
-            : state.required.map((item) => <Entry key={item.id} item={item} service={service} />)
-        }
-        recent={
-          state.recent.length === 0
-            ? null
-            : state.recent.map((item) => <Entry key={item.id} item={item} service={service} />)
-        }
-      />
-      {createPortal(
-        <div ref={region} className={styles.cards} data-notification-cards="" hidden={open}>
-          {cards.map((item) => (
-            <NoticeCard
-              key={item.id}
-              title={translate(t, item.title)}
-              description={item.description ? translate(t, item.description) : undefined}
-              tone={item.tone}
-              icon={item.icon}
-              dismissLabel={t("desktop.notice.dismiss.aria")}
-              onDismiss={() => service.store.dismiss(item.id)}
-              duration={item.required ? null : 8000}
-              actions={<Actions item={item} service={service} />}
-            />
-          ))}
-        </div>,
-        document.body,
-      )}
-      {toast === null
-        ? null
-        : createPortal(
-            <div className={styles.toast}>
-              <Toast
-                key={toast.id}
-                message={translate(t, toast.message)}
-                onDismiss={service.dismissToast}
-              />
-            </div>,
-            document.body,
-          )}
-    </>
+  return createPortal(
+    <div ref={region} className={styles.cards} data-notification-cards="" hidden={open}>
+      {cards.map((item) => (
+        <NoticeCard
+          key={item.id}
+          title={translate(t, item.title)}
+          description={item.description ? translate(t, item.description) : undefined}
+          tone={item.tone}
+          icon={item.icon}
+          dismissLabel={t("desktop.notice.dismiss.aria")}
+          onDismiss={() => service.store.dismiss(item.id)}
+          duration={item.required ? null : 8000}
+          actions={<Actions item={item} service={service} />}
+        />
+      ))}
+    </div>,
+    document.body,
   );
 }
+
 function Entry({ item, service }: { item: NotificationRecord; service: NotificationService }) {
   const t = useT();
   return (

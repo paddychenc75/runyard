@@ -15,7 +15,13 @@ describe("通知持久化", () => {
   it("恢复时过滤坏条目，写入保留键与参数", () => {
     const setItem = vi.fn();
     const storage = createNotificationStorage({
-      getItem: () => JSON.stringify([record, { ...record, title: { key: "missing.key" } }, null]),
+      getItem: () =>
+        JSON.stringify([
+          record,
+          { ...record, title: { key: "missing.key" } },
+          { ...record, title: { key: "desktop.update.banner.label" } },
+          null,
+        ]),
       setItem,
     });
     expect(storage.read()).toEqual([record]);

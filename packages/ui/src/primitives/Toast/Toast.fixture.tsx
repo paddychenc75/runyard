@@ -7,6 +7,12 @@ export const meta: FixtureMeta = {
   backdrop: "colorful",
 };
 export const samples: readonly FixtureSample[] = [
-  { name: "success", render: (data) => <Toast message={data.label} onDismiss={() => {}} /> },
-  { name: "long-label", render: (data) => <Toast message={data.longLabel} onDismiss={() => {}} /> },
+  {
+    name: "success",
+    render: (data) => <Toast duration={null} message={data.label} onDismiss={() => {}} />,
+  },
+  {
+    name: "long-label",
+    render: (data) => <Toast duration={null} message={data.longLabel} onDismiss={() => {}} />,
+  },
 ];

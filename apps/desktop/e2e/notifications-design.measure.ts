@@ -62,6 +62,13 @@ try {
         await expect(instance.page.getByRole("combobox")).toBeFocused();
         await instance.page.keyboard.press("Escape");
         await instance.cli("new", "html", "react-counter");
+        await expect
+          .poll(async () =>
+            (
+              await instance.call<{ playgrounds: { name: string }[] }>("library.get")
+            ).playgrounds.some((item) => item.name === "react-counter"),
+          )
+          .toBe(true);
         await instance.page.evaluate(
           (items) => localStorage.setItem("runyard.notifications.v1", JSON.stringify(items)),
           records,
@@ -81,7 +88,7 @@ try {
             const board = `Notify${mode === "center" ? "Center" : ""}${theme === "dark" ? "Dark" : ""}${lang === "en" ? "En" : ""}`;
             const name = `${width}-${theme}-${lang}-${mode}`;
             const designPage = await chrome.newPage({
-              viewport: { width, height: 900 },
+              viewport: { width: 1440, height: 900 },
               deviceScaleFactor: 1,
             });
             await designPage.goto(
@@ -96,10 +103,10 @@ try {
               path: join(out, `${name}-app.png`),
               scale: "css",
             });
-            const html = `<!doctype html><meta charset="utf-8"><style>body{margin:0;background:#ddd;font:14px system-ui}main{display:flex;gap:12px}figure{margin:0;width:50%}img{width:100%}</style><main><figure><figcaption>设计稿 ${board}</figcaption><img src="data:image/png;base64,${design.toString("base64")}"></figure><figure><figcaption>真实打包应用：${width} / ${theme} / ${lang}；#462骨架替身，真实来源接入见#463</figcaption><img src="data:image/png;base64,${actual.toString("base64")}"></figure></main>`;
+            const html = `<!doctype html><meta charset="utf-8"><style>body{margin:0;background:#ddd;font:14px system-ui}main{display:flex;gap:12px}figure{margin:0;flex:none}figure:first-child{width:1440px}figure:last-child{width:${width}px}img{width:100%}</style><main><figure><figcaption>设计稿 ${board}</figcaption><img src="data:image/png;base64,${design.toString("base64")}"></figure><figure><figcaption>真实打包应用：${width} / ${theme} / ${lang}；#462骨架替身，真实来源接入见#463</figcaption><img src="data:image/png;base64,${actual.toString("base64")}"></figure></main>`;
             writeFileSync(join(out, `${name}.html`), html);
             const pair = await chrome.newPage({
-              viewport: { width: width * 2 + 12, height: 940 },
+              viewport: { width: 1440 + width + 12, height: 940 },
               deviceScaleFactor: 1,
             });
             await pair.setContent(html);

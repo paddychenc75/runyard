@@ -125,11 +125,16 @@ test("[DESKTOP-NOTIFICATIONS-10] 通知入口在资源库、收起侧栏和项�
   await runyard.page.getByRole("button", { name: "Hide sidebar" }).click();
   await expect.poll(async () => (await bell.boundingBox())?.x).toBe(original?.x);
   await runyard.cli("new", "html", "notice-position");
-  const library = await runyard.call<{ playgrounds: { id: string; name: string }[] }>(
-    "library.get",
-  );
-  const id = library.playgrounds.find((item) => item.name === "notice-position")?.id;
-  expect(id).toBeTruthy();
+  let id: string | undefined;
+  await expect
+    .poll(async () => {
+      const library = await runyard.call<{ playgrounds: { id: string; name: string }[] }>(
+        "library.get",
+      );
+      id = library.playgrounds.find((item) => item.name === "notice-position")?.id;
+      return id;
+    })
+    .toBeTruthy();
   await runyard.call("tab.open", id);
   await expect(runyard.page.getByRole("tab", { name: /notice-position/ })).toHaveAttribute(
     "aria-selected",
