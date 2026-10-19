@@ -60,6 +60,25 @@ jobs:
           RUNYARD_E2E_APP: ${{ github.workspace }}/apps/desktop/release/e2e/mac-arm64/Runyard.app/Contents/MacOS/Runyard
         run: pnpm --filter @runyard/desktop e2e:run
 
+      - name: 生成刷新动效八组设计对照
+        if: always()
+        env:
+          RUNYARD_E2E_APP: ${{ github.workspace }}/apps/desktop/release/e2e/mac-arm64/Runyard.app/Contents/MacOS/Runyard
+        run: |
+          node tooling/design-render/render.mjs Web WebEn WebLight WebLightEn --no-shots
+          output="$(mktemp -d)"
+          echo "RUNYARD_REFRESH_OUTPUT=$output" >> "$GITHUB_ENV"
+          RUNYARD_REFRESH_OUTPUT="$output" node apps/desktop/e2e/preview-refresh-design.measure.ts
+
+      - name: 上传刷新动效设计对照
+        if: always() && env.RUNYARD_REFRESH_OUTPUT != ''
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: preview-refresh-design-comparison
+          path: ${{ env.RUNYARD_REFRESH_OUTPUT }}
+          if-no-files-found: error
+          retention-days: 14
+
       - name: 上传失败截图和报告
         if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
