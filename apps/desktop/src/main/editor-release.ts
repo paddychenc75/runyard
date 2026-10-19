@@ -7,14 +7,18 @@ import type { ReleaseExtras } from "./project-release.ts";
 export function createEditorRelease(
   files: Pick<EditorFileService, "unwatch" | "watch" | "isWatching">,
   gate: Pick<ProjectFlushGate, "request">,
+  language?: { close(id: string): Promise<void> },
 ): ReleaseExtras {
   /** 放掉之前正在监听的项目：只有它们需要接回来 */
   const released = new Set<string>();
   return {
+    closed: async (id) => {
+      await language?.close(id);
+    },
     flush: (id, ask) => gate.request(id, ask),
     release: async (id) => {
       if (files.isWatching(id)) released.add(id);
-      await files.unwatch(id);
+      await Promise.all([files.unwatch(id), language?.close(id)]);
     },
     restore: async (id) => {
       if (released.delete(id)) await files.watch(id);

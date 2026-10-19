@@ -10,6 +10,10 @@ import {
 } from "node:fs";
 import { dirname, join, sep } from "node:path";
 import { build } from "esbuild";
+import {
+  VUE_LANGUAGE_SERVICE_DIR,
+  VUE_LANGUAGE_SERVICE_PATHS,
+} from "../src/main/vue-language/service-paths.ts";
 
 // 随应用带的“语言服务目录”（决策记录 0021 第 4 条，证据 vue-intellisense.md“第二次验证”）。
 // 放进 .app 的 Contents/Resources，不进 asar：Node 的权限模型要按真实路径授权读权限，
@@ -21,18 +25,10 @@ import { build } from "esbuild";
 //   <dir>/typescript/lib/                  tsserver 与 typescript.js，两个进程共用的 --tsdk
 //   <dir>/manifest.json                    各部分的版本，供守卫脚本和测试核对
 
-export const VUE_LANGUAGE_SERVICE_DIR = "vue-language-service";
-
-/** 语言服务目录里各个入口的相对路径；进程管理（#412）和冒烟脚本都从这里取，不各自拼 */
-export const VUE_LANGUAGE_SERVICE_PATHS = {
-  server: join("server", "vue-language-server.cjs"),
-  types: "types",
-  pluginProbe: ".",
-  plugin: join("node_modules", "@vue", "typescript-plugin"),
-  tsdk: join("typescript", "lib"),
-  tsserver: join("typescript", "lib", "tsserver.js"),
-  manifest: "manifest.json",
-} as const;
+export {
+  VUE_LANGUAGE_SERVICE_DIR,
+  VUE_LANGUAGE_SERVICE_PATHS,
+} from "../src/main/vue-language/service-paths.ts";
 
 export interface VueLanguageServiceManifest {
   vueLanguageServer: string;
@@ -139,6 +135,16 @@ export async function buildVueLanguageService(desktopDir: string, outDir: string
     logLevel: "warning",
   });
 
+  await build({
+    entryPoints: [join(desktopDir, "src", "main", "integration", "vue-network-guard.ts")],
+    outfile: join(root, VUE_LANGUAGE_SERVICE_PATHS.guard),
+    bundle: true,
+    platform: "node",
+    format: "cjs",
+    target: "node24",
+    logLevel: "warning",
+  });
+
   // 2. 插件及其依赖原样放进 node_modules/，扁平摆放（同名包的版本在锁文件里只有一份，下面核对）
   const closure = runtimeClosure(pluginPackage);
   closure.delete("typescript");
@@ -175,6 +181,7 @@ export async function buildVueLanguageService(desktopDir: string, outDir: string
 export function vueLanguageServiceProblems(root: string): string[] {
   const problems: string[] = [];
   const required = [
+    VUE_LANGUAGE_SERVICE_PATHS.guard,
     VUE_LANGUAGE_SERVICE_PATHS.server,
     VUE_LANGUAGE_SERVICE_PATHS.manifest,
     join(VUE_LANGUAGE_SERVICE_PATHS.types, "template-helpers.d.ts"),
