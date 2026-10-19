@@ -98,7 +98,8 @@ describe("模板页", () => {
     const user = userEvent.setup();
     world();
     // 侧栏“模板”可点，右边是模板总数
-    const nav = await screen.findByRole("button", { name: /^模板/ });
+    // #490：按钮先以初始计数 0 出现，等待异步资源库状态到达后再断言。
+    const nav = await screen.findByRole("button", { name: /^模板.*11/ });
     expect(nav.textContent).toContain("11");
     await openTemplates(user);
     expect(screen.queryByRole("tablist")).toBeNull();
