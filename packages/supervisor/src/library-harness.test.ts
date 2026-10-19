@@ -1,9 +1,9 @@
 import { join } from "node:path";
-import type { PlaygroundSeed } from "@runyard/core";
+import type { PlaygroundSeed, TemplateCatalog } from "@runyard/core";
 import { type AbsPath, absPath, posixRelPath } from "@runyard/platform";
 import type { Owner } from "@runyard/protocol";
 import { expect, it } from "vitest";
-import type { LibrarySeams, TemplateCatalog } from "./library-seams.ts";
+import type { LibrarySeams } from "./library-seams.ts";
 import type { RunsView } from "./runs-view.ts";
 import { World } from "./supervisor-harness.test.ts";
 import type { SupervisorHandle } from "./supervisor-options.ts";
