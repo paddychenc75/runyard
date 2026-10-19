@@ -2,8 +2,8 @@ import { mkdtempSync, realpathSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
-import { absPath, type PosixRelPath, posixRelPath } from "../path-types.ts";
-import type { WatchEvent } from "../platform.ts";
+import { absPath, posixRelPath } from "../path-types.ts";
+import type { WatchEvent, WatchOptions } from "../platform.ts";
 import type { ContractContext } from "./context.ts";
 import { eventually } from "./service-harness.ts";
 
@@ -18,7 +18,7 @@ export function watchContract(ctx: ContractContext): void {
   const { fs, watch } = ctx.create(home);
   let counter = 0;
 
-  async function setup(opts: { ignore?: PosixRelPath[]; depth?: number } = {}) {
+  async function setup(opts: WatchOptions = {}) {
     const base = absPath(join(home, `case-${++counter}`));
     const root = absPath(join(base, "root"));
     await fs.makeDir(root);
@@ -55,6 +55,49 @@ export function watchContract(ctx: ContractContext): void {
       );
       expect(seen.filter((event) => event.path.startsWith("skip"))).toEqual([]);
       await handle.dispose();
+    });
+
+    it('"watch" ignoreNames 在任意层级按完整名称忽略，ignore 仍只匹配根相对路径 [#472]', async () => {
+      const { root, seen, handle } = await setup({
+        ignore: [posixRelPath("skip")],
+        ignoreNames: ["node_modules", ".venv"],
+      });
+      try {
+        for (const parts of [
+          ["node_modules"],
+          ["web", "node_modules"],
+          ["apps", "api", ".venv"],
+          ["skip"],
+          ["web", "skip"],
+          ["web", "node_modules-old"],
+        ]) {
+          const dir = absPath(join(root, ...parts));
+          await fs.makeDir(dir);
+          await fs.writeFile(absPath(join(dir, "index.txt")), "1");
+        }
+        await fs.writeFile(absPath(join(root, "sentinel.txt")), "1");
+        await eventually(() => has(seen, "add", "sentinel.txt"), WAIT_MS, "普通源码的哨兵事件");
+        await eventually(
+          () => has(seen, "add", "web/skip/index.txt"),
+          WAIT_MS,
+          "同名嵌套路径不受根相对 ignore 影响",
+        );
+        await eventually(
+          () => has(seen, "add", "web/node_modules-old/index.txt"),
+          WAIT_MS,
+          "相似名称不受 ignoreNames 影响",
+        );
+        expect(
+          seen.filter(
+            (event) =>
+              event.path.split("/").some((name) => name === "node_modules" || name === ".venv") ||
+              event.path === "skip" ||
+              event.path.startsWith("skip/"),
+          ),
+        ).toEqual([]);
+      } finally {
+        await handle.dispose();
+      }
     });
 
     it('"watch" depth 为 1 时只看根目录的直接子项', async () => {

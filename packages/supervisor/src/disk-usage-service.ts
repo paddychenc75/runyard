@@ -13,8 +13,8 @@ export const SIZE_MAX_WAIT_MS = 60_000;
 export const SIZE_SWEEP_MS = 30 * 60_000;
 
 // 依赖目录里的变化不监听（体量大、变化多）；.runyard 里是运行日志，运行结束时会重算
-const WATCH_IGNORE = [".runyard", "node_modules", ".venv"].map(posixRelPath);
-const IN_DEPENDENCY = /(^|\/)(node_modules|\.venv)(\/|$)/;
+const WATCH_IGNORE = [posixRelPath(".runyard")];
+const WATCH_IGNORE_NAMES = ["node_modules", ".venv"];
 
 export interface SizedFolder {
   readonly id: string;
@@ -166,8 +166,8 @@ export function createDiskUsageService(
 
   function startWatch(id: string, entry: Tracked): Promise<Disposable | undefined> {
     return platform
-      .watch(entry.path, { ignore: WATCH_IGNORE }, (events) => {
-        if (events.some((event) => !IN_DEPENDENCY.test(event.path))) touch(id);
+      .watch(entry.path, { ignore: WATCH_IGNORE, ignoreNames: WATCH_IGNORE_NAMES }, (events) => {
+        if (events.length > 0) touch(id);
       })
       .catch((error: unknown) => {
         hooks.log(`watching ${entry.path} failed: ${String(error)}`);

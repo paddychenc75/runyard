@@ -24,6 +24,7 @@ export interface TrashedEntry {
 interface Watcher {
   readonly root: AbsPath;
   readonly ignore: readonly PosixRelPath[];
+  readonly ignoreNames: ReadonlySet<string>;
   readonly depth: number;
   readonly callback: (events: WatchEvent[]) => void;
 }
@@ -347,6 +348,7 @@ export class MemoryFs {
     const watcher: Watcher = {
       root,
       ignore: options.ignore ?? [],
+      ignoreNames: new Set(options.ignoreNames ?? []),
       depth: options.depth ?? Number.POSITIVE_INFINITY,
       callback,
     };
@@ -369,6 +371,7 @@ export class MemoryFs {
       if (rel.split("/").length > watcher.depth) continue;
       if (watcher.ignore.some((ignored) => rel === ignored || rel.startsWith(`${ignored}/`)))
         continue;
+      if (rel.split("/").some((part) => watcher.ignoreNames.has(part))) continue;
       watcher.callback([{ kind, path: rel }]);
     }
   }

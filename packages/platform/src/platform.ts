@@ -77,6 +77,8 @@ export interface TrashResult {
 export interface WatchOptions {
   /** 忽略的子路径（相对 root），其下的变化不报告 */
   readonly ignore?: readonly PosixRelPath[];
+  /** 任意层级要跳过的完整名称（不是路径或通配符）；命中子项时不遍历、不监听其内容，root 自身不参与 */
+  readonly ignoreNames?: readonly string[];
   /** 往下看几层：1 只看 root 的直接子项，缺省看全部（管理进程监听资源库根目录只要一层） */
   readonly depth?: number;
 }

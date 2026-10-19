@@ -2,7 +2,7 @@ import { join } from "node:path";
 import { absPath } from "@runyard/platform";
 import { createFakePlatform } from "@runyard/testing";
 import { expect, it, vi } from "vitest";
-import { createDiskUsageService, SIZE_QUIET_MS } from "./disk-usage-service.ts";
+import { createDiskUsageService, SIZE_QUIET_MS, SIZE_SWEEP_MS } from "./disk-usage-service.ts";
 
 it("[LIBRARY-DISK-USAGE-18] 重算停在旧路径时改名：旧扫描不清空缓存，新路径继续重算", async () => {
   const fake = createFakePlatform();
@@ -118,6 +118,61 @@ it("[LIBRARY-DISK-USAGE-11] 遍历结束前资源库根变为不可读：保留�
     await service.idle();
     expect(service.get("p")).toEqual(before);
     expect(changed).toHaveBeenCalledTimes(1);
+  } finally {
+    await service.dispose();
+  }
+});
+
+it("[LIBRARY-DISK-USAGE-14] [LIBRARY-DISK-USAGE-16] [LIBRARY-DISK-USAGE-17] 嵌套依赖在平台层不发事件，源码仍防抖，刷新与定期复核补齐依赖大小 [#472]", async () => {
+  const fake = createFakePlatform();
+  const root = absPath(join("/library"));
+  const project = absPath(join(root, "demo"));
+  fake.fs.mkdir(absPath(join(project, "web")));
+  fake.fs.mkdir(absPath(join(project, "apps", "api")));
+  const delivered: string[] = [];
+  const originalWatch = fake.platform.watch;
+  const watches = vi.spyOn(fake.platform, "watch").mockImplementation((path, options, callback) =>
+    originalWatch(path, options, (events) => {
+      delivered.push(...events.map((event) => event.path));
+      callback(events);
+    }),
+  );
+  const service = createDiskUsageService(
+    { platform: fake.platform, clock: fake.clock },
+    { onChange: vi.fn(), log: vi.fn() },
+  );
+  const scanCount = () => fake.fs.scanCounts.get(project);
+  try {
+    service.sync(root, [{ id: "p", path: project, missing: false }]);
+    await service.idle();
+    expect(watches.mock.calls[0]?.[1]).toEqual({
+      ignore: [".runyard"],
+      ignoreNames: ["node_modules", ".venv"],
+    });
+    const count = scanCount();
+    fake.fs.writeFile(absPath(join(project, "web", "node_modules", "pkg", "index.js")), "x");
+    fake.fs.writeFile(absPath(join(project, "apps", "api", ".venv", "lib", "index.py")), "x");
+    await fake.clock.advance(SIZE_QUIET_MS);
+    await service.idle();
+    expect(delivered).toEqual([]);
+    expect(scanCount()).toBe(count);
+    expect(service.get("p")?.dependencyBytes).toBe(0);
+    service.refresh("p");
+    await service.idle();
+    const dependencyBytes = service.get("p")?.dependencyBytes ?? 0;
+    expect(dependencyBytes).toBeGreaterThan(0);
+    fake.fs.writeFile(absPath(join(project, "apps", "api", ".venv", "lib", "new.py")), "x");
+    await fake.clock.advance(SIZE_SWEEP_MS);
+    await service.idle();
+    expect(service.get("p")?.dependencyBytes).toBeGreaterThan(dependencyBytes);
+    const beforeSource = scanCount();
+    fake.fs.writeFile(absPath(join(project, "web", "main.ts")), "x");
+    expect(delivered).toEqual(["web/main.ts"]);
+    await fake.clock.advance(SIZE_QUIET_MS - 1);
+    expect(scanCount()).toBe(beforeSource);
+    await fake.clock.advance(1);
+    await service.idle();
+    expect(scanCount()).toBe((beforeSource ?? 0) + 1);
   } finally {
     await service.dispose();
   }
