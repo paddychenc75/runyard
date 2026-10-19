@@ -257,6 +257,8 @@ export function registerBridgeHandlers(
     "cli.remove": async () =>
       (await settings?.cli?.remove()) ?? { result: "failed", status: unavailableCli },
     "diagnostics.export": async () => (await settings?.cli?.exportDiagnostics()) ?? { ok: false },
+    "agents.openGuide": async (locale) =>
+      (await settings?.cli?.openSkillGuide(locale)) ?? { ok: false },
     "agents.status": async () => (await settings?.cli?.agentSkills()) ?? noSkills,
     "agents.install": async (target) =>
       target === "claude" || target === "agents"

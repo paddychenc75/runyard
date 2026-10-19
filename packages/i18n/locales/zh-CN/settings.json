@@ -132,5 +132,7 @@
   "settings.runtime.pathInput.placeholder": "输入完整可执行文件路径",
   "settings.runtime.pathInput.hint": "输入完整路径后按回车保存，Esc 撤销",
   "settings.runtime.choosePath.aria": "选择 {tool} 可执行文件",
-  "settings.runtime.absolutePath.body": "请输入完整绝对路径，不使用 ~ 或环境变量"
+  "settings.runtime.absolutePath.body": "请输入完整绝对路径，不使用 ~ 或环境变量",
+  "settings.skills.guide.action": "查看说明",
+  "settings.skills.guideFailed.hint": "没能打开说明，请重试。"
 }

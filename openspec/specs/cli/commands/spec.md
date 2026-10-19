@@ -495,24 +495,25 @@
 - 验证：test
 
 ### Requirement: `skill install` 把给智能体的说明写到约定位置
-`runyard skill install` MUST 按 `--target claude|agents|all` 把说明写到 `~/.claude/skills/runyard/SKILL.md` 和 `~/.agents/skills/runyard/SKILL.md`；不给 `--target` 时 MUST 是 `all`。已有同名文件时 MUST 用当前版本的内容覆盖；目录不存在时 MUST 创建。结果 MUST 是 `{ "installed": [ { "target", "path" } ] }`。说明的全文和其中的命令示例 MUST 是英文，MUST 包含这些要点：永远带 `--json`；用 `new … --run --note` 创建并启动；直接改 `path` 下的文件；用 `logs --since <游标>` 看结果；用完用 `stop`；验证性的项目带 `--clean-after 30d`，用户说留着就不带；出错时按 `error.hint` 做，不要盲目重试；不要自己另起开发服务器；不教智能体去设置语言。
+`runyard skill install` MUST 按 `--target claude|agents|all` 把说明写到 `~/.claude/skills/runyard/SKILL.md` 和 `~/.agents/skills/runyard/SKILL.md`；不给 `--target` 时 MUST 是 `all`。已有同名文件时 MUST 用当前版本的内容覆盖；目录不存在时 MUST 创建。结果 MUST 是 `{ "installed": [ { "target", "path" } ] }`。`SKILL.md` 的全文和其中的命令示例 MUST 是英文，MUST 包含这些要点：永远带 `--json`；用 `new … --run --note` 创建并启动；直接改 `path` 下的文件；用 `logs --since <游标>` 看结果；用完用 `stop`；验证性的项目带 `--clean-after 30d`，用户说留着就不带；出错时按 `error.hint` 做，不要盲目重试；不要自己另起开发服务器；不教智能体去设置语言。
+安装到每个目标时 MUST 同时写入同目录的 `SKILL.zh-CN.md`，其中说明是供人阅读的中文对照，智能体以英文 `SKILL.md` 为准。中文说明的条目与命令示例 MUST 与英文一一对应，命令及参数 MUST 保持英文原样。重复安装 MUST 同时更新两份说明，结果 `installed` 的结构和英文文件路径 MUST 保持不变。
 来源：PRD #prd-cli-commands；PRD #prd-decision-table（第 10 项）；PRD #prd-cli-creator
 
 #### Scenario: [CLI-COMMANDS-73] 写到两个位置
 - 前提：一个空的主目录
 - **WHEN** 执行 `runyard skill install --json`
-- **THEN** 两个 `SKILL.md` 都存在，结果的 `installed` 有 `claude` 和 `agents` 两项，路径是绝对路径
+- **THEN** 两个目标内的 `SKILL.md` 与 `SKILL.zh-CN.md` 都存在，结果的 `installed` 有 `claude` 和 `agents` 两项，路径是绝对路径
 - 验证：test
 
 #### Scenario: [CLI-COMMANDS-74] 只写一个目标
 - **WHEN** 执行 `runyard skill install --target claude --json`
-- **THEN** 只有 `~/.claude/skills/runyard/SKILL.md` 被写入
+- **THEN** 只有 claude 目标内的 `SKILL.md` 和 `SKILL.zh-CN.md` 被写入
 - 验证：test
 
 #### Scenario: [CLI-COMMANDS-75] 覆盖旧版本
 - 前提：目标位置已有一份旧内容
 - **WHEN** 再次执行 `skill install`
-- **THEN** 文件内容是当前版本的说明
+- **THEN** 两份文件内容都是当前版本的说明
 - 验证：test
 
 #### Scenario: [CLI-COMMANDS-76] 说明的要点与语言
@@ -523,6 +524,17 @@
 #### Scenario: [CLI-COMMANDS-77] 目标值不对
 - **WHEN** 执行 `runyard skill install --target other`
 - **THEN** 报 `USAGE`，退出码 2，没有写任何文件
+- 验证：test
+
+#### Scenario: [CLI-COMMANDS-91] 同时安装中文对照
+- 前提：目标目录尚不存在或已有旧版中英文说明
+- **WHEN** 执行 `skill install --target claude --json`
+- **THEN** claude 目标内两份说明都是当前版本，agents 目标不变；installed 仍只有 claude 和英文 SKILL.md 的绝对路径
+- 验证：test
+
+#### Scenario: [CLI-COMMANDS-92] 两份说明逐条对应
+- **WHEN** 读取随包的中英文技能说明
+- **THEN** 中文说明注明英文为智能体执行依据；操作条目数量和命令示例与英文一致
 - 验证：test
 
 ### Requirement: 命令行能报告自己的版本

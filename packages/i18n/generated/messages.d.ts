@@ -165,6 +165,7 @@ export type CatalogMessages = {
   "cli.run.starting.body": {
     name: string | number;
   };
+  "cli.skillGuide.body": Record<never, never>;
   "cli.skillInstall.installed.body": {
     path: string | number;
     target: string;
@@ -1172,6 +1173,8 @@ export type CatalogMessages = {
   "settings.skills.both.label": Record<never, never>;
   "settings.skills.claude.label": Record<never, never>;
   "settings.skills.claudeName.label": Record<never, never>;
+  "settings.skills.guide.action": Record<never, never>;
+  "settings.skills.guideFailed.hint": Record<never, never>;
   "settings.skills.hint": Record<never, never>;
   "settings.skills.none.label": Record<never, never>;
   "settings.skills.other.action": Record<never, never>;
