@@ -43,6 +43,7 @@ test("[DESKTOP-LIBRARY-VIEW-97][DESKTOP-LIBRARY-VIEW-98][DESKTOP-LIBRARY-VIEW-99
   expect(await saved()).toBe(before);
   await resize(1100);
   await expect(nav).toBeVisible();
+  await expect(page.getByRole("button", { name: "Hide sidebar" })).toBeFocused();
   await page.getByRole("button", { name: "Hide sidebar" }).click();
   const collapsed = await saved();
   await resize(720);
