@@ -156,11 +156,20 @@ describe("Vue 项目窄通道", () => {
           kind: "hover",
           position: { line: 2, character: 7 },
         });
-      expect(JSON.stringify(await hover())).not.toContain("Ref<number");
-      copyVueTypes(fixture.project, resolve(desktop, "../../tooling"));
+      expect(JSON.stringify(await hover())).toContain("Ref<number");
+      const installed = join(fixture.project, "node_modules", "vue");
+      mkdirSync(installed, { recursive: true });
+      writeFileSync(
+        join(installed, "package.json"),
+        JSON.stringify({ name: "vue", version: "0.0.0-project-fixture", types: "index.d.ts" }),
+      );
+      writeFileSync(
+        join(installed, "index.d.ts"),
+        "export interface ActualInstalledRef<T> { value: T; projectOnly: true }\nexport declare function ref<T>(value:T): ActualInstalledRef<T>;",
+      );
       await expect
         .poll(async () => JSON.stringify(await hover()), { timeout: 10_000 })
-        .toContain("Ref<number");
+        .toContain("ActualInstalledRef<number");
     } finally {
       await fixture.close();
     }

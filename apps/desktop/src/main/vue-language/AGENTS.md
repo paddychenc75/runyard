@@ -32,3 +32,5 @@
 文件变化来自现有 ChangeFeed；依赖安装另在 integration 里只监听项目根与 node_modules 的直接子项，不递归监听整个依赖树。后台变化只使用仍存活的组，不能复活已被淘汰的服务。每个模型有独立 session；open 建立它，sync/close 必须匹配，模型局部版本可从 1 重置。诊断事件带 session 和局部版本，旧回包不覆盖新文本。请求准备和 close 同序，取消后旧请求不能在关闭完成后复活服务。`vue-channel.platform-dependent.test.ts` 验证外部修改与依赖从无到有两条真实路径。
 
 Vue 补全（#414）在 renderer/features/editor 的 `vue-completion-provider.ts` 注册，只接宿主自己的模型，等模型同步完成后请求并核对 session/局部版本。`vue-completion-items.ts` 转换官方两路候选、片段与替换范围；详情文档不信任 HTML/命令。Vue 关闭文字词表建议，自动建议使用真实类型服务。真实补全控件浅深截图由 `e2e/vue-completion.e2e.ts` 保存到测试产物。
+
+Vue 检查（#415）：`vue-definition-targets.ts` 在主进程把定义结果收敛为项目内相对路径，依赖/项目外目标不跳转。renderer 的 `vue-inspection-provider.ts` 按 session 与局部版本应用诊断，复用 TS 屏蔽清单；悬停和跳转与补全共享 `VueModelRequests`。缺 Vue 时的官方声明只读兜底见 ADR 0022 和 `docs/architecture/evidence/vue-declaration-fallback.md`，不改用户配置。

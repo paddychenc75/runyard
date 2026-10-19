@@ -279,7 +279,7 @@ describe("不联网、Vue 和改名", () => {
     }
   });
 
-  it("[DESKTOP-EDITOR-46] 打开 App.vue：有着色，没有错误标记，输入时没有基于文字的补全", async () => {
+  it("打开 App.vue 的基础编辑选项：有着色，关闭文字词表建议", async () => {
     const vue =
       '<template>\n  <Hello :n="n" />\n</template>\n<script setup lang="ts">\nimport { ref } from "vue";\nimport Hello from "./Hello.vue";\nconst n: number = ref(1);\n</script>\n';
     const disk = fakeDisk({ "src/App.vue": vue, "src/Hello.vue": "<template><b /></template>\n" });
