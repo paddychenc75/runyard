@@ -138,7 +138,7 @@ Web 系列只有 1440 画板，1100 对照保留原布局裁取，不代表存�
 
 ### 请求与预览工具栏取证（#436）
 
-渲染 Service/ServiceDark/ServiceEn/ServiceDarkEn 和 Web/WebEn/WebLight/WebLightEn，再运行 `node apps/desktop/e2e/request-layout.measure.ts`。临时 HOME/root 中的真实 Hono 项目发送请求后停止，覆盖当前响应与历史响应提示；另建 HTML 验证预览图标按钮。浅深、中英、1440/1100共24图写入 `RUNYARD_REQUEST_REVIEW_OUTPUT` 或临时目录。原生预览单独抓取后按占位坐标合成并保留原图。`request-status.e2e.ts` 使用方向键将面板收至280，断言地址不溢出、路径可输入、工具栏不换行、停止后的响应明确标旧。CI上传request-layout-design-comparison。
+渲染 Service/ServiceDark/ServiceEn/ServiceDarkEn 和 Web/WebEn/WebLight/WebLightEn，再运行 `node apps/desktop/e2e/request-layout.measure.ts`。临时 HOME/root 中的真实 Hono 项目发送请求后停止，覆盖当前响应与历史响应提示；另建 HTML 验证预览图标按钮。浅深、中英、1440/1100共24图写入 `RUNYARD_REQUEST_REVIEW_OUTPUT` 或临时目录。原生预览单独抓取后按占位坐标合成并保留原图。`request-status.e2e.ts` 使用方向键将面板收至280，断言地址不溢出、路径输入宽度至少40像素、工具栏不换行、停止后的响应明确标旧。CI上传request-layout-design-comparison。
 
 ### 窗口顶部取证（#446）
 
