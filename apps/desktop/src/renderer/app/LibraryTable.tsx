@@ -52,7 +52,15 @@ export interface LibraryTableProps {
 const NONE = "—";
 
 // 资源库方案 A：列宽取设计稿组合已有变量；窄窗口先收最近使用、端口，再把模板收为徽标。
-export function LibraryTable({ bridge, locale, rows, now, sort, onSortChange, reveal }: LibraryTableProps) {
+export function LibraryTable({
+  bridge,
+  locale,
+  rows,
+  now,
+  sort,
+  onSortChange,
+  reveal,
+}: LibraryTableProps) {
   const t = useT();
   const format = useFormat();
   // 创建副本后选中它（规格 DESKTOP-LIBRARY-VIEW-42）
