@@ -2,13 +2,13 @@
    标签在窗口底色上，运行数是文字按钮，只有“新建”是实心的强调按钮 */
 .root {
   position: absolute;
-  inset-block-start: calc(var(--size-window-inset) + var(--space-3));
+  inset-block-start: 0;
   inset-inline: var(--layout-topbar-start, calc(var(--layout-content-left) + var(--space-6)))
     var(--space-7);
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  block-size: var(--size-toolbar);
+  block-size: var(--size-titlebar);
   -webkit-app-region: drag;
 }
 
@@ -79,4 +79,10 @@
   .runningButton {
     transition: none;
   }
+}
+
+.sidebarToggle {
+  display: flex;
+  flex: none;
+  margin-inline-end: var(--space-6);
 }
