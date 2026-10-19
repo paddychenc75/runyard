@@ -1,5 +1,5 @@
 import { useT } from "@runyard/i18n/react";
-import { GlassSurface, Kbd, ListPicker, SearchField } from "@runyard/ui";
+import { GlassSurface, Kbd, ListPicker, SearchField, UserText } from "@runyard/ui";
 import { type KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import type { LibraryState } from "../../shared/library-state.ts";
 import { defaultName } from "../create-view.ts";
@@ -107,7 +107,7 @@ export function PickerDialog({ library, onPick, onClose }: PickerDialogProps) {
                   <span className={styles.spacer} />
                   <span>{t("desktop.picker.defaultName.label")}</span>
                   <span className={styles.defaultName} data-default-name="">
-                    {defaultName(activeId, existing)}
+                    <UserText>{defaultName(activeId, existing)}</UserText>
                   </span>
                 </>
               )}

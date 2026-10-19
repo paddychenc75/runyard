@@ -300,7 +300,7 @@
   "desktop.saveTemplate.files.aria": "Choose the files to put in the template",
   "desktop.saveTemplate.files.label": "Included files",
   "desktop.saveTemplate.footer.hint": "Appears under Mine when creating · {path}",
-  "desktop.saveTemplate.id.hint": "Lowercase letters, numbers and hyphens only. Used on the command line: <code>runyard new {id}</code>",
+  "desktop.saveTemplate.id.hint": "Lowercase letters, numbers and hyphens only. Used on the command line: <code>{command}</code>",
   "desktop.saveTemplate.id.label": "Template id",
   "desktop.saveTemplate.idInvalid.hint": "Use lowercase letters, digits and hyphens only, and no hyphen at either end",
   "desktop.saveTemplate.idPlaceholder.label": "'<'id'>'",

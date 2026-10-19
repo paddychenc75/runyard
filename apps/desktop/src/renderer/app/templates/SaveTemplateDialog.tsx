@@ -165,8 +165,10 @@ function SaveForm({
         description={
           <T
             k="desktop.saveTemplate.id.hint"
-            values={{ id: id === "" ? t("desktop.saveTemplate.idPlaceholder.label") : id }}
-            components={{ code: <code className={styles.code} /> }}
+            values={{
+              command: `runyard new ${id === "" ? t("desktop.saveTemplate.idPlaceholder.label") : id}`,
+            }}
+            components={{ code: <UserText mono className={styles.code} /> }}
           />
         }
       >

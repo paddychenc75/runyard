@@ -46,7 +46,7 @@ export function SettingsPage({ bridge, api, library }: SettingsPageProps) {
             className={styles.sectionScroll}
             viewportClassName={styles.sectionViewport}
             viewportRef={navigation}
-            viewportProps={{ tabIndex: -1 }}
+            viewportProps={{ tabIndex: -1, "data-truncate": "" }}
           >
             <div className={styles.sections}>
               {SECTIONS.map((section, index) => (

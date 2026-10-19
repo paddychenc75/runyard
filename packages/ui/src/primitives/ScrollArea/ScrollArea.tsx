@@ -19,7 +19,9 @@ export interface ScrollAreaProps extends ComponentProps<"div"> {
   /** 真正滚动的那个元素（读 scrollTop、跟随到底部、scrollIntoView 都用它） */
   viewportRef?: Ref<HTMLDivElement>;
   /** 透传给滚动元素的属性：role、aria-label、tabIndex、onScroll、data-* */
-  viewportProps?: Omit<ComponentProps<"div">, "children" | "ref" | "className">;
+  viewportProps?: Omit<ComponentProps<"div">, "children" | "ref" | "className"> & {
+    "data-truncate"?: string;
+  };
   /** 滚动元素的额外类名（版面上的内边距放这里，滚动条才贴着容器边） */
   viewportClassName?: string;
 }

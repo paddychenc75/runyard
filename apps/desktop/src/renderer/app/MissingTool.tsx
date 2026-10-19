@@ -1,5 +1,5 @@
 import { useT } from "@runyard/i18n/react";
-import { Button, ButtonGroup, CopyableCommand, GlassSurface, Icon } from "@runyard/ui";
+import { Button, ButtonGroup, CopyableCommand, GlassSurface, Icon, UserText } from "@runyard/ui";
 import { useEffect, useState } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { DesktopError, TabRow } from "../../shared/library-state.ts";
@@ -90,7 +90,7 @@ export function MissingTool({ bridge, tab, failure }: MissingToolProps) {
                 className={styles.link}
                 onClick={() => void bridge.call("link.open", fields.installUrl ?? "")}
               >
-                {urlLabel(fields.installUrl)}
+                <UserText>{urlLabel(fields.installUrl)}</UserText>
               </button>
             </dd>
           </>

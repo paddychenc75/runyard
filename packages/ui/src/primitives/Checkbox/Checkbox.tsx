@@ -51,9 +51,17 @@ export function Checkbox({
           <Icon name="check" size={12} />
         </BaseCheckbox.Indicator>
       </BaseCheckbox.Root>
-      <span className={labelHidden ? `${styles.text} ${styles.hidden}` : styles.text}>
+      <span
+        data-truncate={labelHidden ? "" : undefined}
+        className={labelHidden ? `${styles.text} ${styles.hidden}` : styles.text}
+      >
         {/* 点文字等于点方框：label 指向 Base UI 的隐藏 input（id 落在它上面） */}
-        <label id={labelId} htmlFor={id} className={styles.label}>
+        <label
+          data-truncate={labelHidden ? "" : undefined}
+          id={labelId}
+          htmlFor={id}
+          className={styles.label}
+        >
           {label}
         </label>
         {hint === undefined ? null : (

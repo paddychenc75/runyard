@@ -66,3 +66,8 @@
   font-size: var(--text-secondary-size);
   line-height: var(--text-secondary-line-height);
 }
+
+/* 较长文案时天数选项换到下一行，不能撑破弹窗。 */
+.details > .row {
+  flex-wrap: wrap;
+}

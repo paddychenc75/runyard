@@ -19,13 +19,32 @@
     "package.json"
   ],
   "references": [
-    { "path": "../../packages/protocol" },
-    { "path": "../../packages/platform" },
-    { "path": "../../packages/i18n" },
-    { "path": "../../packages/tokens" },
-    { "path": "../../packages/ui" },
-    { "path": "../../packages/client" },
-    { "path": "./tsconfig.renderer.json" },
-    { "path": "./tsconfig.e2e.json" }
+    {
+      "path": "../../packages/protocol"
+    },
+    {
+      "path": "../../packages/platform"
+    },
+    {
+      "path": "../../packages/i18n"
+    },
+    {
+      "path": "../../packages/tokens"
+    },
+    {
+      "path": "../../packages/ui"
+    },
+    {
+      "path": "../../packages/client"
+    },
+    {
+      "path": "./tsconfig.renderer.json"
+    },
+    {
+      "path": "./tsconfig.e2e.json"
+    },
+    {
+      "path": "./tsconfig.visual.json"
+    }
   ]
 }

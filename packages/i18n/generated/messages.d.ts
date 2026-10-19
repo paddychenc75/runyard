@@ -661,7 +661,7 @@ export type CatalogMessages = {
   };
   "desktop.saveTemplate.id.hint": {
     code: (chunks: string[]) => string;
-    id: string | number;
+    command: string | number;
   };
   "desktop.saveTemplate.id.label": Record<never, never>;
   "desktop.saveTemplate.idInvalid.hint": Record<never, never>;

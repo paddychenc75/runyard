@@ -8,6 +8,7 @@ import {
   SegmentedControl,
   Switch,
   TextField,
+  UserText,
 } from "@runyard/ui";
 import { type ChangeEvent, type FocusEvent, useMemo, useRef, useState } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
@@ -156,7 +157,7 @@ export function CreateDialog({
             <T
               k="desktop.create.folder.hint"
               values={{ path: `${library.libraryRoot}/${name}` }}
-              components={{ code: <code className={styles.path} /> }}
+              components={{ code: <UserText mono className={styles.path} /> }}
             />
           )
         }

@@ -34,7 +34,10 @@ export function Field({
       invalid={error !== undefined}
       className={className === undefined ? styles.root : `${styles.root} ${className}`}
     >
-      <BaseField.Label className={hideLabel ? `${styles.label} ${styles.hidden}` : styles.label}>
+      <BaseField.Label
+        data-truncate={hideLabel ? "" : undefined}
+        className={hideLabel ? `${styles.label} ${styles.hidden}` : styles.label}
+      >
         {label}
         {optionalLabel === undefined ? null : (
           <span className={styles.optional}>{optionalLabel}</span>

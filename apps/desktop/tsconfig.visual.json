@@ -1,0 +1,28 @@
+{
+  "extends": "../../tooling/tsconfig/base.json",
+  "compilerOptions": {
+    "outDir": "../../.tsbuild/desktop-visual",
+    "tsBuildInfoFile": "../../.tsbuild/desktop-visual/tsconfig.tsbuildinfo",
+    "rootDir": ".",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "types": ["node"],
+    "jsx": "react-jsx"
+  },
+  "include": ["visual/**/*.ts", "visual/**/*.tsx", "src/renderer/css-modules.d.ts"],
+  "references": [
+    {
+      "path": "./tsconfig.renderer.json"
+    },
+    {
+      "path": "../../packages/ui"
+    },
+    {
+      "path": "../../packages/i18n"
+    },
+    {
+      "path": "../../packages/protocol"
+    }
+  ]
+}

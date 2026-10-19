@@ -71,7 +71,9 @@ export function TemplateList({ rows, locale, selected, onSelect }: TemplateListP
                 />
                 <span className={styles.text}>
                   <span className={styles.name}>
-                    <Truncate>{pickLocalizedText(row.name, locale)}</Truncate>
+                    <Truncate>
+                      <UserText>{pickLocalizedText(row.name, locale)}</UserText>
+                    </Truncate>
                   </span>
                   <span className={styles.description} data-warning={row.valid ? undefined : ""}>
                     {row.valid ? (

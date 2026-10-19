@@ -140,7 +140,7 @@
     "path": "新模板文件夹的显示路径，如 ~/.runyard/templates/todo-api"
   },
   "desktop.saveTemplate.id.hint": {
-    "id": "模板标识；还没填时是“<标识>”这样的占位",
+    "command": "原样显示的CLI命令，包含模板标识；还没填时用标识占位",
     "code": "包住命令的标签，显示成等宽字体"
   },
   "desktop.saveTemplate.requiresFrom.body": {
