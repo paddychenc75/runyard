@@ -109,6 +109,20 @@ describe("运行条", () => {
 });
 
 describe("脚本输出", () => {
+  it("[DESKTOP-WORKSPACE-70] 输出区清除后只显示新打印的行", async () => {
+    const { bridge, call, push } = fakeBridge(
+      Array.from({ length: 20 }, (_, i) => line(i, `old-${i}`)),
+    );
+    render(view(<ScriptOutput bridge={bridge} tab={script({ state: "running" })} />));
+    await screen.findByText("old-19");
+    await userEvent.setup().click(screen.getByRole("button", { name: "清除" }));
+    expect(call).toHaveBeenCalledWith("console.clear", "a");
+    push({ playground: "a", reset: true, lines: [] });
+    push({ playground: "a", reset: false, lines: [line(21, "new-line")] });
+    expect(screen.queryByText("old-19")).toBeNull();
+    expect(screen.getByText("new-line")).toBeTruthy();
+  });
+
   it("[DESKTOP-WORKSPACE-15] 脚本跑完：显示输出、“已结束”、退出码和耗时，没有预览", async () => {
     const { bridge } = fakeBridge([line(1, "apple: 3 x 1.5 = 4.50"), line(2, "Total: 12.40")]);
     const tab = script({
