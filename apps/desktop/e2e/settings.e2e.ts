@@ -1,4 +1,4 @@
-import { closePicker, expect, pressMenuShortcut, test } from "./support/fixtures.ts";
+import { closePicker, expect, pressMenuShortcut, previewText, test } from "./support/fixtures.ts";
 import { openSettingsWindow } from "./support/settings-window.ts";
 
 test("设置：切换主题和语言立即生效并保存", async ({ launch }) => {
@@ -235,15 +235,46 @@ test("[DESKTOP-SETTINGS-38] [DESKTOP-SETTINGS-39] 打开与关闭设置都保留
   expect(id).toBeTruthy();
   await runyard.call("tab.open", id);
   await expect(runyard.page.getByRole("tab", { name: /kept-project/ })).toBeVisible();
+  await expect.poll(() => previewText(runyard.app)).toContain("Clicked 0 times");
+  await expect
+    .poll(() => runyard.app.windows().some((page) => page.url().startsWith("http://127.0.0.1:")))
+    .toBe(true);
+  const previewPage = runyard.app
+    .windows()
+    .find((page) => page.url().startsWith("http://127.0.0.1:"));
+  const mainWindow = await runyard.app.browserWindow(runyard.page);
+  const mainWindowId = await mainWindow.evaluate((window) => window.id);
   const before = await runyard.call<{ activeTab: string }>("library.get");
   const page = await openSettingsWindow(runyard);
   expect((await runyard.call<{ activeTab: string }>("library.get")).activeTab).toBe(
     before.activeTab,
   );
+  const settingsWindow = await runyard.app.browserWindow(page);
+  const settingsWindowId = await settingsWindow.evaluate((window) => window.id);
   const closed = page.waitForEvent("close");
   await pressMenuShortcut(runyard.app, "CmdOrCtrl+W");
   await closed;
-  expect(runyard.app.windows()).toHaveLength(1);
+  // #488：Playwright 的 windows() 也包含 WebContentsView 预览，不能把 Page 总数当原生窗口数。
+  await expect
+    .poll(() =>
+      runyard.app.evaluate(
+        ({ BrowserWindow }, id) => BrowserWindow.getAllWindows().some((window) => window.id === id),
+        settingsWindowId,
+      ),
+    )
+    .toBe(false);
+  await expect
+    .poll(() =>
+      runyard.app.evaluate(({ BrowserWindow }) =>
+        BrowserWindow.getAllWindows().map((window) => window.id),
+      ),
+    )
+    .toEqual([mainWindowId]);
+  await expect.poll(() => runyard.app.windows().includes(page)).toBe(false);
+  expect(runyard.page.isClosed()).toBe(false);
+  expect(runyard.app.windows()).toContain(runyard.page);
+  expect(runyard.app.windows()).toContain(previewPage);
+  await expect.poll(() => previewText(runyard.app)).toContain("Clicked 0 times");
   expect((await runyard.call<{ activeTab: string }>("library.get")).activeTab).toBe(
     before.activeTab,
   );
