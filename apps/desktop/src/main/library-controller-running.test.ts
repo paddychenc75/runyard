@@ -278,7 +278,7 @@ describe("重新打开应用时恢复标签页", () => {
   it("[DESKTOP-WORKSPACE-52] 切到 c 才启动，持有者是这个标签页", async () => {
     const { client, controller } = setup(new MemoryStore(last));
     await controller.start();
-    controller.selectTab("c");
+    await controller.selectTab("c");
     await controller.refresh();
     const started = client.calls.filter((c) => c.method === "run.start");
     expect(started).toHaveLength(2);
@@ -290,8 +290,8 @@ describe("重新打开应用时恢复标签页", () => {
     });
     expect(controller.getState().tabs.find((tab) => tab.id === "c")?.ownedByTab).toBe(true);
     // 再切走又切回来，不会再启动一次
-    controller.selectTab("a");
-    controller.selectTab("c");
+    await controller.selectTab("a");
+    await controller.selectTab("c");
     await controller.refresh();
     expect(client.count("run.start")).toBe(3);
   });

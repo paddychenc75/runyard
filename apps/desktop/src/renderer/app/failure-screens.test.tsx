@@ -358,3 +358,14 @@ describe("预览区画面的选择", () => {
     expect(previewScreenOf({ ...base, active: false, state: "stopped" })).toBe("stopped");
   });
 });
+
+it("[DESKTOP-WORKSPACE-11] 未运行与已停止各自说明状态，不推测是谁停止", () => {
+  const { rerender } = setup(
+    sampleTab({ state: "idle", active: false, status: "stopped", previewUrl: null }),
+  );
+  expect(screen.getByText("还没有运行。点“运行”启动这个项目。")).toBeTruthy();
+  expect(screen.queryByText(/你手动停止/)).toBeNull();
+  rerender(sampleTab({ state: "stopped", active: false, status: "stopped", previewUrl: null }));
+  expect(screen.getByText(/项目已停止/)).toBeTruthy();
+  expect(screen.queryByText(/你手动停止/)).toBeNull();
+});

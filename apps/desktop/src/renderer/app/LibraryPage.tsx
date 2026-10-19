@@ -240,6 +240,7 @@ export function LibraryPage({
           now={now}
           sort={query.sort}
           onSortChange={(sort) => onQueryChange({ sort })}
+          reveal={library.libraryReveal}
         />
       )}
     </section>

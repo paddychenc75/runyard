@@ -15,14 +15,19 @@ export interface PreviewStoppedProps {
 // 手动停止后标签页仍开着，点“运行”再次启动（规格 DESKTOP-WORKSPACE-11、12）。
 export function PreviewStopped({ bridge, tab }: PreviewStoppedProps) {
   const t = useT();
-  const manuallyStopped = tab.state === "stopped" || tab.state === "idle";
+  const explanation =
+    tab.state === "idle"
+      ? t("desktop.idle.body")
+      : tab.state === "stopped"
+        ? t("desktop.stopped.body")
+        : null;
   return (
     <div className={styles.root} data-preview-stopped="">
       <span className={styles.badge}>
         <Icon name="stop" size={24} />
       </span>
       <h2 className={styles.title}>{t(stateLabelKey(tab.state))}</h2>
-      {manuallyStopped ? <p className={styles.body}>{t("desktop.stopped.body")}</p> : null}
+      {explanation === null ? null : <p className={styles.body}>{explanation}</p>}
       <RunActionButton bridge={bridge} tab={tab} size="lg" />
     </div>
   );
