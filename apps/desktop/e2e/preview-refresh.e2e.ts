@@ -1,3 +1,4 @@
+import { numbers } from "@runyard/tokens";
 import {
   holdPreviewRequest,
   incrementPreview,
@@ -13,7 +14,7 @@ test("[DESKTOP-WORKSPACE-71] 快速刷新保留一圈动效并真正重置预览
   const reload = instance.page.getByRole("button", { name: "Reload", exact: true });
   // 用事件观察器抓快速加载的短暂状态，避免轮询错过动效开始。
   await reload.evaluate((button) => {
-    const record = { starts: 0, loops: 0, began: 0, ended: 0, expected: 0 };
+    const record = { starts: 0, loops: 0, began: 0, ended: 0, expected: 0, elapsed: 0 };
     (window as unknown as { refreshMotion: typeof record }).refreshMotion = record;
     new MutationObserver(() => {
       if (button.getAttribute("data-refreshing") === "true" && record.began === 0) {
@@ -25,10 +26,13 @@ test("[DESKTOP-WORKSPACE-71] 快速刷新保留一圈动效并真正重置预览
         record.ended = performance.now();
       }
     }).observe(button, { attributes: true, attributeFilter: ["data-refreshing"] });
-    button.addEventListener("animationiteration", () => {
+    button.addEventListener("animationiteration", (event) => {
+      if (event.target !== button.querySelector("svg")) return;
       record.loops++;
+      record.elapsed = (event as AnimationEvent).elapsedTime * 1000;
     });
-    button.addEventListener("animationstart", () => {
+    button.addEventListener("animationstart", (event) => {
+      if (event.target !== button.querySelector("svg")) return;
       record.starts++;
     });
   });
@@ -47,13 +51,25 @@ test("[DESKTOP-WORKSPACE-71] 快速刷新保留一圈动效并真正重置预览
     () =>
       (
         window as unknown as {
-          refreshMotion: { loops: number; began: number; ended: number; expected: number };
+          refreshMotion: {
+            loops: number;
+            began: number;
+            ended: number;
+            expected: number;
+            elapsed: number;
+          };
         }
       ).refreshMotion,
   );
+  console.log(
+    "刷新动效观测",
+    JSON.stringify({ ...motion, observedMs: motion.ended - motion.began }),
+  );
   expect(motion.loops).toBeGreaterThanOrEqual(1);
-  expect(motion.expected).toBeGreaterThan(0);
-  expect(motion.ended - motion.began).toBeGreaterThanOrEqual(motion.expected);
+  expect(motion.expected).toBe(numbers["motion-duration-spin"]);
+  expect(motion.ended).toBeGreaterThan(motion.began);
+  // #515：DOM 观察回调不与 CSS 动画时钟同源；用同一动画已完成的时间，周期门槛不变。
+  expect(motion.elapsed).toBeGreaterThanOrEqual(motion.expected);
 });
 
 test("[DESKTOP-WORKSPACE-71] 慢加载持续旋转，网络失败恢复可点击，减少动态时保持静止", async ({

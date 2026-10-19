@@ -292,10 +292,10 @@ describe("不联网、Vue 和改名", () => {
       for (const token of line) kinds.add(token.type);
     }
     expect(kinds.size).toBeGreaterThanOrEqual(3);
-    // 没有错误标记：自带的和我们的都没有（Vue 不进语言服务）
+    // 这份内存来源没有 Vue 桥：只核对着色与基础编辑选项，真实诊断由 Vue 场景验证。
     await new Promise((resolve) => setTimeout(resolve, 900));
     expect(runtime.monaco.editor.getModelMarkers({ resource: model.uri })).toEqual([]);
-    // 基于文字的建议和输入时自动弹出都关了
+    // 基于文字的建议关闭，输入时允许官方语言服务提供自动补全。
     const editor = editorOf("src/App.vue");
     // Monaco 0.57 的“基于文字的建议”读的是配置服务里的 editor.wordBasedSuggestions（editor.updateOptions 会写进去）
     const config = StandaloneServices.get<{ getValue(key: string): unknown }>(
@@ -303,9 +303,9 @@ describe("不联网、Vue 和改名", () => {
     );
     expect(config.getValue("editor.wordBasedSuggestions")).toBe("off");
     expect(editor.getRawOptions().quickSuggestions).toEqual({
-      other: "off",
-      comments: "off",
-      strings: "off",
+      other: true,
+      comments: false,
+      strings: true,
     });
     // 换到 TS 文件，文字建议恢复（只有 Vue 关）
     const ts = mount(fakeDisk({ "src/a.ts": "const a = 1;\n" }), ["src/a.ts"]);
