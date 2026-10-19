@@ -30,3 +30,5 @@
 单测覆盖权限参数、分帧、两组上限、三次失败、未保存文本重放；`integration/vue-process.platform-dependent.test.ts` 在临时 HOME/项目中以真实 Electron 验证属性补全、权限拒绝和无残留。改权限或协议必须重跑真实进程测试，不能只用假进程证明。
 
 文件变化来自现有 ChangeFeed；依赖安装另在 integration 里只监听项目根与 node_modules 的直接子项，不递归监听整个依赖树。后台变化只使用仍存活的组，不能复活已被淘汰的服务。每个模型有独立 session；open 建立它，sync/close 必须匹配，模型局部版本可从 1 重置。诊断事件带 session 和局部版本，旧回包不覆盖新文本。请求准备和 close 同序，取消后旧请求不能在关闭完成后复活服务。`vue-channel.platform-dependent.test.ts` 验证外部修改与依赖从无到有两条真实路径。
+
+Vue 补全（#414）在 renderer/features/editor 的 `vue-completion-provider.ts` 注册，只接宿主自己的模型，等模型同步完成后请求并核对 session/局部版本。`vue-completion-items.ts` 转换官方两路候选、片段与替换范围；详情文档不信任 HTML/命令。Vue 关闭文字词表建议，自动建议使用真实类型服务。真实补全控件浅深截图由 `e2e/vue-completion.e2e.ts` 保存到测试产物。
