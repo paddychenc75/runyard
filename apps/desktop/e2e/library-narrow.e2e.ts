@@ -64,8 +64,10 @@ test("[DESKTOP-LIBRARY-VIEW-97][DESKTOP-LIBRARY-VIEW-98][DESKTOP-LIBRARY-VIEW-99
   expect(collapsedBox?.y).toBe(toggleBox?.y);
   await show.click();
   await expect(nav).toBeVisible();
+  await expect(nav.locator('[aria-current="page"]')).toBeFocused();
   await nav.getByRole("button", { name: /^All/ }).click();
   await expect(nav).toHaveCount(0);
+  await expect(show).toBeFocused();
   await resize(1440);
   await page.reload();
   await expect(show).toBeVisible();

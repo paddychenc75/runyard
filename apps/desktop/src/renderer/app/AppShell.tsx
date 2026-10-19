@@ -258,7 +258,7 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
                     : null,
                 );
                 setPage(next);
-                sidebar.close();
+                sidebar.close(next === "library" && temporaryNavigation !== null);
               }}
             />
           ) : null}

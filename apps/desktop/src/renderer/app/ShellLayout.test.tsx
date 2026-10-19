@@ -463,3 +463,64 @@ it.each([1100, 1440])(
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "收起侧栏" }));
   },
 );
+
+it.each(["reopen", "return"])(
+  "[DESKTOP-LIBRARY-VIEW-99] 临时模板导航%s时不丢焦点",
+  async (action) => {
+    window.localStorage.setItem("runyard.layout.v1", JSON.stringify({ sidebarCollapsed: true }));
+    const user = userEvent.setup();
+    const { emit } = setup(libraryState({ loaded: false }));
+    await screen.findByRole("button", { name: "显示侧栏" });
+    resizeShell(720);
+    emit("sidebar.toggle");
+    await user.click(screen.getByRole("button", { name: /^模板/ }));
+    if (action === "reopen") {
+      await user.click(screen.getByRole("button", { name: "收起侧栏" }));
+      await user.click(screen.getByRole("button", { name: "显示侧栏" }));
+      expect(document.activeElement).toBe(sidebar()?.querySelector('[aria-current="page"]'));
+    } else {
+      await user.click(screen.getByRole("button", { name: /^全部/ }));
+      expect(document.activeElement).toBe(screen.getByRole("button", { name: "显示侧栏" }));
+    }
+  },
+);
+
+it("[DESKTOP-LIBRARY-VIEW-97] 展开偏好从临时模板拉宽回库后不遗留焦点请求", async () => {
+  const user = userEvent.setup();
+  const { emit } = setup(
+    libraryState({
+      playgrounds: [
+        {
+          id: "focus",
+          name: "focus",
+          path: "/lib/focus",
+          kind: "server",
+          state: "idle",
+          active: false,
+          previewing: false,
+          busy: false,
+          note: "",
+          templateId: "html",
+          templateName: null,
+          port: null,
+          autoClean: { enabled: false, days: null },
+          lastUsedAt: 1,
+          lastOpenedAt: 1,
+          createdBy: { kind: "user" },
+          createdAt: 1,
+          missing: false,
+        },
+      ],
+    }),
+  );
+  await screen.findByRole("navigation", { name: "资源库导航" });
+  resizeShell(720);
+  emit("sidebar.toggle");
+  await user.click(screen.getByRole("button", { name: /^模板/ }));
+  resizeShell(1440);
+  await user.click(screen.getByRole("button", { name: /^全部/ }));
+  const search = screen.getByRole("textbox", { name: "搜索项目" });
+  search.focus();
+  resizeShell(720);
+  expect(document.activeElement).toBe(search);
+});
