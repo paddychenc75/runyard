@@ -1,4 +1,5 @@
 import type { Locale } from "@runyard/i18n";
+import { numbers } from "@runyard/tokens";
 import type { BootstrapInfo } from "../../shared/desktop-bridge.ts";
 
 // 启动信息里随系统变的部分：平台、窗口按钮位置、快捷键用 ⌘ 还是 Ctrl。
@@ -26,7 +27,10 @@ export function buildBootstrapInfo(
     platform,
     // 标题栏是自绘的（macOS 用 hiddenInset，红黄绿画在侧栏顶上）：这一侧要给窗口按钮让出 inset，
     // 与设计变量 size-window-controls 同值，TitleBar 用后者留空
-    windowControls: { side: mac ? "left" : "right", inset: mac ? 72 : 0 },
+    windowControls: {
+      side: mac ? "left" : "right",
+      inset: mac ? numbers["size-window-controls"] : 0,
+    },
     modKey: mac ? "meta" : "ctrl",
     locale: inputs.locale,
     theme: inputs.theme,
