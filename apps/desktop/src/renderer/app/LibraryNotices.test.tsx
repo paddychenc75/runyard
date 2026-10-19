@@ -438,13 +438,15 @@ describe("自动清理通知", () => {
     expect(calledWith(calls, "clean.shown")).toEqual([["node-ts-1"]]);
   });
 
-  it("[DESKTOP-LIBRARY-VIEW-59] 点“改为保留”：请求把提示条里的项目都改为已保留；状态推来后提示条和行标签消失", async () => {
+  it("[DESKTOP-LIBRARY-VIEW-59] 点“关闭自动清理”：请求把提示条里的项目都改为关闭；状态推来后提示条和行标签消失", async () => {
     const { calls, push } = setup(remind());
     await user.click(await screen.findByRole("button", { name: "关闭自动清理" }));
     expect(calledWith(calls, "clean.keep")).toEqual([["node-ts-1"]]);
     await push(library([row("node-ts-1"), row("kept")], { cleanReminder: [], cleanDueCount: 0 }));
     expect(document.querySelector("[data-notification-cards] [role=status]")).toBeNull();
-    expect(within(await bodyRow("node-ts-1")).getByText("已保留")).toBeTruthy();
+    expect(
+      (await bodyRow("node-ts-1")).querySelector('[data-column="retention"]')?.textContent,
+    ).toBe("—");
   });
 
   it("[DESKTOP-LIBRARY-VIEW-60] 关闭只收起卡片，待处理列表和行提醒保留", async () => {

@@ -63,7 +63,7 @@
   "desktop.create.cancel.action": "Cancel",
   "desktop.create.changeTemplate.action": "Change template",
   "desktop.create.cleanAfter.label": "Clean up after unused for",
-  "desktop.create.cleanSummary.hint": "Moves to the {term_trash} after {days, plural, one {# day} other {# days}} unused. You get a reminder the day before, and can switch to Kept any time.",
+  "desktop.create.cleanSummary.hint": "Moves to the {term_trash} after {days, plural, one {# day} other {# days}} unused. You get a reminder the day before, and can turn off auto-clean at any time.",
   "desktop.create.custom.label": "Custom",
   "desktop.create.customDays.label": "Custom number of days",
   "desktop.create.customDaysInvalid.hint": "Enter a whole number above 0",
