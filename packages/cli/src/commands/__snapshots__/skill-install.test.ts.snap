@@ -21,6 +21,8 @@ Always add \`--json\`: standard output is then exactly one JSON object that you 
 4. Check what happened with \`runyard logs <name> --since <cursor> --json\`.
    Use the \`cursor\` from the previous result to read only what is new.
 5. Stop it when you are done: \`runyard stop <name> --json\`.
+6. If a temporary project is no longer needed after the task, move it to Trash:
+   \`runyard rm <name> --json\`. This also stops its run. Keep projects the user wants to retain.
 
 ## Rules
 
