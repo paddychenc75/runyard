@@ -18,7 +18,7 @@
 
 - 可以导入：`@runyard/protocol`、`platform`、`client`、`i18n`、`core`（`ToolchainService`、模板的读取、lint 和隔离冒烟）；测试里可以导入 `testing`。不许导入 `supervisor`。依赖规则的唯一出处是 `tooling/checks/layers.json`。
 - 所有给人看的文字都来自 `packages/i18n`（`cli` 组和 `errors.*`、`notice.*`）；代码里不写句子，命令说明写成 `(t) => t("键")`。命令名、选项名、占位符（`<pg>`）不翻译。只有 `src/output/` 可以写标准输出和标准错误（`ui-strings` 检查）。
-- `--json`：标准输出恰好一个对象（`result` 或 `{"error":…}`），只有 `logs --follow` 用 `stream()` 每行一个对象。`message` 与 `hint` 永远是英文（取英文文案的 `title`、`hintCli`；用法错误的 `message` 是更具体的英文说明）；`data` 是错误码登记的参数。输出不随语言变，不含堆栈和 `debug`。
+- `--json`：标准输出恰好一个对象（`result` 或 `{"error":…}`），例外：`--help` 始终输出当前语言的帮助文本；`logs --follow` 用 `stream()` 每行一个对象。`message` 与 `hint` 永远是英文（取英文文案的 `title`、`hintCli`；用法错误的 `message` 是更具体的英文说明）；`data` 是错误码登记的参数。输出不随语言变，不含堆栈和 `debug`。
 - 退出码只取 `errorRegistry[code].exit`，本包没有第二张表。管理进程返回了登记表里没有的错误码时按 `INTERNAL`（1）。成功但 `--json` 下没写任何结果也按 `INTERNAL`。
 - 语言：`--lang`，`RUNYARD_LANG`，`~/.runyard/cli.json` 的 `lang`，英文；用 `resolveCliLocale`，不看系统语言；不认识的值在标准错误一行英文提示。`--lang` 和环境变量从不写文件，只有 `config set lang` 写。
 - 参数解析用 Node 自带的 `util.parseArgs` 分词，校验自己做（未知选项、缺值、布尔带值、缺参数、多参数都是 `USAGE`）。不加解析库。

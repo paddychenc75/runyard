@@ -9,7 +9,8 @@ description: Create, run and inspect small throwaway code projects (web pages, R
 # Runyard
 
 Runyard creates small projects from templates, runs them in the background and keeps their logs.
-Always add \`--json\`: standard output is then exactly one JSON object that you can parse.
+Add \`--json\` when executing commands: standard output is one JSON object that you can parse.
+Exceptions: \`--help\` returns help text even with \`--json\`; \`logs --follow --json\` returns one JSON object per line.
 
 ## Workflow
 
