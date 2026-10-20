@@ -7,7 +7,7 @@
 ## Requirements
 
 ### Requirement: 命令行始终非交互，`--json` 只输出一个对象
-命令行 MUST NOT 提问，MUST NOT 等待标准输入。带 `--json` 时，标准输出上 MUST 恰好是一个 JSON 对象：结果，或 `{"error": {...}}`；其中的路径 MUST 是绝对路径，本机地址 MUST 是字面量 `127.0.0.1`，MUST NOT 出现 `localhost`。唯一的例外是 `logs --follow --json`，见该命令。错误对象 MUST 含 `code`、`message`、`hint`、`data`，有原始现场时再含 `cause`；`data` 就是错误码登记的参数；`message` 与 `hint` MUST 是英文，`hint` MUST 写明下一步该执行的完整命令。`--json` 模式下进度、警告 MUST NOT 写到标准输出；结果里的提示 MUST 放在 `notices` 数组里（元素是 `{ "code", "params" }`，没有提示时不出现这个键）。`--quiet` MUST NOT 改变 `--json` 的输出和退出码。
+命令行 MUST NOT 提问，MUST NOT 等待标准输入。带 `--json` 时，标准输出上 MUST 恰好是一个 JSON 对象：结果，或 `{"error": {...}}`；其中的路径 MUST 是绝对路径，本机地址 MUST 是字面量 `127.0.0.1`，MUST NOT 出现 `localhost`。例外：`logs --follow --json` 按该命令输出 NDJSON；`--help` 即使同时带 `--json`，MUST 仍输出当前命令行语言的帮助文本，退出码为 0。错误对象 MUST 含 `code`、`message`、`hint`、`data`，有原始现场时再含 `cause`；`data` 就是错误码登记的参数；`message` 与 `hint` MUST 是英文，`hint` MUST 写明下一步该执行的完整命令。`--json` 模式下进度、警告 MUST NOT 写到标准输出；结果里的提示 MUST 放在 `notices` 数组里（元素是 `{ "code", "params" }`，没有提示时不出现这个键）。`--quiet` MUST NOT 改变 `--json` 的输出和退出码。
 来源：PRD #prd-cli-json；PRD #prd-cli-language；PRD #prd-cli
 
 #### Scenario: [CLI-COMMANDS-01] 成功时恰好一个对象
@@ -70,7 +70,7 @@
 - 验证：test
 
 ### Requirement: 提示语言只有英文和简体中文，默认英文
-给人看的输出和 `--help` MUST 有 `en` 和 `zh-CN` 两份。默认 MUST 是英文，在任何系统上都是，MUST NOT 读取 `LANG` 等系统语言。切换的优先级从高到低 MUST 是：单条命令的 `--lang`；环境变量 `RUNYARD_LANG`；`runyard config set lang` 写下的设置；英文。不认识的值 MUST 退回英文，并在标准错误上输出一行英文提示，MUST NOT 污染标准输出。`--json` 的输出 MUST 不受语言影响：同一条命令在两种语言下的 `--json` 输出 MUST 逐字相同，`message` 与 `hint` 永远是英文。`--lang` 和环境变量 MUST NOT 写入设置文件。命令行与桌面应用的语言 MUST 互不影响。
+给人看的输出和 `--help` MUST 有 `en` 和 `zh-CN` 两份。默认 MUST 是英文，在任何系统上都是，MUST NOT 读取 `LANG` 等系统语言。切换的优先级从高到低 MUST 是：单条命令的 `--lang`；环境变量 `RUNYARD_LANG`；`runyard config set lang` 写下的设置；英文。不认识的值 MUST 退回英文，并在标准错误上输出一行英文提示，MUST NOT 污染标准输出。`--json` 的命令结果 MUST 不受语言影响（帮助文本除外）：同一条命令在两种语言下的 `--json` 输出 MUST 逐字相同，`message` 与 `hint` 永远是英文。`--lang` 和环境变量 MUST NOT 写入设置文件。命令行与桌面应用的语言 MUST 互不影响。
 来源：PRD #prd-cli-language；PRD #prd-cli-json；PRD #prd-quality
 
 #### Scenario: [CLI-COMMANDS-11] 默认英文且不跟随系统
@@ -98,7 +98,7 @@
 
 #### Scenario: [CLI-COMMANDS-15] --help 有两份
 - **WHEN** 分别用英文和中文执行 `runyard --help` 和每个子命令的 `--help`
-- **THEN** 输出与各自语言的快照一致；命令名和参数名在两份里相同，没有被翻译
+- **THEN** 输出与各自语言的快照一致；命令名和参数名在两份里相同，没有被翻译；同时带 `--json` 时仍输出相同帮助文本，退出码为 0
 - 验证：test
 
 #### Scenario: [CLI-COMMANDS-16] --lang 与环境变量不写设置
@@ -495,7 +495,7 @@
 - 验证：test
 
 ### Requirement: `skill install` 把给智能体的说明写到约定位置
-`runyard skill install` MUST 按 `--target claude|agents|all` 把说明写到 `~/.claude/skills/runyard/SKILL.md` 和 `~/.agents/skills/runyard/SKILL.md`；不给 `--target` 时 MUST 是 `all`。已有同名文件时 MUST 用当前版本的内容覆盖；目录不存在时 MUST 创建。结果 MUST 是 `{ "installed": [ { "target", "path" } ] }`。`SKILL.md` 的全文和其中的命令示例 MUST 是英文，MUST 包含这些要点：永远带 `--json`；用 `new … --run --note` 创建并启动；直接改 `path` 下的文件；用 `logs --since <游标>` 看结果；用完用 `stop`；验证性的项目带 `--clean-after 30d`，用户说留着就不带；出错时按 `error.hint` 做，不要盲目重试；不要自己另起开发服务器；不教智能体去设置语言。
+`runyard skill install` MUST 按 `--target claude|agents|all` 把说明写到 `~/.claude/skills/runyard/SKILL.md` 和 `~/.agents/skills/runyard/SKILL.md`；不给 `--target` 时 MUST 是 `all`。已有同名文件时 MUST 用当前版本的内容覆盖；目录不存在时 MUST 创建。结果 MUST 是 `{ "installed": [ { "target", "path" } ] }`。`SKILL.md` 的全文和其中的命令示例 MUST 是英文，MUST 包含这些要点：执行命令带 `--json`，`--help` 仍返回帮助文本，`logs --follow --json` 逐行返回 JSON；用 `new … --run --note` 创建并启动；直接改 `path` 下的文件；用 `logs --since <游标>` 看结果；用完用 `stop`；验证性的项目带 `--clean-after 30d`，用户说留着就不带；出错时按 `error.hint` 做，不要盲目重试；不要自己另起开发服务器；不教智能体去设置语言。
 安装到每个目标时 MUST 同时写入同目录的 `SKILL.zh-CN.md`，其中说明是供人阅读的中文对照，智能体以英文 `SKILL.md` 为准。中文说明的条目与命令示例 MUST 与英文一一对应，命令及参数 MUST 保持英文原样。重复安装 MUST 同时更新两份说明，结果 `installed` 的结构和英文文件路径 MUST 保持不变。
 来源：PRD #prd-cli-commands；PRD #prd-decision-table（第 10 项）；PRD #prd-cli-creator
 
