@@ -1,0 +1,8 @@
+.content {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-family: var(--font-mono);
+  font-size: var(--text-code-small-size);
+  color: var(--color-text-primary);
+}

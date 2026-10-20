@@ -936,10 +936,11 @@
 | settings.runtime.path.label | 路径 | Path | — |
 | settings.runtime.pathFailed.body | 没能指定这个路径 | Couldn't set that path | — |
 | settings.runtime.pathInput.aria | {tool} 可执行文件路径 | {tool} executable path | tool：工具显示名称，如 Node |
-| settings.runtime.pathInput.hint | 输入完整路径后按回车保存，Esc 撤销 | Press Enter to save the full path; Esc to cancel | — |
+| settings.runtime.pathInput.hint | 修改后点击保存或按回车，Esc 撤销 | Click Save or press Enter to apply changes; Esc to cancel | — |
 | settings.runtime.pathInput.placeholder | 输入完整可执行文件路径 | Enter the full executable path | — |
 | settings.runtime.recheck.action | 重新检测 | Check again | — |
 | settings.runtime.runInstall.action | 在终端中运行 | Run in Terminal | — |
+| settings.runtime.savePath.action | 保存 | Save | — |
 | settings.runtime.setPath.action | 指定路径… | Set path… | — |
 | settings.runtime.site.label | 官网 | Website | — |
 | settings.runtime.status.label | 状态 | Status | — |
@@ -958,6 +959,7 @@
 | settings.skills.both.label | 已安装到 Claude Code 和 Codex | Installed for Claude Code and Codex | — |
 | settings.skills.claude.label | 已安装到 Claude Code | Installed for Claude Code | — |
 | settings.skills.claudeName.label | Claude Code | Claude Code | — |
+| settings.skills.closeGuide.action | 关闭说明 | Close guide | — |
 | settings.skills.guide.action | 查看说明 | View guide | — |
 | settings.skills.guideFailed.hint | 没能打开说明，请重试。 | Could not open the guide. Try again. | — |
 | settings.skills.hint | 让 Claude Code、Codex 等知道怎么用 runyard 新建和运行项目 | Lets Claude Code, Codex and others create and run playgrounds | — |

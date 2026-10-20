@@ -86,9 +86,11 @@ export function ConsolePanel({ bridge, tab }: ConsolePanelProps) {
           className={styles.body}
         />
       ) : script ? (
-        <Button className={styles.empty} onClick={showTerminal}>
-          {t("desktop.console.terminalStart.action")}
-        </Button>
+        <div className={styles.empty}>
+          <Button size="sm" onClick={showTerminal}>
+            {t("desktop.console.terminalStart.action")}
+          </Button>
+        </div>
       ) : (
         <ConsoleOutput bridge={bridge} playground={tab.id} className={styles.log} />
       )}
