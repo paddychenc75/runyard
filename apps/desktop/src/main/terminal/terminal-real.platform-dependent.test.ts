@@ -46,6 +46,15 @@ async function run(
 
 // 见 #336
 describe.skipIf(!onMac)("终端服务与真伪终端", () => {
+  it.each(["/bin/zsh", "/bin/bash"])("终端验收握手不依赖 %s 的提示符（#528）", async (shell) => {
+    const t = setup({ zshrc: "", overrides: { loginShell: async () => shell } });
+    const snapshot = await t.open("demo", size);
+    expect(snapshot.state).toMatchObject({ kind: "running", shell });
+    const command = "printf 'READY%s\\n' '401>'";
+    expect(command).not.toContain("READY401>");
+    await run(t, "demo", command, /^READY401>\r?$/m);
+  });
+
   it("[DESKTOP-TERMINAL-01] 没人要终端时不启动任何 shell；第一次打开 1 秒内出现提示符，pwd 是项目文件夹", async () => {
     const t = setup();
     // 服务建好、项目在资源库里，但没有打开终端：没有 shell
