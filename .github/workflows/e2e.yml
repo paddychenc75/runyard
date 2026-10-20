@@ -214,6 +214,27 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+      # 截图使用固定状态，不下载演示项目依赖；断言和原端到端测试仍分别报告失败。
+      - name: 资源库与设计稿并排取证（浅深、中英、宽窄）
+        if: ${{ !cancelled() }}
+        env:
+          RUNYARD_E2E_APP: ${{ github.workspace }}/apps/desktop/release/e2e/mac-arm64/Runyard.app/Contents/MacOS/Runyard
+        run: |
+          shots="$(mktemp -d)"
+          echo "RUNYARD_DESIGN_OUTPUT=$shots" >> "$GITHUB_ENV"
+          export RUNYARD_DESIGN_OUTPUT="$shots"
+          node tooling/design-render/render.mjs Main MainDark MainEn MainDarkEn MainNarrow MainNarrowDark MainNarrowEn MainNarrowDarkEn --no-shots
+          node apps/desktop/e2e/library-design.measure.ts
+
+      - name: 上传资源库设计稿并排图与测量记录
+        if: ${{ always() && env.RUNYARD_DESIGN_OUTPUT != '' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: library-design-comparison
+          path: ${{ env.RUNYARD_DESIGN_OUTPUT }}
+          if-no-files-found: error
+          retention-days: 14
+
   package:
     name: package（打包并开窗冒烟）
     runs-on: macos-26

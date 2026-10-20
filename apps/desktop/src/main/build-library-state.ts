@@ -22,6 +22,7 @@ import type {
   UpdateBannerView,
 } from "../shared/library-state.ts";
 import { displayPath } from "./library-root.ts";
+import { compareRows } from "./library-row-order.ts";
 import { recentTemplateIds } from "./recent-templates.ts";
 
 // 结束了的状态；其余都算进行中（run-state-machine.md 第 1 节）
@@ -106,15 +107,6 @@ export function latestRunByPlayground(runs: readonly RunSnapshot[]): Map<string,
       latest.set(run.playgroundId, run);
   }
   return latest;
-}
-
-// 运行中的排最前，其余按上次打开从新到旧；从没打开过的用创建时间排，名字兜底（规格 DESKTOP-LIBRARY-VIEW-01）
-function compareRows(a: PlaygroundRow, b: PlaygroundRow): number {
-  if (a.active !== b.active) return a.active ? -1 : 1;
-  const aTime = a.lastOpenedAt ?? a.createdAt;
-  const bTime = b.lastOpenedAt ?? b.createdAt;
-  if (aTime !== bTime) return bTime - aTime;
-  return a.name.localeCompare(b.name);
 }
 
 /** 运行状态归并成标签上的小圆点：就绪和运行中是绿，准备中是黄，崩溃失败是红，其余（含手动停止）是空心 */

@@ -76,6 +76,22 @@ expect(await fake.platform.ports.isFree(7100)).toBe("free");
 
 规格 `DESKTOP-EDITOR-04`（150 ms，手工验证）在打好的包上量，不在单元测试里量。脚本是 `apps/desktop/e2e/editor-latency.measure.ts`（文件名不是 `*.e2e.ts`，CI 不跑），用法和历次结果见 `docs/architecture/evidence/editor-150ms.md`。
 
+## 资源库与设计稿并排取证
+
+`apps/desktop/e2e/library-design.measure.ts` 在真实 Electron 应用里通过资源库事件注入固定的九行演示状态，拍摄 Main / MainNarrow 的浅色、深色、中文、英文八组画面。它用于核对画面；真实项目的创建、运行、改名等行为仍由端到端测试验证。不要把固定状态的截图当成后台运行成功的证据。
+
+和设计稿渲染器一样，需要 macOS 的 `/Applications/Google Chrome.app`。在仓库根目录用 Node 24 运行：
+
+```sh
+pnpm --filter @runyard/desktop build
+node tooling/design-render/render.mjs Main MainDark MainEn MainDarkEn MainNarrow MainNarrowDark MainNarrowEn MainNarrowDarkEn --no-shots
+node apps/desktop/e2e/library-design.measure.ts
+```
+
+脚本打印自己的临时产物目录，包含原图、并排图、列宽测量、提交编号和真实数据目录修改时间。每份应用都使用临时 `HOME` 和 `--root`，收尾沿用端到端工具的进程身份核对；不使用固定睡眠。指定 `RUNYARD_E2E_APP` 时可对打好的包取证，与端到端测试相同。需要标注本地提交时传入 `RUNYARD_DESIGN_COMMIT`。
+
+CI 的 e2e 任务在打包后运行同一脚本，无论原端到端测试成功还是失败，都上传 `library-design-comparison` 产物（保留 14 天）。在 PR 描述链接到对应运行，逐项记录剩余差异；协调人必须下载并打开图核对。图片不进仓库。历史产物到期后可用对应提交重新生成。
+
 ## 偶发失败的规则
 
 - 必过检查失败了，不许直接重跑了事：先开一个带 `flaky` 标签的 issue，写上失败的运行链接、哪个测试、哪个系统，再重跑。

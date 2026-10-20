@@ -858,16 +858,15 @@ export type CatalogMessages = {
     count: number;
   };
   "library.column.actions.aria": Record<never, never>;
-  "library.column.creator.label": Record<never, never>;
-  "library.column.lastOpened.label": Record<never, never>;
+  "library.column.lastUsed.label": Record<never, never>;
   "library.column.name.label": Record<never, never>;
   "library.column.port.label": Record<never, never>;
   "library.column.retention.label": Record<never, never>;
+  "library.column.size.label": Record<never, never>;
   "library.column.status.label": Record<never, never>;
   "library.column.template.label": Record<never, never>;
   "library.creator.agent.label": Record<never, never>;
   "library.creator.cli.label": Record<never, never>;
-  "library.creator.collapse.aria": Record<never, never>;
   "library.creator.details.label": {
     agent: string | number;
     code: (chunks: string[]) => string;
@@ -876,8 +875,6 @@ export type CatalogMessages = {
     time: string | number;
     user: (chunks: string[]) => string;
   };
-  "library.creator.expand.aria": Record<never, never>;
-  "library.creator.me.label": Record<never, never>;
   "library.creator.tooltip.label": {
     command: string | number;
     hasCommand: string;

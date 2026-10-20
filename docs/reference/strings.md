@@ -700,19 +700,16 @@
 | library.clean.now.action | 现在清理 | Clean now | — |
 | library.cleanBanner.lead.label | {count, plural, other {# 个项目}}明天会被自动清理： | {count, plural, one {# playground} other {# playgrounds}} will be cleaned up tomorrow: | count：明天会被自动清理的项目数 |
 | library.column.actions.aria | 操作 | Actions | — |
-| library.column.creator.label | 创建者 | Created by | — |
-| library.column.lastOpened.label | 上次打开 | Last opened | — |
+| library.column.lastUsed.label | 最近使用 | Last used | — |
 | library.column.name.label | 名称与备注 | Name and note | — |
 | library.column.port.label | 端口 | Port | — |
 | library.column.retention.label | 自动清理 | Auto-clean | — |
+| library.column.size.label | 大小 | Size | — |
 | library.column.status.label | 状态 | Status | — |
 | library.column.template.label | 模板 | Template | — |
 | library.creator.agent.label | 智能体 | Agent | — |
 | library.creator.cli.label | 命令行 | Command line | — |
-| library.creator.collapse.aria | 收起创建信息 | Hide creation details | — |
 | library.creator.details.label | 由 <user>{agent}</user> 创建 · {time}{hasCommand, select, yes { · 命令：<code>{command}</code>} other {}} | Created by <user>{agent}</user> · {time}{hasCommand, select, yes { · Command: <code>{command}</code>} other {}} | time：创建时间（已格式化）；hasCommand：有创建命令是 yes，否则 no；command：创建时的命令行（用 code 标签包成等宽）；user：包住智能体名称的标签；code：包住命令的标签，显示成等宽字体；agent：智能体名称（不翻译） |
-| library.creator.expand.aria | 展开创建信息 | Show creation details | — |
-| library.creator.me.label | 我 | Me | — |
 | library.creator.tooltip.label | {time} 创建{hasCommand, select, yes { · 命令：{command}} other {}} | Created {time}{hasCommand, select, yes { · Command: {command}} other {}} | time：创建时间（已格式化）；hasCommand：有创建命令是 yes，否则 no；command：创建时的命令行（用 code 标签包成等宽） |
 | library.empty.cli.label | 也可以让智能体用命令行创建： | Or let an agent create one from the command line: | — |
 | library.empty.hint | 选一个模板，新建你的第一个项目。 | Pick a template to create your first playground. | — |
@@ -797,7 +794,7 @@
 | library.sidebar.footer.label | {count, plural, other {# 个项目}} | {count, plural, one {# playground} other {# playgrounds}} | count：资源库里项目的总数 |
 | library.sort.created.label | 创建时间 | Created | — |
 | library.sort.name.label | 名称 | Name | — |
-| library.sort.recent.label | 最近打开 | Recently opened | — |
+| library.sort.recent.label | 最近使用 | Last used | — |
 | library.status.problem.label | 有问题 | Has a problem | — |
 | library.status.running.label | 运行中 | Running | — |
 | library.status.stopped.label | 已停止 | Stopped | — |

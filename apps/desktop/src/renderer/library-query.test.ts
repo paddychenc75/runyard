@@ -58,10 +58,10 @@ describe("navCounts", () => {
 });
 
 describe("filterRows", () => {
-  it("最近打开排序时从没打开过的按创建时间排，名字兜底", () => {
+  it("[DESKTOP-LIBRARY-VIEW-94] 最近使用排序：打开和使用里较晚的一次，从没打开过的看使用（命令行运行、创建），名字兜底", () => {
     const rows = [
-      row("b", { createdAt: 5 }),
-      row("a", { createdAt: 5 }),
+      row("b", { lastUsedAt: 5 }),
+      row("a", { lastUsedAt: 5 }),
       row("c", { lastOpenedAt: 9 }),
     ];
     expect(filterRows(rows, [], "zh-CN", defaultQuery).map((r) => r.id)).toEqual(["c", "a", "b"]);

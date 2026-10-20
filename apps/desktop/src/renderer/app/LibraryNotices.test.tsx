@@ -264,7 +264,7 @@ describe("智能体创建的项目", () => {
     );
     expect(await screen.findByText("Claude Code")).toBeTruthy();
     expect(screen.queryByText(/claude-code_2-1-2/)).toBeNull();
-    await user.click(screen.getByRole("button", { name: "展开创建信息" }));
+    await user.click(screen.getByRole("button", { name: "Claude Code" }));
     const details = document.querySelector("[data-creator-details]") as HTMLElement;
     expect(details.textContent).toContain("由 Claude Code 创建");
   });
@@ -279,14 +279,16 @@ describe("智能体创建的项目", () => {
     expect(tip.textContent).toContain("创建");
   });
 
-  it("[DESKTOP-LIBRARY-VIEW-53] 行末的展开按钮在行下面展开“由 Claude Code 创建 · 时间 · 命令：…”，再点收起", async () => {
+  it("[DESKTOP-LIBRARY-VIEW-53] 点智能体徽标在行下面展开“由 Claude Code 创建 · 时间 · 命令：…”，再点收起", async () => {
     setup(library([agentRow()]));
-    const toggle = await screen.findByRole("button", { name: "展开创建信息" });
+    const toggle = await screen.findByRole("button", { name: "Claude Code" });
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
     await user.click(toggle);
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
     const details = document.querySelector('[data-creator-details="react19-5"]') as HTMLElement;
     expect(details.textContent).toContain("由 Claude Code 创建 · ");
     expect(details.textContent).toContain("命令：runyard new react19 react19-5 --run --note …");
-    await user.click(screen.getByRole("button", { name: "收起创建信息" }));
+    await user.click(screen.getByRole("button", { name: "Claude Code" }));
     expect(document.querySelector("[data-creator-details]")).toBeNull();
   });
 });
@@ -445,7 +447,7 @@ describe("自动清理通知", () => {
     await push(library([row("node-ts-1"), row("kept")], { cleanReminder: [], cleanDueCount: 0 }));
     expect(document.querySelector("[data-notification-cards] [role=status]")).toBeNull();
     expect(
-      (await bodyRow("node-ts-1")).querySelector('[data-column="retention"]')?.textContent,
+      (await bodyRow("node-ts-1")).querySelector("td[data-column=retention]")?.textContent,
     ).toBe("—");
   });
 
