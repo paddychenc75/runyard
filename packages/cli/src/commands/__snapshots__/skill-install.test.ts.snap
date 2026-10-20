@@ -1,35 +1,37 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`skill install > [CLI-COMMANDS-76] 说明是英文，含约定的要点，不教智能体设置语言 1`] = `
+exports[`skill install > [CLI-COMMANDS-76] 说明是中文，含约定的要点，不教智能体设置语言 1`] = `
 "---
 name: runyard
-description: Create, run and inspect small throwaway code projects (web pages, React apps, scripts) with the runyard command line. Use it when you need to try out or show a piece of code instead of starting a dev server yourself.
+description: 使用 runyard 命令行创建、运行和检查小型代码项目（网页、React 应用、脚本）。需要试验或展示代码时使用，不要自行启动开发服务器。
 ---
 
 # Runyard
 
-Runyard creates small projects from templates, runs them in the background and keeps their logs.
-Add \`--json\` when executing commands: standard output is one JSON object that you can parse.
-Exceptions: \`--help\` returns help text even with \`--json\`; \`logs --follow --json\` returns one JSON object per line.
+Runyard 从模板创建小项目，在后台运行并保存日志。
+执行命令时添加 \`--json\`：标准输出是一个可解析的 JSON 对象。
+例外：\`--help\` 即使带 \`--json\` 也返回帮助文本；\`logs --follow --json\` 每行返回一个 JSON 对象。
 
-## Workflow
+## 工作流程
 
-1. List templates when you are unsure which one fits: \`runyard template list --json\`.
-2. Create and start a project in one step, and say why it exists:
+1. 不确定选哪个模板时，先列出模板：\`runyard template list --json\`。
+2. 一步创建并启动项目，并说明它的用途：
    \`runyard new <template> [name] --run --note "what this is for" --json\`
-   For a server the result has \`run.url\`; for a script it has the output once it exits.
-3. Edit the files under the \`path\` in the result directly. A running server reloads by itself.
-4. Check what happened with \`runyard logs <name> --since <cursor> --json\`.
-   Use the \`cursor\` from the previous result to read only what is new.
-5. Stop it when you are done: \`runyard stop <name> --json\`.
+   网页或服务的结果包含 \`run.url\`；脚本则在退出后返回输出。
+3. 直接编辑结果里 \`path\` 下的文件。运行中的服务会自行重新加载。
+4. 使用 \`runyard logs <name> --since <cursor> --json\` 检查结果。
+   使用上次结果中的 \`cursor\`，只读取新增内容。
+5. 用完后停止：\`runyard stop <name> --json\`。
+6. 任务结束后不再需要的验证项目，移到废纸篓：
+   \`runyard rm <name> --json\`。这也会停止运行。用户要留着的项目应保留。
 
-## Rules
+## 规则
 
-- Do not start your own dev server for these projects. Use \`runyard run <name> --json\`.
-- A project that only verifies something and is not meant to be kept: add \`--clean-after 30d\` to \`new\`
-  so it is cleaned up later. If the user says to keep it, leave the option out.
-- When a command fails, the JSON has \`error.code\` and \`error.hint\`. Do what \`error.hint\` says,
-  do not retry the same command blindly.
-- \`runyard status --json\` shows what is running. \`runyard doctor --json\` shows which tools are installed.
+- 不要为这些项目自行启动开发服务器。使用 \`runyard run <name> --json\`。
+- 只用于验证、无须长期保留的项目：添加 \`--clean-after 30d\` 到 \`new\`，
+  让它以后自动清理。如果用户说要留着，就不要添加这个选项。
+- 命令失败时，JSON 包含 \`error.code\` 和 \`error.hint\`。按 \`error.hint\` 的说明处理，
+  不要盲目重复同一个命令。
+- \`runyard status --json\` 显示正在运行的项目。\`runyard doctor --json\` 显示已安装的工具。
 "
 `;
