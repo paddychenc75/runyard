@@ -29,7 +29,7 @@ export function languageProcessArgs(
       : [
           join(service, paths.tsserver),
           "--globalPlugins",
-          "@vue/typescript-plugin",
+          "@vue/typescript-plugin,@runyard/vue-types-fallback",
           "--pluginProbeLocations",
           service,
           "--disableAutomaticTypingAcquisition",
