@@ -9,6 +9,7 @@ export function buildSkillGuide(outDir: string): void {
     const text = createTranslator({ locale, platform: "darwin", catalogs: cliCatalogs }).t(
       "cli.skillGuide.body",
     );
-    writeFileSync(join(outDir, locale === "zh-CN" ? "SKILL.zh-CN.md" : "SKILL.md"), `${text}\n`);
+    if (locale === "zh-CN") writeFileSync(join(outDir, "SKILL.md"), `${text}\n`);
+    writeFileSync(join(outDir, locale === "zh-CN" ? "SKILL.zh-CN.md" : "SKILL.en.md"), `${text}\n`);
   }
 }

@@ -26,10 +26,14 @@ export const skillInstall: CommandHandler = async (context) => {
     const dir = joinPath(context.platform.paths.home, posixRelPath(TARGETS[target]));
     await context.platform.fs.makeDir(dir);
     const file = joinPath(dir, posixRelPath("SKILL.md"));
-    await context.platform.fs.writeAtomic(absPath(file), skillText("en", context.platform.id));
+    await context.platform.fs.writeAtomic(absPath(file), skillText("zh-CN", context.platform.id));
     await context.platform.fs.writeAtomic(
       joinPath(dir, posixRelPath("SKILL.zh-CN.md")),
       skillText("zh-CN", context.platform.id),
+    );
+    await context.platform.fs.writeAtomic(
+      joinPath(dir, posixRelPath("SKILL.en.md")),
+      skillText("en", context.platform.id),
     );
     installed.push({ target, path: file });
   }

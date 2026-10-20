@@ -595,6 +595,7 @@ Spring Boot、Angular。
 <a id="prd-cli-commands"></a>
 - P0：`new`、`run`、`stop`、`status`、`logs`、`rm`、`doctor`（`doctor --bundle` 导出诊断包）、
   `template list | show | save | lint | test`、`skill install`。
+- 智能体技能包的执行正文 `SKILL.md` 使用中文（负责人 2026-10-20 决定），同时保留同源的 `SKILL.zh-CN.md` 和英文对照 `SKILL.en.md`。命令、参数和 JSON 字段保持英文；技能安装不改变命令行显示语言。
 - P1：`prune`、`exec`、`open`、`screenshot`、`template add | update | remove`。
 - P2：`runyard mcp`。
 <a id="prd-cli-json"></a>
