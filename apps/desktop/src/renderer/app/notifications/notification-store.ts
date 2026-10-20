@@ -3,6 +3,7 @@ import type { IconName } from "@runyard/ui";
 
 /** 保存文案键和参数，切换语言后重新翻译，不把某次界面语言写进持久记录。 */
 export interface NotificationText {
+  relativeTime?: number;
   key: MessageKey;
   values?: MessageValues;
 }
@@ -14,6 +15,7 @@ export interface NotificationRecord {
   icon: IconName;
   title: NotificationText;
   description?: NotificationText;
+  details?: readonly NotificationText[];
   /** 数据源注册动作处理器，记录中只存动作标识，不存可执行函数。 */
   actions?: readonly { id: string; label: NotificationText; primary?: boolean }[];
 }

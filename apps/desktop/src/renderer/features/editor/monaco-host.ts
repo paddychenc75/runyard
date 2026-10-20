@@ -12,6 +12,7 @@ import type { SessionState } from "./session-types.ts";
 import { configureTypeScript, IGNORED_DIAGNOSTIC_CODES } from "./typescript-defaults.ts";
 import { TypeScriptDiagnostics } from "./typescript-diagnostics.ts";
 import { type ClosedFile, TypeScriptProject } from "./typescript-project.ts";
+import { createVueEditorServices } from "./vue-editor-services.ts";
 import { VueModelSync } from "./vue-model-sync.ts";
 
 // 把编辑会话（EditorSession）摆进 Monaco：每个能编辑的文件标签一个模型，选中的那个放进编辑器。
@@ -86,6 +87,16 @@ export function buildHost(
     subscription: Monaco.IDisposable;
   }
   const entries = new Map<string, Entry>();
+  const vueServices =
+    source?.vue && vue
+      ? createVueEditorServices({
+          runtime,
+          models: () => [...entries.values()].map((entry) => entry.model),
+          bridge: source.vue,
+          owns: (model) => [...entries.values()].some((entry) => entry.model === model),
+          synced: (model) => vue.synced(model),
+        })
+      : undefined;
   const viewStates = new Map<string, Monaco.editor.ICodeEditorViewState | null>();
   const versions = usedVersions.get(runtime) ?? new Map<string, number>();
   usedVersions.set(runtime, versions);
@@ -186,7 +197,8 @@ export function buildHost(
       if (editor.getModel()?.uri.toString() === resource.toString()) return false;
       if (handlers.onOpenFile === undefined) return false;
       const path = resource.path.slice(1);
-      if (project?.isKnownScript(path) !== true && !isOpenPath(path)) return false;
+      if (project?.isKnownScript(path) !== true && !isOpenPath(path) && !vueServices?.canOpen(path))
+        return false;
       const at =
         selectionOrPosition === undefined
           ? undefined
@@ -281,11 +293,11 @@ export function buildHost(
   }
 
   function applyLanguageOptions(id: string): void {
-    // Vue 只有着色：不从文件里已有的词给建议（规格“智能提示”；K8 装法第 9 条）
+    // Vue 只采用语言服务的候选，不把文件里的词混进真实类型补全。
     const vue = entries.get(id)?.model.getLanguageId() === "vue";
     editor.updateOptions({
       wordBasedSuggestions: vue ? "off" : "matchingDocuments",
-      quickSuggestions: vue ? false : { other: true, comments: false, strings: false },
+      quickSuggestions: { other: true, comments: false, strings: vue },
     });
   }
 
@@ -358,6 +370,7 @@ export function buildHost(
     focus: () => editor.focus(),
     run: (operation) => runEditorOperation(editor, operation),
     dispose() {
+      vueServices?.dispose();
       opener.dispose();
       createdListener.dispose();
       for (const listener of composing) listener.dispose();

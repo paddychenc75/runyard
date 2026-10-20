@@ -22,7 +22,10 @@ import styles from "./AppShell.module.css";
 import { CloseConfirmDialog } from "./CloseConfirmDialog.tsx";
 import { CreateDialog } from "./CreateDialog.tsx";
 import { LibraryPage } from "./LibraryPage.tsx";
-import { NoticeToasts } from "./NoticeToasts.tsx";
+import { NotificationSources } from "./notifications/NotificationSources.tsx";
+import { NotificationContext } from "./notifications/notification-context.tsx";
+import { createNotificationService } from "./notifications/notification-service.ts";
+import { PaneToggleButton } from "./PaneToggleButton.tsx";
 import { PickerDialog } from "./PickerDialog.tsx";
 import { QuitTerminalPrompt } from "./QuitTerminalPrompt.tsx";
 import { Sidebar } from "./Sidebar.tsx";
@@ -31,6 +34,7 @@ import { chooseNavFilter, type ShellPage, showLibrary } from "./sidebar-navigati
 import { TopBar } from "./TopBar.tsx";
 import { TemplatesPage } from "./templates/TemplatesPage.tsx";
 import { UrlConfirmDialog } from "./UrlConfirmDialog.tsx";
+import { useResponsiveSidebar } from "./use-responsive-sidebar.ts";
 import { WorkspaceLayout } from "./WorkspaceLayout.tsx";
 
 export interface AppShellProps {
@@ -46,10 +50,13 @@ export interface AppShellProps {
 export function AppShell(props: AppShellProps) {
   // 命令宿主在外壳最外面：下面各个部件（顶栏、运行条、编辑器……）显示期间登记自己的命令，命令面板读它
   const [commands] = useState(() => new CommandHost());
+  const [notifications] = useState(createNotificationService);
   return (
-    <CommandContext.Provider value={commands}>
-      <ShellBody {...props} />
-    </CommandContext.Provider>
+    <NotificationContext.Provider value={notifications}>
+      <CommandContext.Provider value={commands}>
+        <ShellBody {...props} />
+      </CommandContext.Provider>
+    </NotificationContext.Provider>
   );
 }
 
@@ -62,9 +69,11 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
   }, [title]);
   // 模板仍在主窗口；设置通过独立窗口打开，不参与当前页面或标签选择。
   const [page, setPage] = useState<ShellPage>("library");
+  const [temporaryNavigation, setTemporaryNavigation] = useState<boolean | null>(null);
   const activeTabId = library?.activeTab ?? "library";
   useEffect(() => {
     setPage("library");
+    setTemporaryNavigation(null);
   }, [activeTabId]);
   // 编辑器按设置里的自动保存档位存（规格 DESKTOP-SETTINGS-11）
   const readAutoSave = useAutoSaveReader(settings.settings);
@@ -155,13 +164,22 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
     });
   }, [bridge]);
   // 侧栏只在资源库标签上显示（设计稿 WebLight、Script 的项目标签页没有它），并且可以收起
-  const sidebarVisible = onLibraryPage && !layoutPrefs.sidebarCollapsed;
+  const sidebar = useResponsiveSidebar(
+    onLibraryPage && page === "library",
+    temporaryNavigation === null ? layoutPrefs.sidebarCollapsed : !temporaryNavigation,
+    () => {
+      if (temporaryNavigation !== null) {
+        setTemporaryNavigation(!temporaryNavigation);
+      } else patchLayout({ sidebarCollapsed: !layoutPrefs.sidebarCollapsed });
+    },
+  );
+  const sidebarVisible = onLibraryPage && sidebar.visible;
   // ⌃⌘S 是主进程的菜单项（原因同 ⌘N）：资源库标签上收起或显示侧栏，项目标签页上收起或展开文件树
   // （那里的“侧栏”，规格 DESKTOP-WORKSPACE-62）
   const toggleSidebar = useCallback(() => {
-    if (onLibraryPage) patchLayout({ sidebarCollapsed: !layoutPrefs.sidebarCollapsed });
+    if (onLibraryPage) sidebar.toggle();
     else patchLayout({ treeCollapsed: !layoutPrefs.treeCollapsed });
-  }, [onLibraryPage, layoutPrefs.sidebarCollapsed, layoutPrefs.treeCollapsed, patchLayout]);
+  }, [onLibraryPage, sidebar.toggle, layoutPrefs.treeCollapsed, patchLayout]);
   useEffect(() => bridge.on("sidebar.toggle", toggleSidebar), [bridge, toggleSidebar]);
   // 应用菜单触发的命令（设置、项目操作……）和命令面板走同一个宿主：此刻没登记的命令不会做任何事
   const commandHost = useCommandHost();
@@ -210,8 +228,10 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
         beforeQuit={askQuit}
       >
         <div
+          ref={sidebar.root}
           className={styles.root}
-          data-sidebar={sidebarVisible ? "shown" : "hidden"}
+          data-sidebar-overlay={sidebar.overlay ? "" : undefined}
+          data-sidebar={sidebarVisible && !sidebar.overlay ? "shown" : "hidden"}
           data-controls={windowControls.inset === 0 ? "none" : windowControls.side}
         >
           {sidebarVisible ? (
@@ -220,15 +240,28 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
               total={total}
               counts={navCounts(library?.playgrounds ?? [])}
               nav={query.nav}
-              onNavChange={(nav) => chooseNavFilter(nav, { activeTab, patchQuery, selectTab })}
+              onNavChange={(nav) => {
+                chooseNavFilter(nav, { activeTab, patchQuery, selectTab });
+                sidebar.close();
+              }}
               templateCount={library?.templateCount ?? library?.templates.length ?? 0}
               libraryRoot={library?.libraryRoot ?? ""}
               page={page}
               onCollapse={toggleSidebar}
-              onSettings={() => void bridge.call("settings.open")}
+              onSettings={() => {
+                sidebar.close();
+                void bridge.call("settings.open");
+              }}
               onNavigate={(next) => {
                 showLibrary({ activeTab, selectTab });
+                // 模板页没有顶栏：从覆盖导航进入时保留现有侧栏，回库再收回，不写手动偏好。
+                setTemporaryNavigation(
+                  next === "templates" && (sidebar.overlay || temporaryNavigation !== null)
+                    ? true
+                    : null,
+                );
                 setPage(next);
+                sidebar.close(next === "library" && temporaryNavigation !== null);
               }}
             />
           ) : null}
@@ -248,6 +281,16 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
               onSelect={selectTab}
               onClose={(id) => void bridge.call("tab.close", id)}
             />
+          ) : null}
+          {page === "templates" && !sidebarVisible ? (
+            <div className={styles.standaloneToggle}>
+              <PaneToggleButton
+                sidebar
+                label={t("library.sidebar.expand.label")}
+                expanded={false}
+                onClick={toggleSidebar}
+              />
+            </div>
           ) : null}
           {page === "templates" ? (
             <main className={styles.settings}>
@@ -295,7 +338,7 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
               locale={library.locale}
             />
           )}
-          <NoticeToasts bridge={bridge} notices={library?.notices ?? []} />
+          <NotificationSources bridge={bridge} library={library} />
           {creating !== null && library !== null ? (
             <CreateDialog
               key={creating}

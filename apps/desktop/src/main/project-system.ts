@@ -37,8 +37,8 @@ export class ProjectSystem {
   }
 
   /** 缺工具画面的“复制命令”：只放进剪贴板，从不执行 */
-  copyText(text: string): void {
-    this.#system.copyText(text);
+  copyText(text: string): void | Promise<void> {
+    return this.#system.copyText(text);
   }
 
   /** 终端的粘贴：读剪贴板里的文字 */

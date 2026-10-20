@@ -81,6 +81,8 @@ disagree, `tokens.json` wins.
 | Accent line (focus ring, caret, non-text marks) (`--color-line-accent`) | #0071E3 | #0A84FF |
 | Accent text (`--color-text-accent`) | #0058B0 | #4DA3FF |
 | Link (`--color-text-link`) | #0071E3 | #4DA3FF |
+| Table hover: subtle neutral fill below selection (`--color-fill-table-hover`) | rgba(0, 0, 0, 0.03) | rgba(255, 255, 255, 0.04) |
+| Table selection: restrained accent fill (`--color-fill-table-selected`) | rgba(0, 113, 227, 0.08) | rgba(10, 132, 255, 0.14) |
 | Accent tint (selected row, focus ring) (`--color-fill-accent-tint`) | rgba(0, 113, 227, 0.08) | rgba(10, 132, 255, 0.32) |
 | Running: dot (`--color-status-running-mark`) | #28A745 | #30D158 |
 | Running: text (`--color-status-running-text`) | #1B7A34 | #30D158 |
@@ -174,9 +176,9 @@ disagree, `tokens.json` wins.
 | `--radius-sm` | 9px | Tier sm: 28-32 px rows and controls, menu items, file tabs |
 | `--radius-md` | 12px | Tier md: 40-54 px rows, fields, inset blocks |
 | `--radius-lg` | 16px | Tier lg: content cards, menus, popovers |
-| `--radius-xl` | 20px | Tier xl: floating panels at the window edge |
+| `--radius-xl` | 9px | Tier xl: floating panels at the window edge |
 | `--radius-2xl` | 28px | Tier 2xl: dialogs |
-| `--radius-sidebar` | 20px | Floating sidebar |
+| `--radius-sidebar` | 9px | Floating sidebar |
 | `--radius-card` | 16px | Content card |
 | `--radius-dialog` | 28px | Dialog |
 | `--radius-menu` | 16px | Menu |
@@ -200,6 +202,7 @@ disagree, `tokens.json` wins.
 | `--size-settings-window-min-height` | 420px | 设置窗口最小高度 |
 | `--size-settings-titlebar` | 52px | 设置窗口原生标题栏占位 |
 | `--size-window-buttons-inset` | 19px | 标准红绿灯按钮框离窗口左边和上边 |
+| `--size-titlebar` | 52px | Unified window title bar height |
 | `--size-toolbar` | 44px | Toolbar capsule height |
 | `--size-control-lg` | 40px | Primary button height |
 | `--size-control-md` | 32px | Secondary button height |
@@ -217,7 +220,7 @@ disagree, `tokens.json` wins.
 | `--size-tab-label-max` | 180px | Widest a tab name gets before it is truncated |
 | `--size-search-wide` | 240px | Library header search field, wide window |
 | `--size-search-short` | 180px | Library header search field, narrow window |
-| `--size-window-controls` | 72px | Space reserved for the native window buttons in a title bar |
+| `--size-window-controls` | 70px | Space reserved for the native window buttons in a title bar |
 | `--size-card-gap` | 8px | Gap between cards |
 | `--size-dialog-width` | 580px | Dialog width |
 | `--size-dialog-width-wide` | 720px | Width of the wide form dialog (save as template) |

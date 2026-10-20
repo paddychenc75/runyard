@@ -34,6 +34,7 @@ function setup(dynamicBootstrap = false) {
     libraryRoot: "~/Runyard",
   } as LibraryState;
   const controller = {
+    system: { copyText: async (_text: string) => {} },
     getState: () => state,
     startRun: async (id: string) => void calls.push(["start", id]),
     stopRun: async (id: string) => void calls.push(["stop", id]),
@@ -509,4 +510,28 @@ describe("设置通道", () => {
       { channel: desktopChannels.event, event: "settings.changed", payload: { theme: "dark" } },
     ]);
   });
+});
+
+it("[DESKTOP-NOTIFICATIONS-08] 复制的桥接回执等待剪贴板完成，失败会交回界面", async () => {
+  const h = setup();
+  let finish: (() => void) | undefined;
+  h.controller.system.copyText = () =>
+    new Promise<void>((resolve) => {
+      finish = resolve;
+    });
+  let done = false;
+  const pending = Promise.resolve(h.call(app, "clipboard.copy", "runyard://open/demo")).then(() => {
+    done = true;
+  });
+  await Promise.resolve();
+  expect(done).toBe(false);
+  finish?.();
+  await pending;
+  expect(done).toBe(true);
+  h.controller.system.copyText = async () => {
+    throw new Error("clipboard failed");
+  };
+  await expect(h.call(app, "clipboard.copy", "runyard://open/demo")).rejects.toThrow(
+    "clipboard failed",
+  );
 });
