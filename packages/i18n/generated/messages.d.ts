@@ -212,6 +212,11 @@ export type CatalogMessages = {
   "cli.templateShow.path.body": {
     path: string | number;
   };
+  "cli.templateTest.step.body": {
+    ms: string | number;
+    status: string;
+    step: string | number;
+  };
   "cli.usage.invalidValue.body": {
     option: string | number;
     value: string | number;
@@ -619,6 +624,7 @@ export type CatalogMessages = {
   "desktop.request.payload.label": Record<never, never>;
   "desktop.request.payload.placeholder": Record<never, never>;
   "desktop.request.pending.label": Record<never, never>;
+  "desktop.request.previousResponse.label": Record<never, never>;
   "desktop.request.response.title": Record<never, never>;
   "desktop.request.responseBody.label": Record<never, never>;
   "desktop.request.responseHeaders.label": Record<never, never>;
@@ -626,6 +632,7 @@ export type CatalogMessages = {
   "desktop.request.send.action": Record<never, never>;
   "desktop.request.starting.hint": Record<never, never>;
   "desktop.request.stopped.hint": Record<never, never>;
+  "desktop.request.stoppedResponse.label": Record<never, never>;
   "desktop.request.tabs.aria": Record<never, never>;
   "desktop.request.timeout.label": Record<never, never>;
   "desktop.request.tooLarge.label": Record<never, never>;

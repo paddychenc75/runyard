@@ -111,6 +111,7 @@
 | cli.templateSave.saved.body | 已存为模板 {id}：{path} | Saved as template {id}: {path} | id：新模板的标识，原样显示；path：新模板文件夹的绝对路径，原样显示 |
 | cli.templateShow.file.body | {file} | {file} | file：模板里文件的相对路径，原样显示 |
 | cli.templateShow.path.body | 位置：{path} | Location: {path} | path：模板文件夹的绝对路径，原样显示 |
+| cli.templateTest.step.body | {step}：{status, select, ok {通过} other {失败}}（{ms} ms） | {step}: {status, select, ok {passed} other {failed}} ({ms} ms) | step：步骤标识，固定英文；status：ok 或 failed；ms：步骤耗时毫秒 |
 | cli.usage.invalidValue.body | {option} 的值 {value} 不合法。 | The value {value} is not valid for {option}. | option：选项或设置名；value：用户输入的值，原样显示 |
 | cli.usage.missingArgument.body | 缺少参数：{argument}。 | Missing argument: {argument}. | argument：缺少的参数名，如 <pg> |
 | cli.usage.missingCommand.body | 没有给出命令。 | No command was given. | — |
@@ -406,6 +407,7 @@
 | desktop.request.payload.label | 请求体 | Body | — |
 | desktop.request.payload.placeholder | 请求体（GET 不发送） | Request body (not sent with GET) | — |
 | desktop.request.pending.label | 正在等待响应… | Waiting for the response… | — |
+| desktop.request.previousResponse.label | 服务尚未就绪，这是上次的响应。 | The service is not ready. This is the previous response. | — |
 | desktop.request.response.title | 响应 | Response | — |
 | desktop.request.responseBody.label | 响应体 | Body | — |
 | desktop.request.responseHeaders.label | 响应头 | Headers | — |
@@ -413,6 +415,7 @@
 | desktop.request.send.action | 发送 | Send | — |
 | desktop.request.starting.hint | 服务还没就绪，就绪后才能发送 | The service is not ready yet; you can send once it is | — |
 | desktop.request.stopped.hint | 服务没有在运行，运行后才能发送 | The service is not running; run it to send | — |
+| desktop.request.stoppedResponse.label | 服务已停止，这是停止前的响应。 | The service has stopped. This response was received before it stopped. | — |
 | desktop.request.tabs.aria | 请求内容 | Request content | — |
 | desktop.request.timeout.label | 等了 30 秒仍没有响应，已超时 | No response after 30 seconds; timed out | — |
 | desktop.request.tooLarge.label | 响应超过 5 MB，没有显示 | The response is over 5 MB and is not shown | — |

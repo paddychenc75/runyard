@@ -67,6 +67,8 @@
 - `src/scripts/`：语法检查（`check-script.ts`）、监听与重跑（`script-runs.ts`）、路径通配（`watch-glob.ts`）
 - `src/run/`：转移表（`run-transitions.ts`）、一次运行的会话（`run-session.ts`，状态与结果字段的账在 `run-record.ts`，启动到就绪的看护在 `startup-watch.ts`，不碰状态机的几个步骤在 `run-session-steps.ts`）、对外的运行句柄类型（`run-handle.ts`）、状态等待者（`state-waiters.ts`）、引擎（`run-engine.ts`）、停止（`stop-process-tree.ts`）、输出收集（`run-output.ts`）、辅助命令（`run-command.ts`，安装与语法检查用）、环境（`run-env.ts`）、就绪探测（`readiness-probe.ts`，真正碰网络的两个动作在 `probe-io.ts`）、快照（`run-snapshot.ts`）、空闲停止的原因（`Run.stop({ idle })`，`StopOptions`）、进程起来的通知（`RunSinks.spawned`，管理进程据此写运行记录）、崩溃后清理出来的 `crashed` 运行（`RunEngine.restoreCrashed`）、引擎自己产生的错误（`run-failures.ts`）、类型与接缝（`run-types.ts`）；`run-harness.test.ts` 是测试共用的现场（假平台、记录事件的出口），只有测试文件能导入 `@runyard/testing`
 
+- `src/template-test/`：隔离模板冒烟（#146），复用模板展开、工具链、准备器、引擎与脚本监听；目录分配/删除和取消信号由调用方注入，不连接管理进程、不改用户模板或资源库。
+
 ## 测试
 
 在仓库根目录运行（需要 Node 24）：

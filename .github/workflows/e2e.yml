@@ -187,6 +187,24 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+      - name: 请求与预览工具栏设计对照
+        if: always()
+        env:
+          RUNYARD_E2E_APP: ${{ github.workspace }}/apps/desktop/release/e2e/mac-arm64/Runyard.app/Contents/MacOS/Runyard
+          RUNYARD_REQUEST_REVIEW_OUTPUT: ${{ runner.temp }}/request-layout-design-comparison
+        run: |
+          node tooling/design-render/render.mjs Service ServiceDark ServiceEn ServiceDarkEn Web WebEn WebLight WebLightEn
+          node apps/desktop/e2e/request-layout.measure.ts
+
+      - name: 上传请求与预览设计对照
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: request-layout-design-comparison
+          path: ${{ runner.temp }}/request-layout-design-comparison/
+          if-no-files-found: error
+          retention-days: 14
+
       - name: 窗口顶部三十二组设计对照
         if: always()
         env:
@@ -202,6 +220,24 @@ jobs:
         with:
           name: window-header-design-comparison
           path: ${{ runner.temp }}/window-header-design-comparison/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: 文件标签八组设计对照
+        if: always()
+        env:
+          RUNYARD_E2E_APP: ${{ github.workspace }}/apps/desktop/release/e2e/mac-arm64/Runyard.app/Contents/MacOS/Runyard
+          RUNYARD_FILE_TABS_REVIEW_OUTPUT: ${{ runner.temp }}/file-tabs-design-comparison
+        run: |
+          node tooling/design-render/render.mjs WebLight Web WebLightEn WebEn
+          node apps/desktop/e2e/file-tabs-design.measure.ts
+
+      - name: 上传文件标签设计对照
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: file-tabs-design-comparison
+          path: ${{ runner.temp }}/file-tabs-design-comparison/
           if-no-files-found: error
           retention-days: 14
 
