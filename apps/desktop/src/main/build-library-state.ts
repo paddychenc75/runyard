@@ -157,6 +157,7 @@ export function buildLibraryState(inputs: LibraryInputs): LibraryState {
       createdBy: playground.createdBy,
       createdAt: playground.createdAt,
       missing: playground.missingSince !== undefined,
+      size: playground.size ?? null,
       folder:
         inputs.home === undefined ? playground.path : displayPath(playground.path, inputs.home),
     };

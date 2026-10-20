@@ -2,6 +2,8 @@ import { basename, dirname, join, relative } from "node:path";
 import {
   type AbsPath,
   absPath,
+  type DirScan,
+  type DiskEntry,
   type PosixRelPath,
   platformError,
   posixRelPath,
@@ -9,6 +11,10 @@ import {
   type WatchEvent,
   type WatchOptions,
 } from "@runyard/platform";
+
+// 假文件系统里的块大小：与 APFS 一致，空文件不占块
+const BLOCK_BYTES = 4096;
+const blocksOf = (length: number): number => Math.ceil(length / BLOCK_BYTES) * BLOCK_BYTES;
 
 export interface TrashedEntry {
   readonly path: AbsPath;
@@ -18,6 +24,7 @@ export interface TrashedEntry {
 interface Watcher {
   readonly root: AbsPath;
   readonly ignore: readonly PosixRelPath[];
+  readonly ignoreNames: ReadonlySet<string>;
   readonly depth: number;
   readonly callback: (events: WatchEvent[]) => void;
 }
@@ -40,6 +47,17 @@ export class MemoryFs {
   readonly #locked = new Set<string>();
   readonly #watchers = new Set<Watcher>();
   #trashFails = false;
+  // 磁盘占用用的现场（scanDir）：符号链接、硬链接、挂载的卷、读不了的目录、不返回的遍历、遍历中的钩子
+  readonly #symlinks = new Set<string>();
+  readonly #inodes = new Map<string, number>();
+  readonly #volumes = new Map<string, number>();
+  readonly #unreadable = new Set<string>();
+  readonly #hanging = new Set<string>();
+  #nextInode = 1;
+  /** 每次 scanDir 开始读某个目录之前调用，测试在这里让文件“中途消失” */
+  onScanDir: ((dir: AbsPath) => void) | undefined;
+  /** 每个目录被 scanDir 读过的次数（“没有变化不重算”要断言没再遍历） */
+  readonly scanCounts = new Map<string, number>();
   readonly trashed: TrashedEntry[] = [];
 
   mkdir(path: AbsPath): void {
@@ -134,10 +152,122 @@ export class MemoryFs {
     this.writeFile(to, data);
   }
 
+  /** 符号链接：只占链接本身的一块，不跟随（假文件系统里它不指向任何东西） */
+  symlink(path: AbsPath): void {
+    this.mkdir(absPath(dirname(path)));
+    this.#symlinks.add(path);
+  }
+
+  /** 硬链接：与 target 共用同一个 inode */
+  hardLink(path: AbsPath, target: AbsPath): void {
+    const data = this.#files.get(target);
+    if (data === undefined) throw platformError("INTERNAL", {}, `ENOENT: ${target}`);
+    this.writeFile(path, data);
+    this.#inodes.set(path, this.#inodeOf(target));
+  }
+
+  /** 把 dir 当作另一个卷的挂载点（设备号不同于其余部分） */
+  mount(dir: AbsPath, device: number): void {
+    this.mkdir(dir);
+    this.#volumes.set(dir, device);
+  }
+
+  /** 没有权限读这个目录：scanDir 抛 PATH_LOCKED */
+  denyRead(dir: AbsPath, denied = true): void {
+    if (denied) this.#unreadable.add(dir);
+    else this.#unreadable.delete(dir);
+  }
+
+  /** 读这个目录的遍历永远不结束（规格 LIBRARY-DISK-USAGE-03） */
+  hangScan(dir: AbsPath): void {
+    this.#hanging.add(dir);
+  }
+
+  /** 平台接口 scanDir */
+  scanDir(dir: AbsPath, expected?: Pick<DiskEntry, "dev" | "ino">): Promise<DirScan | null> {
+    this.scanCounts.set(dir, (this.scanCounts.get(dir) ?? 0) + 1);
+    if (this.#hanging.has(dir)) return new Promise(() => {});
+    this.onScanDir?.(dir);
+    if (!this.#dirs.has(dir)) return Promise.resolve(null);
+    if (this.#unreadable.has(dir)) {
+      return Promise.reject(
+        platformError("PATH_LOCKED", { name: basename(dir) }, `EACCES: ${dir}`),
+      );
+    }
+    const device = (path: string) => this.#deviceOf(path);
+    const entries: DirScan["entries"][number][] = [];
+    for (const name of this.list(dir)) {
+      const path = join(dir, name);
+      if (this.#symlinks.has(path)) {
+        entries.push({
+          name,
+          kind: "symlink",
+          bytes: BLOCK_BYTES,
+          dev: device(path),
+          ino: this.#inodeOf(path),
+          nlink: 1,
+        });
+      } else if (this.#dirs.has(path)) {
+        entries.push({
+          name,
+          kind: "dir",
+          bytes: BLOCK_BYTES,
+          dev: device(path),
+          ino: this.#inodeOf(path),
+          nlink: 2,
+        });
+      } else if (this.#files.has(path)) {
+        const data = this.#files.get(path) as string | Uint8Array;
+        const length =
+          typeof data === "string" ? new TextEncoder().encode(data).length : data.length;
+        const links = [...this.#inodes.values()].filter(
+          (ino) => ino === this.#inodeOf(path),
+        ).length;
+        entries.push({
+          name,
+          kind: "file",
+          bytes: blocksOf(length),
+          dev: device(path),
+          ino: this.#inodeOf(path),
+          nlink: Math.max(1, links),
+        });
+      }
+    }
+    const self = {
+      kind: "dir" as const,
+      bytes: BLOCK_BYTES,
+      dev: device(dir),
+      ino: this.#inodeOf(dir),
+      nlink: 2,
+    };
+    if (expected !== undefined && (self.dev !== expected.dev || self.ino !== expected.ino))
+      return Promise.resolve({ self, entries: [], changed: true });
+    return Promise.resolve({ self, entries });
+  }
+
+  #inodeOf(path: string): number {
+    let ino = this.#inodes.get(path);
+    if (ino === undefined) {
+      ino = this.#nextInode++;
+      this.#inodes.set(path, ino);
+    }
+    return ino;
+  }
+
+  // 最近的挂载点决定设备号；没有挂载点的是设备 1
+  #deviceOf(path: string): number {
+    let best: [string, number] | undefined;
+    for (const entry of this.#volumes) {
+      if (within(entry[0], path) && (best === undefined || entry[0].length > best[0].length))
+        best = entry;
+    }
+    return best?.[1] ?? 1;
+  }
+
   /** 目录下一层的名字，排好序 */
   list(dir: AbsPath): string[] {
     const names = new Set<string>();
-    for (const entry of [...this.#files.keys(), ...this.#dirs]) {
+    for (const entry of [...this.#files.keys(), ...this.#dirs, ...this.#symlinks]) {
       if (entry === dir || !within(dir, entry)) continue;
       names.add(relative(dir, entry).split(SEPARATOR)[0] as string);
     }
@@ -145,6 +275,8 @@ export class MemoryFs {
   }
 
   remove(path: AbsPath): void {
+    for (const key of this.#inodes.keys()) if (within(path, key)) this.#inodes.delete(key);
+    this.#symlinks.delete(path);
     for (const file of this.#under(path).files) {
       this.#files.delete(file);
       this.#emit(file as AbsPath, "remove");
@@ -174,6 +306,12 @@ export class MemoryFs {
       throw platformError("PATH_LOCKED", { name }, `EBUSY: ${from}`);
     }
     const { files, dirs } = this.#under(from);
+    // 改名不换 inode；原路径随后新建的目录要有新身份，才能复现扫描与改名的竞态。
+    for (const path of [...files, ...dirs]) {
+      const ino = this.#inodes.get(path);
+      if (ino !== undefined) this.#inodes.set(to + path.slice(from.length), ino);
+      this.#inodes.delete(path);
+    }
     for (const file of files) {
       const target = to + file.slice(from.length);
       this.#files.set(target, this.#files.get(file) as string | Uint8Array);
@@ -210,6 +348,7 @@ export class MemoryFs {
     const watcher: Watcher = {
       root,
       ignore: options.ignore ?? [],
+      ignoreNames: new Set(options.ignoreNames ?? []),
       depth: options.depth ?? Number.POSITIVE_INFINITY,
       callback,
     };
@@ -232,6 +371,7 @@ export class MemoryFs {
       if (rel.split("/").length > watcher.depth) continue;
       if (watcher.ignore.some((ignored) => rel === ignored || rel.startsWith(`${ignored}/`)))
         continue;
+      if (rel.split("/").some((part) => watcher.ignoreNames.has(part))) continue;
       watcher.callback([{ kind, path: rel }]);
     }
   }

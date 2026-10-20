@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { Icon } from "../../primitives/Icon/index.ts";
 import { ScrollArea } from "../../primitives/ScrollArea/index.ts";
 import styles from "./DataTable.module.css";
 
@@ -34,6 +35,9 @@ export interface DataTableColumn<Row> {
   header?: Localized;
   hiddenHeader?: Localized;
   width: ColumnSize;
+  /** 数字列靠右；可点表头与页面排序使用同一个动作。 */
+  align?: "end";
+  sort?: { sorted: boolean; onSort: () => void };
   /**
    * 窗口放不下全部列时怎么办：order 小的先收。hide 是整列不画；narrow 是列缩成 narrowWidth，
    * 内容里带 data-collapse-hide 的部分不画（如模板列只剩徽标）。没有这一项的列一直显示
@@ -195,6 +199,8 @@ export function DataTable<Row>({
                 key={column.id}
                 scope="col"
                 className={styles.headerCell}
+                data-align={column.align}
+                aria-sort={column.sort?.sorted === true ? "descending" : undefined}
                 data-column={column.id}
                 data-collapsed={collapsedIds.has(column.id) ? "" : undefined}
               >
@@ -202,6 +208,16 @@ export function DataTable<Row>({
                   <span className={styles.hidden} data-truncate="">
                     {column.header ?? column.hiddenHeader}
                   </span>
+                ) : column.sort !== undefined && column.header !== undefined ? (
+                  <button
+                    type="button"
+                    tabIndex={-1}
+                    className={styles.sortButton}
+                    onClick={column.sort.onSort}
+                  >
+                    <span data-truncate="">{column.header}</span>
+                    {column.sort.sorted ? <Icon name="chevron-down" size={12} /> : null}
+                  </button>
                 ) : (
                   (column.header ?? (
                     <span className={styles.hidden} data-truncate="">
@@ -248,6 +264,7 @@ export function DataTable<Row>({
                       key={column.id}
                       className={styles.cell}
                       data-column={column.id}
+                      data-align={column.align}
                       data-reveal={column.reveal === true ? "" : undefined}
                       data-collapsed={collapsedIds.has(column.id) ? "" : undefined}
                       data-span={span > 1 ? span : undefined}

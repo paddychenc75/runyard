@@ -22,13 +22,20 @@ export function project(id: string, patch: Partial<PlaygroundRow> = {}): Playgro
     createdBy: { kind: "user" },
     createdAt: NOW - 86400000,
     missing: false,
+    size: { totalBytes: 128_000, dependencyBytes: 0, dependencyDirs: [], unreadable: 0 },
     ...patch,
   };
 }
 export function library(): LibraryState {
   return {
     locale: "en",
-    playgrounds: [project("landing-hero"), project("api-notes", { createdBy: { kind: "cli" } })],
+    playgrounds: [
+      project("landing-hero"),
+      project("api-notes", {
+        createdBy: { kind: "cli" },
+        size: { totalBytes: 64_000, dependencyBytes: 0, dependencyDirs: [], unreadable: 0 },
+      }),
+    ],
     tabs: [],
     activeTab: "library",
     templates: [

@@ -235,7 +235,14 @@ export function LibraryPage({
           onCreate={() => onNewNamed(query.search)}
         />
       ) : (
-        <LibraryTable bridge={bridge} locale={locale} rows={visible} now={now} />
+        <LibraryTable
+          bridge={bridge}
+          locale={locale}
+          rows={visible}
+          now={now}
+          sort={query.sort}
+          onSortChange={(sort) => onQueryChange({ sort })}
+        />
       )}
     </section>
   );

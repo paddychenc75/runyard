@@ -23,7 +23,7 @@
 - 只在 `*.test.ts` 里被导入：别的包只能把它写在 `devDependencies`（`layers` 检查），非测试源码导入它会被 `testing-imports` 检查拦住。
 - 可以导入 `@runyard/protocol`、`@runyard/platform`，不导入 `@runyard/core`（core 的测试要用本包，导入会成环）。不装第三方依赖。
 - 假平台必须与真实 `Platform` 接口一致：`paths` 直接用真实实现的纯函数，不重写规则；接口加成员时 TypeScript 会在 `fake-platform.ts` 报错。假平台过 `@runyard/platform/contract` 的同一组契约测试（`fake-platform.contract.platform-dependent.test.ts`，`complete: true` 表示没有占位成员；带 platform-dependent 后缀，因为 `paths` 的契约用例按 POSIX 路径写，Windows 任务不跑它）；真实现换掉占位的契约用例后，假平台自动跟着被检验。
-- 已知与真实实现不同的地方：`ipc` 用 127.0.0.1 上的临时 TCP 端口（Node 的 Server 和 Socket 没有内存版），测试结束调用 `dispose()`；`watch` 同步通知；`writeAtomic` 要求父目录已存在（和真实一致），`MemoryFs.writeFile` 则会自动建父目录（布置现场用）。
+- 已知与真实实现不同的地方：`ipc` 用 127.0.0.1 上的临时 TCP 端口（Node 的 Server 和 Socket 没有内存版），测试结束调用 `dispose()`；`watch` 同步通知（`ignore` 根相对路径、`ignoreNames` 任意层级完整路径段的语义与真实平台共用契约）；`writeAtomic` 要求父目录已存在（和真实一致），`MemoryFs.writeFile` 则会自动建父目录（布置现场用）。
 - 不用真实的 `setTimeout` 等待；不启动真实进程；不碰真实目录（`createTempHome` 除外）。
 
 ## 子目录地图

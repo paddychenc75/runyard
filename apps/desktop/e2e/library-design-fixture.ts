@@ -170,7 +170,29 @@ function designTab(row: PlaygroundRow): TabRow {
 }
 
 export function libraryDesignFixture(base: LibraryState, root: string, now: number): LibraryState {
-  const playgrounds = designRows(base, root, now);
+  const sizes = [
+    96_000,
+    38_200_000,
+    null,
+    214_700_000,
+    42_000_000,
+    24_000,
+    null,
+    123_400_000_000,
+    61_400_000,
+  ];
+  const playgrounds = designRows(base, root, now).map((row, index) => ({
+    ...row,
+    size:
+      sizes[index] == null
+        ? undefined
+        : {
+            totalBytes: sizes[index] as number,
+            dependencyBytes: index === 7 ? 120_000_000_000 : index === 1 ? 35_000_000 : 0,
+            dependencyDirs: index === 7 || index === 1 ? ["node_modules"] : [],
+            unreadable: index === 7 ? 1 : 0,
+          },
+  }));
   return {
     ...base,
     templateCount: 10,
