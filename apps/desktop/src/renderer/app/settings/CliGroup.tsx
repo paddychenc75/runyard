@@ -1,5 +1,5 @@
-import { useT } from "@runyard/i18n/react";
-import { Button, ConfirmDialog, CopyableCommand, Menu, UserText } from "@runyard/ui";
+import { useLocale, useT } from "@runyard/i18n/react";
+import { Button, ButtonGroup, ConfirmDialog, CopyableCommand, Menu, UserText } from "@runyard/ui";
 import { useState } from "react";
 import type { DesktopBridge } from "../../../shared/desktop-bridge.ts";
 import type { LibraryState } from "../../../shared/library-state.ts";
@@ -184,6 +184,7 @@ function SupervisorRow({ cli }: { cli: Cli }) {
 
 function SkillsRow({ cli }: { cli: Cli }) {
   const t = useT();
+  const locale = useLocale();
   const skills: AgentSkillStatus | null = cli.skills;
   if (skills === null) return null;
   const label =
@@ -197,23 +198,29 @@ function SkillsRow({ cli }: { cli: Cli }) {
   return (
     <SettingsRow title={t("settings.skills.title")} hint={t("settings.skills.hint")} wrapHint>
       <StatusLine tone={skills.claude || skills.agents ? "ok" : "idle"}>{label}</StatusLine>
-      <Menu
-        label={t("settings.skills.other.action")}
-        entries={[
-          {
-            id: "claude",
-            label: t("settings.skills.claudeName.label"),
-            checked: skills.claude,
-          },
-          {
-            id: "agents",
-            label: t("settings.skills.agentsName.label"),
-            checked: skills.agents,
-          },
-        ]}
-        onSelect={(id) => cli.installSkill(id === "claude" ? "claude" : "agents")}
-        trigger={<Button>{t("settings.skills.other.action")}</Button>}
-      />
+      <ButtonGroup>
+        <Button onClick={() => cli.openGuide(locale === "zh-CN" ? "zh-CN" : "en")}>
+          {t("settings.skills.guide.action")}
+        </Button>
+        <Menu
+          label={t("settings.skills.other.action")}
+          entries={[
+            {
+              id: "claude",
+              label: t("settings.skills.claudeName.label"),
+              checked: skills.claude,
+            },
+            {
+              id: "agents",
+              label: t("settings.skills.agentsName.label"),
+              checked: skills.agents,
+            },
+          ]}
+          onSelect={(id) => cli.installSkill(id === "claude" ? "claude" : "agents")}
+          trigger={<Button>{t("settings.skills.other.action")}</Button>}
+        />
+      </ButtonGroup>
+      {cli.guideFailed ? <span role="alert">{t("settings.skills.guideFailed.hint")}</span> : null}
     </SettingsRow>
   );
 }

@@ -34,4 +34,10 @@
 
 ## 完成标准
 
-`pnpm template:lint` 对新模板输出 `"ok":true`；`pnpm verify` 通过；冒烟测试通过（`pnpm template:smoke <id>`；模板 CI 在拉取请求里自动对改动的模板跑，每晚对全部模板跑，见 `docs/guides/commands.md` 的“模板 CI”；`runyard template test` 命令本身还没有行为）；PR 引用对应的规格场景。
+`pnpm template:lint` 对新模板输出 `"ok":true`；`pnpm verify` 通过；冒烟测试通过（`pnpm template:smoke <id>`；模板 CI 在拉取请求里自动对改动的模板跑，每晚对全部模板跑，见 `docs/guides/commands.md` 的“模板 CI”；同时运行 `runyard template test <id> --json` 验证产品命令）；PR 引用对应的规格场景。
+
+## 产品命令的隔离冒烟
+
+`runyard template test <id> --json` 在系统临时目录展开副本，依次执行创建、安装、启动、就绪、修改入口验证重载、停止和残留检查；脚本不检查就绪，而是确认修改后输出变化。退出时删除副本，`--keep-dir` 保留并返回 `keptDir`。`--tool-version node=22.18.0` 只选已安装的精确版本，不安装工具；找不到时退出 4。依赖离线退出 5，重载或残留检查失败退出 6。
+
+重载探针会向现有内置模板的 HTML、JSX、Vue 或脚本入口插入标记；自定义模板若无法构造可观察输出，重载步骤失败，不把仅写入文件算作通过。测试只改副本。模板 CI 同时保留 `template:smoke` 的构建、语法错误恢复和标准输入专项断言。

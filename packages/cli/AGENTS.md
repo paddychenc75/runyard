@@ -3,7 +3,7 @@
 ## 用途
 
 `runyard` 命令：参数解析、输出模块、`--json`、退出码映射、语言解析、`--help`（技术设计 §5.3、§6.8；`docs/architecture/cli-contract.md`；规格 `openspec/specs/cli/commands`）。命令行只随桌面应用安装，第一版不发 npm：包是 `private`，没有 `bin`、没有发布配置；M1 期间从仓库源码运行（`pnpm --filter runyard start -- <参数>` 或 `node packages/cli/src/main.ts <参数>`）。
-现状：`config get|set lang`、`doctor`（含 `--template`、`--bundle`）、`skill install`、`template list|show|save|lint`、`new`、`run`、`stop`、`status`、`logs`、`rm` 有行为；`template test` 只有声明（帮助里看得到，运行得到 `NOT_SUPPORTED`，退出码 10），其冒烟测试在 #54。
+现状：`config get|set lang`、`doctor`（含 `--template`、`--bundle`）、`skill install`、`template list|show|save|lint`、`new`、`run`、`stop`、`status`、`logs`、`rm` 有行为；`template test` 在本进程经 core 做隔离冒烟（#146）。
 
 ## 对外暴露什么
 
@@ -16,7 +16,7 @@
 
 ## 本包特有的规则
 
-- 可以导入：`@runyard/protocol`、`platform`、`client`、`i18n`、`core`（`ToolchainService`、模板的读取和 lint）；测试里可以导入 `testing`。不许导入 `supervisor`。依赖规则的唯一出处是 `tooling/checks/layers.json`。
+- 可以导入：`@runyard/protocol`、`platform`、`client`、`i18n`、`core`（`ToolchainService`、模板的读取、lint 和隔离冒烟）；测试里可以导入 `testing`。不许导入 `supervisor`。依赖规则的唯一出处是 `tooling/checks/layers.json`。
 - 所有给人看的文字都来自 `packages/i18n`（`cli` 组和 `errors.*`、`notice.*`）；代码里不写句子，命令说明写成 `(t) => t("键")`。命令名、选项名、占位符（`<pg>`）不翻译。只有 `src/output/` 可以写标准输出和标准错误（`ui-strings` 检查）。
 - `--json`：标准输出恰好一个对象（`result` 或 `{"error":…}`），只有 `logs --follow` 用 `stream()` 每行一个对象。`message` 与 `hint` 永远是英文（取英文文案的 `title`、`hintCli`；用法错误的 `message` 是更具体的英文说明）；`data` 是错误码登记的参数。输出不随语言变，不含堆栈和 `debug`。
 - 退出码只取 `errorRegistry[code].exit`，本包没有第二张表。管理进程返回了登记表里没有的错误码时按 `INTERNAL`（1）。成功但 `--json` 下没写任何结果也按 `INTERNAL`。
@@ -29,9 +29,10 @@
 ## 本包里已有行为的命令
 
 - `doctor`（`src/commands/doctor.ts`、`src/doctor/`）：`cli`、`supervisor`、`tools`、`library`、`system` 五项。`tools` 在本进程里用 `ToolchainService` 直接检测（不写缓存），所以管理进程连不上时也有；连不上时 `supervisor` 是 `{ running: false, reason: <错误码> }`，退出码 0。缺失或过低的工具带 `install` 提示（`src/doctor/install-hints.ts` 的 `installHints`：在用版本管理工具给它的命令，否则有 Homebrew 给 Homebrew 的，官网链接始终在，模板自己写的 `install` 标 `via: "template"`），**只展示，从不执行**；选哪条的核心规则（TEMPLATES-FORMAT-35）归 core 的安装模块（#36），合并后换掉这个函数体。`--bundle`：只收规格列的各项（`doctor.json`、去掉 `token` 的 `supervisor.json`、`toolchain.json`、`runs/` 下最近三个运行日志、`app.log`、`supervisor.log`、`system.json`），所有文本再抹掉口令和网址里的账号密码（`scrub-secrets.ts`，不依赖设置里代理字段的名字）；zip 自己写（`zip-writer.ts`，不加依赖）；写到 `host.tempDir/runyard-doctor-<时间>.zip`，没有 `--out`（规格没有）。运行日志文件的命名由 #43 定，现在假定“logs/ 下不是 `app.log`、`supervisor.log`（含轮转）的文件”，名字最大的三个。
-- `skill install`（`src/commands/skill-install.ts`、`src/skill/skill-text.ts`）：只写 `<主目录>/.claude/skills/runyard/SKILL.md` 和 `<主目录>/.agents/skills/runyard/SKILL.md`；全文是英文数据，不走文案包，有快照测试。
+- `skill install`（`src/commands/skill-install.ts`、`src/skill/skill-text.ts`）：每个目标同时写 `SKILL.md`（供智能体执行的英文）和 `SKILL.zh-CN.md`（供人阅读的中文对照）；返回路径仍是英文文件。正文同源于文案包 `cli.skillGuide.body`，英文快照保持原文，测试核对两份操作条目及命令示例一致。
 - `template list|show|save` 经管理进程（`template.list|get|save`）；`save` 在发请求前先校验 `--as`（`NAME_INVALID`）和 `--include|--exclude`（`USAGE`）。`template lint` 在本进程直接调 core 的 `lintTemplateRef`；有错误时先输出结果对象，再以 `TEMPLATE_INVALID`（2）结束。管理进程一侧的 `template.*` 处理不在本包。
 
+- `template test`（`src/template-test/`、`src/commands/template-test.ts`）：core 编排 create/install/start/ready/reload/stop/leftovers，脚本没有 ready；只操作系统临时目录里的副本，不连接管理进程。`--tool-version` 选择已安装的精确版本，`--keep-dir` 返回保留的项目路径。CLI 提供独占目录清理和中断接缝，core 只停止本次标记且核对 pid 加启动时间的进程。
 - `new`、`run`（`src/commands/new.ts`、`run.ts`、`start-run.ts`）：参数先在本进程检查完再连管理进程（`--var` 写法或键为 `name` 是 `VAR_INVALID`，`--clean-after` 不是“正整数加 d”、`--if-exists`、`--timeout`、`--port` 不合法是 `USAGE`），所以参数不对时不创建任何文件夹。`new` 发 `playground.create`（`ifExists` 缺省显式传 `fail`），`--run` 再发 `run.start`；`run` 先 `playground.get` 取种类（服务等 `ready`，脚本等 `exit`，`--no-wait` 是 `none`），`--timeout` 缺省 60 秒（`new` 也是，cli-contract“未定”第 4 项的暂定做法）换成毫秒交给管理进程。`--restart` 是 `run.stop`（没有运行可停不算错）加 `run.start`，因为 `run.restart` 没有等待参数。`<pg>` 原样交给管理进程，名称、id、绝对路径它都认（`PlaygroundLibrary.find`）。结果整理成规格的键：服务 `logTail`、脚本 `output` 取自 `logs.read` 的最后 200 行（与 `logs` 默认一致），`idleStopMinutes` 取设置 `cliIdleStopMinutes`；管理进程默认返回清洗过的整行，系统提示不算输出，`cursor` 用这次读取返回的。端口回退在文字模式下写成 `PORT_FALLBACK` 提示，`--json` 里是 `portFallback`。
 - 创建者与持有者（`src/creator/detect-creator.ts`）：`RUNYARD_AGENT`，其次 `CLAUDECODE=1`（记为 `Claude Code`），其次 `AI_AGENT` 的原值，都没有是 `cli` 且不带名字；记下的“创建命令”只有命令词和位置参数（`runyard new html demo`），不含 `--note`、`--var` 的值。
 - `stop`（`src/commands/stop.ts`）：`<pg>` 或 `--all [--mine]`，参数组合不对先报 `USAGE`，不连管理进程。管理进程的 `run.stop` 对没运行过的项目报 `RUN_NOT_FOUND`、对已结束的运行也返回快照，所以先用 `run.list { running: true }` 记下活动中的运行，只把停之前确实活动的列进 `stopped`。

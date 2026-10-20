@@ -14,15 +14,14 @@ import {
 } from "../library-query.ts";
 import { brandOf, logoOf, monogramOf, pickLocalizedText, runningCount } from "../library-view.ts";
 import { useElementWidth } from "../shared/viewport.ts";
-import { CleanBanner } from "./CleanBanner.tsx";
 import { CombinedFilterMenu } from "./CombinedFilterMenu.tsx";
 import { FilterMenu } from "./FilterMenu.tsx";
 import styles from "./LibraryPage.module.css";
 import { LibraryTable } from "./LibraryTable.tsx";
 import { navLabel, sortLabel, statusLabel, typeLabel } from "./library-labels.ts";
+import { NavEmptyState } from "./NavEmptyState.tsx";
 import { NoResults } from "./NoResults.tsx";
-import { SearchBox, type SearchSize } from "./SearchBox.tsx";
-import { UpdateBanner } from "./UpdateBanner.tsx";
+import { SearchBox } from "./SearchBox.tsx";
 import { useNow } from "./use-now.ts";
 
 export interface LibraryPageProps {
@@ -80,6 +79,7 @@ export function LibraryPage({
   const { playgrounds, templates, locale } = library;
   const visible = filterRows(playgrounds, templates, locale, query);
   const filtering = isFiltering(query);
+  const status = query.nav === "running" ? "running" : query.status;
   const common = COMMON_TEMPLATES.flatMap((id) => {
     const template = templates.find((candidate) => candidate.id === id);
     return template === undefined ? [] : [template];
@@ -122,11 +122,12 @@ export function LibraryPage({
                 />
                 <FilterMenu
                   buttonLabel={t("library.filter.status.label", {
-                    value: statusLabel(query.status, t),
+                    value: statusLabel(status, t),
                   })}
                   menuLabel={t("library.menu.status.aria")}
                   options={statusFilters.map((id) => ({ id, label: statusLabel(id, t) }))}
-                  value={query.status}
+                  value={status}
+                  disabled={query.nav === "running"}
                   onValueChange={(status) =>
                     onQueryChange({ status: status as LibraryQuery["status"] })
                   }
@@ -147,7 +148,8 @@ export function LibraryPage({
                     id: "status",
                     title: t("library.menu.status.aria"),
                     options: statusFilters.map((id) => ({ id, label: statusLabel(id, t) })),
-                    value: query.status,
+                    value: status,
+                    disabled: query.nav === "running",
                   },
                 ]}
                 onValueChange={(group, id) =>
@@ -173,14 +175,13 @@ export function LibraryPage({
           </div>
         )}
       </header>
-      <UpdateBanner bridge={bridge} update={library.update} />
-      <CleanBanner bridge={bridge} items={library.cleanReminder ?? []} playgrounds={playgrounds} />
-      {library.error === null ? null : (
-        <p className={styles.error}>
-          {t("desktop.error.title.label", { title: errorTitle(library, t) })}
-        </p>
-      )}
-      {playgrounds.length === 0 ? (
+      {visible.length === 0 &&
+      query.nav !== "all" &&
+      query.search === "" &&
+      query.type === "all" &&
+      (query.nav === "running" || query.status === "all") ? (
+        <NavEmptyState nav={query.nav} />
+      ) : playgrounds.length === 0 ? (
         <EmptyState
           className={styles.empty}
           title={t("library.empty.title")}
@@ -236,13 +237,4 @@ export function LibraryPage({
       )}
     </section>
   );
-}
-
-// 错误码到文案：键 errors.<码>.title 由协议登记表推出，参数类型随码变，所以按字符串键调用一次
-type LooseTranslate = (key: string, values?: unknown) => ReturnType<ReturnType<typeof useT>>;
-
-function errorTitle(library: LibraryState, t: ReturnType<typeof useT>) {
-  const error = library.error;
-  const loose = t as unknown as LooseTranslate;
-  return loose(`errors.${error?.code ?? "INTERNAL"}.title`, error?.params);
 }

@@ -1,5 +1,5 @@
 import { T, useFormat, useT } from "@runyard/i18n/react";
-import { Badge, IconButton, Tooltip, UserText } from "@runyard/ui";
+import { Icon, Tooltip, UserText } from "@runyard/ui";
 import type { PlaygroundRow } from "../../shared/library-state.ts";
 import { creatorOf } from "../library-view.ts";
 import styles from "./LibraryTable.module.css";
@@ -13,9 +13,10 @@ const commandOf = (row: PlaygroundRow) => {
   return command === undefined || command === "" ? null : command;
 };
 
-// 创建者列（设计稿 Main、AgentActivity，规格 DESKTOP-LIBRARY-VIEW-53）：我、命令行，或智能体的徽标。
-// 智能体的徽标悬停显示创建时间和创建命令；旁边的按钮展开或收起行下面的“由 … 创建”一行。
-export function CreatorCell({
+// 名称后面的创建徽标（设计稿 Main、AgentActivity，规格 DESKTOP-LIBRARY-VIEW-04、53）：智能体建的挂写智能体名称的徽标，
+// 命令行（不是智能体）建的挂“命令行”，在应用里建的不挂。智能体徽标悬停显示创建时间和命令，点它展开或收起行下面的
+// “由 … 创建”一行；徽标是按钮，Tab 顺序保留给选中行的打开与更多（规格 96）。
+export function CreatorTag({
   row,
   expanded,
   onToggle,
@@ -23,42 +24,45 @@ export function CreatorCell({
   const t = useT();
   const format = useFormat();
   const creator = creatorOf(row);
-  if (creator.kind === "me")
-    return <span className={styles.secondary}>{t("library.creator.me.label")}</span>;
+  if (creator.kind === "me") return null;
   if (creator.kind === "cli")
-    return <span className={styles.secondary}>{t("library.creator.cli.label")}</span>;
+    return (
+      <span className={styles.tag} data-kind="cli">
+        {t("library.creator.cli.label")}
+      </span>
+    );
   const command = commandOf(row);
-  const label = expanded ? t("library.creator.collapse.aria") : t("library.creator.expand.aria");
   return (
-    <span className={styles.creator}>
-      <Tooltip
-        content={t("library.creator.tooltip.label", {
-          time: format.dateTime(row.createdAt, "short"),
-          hasCommand: command === null ? "no" : "yes",
-          command: command ?? "",
-        })}
+    <Tooltip
+      content={t("library.creator.tooltip.label", {
+        time: format.dateTime(row.createdAt, "short"),
+        hasCommand: command === null ? "no" : "yes",
+        command: command ?? "",
+      })}
+    >
+      <button
+        type="button"
+        className={styles.tag}
+        data-kind="agent"
+        aria-expanded={expanded}
+        tabIndex={-1}
+        onClick={(event) => {
+          // 行的单击和双击是选中与打开，展开徽标不触发它们
+          event.stopPropagation();
+          onToggle();
+        }}
+        onDoubleClick={(event) => event.stopPropagation()}
       >
-        <Badge variant="violet" icon="spark">
+        <Icon name="spark" size={10} />
+        <span className={styles.tagText} data-truncate="">
           {creator.name === null ? (
             t("library.creator.agent.label")
           ) : (
             <UserText>{creator.name}</UserText>
           )}
-        </Badge>
-      </Tooltip>
-      <IconButton
-        icon="info"
-        size="sm"
-        label={label}
-        aria-expanded={expanded}
-        onClick={(event) => {
-          // 行的单击和双击是选中与打开，展开按钮不触发它们
-          event.stopPropagation();
-          onToggle();
-        }}
-        onDoubleClick={(event) => event.stopPropagation()}
-      />
-    </span>
+        </span>
+      </button>
+    </Tooltip>
   );
 }
 

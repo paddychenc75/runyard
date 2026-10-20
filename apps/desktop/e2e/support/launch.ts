@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { _electron, type ElectronApplication, expect, type Page } from "@playwright/test";
 import { absPath, getPlatform, type Platform, type ProcRef } from "@runyard/platform";
+import { type PrepareE2eHome, prepareE2eHome } from "./prepare-home.ts";
 
 // 启动一份真正的桌面应用，所有数据都落在临时主目录里：HOME 指向它，--root 也在它里面，
 // 即使 --root 丢了也碰不到真实的 ~/.runyard 和 ~/Runyard。收尾时应用和它拉起的管理进程都按“进程号加启动时间”确认已退出。
@@ -14,6 +15,8 @@ const cliMain = join(desktopDir, "..", "..", "packages", "cli", "src", "main.ts"
 const electronPath = createRequire(join(desktopDir, "package.json"))("electron") as string;
 
 export interface LaunchOptions {
+  /** 默认隔离更新联网之后、应用启动之前，专门用例可覆盖自己的临时文件。 */
+  prepare?: PrepareE2eHome;
   lang?: "en" | "zh-CN";
   theme?: "light" | "dark" | "system";
 }
@@ -80,6 +83,7 @@ export async function launchRunyard(options: LaunchOptions = {}): Promise<Runyar
   // 路径要短：管理进程的 unix 套接字路径有长度上限
   const home = mkdtempSync(join(tmpdir(), "rye-"));
   const root = join(home, "r");
+  await prepareE2eHome({ home, root }, options.prepare);
   const platform = getPlatform({ home: absPath(home) });
   // 缺省跑源码构建（dist/main）；设了 RUNYARD_E2E_APP 就跑打好的包（CI 用，--e2e 构建，保留 nodeCliInspect）
   const packaged = process.env.RUNYARD_E2E_APP;
@@ -90,6 +94,26 @@ export async function launchRunyard(options: LaunchOptions = {}): Promise<Runyar
     args,
     env: stringEnv({ HOME: home }),
   });
+  let expectedExit = false;
+  let unexpectedClose = false;
+  app.once("close", () => {
+    if (!expectedExit) {
+      unexpectedClose = true;
+      console.error(
+        "RUNYARD_E2E_UNEXPECTED_CLOSE",
+        JSON.stringify({
+          pid: app.process().pid,
+          code: app.process().exitCode,
+          signal: app.process().signalCode,
+        }),
+      );
+    }
+  });
+  // #494：初始预览等待中退出时保留真实退出码/信号，不把 target closed 当作具体根因。
+  app.process().once("exit", (code, signal) => {
+    if (unexpectedClose || !expectedExit)
+      console.error("RUNYARD_E2E_UNEXPECTED_EXIT", JSON.stringify({ code, signal }));
+  });
   const appPid = app.process().pid ?? 0;
   const appIdentity = await platform.proc.identity(appPid);
   if (appIdentity === null) throw new Error("the app is not running right after launch");
@@ -98,6 +122,7 @@ export async function launchRunyard(options: LaunchOptions = {}): Promise<Runyar
 
   const exited = new Promise<void>((resolve) => app.process().once("exit", () => resolve()));
   const quit = async (): Promise<void> => {
+    expectedExit = true;
     // ⌘Q 走的是同一条退出流程；不等它返回，只等进程退出
     void app.evaluate(({ app: electronApp }) => electronApp.quit()).catch(() => undefined);
     await Promise.race([
@@ -112,6 +137,7 @@ export async function launchRunyard(options: LaunchOptions = {}): Promise<Runyar
   const shutdown = async (): Promise<void> => {
     if (finished) return;
     finished = true;
+    expectedExit = true;
     // 先记下管理进程（应用退出后状态文件还在，但进程可能已经没了）
     const supervisor = await supervisorOf(platform, root);
     let stuck = false;

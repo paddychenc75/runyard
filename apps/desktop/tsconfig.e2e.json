@@ -7,5 +7,10 @@
     // 用例里 page.evaluate 的回调跑在网页里，要 DOM 类型
     "lib": ["ES2023", "DOM"]
   },
-  "include": ["e2e/**/*.ts", "src/main/integration/vue-test-support/*.ts"]
+  "include": ["e2e/**/*.ts", "src/shared/**/*.ts", "src/main/integration/vue-test-support/*.ts"],
+  "references": [
+    { "path": "../../packages/protocol" },
+    { "path": "../../packages/i18n" },
+    { "path": "../../packages/tokens" }
+  ]
 }

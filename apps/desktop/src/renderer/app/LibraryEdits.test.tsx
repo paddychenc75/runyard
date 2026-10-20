@@ -180,7 +180,7 @@ describe("行内重命名与编辑备注", () => {
     await push(library([{ ...running, name: "todo-api" }]));
     const after = await rowOf("hono-todo-api");
     expect(within(after).getByText("todo-api")).toBeTruthy();
-    expect(within(after).getByText(":7102")).toBeTruthy();
+    expect(after.querySelector("td[data-column=port]")?.textContent).toBe(":7102");
     expect(within(after).queryByRole("textbox")).toBeNull();
   });
 
@@ -262,24 +262,25 @@ describe("行内重命名与编辑备注", () => {
 });
 
 describe("自动清理与创建副本", () => {
-  it("[DESKTOP-LIBRARY-VIEW-40] 改为自动清理 30 天：菜单右侧写“现在：已保留”，选 30 天并保存交给主进程，保留列变“剩 28 天”，侧栏计数跟着变", async () => {
+  it("[DESKTOP-LIBRARY-VIEW-40] 改为自动清理 30 天：菜单右侧写“现在：关闭”，选 30 天并保存交给主进程，保留列变“剩 28 天”，侧栏计数跟着变", async () => {
     const user = userEvent.setup();
     const kept = row("demo", { lastUsedAt: NOW - 2 * DAY });
     const { call, push } = setup(library([kept]));
     const menu = await openMenu(user, "demo");
     expect(within(menu).getByRole("menuitem", { name: /自动清理…/ }).textContent).toContain(
-      "现在：已保留",
+      "现在：关闭",
     );
     await user.click(within(menu).getByRole("menuitem", { name: /自动清理…/ }));
     const dialog = await screen.findByRole("dialog");
     await user.click(within(dialog).getByRole("button", { name: "30 天" }));
+    expect(within(dialog).getByText("demo 现在没有开启自动清理，会一直保留。")).toBeTruthy();
     await user.click(within(dialog).getByRole("button", { name: "保存" }));
     expect(call).toHaveBeenCalledWith("playground.autoClean", { id: "demo", days: 30 });
     await push(library([{ ...kept, autoClean: { enabled: true, days: 30 } }]));
     expect(within(await rowOf("demo")).getByText("剩 28 天")).toBeTruthy();
     const nav = screen.getByRole("navigation");
     expect(within(nav).getByText("自动清理").parentElement?.textContent).toContain("1");
-    expect(within(nav).getByText("已保留").parentElement?.textContent).toContain("0");
+    expect(within(nav).getByText("运行中").parentElement?.textContent).toContain("0");
   });
 
   it("[DESKTOP-LIBRARY-VIEW-41] 悬停在“剩 28 天”上出现说明", async () => {
@@ -287,8 +288,7 @@ describe("自动清理与创建副本", () => {
     setup(
       library([row("demo", { autoClean: { enabled: true, days: 30 }, lastUsedAt: NOW - 2 * DAY })]),
     );
-    const badge = within(await rowOf("demo")).getByText("剩 28 天");
-    await user.hover(badge.parentElement as HTMLElement);
+    await user.hover(within(await rowOf("demo")).getByText("剩 28 天"));
     // 提示默认悬停 600 毫秒后出现（组件自己的延迟），等它出现
     expect(
       await screen.findByText("28 天没打开就移到废纸篓，每次打开重新计时", {}, { timeout: 3000 }),

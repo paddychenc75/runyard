@@ -7,7 +7,7 @@ import { RunWorld, tabOwner } from "./run-harness.test.ts";
 // 编辑器保存后的实时结果里属于管理进程的部分（规格 desktop/editor 的 DESKTOP-EDITOR-48 至 50，
 // 以及它们依赖的 run/scripts 的 RUN-SCRIPTS-32、templates/runners 的 TEMPLATES-RUNNERS-36 至 38）：
 // 编辑器保存与别的程序写文件没有区别，都是磁盘上的变化；这里用 `fs.writeFile` 模拟写入，
-// 桌面应用的标签页持有运行。静态页面的刷新在 static-server.test.ts 和 editor-live-static.platform-dependent.test.ts。
+// 桌面应用的标签页持有运行。静态页面的刷新在 core/src/static 的 static-server.test.ts 和 static-live-edit.platform-dependent.test.ts。
 
 async function setup(kind: "script" | "server", serverWatch?: Record<string, unknown>) {
   const w = new RunWorld();

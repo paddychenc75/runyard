@@ -3,7 +3,7 @@ import { join, resolve } from "node:path";
 import type { Page, TestInfo } from "@playwright/test";
 import type * as Monaco from "monaco-editor/editor/editor.api.js";
 import { copyVueTypes } from "../src/main/integration/vue-test-support/fixture.ts";
-import { expect, test } from "./support/fixtures.ts";
+import { closePicker, expect, test } from "./support/fixtures.ts";
 
 type Runtime = { monaco: typeof Monaco };
 async function action(page: Page, file: string, needle: string, extra: number, name: string) {
@@ -46,9 +46,7 @@ for (const theme of ["light", "dark"] as const)
       }, info) => {
         const instance = await launch({ theme, lang });
         const { page } = instance;
-        await expect(page.getByRole("dialog").getByRole("combobox")).toBeFocused();
-        await page.getByRole("dialog").getByRole("combobox").press("Escape");
-        await expect(page.getByRole("dialog")).toHaveCount(0);
+        await closePicker(page);
         await instance.app.evaluate(
           ({ BrowserWindow }, width) =>
             BrowserWindow.getAllWindows()[0]?.setContentSize(width, 900),

@@ -5,12 +5,10 @@
   },
   "desktop.agentNotice.title.label": {
     "agent": "智能体名称（用户或命令行给的，不翻译）",
-    "name": "项目名称（不翻译）",
-    "user": "包住用户内容的标签"
+    "name": "项目名称（不翻译）"
   },
   "desktop.agentNotice.unnamed.label": {
-    "name": "项目名称（不翻译）",
-    "user": "包住用户内容的标签"
+    "name": "项目名称（不翻译）"
   },
   "desktop.crashed.title": {
     "exitCode": "进程的退出码"
@@ -74,28 +72,20 @@
     "size": "已格式化的文件大小",
     "limit": "已格式化的上限大小"
   },
-  "desktop.error.title.label": {
-    "title": "错误的标题，来自 errors.<代码>.title，已是翻译好的句子"
-  },
   "desktop.linkNotice.newFailed.label": {
-    "value": "链接里写的项目名称、模板标识或新名称（不翻译）",
-    "user": "包住用户内容的标签"
+    "value": "链接里写的项目名称、模板标识或新名称（不翻译）"
   },
   "desktop.linkNotice.newNameInvalid.label": {
-    "value": "链接里写的项目名称、模板标识或新名称（不翻译）",
-    "user": "包住用户内容的标签"
+    "value": "链接里写的项目名称、模板标识或新名称（不翻译）"
   },
   "desktop.linkNotice.newNameTaken.label": {
-    "value": "链接里写的项目名称、模板标识或新名称（不翻译）",
-    "user": "包住用户内容的标签"
+    "value": "链接里写的项目名称、模板标识或新名称（不翻译）"
   },
   "desktop.linkNotice.newNoTemplate.label": {
-    "value": "链接里写的项目名称、模板标识或新名称（不翻译）",
-    "user": "包住用户内容的标签"
+    "value": "链接里写的项目名称、模板标识或新名称（不翻译）"
   },
   "desktop.linkNotice.openMissing.label": {
-    "value": "链接里写的项目名称、模板标识或新名称（不翻译）",
-    "user": "包住用户内容的标签"
+    "value": "链接里写的项目名称、模板标识或新名称（不翻译）"
   },
   "desktop.menu.updateLatest.body": {
     "version": "当前应用的版本号，如 0.3.0"
@@ -105,8 +95,7 @@
     "required": "需要的版本范围，原样显示"
   },
   "desktop.pathNotice.title.label": {
-    "name": "新建项目的名称（不翻译）",
-    "user": "包住用户内容的标签"
+    "name": "新建项目的名称（不翻译）"
   },
   "desktop.port.body.label": {
     "actual": "现在实际使用的端口，纯数字字符串"
@@ -205,12 +194,18 @@
     "index": "当前是第几个，从 1 开始",
     "total": "一共几个"
   },
-  "desktop.update.banner.label": {
-    "latest": "新版本号，如 0.3.0",
-    "current": "当前版本号，如 0.2.0"
-  },
   "desktop.urlConfirm.preview.label": {
     "name": "项目名称（不翻译）",
     "user": "包住用户内容的标签"
+  },
+  "desktop.notifications.update.label": {
+    "version": "可用的新版本"
+  },
+  "desktop.notifications.current.label": {
+    "version": "当前应用版本"
+  },
+  "desktop.notifications.cleanItem.label": {
+    "name": "项目名称，不翻译",
+    "days": "未打开的整天数，0表示今天打开过"
   }
 }

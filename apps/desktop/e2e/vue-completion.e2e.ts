@@ -6,7 +6,7 @@ import { copyVueTypes } from "../src/main/integration/vue-test-support/fixture.t
 
 type EditorRuntime = { monaco: typeof Monaco };
 
-import { expect, test } from "./support/fixtures.ts";
+import { closePicker, expect, test } from "./support/fixtures.ts";
 
 async function attachScreenshot(page: Page, info: TestInfo, name: string) {
   const path = info.outputPath(`${name}.png`);
@@ -22,9 +22,7 @@ for (const theme of ["light", "dark"] as const)
       }, info) => {
         const instance = await launch({ theme, lang });
         const { page } = instance;
-        await expect(page.getByRole("dialog").getByRole("combobox")).toBeFocused();
-        await page.getByRole("dialog").getByRole("combobox").press("Escape");
-        await expect(page.getByRole("dialog")).toHaveCount(0);
+        await closePicker(page);
         await instance.app.evaluate(
           ({ BrowserWindow }, width) =>
             BrowserWindow.getAllWindows()[0]?.setContentSize(width, 900),

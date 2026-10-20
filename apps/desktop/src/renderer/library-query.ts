@@ -1,5 +1,6 @@
 import type { Locale } from "@runyard/i18n";
 import type { TemplateCategory } from "@runyard/protocol";
+import { lastUsedAt } from "../shared/last-used.ts";
 import type { PlaygroundRow, TemplateRow } from "../shared/library-state.ts";
 import { nameProblem } from "./create-view.ts";
 import { creatorOf, pickLocalizedText, statusMarkOf } from "./library-view.ts";
@@ -8,8 +9,8 @@ import { creatorOf, pickLocalizedText, statusMarkOf } from "./library-view.ts";
 // 搜索框、三个下拉和侧栏固定筛选同时生效，取交集。
 
 /** 侧栏“资源库”组的四个固定筛选 */
-export type NavFilter = "all" | "kept" | "autoClean" | "agent";
-export const navFilters: readonly NavFilter[] = ["all", "kept", "autoClean", "agent"];
+export type NavFilter = "all" | "running" | "autoClean" | "agent";
+export const navFilters: readonly NavFilter[] = ["all", "running", "agent", "autoClean"];
 
 /** 类型下拉的选项：与模板选择器的分组一致（“我的”不是类型，项目按所用模板的分组归类） */
 export type TypeFilter = "all" | Exclude<TemplateCategory, "mine">;
@@ -63,8 +64,8 @@ function inNav(row: PlaygroundRow, nav: NavFilter): boolean {
   switch (nav) {
     case "all":
       return true;
-    case "kept":
-      return !row.autoClean.enabled;
+    case "running":
+      return statusGroupOf(row) === "running";
     case "autoClean":
       return row.autoClean.enabled;
     case "agent":
@@ -72,9 +73,9 @@ function inNav(row: PlaygroundRow, nav: NavFilter): boolean {
   }
 }
 
-/** 侧栏每一项右边的数字；“已保留”和“自动清理”互补，加起来是“全部” */
+/** 侧栏每一项右边的数字；各筛选独立计数，运行中沿用状态筛选的定义 */
 export function navCounts(rows: readonly PlaygroundRow[]): Record<NavFilter, number> {
-  const counts = { all: 0, kept: 0, autoClean: 0, agent: 0 };
+  const counts = { all: 0, running: 0, autoClean: 0, agent: 0 };
   for (const nav of navFilters) counts[nav] = rows.filter((row) => inNav(row, nav)).length;
   return counts;
 }
@@ -91,10 +92,8 @@ function matchesSearch(row: PlaygroundRow, needle: string, locale: Locale): bool
 function compare(sort: SortKey, a: PlaygroundRow, b: PlaygroundRow): number {
   if (sort === "name") return a.name.localeCompare(b.name);
   if (sort === "created") return b.createdAt - a.createdAt || a.name.localeCompare(b.name);
-  // 最近打开：从没打开过的按创建时间排（和主进程的默认顺序一致，规格 DESKTOP-LIBRARY-VIEW-01）
-  const aTime = a.lastOpenedAt ?? a.createdAt;
-  const bTime = b.lastOpenedAt ?? b.createdAt;
-  return bTime - aTime || a.name.localeCompare(b.name);
+  // 最近使用：打开、命令行运行、创建里最近的一次（规格 DESKTOP-LIBRARY-VIEW-01、94）
+  return lastUsedAt(b) - lastUsedAt(a) || a.name.localeCompare(b.name);
 }
 
 export function filterRows(
@@ -110,7 +109,9 @@ export function filterRows(
       (row) =>
         inNav(row, query.nav) &&
         (query.type === "all" || categoryById.get(row.templateId) === query.type) &&
-        (query.status === "all" || statusGroupOf(row) === query.status) &&
+        (query.nav === "running" ||
+          query.status === "all" ||
+          statusGroupOf(row) === query.status) &&
         matchesSearch(row, needle, locale),
     )
     .sort((a, b) => {

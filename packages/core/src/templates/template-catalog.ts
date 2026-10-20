@@ -1,12 +1,3 @@
-import {
-  decodeText,
-  lintTemplateRef,
-  listFolderFiles,
-  locateTemplate,
-  type PlaygroundSeed,
-  type SeedFile,
-  type TemplateLocations,
-} from "@runyard/core";
 import { joinPath, type Platform, posixRelPath } from "@runyard/platform";
 import {
   type Requires,
@@ -17,12 +8,26 @@ import {
   templateFileFormat,
   templateIdPattern,
 } from "@runyard/protocol";
-import type { TemplateCatalog } from "./library-seams.ts";
-import { methodFailure } from "./method-failure.ts";
+import { libraryError } from "../library/library-error.ts";
+import type { PlaygroundSeed, SeedFile } from "../library/library-types.ts";
+import { lintTemplateRef } from "./lint-template-ref.ts";
+import { locateTemplate, type TemplateLocations } from "./locate-template.ts";
+import { decodeText, listFolderFiles } from "./read-template-folder.ts";
 
 // 模板展开成项目（seed）：找到模板、校验、检查变量、把 files/ 里的文件交给资源库
 // （规格 TEMPLATES-FORMAT-02、03，TEMPLATES-CUSTOM-02、19、22，CLI-COMMANDS-29、30）。
 // 创建不联网：只读磁盘；变量只是对 `substitute` 所列文件里 {{名字}} 的字面替换。
+
+export interface TemplateCatalog {
+  /** 把模板展开成创建一个项目需要的一切（文件已替换好变量、名称已代入） */
+  seed(request: {
+    readonly template: string;
+    readonly name: string;
+    readonly vars: Readonly<Record<string, string>>;
+  }): Promise<PlaygroundSeed>;
+  /** 运行器的类别；找不到运行器时 undefined */
+  runnerKind(runner: string): RunKind | undefined;
+}
 
 export interface TemplateCatalogDeps {
   readonly platform: Platform;
@@ -83,7 +88,7 @@ export function createTemplateCatalog(deps: TemplateCatalogDeps): TemplateCatalo
   return {
     async seed({ template: ref, name, vars }): Promise<PlaygroundSeed> {
       // 只认标识：绝对路径不是创建的入参（lint 命令才收文件夹）
-      const notFound = () => methodFailure("TEMPLATE_NOT_FOUND", { template: ref }, `no ${ref}`);
+      const notFound = () => libraryError("TEMPLATE_NOT_FOUND", { template: ref }, `no ${ref}`);
       if (!templateIdPattern.test(ref)) throw notFound();
       // 内置的标识优先于同名的用户模板（规格 TEMPLATES-CUSTOM-22）
       const target = await locateTemplate(platform, locations, ref);
@@ -91,12 +96,12 @@ export function createTemplateCatalog(deps: TemplateCatalogDeps): TemplateCatalo
       const linted = await lintTemplateRef(platform, locations, ref);
       if (linted.kind === "not-found") throw notFound();
       if (!linted.result.ok) {
-        throw methodFailure("TEMPLATE_INVALID", { template: ref }, `${ref} does not pass lint`);
+        throw libraryError("TEMPLATE_INVALID", { template: ref }, `${ref} does not pass lint`);
       }
       const text = await platform.fs.readText(joinPath(target.dir, posixRelPath("template.json")));
       const read = text === null ? undefined : readVersionedText(templateFileFormat, text);
       if (read?.status !== "ok") {
-        throw methodFailure("TEMPLATE_INVALID", { template: ref }, `${ref} cannot be read`);
+        throw libraryError("TEMPLATE_INVALID", { template: ref }, `${ref} cannot be read`);
       }
       const template = read.value;
 
@@ -104,7 +109,7 @@ export function createTemplateCatalog(deps: TemplateCatalogDeps): TemplateCatalo
       const declared = template.variables ?? {};
       for (const key of Object.keys(vars)) {
         if (key === "name" || !(key in declared)) {
-          throw methodFailure("VAR_INVALID", { key }, `variable ${key} is not declared`);
+          throw libraryError("VAR_INVALID", { key }, `variable ${key} is not declared`);
         }
       }
       const values = new Map<string, string>([
