@@ -2,7 +2,9 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { buildTokens, DOC_BEGIN, DOC_END, replaceDocBlock } from "./build.ts";
+import { toHex } from "./color.ts";
 import { loadTokens } from "./model.ts";
+import { resolveThemes } from "./resolved.ts";
 
 const packageDir = join(import.meta.dirname, "..");
 const out = buildTokens(packageDir);
@@ -68,8 +70,8 @@ describe("tokens.ts", () => {
 });
 
 describe("editor-themes.ts", () => {
-  it("三种编辑器的浅色和深色都有，色值是真实写法，没有 CSS 变量也没有 rgba()", () => {
-    for (const name of ["monacoThemes", "shikiThemes", "xtermThemes"]) {
+  it("Shiki 和 xterm 的浅色和深色都有，色值是真实写法，没有 CSS 变量也没有 rgba()", () => {
+    for (const name of ["shikiThemes", "xtermThemes"]) {
       expect(out.editor).toContain(`export const ${name} = {`);
     }
     expect(out.editor).not.toContain("var(");
@@ -77,9 +79,11 @@ describe("editor-themes.ts", () => {
     expect(out.editor).toContain('"editor.lineHighlightBackground": "#0071E312"');
   });
 
-  it("Monaco 的规则颜色不带 #，深色用 vs-dark", () => {
-    expect(out.editor).toContain('base: "vs-dark"');
-    expect(out.editor).toMatch(/token: "keyword", foreground: "[0-9A-F]{6}"/);
+  it("编辑器只有 Shiki 配色出口，不再生成无人消费的 Monarch 主题", () => {
+    expect(out.editor).not.toContain("export const monacoThemes");
+    expect(out.editor).toContain('name: "runyard-dark"');
+    expect(out.editor).toContain('type: "dark"');
+    expect(out.editor).toContain('scope: ["keyword", "storage"]');
   });
 });
 
@@ -148,4 +152,26 @@ describe("shikiThemes 的补充语法范围（#289）", () => {
     expect(colorOf("light", "markup.heading")).toBe("#AD3DA4");
     expect(colorOf("dark", "markup.inline.raw")).toBe("#FF8170");
   });
+});
+
+describe("Shiki 到 Monaco 的实际主题颜色（#454）", () => {
+  it.each(["light", "dark"] as const)(
+    "[DESKTOP-EDITOR-39] %s 主题的滚动条颜色与共享滚动条来自同一变量",
+    (theme) => {
+      const resolved = resolveThemes(loadTokens(packageDir))[theme];
+      const shiki = out.editor.slice(
+        out.editor.indexOf("export const shikiThemes"),
+        out.editor.indexOf("export const xtermThemes"),
+      );
+      const section = shiki.split(`  ${theme}: {`)[1]?.split("\n  },")[0] ?? "";
+      for (const [role, token] of [
+        ["scrollbarSlider.background", "color-scrollbar-thumb"],
+        ["scrollbarSlider.hoverBackground", "color-scrollbar-thumb-hover"],
+        ["scrollbarSlider.activeBackground", "color-scrollbar-thumb-hover"],
+      ] as const) {
+        expect(section).toContain(`"${role}": "${toHex(resolved[token] as string)}"`);
+      }
+      expect(section).toContain('"scrollbar.shadow": "#00000000"');
+    },
+  );
 });

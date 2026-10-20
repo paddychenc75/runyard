@@ -7,6 +7,7 @@ import type {
   VueResult,
 } from "../../shared/vue-language.ts";
 import { confine } from "../editor-files/confine.ts";
+import { vueDefinitionTargets } from "./vue-definition-targets.ts";
 import { VueOperations } from "./vue-operations.ts";
 import type { VueProjects } from "./vue-projects.ts";
 
@@ -146,7 +147,13 @@ export class VueChannel {
       );
       if (signal.aborted || this.#documents.get(keyOf(input)) !== prepared.document)
         return { ok: false, reason: "cancelled" };
-      return { ok: true, value };
+      return {
+        ok: true,
+        value:
+          input.kind === "definition"
+            ? await vueDefinitionTargets(prepared.document.folder, value)
+            : value,
+      };
     } catch {
       return { ok: false, reason: signal.aborted ? "cancelled" : "unavailable" };
     }

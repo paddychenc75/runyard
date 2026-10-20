@@ -19,6 +19,9 @@ export class VueModelSync {
       if (this.#queues.get(path) === pending) this.#queues.delete(path);
     });
   }
+  synced(model: Monaco.editor.ITextModel): Promise<void> {
+    return this.#queues.get(model.uri.path.slice(1)) ?? Promise.resolve();
+  }
   attach(path: string, model: Monaco.editor.ITextModel): void {
     if (model.getLanguageId() !== "vue") return;
     const session = crypto.randomUUID();

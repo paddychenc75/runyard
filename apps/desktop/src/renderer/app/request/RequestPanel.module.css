@@ -86,13 +86,17 @@
 }
 
 .prefix {
-  flex: none;
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: var(--color-text-secondary);
 }
 
 .path {
   flex: 1;
-  min-inline-size: 0;
+  min-inline-size: var(--size-control-lg);
   margin: 0;
   padding: 0;
   border: 0;
@@ -115,9 +119,9 @@
 .toolRow {
   flex: none;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-2);
   padding: 0 var(--space-6) var(--space-5);
   border-block-end: 1px solid var(--color-line-hairline);
   font-size: var(--text-body-size);
@@ -125,6 +129,8 @@
 }
 
 .autoResend {
+  min-inline-size: var(--size-switch-width);
+  flex: 0 1 auto;
   display: inline-flex;
   align-items: center;
   gap: var(--space-4);
@@ -315,4 +321,43 @@
 
 .placeholder[data-tone="failure"] {
   color: var(--color-status-danger-text);
+}
+
+.autoLabel {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.staleNote {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-4);
+  margin: var(--space-4);
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-md);
+  background: var(--color-fill-warning-tint);
+  color: var(--color-status-warning-text);
+  font-size: var(--text-secondary-size);
+}
+
+.response[data-stale] :is(.responseHead, .responseTabs, .output) {
+  opacity: 0.5;
+}
+
+.tools[data-size] {
+  flex: none;
+  flex-wrap: nowrap;
+  gap: var(--space-2);
+}
+
+.staleNote svg {
+  flex: none;
+}
+
+.sendHint {
+  display: flex;
+  flex: none;
 }

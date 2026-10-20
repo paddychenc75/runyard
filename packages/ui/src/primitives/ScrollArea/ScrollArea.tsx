@@ -16,6 +16,8 @@ export type ScrollAreaOrientation = "vertical" | "horizontal" | "both";
 export interface ScrollAreaProps extends ComponentProps<"div"> {
   /** 往哪个方向滚；默认只竖向 */
   orientation?: ScrollAreaOrientation;
+  /** 隐藏滑块但保留滚动和底层方向登记；默认沿用应用滚动条。 */
+  scrollbarVisibility?: "auto" | "hidden";
   /** 真正滚动的那个元素（读 scrollTop、跟随到底部、scrollIntoView 都用它） */
   viewportRef?: Ref<HTMLDivElement>;
   /** 透传给滚动元素的属性：role、aria-label、tabIndex、onScroll、data-* */
@@ -30,6 +32,7 @@ export interface ScrollAreaProps extends ComponentProps<"div"> {
 // 视口自己是可聚焦的滚动区域，键盘用户能用方向键滚动。
 export function ScrollArea({
   orientation = "vertical",
+  scrollbarVisibility = "auto",
   className,
   children,
   viewportRef,
@@ -55,6 +58,7 @@ export function ScrollArea({
       {...rest}
       className={className === undefined ? styles.root : `${styles.root} ${className}`}
       data-orientation={orientation}
+      data-scrollbars={scrollbarVisibility === "hidden" ? "hidden" : undefined}
       data-active={active ? "" : undefined}
       onPointerMove={(event: PointerEvent<HTMLDivElement>) => {
         onPointerMove?.(event);

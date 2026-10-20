@@ -45,6 +45,7 @@ it("[DESKTOP-NOTIFICATIONS-10] 到来的卡片不改变当前标签与焦点，�
   expect(document.activeElement).toBe(input);
   expect(screen.getByRole("tab").getAttribute("aria-selected")).toBe("true");
   expect(screen.getAllByRole("status")).toHaveLength(2);
+  expect(screen.getByRole("region", { name: "Notices" }).getAttribute("aria-live")).toBe("polite");
   expect(screen.getByRole("button", { name: "Notifications" }).getAttribute("data-count")).toBe(
     "1",
   );
