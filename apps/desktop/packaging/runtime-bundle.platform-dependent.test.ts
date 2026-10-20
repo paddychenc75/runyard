@@ -58,6 +58,7 @@ describe("buildRuntimeBundle", () => {
       "cli.mjs",
       "skill-guide/SKILL.md",
       "skill-guide/SKILL.zh-CN.md",
+      "skill-guide/SKILL.en.md",
       "templates/builtin/html/template.json",
       "templates/runners/static/runner.json",
       "templates/tools/node.json",
@@ -65,9 +66,9 @@ describe("buildRuntimeBundle", () => {
       expect(statSync(join(out, "runyard", file)).isFile()).toBe(true);
     }
     expect(readFileSync(join(out, "runyard", "skill-guide", "SKILL.zh-CN.md"), "utf8")).toContain(
-      "这是给人看的中文对照",
+      "## 工作流程",
     );
-    expect(readFileSync(join(out, "runyard", "skill-guide", "SKILL.md"), "utf8")).toContain(
+    expect(readFileSync(join(out, "runyard", "skill-guide", "SKILL.en.md"), "utf8")).toContain(
       "## Workflow",
     );
     expect(statSync(join(out, "bin", "runyard")).mode & 0o111).not.toBe(0);
