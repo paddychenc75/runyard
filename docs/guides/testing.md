@@ -152,6 +152,10 @@ Node 24 下先 `pnpm --filter @runyard/desktop build`，再运行 `pnpm --filter
 
 Web 系列只有 1440 画板，1100 对照保留原布局裁取，不代表存在窄窗设计稿。原生预览另附 preview.png；静态项目和设计的 React 示例内容不同，原有顶栏/侧栏差异分别由 #446/#448 追踪，停止图标沿用已合并 #475。动效是 #477 批准的新增行为，不能用静止图证明动效生命周期，须结合真实端到端结果。
 
+### 请求与预览工具栏取证（#436）
+
+渲染 Service/ServiceDark/ServiceEn/ServiceDarkEn 和 Web/WebEn/WebLight/WebLightEn，再运行 `node apps/desktop/e2e/request-layout.measure.ts`。临时 HOME/root 中的真实 Hono 项目发送请求后停止，覆盖当前响应与历史响应提示；另建 HTML 验证预览图标按钮。浅深、中英、1440/1100共24图写入 `RUNYARD_REQUEST_REVIEW_OUTPUT` 或临时目录。原生预览单独抓取后按占位坐标合成并保留原图。`request-status.e2e.ts` 使用方向键将面板收至280，断言地址不溢出、路径输入宽度至少40像素、工具栏不换行、停止后的响应明确标旧。CI上传request-layout-design-comparison。
+
 ### 窗口顶部取证（#446）
 
 先渲染 Main、MainSidebarHidden、Web、Settings 的浅深中英画板，再运行 `node apps/desktop/e2e/window-header.measure.ts`。每个临时实例覆盖1440/1100、展开/收起/项目/独立设置四种状态，32组对照与 measurements.json 写到 `RUNYARD_HEADER_REVIEW_OUTPUT` 或新临时目录。原生红绿灯API坐标19/19；侧栏按钮90/12，展开收起恢复不移动；首标签134，标题70，文件树顶52/圆角9。项目原生预览单独截图后按占位实测坐标合成，保留原始图和预览图。没有窄版的画板使用完整参考，不把裁切稿当窄窗设计。
