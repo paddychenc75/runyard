@@ -1,3 +1,9 @@
+import { useNotificationService } from "./notifications/notification-context.tsx";
+import { notificationText as t } from "./notifications/notification-text.ts";
+
+const copiedMessage = () => t("desktop.notifications.copied.label");
+const trashedMessage = () => t("desktop.notifications.trashed.label");
+
 import { useT } from "@runyard/i18n/react";
 import type { MenuEntry } from "@runyard/ui";
 import { type ReactNode, useState } from "react";
@@ -28,6 +34,7 @@ export function useProjectMenu(options: UseProjectMenuOptions): ProjectMenu {
   const { bridge, row } = options;
   const t = useT();
   const edits = usePlaygroundEdits(options);
+  const notifications = useNotificationService();
   const [confirmTrash, setConfirmTrash] = useState(false);
   const [terminalCommand, setTerminalCommand] = useState<string | null>(null);
   const [failed, setFailed] = useState<DesktopError | null>(null);
@@ -56,7 +63,9 @@ export function useProjectMenu(options: UseProjectMenuOptions): ProjectMenu {
   // 确认后弹窗先关，结果回来再决定要不要出失败说明（成功时这一行已经从列表消失）
   const trash = async () => {
     setConfirmTrash(false);
-    settle(await bridge.call("playground.trash", row.id));
+    const result = await bridge.call("playground.trash", row.id);
+    if (result.ok) notifications.showToast(trashedMessage());
+    settle(result);
   };
 
   // 终端里有命令在运行的，确认里要写明它会被结束（规格 DESKTOP-TERMINAL-36）；查不到当作没有
@@ -72,7 +81,11 @@ export function useProjectMenu(options: UseProjectMenuOptions): ProjectMenu {
     else if (id === "reveal") void bridge.call("playground.reveal", row.id);
     else if (id === "openTerminal") void bridge.call("playground.openTerminal", row.id);
     else if (id === "copyPath") void bridge.call("playground.copyPath", row.id);
-    else if (id === "copyLink") void bridge.call("clipboard.copy", `runyard://open/${row.name}`);
+    else if (id === "copyLink")
+      void bridge
+        .call("clipboard.copy", `runyard://open/${row.name}`)
+        .then(() => notifications.showToast(copiedMessage()))
+        .catch(() => setFailed({ code: "INTERNAL", params: {} }));
     else if (id === "trash") void askTrash();
     else if (id === "relocate") {
       if (options.onRelocate !== undefined) options.onRelocate();

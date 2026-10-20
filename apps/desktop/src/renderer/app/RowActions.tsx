@@ -20,6 +20,8 @@ export interface RowActionsProps {
   onDuplicated: (id: string) => void;
   /** 找不到文件夹的行菜单里的“重新定位…”：由表格统一处理（选错文件夹的说明显示在行下面） */
   onRelocate?: () => void;
+  /** 按钮能不能被 Tab 走到：表格只占一个 Tab 停点，只有选中的行里的按钮才加进去（规格 DESKTOP-LIBRARY-VIEW-96） */
+  tabbable?: boolean;
 }
 
 // 列表一行的操作（规格 desktop/library-view“打开与停止运行”“更多菜单里的访达与路径”）：
@@ -33,6 +35,7 @@ export function RowActions({
   onInlineRename,
   onDuplicated,
   onRelocate,
+  tabbable = true,
 }: RowActionsProps) {
   const t = useT();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -74,6 +77,7 @@ export function RowActions({
       <Button
         size="sm"
         disabled={row.busy}
+        tabIndex={tabbable ? 0 : -1}
         onClick={row.missing ? () => menu.select("relocate") : row.active ? stop : open}
       >
         {row.missing
@@ -84,7 +88,9 @@ export function RowActions({
       </Button>
       <Menu
         label={moreLabel}
-        trigger={<IconButton icon="more" size="sm" label={moreLabel} />}
+        trigger={
+          <IconButton icon="more" size="sm" label={moreLabel} tabIndex={tabbable ? 0 : -1} />
+        }
         entries={entries}
         onSelect={onSelect}
         onOpenChange={setMenuOpen}

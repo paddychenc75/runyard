@@ -4,6 +4,12 @@ import { pathToFileURL } from "node:url";
 import { chromium, expect } from "@playwright/test";
 import { launchRunyard } from "./support/launch.ts";
 
+interface LibraryState {
+  playgrounds: { id: string; name: string; [key: string]: unknown }[];
+  notices?: { id: string; [key: string]: unknown }[];
+  [key: string]: unknown;
+}
+
 const out = process.env.RUNYARD_NOTIFICATION_OUTPUT;
 if (!out) throw new Error("请设置 RUNYARD_NOTIFICATION_OUTPUT 为临时证据目录");
 mkdirSync(out, { recursive: true });
@@ -12,48 +18,69 @@ const chrome = await chromium.launch({
   executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   headless: true,
 });
-const records = [
-  {
-    id: "update",
-    at: Date.now(),
-    required: true,
-    tone: "accent",
-    icon: "refresh",
-    title: { key: "desktop.update.region.aria" },
-    description: {
-      key: "desktop.update.banner.label",
-      values: { latest: "1.0.1", current: "1.0.0" },
-    },
-    actions: [
-      { id: "update.download", label: { key: "desktop.update.download.action" }, primary: true },
-      { id: "update.later", label: { key: "desktop.update.later.action" } },
+async function seedSources(instance: Awaited<ReturnType<typeof launchRunyard>>) {
+  for (const name of ["react-counter", "node-ts-1", "react19-5"])
+    await instance.cli("new", "html", name);
+  await expect
+    .poll(async () => (await instance.call<LibraryState>("library.get")).playgrounds.length)
+    .toBe(3);
+  const base = await instance.call<LibraryState>("library.get");
+  const clean = base.playgrounds.find((row) => row.name === "node-ts-1");
+  const agent = base.playgrounds.find((row) => row.name === "react19-5");
+  if (!clean || !agent) throw new Error("通知设计替身项目未就绪");
+  const now = Date.now();
+  const fixture: LibraryState = {
+    ...base,
+    update: { latest: "0.3.0", current: "0.2.0" },
+    updateReady: true,
+    cleanDueCount: 1,
+    cleanReminder: [{ id: clean.id, name: clean.name, idleDays: 29 }],
+    playgrounds: base.playgrounds.map((row) =>
+      row.id === clean.id
+        ? {
+            ...row,
+            autoClean: { enabled: true, days: 30 },
+            lastUsedAt: now - 29 * 86400000 - 3600000,
+          }
+        : row,
+    ),
+    notices: [
+      {
+        id: "design-agent",
+        kind: "agent-run",
+        playgroundId: agent.id,
+        name: agent.name,
+        agent: "Claude Code",
+        url: "http://127.0.0.1:7113/",
+        at: now,
+      },
+      { id: "design-link", kind: "link", code: "open-missing", value: "vue-drag-list" },
+      { id: "design-path", kind: "path-near-limit", name: "long-project", length: 240, limit: 255 },
     ],
-  },
-  {
-    id: "clean",
-    at: Date.now(),
-    required: true,
-    tone: "warning",
-    icon: "warning",
-    title: { key: "library.cleanBanner.lead.label", values: { count: 1 } },
-    description: { key: "library.cleanBanner.idle.label", values: { days: 29 } },
-    actions: [
-      { id: "clean.keep", label: { key: "library.clean.keep.action" }, primary: true },
-      { id: "clean.now", label: { key: "library.clean.now.action" } },
-    ],
-  },
-  {
-    id: "agent",
-    at: Date.now() - 3600000,
-    required: false,
-    tone: "violet",
-    icon: "spark",
-    title: {
-      key: "desktop.agentNotice.meta.label",
-      values: { url: "Codex · node-ts-1", time: "1h" },
-    },
-  },
-];
+  };
+  await instance.app.evaluate(({ ipcMain }, initial) => {
+    const handlers = (
+      ipcMain as unknown as { _invokeHandlers: Map<string, (...args: unknown[]) => unknown> }
+    )._invokeHandlers;
+    const original = handlers.get("desktop:call");
+    if (!original) throw new Error("通知设计缺少桥接处理器");
+    let state = initial;
+    ipcMain.removeHandler("desktop:call");
+    ipcMain.handle("desktop:call", (event, method, ...args) => {
+      if (method === "library.get") return state;
+      if (method === "notice.dismiss") {
+        state = { ...state, notices: (state.notices ?? []).filter((item) => item.id !== args[0]) };
+        return;
+      }
+      if (method === "clean.shown") return;
+      return original(event, method, ...args);
+    });
+  }, fixture);
+  await instance.page.clock.install({ time: now });
+  await instance.page.clock.pauseAt(now);
+  await instance.page.reload();
+}
+
 try {
   for (const theme of ["light", "dark"] as const)
     for (const lang of ["zh-CN", "en"] as const) {
@@ -61,19 +88,7 @@ try {
       try {
         await expect(instance.page.getByRole("combobox")).toBeFocused();
         await instance.page.keyboard.press("Escape");
-        await instance.cli("new", "html", "react-counter");
-        await expect
-          .poll(async () =>
-            (
-              await instance.call<{ playgrounds: { name: string }[] }>("library.get")
-            ).playgrounds.some((item) => item.name === "react-counter"),
-          )
-          .toBe(true);
-        await instance.page.evaluate(
-          (items) => localStorage.setItem("runyard.notifications.v1", JSON.stringify(items)),
-          records,
-        );
-        await instance.page.reload();
+        await seedSources(instance);
         for (const width of [1440, 1100]) {
           await instance.app.evaluate(
             ({ BrowserWindow }, size) =>
@@ -81,7 +96,7 @@ try {
             width,
           );
           const cards = instance.page.locator("[data-notification-cards]");
-          await expect(cards.getByRole("status")).toHaveCount(2);
+          await expect(cards.getByRole("status")).toHaveCount(3);
           for (const mode of ["cards", "center"] as const) {
             if (mode === "center")
               await instance.page.locator("[data-notifications-toggle]").click();
@@ -103,7 +118,7 @@ try {
               path: join(out, `${name}-app.png`),
               scale: "css",
             });
-            const html = `<!doctype html><meta charset="utf-8"><style>body{margin:0;background:#ddd;font:14px system-ui}main{display:flex;gap:12px}figure{margin:0;flex:none}figure:first-child{width:1440px}figure:last-child{width:${width}px}img{width:100%}</style><main><figure><figcaption>设计稿 ${board}</figcaption><img src="data:image/png;base64,${design.toString("base64")}"></figure><figure><figcaption>真实打包应用：${width} / ${theme} / ${lang}；#462骨架替身，真实来源接入见#463</figcaption><img src="data:image/png;base64,${actual.toString("base64")}"></figure></main>`;
+            const html = `<!doctype html><meta charset="utf-8"><style>body{margin:0;background:#ddd;font:14px system-ui}main{display:flex;gap:12px}figure{margin:0;flex:none}figure:first-child{width:1440px}figure:last-child{width:${width}px}img{width:100%}</style><main><figure><figcaption>设计稿 ${board}</figcaption><img src="data:image/png;base64,${design.toString("base64")}"></figure><figure><figcaption>真实打包应用：${width} / ${theme} / ${lang}；#463来源契约替身，通知与处理入口由真实应用渲染</figcaption><img src="data:image/png;base64,${actual.toString("base64")}"></figure></main>`;
             writeFileSync(join(out, `${name}.html`), html);
             const pair = await chrome.newPage({
               viewport: { width: 1440 + width + 12, height: 940 },
@@ -122,4 +137,4 @@ try {
 } finally {
   await chrome.close();
 }
-console.log(`通知骨架16组对照已写入 ${out}`);
+console.log(`通知来源16组对照已写入 ${out}`);

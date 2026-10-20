@@ -139,11 +139,11 @@ describe("buildLibraryState 的列和顺序", () => {
     expect(state.playgrounds.map((row) => row.id)).toEqual(["running", "recent", "older"]);
   });
 
-  it("从没打开过的项目按创建时间排，时间相同按名字", () => {
-    const created = (id: string, createdAt: number) => ({ ...playground(id), createdAt });
+  it("[DESKTOP-LIBRARY-VIEW-94] 从没在应用里打开过的项目按最近使用（命令行运行、创建）排，时间相同按名字", () => {
+    const used = (id: string, lastUsedAt: number) => ({ ...playground(id), lastUsedAt });
     const state = buildLibraryState({
       ...base,
-      playgrounds: [created("b", 5), created("a", 5), created("c", 9)],
+      playgrounds: [used("b", 5), used("a", 5), used("c", 9)],
       runs: [],
     });
     expect(state.playgrounds.map((row) => row.id)).toEqual(["c", "a", "b"]);

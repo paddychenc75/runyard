@@ -17,9 +17,13 @@
 
 ## 子目录地图
 
-- `bin/`：随包的启动脚本 `runyard`。
+- `bin/`：随包的启动脚本 `runyard`。`skill-guide.ts` 从文案包同源生成中英文 Markdown：源码构建放 `dist/skill-guide`，打包放 `Contents/Resources/runyard/skill-guide`，不依赖用户是否安装技能包。
 - `*.platform-dependent.test.ts`：起真文件或真进程的测试，只在 macOS 和 Ubuntu 跑。
 
 ## 测试
 
 纯逻辑用 Vitest（`vue-language-service.test.ts`、`fuses.test.ts` 等）。`vue-language-service.platform-dependent.test.ts` 真的用 esbuild 和文件复制生成一份目录并核对结构。完整的打包和冒烟在本机或 macOS 的 CI 上手动跑：`pnpm --filter @runyard/desktop package -- --dir --out "$(mktemp -d)"`，再跑上面的冒烟。
+
+## Vue 声明兜底（ADR 0022）
+
+`vue-fallback-types.ts` 从现有 tooling/vue@3.5.43 复制声明闭包、包元数据、许可证及版本清单到 `fallback-types/`，不复制 Vue JS。第一方 `@runyard/vue-types-fallback` 解析插件构建到语言服务 node_modules，只在原解析失败时提供固定 Vue 入口。afterPack 同时补拷 node_modules 与 fallback-types，避免 electron-builder 丢掉嵌套 node_modules；打包自检必须检查兜底声明和插件。来源及三处安全审查见 dependencies.md 的 vue 行，不新增依赖或放宽权限。

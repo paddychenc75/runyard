@@ -223,7 +223,7 @@ export function registerBridgeHandlers(
       if (playground !== null) controller.system.copyPath(playground);
     },
     "clipboard.copy": (value) => {
-      if (typeof value === "string") controller.system.copyText(value);
+      if (typeof value === "string") return controller.system.copyText(value);
     },
     "clipboard.read": () => controller.system.readText(),
     "link.openWeb": (value) => {
@@ -257,6 +257,8 @@ export function registerBridgeHandlers(
     "cli.remove": async () =>
       (await settings?.cli?.remove()) ?? { result: "failed", status: unavailableCli },
     "diagnostics.export": async () => (await settings?.cli?.exportDiagnostics()) ?? { ok: false },
+    "agents.openGuide": async (locale) =>
+      (await settings?.cli?.openSkillGuide(locale)) ?? { ok: false },
     "agents.status": async () => (await settings?.cli?.agentSkills()) ?? noSkills,
     "agents.install": async (target) =>
       target === "claude" || target === "agents"

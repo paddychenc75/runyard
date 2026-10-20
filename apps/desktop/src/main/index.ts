@@ -234,7 +234,7 @@ async function main(args: DesktopArgs): Promise<void> {
     platform: currentPlatform(),
     development: !app.isPackaged,
     version: app.getVersion(),
-    openExternal: (url) => system.openExternal(url),
+    openExternal: (url) => system.openExternalChecked(url),
     checkUpdates: () => updates.checkNow(),
   });
   menu.install();
@@ -297,9 +297,10 @@ async function main(args: DesktopArgs): Promise<void> {
     enabled: async () => (await settings.get()).updateCheck,
     publish: (view) => {
       controller.chrome.update = view;
+      controller.chrome.updateReady = true;
       controller.chrome.changed();
     },
-    openExternal: (url) => system.openExternal(url),
+    openExternal: (url) => system.openExternalChecked(url),
     canFetch: app.isPackaged && !args.smoke,
   });
   let currentLocale = locale;

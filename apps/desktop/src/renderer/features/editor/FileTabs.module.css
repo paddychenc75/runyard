@@ -21,6 +21,8 @@
   position: relative;
   z-index: var(--z-slide-content);
   flex: none;
+  box-sizing: border-box;
+  max-inline-size: var(--file-tab-max-width);
   display: flex;
   align-items: center;
   gap: var(--space-3);
@@ -38,6 +40,7 @@
 }
 
 .tab {
+  min-inline-size: 0;
   display: flex;
   align-items: center;
   gap: var(--space-3);
@@ -68,4 +71,8 @@
 .deleted {
   color: var(--color-status-warning-text);
   font-size: var(--text-secondary-size);
+}
+
+.name {
+  min-inline-size: 0;
 }

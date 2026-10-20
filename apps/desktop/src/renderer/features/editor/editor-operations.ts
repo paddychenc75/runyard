@@ -34,5 +34,7 @@ export function runEditorOperation(
   if (operation === "foldAll" || operation === "unfoldAll") {
     editor.updateOptions({ folding: true, showFoldingControls: "mouseover" });
   }
-  void editor.getAction(MONACO_ACTIONS[operation])?.run();
+  // Monaco 的跳转注册为全局 EditorAction2，不在 getAction 的实例动作表里。
+  if (operation === "goToDefinition") editor.trigger("runyard", MONACO_ACTIONS[operation], {});
+  else void editor.getAction(MONACO_ACTIONS[operation])?.run();
 }

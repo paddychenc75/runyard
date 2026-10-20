@@ -16,7 +16,7 @@ export interface ProjectSource {
   watch(listener: (changes: FileChange[]) => void): () => void;
 }
 
-/** 这些后缀的文件交给 TS 语言服务（.vue 只有着色，不进语言服务，规格 DESKTOP-EDITOR-46） */
+/** 这些后缀的文件交给 TS 语言服务（.vue 经独立的官方 Vue 服务处理，不进 Monaco 自带 TS 线程） */
 export const SCRIPT_EXTENSIONS = ["ts", "tsx", "mts", "cts", "js", "jsx", "mjs", "cjs"] as const;
 
 export function isScriptPath(path: string): boolean {

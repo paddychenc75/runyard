@@ -100,6 +100,7 @@ export interface SettingsMethods {
   "cli.install": { param: undefined; result: CliLinkOutcome };
   "cli.remove": { param: undefined; result: CliLinkOutcome };
   "diagnostics.export": { param: undefined; result: DiagnosticsOutcome };
+  "agents.openGuide": { param: "en" | "zh-CN"; result: { ok: boolean } };
   "agents.status": { param: undefined; result: AgentSkillStatus };
   "agents.install": { param: AgentSkillTarget; result: AgentSkillStatus };
   "supervisor.status": { param: undefined; result: SupervisorStatus };
@@ -126,6 +127,7 @@ export const settingsMethodNames: readonly SettingsMethod[] = [
   "cli.install",
   "cli.remove",
   "diagnostics.export",
+  "agents.openGuide",
   "agents.status",
   "agents.install",
   "supervisor.status",

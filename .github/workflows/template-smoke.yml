@@ -84,6 +84,16 @@ jobs:
           python3 --version || true
           go version || true
 
+      - name: 验证产品 template test 命令
+        run: |
+          SMOKE_HOME=$(mktemp -d)
+          if [ -n "$TEMPLATE_NODE" ]; then
+            HOME="$SMOKE_HOME" "$REPO_NODE" packages/cli/src/main.ts --root "$SMOKE_HOME/root" template test "$TEMPLATE" --tool-version "node=$(node -p process.versions.node)" --json
+          else
+            HOME="$SMOKE_HOME" "$REPO_NODE" packages/cli/src/main.ts --root "$SMOKE_HOME/root" template test "$TEMPLATE" --json
+          fi
+
+      # 保留专项冒烟：它还覆盖类型检查/构建、语法错误恢复、标准输入等产品命令之外的断言。
       # 数据目录在冒烟脚本自己建的临时目录里；服务类模板的 --node 指向矩阵版本的 node
       - name: 冒烟
         run: |

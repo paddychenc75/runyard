@@ -30,7 +30,7 @@ export interface SystemActions {
   directoryExists?: (path: string) => Promise<boolean>;
   /** 在文件管理器里选中这个路径 */
   revealInFileManager(path: string): void;
-  copyText(text: string): void;
+  copyText(text: string): void | Promise<void>;
   /** 读剪贴板里的文字（终端的粘贴） */
   readText(): Promise<string>;
   /** 在系统终端里打开一个位于这个文件夹的窗口 */
