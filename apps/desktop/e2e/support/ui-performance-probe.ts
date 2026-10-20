@@ -17,6 +17,7 @@ export async function armUiProbe(
     query?: string;
     count?: number;
     traceLabel?: string;
+    priorObserved?: string[];
   },
 ) {
   await page.evaluate((options) => {
@@ -58,6 +59,11 @@ export async function armUiProbe(
         if (began === undefined || finished) return;
         const nodes = [...document.querySelectorAll(options.selector)];
         const observed = nodes.map((node) => (node.textContent ?? "").replaceAll("\u00a0", " "));
+        if (
+          options.priorObserved &&
+          JSON.stringify(observed) === JSON.stringify(options.priorObserved)
+        )
+          return;
         if (options.count !== undefined && observed.length !== options.count) return;
         if (!observed.some((text) => text.includes(options.needle))) return;
         if (
