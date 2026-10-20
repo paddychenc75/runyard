@@ -14,12 +14,7 @@ interface Status {
 test("[DESKTOP-TERMINAL-33] 从终端启动另一项目，关闭宿主后原服务进程与命令行持有者仍在", async ({
   launch,
 }) => {
-  const instance = await launch({
-    prepare: async ({ home }) => {
-      // 测试只写临时HOME，稳定提示符不依赖用户的shell配置。
-      writeFileSync(join(home, ".zshrc"), "PROMPT='READY401> '\n");
-    },
-  });
+  const instance = await launch();
   const { page } = instance;
   await closePicker(page);
   await instance.cli("new", "html", "demo");
@@ -55,12 +50,19 @@ test("[DESKTOP-TERMINAL-33] 从终端启动另一项目，关闭宿主后原服�
   await instance.call("tab.openWithoutRun", id);
   await page.getByRole("button", { name: "Terminal", exact: true }).click();
   const terminal = page.locator(".xterm").first();
-  await expect(terminal).toContainText("READY401>");
+  await expect
+    .poll(() => instance.call<TerminalSnapshot>("terminal.attach", { project: id }))
+    .toMatchObject({ state: { kind: "running" } });
   const shell = (await instance.call<TerminalSnapshot>("terminal.attach", { project: id })).state;
   if (shell.kind !== "running") throw new Error("测试终端没有运行");
   const shellIdentity = await instance.platform.proc.identity(shell.pid);
   expect(shellIdentity).not.toBeNull();
   await terminal.click();
+  // #528：登录shell来自系统用户记录，CI可为bash；不要依赖.zshrc提示符。
+  // 标记分成两段，终端对输入命令的回显不能冒充shell已执行。
+  await page.keyboard.type("printf 'READY%s\\n' '401>'");
+  await page.keyboard.press("Enter");
+  await expect(terminal).toContainText("READY401>");
   // 应用采用隔离的 --root；终端命令必须显式指向同一库，不使用临时 HOME 下的默认库。
   const cli = process.env.RUNYARD_E2E_APP
     ? "runyard"
