@@ -111,6 +111,7 @@
 | cli.templateSave.saved.body | 已存为模板 {id}：{path} | Saved as template {id}: {path} | id：新模板的标识，原样显示；path：新模板文件夹的绝对路径，原样显示 |
 | cli.templateShow.file.body | {file} | {file} | file：模板里文件的相对路径，原样显示 |
 | cli.templateShow.path.body | 位置：{path} | Location: {path} | path：模板文件夹的绝对路径，原样显示 |
+| cli.templateTest.step.body | {step}：{status, select, ok {通过} other {失败}}（{ms} ms） | {step}: {status, select, ok {passed} other {failed}} ({ms} ms) | step：步骤标识，固定英文；status：ok 或 failed；ms：步骤耗时毫秒 |
 | cli.usage.invalidValue.body | {option} 的值 {value} 不合法。 | The value {value} is not valid for {option}. | option：选项或设置名；value：用户输入的值，原样显示 |
 | cli.usage.missingArgument.body | 缺少参数：{argument}。 | Missing argument: {argument}. | argument：缺少的参数名，如 <pg> |
 | cli.usage.missingCommand.body | 没有给出命令。 | No command was given. | — |
