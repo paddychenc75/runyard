@@ -16,6 +16,11 @@ export type DetailLoad =
 export function useTemplates(bridge: DesktopBridge) {
   const [load, setLoad] = useState<TemplatesLoad>({ status: "loading" });
   const [selected, setSelected] = useState<string | null>(null);
+  const [toolRevision, setToolRevision] = useState(0);
+  useEffect(
+    () => bridge.on("toolchain.changed", () => setToolRevision((value) => value + 1)),
+    [bridge],
+  );
   const [detail, setDetail] = useState<DetailLoad>({ status: "loading" });
   const selectedRef = useRef(selected);
   selectedRef.current = selected;
@@ -54,7 +59,7 @@ export function useTemplates(bridge: DesktopBridge) {
     return () => {
       live = false;
     };
-  }, [bridge, rowKey, rowId, rowSource]);
+  }, [bridge, rowKey, rowId, rowSource, toolRevision]);
 
   return { load, selected, select: setSelected, row, detail };
 }
