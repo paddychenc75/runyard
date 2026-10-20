@@ -1,8 +1,10 @@
 import { useT } from "@runyard/i18n/react";
-import { Icon, StatusMark } from "@runyard/ui";
+import { Button, Icon, StatusMark } from "@runyard/ui";
+import { useRef } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { TabRow } from "../../shared/library-state.ts";
 import { useSettings } from "../bridge/use-settings.ts";
+import { useCommand } from "../shared/command-host.tsx";
 import { ConsoleOutput } from "./ConsoleOutput.tsx";
 import { RunActionButton } from "./RunActionButton.tsx";
 import { ScriptAutoRun } from "./ScriptAutoRun.tsx";
@@ -25,10 +27,15 @@ const TAIL_LINES = 12;
 export function ScriptOutput({ bridge, tab }: ScriptOutputProps) {
   const t = useT();
   const status = useRunStatus(tab);
+  const root = useRef<HTMLElement>(null);
+  useCommand("app.showOutput", () =>
+    root.current?.querySelector<HTMLElement>('[role="log"]')?.focus(),
+  );
   const { settings } = useSettings(bridge);
   const failure = tab.failure;
   return (
     <section
+      ref={root}
       className={styles.root}
       data-script-output={tab.id}
       aria-label={t("desktop.output.aria")}
@@ -45,6 +52,9 @@ export function ScriptOutput({ bridge, tab }: ScriptOutputProps) {
         <span className={styles.spacer} />
         {/* 设置还没读到时按开处理，读到之后跟着变 */}
         <ScriptAutoRun bridge={bridge} tab={tab} globalOn={settings?.scriptAutoRun ?? true} />
+        <Button size="sm" onClick={() => void bridge.call("console.clear", tab.id)}>
+          {t("desktop.console.clear.action")}
+        </Button>
         <RunActionButton bridge={bridge} tab={tab} />
       </header>
       {tab.stale ? (
