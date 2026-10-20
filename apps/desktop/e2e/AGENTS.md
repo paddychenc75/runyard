@@ -22,3 +22,9 @@ Playwright（`_electron`）驱动真正的应用走主要用户流程（issue #1
 ## 测试
 
 本目录本身就是测试。本机跑全套约半分钟；失败的截图和报告在 `e2e/.output/`（已忽略）。失败不重试：偶发失败按仓库规则记成带 `flaky` 标签的 issue。
+
+## Vue 打包验收（#416）
+
+`vue-completion.e2e.ts`、`vue-inspection.e2e.ts` 覆盖浅深 × 中英 × 1440/1100，截图里用现有 TypeScript 候选/悬停控件作同状态对照。语言相关的准备动作通过 dialog 内的 combobox 找到选择器，不能固定查英文名称。
+
+独立测量使用 `vue-acceptance.measure.ts`（时延）、`vue-acceptance.memory.ts`（1→2→3 项目内存与淘汰）、`vue-acceptance.audit.ts`（只读、联网、组合输入观察）。必须设置 `RUNYARD_E2E_APP` 和新建临时目录 `RUNYARD_VUE_ACCEPTANCE_OUT`；前者必须指向端到端打包模式的可执行文件。先用 `RUNYARD_VUE_MEASURE_MODE=prepare` 只离线准备依赖，再在排到的 GUI 时段运行测量。复制 pnpm 依赖保留相对符号链接并核对真实路径，自动保存用正确的 `autoSave` 键并读回；不能让自动保存混入语言服务写入审计。计时通过页面观察器与帧事件记录，不把等待轮询间隔算作响应时间。安全脚本插入的观察器保留原权限与守卫，只在本次应用进程里生效，不接产品构建入口；结果须说明 API 层观察的覆盖限制。实测数字及方法见 `docs/architecture/evidence/vue-intellisense.md`。
