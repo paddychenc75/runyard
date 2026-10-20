@@ -14,13 +14,11 @@ import {
   type TileBrand,
 } from "../../primitives/MonogramTile/index.ts";
 import { ScrollArea } from "../../primitives/ScrollArea/index.ts";
+import { UserText } from "../../primitives/UserText/index.ts";
 import styles from "./ListPicker.module.css";
 
-export interface ListPickerItem {
+interface ListPickerItemBase {
   id: string;
-  title: Localized | string;
-  /** 第二行；不传就只有一行 */
-  subtitle?: Localized | string;
   /** warning 把第二行画成警示色（如已停止维护） */
   tone?: "default" | "warning";
   /** 前面方块里的字母 */
@@ -29,6 +27,13 @@ export interface ListPickerItem {
   logo?: TechLogo;
   brand?: TileBrand;
 }
+
+/** 外部元数据必须显式标记；普通控件文字仍要求经过文案包。 */
+export type ListPickerItem = ListPickerItemBase &
+  (
+    | { userContent: true; title: string; subtitle?: string }
+    | { userContent?: false; title: Localized; subtitle?: Localized }
+  );
 
 export interface ListPickerGroup {
   id: string;
@@ -229,11 +234,15 @@ export function ListPicker({
                       />
                       <span className={styles.text}>
                         <span className={styles.title} data-truncate="">
-                          {item.title}
+                          {item.userContent ? <UserText>{item.title}</UserText> : item.title}
                         </span>
                         {item.subtitle === undefined ? null : (
                           <span className={styles.subtitle} data-truncate="">
-                            {item.subtitle}
+                            {item.userContent ? (
+                              <UserText>{item.subtitle}</UserText>
+                            ) : (
+                              item.subtitle
+                            )}
                           </span>
                         )}
                       </span>

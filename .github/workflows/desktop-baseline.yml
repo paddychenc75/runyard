@@ -1,0 +1,141 @@
+# 更新界面基准图（技术设计 §6.7、§8.3）：PR 上加标签 update-screen-baseline 时，在 macos-26 上重新生成
+# apps/desktop/visual/__screenshots__/ 并提交到该 PR 的分支。基准图只在这里生成，本地不许更新。
+#
+# 拆成两个任务是为了不把写权限交给 PR 里的代码：
+# - generate 跑 PR 分支上的代码（装依赖、开浏览器），只有只读令牌，产物是一个文件夹的 PNG；
+# - commit 不运行 PR 里的任何代码，只把产物里的 PNG 复制进基准图目录、提交、推送，写权限只在这里。
+# 谁能触发：能给 PR 加标签的人（仓库里只有负责人和他授权的智能体）；来自复刻仓库的 PR 一律不处理。
+# 为什么推完要手动触发 ci.yml、security.yml、ui-visual.yml：机器人用默认令牌推的提交不会触发 pull_request，
+# 必过检查就出现不了；做法和发版 PR 一样（release-please.yml、决策记录 0015）。
+name: desktop-baseline
+
+on:
+  pull_request:
+    types: [labeled]
+
+permissions: {}
+
+concurrency:
+  group: desktop-baseline-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    name: 在 macos-26 上生成画面基准
+    if: github.event.label.name == 'update-screen-baseline' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: macos-26
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      # 检出标签被加上时的那个提交，不是合并预览：基准图要和分支本身一致
+      - name: 检出 PR 分支的提交
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - name: 安装 pnpm（版本读自 package.json 的 packageManager 字段）
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: 安装 Node（版本读自 .node-version）
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: 安装依赖（锁文件必须与 package.json 一致）
+        run: pnpm install --frozen-lockfile
+
+      - name: 安装 Playwright 管理的 Chromium
+        run: pnpm --filter @runyard/ui visual:install
+
+      - name: 重新生成基准图（同时跑溢出检查和漏网文字检查，它们不过就不更新）
+        env:
+          RUNYARD_SCREEN_BASELINE: update
+        run: pnpm --filter @runyard/desktop visual:screens
+
+      - name: 检查体积预算
+        run: node apps/desktop/visual/check-budget.ts
+
+      - name: 上传新基准图
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: desktop-baseline
+          path: apps/desktop/visual/__screenshots__/
+          if-no-files-found: error
+          retention-days: 1
+
+  commit:
+    name: 把基准图提交到 PR 分支
+    needs: generate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      # contents：推提交；pull-requests：摘掉标签；actions：手动触发检查
+      contents: write
+      pull-requests: write
+      actions: write
+    steps:
+      - name: 检出 PR 分支
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: 下载新基准图
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: desktop-baseline
+          path: ${{ runner.temp }}/desktop-baseline
+
+      - name: 提交并推送
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha }}
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+          NEW_DIR: ${{ runner.temp }}/desktop-baseline
+        run: |
+          # 生成之后分支又有了新提交：基准图对不上，不提交，让人重新加一次标签
+          if [ "$(git rev-parse HEAD)" != "$EXPECTED_SHA" ]; then
+            echo "::error title=分支已前进::生成基准图之后 $BRANCH 又有了新提交，基准图可能对不上。摘掉标签 update-screen-baseline 再加一次。"
+            exit 1
+          fi
+          target=apps/desktop/visual/__screenshots__
+          # 产物来自 PR 里的代码，这里不信它：只收 PNG 文件，其余一律拒绝；单张不超过 200 KB、总量不超过 30 MB
+          if find "$NEW_DIR" -mindepth 1 \( -type d -o ! -name '*.png' \) | grep -q .; then
+            echo "::error title=产物不对::基准图产物里只许有 PNG 文件，没有子文件夹。"
+            exit 1
+          fi
+          if [ -n "$(find "$NEW_DIR" -type f -size +200k)" ]; then
+            echo "::error title=超出预算::有基准图超过单张 200 KB 的预算。"
+            exit 1
+          fi
+          total_kb=$(( $(du -sk "$NEW_DIR" | cut -f1) + $(du -sk packages/ui/visual/__screenshots__ | cut -f1) ))
+          if [ "$total_kb" -gt 30720 ]; then
+            echo "::error title=超出预算::组件与画面基准合计超过 30 MB 的预算。"
+            exit 1
+          fi
+          mkdir -p "$target"
+          git rm -q --ignore-unmatch -r -- "$target"
+          mkdir -p "$target"
+          cp "$NEW_DIR"/*.png "$target"/
+          git add -- "$target"
+          if git diff --cached --quiet; then
+            echo "基准图和分支上的一致，没有要提交的。" >> "$GITHUB_STEP_SUMMARY"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -q -m "test(desktop): 更新画面级基准图" -m "由 desktop-baseline 在 macos-26 上重新生成（PR 标签 update-screen-baseline）。"
+            git push origin "HEAD:refs/heads/$BRANCH"
+            # 机器人推的提交不触发 pull_request：手动触发检查，结果由各工作流的 report 任务记成提交状态
+            gh workflow run ci.yml --ref "$BRANCH"
+            gh workflow run security.yml --ref "$BRANCH"
+            gh workflow run desktop-visual.yml --ref "$BRANCH"
+            gh workflow run ui-visual.yml --ref "$BRANCH"
+            gh workflow run e2e.yml --ref "$BRANCH"
+            echo "已提交新基准图并触发检查。请核对 PR 里的图片变化再批准。" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          # 摘掉标签，下次要更新时可以再加
+          gh pr edit "$PR_NUMBER" --remove-label update-screen-baseline

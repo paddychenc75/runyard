@@ -80,6 +80,7 @@
 
 .hint {
   overflow: hidden;
+  overflow-wrap: anywhere;
   color: var(--color-text-secondary);
   font-size: var(--text-secondary-size);
   line-height: var(--text-secondary-line-height);

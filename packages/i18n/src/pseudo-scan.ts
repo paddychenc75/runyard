@@ -25,10 +25,30 @@ export interface PageNodeLike {
 
 const LETTER = /[\p{L}]/u;
 
-/** 去掉所有 ⟦…⟧ 之后还剩字母的文字，就是漏网的 */
+/** 翻译参数也可能是翻译结果；只移除完整配对区间，不能遇到内层闭括号就结束。 */
+function outsidePseudo(value: string): string {
+  let depth = 0;
+  let pending = "";
+  let outside = "";
+  for (const character of value) {
+    if (character === PSEUDO_OPEN) {
+      depth += 1;
+      pending += character;
+    } else if (depth > 0) {
+      pending += character;
+      if (character === PSEUDO_CLOSE) {
+        depth -= 1;
+        if (depth === 0) pending = "";
+      }
+    } else outside += character;
+  }
+  // 未闭合的片段仍要检查，不能用一个开括号让后面的裸文案消失。
+  return outside + pending;
+}
+
+/** 去掉所有完整的 ⟦…⟧ 之后还剩字母的文字，就是漏网的。每个样本独立配对。 */
 export function findLeakedText(samples: readonly PageText[]): PageText[] {
-  const wrapped = new RegExp(String.raw`${PSEUDO_OPEN}[\s\S]*?${PSEUDO_CLOSE}`, "gu");
-  return samples.filter((sample) => LETTER.test(sample.text.replace(wrapped, "")));
+  return samples.filter((sample) => LETTER.test(outsidePseudo(sample.text)));
 }
 
 /** 收集可见文字：文字节点加三个属性。自带全部辅助，可以直接交给 page.evaluate。 */
@@ -53,9 +73,23 @@ export function collectPageTexts(root: PageNodeLike): PageText[] {
       const value = node.getAttribute?.(attribute)?.trim();
       if (value) found.push({ text: value, where: `${here}[${attribute}]` });
     }
+    // 富文案可在同一父节点内被UserText分开：只把直接文字与这种透明插值视为一个连续片段。
+    // 普通子元素、显式跳过的第三方区域和父边界都切断片段；不能按相同标签路径跨元素配对。
+    let run = "";
+    const flush = () => {
+      if (run.trim() !== "") found.push({ text: run.trim(), where: here });
+      run = "";
+    };
     for (let index = 0; index < node.childNodes.length; index += 1) {
-      walk(node.childNodes[index] as PageNodeLike, here);
+      const child = node.childNodes[index] as PageNodeLike;
+      if (child.nodeType === TEXT) run += child.nodeValue ?? "";
+      else if (child.hasAttribute?.("data-user-content")) continue;
+      else {
+        flush();
+        walk(child, here);
+      }
     }
+    flush();
   };
   walk(root, "");
   return found;

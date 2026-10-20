@@ -53,6 +53,7 @@ export function buildPickerGroups(
 ): ListPickerGroup[] {
   const item = (template: TemplateRow) => ({
     id: template.id,
+    userContent: true as const,
     title: pickLocalizedText(template.name, locale),
     subtitle: pickLocalizedText(template.description, locale),
     tone: template.unmaintained ? ("warning" as const) : ("default" as const),

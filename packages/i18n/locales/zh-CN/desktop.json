@@ -300,7 +300,7 @@
   "desktop.saveTemplate.files.aria": "选择要放进模板的文件",
   "desktop.saveTemplate.files.label": "包含的文件",
   "desktop.saveTemplate.footer.hint": "保存后出现在新建时的“我的”分组 · {path}",
-  "desktop.saveTemplate.id.hint": "只能用小写字母、数字和连字符，命令行里用它：<code>runyard new {id}</code>",
+  "desktop.saveTemplate.id.hint": "只能用小写字母、数字和连字符，命令行里用它：<code>{command}</code>",
   "desktop.saveTemplate.id.label": "模板标识",
   "desktop.saveTemplate.idInvalid.hint": "标识只能用小写字母、数字和连字符，首尾不能是连字符",
   "desktop.saveTemplate.idPlaceholder.label": "'<'标识'>'",

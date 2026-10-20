@@ -34,13 +34,15 @@
 .sectionScroll {
   margin-block-start: var(--space-4);
   margin-inline-start: calc(var(--space-7) * -1);
-  margin-inline-end: calc(var(--space-2) * -1);
+  margin-inline-end: 0;
 }
 .sectionViewport {
   box-sizing: border-box;
   padding: var(--space-2);
 }
 .sections {
+  inline-size: max-content;
+  min-inline-size: 100%;
   padding-inline-end: var(--space-1);
   display: flex;
   gap: var(--space-2);

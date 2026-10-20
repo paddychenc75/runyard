@@ -221,7 +221,9 @@ export function LibraryPage({
           )}
           <div className={styles.cli}>
             <span>{t("library.empty.cli.label")}</span>
-            <code className={styles.command}>{SAMPLE_COMMAND}</code>
+            <code className={styles.command}>
+              <UserText>{SAMPLE_COMMAND}</UserText>
+            </code>
           </div>
         </EmptyState>
       ) : visible.length === 0 ? (

@@ -26,6 +26,7 @@
 .key {
   flex: none;
   inline-size: calc(var(--space-9) * 3);
+  overflow-wrap: anywhere;
   color: var(--color-text-secondary);
 }
 

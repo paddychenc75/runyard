@@ -205,7 +205,9 @@ export function DataTable<Row>({
                 data-collapsed={collapsedIds.has(column.id) ? "" : undefined}
               >
                 {collapsedIds.has(column.id) && column.collapse?.mode === "narrow" ? (
-                  <span className={styles.hidden}>{column.header ?? column.hiddenHeader}</span>
+                  <span className={styles.hidden} data-truncate="">
+                    {column.header ?? column.hiddenHeader}
+                  </span>
                 ) : column.sort !== undefined && column.header !== undefined ? (
                   <button
                     type="button"

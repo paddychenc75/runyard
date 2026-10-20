@@ -1,7 +1,7 @@
 import type { Localized } from "@runyard/i18n";
 import { useT } from "@runyard/i18n/react";
 import { type RequestMethod, requestMethods } from "@runyard/protocol";
-import { Button, Icon, Menu, Tooltip } from "@runyard/ui";
+import { Button, Icon, Menu, Tooltip, UserText } from "@runyard/ui";
 import styles from "./RequestPanel.module.css";
 import type { RequestPanelState } from "./use-request-panel.ts";
 
@@ -28,8 +28,8 @@ export function RequestForm({
     >
       <MethodMenu value={draft.method} onSelect={panel.setMethod} />
       <label className={styles.address}>
-        <Tooltip content={<span>{prefix}</span>}>
-          <span className={styles.prefix}>{prefix}</span>
+        <Tooltip content={<UserText>{prefix}</UserText>}>
+          <UserText className={styles.prefix}>{prefix}</UserText>
         </Tooltip>
         <input
           className={styles.path}
@@ -76,7 +76,7 @@ function MethodMenu({
       label={t("desktop.request.method.aria")}
       trigger={
         <button type="button" className={styles.method} data-method={value}>
-          {value}
+          <UserText>{value}</UserText>
           <Icon name="chevron-down" size={10} />
         </button>
       }

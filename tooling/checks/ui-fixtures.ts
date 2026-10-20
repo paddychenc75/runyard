@@ -1,6 +1,7 @@
 import { statSync } from "node:fs";
 import { join } from "node:path";
 import { listFiles, readText } from "./docs.ts";
+import { checkScreenCoverage } from "./screen-coverage.ts";
 import { parseSource, ts, visit } from "./ts-source.ts";
 import type { Check } from "./workspace.ts";
 
@@ -162,6 +163,13 @@ export const uiFixtures: Check = {
       }));
     const baselineDirExists = files.some((file) => file.startsWith(BASELINE_DIR));
     errors.push(...checkBaselines(fixtureNames, baselines, baselineDirExists));
+    errors.push(
+      ...checkScreenCoverage(root, {
+        file: MAX_BASELINE_BYTES,
+        total: MAX_TOTAL_BYTES,
+        existingBytes: baselines.reduce((sum, item) => sum + item.bytes, 0),
+      }),
+    );
     return errors;
   },
 };
