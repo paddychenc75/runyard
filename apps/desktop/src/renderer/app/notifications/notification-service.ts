@@ -3,15 +3,25 @@ import { NotificationStore, type NotificationText } from "./notification-store.t
 
 /** #463 的数据源接入这里；只保存事实，动作在每次启动时重新登记，不从持久记录执行代码。 */
 export class NotificationService {
-  readonly actions = new Map<string, () => Promise<void>>();
+  readonly actions = new Map<string, () => Promise<void | boolean>>();
   private listeners = new Set<() => void>();
   private toast: { id: number; message: NotificationText } | null = null;
   private nextToast = 0;
+  private readonly shownListeners = new Set<(ids: readonly string[]) => void>();
+  markShown(ids: readonly string[]): void {
+    for (const listener of this.shownListeners) listener(ids);
+  }
+  subscribeShown(listener: (ids: readonly string[]) => void): () => void {
+    this.shownListeners.add(listener);
+    return () => {
+      this.shownListeners.delete(listener);
+    };
+  }
   readonly store: NotificationStore;
   constructor(store: NotificationStore) {
     this.store = store;
   }
-  registerAction(id: string, action: () => Promise<void>): () => void {
+  registerAction(id: string, action: () => Promise<void | boolean>): () => void {
     this.actions.set(id, action);
     return () => {
       if (this.actions.get(id) === action) this.actions.delete(id);
@@ -31,9 +41,8 @@ export class NotificationService {
     return () => this.listeners.delete(listener);
   };
 }
-let service: NotificationService | undefined;
-export function getNotificationService(): NotificationService {
-  service ??= new NotificationService(
+export function createNotificationService(): NotificationService {
+  return new NotificationService(
     new NotificationStore(
       createNotificationStorage({
         getItem: (key) => window.localStorage.getItem(key),
@@ -41,5 +50,9 @@ export function getNotificationService(): NotificationService {
       }),
     ),
   );
+}
+let service: NotificationService | undefined;
+export function getNotificationService(): NotificationService {
+  service ??= createNotificationService();
   return service;
 }

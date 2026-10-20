@@ -14,6 +14,7 @@ export interface NoticeCardProps {
   icon?: IconName;
   tone?: "accent" | "warning" | "violet" | "danger";
   actions?: ReactNode;
+  children?: ReactNode;
   dismissLabel: Localized;
   onDismiss: () => void;
   /** null 表示必须手动收起；其余从挂载起累计未悬停的时间。 */
@@ -26,6 +27,7 @@ export function NoticeCard({
   icon = "info",
   tone = "accent",
   actions,
+  children,
   dismissLabel,
   onDismiss,
   duration = null,
@@ -55,6 +57,7 @@ export function NoticeCard({
     <GlassSurface
       material="menu"
       role="status"
+      aria-label={title}
       aria-atomic="true"
       className={`${styles.root} ${className ?? ""}`}
       data-tone={tone}
@@ -68,6 +71,7 @@ export function NoticeCard({
       <div className={styles.content}>
         <p className={styles.title}>{title}</p>
         {description === undefined ? null : <p className={styles.description}>{description}</p>}
+        {children === undefined ? null : <div className={styles.description}>{children}</div>}
         {actions === undefined ? null : (
           <ButtonGroup size="sm" className={styles.actions}>
             {actions}

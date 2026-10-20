@@ -14,6 +14,7 @@ import {
   VUE_LANGUAGE_SERVICE_DIR,
   VUE_LANGUAGE_SERVICE_PATHS,
 } from "../src/main/vue-language/service-paths.ts";
+import { buildVueFallbackTypes } from "./vue-fallback-types.ts";
 
 // 随应用带的“语言服务目录”（决策记录 0021 第 4 条，证据 vue-intellisense.md“第二次验证”）。
 // 放进 .app 的 Contents/Resources，不进 asar：Node 的权限模型要按真实路径授权读权限，
@@ -165,6 +166,8 @@ export async function buildVueLanguageService(desktopDir: string, outDir: string
   // 3. TypeScript
   copyTypescript(tsPackage, join(root, "typescript"));
 
+  await buildVueFallbackTypes(desktopDir, root);
+
   const manifest: VueLanguageServiceManifest = {
     vueLanguageServer: readManifest(serverPackage).version,
     vueTypescriptPlugin: readManifest(pluginPackage).version,
@@ -182,6 +185,9 @@ export function vueLanguageServiceProblems(root: string): string[] {
   const problems: string[] = [];
   const required = [
     VUE_LANGUAGE_SERVICE_PATHS.guard,
+    join("fallback-types", "manifest.json"),
+    join("fallback-types", "node_modules", "vue", "dist", "vue.d.ts"),
+    join("node_modules", "@runyard", "vue-types-fallback", "index.cjs"),
     VUE_LANGUAGE_SERVICE_PATHS.server,
     VUE_LANGUAGE_SERVICE_PATHS.manifest,
     join(VUE_LANGUAGE_SERVICE_PATHS.types, "template-helpers.d.ts"),

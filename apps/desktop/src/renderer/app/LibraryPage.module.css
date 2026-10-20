@@ -119,3 +119,9 @@
   color: var(--color-text-secondary-strong);
   font-family: var(--font-mono);
 }
+
+@media (width <= 800px) {
+  .root {
+    padding-inline: var(--space-6);
+  }
+}

@@ -1,4 +1,4 @@
-import { existsSync, mkdtempSync, readFileSync, statSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -15,6 +15,29 @@ describe("buildVueLanguageService", () => {
     const root = await buildVueLanguageService(join(import.meta.dirname, ".."), out);
 
     expect(vueLanguageServiceProblems(root)).toEqual([]);
+    const fallback = join(root, "fallback-types");
+    const declarations = JSON.parse(readFileSync(join(fallback, "manifest.json"), "utf8")) as {
+      name: string;
+      version: string;
+      license: string;
+    }[];
+    expect(declarations.find((item) => item.name === "vue")?.version).toBe("3.5.43");
+    for (const item of declarations) {
+      expect(["MIT", "ISC", "BSD-2-Clause", "BSD-3-Clause"]).toContain(item.license);
+      expect(
+        readdirSync(join(fallback, "node_modules", item.name)).some((name) =>
+          /^(license|licence|copying)([.-].*)?$/i.test(name),
+        ),
+        item.name,
+      ).toBe(true);
+    }
+    const walk = (dir: string): string[] =>
+      readdirSync(dir).flatMap((name) => {
+        const path = join(dir, name);
+        return statSync(path).isDirectory() ? walk(path) : [path];
+      });
+    expect(walk(fallback).filter((path) => /\.(mjs|cjs|js)$/.test(path))).toEqual([]);
+
     // 类型文件在打包文件的上一级（坑 5）
     expect(existsSync(join(root, "types", "template-helpers.d.ts"))).toBe(true);
     // 服务器不依赖 node_modules 里的 vscode-json-languageservice（mainFields 为 module,main，坑 4）
