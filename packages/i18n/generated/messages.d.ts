@@ -212,6 +212,11 @@ export type CatalogMessages = {
   "cli.templateShow.path.body": {
     path: string | number;
   };
+  "cli.templateTest.step.body": {
+    ms: string | number;
+    status: string;
+    step: string | number;
+  };
   "cli.usage.invalidValue.body": {
     option: string | number;
     value: string | number;
@@ -620,6 +625,7 @@ export type CatalogMessages = {
   "desktop.request.payload.label": Record<never, never>;
   "desktop.request.payload.placeholder": Record<never, never>;
   "desktop.request.pending.label": Record<never, never>;
+  "desktop.request.previousResponse.label": Record<never, never>;
   "desktop.request.response.title": Record<never, never>;
   "desktop.request.responseBody.label": Record<never, never>;
   "desktop.request.responseHeaders.label": Record<never, never>;
@@ -627,6 +633,7 @@ export type CatalogMessages = {
   "desktop.request.send.action": Record<never, never>;
   "desktop.request.starting.hint": Record<never, never>;
   "desktop.request.stopped.hint": Record<never, never>;
+  "desktop.request.stoppedResponse.label": Record<never, never>;
   "desktop.request.tabs.aria": Record<never, never>;
   "desktop.request.timeout.label": Record<never, never>;
   "desktop.request.tooLarge.label": Record<never, never>;
@@ -859,16 +866,15 @@ export type CatalogMessages = {
     count: number;
   };
   "library.column.actions.aria": Record<never, never>;
-  "library.column.creator.label": Record<never, never>;
-  "library.column.lastOpened.label": Record<never, never>;
+  "library.column.lastUsed.label": Record<never, never>;
   "library.column.name.label": Record<never, never>;
   "library.column.port.label": Record<never, never>;
   "library.column.retention.label": Record<never, never>;
+  "library.column.size.label": Record<never, never>;
   "library.column.status.label": Record<never, never>;
   "library.column.template.label": Record<never, never>;
   "library.creator.agent.label": Record<never, never>;
   "library.creator.cli.label": Record<never, never>;
-  "library.creator.collapse.aria": Record<never, never>;
   "library.creator.details.label": {
     agent: string | number;
     code: (chunks: string[]) => string;
@@ -877,8 +883,6 @@ export type CatalogMessages = {
     time: string | number;
     user: (chunks: string[]) => string;
   };
-  "library.creator.expand.aria": Record<never, never>;
-  "library.creator.me.label": Record<never, never>;
   "library.creator.tooltip.label": {
     command: string | number;
     hasCommand: string;

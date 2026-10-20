@@ -1,4 +1,5 @@
 import { closePicker, expect, pressMenuShortcut, previewText, test } from "./support/fixtures.ts";
+import { showLibrarySidebar } from "./support/library-sidebar.ts";
 import { openSettingsWindow } from "./support/settings-window.ts";
 
 test("设置：切换主题和语言立即生效并保存", async ({ launch }) => {
@@ -185,6 +186,7 @@ test("[DESKTOP-SETTINGS-01] [DESKTOP-SETTINGS-37] 侧栏打开独立设置，快
   const runyard = await launch();
   const main = runyard.page;
   await closePicker(main);
+  await showLibrarySidebar(main);
   const opened = runyard.app.waitForEvent("window");
   await main.getByRole("button", { name: "Settings", exact: true }).click();
   const page = await opened;

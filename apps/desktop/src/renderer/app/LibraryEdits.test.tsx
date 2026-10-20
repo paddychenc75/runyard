@@ -180,7 +180,7 @@ describe("行内重命名与编辑备注", () => {
     await push(library([{ ...running, name: "todo-api" }]));
     const after = await rowOf("hono-todo-api");
     expect(within(after).getByText("todo-api")).toBeTruthy();
-    expect(within(after).getByText(":7102")).toBeTruthy();
+    expect(after.querySelector("td[data-column=port]")?.textContent).toBe(":7102");
     expect(within(after).queryByRole("textbox")).toBeNull();
   });
 
@@ -288,8 +288,7 @@ describe("自动清理与创建副本", () => {
     setup(
       library([row("demo", { autoClean: { enabled: true, days: 30 }, lastUsedAt: NOW - 2 * DAY })]),
     );
-    const badge = within(await rowOf("demo")).getByText("剩 28 天");
-    await user.hover(badge.parentElement as HTMLElement);
+    await user.hover(within(await rowOf("demo")).getByText("剩 28 天"));
     // 提示默认悬停 600 毫秒后出现（组件自己的延迟），等它出现
     expect(
       await screen.findByText("28 天没打开就移到废纸篓，每次打开重新计时", {}, { timeout: 3000 }),

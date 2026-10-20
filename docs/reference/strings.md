@@ -111,6 +111,7 @@
 | cli.templateSave.saved.body | 已存为模板 {id}：{path} | Saved as template {id}: {path} | id：新模板的标识，原样显示；path：新模板文件夹的绝对路径，原样显示 |
 | cli.templateShow.file.body | {file} | {file} | file：模板里文件的相对路径，原样显示 |
 | cli.templateShow.path.body | 位置：{path} | Location: {path} | path：模板文件夹的绝对路径，原样显示 |
+| cli.templateTest.step.body | {step}：{status, select, ok {通过} other {失败}}（{ms} ms） | {step}: {status, select, ok {passed} other {failed}} ({ms} ms) | step：步骤标识，固定英文；status：ok 或 failed；ms：步骤耗时毫秒 |
 | cli.usage.invalidValue.body | {option} 的值 {value} 不合法。 | The value {value} is not valid for {option}. | option：选项或设置名；value：用户输入的值，原样显示 |
 | cli.usage.missingArgument.body | 缺少参数：{argument}。 | Missing argument: {argument}. | argument：缺少的参数名，如 <pg> |
 | cli.usage.missingCommand.body | 没有给出命令。 | No command was given. | — |
@@ -407,6 +408,7 @@
 | desktop.request.payload.label | 请求体 | Body | — |
 | desktop.request.payload.placeholder | 请求体（GET 不发送） | Request body (not sent with GET) | — |
 | desktop.request.pending.label | 正在等待响应… | Waiting for the response… | — |
+| desktop.request.previousResponse.label | 服务尚未就绪，这是上次的响应。 | The service is not ready. This is the previous response. | — |
 | desktop.request.response.title | 响应 | Response | — |
 | desktop.request.responseBody.label | 响应体 | Body | — |
 | desktop.request.responseHeaders.label | 响应头 | Headers | — |
@@ -414,6 +416,7 @@
 | desktop.request.send.action | 发送 | Send | — |
 | desktop.request.starting.hint | 服务还没就绪，就绪后才能发送 | The service is not ready yet; you can send once it is | — |
 | desktop.request.stopped.hint | 服务没有在运行，运行后才能发送 | The service is not running; run it to send | — |
+| desktop.request.stoppedResponse.label | 服务已停止，这是停止前的响应。 | The service has stopped. This response was received before it stopped. | — |
 | desktop.request.tabs.aria | 请求内容 | Request content | — |
 | desktop.request.timeout.label | 等了 30 秒仍没有响应，已超时 | No response after 30 seconds; timed out | — |
 | desktop.request.tooLarge.label | 响应超过 5 MB，没有显示 | The response is over 5 MB and is not shown | — |
@@ -701,19 +704,16 @@
 | library.clean.now.action | 现在清理 | Clean now | — |
 | library.cleanBanner.lead.label | {count, plural, other {# 个项目}}明天会被自动清理： | {count, plural, one {# playground} other {# playgrounds}} will be cleaned up tomorrow: | count：明天会被自动清理的项目数 |
 | library.column.actions.aria | 操作 | Actions | — |
-| library.column.creator.label | 创建者 | Created by | — |
-| library.column.lastOpened.label | 上次打开 | Last opened | — |
+| library.column.lastUsed.label | 最近使用 | Last used | — |
 | library.column.name.label | 名称与备注 | Name and note | — |
 | library.column.port.label | 端口 | Port | — |
 | library.column.retention.label | 自动清理 | Auto-clean | — |
+| library.column.size.label | 大小 | Size | — |
 | library.column.status.label | 状态 | Status | — |
 | library.column.template.label | 模板 | Template | — |
 | library.creator.agent.label | 智能体 | Agent | — |
 | library.creator.cli.label | 命令行 | Command line | — |
-| library.creator.collapse.aria | 收起创建信息 | Hide creation details | — |
 | library.creator.details.label | 由 <user>{agent}</user> 创建 · {time}{hasCommand, select, yes { · 命令：<code>{command}</code>} other {}} | Created by <user>{agent}</user> · {time}{hasCommand, select, yes { · Command: <code>{command}</code>} other {}} | time：创建时间（已格式化）；hasCommand：有创建命令是 yes，否则 no；command：创建时的命令行（用 code 标签包成等宽）；user：包住智能体名称的标签；code：包住命令的标签，显示成等宽字体；agent：智能体名称（不翻译） |
-| library.creator.expand.aria | 展开创建信息 | Show creation details | — |
-| library.creator.me.label | 我 | Me | — |
 | library.creator.tooltip.label | {time} 创建{hasCommand, select, yes { · 命令：{command}} other {}} | Created {time}{hasCommand, select, yes { · Command: {command}} other {}} | time：创建时间（已格式化）；hasCommand：有创建命令是 yes，否则 no；command：创建时的命令行（用 code 标签包成等宽） |
 | library.empty.cli.label | 也可以让智能体用命令行创建： | Or let an agent create one from the command line: | — |
 | library.empty.hint | 选一个模板，新建你的第一个项目。 | Pick a template to create your first playground. | — |
@@ -798,7 +798,7 @@
 | library.sidebar.footer.label | {count, plural, other {# 个项目}} | {count, plural, one {# playground} other {# playgrounds}} | count：资源库里项目的总数 |
 | library.sort.created.label | 创建时间 | Created | — |
 | library.sort.name.label | 名称 | Name | — |
-| library.sort.recent.label | 最近打开 | Recently opened | — |
+| library.sort.recent.label | 最近使用 | Last used | — |
 | library.status.problem.label | 有问题 | Has a problem | — |
 | library.status.running.label | 运行中 | Running | — |
 | library.status.stopped.label | 已停止 | Stopped | — |

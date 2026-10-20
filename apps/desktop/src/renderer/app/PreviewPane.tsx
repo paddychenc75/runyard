@@ -1,5 +1,5 @@
 import { useT } from "@runyard/i18n/react";
-import { IconButton } from "@runyard/ui";
+import { IconButton, Tooltip } from "@runyard/ui";
 import { type ReactNode, useState } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { Bounds } from "../../shared/layout.ts";
@@ -117,22 +117,24 @@ export function PreviewPane({ bridge, tab, overlays }: PreviewPaneProps) {
             onAnimationIteration={refresh.onAnimationIteration}
           />
           <span className={styles.url}>{addressLabel(tab.previewUrl)}</span>
-          <button
-            type="button"
-            className={styles.action}
-            disabled={tab.previewUrl === null}
-            onClick={() => void bridge.call("preview.openExternal", tab.id)}
-          >
-            {t("desktop.preview.openExternal.action")}
-          </button>
-          <button
-            type="button"
-            className={styles.action}
-            disabled={tab.previewUrl === null}
-            onClick={() => void bridge.call("preview.devtools", tab.id)}
-          >
-            {t("desktop.preview.devtools.action")}
-          </button>
+          <Tooltip content={t("desktop.preview.openExternal.action")}>
+            <IconButton
+              icon="browser"
+              size="sm"
+              label={t("desktop.preview.openExternal.action")}
+              disabled={tab.previewUrl === null}
+              onClick={() => void bridge.call("preview.openExternal", tab.id)}
+            />
+          </Tooltip>
+          <Tooltip content={t("desktop.preview.devtools.action")}>
+            <IconButton
+              icon="tools"
+              size="sm"
+              label={t("desktop.preview.devtools.action")}
+              disabled={tab.previewUrl === null}
+              onClick={() => void bridge.call("preview.devtools", tab.id)}
+            />
+          </Tooltip>
         </div>
       )}
       <PreviewSlot

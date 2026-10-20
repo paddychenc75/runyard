@@ -33,7 +33,13 @@ export function builderConfig(inputs: BuilderInputs): Configuration {
     },
     electronVersion: inputs.electronVersion,
     electronDist: inputs.electronDist,
-    files: ["dist/**/*", "package.json", "node_modules/node-pty/**/*", "!**/*.map"],
+    files: [
+      "dist/**/*",
+      "!dist/vue-language-service/**",
+      "package.json",
+      "node_modules/node-pty/**/*",
+      "!**/*.map",
+    ],
     asar: true,
     // node-pty 带要单独执行的 spawn-helper 和 .node 文件，放在 asar 之外；明写，不依赖 electron-builder 的自动规则（K5 证据第 3 条）
     asarUnpack: ["**/node_modules/node-pty/**"],
@@ -58,11 +64,12 @@ export function builderConfig(inputs: BuilderInputs): Configuration {
         "Contents",
         "Resources",
       );
-      cpSync(
-        join(inputs.vueLanguageServiceDir, "node_modules"),
-        join(resources, VUE_LANGUAGE_SERVICE_DIR, "node_modules"),
-        { recursive: true, dereference: true },
-      );
+      for (const folder of ["node_modules", "fallback-types"])
+        cpSync(
+          join(inputs.vueLanguageServiceDir, folder),
+          join(resources, VUE_LANGUAGE_SERVICE_DIR, folder),
+          { recursive: true, dereference: true },
+        );
     },
     npmRebuild: false,
     // runyard:// 链接：写进 Info.plist，系统在安装后的应用上登记它（规格 DESKTOP-LINKS-05）；
