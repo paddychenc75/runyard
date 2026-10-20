@@ -18,7 +18,7 @@ Commands:
   config <command>       Show and change command line settings
 
 Global options:
-  --json           Print one JSON object; not affected by language
+  --json           Print command results as JSON; help stays text
   --quiet          Do not print progress or notices; results and errors are still printed
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
@@ -41,7 +41,7 @@ Commands:
   test <template>  Smoke-test a template
 
 Global options:
-  --json           Print one JSON object; not affected by language
+  --json           Print command results as JSON; help stays text
   --quiet          Do not print progress or notices; results and errors are still printed
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
@@ -60,7 +60,7 @@ Commands:
   install  Write the instructions to the agent folders
 
 Global options:
-  --json           Print one JSON object; not affected by language
+  --json           Print command results as JSON; help stays text
   --quiet          Do not print progress or notices; results and errors are still printed
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
@@ -80,7 +80,7 @@ Commands:
   set <key> <value>  Change a setting
 
 Global options:
-  --json           Print one JSON object; not affected by language
+  --json           Print command results as JSON; help stays text
   --quiet          Do not print progress or notices; results and errors are still printed
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
@@ -109,7 +109,7 @@ Options:
   --no-wait                 Return as soon as the request is accepted
 
 Global options:
-  --json           Print one JSON object; not affected by language
+  --json           Print command results as JSON; help stays text
   --quiet          Do not print progress or notices; results and errors are still printed
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
@@ -132,7 +132,7 @@ Options:
   --port <n>           Port to use for this run only
 
 Global options:
-  --json           Print one JSON object; not affected by language
+  --json           Print command results as JSON; help stays text
   --quiet          Do not print progress or notices; results and errors are still printed
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
@@ -153,7 +153,7 @@ Options:
   --mine  Stop only the runs held by the command line
 
 Global options:
-  --json           Print one JSON object; not affected by language
+  --json           Print command results as JSON; help stays text
   --quiet          Do not print progress or notices; results and errors are still printed
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
@@ -173,7 +173,7 @@ Options:
   --running  List only playgrounds that are running
 
 Global options:
-  --json           Print one JSON object; not affected by language
+  --json           Print command results as JSON; help stays text
   --quiet          Do not print progress or notices; results and errors are still printed
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
@@ -196,7 +196,7 @@ Options:
   --raw             Keep control sequences such as color codes
 
 Global options:
-  --json           Print one JSON object; not affected by language
+  --json           Print command results as JSON; help stays text
   --quiet          Do not print progress or notices; results and errors are still printed
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
@@ -213,7 +213,7 @@ Arguments:
   pg  Playground name or path
 
 Global options:
-  --json           Print one JSON object; not affected by language
+  --json           Print command results as JSON; help stays text
   --quiet          Do not print progress or notices; results and errors are still printed
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
@@ -231,7 +231,7 @@ Options:
   --bundle         Export a diagnostics bundle and print its path
 
 Global options:
-  --json           Print one JSON object; not affected by language
+  --json           Print command results as JSON; help stays text
   --quiet          Do not print progress or notices; results and errors are still printed
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
@@ -245,7 +245,7 @@ Usage:
   runyard version
 
 Global options:
-  --json           Print one JSON object; not affected by language
+  --json           Print command results as JSON; help stays text
   --quiet          Do not print progress or notices; results and errors are still printed
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
@@ -259,7 +259,7 @@ Usage:
   runyard template list
 
 Global options:
-  --json           Print one JSON object; not affected by language
+  --json           Print command results as JSON; help stays text
   --quiet          Do not print progress or notices; results and errors are still printed
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
@@ -276,7 +276,7 @@ Arguments:
   template  Template id
 
 Global options:
-  --json           Print one JSON object; not affected by language
+  --json           Print command results as JSON; help stays text
   --quiet          Do not print progress or notices; results and errors are still printed
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
@@ -301,7 +301,7 @@ Options:
   --exclude <path>      Leave out a file that is included by default; repeatable
 
 Global options:
-  --json           Print one JSON object; not affected by language
+  --json           Print command results as JSON; help stays text
   --quiet          Do not print progress or notices; results and errors are still printed
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
@@ -318,7 +318,7 @@ Arguments:
   template  Template id or template folder
 
 Global options:
-  --json           Print one JSON object; not affected by language
+  --json           Print command results as JSON; help stays text
   --quiet          Do not print progress or notices; results and errors are still printed
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
@@ -339,7 +339,7 @@ Options:
   --tool-version <version>  Test with the given tool version
 
 Global options:
-  --json           Print one JSON object; not affected by language
+  --json           Print command results as JSON; help stays text
   --quiet          Do not print progress or notices; results and errors are still printed
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
@@ -356,7 +356,7 @@ Options:
   --target <claude|agents|all>  Where to write: claude, agents or all
 
 Global options:
-  --json           Print one JSON object; not affected by language
+  --json           Print command results as JSON; help stays text
   --quiet          Do not print progress or notices; results and errors are still printed
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
@@ -373,7 +373,7 @@ Arguments:
   key  Name of the setting; the only one is lang
 
 Global options:
-  --json           Print one JSON object; not affected by language
+  --json           Print command results as JSON; help stays text
   --quiet          Do not print progress or notices; results and errors are still printed
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
@@ -391,7 +391,7 @@ Arguments:
   value  The new value
 
 Global options:
-  --json           Print one JSON object; not affected by language
+  --json           Print command results as JSON; help stays text
   --quiet          Do not print progress or notices; results and errors are still printed
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
