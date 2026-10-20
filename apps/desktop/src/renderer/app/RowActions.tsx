@@ -78,9 +78,13 @@ export function RowActions({
         size="sm"
         disabled={row.busy}
         tabIndex={tabbable ? 0 : -1}
-        onClick={row.active ? stop : open}
+        onClick={row.missing ? () => menu.select("relocate") : row.active ? stop : open}
       >
-        {row.active ? t("library.row.stop.action") : t("library.row.open.action")}
+        {row.missing
+          ? t("library.row.relocate.action")
+          : row.active
+            ? t("library.row.stop.action")
+            : t("library.row.open.action")}
       </Button>
       <Menu
         label={moreLabel}
