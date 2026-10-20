@@ -11,6 +11,8 @@ export interface UpdateRecord {
   latest: { version: string; url: string } | null;
   /** 点过“以后再说”的版本 */
   dismissed: string | null;
+  /** 成功请求浏览器打开下载页的版本；旧记录没有此字段，不把旧“以后再说”当处理。 */
+  handledVersion?: string | null;
 }
 
 export interface UpdateStore {
@@ -26,14 +28,19 @@ function parse(raw: string): UpdateRecord | null {
     return null;
   }
   if (typeof value !== "object" || value === null) return null;
-  const { checkedOn, latest, dismissed } = value as Record<string, unknown>;
+  const { checkedOn, latest, dismissed, handledVersion } = value as Record<string, unknown>;
   if (typeof checkedOn !== "string") return null;
   let found: UpdateRecord["latest"] = null;
   if (typeof latest === "object" && latest !== null) {
     const { version, url } = latest as Record<string, unknown>;
     if (typeof version === "string" && typeof url === "string") found = { version, url };
   }
-  return { checkedOn, latest: found, dismissed: typeof dismissed === "string" ? dismissed : null };
+  return {
+    checkedOn,
+    latest: found,
+    dismissed: typeof dismissed === "string" ? dismissed : null,
+    handledVersion: typeof handledVersion === "string" ? handledVersion : null,
+  };
 }
 
 export class FileUpdateStore implements UpdateStore {

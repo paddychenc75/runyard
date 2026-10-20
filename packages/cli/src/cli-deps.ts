@@ -31,6 +31,8 @@ export interface CliHost {
   /** 系统临时目录：诊断包默认写在这里 */
   readonly tempDir: AbsPath;
   readonly clock: RunClock;
+  /** 长命令注册中断处理，完成后撤销；测试可不给 */
+  onCancel?: (cancel: () => void) => () => void;
   /** 看一眼 PATH 上另一份 runyard 是哪种安装；认不出版本时 version 为 null */
   probeInstall(path: string): Promise<{ kind: "app" | "source"; version: string | null }>;
 }

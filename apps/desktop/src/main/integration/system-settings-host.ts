@@ -16,6 +16,7 @@ import {
   uninstallCliLink,
 } from "./cli-link.ts";
 import { runBundledCli } from "./run-bundled-cli.ts";
+import { skillGuidePath } from "./skill-guide.ts";
 
 // 设置页里“依赖与网络、运行环境、命令行与智能体”要的系统动作的接线：文件选择器、终端、访达、随包命令行的运行。
 // 这些在自动化测试里看不到真的发生，逻辑都在 toolchain-settings.ts、cli-settings.ts 里用假的宿主测，这里只做薄薄的转接。
@@ -100,6 +101,8 @@ export function createSystemSettings(options: SystemSettingsOptions): {
     exists,
     shellName: () => basename(process.env.SHELL ?? "zsh"),
     revealInFileManager: (path) => shell.showItemInFolder(path),
+    openSkillGuide: async (locale) =>
+      (await shell.openPath(skillGuidePath(runtime, locale))) === "",
   };
   return { toolchain, cli: new CliSettings(client, host) };
 }

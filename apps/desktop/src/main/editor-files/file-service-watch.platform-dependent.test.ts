@@ -65,7 +65,10 @@ describe("监听项目文件夹", () => {
     await expect.poll(() => p.changes.some((c) => c.path === "done.marker"), poll).toBe(true);
     const mine = p.changes.filter((c) => c.path !== "done.marker");
     expect(mine.length).toBeGreaterThan(0);
-    expect(mine.every((c) => c.path === "App.tsx" && c.self)).toBe(true);
+    expect(
+      mine.every((c) => c.path === "App.tsx" && c.self),
+      JSON.stringify(mine),
+    ).toBe(true);
     await p.service.dispose();
   });
 

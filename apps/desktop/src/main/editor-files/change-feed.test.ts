@@ -116,3 +116,66 @@ describe("ChangeFeed", () => {
     expect(t.isDisposed()).toBe(true);
   });
 });
+
+function promiseGate<T>() {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>((done) => {
+    resolve = done;
+  });
+  return { promise, resolve };
+}
+
+async function blockedRead() {
+  const reading = promiseGate<void>();
+  const bytes = promiseGate<Uint8Array | null>();
+  const received = promiseGate<FileChange[]>();
+  let now = 1_000;
+  let push: (events: WatchEvent[]) => void = () => {};
+  const feed = new ChangeFeed({
+    folder: "/project" as AbsPath,
+    now: () => now,
+    readBytes: async () => {
+      reading.resolve();
+      return bytes.promise;
+    },
+    emit: received.resolve,
+  });
+  await feed.start(async (_root, _options, handler) => {
+    push = handler;
+    return { dispose: async () => {} };
+  });
+  return {
+    feed,
+    advance: (ms: number) => {
+      now += ms;
+    },
+    begin: async () => {
+      push([change("a.ts")]);
+      await reading.promise;
+    },
+    finish: async (text: string) => {
+      bytes.resolve(new TextEncoder().encode(text));
+      const changes = await received.promise;
+      await feed.stop();
+      return changes;
+    },
+  };
+}
+
+it.each([
+  { name: "又保存新内容", action: "save", disk: "v2", self: true },
+  { name: "失败写入被撤销", action: "forget", disk: "v1", self: false },
+  { name: "旧登记过期", action: "expire", disk: "v1", self: false },
+  { name: "外部另写内容", action: "save", disk: "external", self: false },
+])(
+  "[DESKTOP-EDITOR-36] 等待读盘期间$name：按读回时的有效登记判定",
+  async ({ action, disk, self }) => {
+    const t = await blockedRead();
+    t.feed.noteOwnWrite("a.ts", "v1");
+    await t.begin();
+    if (action === "save") t.feed.noteOwnWrite("a.ts", "v2");
+    if (action === "forget") t.feed.forgetOwnWrite("a.ts", "v1");
+    if (action === "expire") t.advance(5_001);
+    expect(await t.finish(disk)).toEqual([{ kind: "change", path: "a.ts", self }]);
+  },
+);

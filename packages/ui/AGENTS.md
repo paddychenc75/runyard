@@ -50,7 +50,7 @@
 
 ## 表格组件的约定（#169）
 
-- `DataTable`：`editingId` 标出行内编辑的行（行高随内容、淡强调底加边），`cellSpan(row, 列 id)` 让某一格向右占几列（最多 4，被占的列不画）；列用档位（`fill`、`flex`、`icon`、`sm`、`md`、`lg`、`xl`）说宽度，档位对应设计变量 `size-column-*`；`pin: "start" | "end"` 的列在窗口变窄、整张表横向滚动时固定在两侧。放不下时根元素带 `data-overflowing`，单元格里带 `data-when-overflowing` 的元素只在这时显示（名称列里补的状态圆点）。用的是真正的 `<table>`，版面靠 CSS 网格。
+- `DataTable`：`editingId` 标出行内编辑的行（行高随内容、淡强调底加边），`cellSpan(row, 列 id)` 让某一格向右占几列（最多 4，被占的列不画）；列用档位（`fill`、`flex`、`icon`、`sm`、`md`、`lg`、`xl`）说宽度，档位对应设计变量 `size-column-*`；`collapse: { order, mode: "hide" | "narrow" }` 的列在放不下时按 order 一列一列收起（hide 整列不画，narrow 缩成窄档，内容里带 `data-collapse-hide` 的部分不画），变宽按相反顺序恢复，不横向滚动；被收的列 id 记在根元素 `data-collapsed`，带 `data-when-collapsed="<列 id>"` 的元素只在那一列被收起时显示；`reveal` 的列（操作列）平时 opacity 为 0，悬停、选中或焦点进入这一行（行上的 `data-revealed`）才显示；`render(row, { selected, editing, collapsed })`；表格本身是一个 Tab 停点，选中行淡强调色，表格失焦后灰底，悬停比选中淡。用的是真正的 `<table>`，版面靠 CSS 网格；宿主可通过 `--table-gap`、`--table-padding` 以语义变量收紧列距和行内边距，最小宽计算与网格共用它们。
 - `StatusMark` 的形状随状态变（实心圆、空心圆、圆圈叉），不只靠颜色；`Badge` 的 `violet` 变体是“来源”标记，`dashed` 比 `solid` 更轻。
 
 ## 日志视图的约定（#176）

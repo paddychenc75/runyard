@@ -76,6 +76,8 @@
   --color-line-accent: light-dark(var(--blue-600), var(--blue-500));
   --color-text-accent: light-dark(var(--blue-700), var(--blue-400));
   --color-text-link: light-dark(var(--blue-600), var(--blue-400));
+  --color-fill-table-hover: light-dark(rgba(0, 0, 0, 0.03), rgba(255, 255, 255, 0.04));
+  --color-fill-table-selected: light-dark(rgba(0, 113, 227, 0.08), rgba(10, 132, 255, 0.14));
   --color-fill-accent-tint: light-dark(rgba(0, 113, 227, 0.08), rgba(10, 132, 255, 0.32));
   --color-status-running-mark: light-dark(var(--green-600), var(--green-500));
   --color-status-running-text: light-dark(var(--green-800), var(--green-500));
@@ -149,9 +151,9 @@
   --radius-sm: 9px;
   --radius-md: 12px;
   --radius-lg: 16px;
-  --radius-xl: 20px;
+  --radius-xl: 9px;
   --radius-2xl: 28px;
-  --radius-sidebar: 20px;
+  --radius-sidebar: 9px;
   --radius-card: 16px;
   --radius-dialog: 28px;
   --radius-menu: 16px;
@@ -165,6 +167,7 @@
   --size-settings-window-min-height: 420px;
   --size-settings-titlebar: 52px;
   --size-window-buttons-inset: 19px;
+  --size-titlebar: 52px;
   --size-toolbar: 44px;
   --size-control-lg: 40px;
   --size-control-md: 32px;
@@ -182,7 +185,7 @@
   --size-tab-label-max: 180px;
   --size-search-wide: 240px;
   --size-search-short: 180px;
-  --size-window-controls: 72px;
+  --size-window-controls: 70px;
   --size-card-gap: 8px;
   --size-dialog-width: 580px;
   --size-dialog-width-wide: 720px;
