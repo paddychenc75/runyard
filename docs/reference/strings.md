@@ -792,12 +792,22 @@
 | library.search.label | 搜索项目 | Search playgrounds | — |
 | library.search.placeholder | 搜索名称、备注、模板 | Search name, note, template | — |
 | library.search.short.placeholder | 搜索 | Search | — |
+| library.sidebar.calculating.label | {count, plural, other {# 个项目}} · 正在计算大小 | {count, plural, one {# playground} other {# playgrounds}} · calculating size | count：资源库里项目的总数 |
 | library.sidebar.collapse.label | 收起侧栏 | Hide sidebar | — |
 | library.sidebar.expand.label | 显示侧栏 | Show sidebar | — |
 | library.sidebar.footer.label | {count, plural, other {# 个项目}} | {count, plural, one {# playground} other {# playgrounds}} | count：资源库里项目的总数 |
+| library.sidebar.total.label | {count, plural, other {# 个项目}} · 共 {size} | {count, plural, one {# playground} other {# playgrounds}} · {size} total | count：资源库里项目的总数；size：所有项目大小之和（format.fileSize） |
+| library.size.atLeast.label | ≥ {size} | ≥ {size} | size：项目总大小的写法（format.fileSize）；结果不完整时前面加“≥ ” |
+| library.size.calculating.label | 计算中 | Calculating | — |
+| library.size.dependencies.tooltip | 依赖 {size}（{dirs}） | Dependencies {size} ({dirs}) | size：依赖目录的总大小；dirs：找到的依赖目录名，用顿号（英文逗号）连起来 |
+| library.size.dirs.label | {first}、{second} | {first}, {second} | first：第一个依赖目录名；second：第二个依赖目录名（依赖目录只有 node_modules 和 .venv 两种） |
+| library.size.noDependencies.tooltip | 没有依赖目录 | No dependency folders | — |
+| library.size.rest.tooltip | 其余 {size} | Everything else {size} | size：总大小减去依赖大小 |
+| library.size.unreadable.tooltip | 有 {count, plural, other {# 处}}没有权限读取，没有计入 | {count, plural, one {# location} other {# locations}} could not be read and {count, plural, one {is} other {are}} not counted | count：没有权限读取而被跳过的文件夹个数 |
 | library.sort.created.label | 创建时间 | Created | — |
 | library.sort.name.label | 名称 | Name | — |
 | library.sort.recent.label | 最近使用 | Last used | — |
+| library.sort.size.label | 大小 | Size | — |
 | library.status.problem.label | 有问题 | Has a problem | — |
 | library.status.running.label | 运行中 | Running | — |
 | library.status.stopped.label | 已停止 | Stopped | — |

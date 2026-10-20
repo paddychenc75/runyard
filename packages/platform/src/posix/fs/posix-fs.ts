@@ -17,6 +17,7 @@ import type { Platform } from "../../platform.ts";
 import { platformError } from "../../platform-error.ts";
 import { errnoOf, fsError } from "./map-fs-error.ts";
 import { renameNoReplace } from "./rename-no-replace.ts";
+import { scanDirPosix } from "./scan-dir.ts";
 import { type AtomicOps, writeAtomic } from "./write-atomic.ts";
 
 // darwin 与 linux 共用的 fs（不含 trash，废纸篓是各系统自己的事）。
@@ -105,6 +106,8 @@ export function createPosixFs(options: PosixFsOptions = {}): Omit<Platform["fs"]
       }
       return names.sort();
     },
+
+    scanDir: scanDirPosix,
 
     async exists(path) {
       try {

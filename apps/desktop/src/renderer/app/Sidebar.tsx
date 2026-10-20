@@ -20,6 +20,8 @@ export interface SidebarProps {
   windowControls: BootstrapInfo["windowControls"];
   /** 资源库里项目的总数 */
   total: number;
+  /** 所有项目大小的合计，和有没有项目还在计算（规格 DESKTOP-LIBRARY-VIEW-69、70） */
+  sizeTotal: { bytes: number; calculating: boolean };
   /** 四个固定筛选各自符合的项目数 */
   counts: Record<NavFilter, number>;
   /** 当前的固定筛选 */
@@ -42,6 +44,7 @@ export interface SidebarProps {
 export function Sidebar({
   windowControls,
   total,
+  sizeTotal,
   counts,
   nav,
   onNavChange,
@@ -98,6 +101,15 @@ export function Sidebar({
   // 窗口按钮是自绘标题栏的一部分：让位宽度大于 0 才有，在哪一侧由主进程说了算
   const controls =
     windowControls.inset === 0 ? "none" : windowControls.side === "left" ? "start" : "end";
+  // 没有项目只写个数；有项目还在计算时写“正在计算大小”，全算完才写合计
+  const footerText = () => {
+    if (total === 0) return t("library.sidebar.footer.label", { count: total });
+    if (sizeTotal.calculating) return t("library.sidebar.calculating.label", { count: total });
+    return t("library.sidebar.total.label", {
+      count: total,
+      size: format.fileSize(sizeTotal.bytes),
+    });
+  };
   return (
     <GlassSurface
       material="sidebar"
@@ -157,7 +169,7 @@ export function Sidebar({
         <UserText mono className={styles.location}>
           {libraryRoot}
         </UserText>
-        <div>{t("library.sidebar.footer.label", { count: total })}</div>
+        <div>{footerText()}</div>
       </div>
     </GlassSurface>
   );

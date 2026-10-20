@@ -217,6 +217,58 @@ export function fsContract(ctx: ContractContext): void {
     });
   });
 
+  describe("fs.scanDir", () => {
+    it('"fs.scanDir" 带父扫描的目录身份，路径已换成另一目录时拒绝结果', async () => {
+      const at = await fresh();
+      await fs.makeDir(at("sub"));
+      const original = (await fs.scanDir(at("sub")))?.self;
+      if (original === undefined) throw new Error("缺少原目录的身份");
+      await fs.moveDir(at("sub"), at("original"));
+      const moved = await fs.scanDir(at("original"), original);
+      expect(moved?.changed).toBeUndefined();
+      expect(moved?.self).toMatchObject({ dev: original.dev, ino: original.ino });
+      await fs.makeDir(at("sub"));
+      const changed = await fs.scanDir(at("sub"), original);
+      expect(changed?.changed).toBe(true);
+      expect(changed?.entries).toEqual([]);
+    });
+
+    it('"fs.scanDir" 列出直接子项的类型和占用的字节，1 字节的文件按整块算', async () => {
+      const at = await fresh();
+      await fs.writeFile(at("a.txt"), "x");
+      await fs.makeDir(at("sub"));
+      const scan = await fs.scanDir(at());
+      expect(scan?.self.kind).toBe("dir");
+      const byName = new Map((scan?.entries ?? []).map((entry) => [entry.name, entry]));
+      expect([...byName.keys()].sort()).toEqual(["a.txt", "sub"]);
+      expect(byName.get("a.txt")?.kind).toBe("file");
+      expect(byName.get("a.txt")?.bytes).toBeGreaterThanOrEqual(512);
+      expect((byName.get("a.txt")?.bytes ?? 0) % 512).toBe(0);
+      expect(byName.get("sub")?.kind).toBe("dir");
+    });
+
+    it('"fs.scanDir" 空文件夹没有子项；不存在的文件夹和不是文件夹的路径返回 null', async () => {
+      const at = await fresh();
+      await fs.writeFile(at("f.txt"), "x");
+      expect((await fs.scanDir(at()))?.entries.length).toBe(1);
+      await fs.makeDir(at("empty"));
+      expect((await fs.scanDir(at("empty")))?.entries).toEqual([]);
+      expect(await fs.scanDir(at("nope"))).toBeNull();
+      expect(await fs.scanDir(at("f.txt"))).toBeNull();
+    });
+
+    it('"fs.scanDir" 内容越长占用越大', async () => {
+      const at = await fresh();
+      await fs.writeFile(at("small"), "x");
+      await fs.writeFile(at("big"), new Uint8Array(1_000_000));
+      const scan = await fs.scanDir(at());
+      const bytes = (name: string) =>
+        scan?.entries.find((entry) => entry.name === name)?.bytes ?? 0;
+      expect(bytes("big")).toBeGreaterThanOrEqual(1_000_000);
+      expect(bytes("big")).toBeGreaterThan(bytes("small"));
+    });
+  });
+
   describe("fs.trash", () => {
     if (ctx.unsupported.has("fs.trash")) {
       it('"fs.trash" 这个系统不支持：抛 NOT_SUPPORTED，文件夹原样', async () => {
