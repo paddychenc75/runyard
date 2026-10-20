@@ -84,3 +84,5 @@
 `pnpm --filter @runyard/desktop visual:screens`运行画面基准及en-XA扫描；本机定位可用`visual:scan`（只写临时证据，不更新基准）。画面基准只由`desktop-baseline`在macOS上生成，给PR加独立标签`update-screen-baseline`；没有这个标签时只比对。现有`update-ui-baseline`只更新组件图。两者保持相同单张200KB、合计30MB和20像素容差，不增加豁免。新标签通过仓库标签管理注册后再使用，不修改组件基准任务。
 
 `desktop-visual`上传`desktop-screen-results`，包括JSON执行报告与失败差异图。基准工作流将只读生成和写入提交分成两个任务，提交前核对分支head未变化，机器人提交后重新触发完整检查。画面工作台不证明原生预览/真实服务或主进程行为；这部分继续由既有打包E2E和设计并排取证承担。
+
+诊断与CI共用锁定的Playwright Chromium和资源白名单。编辑器资源复用既有构建，只有真实产物中的本地`app://runyard/`资源可以映射到临时回环站点；外部地址、未登记文件和路径穿越仍使测试失败。不能用系统浏览器的扫描结果替代CI，也不能吞掉资源失败或返回空脚本来生成基准。

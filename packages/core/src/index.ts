@@ -10,5 +10,11 @@ export * from "./run/index.ts";
 export * from "./scripts/index.ts";
 export { RELOAD_EVENTS_PATH } from "./static/static-reload.ts";
 export { createStaticServer } from "./static/static-server.ts";
+export { type TemplateTestOptions, testTemplate } from "./template-test/template-test.ts";
+export type {
+  TemplateTestResult,
+  TemplateTestRun,
+  TemplateTestStepResult,
+} from "./template-test/test-workflow.ts";
 export * from "./templates/index.ts";
 export * from "./toolchain/index.ts";

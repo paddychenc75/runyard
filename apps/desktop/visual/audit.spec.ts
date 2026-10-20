@@ -1,12 +1,15 @@
 import { auditScreen } from "./audit.ts";
 import { expect, test } from "./fixtures.ts";
 import { prepareScene } from "./prepare-scene.ts";
+import { installResourceRoute } from "./resource-route.ts";
 import { NOW } from "./scene-data.ts";
 
 for (const fault of ["text", "overflow"] as const) {
-  test(`故障注入证明画面检查会拒绝${fault}`, async ({ page, screenUrl }) => {
+  test(`故障注入证明画面检查会拒绝${fault}`, async ({ page, screenServer }) => {
+    const errors: string[] = [];
+    await installResourceRoute(page, screenServer, errors);
     await page.clock.setFixedTime(NOW);
-    await page.goto(`${screenUrl}?scene=Main&locale=en-XA`);
+    await page.goto(`${screenServer.url}?scene=Main&locale=en-XA`);
     await prepareScene(page, "Main", "en-XA");
     await auditScreen(page);
     await page.evaluate((kind) => {
@@ -23,5 +26,6 @@ for (const fault of ["text", "overflow"] as const) {
     await expect(auditScreen(page)).rejects.toThrow(
       fault === "text" ? "未通过文案包" : "画面内容溢出",
     );
+    expect(errors).toEqual([]);
   });
 }

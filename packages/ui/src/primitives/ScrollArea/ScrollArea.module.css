@@ -98,3 +98,9 @@
     transition: background-color var(--motion-duration-fast) linear;
   }
 }
+
+/* 保留Scrollbar挂载和尺寸，避免隐藏外观时改变底层滚动方向/溢出登记。 */
+.root[data-scrollbars="hidden"] .scrollbar {
+  visibility: hidden;
+  pointer-events: none;
+}

@@ -2,6 +2,7 @@ import { combinations } from "../../../packages/ui/visual/matrix.ts";
 import { auditScreen } from "./audit.ts";
 import { expect, test } from "./fixtures.ts";
 import { prepareScene } from "./prepare-scene.ts";
+import { installResourceRoute } from "./resource-route.ts";
 import { NOW } from "./scene-data.ts";
 import { scenes } from "./scenes.ts";
 
@@ -9,23 +10,16 @@ for (const scene of scenes)
   for (const combination of combinations) {
     test(`${scene.id} / ${combination.theme} / ${combination.locale}`, async ({
       page,
-      screenUrl,
+      screenServer,
     }, info) => {
       const errors: string[] = [];
-      await page.route("**/*", async (route) => {
-        if (new URL(route.request().url()).origin === new URL(screenUrl).origin)
-          await route.continue();
-        else {
-          errors.push(`画面工作台尝试访问外部地址：${route.request().url()}`);
-          await route.abort();
-        }
-      });
+      await installResourceRoute(page, screenServer, errors);
       page.on("pageerror", (error) => errors.push(error.message));
       await page.setViewportSize({ width: scene.width, height: 900 });
       await page.clock.setFixedTime(NOW);
       await page.emulateMedia({ colorScheme: combination.theme });
       await page.goto(
-        `${screenUrl}?scene=${scene.id}&locale=${combination.locale}&theme=${combination.theme}`,
+        `${screenServer.url}?scene=${scene.id}&locale=${combination.locale}&theme=${combination.theme}`,
       );
       await prepareScene(page, scene.id, combination.locale);
       expect(errors, "画面存在未处理错误，契约替身可能不完整").toEqual([]);

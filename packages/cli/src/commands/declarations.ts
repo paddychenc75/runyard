@@ -15,10 +15,11 @@ import { skillInstall as skillInstallRun } from "./skill-install.ts";
 import { status } from "./status.ts";
 import { stop } from "./stop.ts";
 import { templateLint, templateList, templateSave, templateShow } from "./template-commands.ts";
+import { templateTest } from "./template-test.ts";
 import { versionCommand } from "./version.ts";
 
 // 命令表（docs/architecture/cli-contract.md 第 2 节）。
-// template test 没有 run，等 #54 的冒烟测试。
+// template test 在本进程直接通过 core 做冒烟，不连接管理进程。
 // template、skill 子命令的位置参数契约没写，按“show / lint / test 收一个模板，save 收一个项目”声明。
 
 const pg = (required = true): PositionalSpec => ({
@@ -240,6 +241,7 @@ const templateCommands = [
       },
     ],
     needsSupervisor: false,
+    run: templateTest,
   }),
 ];
 

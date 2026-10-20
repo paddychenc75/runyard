@@ -17,6 +17,8 @@
 
 ## 子目录地图
 
+- `library-row-order.ts`：资源库的默认排序比较，运行中优先、最近使用降序、名称兜底；由 `buildLibraryState` 调用。
+
 - `agent-notices.ts`：右下角提示的推导；`clean-reminders.ts`：提示条的三个选择、“提醒已显示”的回报和到点的清理检查；`library-chrome.ts`：把资源库文件夹、提醒、提示、Dock 角标从控制器里分出来（控制器文件接近 400 行上限）。
 - `integration/dock-badge.ts`：Dock 角标（Electron 接线）。
 - `src/shared/clean-due.ts`：主进程和界面共用的“明天清理”判断。

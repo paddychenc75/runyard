@@ -6,6 +6,7 @@ import { collectPageTexts, findLeakedText } from "@runyard/i18n";
 import { findOverflows } from "../../../packages/ui/visual/overflow-scan.ts";
 import { serveScreens } from "./build.ts";
 import { prepareScene } from "./prepare-scene.ts";
+import { installResourceRoute } from "./resource-route.ts";
 import { NOW } from "./scene-data.ts";
 import { scenes } from "./scenes.ts";
 
@@ -15,7 +16,6 @@ const out = mkdtempSync(join(tmpdir(), "ry-screen400-"));
 let failed = false;
 const server = await serveScreens(join(out, "site"));
 const browser = await chromium.launch({
-  executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   headless: true,
 });
 try {
@@ -28,6 +28,7 @@ try {
       locale: "en-US",
     });
     const errors: string[] = [];
+    await installResourceRoute(page, server, errors);
     page.on("pageerror", (error) => errors.push(error.message));
     await page.clock.setFixedTime(NOW);
     try {

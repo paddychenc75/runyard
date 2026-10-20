@@ -10,7 +10,12 @@
     "types": ["node"],
     "jsx": "react-jsx"
   },
-  "include": ["visual/**/*.ts", "visual/**/*.tsx", "src/renderer/css-modules.d.ts"],
+  "include": [
+    "visual/**/*.ts",
+    "visual/**/*.tsx",
+    "build-editor.ts",
+    "src/renderer/css-modules.d.ts"
+  ],
   "references": [
     {
       "path": "./tsconfig.renderer.json"

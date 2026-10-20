@@ -79,6 +79,19 @@ const methodButton = () => document.querySelector("[data-method]") as HTMLButton
 const sendButton = () => screen.getByRole("button", { name: "发送" }) as HTMLButtonElement;
 
 describe("请求面板", () => {
+  it("[DESKTOP-REQUEST-PANEL-06] 服务崩溃后保留上次响应但明确标为停止前的结果", async () => {
+    const view = setup(service());
+    await userEvent.setup().click(sendButton());
+    await screen.findByText("200 OK");
+    view.rerender(service({ state: "errored", status: "crashed", active: false }));
+    expect(sendButton().disabled).toBe(true);
+    expect(await screen.findByText("服务已停止，这是停止前的响应。")).toBeTruthy();
+    expect(
+      document.querySelector('[data-request-response="response"]')?.getAttribute("data-stale"),
+    ).toBe("true");
+    expect(screen.getByText("200 OK")).toBeTruthy();
+  });
+
   it("[DESKTOP-REQUEST-PANEL-01] 服务项目：方法 GET、地址前缀 127.0.0.1:7102、路径 /、发送、请求头和请求体页签、自动重发开关、复制为 curl、在浏览器中打开", async () => {
     setup(service());
     expect(methodButton().textContent).toBe("GET");

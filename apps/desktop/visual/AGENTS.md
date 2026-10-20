@@ -4,6 +4,8 @@
 
 仅测试入口，生产build/pack不引用。复用真实AppShell、页面和弹窗，不复制产品DOM；`scene-state`与`bridge-data`提供主进程契约替身，未知桥方法必须失败。工作台只访问自己的回环服务，既不启动管理进程也不运行模板服务器。原生预览、真实文件、工具链和进程行为仍由打包E2E证明；这里的Web画面只覆盖renderer外壳和预览槽，不能声称测过原生网页。
 
+编辑器脚本、样式、中文包和字体由既有`buildEditor`真实构建。测试路由只把已构建文件白名单中的`app://runyard/editor/*`与`workers/*`映射到临时回环站点；拒绝点目录、编码路径、主机/协议变化及未登记资源，不提供空脚本或生产联网豁免。工作台未打开文件，不能把运行时加载验收当成Monaco文件、worker或语言服务的完整验收。
+
 ## 对外暴露什么
 
 只有测试命令与CI产物，不向应用或其他产品包提供运行时入口。
@@ -20,11 +22,11 @@
 - `scenes.ts`、`prepare-scene.ts`：画板映射、正常UI交互及可见性断言。
 - `screens.spec.ts`、`audit.spec.ts`：全矩阵回归与故障注入。
 - `executed-coverage.ts`、`check-results.ts`、`check-budget.ts`：执行覆盖和既有预算检查。
-- `build.ts`、`probe.ts`：回环构建服务、本机诊断扫描。
+- `build.ts`、`probe.ts`：回环构建服务、本机诊断扫描；`resource-policy.ts`、`resource-route.ts`是诊断和CI共用的资源白名单与网络闸门。
 
 ## 测试
 
-- `pnpm --filter @runyard/desktop visual:scan`：本机Chrome无头跑en-XA，截图与JSON保留在输出所示临时目录；可在命令后给单一场景名定位，不是CI全覆盖入口。
+- `pnpm --filter @runyard/desktop visual:scan`：锁定的Playwright Chromium无头跑en-XA，与CI用同一个浏览器和资源闸门；先运行已有`pnpm --filter @runyard/ui visual:install`。截图与JSON保留在输出所示临时目录；可在命令后给单一场景名定位，不是CI全覆盖入口。
 - `pnpm --filter @runyard/desktop visual:screens`：Playwright全矩阵截图比对、伪语言及运行覆盖检查。先用现有`pnpm --filter @runyard/ui visual:install`安装锁定的Chromium。
 - `__screenshots__`只由独立macOS CI生成；PR加`update-screen-baseline`，不用本地`-u`。`desktop-baseline.yml`与组件基准的`update-ui-baseline`相互独立，不操作组件PNG。
 - 保持既有单张200KB、组件与画面合计30MB、像素容差20；不把目录隔离当成增加预算。

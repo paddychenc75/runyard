@@ -99,12 +99,18 @@ export function Sidebar({
   const controls =
     windowControls.inset === 0 ? "none" : windowControls.side === "left" ? "start" : "end";
   return (
-    <GlassSurface material="sidebar" className={styles.root}>
+    <GlassSurface
+      material="sidebar"
+      className={styles.root}
+      data-library-sidebar=""
+      data-sidebar-controls={controls}
+    >
       <TitleBar controls={controls}>
         <span className={styles.toggle}>
           <PaneToggleButton
             label={t("library.sidebar.collapse.label")}
             expanded
+            sidebar
             onClick={onCollapse}
           />
         </span>
@@ -126,7 +132,7 @@ export function Sidebar({
             draggable={false}
           />
         </span>
-        <span>{t("desktop.window.title")}</span>
+        <span className={styles.wordmark}>{t("desktop.window.title")}</span>
       </div>
       <ScrollArea className={styles.nav}>
         <NavList
