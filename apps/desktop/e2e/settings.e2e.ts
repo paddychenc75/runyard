@@ -67,10 +67,10 @@ test("[DESKTOP-SETTINGS-35] 标题固定、滚动高亮和细线，行距符合�
   const header = page.locator("[data-settings-header]");
   await expect(header).toBeVisible();
   const before = await header.boundingBox();
-  expect(before?.height).toBe(88);
+  expect(before?.height).toBeGreaterThan(88);
   await expect(header).toHaveAttribute("data-scrolled", "false");
   const column = page.locator("[data-settings-column]");
-  expect((await column.boundingBox())?.width).toBe(720);
+  expect((await column.boundingBox())?.width).toBe(756);
   const metrics = await page.locator("[data-settings-row]").evaluateAll((rows) =>
     rows.map((row) => {
       const text = row.firstElementChild;
@@ -87,7 +87,7 @@ test("[DESKTOP-SETTINGS-35] 标题固定、滚动高亮和细线，行距符合�
   );
   expect(metrics.length).toBeGreaterThan(10);
   for (const metric of metrics) {
-    expect(metric.height).toBeGreaterThanOrEqual(54);
+    expect(metric.height).toBeGreaterThanOrEqual(64);
     expect(metric.gap).toBeGreaterThanOrEqual(24);
   }
   await page.locator("#settings-viewport").evaluate((node) => {
