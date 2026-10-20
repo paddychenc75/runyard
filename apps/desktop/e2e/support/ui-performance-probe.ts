@@ -10,7 +10,14 @@ export interface UiSample {
 /** 只在测量页面监听真实输入与DOM，不改产品状态、注册表或时钟。 */
 export async function armUiProbe(
   page: Page,
-  options: { key: string; selector: string; needle: string; query?: string; count?: number },
+  options: {
+    key: string;
+    selector: string;
+    needle: string;
+    query?: string;
+    count?: number;
+    traceLabel?: string;
+  },
 ) {
   await page.evaluate((options) => {
     const holder = window as unknown as { performanceSample: Promise<unknown> };
@@ -18,7 +25,8 @@ export async function armUiProbe(
       let began: number | undefined;
       let finished = false;
       const states: unknown[] = [];
-      const frames: { stamp: number; callback: number }[] = [];
+      const frames: { stamp: number; callback: number; visibility: string; focused: boolean }[] =
+        [];
       const snapshot = () => ({
         at: performance.now(),
         visibility: document.visibilityState,
@@ -30,6 +38,9 @@ export async function armUiProbe(
           longTasks.push({ start: entry.startTime, duration: entry.duration });
       });
       tasks.observe({ type: "longtask" });
+      const mark = (phase: string) => {
+        if (options.traceLabel) performance.mark(`${options.traceLabel}:${phase}`);
+      };
       const eventName = options.key === "pointerdown" ? "pointerdown" : "keydown";
       const start = (event: Event) => {
         if (
@@ -38,6 +49,7 @@ export async function armUiProbe(
         )
           return;
         began = performance.now();
+        mark("input");
         states.push({ phase: "input", ...snapshot() });
         window.removeEventListener(eventName, start, true);
       };
@@ -56,13 +68,26 @@ export async function armUiProbe(
           return;
         finished = true;
         const domMs = performance.now() - began;
+        mark("dom");
         states.push({ phase: "dom", ...snapshot() });
         observer.disconnect();
         requestAnimationFrame((stamp) => {
-          frames.push({ stamp, callback: performance.now() });
+          frames.push({
+            stamp,
+            callback: performance.now(),
+            visibility: document.visibilityState,
+            focused: document.hasFocus(),
+          });
+          mark("raf1");
           requestAnimationFrame((stamp) => {
-            frames.push({ stamp, callback: performance.now() });
+            frames.push({
+              stamp,
+              callback: performance.now(),
+              visibility: document.visibilityState,
+              focused: document.hasFocus(),
+            });
             const paintedMs = performance.now() - (began ?? 0);
+            mark("raf2");
             states.push({ phase: "frames", ...snapshot() });
             for (const entry of tasks.takeRecords())
               longTasks.push({ start: entry.startTime, duration: entry.duration });
@@ -70,6 +95,17 @@ export async function armUiProbe(
             const animations = document.getAnimations().map((animation) => ({
               playState: animation.playState,
               currentTime: animation.currentTime,
+              animationName: animation instanceof CSSAnimation ? animation.animationName : null,
+              transitionProperty:
+                animation instanceof CSSTransition ? animation.transitionProperty : null,
+              targetTag:
+                animation.effect instanceof KeyframeEffect
+                  ? animation.effect.target?.tagName
+                  : null,
+              targetClass:
+                animation.effect instanceof KeyframeEffect
+                  ? animation.effect.target?.getAttribute("class")
+                  : null,
             }));
             resolve({ domMs, paintedMs, observed, longTasks, states, frames, animations });
           });

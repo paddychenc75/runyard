@@ -57,7 +57,19 @@ pnpm --filter @runyard/desktop exec playwright test \
 
 探针在计时区间读取querySelector/textContent/input.value，不读取几何或computed style；MutationObserver观察范围是document.body，可能增加观察开销。getAnimations在paintedMs已经记下之后执行，不包含在该次页面内时长，但可能改变下一次测量前的状态。readUiProbe只等待页面内Promise，不以page.evaluate轮询间隔计时。首次版本没有takeRecords，不能将空longTasks数组解释为完全排除了所有主线程/样式任务；诊断已保留待交付记录。
 
-下一步诊断（尚未执行）：固定首字从少量recent结果扩展到100行的触发，采集主线程样式/布局/绘制与合成帧trace；同时记录面板及结果行的动画名称/属性和目标，不只枚举playState。先做一份带trace的定向样本核对DOM提交、Palette的scrollIntoView、ScrollArea布局、光栅化/合成与两个rAF回调的关系；trace开销单列，不拿它直接作达标样本。定位后再预先约定新实例首字与同实例热查询的固定次数，保留全部分布及失败，不挑最好结果。产品门槛仍是200/100ms；两rAF是提交近似，不是硬件呈现时刻。
+随后经协调人批准完成一次trace诊断，结果见下节。定位后仍须预先约定新实例首字与同实例热查询的固定次数，保留全部分布及失败，不挑最好结果。产品门槛仍是200/100ms；两rAF是提交近似，不是硬件呈现时刻。
+
+### #531 的一次全进程trace诊断
+
+`quick-open-trace.measure.ts`复用相同万文件夹具，只做一次首开与首字。使用Electron本地类型及[官方contentTracing接口](https://www.electronjs.org/docs/latest/api/content-tracing/)，记录main/renderer、devtools.timeline、blink.user_timing、cc、viz、gpu；页面以input/dom/raf1/raf2用户标记对齐trace时间，附每帧visibility/focus和动画名称、属性、目标。它明确是诊断，不能代替保留200/100ms断言的普通测量文件。
+
+该次首字DOM11.3ms、两回调18.0ms，未复现187.1ms。trace标记相对输入为DOM11.215、rAF1 12.335、rAF2 17.902ms，即DOM到首回调1.120ms、首到次回调5.567ms。主窗口及每帧均可见、聚焦。实际动画目标是FileTabs选中指示器的transform/width与Monaco滚动条opacity，没有观察到Palette结果行进入动画。
+
+同一区间renderer主线程Layout4次（单次最大1.048ms）、UpdateLayoutTree6次（最大1.208ms）、Paint5次（最大0.585ms），最长RunTask11.379ms。这些事件含嵌套时间，不可跨名称相加当CPU总耗时。代码里的选中行scrollIntoView、Base UI ScrollArea读取scroll/client尺寸和ResizeObserver、玻璃backdrop-filter仍是后续分布诊断可对照的路径；本次低时延trace不能证明它们导致或排除了最初的停顿。
+
+startRecording等待61.4ms已单列，采样本身的持续开销未能从单次运行分离，不从实测里擅自减去。原trace在tmp.39ksxLgBZB/quick-open-chromium-trace.json（6639事件、1372254字节，SHA-256 `e3452a8a7016c6d1397dd5b772f9fc09fb60325e6f9970d8b85de68c03f06a0b`）；原trace可能含本机路径，不提交。去除路径参数的数值摘要及页面观测保存在`editor-trace-summary.json`与`editor-trace-observations.json`。
+
+本次完整pnpm verify及e2e专用类型检查通过，trace诊断1/1完成并正常退出。#531仍开放：原失败没有逐帧/trace证据，无法将本次状态反推到它。下一步是预先固定新应用首字和同应用热查询的样本分布，并对慢样本抓取对应trace；尚未执行，不继续裸重跑以求通过。
 
 ### 终端：三份有效负载均达到实际每秒几万行
 
