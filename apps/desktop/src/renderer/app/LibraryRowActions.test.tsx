@@ -93,7 +93,7 @@ describe("最近使用", () => {
     expect([used("a"), used("b"), used("c")]).toEqual(["1 小时前", "30 分钟前", "10 分钟前"]);
     expect(screen.getByRole("columnheader", { name: "最近使用" })).toBeTruthy();
     expect(screen.getByRole("columnheader", { name: "大小" })).toBeTruthy();
-    expect(table.querySelector("td[data-column=size]")?.textContent).toBe("—");
+    expect(table.querySelector("td[data-column=size]")?.textContent).toBe("计算中");
   });
 });
 

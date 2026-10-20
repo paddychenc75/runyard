@@ -4,6 +4,8 @@ export { type AbsPath, absPath, joinPath, type PosixRelPath, posixRelPath } from
 export { MAX_NAME_LENGTH } from "./paths/validate-name.ts";
 export type {
   Arch,
+  DirScan,
+  DiskEntry,
   Disposable,
   Env,
   EnvFailureReason,

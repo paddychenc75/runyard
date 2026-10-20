@@ -1000,14 +1000,41 @@ export type CatalogMessages = {
   "library.search.label": Record<never, never>;
   "library.search.placeholder": Record<never, never>;
   "library.search.short.placeholder": Record<never, never>;
+  "library.sidebar.calculating.label": {
+    count: number;
+  };
   "library.sidebar.collapse.label": Record<never, never>;
   "library.sidebar.expand.label": Record<never, never>;
   "library.sidebar.footer.label": {
     count: number;
   };
+  "library.sidebar.total.label": {
+    count: number;
+    size: string | number;
+  };
+  "library.size.atLeast.label": {
+    size: string | number;
+  };
+  "library.size.calculating.label": Record<never, never>;
+  "library.size.dependencies.tooltip": {
+    dirs: string | number;
+    size: string | number;
+  };
+  "library.size.dirs.label": {
+    first: string | number;
+    second: string | number;
+  };
+  "library.size.noDependencies.tooltip": Record<never, never>;
+  "library.size.rest.tooltip": {
+    size: string | number;
+  };
+  "library.size.unreadable.tooltip": {
+    count: number;
+  };
   "library.sort.created.label": Record<never, never>;
   "library.sort.name.label": Record<never, never>;
   "library.sort.recent.label": Record<never, never>;
+  "library.sort.size.label": Record<never, never>;
   "library.status.problem.label": Record<never, never>;
   "library.status.running.label": Record<never, never>;
   "library.status.stopped.label": Record<never, never>;

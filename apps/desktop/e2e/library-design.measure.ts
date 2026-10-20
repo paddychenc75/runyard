@@ -88,6 +88,15 @@ async function captureApp(instance: RunyardApp, board: string, width: number, he
   if (width === 1100) {
     await expect(instance.page.locator('[data-collapsed~="template"]')).toBeVisible();
   }
+  // 窄化会同时改变页头换行与表格收列；先等页头档位，避免鼠标坐标落到换行前的相邻行。
+  await expect
+    .poll(() =>
+      instance.page
+        .locator("input[aria-label]")
+        .first()
+        .evaluate((el) => el.closest("[data-size]")?.getAttribute("data-size")),
+    )
+    .toBe(width === 720 || width === 1100 ? "short" : "wide");
   const selected = instance.page.locator('tr[data-row-id="react19-1"]');
   await selected.locator('td[data-column="name"]').click();
   await expect(selected).toHaveAttribute("data-selected", "");
@@ -101,6 +110,13 @@ async function captureApp(instance: RunyardApp, board: string, width: number, he
       id: cell.getAttribute("data-column"),
       width: cell.getBoundingClientRect().width,
     })),
+    clippedSizes: [...element.querySelectorAll('tbody td[data-column="size"]')].flatMap((cell) => {
+      const box = cell.getBoundingClientRect();
+      const range = document.createRange();
+      range.selectNodeContents(cell);
+      const text = range.getBoundingClientRect();
+      return text.left < box.left - 1 || text.right > box.right + 1 ? [cell.textContent] : [];
+    }),
     horizontalOverflow:
       element.parentElement === null
         ? null
@@ -113,8 +129,19 @@ async function captureApp(instance: RunyardApp, board: string, width: number, he
       metrics.columns.some((column) => column.id === id),
       `${board}: ${id}`,
     ).toBe(true);
+  expect(metrics.clippedSizes, `${board}: size text bounds`).toEqual([]);
   measurements.push({ board, metrics });
   await instance.page.screenshot({ path: join(output, `${board}-app.png`), scale: "css" });
+  if (width === 720) {
+    await instance.page
+      .locator('tr[data-row-id="hono-1"] td[data-column="size"] [data-user-content]')
+      .hover();
+    await expect(instance.page.getByText(/node_modules/)).toBeVisible();
+    await instance.page.screenshot({
+      path: join(output, `${board}-dependencies.png`),
+      scale: "css",
+    });
+  }
 }
 
 async function captureComparison(page: Page, board: string, width: number, height: number) {
@@ -205,7 +232,7 @@ async function main() {
   }
   writeFileSync(
     join(output, "README.md"),
-    `# 资源库设计稿并排对照\n\n左：仓库设计稿；右：真实 Electron 应用，经过真实 IPC 事件注入固定演示状态。\n\n共八组：1440×900 / 1100×800，浅色 / 深色，中文 / 英文。九行覆盖两项运行中、崩溃、找不到文件夹、智能体和命令行徽标、空备注、自动清理、选中与悬停。截图仅验证界面，运行和磁盘行为另由端到端及单元测试验证。\n\n本次保留的范围差异：大小数据由 #410 接入；侧栏分组沿用 #448；窄窗口自动隐藏与压缩间距为负责人2026-10-19批准的方案A，另附720/900/1024中英浅深12图，三种宽度无横滚、名称至少200。侧栏切换按钮本分支固定x92/y22；#446后续整体迁移到新顶栏位置。完整差异及负责人批准出处在 PR 描述中记录。\n\n应用和设计稿提交：${process.env.GITHUB_SHA ?? process.env.RUNYARD_DESIGN_COMMIT ?? "本地工作树，提交编号由 PR 记录"}\n\n真实 ~/.runyard 与 ~/Runyard 目录的修改时间未变，详见 measurements.json。\n`,
+    `# 资源库设计稿并排对照\n\n左：仓库设计稿；右：真实 Electron 应用，经过真实 IPC 事件注入固定演示状态。\n\n共八组：1440×900 / 1100×800，浅色 / 深色，中文 / 英文。九行覆盖两项运行中、崩溃、找不到文件夹、智能体和命令行徽标、空备注、自动清理、选中与悬停。截图仅验证界面，运行和磁盘行为另由端到端及单元测试验证。\n\n本次保留的范围差异：大小列已接入 #410（取证用固定大小状态覆盖计算中、不完整及GB值，真实磁盘更新另由library-size.e2e验证）；侧栏分组沿用 #448；窄窗口自动隐藏与压缩间距为负责人2026-10-19批准的方案A，另附720/900/1024中英浅深12图，三种宽度无横滚、名称至少200。侧栏切换按钮沿已合入#446的52高顶栏固定在x90/y12。完整差异及负责人批准出处在 PR 描述中记录。\n\n应用和设计稿提交：${process.env.GITHUB_SHA ?? process.env.RUNYARD_DESIGN_COMMIT ?? "本地工作树，提交编号由 PR 记录"}\n\n真实 ~/.runyard 与 ~/Runyard 目录的修改时间未变，详见 measurements.json。\n`,
   );
   console.log(`并排图已写入 ${output}`);
 }

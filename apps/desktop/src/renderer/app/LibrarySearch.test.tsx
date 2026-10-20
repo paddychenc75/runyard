@@ -389,7 +389,7 @@ describe("页概况与资源库位置", () => {
     ];
     setup(library(rows));
     expect(await screen.findByText("20 个项目 · 4 个正在运行 · 存放在 ~/Runyard")).toBeTruthy();
-    const footer = screen.getByText("20 个项目", { selector: "div" });
+    const footer = screen.getByText(/^20 个项目 · /, { selector: "div" });
     expect(footer.parentElement?.textContent).toContain("~/Runyard");
   });
 });

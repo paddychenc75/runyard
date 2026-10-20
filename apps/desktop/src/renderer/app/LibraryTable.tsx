@@ -16,6 +16,7 @@ import { isDueTomorrow } from "../../shared/clean-due.ts";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import { lastUsedAt } from "../../shared/last-used.ts";
 import type { PlaygroundRow } from "../../shared/library-state.ts";
+import type { SortKey } from "../library-query.ts";
 import {
   brandOf,
   logoOf,
@@ -27,6 +28,7 @@ import {
 } from "../library-view.ts";
 import { ActionFailedDialog } from "./ActionFailedDialog.tsx";
 import { CreatorDetails, CreatorTag } from "./CreatorCell.tsx";
+import { sizeColumn } from "./LibrarySizeColumn.tsx";
 import styles from "./LibraryTable.module.css";
 import { MissingNote } from "./MissingNote.tsx";
 import { RenameInlineActions, RenameInlineFields } from "./RenameInline.tsx";
@@ -41,13 +43,24 @@ export interface LibraryTableProps {
   rows: readonly PlaygroundRow[];
   now: number;
   reveal?: { id: string; sequence: number };
+  /** 当前排序，和“排序”下拉是同一个值；点“大小”表头等于选“大小” */
+  sort: SortKey;
+  onSortChange: (sort: SortKey) => void;
 }
 
-// 没有值的格子用短横线；大小数据由 #410 接入。
+// 没有值的格子用短横线。
 const NONE = "—";
 
 // 资源库方案 A：列宽取设计稿组合已有变量；窄窗口先收最近使用、端口，再把模板收为徽标。
-export function LibraryTable({ bridge, locale, rows, now, reveal }: LibraryTableProps) {
+export function LibraryTable({
+  bridge,
+  locale,
+  rows,
+  now,
+  sort,
+  onSortChange,
+  reveal,
+}: LibraryTableProps) {
   const t = useT();
   const format = useFormat();
   // 创建副本后选中它（规格 DESKTOP-LIBRARY-VIEW-42）
@@ -175,18 +188,7 @@ export function LibraryTable({ bridge, locale, rows, now, reveal }: LibraryTable
           ),
         ),
     },
-    {
-      id: "size",
-      header: t("library.column.size.label"),
-      width: {
-        size: "var(--size-column-sm)",
-        compact: {
-          whenCollapsed: "template",
-          size: "calc(var(--size-column-sm) - var(--space-4))",
-        },
-      },
-      render: (row) => dim(row, <span className={styles.size}>{NONE}</span>),
-    },
+    sizeColumn(t("library.column.size.label"), sort === "size", () => onSortChange("size")),
     {
       id: "lastUsed",
       header: t("library.column.lastUsed.label"),
