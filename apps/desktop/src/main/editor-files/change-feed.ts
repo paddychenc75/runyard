@@ -95,15 +95,16 @@ export class ChangeFeed {
   }
 
   async #isSelf(event: WatchEvent): Promise<boolean> {
-    const now = this.#deps.now();
-    const records = (this.#selfWrites.get(event.path) ?? []).filter(
-      (w) => now - w.at <= SELF_WRITE_TTL_MS,
-    );
-    if (records.length === 0 || event.kind === "remove") return false;
+    if (event.kind === "remove" || !this.#selfWrites.get(event.path)?.length) return false;
     const bytes = await this.#deps
       .readBytes(joinPath(this.#deps.folder, posixRelPath(event.path)))
       .catch(() => null);
     if (bytes === null) return false;
+    // 读盘期间可能又保存、撤销或过期；旧快照不能代表读回内容对应的有效登记（#480）。
+    const now = this.#deps.now();
+    const records = (this.#selfWrites.get(event.path) ?? []).filter(
+      (w) => now - w.at <= SELF_WRITE_TTL_MS,
+    );
     const current = digestOf(bytes);
     return records.some((w) => w.digest === current);
   }
