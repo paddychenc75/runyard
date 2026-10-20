@@ -21,4 +21,6 @@ Playwright（`_electron`）驱动真正的应用走主要用户流程（issue #1
 
 ## 测试
 
+`m3-flow.e2e.ts` 是 #267 的同项目串联：界面新建、编辑保存、原生预览更新、终端真实离线安装并使用本地 file 依赖、关闭后释放 shell 和端口。方法与验收边界见 `docs/architecture/evidence/m3-integrated-flow.md`；不以它替代性能或系统输入法手验。
+
 本目录本身就是测试。本机跑全套约半分钟；失败的截图和报告在 `e2e/.output/`（已忽略）。失败不重试：偶发失败按仓库规则记成带 `flaky` 标签的 issue。
