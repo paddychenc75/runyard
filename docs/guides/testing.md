@@ -132,9 +132,9 @@ Node 24 下运行 `pnpm --filter @runyard/desktop build`，然后 `node apps/des
 
 Node 24 下先运行 `node tooling/design-render/render.mjs Settings SettingsDark SettingsEn SettingsDarkEn SettingsNarrow SettingsNarrowDark SettingsNarrowEn SettingsNarrowDarkEn`，再运行 `pnpm --filter @runyard/desktop build` 和 `node apps/desktop/e2e/settings-design.measure.ts`。脚本每次新建临时 HOME/root，顺序启动自己的 Electron 应用并核对收尾，输出八组 1440/1100 × 浅深 × 中英文的原图、并排图和测量 JSON；1100 宽滚到“编辑与运行”，1440 宽停在最上面。
 
-`RUNYARD_SETTINGS_REVIEW_OUTPUT` 指定产物目录，不设时新建临时目录；`RUNYARD_REVIEW_CHROME` 可覆盖并排图用的 Chrome。原设计参考为820×900，实际主窗口分别1440/1100：保留顶部项目标签与运行状态、设置内容嵌入主窗，是负责人2026-10-20批准的差异，不能声称外框逐像素一致。标题区移除重复52px窗口预留后为88高，内容列最宽720居中；检查至少54行高、至少24文字控件间距及无横向溢出。检测结果取临时环境，内容差异如实列出。
+`RUNYARD_SETTINGS_REVIEW_OUTPUT` 指定产物目录，不设时新建临时目录；`RUNYARD_REVIEW_CHROME` 可覆盖并排图用的 Chrome。原设计参考为820×900，实际主窗口分别1440/1100：保留顶部项目标签与运行状态、设置内容嵌入主窗，是负责人2026-10-20批准的差异，不能声称外框逐像素一致。标题区按内容自然高度；共用848外容器含两侧4px焦点环余量，可见卡片最宽840居中，h1/首导航pill/h2/card同线。检查至少64行高、20/12行内距、横向24/换行后纵向12的文字控件间距、32组距及无横向溢出。检测结果取临时环境，内容差异如实列出。
 
-端到端操作用 `e2e/support/settings-page.ts` 的 `openSettingsPage`，返回同一个主窗口page，不等待新窗口。`settings-navigation.e2e.ts` 验证重复打开保留草稿/焦点、隐藏主窗恢复、语言主题和选择框归属；`settings-workspace.e2e.ts` 用真实Monaco/model对象、selection、运行标识及PTY进程启动时间验证切换不重建，720宽仍能返回，隐藏编辑器不接收保存快捷键；终端Portal菜单不能留在设置上。设置中⌘W只返回原项目或资源库；旧38–40独立窗口场景作废，由45–48替代。
+端到端操作用 `e2e/support/settings-page.ts` 的 `openSettingsPage`，返回同一个主窗口page，不等待新窗口。`settings-alignment.e2e.ts`覆盖720/900/1100/1440×中英浅深真实几何，固定已安装长CLI状态与长工具路径草稿仅供布局验证，另测保存/取消按钮边界、文字至少160px、控件不截断及首尾导航焦点环四边4px。普通hint仍限两行，wrapHint允许自然多行。`settings-navigation.e2e.ts` 验证重复打开保留草稿/焦点、隐藏主窗恢复、语言主题和选择框归属；`settings-workspace.e2e.ts` 用真实Monaco/model对象、selection、运行标识及PTY进程启动时间验证切换不重建，720宽仍能返回，隐藏编辑器不接收保存快捷键；终端Portal菜单不能留在设置上。设置中⌘W只返回原项目或资源库；旧38–40独立窗口场景作废，由45–48替代。
 
 ## 工具路径输入的设计对照
 
