@@ -1,0 +1,111 @@
+{
+  "traceSha256": "e3452a8a7016c6d1397dd5b772f9fc09fb60325e6f9970d8b85de68c03f06a0b",
+  "bytes": 1372254,
+  "eventCount": 6639,
+  "phaseMs": {
+    "input": 0.0,
+    "dom": 11.215,
+    "raf1": 12.335,
+    "raf2": 17.902
+  },
+  "rendererMain": {
+    "Layout": {
+      "count": 4,
+      "maxMs": 1.048,
+      "inclusiveMs": 1.215
+    },
+    "UpdateLayoutTree": {
+      "count": 6,
+      "maxMs": 1.208,
+      "inclusiveMs": 1.428
+    },
+    "Paint": {
+      "count": 5,
+      "maxMs": 0.585,
+      "inclusiveMs": 1.139
+    },
+    "PrePaint": {
+      "count": 3,
+      "maxMs": 0.536,
+      "inclusiveMs": 0.542
+    },
+    "Layerize": {
+      "count": 1,
+      "maxMs": 0.325,
+      "inclusiveMs": 0.325
+    },
+    "FireAnimationFrame": {
+      "count": 2,
+      "maxMs": 0.171,
+      "inclusiveMs": 0.041999999999999996
+    },
+    "ScrollLayer": {
+      "count": 0,
+      "maxMs": 0,
+      "inclusiveMs": 0
+    },
+    "ScrollableArea::ScrollIntoView": {
+      "count": 0,
+      "maxMs": 0,
+      "inclusiveMs": 0
+    },
+    "Blink.ForcedStyleAndLayout.UpdateTime": {
+      "count": 48,
+      "maxMs": 2.305,
+      "inclusiveMs": 2.8329999999999975
+    }
+  },
+  "longestRendererEvents": [
+    {
+      "name": "RunTask",
+      "startMs": -0.089,
+      "durationMs": 11.379
+    },
+    {
+      "name": "ThreadControllerImpl::RunTask",
+      "startMs": -0.088,
+      "durationMs": 11.368
+    },
+    {
+      "name": "EventDispatch",
+      "startMs": 0.214,
+      "durationMs": 11.051
+    },
+    {
+      "name": "Editor::HandleKeyboardEvent",
+      "startMs": 0.242,
+      "durationMs": 11.022
+    },
+    {
+      "name": "EventDispatch",
+      "startMs": 0.573,
+      "durationMs": 10.691
+    },
+    {
+      "name": "TypingCommand::InsertText",
+      "startMs": 0.647,
+      "durationMs": 10.599
+    },
+    {
+      "name": "EventDispatch",
+      "startMs": 1.235,
+      "durationMs": 10.009
+    },
+    {
+      "name": "FunctionCall",
+      "startMs": 1.267,
+      "durationMs": 9.8
+    },
+    {
+      "name": "RunTask",
+      "startMs": 11.305,
+      "durationMs": 6.282
+    },
+    {
+      "name": "ThreadControllerImpl::RunTask",
+      "startMs": 11.305,
+      "durationMs": 6.241
+    }
+  ],
+  "note": "各事件包含嵌套时间，不能跨事件名相加当成CPU总耗时；本次trace未重现187ms。"
+}
