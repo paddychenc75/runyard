@@ -4,6 +4,7 @@ import { join, resolve } from "node:path";
 import { chromium, expect, type Page } from "@playwright/test";
 import { composeEvidence } from "./preview-image-comparison.ts";
 import { launchRunyard, type RunyardApp } from "./support/launch.ts";
+import { openLibraryPage } from "./support/library-sidebar.ts";
 import { openSettingsPage } from "./support/settings-page.ts";
 
 const out = process.env.RUNYARD_HEADER_REVIEW_OUTPUT ?? mkdtempSync(join(tmpdir(), "ry-header-"));
@@ -11,7 +12,6 @@ mkdirSync(out, { recursive: true });
 console.log(out);
 const repo = resolve(import.meta.dirname, "../../..");
 const browser = await chromium.launch({
-  executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   headless: true,
 });
 const metrics: unknown[] = [];
@@ -97,7 +97,13 @@ try {
           await capture(app.page, `${name}-hidden`, `MainSidebarHidden${suffix}`, width);
           await show.click();
           expect(await hide.boundingBox()).toEqual(shown);
-          await app.call("tab.open", id);
+          await app.page
+            .locator("tr[data-row-id]")
+            .filter({ hasText: "header-review" })
+            .getByText("header-review", { exact: true })
+            .dblclick();
+          await expect(app.page.getByRole("tab", { name: /^(Library|资源库)$/ })).toHaveCount(0);
+          await expect(app.page.locator("[data-library-sidebar]")).toBeVisible();
           await expect(app.page.locator("[data-preview-slot]")).toBeVisible();
           await expect
             .poll(
@@ -117,6 +123,16 @@ try {
             width,
             app,
           );
+          await hide.click();
+          await expect(app.page.locator("[data-library-sidebar]")).toHaveCount(0);
+          await capture(
+            app.page,
+            `${name}-project-hidden`,
+            `Web${theme === "light" ? "Light" : ""}${lang === "en" ? "En" : ""}`,
+            width,
+            app,
+          );
+          await show.click();
           const settings = await openSettingsPage(app);
           await settings.setViewportSize({ width, height: 900 });
           const settingsWindow = await app.app.browserWindow(settings);
@@ -124,10 +140,7 @@ try {
             native,
           );
           await capture(settings, `${name}-settings`, `Settings${suffix}`, width);
-          await settingsWindow.evaluate((win) => win.close());
-          await app.page
-            .getByRole("tab", { name: lang === "en" ? "Library" : "资源库", exact: true })
-            .click();
+          await openLibraryPage(app.page);
           metrics.push({ name, native, shown, hidden });
         }
       } finally {
@@ -139,3 +152,8 @@ try {
 }
 writeFileSync(join(out, "measurements.json"), JSON.stringify(metrics, null, 2));
 console.log(out);
+
+writeFileSync(
+  join(out, "README.md"),
+  "# 常驻全局侧栏画面对照\n\n1440/1100 × 中文/英文 × 浅色/深色；每组包含资源库展开/收起、项目展开/收起、主窗口设置。左侧是只读原设计，右侧为真实 Electron；原生预览截图按其真实坐标合成，原始图一并保留。\n\n与设计稿的有意差异：负责人 2026-10-21 批准取消顶部资源库标签、全局侧栏在项目中常驻且可收起；工作区相应让位。设置为此前批准的主窗口页面，因此不再是设计稿的独立窗口。文件树独立开合与窄窗原生预览让位由 persistent-sidebar.e2e.ts 另行回归。\n",
+);

@@ -27,7 +27,7 @@
   min-block-size: 0;
 }
 
-/* 侧栏收起或在项目标签页时，内容区从窗口左边的留白开始，顶栏让开窗口按钮（红黄绿） */
+/* 侧栏收起时，内容区从窗口左边的留白开始，顶栏让开窗口按钮（红黄绿） */
 .root[data-sidebar="hidden"] {
   --layout-content-left: var(--size-window-inset);
 }

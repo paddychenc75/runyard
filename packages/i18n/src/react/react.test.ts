@@ -35,7 +35,7 @@ function render(
 }
 
 describe("I18nProvider 和钩子", () => {
-  const Title = () => createElement("h1", null, useT()("library.tab.title"));
+  const Title = () => createElement("h1", null, useT()("library.nav.library.title"));
 
   it("useT 按 Provider 的语言取文案；语言一换就是另一句", () => {
     expect(render("zh-CN", createElement(Title))).toBe("<h1>资源库</h1>");

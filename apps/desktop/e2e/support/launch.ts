@@ -94,6 +94,7 @@ export async function launchRunyard(options: LaunchOptions = {}): Promise<Runyar
     args,
     env: stringEnv({ HOME: home }),
   });
+  const electronProcess = app.process();
   let expectedExit = false;
   let unexpectedClose = false;
   app.once("close", () => {
@@ -102,25 +103,25 @@ export async function launchRunyard(options: LaunchOptions = {}): Promise<Runyar
       console.error(
         "RUNYARD_E2E_UNEXPECTED_CLOSE",
         JSON.stringify({
-          pid: app.process().pid,
-          code: app.process().exitCode,
-          signal: app.process().signalCode,
+          pid: electronProcess.pid,
+          code: electronProcess.exitCode,
+          signal: electronProcess.signalCode,
         }),
       );
     }
   });
   // #494：初始预览等待中退出时保留真实退出码/信号，不把 target closed 当作具体根因。
-  app.process().once("exit", (code, signal) => {
+  electronProcess.once("exit", (code, signal) => {
     if (unexpectedClose || !expectedExit)
       console.error("RUNYARD_E2E_UNEXPECTED_EXIT", JSON.stringify({ code, signal }));
   });
-  const appPid = app.process().pid ?? 0;
+  const appPid = electronProcess.pid ?? 0;
   const appIdentity = await platform.proc.identity(appPid);
   if (appIdentity === null) throw new Error("the app is not running right after launch");
   const appRef: ProcRef = { pid: appPid, startTime: appIdentity.startTime };
   const page = await app.firstWindow();
 
-  const exited = new Promise<void>((resolve) => app.process().once("exit", () => resolve()));
+  const exited = new Promise<void>((resolve) => electronProcess.once("exit", () => resolve()));
   const quit = async (): Promise<void> => {
     expectedExit = true;
     // ⌘Q 走的是同一条退出流程；不等它返回，只等进程退出
@@ -199,7 +200,17 @@ export async function launchRunyard(options: LaunchOptions = {}): Promise<Runyar
     return JSON.parse(out);
   };
 
-  await expect(page.getByRole("tab", { name: /Library|资源库/ })).toBeVisible();
+  try {
+    await expect(page.locator("[data-sidebar]")).toBeVisible();
+    await expect(page.locator("[data-window-toolbar]")).toBeVisible();
+  } catch (error) {
+    try {
+      await shutdown();
+    } catch (cleanupError) {
+      throw new AggregateError([error, cleanupError], "startup and cleanup failed");
+    }
+    throw error;
+  }
   return {
     app,
     page,

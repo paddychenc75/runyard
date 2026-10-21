@@ -48,8 +48,8 @@ export interface TopBarProps {
 /** 窗口窄于它：“N 个运行中”只留圆点和数字，运行条只留圆点和端口（规格 DESKTOP-LIBRARY-VIEW-67、DESKTOP-WORKSPACE-65） */
 export const COMPACT_WINDOW_PX = 1200;
 
-// 顶栏（方案 A）：标签条占去其余控件之外的全部宽度，资源库固定在第一位、不能关闭（规格 desktop/workspace 的
-// DESKTOP-WORKSPACE-03），后面是打开的项目标签，名字前是运行状态的小圆点。项目标签有关闭钮和 ⌘W（#174，
+// 顶栏只列打开的项目标签，资源库由全局侧栏进入（DESKTOP-WORKSPACE-03）。
+// 名字前是运行状态的小圆点。项目标签有关闭钮和 ⌘W（#174，
 // 运行中的会先出确认对话框，见 CloseConfirmDialog）。右边是“N 个运行中”（无边框文字按钮，点开是运行视图
 // RunningPopover，#186）；项目标签上它左边是运行条（#176），资源库标签上最右是“新建”（#173）。
 // 搜索框不在顶栏，在资源库页的页头。侧栏收起后，侧栏按钮跟着红绿灯留在最左边。
@@ -77,40 +77,31 @@ export function TopBar({
   const runningRef = useRef<HTMLDivElement>(null);
   // 命令面板的“打开运行视图”：和点“N 个运行中”是同一个面板
   useCommand("app.openRunning", () => setListOpen(true));
-  const items: TabStripItem[] = [
-    {
-      id: "library",
-      label: t("library.tab.title"),
-      menuLabel: t("library.tab.title"),
-      icon: "grid",
-      shrinkToIcon: activeTabRow !== undefined,
-    },
-    ...tabs.map(
-      (tab): TabStripItem => ({
-        id: tab.id,
-        label: (
-          <>
-            <UserText>{tab.name}</UserText>
-            {tab.attached !== null ? (
-              <Badge variant="violet" className={styles.agent}>
-                {tab.attached.agent === null ? (
-                  t("desktop.tab.cli.label")
-                ) : (
-                  <UserText>{tab.attached.agent}</UserText>
-                )}
-              </Badge>
-            ) : null}
-          </>
-        ),
-        // 折进“+N”菜单时只有名字（用户起的项目名，原样显示）
-        menuLabel: tab.name as Localized,
-        status: tab.status,
-        closeLabel: t("workspace.tab.close.label", { name: tab.name }),
-        statusLabel:
-          tab.state === "idle" ? t("desktop.state.idle.label") : t(`runState.${tab.state}`),
-      }),
-    ),
-  ];
+  const items: TabStripItem[] = tabs.map(
+    (tab): TabStripItem => ({
+      id: tab.id,
+      label: (
+        <>
+          <UserText>{tab.name}</UserText>
+          {tab.attached !== null ? (
+            <Badge variant="violet" className={styles.agent}>
+              {tab.attached.agent === null ? (
+                t("desktop.tab.cli.label")
+              ) : (
+                <UserText>{tab.attached.agent}</UserText>
+              )}
+            </Badge>
+          ) : null}
+        </>
+      ),
+      // 折进“+N”菜单时只有名字（用户起的项目名，原样显示）
+      menuLabel: tab.name as Localized,
+      status: tab.status,
+      closeLabel: t("workspace.tab.close.label", { name: tab.name }),
+      statusLabel:
+        tab.state === "idle" ? t("desktop.state.idle.label") : t(`runState.${tab.state}`),
+    }),
+  );
   const runningText =
     running > 0
       ? t("library.topbar.running.label", { count: running })
