@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import type { LibraryState } from "../src/shared/library-state.ts";
 import type { TerminalSnapshot } from "../src/shared/terminal.ts";
 import { createWithKeyboard, expect, pressMenuShortcut, test } from "./support/fixtures.ts";
+import { openLibraryPage } from "./support/library-sidebar.ts";
 import { openSettingsPage } from "./support/settings-page.ts";
 import { editorProof, rememberEditor } from "./support/settings-proof.ts";
 
@@ -72,7 +73,7 @@ test("[DESKTOP-SETTINGS-45] [DESKTOP-SETTINGS-46] [DESKTOP-SETTINGS-47] 设置�
     await expect(page.getByRole("tab", { name: "index.html (unsaved)" })).toBeVisible();
     await page.keyboard.press("Meta+s");
     await openSettingsPage(runyard);
-    await page.getByRole("tab", { name: /Library/ }).click();
+    await openLibraryPage(page);
     await expect(page.getByRole("heading", { name: "Settings", level: 1 })).toHaveCount(0);
   } finally {
     await runyard.call("terminal.write", { project, data: "\u0003" });

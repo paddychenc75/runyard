@@ -104,7 +104,6 @@
   "library.status.problem.label": "有问题",
   "library.status.running.label": "运行中",
   "library.status.stopped.label": "已停止",
-  "library.tab.title": "资源库",
   "library.table.aria": "项目列表",
   "library.topbar.idle.label": "没有在运行的项目",
   "library.topbar.running.label": "{count, plural, other {# 个运行中}}",

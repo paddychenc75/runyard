@@ -93,7 +93,7 @@ it("[DESKTOP-SETTINGS-45] 设置标题的方向键与回车不操作隐藏的资
   expect(document.activeElement).toBe(title);
   await user.keyboard("{ArrowDown}{Enter}");
   expect(call).not.toHaveBeenCalledWith("tab.open", expect.anything());
-  await user.click(screen.getByRole("tab", { name: "资源库" }));
+  await user.click(screen.getByRole("button", { name: /^全部/ }));
   await user.keyboard("{Enter}");
   expect((await rowEl("a")).getAttribute("data-selected")).not.toBeNull();
 });

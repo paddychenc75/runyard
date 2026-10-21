@@ -36,7 +36,7 @@ function setup(
 }
 
 describe("TabStrip", () => {
-  it("[DESKTOP-WORKSPACE-03] 资源库标签在第一位，没有关闭按钮，⌘W 和 Delete 在它上面都不起作用", async () => {
+  it("不可关闭的固定项没有关闭按钮，⌘W 和 Delete 在它上面都不起作用", async () => {
     const user = userEvent.setup();
     const { onClose } = setup();
     const tabs = screen.getAllByRole("tab");
@@ -50,7 +50,7 @@ describe("TabStrip", () => {
     expect(onClose).not.toHaveBeenCalled();
   });
 
-  it("[DESKTOP-WORKSPACE-03] 按下 ⌘W 时窗口不会因此关闭：按键被吞掉", () => {
+  it("当前项不可关闭时按下 ⌘W 不会关闭窗口：按键被吞掉", () => {
     setup();
     const event = new KeyboardEvent("keydown", {
       key: "w",
@@ -60,6 +60,19 @@ describe("TabStrip", () => {
     });
     document.dispatchEvent(event);
     expect(event.defaultPrevented).toBe(true);
+  });
+
+  it("[DESKTOP-WORKSPACE-03] 没有当前项目时首个可见标签仍可键盘进入，且不误选或关闭项目", async () => {
+    const user = userEvent.setup();
+    const { onClose, onValueChange } = setup({ value: "library" }, [demo, other]);
+    await user.tab();
+    expect(document.activeElement).toBe(screen.getByRole("tab", { name: "demo" }));
+    expect(screen.queryByRole("tab", { selected: true })).toBeNull();
+    await user.keyboard("{Meta>}w{/Meta}");
+    expect(onClose).not.toHaveBeenCalled();
+    expect(onValueChange).not.toHaveBeenCalled();
+    await user.keyboard("{Enter}");
+    expect(onValueChange).toHaveBeenCalledWith("demo");
   });
 
   it("是带名字的 tablist，当前标签 aria-selected，只有它在 Tab 顺序里", async () => {

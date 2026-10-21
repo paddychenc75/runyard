@@ -57,7 +57,14 @@ export function useResponsiveSidebar(
       request === "toggle"
         ? "[data-sidebar-toggle]"
         : '[data-library-sidebar] [aria-current="page"]';
-    root.current?.querySelector<HTMLElement>(selector)?.focus();
+    const target =
+      root.current?.querySelector<HTMLElement>(selector) ??
+      (request === "navigation"
+        ? root.current?.querySelector<HTMLElement>(
+            "[data-library-sidebar] nav button:not(:disabled)",
+          )
+        : null);
+    target?.focus();
   });
   const close = useCallback(
     (leavingTemporaryPage = false) => {

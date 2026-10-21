@@ -26,7 +26,8 @@ it("[DESKTOP-SETTINGS-47] 720宽自动隐藏侧栏后顶部项目和资源库入
   expect(screen.queryByRole("heading", { level: 1, name: "设置" })).toBeNull();
   act(() => w.emit("command.run", { id: "app.settings" }));
   await screen.findByRole("heading", { level: 1, name: "设置" });
-  await userEvent.setup().click(screen.getByRole("tab", { name: "资源库" }));
+  await userEvent.setup().click(screen.getByRole("button", { name: "显示侧栏" }));
+  await userEvent.setup().click(screen.getByRole("button", { name: /^全部/ }));
   expect(screen.queryByRole("heading", { level: 1, name: "设置" })).toBeNull();
 });
 
@@ -40,7 +41,7 @@ it("[DESKTOP-SETTINGS-01] 侧栏设置在同一外壳中显示并保留顶部标
   setup();
   await userEvent.setup().click(await screen.findByRole("button", { name: "设置" }));
   expect(await screen.findByRole("heading", { level: 1, name: "设置" })).toBeTruthy();
-  expect(screen.getByRole("tab", { name: "资源库" })).toBeTruthy();
+  expect(screen.getByRole("tablist")).toBeTruthy();
 });
 
 it("[DESKTOP-SETTINGS-46] 原项目关闭后即使相邻项目成为活动项仍留设置，⌘W回资源库", async () => {
@@ -83,7 +84,7 @@ it("[DESKTOP-SETTINGS-45] 显式再次打开同一项目的序号让设置退出
 
 it("[DESKTOP-SETTINGS-37] 重复设置命令保留同一页面与滚动位置", async () => {
   const w = setup();
-  await screen.findByRole("tab", { name: "资源库" });
+  await screen.findByRole("button", { name: "设置" });
   act(() => w.emit("command.run", { id: "app.settings" }));
   await screen.findByRole("heading", { level: 1, name: "设置" });
   const viewport = document.getElementById("settings-viewport") as HTMLElement;
@@ -95,12 +96,12 @@ it("[DESKTOP-SETTINGS-37] 重复设置命令保留同一页面与滚动位置", 
 
 it("[DESKTOP-SETTINGS-46] 资源库进入设置后⌘W只返回资源库", async () => {
   const w = setup();
-  await screen.findByRole("tab", { name: "资源库" });
+  await screen.findByRole("button", { name: "设置" });
   act(() => w.emit("command.run", { id: "app.settings" }));
   await screen.findByRole("heading", { level: 1, name: "设置" });
   fireEvent.keyDown(window, { key: "w", metaKey: true });
   expect(screen.queryByRole("heading", { level: 1, name: "设置" })).toBeNull();
-  expect(screen.getByRole("tab", { name: "资源库" })).toBeTruthy();
+  expect(screen.getByRole("tablist")).toBeTruthy();
   expect(w.calls.filter(({ method }) => method === "tab.close" || method === "run.stop")).toEqual(
     [],
   );
@@ -108,7 +109,7 @@ it("[DESKTOP-SETTINGS-46] 资源库进入设置后⌘W只返回资源库", async
 
 it("[DESKTOP-SETTINGS-45] 设置中创建或打开另一项目后显示新工作区", async () => {
   const w = setup();
-  await screen.findByRole("tab", { name: "资源库" });
+  await screen.findByRole("button", { name: "设置" });
   act(() => w.emit("command.run", { id: "app.settings" }));
   await screen.findByRole("heading", { level: 1, name: "设置" });
   act(() =>

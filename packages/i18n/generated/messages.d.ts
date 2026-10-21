@@ -1039,7 +1039,6 @@ export type CatalogMessages = {
   "library.status.problem.label": Record<never, never>;
   "library.status.running.label": Record<never, never>;
   "library.status.stopped.label": Record<never, never>;
-  "library.tab.title": Record<never, never>;
   "library.table.aria": Record<never, never>;
   "library.topbar.idle.label": Record<never, never>;
   "library.topbar.running.label": {
