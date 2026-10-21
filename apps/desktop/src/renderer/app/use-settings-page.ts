@@ -20,17 +20,27 @@ export function useSettingsPage(
       setPage("library");
   }, [projectSelection, setPage]);
   const previous = useRef("library");
+  const focusTarget = useRef<string | null>(null);
   const open = useCallback(() => {
     if (page === "settings") return;
+    focusTarget.current = null;
     previous.current = activeTab;
     setPage("settings");
   }, [activeTab, page, setPage]);
   const close = useCallback(() => {
     const target = openIds.includes(previous.current) ? previous.current : "library";
+    focusTarget.current = target === "library" ? null : target;
     setPage("library");
     if (target !== activeTab) void bridge.call("tab.select", target);
-    if (target !== "library") requestAnimationFrame(requestEditorFocus);
   }, [activeTab, bridge, openIds, setPage]);
+  // 桥回调里的状态更新可能晚于下一帧；等可见性提交后才请求焦点，避免隐藏的编辑器丢弃它。
+  useEffect(() => {
+    if (page !== "library" || focusTarget.current !== activeTab) return;
+    focusTarget.current = null;
+    const frame = requestAnimationFrame(requestEditorFocus);
+    // 再次打开设置或切走项目后，旧的返回请求不能抢走新页面的焦点。
+    return () => cancelAnimationFrame(frame);
+  }, [page, activeTab]);
   useEffect(() => {
     void bridge.call("settings.pageActive", page === "settings");
   }, [bridge, page]);

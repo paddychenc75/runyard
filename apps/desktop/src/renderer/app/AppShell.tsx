@@ -1,5 +1,5 @@
 import { useT } from "@runyard/i18n/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { LibraryState } from "../../shared/library-state.ts";
 import type { SettingsApi } from "../bridge/use-settings.ts";
@@ -77,6 +77,8 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
   const [temporaryNavigation, setTemporaryNavigation] = useState<boolean | null>(null);
   const activeTabId = library?.activeTab ?? "library";
   useEffect(() => {
+    // 回库的状态推送不能覆盖刚从项目侧栏选中的模板页面。
+    if (activeTabId === "library") return;
     setPage((current) => (current === "settings" ? current : "library"));
     setTemporaryNavigation(null);
   }, [activeTabId]);
@@ -165,9 +167,9 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
     openIds.current = now;
   });
   const { quitAsk, askQuit } = useQuitTerminalConfirm(bridge);
-  // 侧栏只在资源库标签上显示（设计稿 WebLight、Script 的项目标签页没有它），并且可以收起
+  // 全局侧栏跨页面共享手动偏好；模板保留原来的临时导航布局。
   const sidebar = useResponsiveSidebar(
-    onLibraryPage && page !== "templates",
+    page !== "templates",
     temporaryNavigation === null ? layoutPrefs.sidebarCollapsed : !temporaryNavigation,
     () => {
       if (temporaryNavigation !== null) {
@@ -175,18 +177,17 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
       } else patchLayout({ sidebarCollapsed: !layoutPrefs.sidebarCollapsed });
     },
   );
-  const sidebarVisible = onLibraryPage && sidebar.visible;
+  const sidebarVisible = sidebar.visible;
+  useLayoutEffect(() => {
+    if (sidebar.overlay) return overlays.acquire();
+  }, [sidebar.overlay, overlays]);
   const openSettings = () => {
     if (page === "settings") return;
     sidebar.close();
     settingsPage.open();
   };
-  // ⌃⌘S 是主进程的菜单项（原因同 ⌘N）：资源库标签上收起或显示侧栏，项目标签页上收起或展开文件树
-  // （那里的“侧栏”，规格 DESKTOP-WORKSPACE-62）
-  const toggleSidebar = useCallback(() => {
-    if (onLibraryPage) sidebar.toggle();
-    else if (page !== "settings") patchLayout({ treeCollapsed: !layoutPrefs.treeCollapsed });
-  }, [onLibraryPage, page, sidebar.toggle, layoutPrefs.treeCollapsed, patchLayout]);
+  // 全局侧栏命令与工作区文件树命令独立。
+  const toggleSidebar = sidebar.toggle;
   useEffect(() => bridge.on("sidebar.toggle", toggleSidebar), [bridge, toggleSidebar]);
   // 应用菜单触发的命令（设置、项目操作……）和命令面板走同一个宿主：此刻没登记的命令不会做任何事
   const commandHost = useCommandHost();
@@ -264,7 +265,7 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
               }}
               templateCount={library?.templateCount ?? library?.templates.length ?? 0}
               libraryRoot={library?.libraryRoot ?? ""}
-              page={page}
+              page={page === "library" && !onLibraryPage ? null : page}
               onCollapse={toggleSidebar}
               onSettings={openSettings}
               onNavigate={(next) => {
@@ -291,7 +292,7 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
               playgrounds={library?.playgrounds ?? []}
               activeTabRow={activeTabRow}
               sidebarVisible={sidebarVisible}
-              onToggleSidebar={onLibraryPage ? toggleSidebar : undefined}
+              onToggleSidebar={toggleSidebar}
               onNew={openPicker}
               onSelect={selectTab}
               onClose={(id) => void bridge.call("tab.close", id)}

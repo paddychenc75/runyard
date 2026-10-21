@@ -23,7 +23,7 @@
 
 #### Scenario: [DESKTOP-TERMINAL-03] 切走再回来是同一个终端
 - 前提：在 `demo` 的终端里执行过 `echo hello`
-- **WHEN** 切回“输出”，再切到资源库标签，然后回到 `demo` 并切到“终端”
+- **WHEN** 切回“输出”，再切到资源库页面，然后回到 `demo` 并切到“终端”
 - **THEN** `hello` 还在；按上方向键调出的上一条命令是 `echo hello`；shell 的进程号没有变
 - 验证：test
 

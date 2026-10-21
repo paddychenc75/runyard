@@ -813,7 +813,6 @@
 | library.status.problem.label | 有问题 | Has a problem | — |
 | library.status.running.label | 运行中 | Running | — |
 | library.status.stopped.label | 已停止 | Stopped | — |
-| library.tab.title | 资源库 | Library | — |
 | library.table.aria | 项目列表 | Playgrounds | — |
 | library.topbar.idle.label | 没有在运行的项目 | No playground running | — |
 | library.topbar.running.label | {count, plural, other {# 个运行中}} | {count, plural, one {# running} other {# running}} | count：正在运行的项目数（标签页和命令行持有的都算） |

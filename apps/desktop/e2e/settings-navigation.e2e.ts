@@ -1,5 +1,5 @@
 import { closePicker, expect, pressMenuShortcut, test } from "./support/fixtures.ts";
-import { showLibrarySidebar } from "./support/library-sidebar.ts";
+import { openLibraryPage, showLibrarySidebar } from "./support/library-sidebar.ts";
 import { openSettingsPage } from "./support/settings-page.ts";
 import { installWindowFocusProbe, windowFocusProbe } from "./support/window-focus-probe.ts";
 
@@ -16,7 +16,7 @@ test("[DESKTOP-SETTINGS-47] 窄窗口覆盖侧栏展开时菜单打开设置会�
   await expect(title).toBeFocused();
   await expect(page.getByRole("navigation")).toHaveCount(0);
   expect(await title.evaluate((node) => getComputedStyle(node).outlineStyle)).toBe("none");
-  await page.getByRole("tab", { name: /Library/ }).click();
+  await openLibraryPage(page);
   await expect(title).toHaveCount(0);
 });
 
@@ -29,7 +29,8 @@ test("[DESKTOP-SETTINGS-01] [DESKTOP-SETTINGS-37] 三入口复用主窗口设置
   await showLibrarySidebar(page);
   await page.getByRole("button", { name: "Settings", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Settings", level: 1 })).toBeVisible();
-  await expect(page.getByRole("tab", { name: /Library/ })).toBeVisible();
+  await expect(page.getByRole("tab", { name: /Library/ })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /^(Show sidebar|Hide sidebar)$/ })).toBeVisible();
   await page
     .locator("[data-settings-header]")
     .getByRole("button", { name: "Runtime", exact: true })

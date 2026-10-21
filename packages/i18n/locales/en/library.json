@@ -104,7 +104,6 @@
   "library.status.problem.label": "Has a problem",
   "library.status.running.label": "Running",
   "library.status.stopped.label": "Stopped",
-  "library.tab.title": "Library",
   "library.table.aria": "Playgrounds",
   "library.topbar.idle.label": "No playground running",
   "library.topbar.running.label": "{count, plural, one {# running} other {# running}}",
