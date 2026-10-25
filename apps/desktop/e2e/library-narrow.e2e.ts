@@ -33,7 +33,8 @@ test("[DESKTOP-LIBRARY-VIEW-97][DESKTOP-LIBRARY-VIEW-98][DESKTOP-LIBRARY-VIEW-99
   expect(libraryToggleBox?.y).toBe(initialToggleBox?.y);
   const width = (await table.boundingBox())?.width;
   await show.click();
-  await expect(nav.locator('[aria-current="page"]')).toBeFocused();
+  // 鼠标点开：焦点不进导航，没有键盘焦点环（DESKTOP-WORKSPACE-78）
+  await expect(nav.locator(":focus-visible")).toHaveCount(0);
   expect((await table.boundingBox())?.width).toBe(width);
   await page.keyboard.press("Escape");
   await expect(show).toBeFocused();
@@ -49,7 +50,10 @@ test("[DESKTOP-LIBRARY-VIEW-97][DESKTOP-LIBRARY-VIEW-98][DESKTOP-LIBRARY-VIEW-99
   await page.getByRole("button", { name: "Hide sidebar" }).click();
   const collapsed = await saved();
   await resize(720);
-  await show.click();
+  await expect(show).toBeVisible();
+  // 用快捷键展开才把焦点送进侧栏；拉宽后焦点回切换按钮
+  await pressMenuShortcut(app, "Ctrl+Cmd+S");
+  await expect(nav.getByRole("button").first()).toBeFocused();
   await resize(1440);
   await expect(show).toBeFocused();
   expect(await saved()).toBe(collapsed);
@@ -66,7 +70,7 @@ test("[DESKTOP-LIBRARY-VIEW-97][DESKTOP-LIBRARY-VIEW-98][DESKTOP-LIBRARY-VIEW-99
   expect(collapsedBox?.y).toBe(toggleBox?.y);
   await show.click();
   await expect(nav).toBeVisible();
-  await expect(nav.locator('[aria-current="page"]')).toBeFocused();
+  await expect(nav.locator(":focus-visible")).toHaveCount(0);
   await nav.getByRole("button", { name: /^All/ }).click();
   await expect(nav).toHaveCount(0);
   await expect(show).toBeFocused();

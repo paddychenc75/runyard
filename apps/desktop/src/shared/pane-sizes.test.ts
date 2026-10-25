@@ -7,6 +7,7 @@ import {
   HANDLE_PX,
   layoutPanes,
   type PanePrefs,
+  PREVIEW_COMPACT_MIN_PX,
   PREVIEW_MIN_PX,
   RAIL_PX,
   TOP_ROW_MIN_PX,
@@ -70,5 +71,18 @@ describe("项目标签页的面板尺寸", () => {
 
   it("脚本项目没有输出面板：高度是 0", () => {
     expect(layoutPanes(box, fresh, false).sizes.console).toBe(0);
+  });
+
+  it("[DESKTOP-WORKSPACE-77] 侧栏展开使容器变窄时：文件树自动收成窄条、预览压到下限，编辑器仍不小于 420", () => {
+    const narrow = { width: 724, height: 700 };
+    const { sizes, treeCollapsed } = layoutPanes(narrow, fresh, true);
+    expect(treeCollapsed).toBe(true);
+    expect(sizes.tree).toBe(0);
+    expect(sizes.preview).toBeGreaterThanOrEqual(PREVIEW_COMPACT_MIN_PX);
+    expect(narrow.width - RAIL_PX - sizes.preview - HANDLE_PX).toBeGreaterThanOrEqual(
+      EDITOR_MIN_PX,
+    );
+    // 宽容器不受影响，手动偏好不被改写
+    expect(layoutPanes(box, fresh, true).treeCollapsed).toBe(false);
   });
 });

@@ -54,7 +54,7 @@ export function WorkspaceLayout({ bridge, tab, overlays, prefs, onPrefs }: Works
     return () => observer.disconnect();
   }, []);
   const script = isScript(tab);
-  const { sizes, ranges } = layoutPanes(box, prefs, true);
+  const { sizes, ranges, treeCollapsed } = layoutPanes(box, prefs, true);
   const vars = {
     "--layout-file-tree-width": `${sizes.tree}px`,
     "--layout-console-height": `${sizes.console}px`,
@@ -69,7 +69,7 @@ export function WorkspaceLayout({ bridge, tab, overlays, prefs, onPrefs }: Works
           tab={tab}
           onCollapseTree={() => onPrefs({ treeCollapsed: true })}
           collapsedRail={
-            prefs.treeCollapsed ? (
+            treeCollapsed ? (
               <div className={styles.rail}>
                 <PaneToggleButton
                   label={t("workspace.files.expand.label")}
