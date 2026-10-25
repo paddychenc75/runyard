@@ -58,7 +58,7 @@ export function WorkspaceLayout({ bridge, tab, overlays, prefs, onPrefs }: Works
   // 脚本没开终端时底部面板只有一行标题条，没有可拖的高度（问题单 R2）
   const panelMode = usePanelMode(tab.id);
   const consoleCollapsed = script && panelMode !== "terminal";
-  const { sizes, ranges } = layoutPanes(box, prefs, true);
+  const { sizes, ranges, treeCollapsed } = layoutPanes(box, prefs, true);
   const vars = {
     "--layout-file-tree-width": `${sizes.tree}px`,
     "--layout-console-height": `${sizes.console}px`,
@@ -73,7 +73,7 @@ export function WorkspaceLayout({ bridge, tab, overlays, prefs, onPrefs }: Works
           tab={tab}
           onCollapseTree={() => onPrefs({ treeCollapsed: true })}
           collapsedRail={
-            prefs.treeCollapsed ? (
+            treeCollapsed ? (
               <div className={styles.rail}>
                 <PaneToggleButton
                   label={t("workspace.files.expand.label")}

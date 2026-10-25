@@ -409,7 +409,8 @@ it("[DESKTOP-LIBRARY-VIEW-99] 覆盖侧栏按钮与快捷键可开关，分类�
   resizeShell(720);
   await user.click(screen.getByRole("button", { name: "显示侧栏" }));
   expect(container.querySelector("[data-sidebar-overlay]")).toBeTruthy();
-  expect(document.activeElement).toBe(sidebar()?.querySelector('[aria-current="page"]'));
+  // 鼠标点开：焦点不进侧栏，避免出现键盘焦点环（DESKTOP-WORKSPACE-78）
+  expect(sidebar()?.contains(document.activeElement)).toBe(false);
   await user.keyboard("{Escape}");
   expect(sidebar()).toBeNull();
   expect(document.activeElement).toBe(screen.getByRole("button", { name: "显示侧栏" }));
@@ -492,7 +493,7 @@ it.each(["reopen", "return"])(
     if (action === "reopen") {
       await user.click(screen.getByRole("button", { name: "收起侧栏" }));
       await user.click(screen.getByRole("button", { name: "显示侧栏" }));
-      expect(document.activeElement).toBe(sidebar()?.querySelector('[aria-current="page"]'));
+      expect(sidebar()?.contains(document.activeElement)).toBe(false);
     } else {
       await user.click(screen.getByRole("button", { name: /^全部/ }));
       expect(document.activeElement).toBe(screen.getByRole("button", { name: "显示侧栏" }));
@@ -595,6 +596,11 @@ describe("项目页版面（UI 走查 W1 至 W7）", () => {
     expect(window.localStorage.getItem("runyard.layout.v1")).toBeNull();
     await user.click(screen.getByRole("button", { name: "显示侧栏" }));
     expect(sidebar()).toBeTruthy();
+    // 展开的侧栏是布局里的一栏（推开内容），不是浮层（DESKTOP-WORKSPACE-77）
+    expect(document.querySelector("[data-sidebar-overlay]")).toBeNull();
+    expect(document.querySelector("[data-sidebar]")?.getAttribute("data-sidebar")).toBe("shown");
+    // 鼠标展开不把焦点送进侧栏（DESKTOP-WORKSPACE-78）
+    expect(sidebar()?.contains(document.activeElement)).toBe(false);
     expect(window.localStorage.getItem("runyard.layout.v1")).toBeNull();
     // 编辑器最窄 420：预览不会把它挤到更窄
     const tree = Number.parseFloat(treeWidth(document.body) ?? "0");
@@ -603,6 +609,34 @@ describe("项目页版面（UI 走查 W1 至 W7）", () => {
     // 宽窗口照手动偏好常驻
     resizeShell(1440);
     expect(sidebar()).toBeTruthy();
+  });
+
+  it("[DESKTOP-WORKSPACE-78] 鼠标展开侧栏焦点不进导航，快捷键展开才进入", async () => {
+    const user = userEvent.setup();
+    CONTAINER.width = 1100;
+    const { emit } = setup(projectState());
+    await handle("调整文件树宽度");
+    await user.click(screen.getByRole("button", { name: "显示侧栏" }));
+    expect(sidebar()?.contains(document.activeElement)).toBe(false);
+    await user.click(screen.getByRole("button", { name: "收起侧栏" }));
+    expect(sidebar()).toBeNull();
+    (document.activeElement as HTMLElement | null)?.blur();
+    emit("sidebar.toggle");
+    expect(sidebar()?.contains(document.activeElement)).toBe(true);
+  });
+
+  it("[DESKTOP-WORKSPACE-77] 资源库页临时展开侧栏后打开项目，侧栏从收起开始", async () => {
+    const user = userEvent.setup();
+    CONTAINER.width = 1100;
+    const state = { ...projectState(), loaded: false };
+    const { emit } = setup({ ...state, activeTab: "library" });
+    await screen.findByRole("navigation", { name: "资源库导航" });
+    resizeShell(1000);
+    await user.click(screen.getByRole("button", { name: "显示侧栏" }));
+    expect(sidebar()).toBeTruthy();
+    emit("library.changed", state);
+    await handle("调整文件树宽度");
+    expect(sidebar()).toBeNull();
   });
 
   it("[DESKTOP-WORKSPACE-73] 项目页卡片间用工作区底色，资源库页不用", async () => {

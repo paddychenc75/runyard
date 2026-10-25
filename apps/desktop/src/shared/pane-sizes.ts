@@ -8,6 +8,8 @@ export const FILE_TREE_MIN_PX = 160;
 export const FILE_TREE_MAX_PX = 480;
 export const EDITOR_MIN_PX = 420;
 export const PREVIEW_MIN_PX = 280;
+/** 窄窗口（全局侧栏展开占去 264）下预览可压到的下限；编辑器 420 不让 */
+export const PREVIEW_COMPACT_MIN_PX = 200;
 export const CONSOLE_MIN_PX = 96;
 /** 三栏那一行至少留这么高，输出面板拖得再高也压不掉它 */
 export const TOP_ROW_MIN_PX = 160;
@@ -55,9 +57,14 @@ export function layoutPanes(
   container: { width: number; height: number },
   prefs: PanePrefs,
   hasConsole: boolean,
-): { sizes: PaneSizes; ranges: PaneRanges } {
-  const left = prefs.treeCollapsed ? RAIL_PX : 0;
-  const handles = prefs.treeCollapsed ? HANDLE_PX : 2 * HANDLE_PX;
+): { sizes: PaneSizes; ranges: PaneRanges; treeCollapsed: boolean } {
+  // 放不下“文件树最小宽 + 编辑器 420 + 预览最小宽”时，文件树自动收成窄条（不改手动偏好），先保编辑器
+  const treeAuto =
+    !prefs.treeCollapsed &&
+    container.width < FILE_TREE_MIN_PX + EDITOR_MIN_PX + PREVIEW_MIN_PX + 2 * HANDLE_PX;
+  const treeCollapsed = prefs.treeCollapsed || treeAuto;
+  const left = treeCollapsed ? RAIL_PX : 0;
+  const handles = treeCollapsed ? HANDLE_PX : 2 * HANDLE_PX;
   const treeRange: Range = {
     min: FILE_TREE_MIN_PX,
     max: Math.max(
@@ -65,11 +72,15 @@ export function layoutPanes(
       Math.min(FILE_TREE_MAX_PX, container.width - handles - EDITOR_MIN_PX - PREVIEW_MIN_PX),
     ),
   };
-  const tree = prefs.treeCollapsed ? 0 : clamp(prefs.treeWidth ?? FILE_TREE_WIDTH_PX, treeRange);
+  const tree = treeCollapsed ? 0 : clamp(prefs.treeWidth ?? FILE_TREE_WIDTH_PX, treeRange);
   const rest = container.width - left - tree - handles;
+  const previewMin = Math.min(
+    PREVIEW_MIN_PX,
+    Math.max(PREVIEW_COMPACT_MIN_PX, rest - EDITOR_MIN_PX),
+  );
   const previewRange: Range = {
-    min: PREVIEW_MIN_PX,
-    max: Math.max(PREVIEW_MIN_PX, rest - EDITOR_MIN_PX),
+    min: previewMin,
+    max: Math.max(previewMin, rest - EDITOR_MIN_PX),
   };
   const preview = clamp(prefs.previewWidth ?? rest * PREVIEW_SHARE, previewRange);
   const consoleRange: Range = {
@@ -80,6 +91,7 @@ export function layoutPanes(
     ? clamp(prefs.consoleHeight ?? CONSOLE_HEIGHT_PX, consoleRange)
     : 0;
   return {
+    treeCollapsed,
     sizes: { tree, preview, console: consoleSize },
     ranges: { tree: treeRange, preview: previewRange, console: consoleRange },
   };
