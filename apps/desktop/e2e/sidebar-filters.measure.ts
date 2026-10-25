@@ -74,7 +74,10 @@ try {
         for (const width of [1440, 1100]) {
           await page.setViewportSize({ width, height: 900 });
           const zh = lang === "zh-CN";
-          const nav = page.getByRole("navigation");
+          // 编辑器面包屑也是 navigation，必须按名字取资源库导航，否则严格模式报错
+          const nav = page.getByRole("navigation", {
+            name: zh ? "资源库导航" : "Library navigation",
+          });
           const states = [
             { board: "Main", label: zh ? "全部" : "All" },
             { board: "LibraryRunning", label: zh ? "运行中" : "Running" },

@@ -200,7 +200,7 @@ describe("脚本底部终端", () => {
       return el as HTMLElement;
     });
     expect(panel.querySelector('[role="log"]')).toBeNull();
-    expect(panel.textContent).toContain("点这里或按 ⌃` 打开终端");
+    expect(panel.textContent).toContain("打开终端 ⌃`");
     expect(panel.textContent).not.toContain("清除");
     expect(result.named("terminal.open")).toEqual([]);
   });
@@ -208,9 +208,7 @@ describe("脚本底部终端", () => {
   it("[DESKTOP-TERMINAL-40] 点击入口才创建脚本终端", async () => {
     const scriptTab = sampleTab({ id: "script-click", kind: "oneshot" });
     const result = setup({ ...base, tabs: [scriptTab], activeTab: scriptTab.id });
-    await userEvent
-      .setup()
-      .click(await screen.findByRole("button", { name: "点这里或按 ⌃` 打开终端" }));
+    await userEvent.setup().click(await screen.findByRole("button", { name: "打开终端 ⌃`" }));
     await waitFor(() =>
       expect(result.named("terminal.open")).toEqual([
         { project: "script-click", cols: 100, rows: 30 },

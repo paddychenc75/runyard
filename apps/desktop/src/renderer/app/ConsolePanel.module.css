@@ -11,6 +11,17 @@
   background: var(--color-bg-card);
 }
 
+/* 脚本没打开终端：整块收成一行标题条，高度 = 标签高（问题单 R2） */
+.root[data-collapsed] {
+  block-size: var(--size-tab);
+}
+
+.root[data-collapsed] .header {
+  block-size: 100%;
+  box-sizing: border-box;
+  padding-block: 0;
+}
+
 .header {
   flex: none;
   display: flex;
@@ -25,25 +36,15 @@
   min-block-size: 0;
 }
 
-/* 输出内容放在一块内嵌块里（视觉规范：内嵌块 md 12），不贴卡片边 */
+/* 设计稿 WebLight、Web：输出的字直接写在卡片上，不再套一层内嵌灰框（问题单 W8） */
 .log {
   flex: 1;
   min-block-size: 0;
   margin: 0 var(--space-4) var(--space-4);
   overflow: hidden;
-  border-radius: var(--radius-md);
-  background: var(--color-bg-inset);
 }
 
 .title {
   font-size: var(--text-body-size);
   font-weight: var(--text-item-weight);
-}
-
-.empty {
-  flex: 1;
-  inline-size: 100%;
-  color: var(--color-text-secondary);
-  background: var(--color-bg-card);
-  block-size: auto;
 }

@@ -1,5 +1,5 @@
 import { useT } from "@runyard/i18n/react";
-import { Button, Icon, StatusMark } from "@runyard/ui";
+import { Button, Icon } from "@runyard/ui";
 import { useRef } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { TabRow } from "../../shared/library-state.ts";
@@ -11,7 +11,6 @@ import { ScriptAutoRun } from "./ScriptAutoRun.tsx";
 import { ScriptFailure } from "./ScriptFailure.tsx";
 import { ScriptInput } from "./ScriptInput.tsx";
 import styles from "./ScriptOutput.module.css";
-import { useRunStatus } from "./use-run-status.ts";
 
 export interface ScriptOutputProps {
   bridge: DesktopBridge;
@@ -22,11 +21,10 @@ export interface ScriptOutputProps {
 const TAIL_LINES = 12;
 
 // 脚本项目没有预览，右侧是输出（设计稿 Script、ScriptRunning、ScriptStale、ScriptFailed）：
-// 头部是状态（运行中 · 已 3.2 秒 / 已结束 · 退出码 0 · 0.18 秒，语法错误时旁边有“过期”）、
-// “保存后自动运行”开关和运行、停止按钮；中间是进程输出；底部是输入行。
+// 头部只有“保存后自动运行”开关、清除和运行、停止按钮（语法错误时有“过期”标记）；
+// 状态（运行中 · 已 3.2 秒 / 已结束 · 退出码 0 · 0.18 秒）只在顶栏的运行条里写一次，不在这里重复（问题单 R1）；中间是进程输出；底部是输入行。
 export function ScriptOutput({ bridge, tab }: ScriptOutputProps) {
   const t = useT();
-  const status = useRunStatus(tab);
   const root = useRef<HTMLElement>(null);
   useCommand("app.showOutput", () =>
     root.current?.querySelector<HTMLElement>('[role="log"]')?.focus(),
@@ -41,13 +39,6 @@ export function ScriptOutput({ bridge, tab }: ScriptOutputProps) {
       aria-label={t("desktop.output.aria")}
     >
       <header className={styles.header}>
-        <StatusMark
-          status={status.mark}
-          className={styles.status}
-          data-danger={status.danger || undefined}
-        >
-          {status.text}
-        </StatusMark>
         {tab.stale ? <span className={styles.stale}>{t("desktop.script.stale.label")}</span> : null}
         <span className={styles.spacer} />
         {/* 设置还没读到时按开处理，读到之后跟着变 */}

@@ -423,7 +423,7 @@
   "desktop.urlConfirm.unknown.label": "未知来源",
   "desktop.urlConfirm.warning.label": "这个来源是链接自己写的，Runyard 无法核实。新建后会安装依赖并运行模板里的代码，只在你信任它时继续。",
   "desktop.window.title": "Runyard",
-  "desktop.console.terminalStart.action": "点这里或按 ⌃` 打开终端",
+  "desktop.console.terminalOpen.action": "打开终端 ⌃`",
   "desktop.request.stoppedResponse.label": "服务已停止，这是停止前的响应。",
   "desktop.request.previousResponse.label": "服务尚未就绪，这是上次的响应。",
   "desktop.notifications.title": "通知",
