@@ -22,14 +22,19 @@ test("[DESKTOP-LIBRARY-VIEW-49] 打开前发现新近移走的目录，定位说
   await instance.call("tab.open", id);
   await expect(row).toContainText("Folder not found");
   await expect(row.getByRole("button", { name: "Open", exact: true })).toHaveCount(0);
-  await expect(row.getByRole("button", { name: "Locate…", exact: true })).toBeFocused();
+  // 行内只剩“⋯”，“Locate…”只在行下的说明里出现一次并拿到焦点（走查 M1）
+  const locate = instance.page
+    .locator("[data-missing-note]")
+    .getByRole("button", { name: "Locate…", exact: true });
+  await expect(row.getByRole("button", { name: "Locate…", exact: true })).toHaveCount(0);
+  await expect(locate).toBeFocused();
   const state = await instance.call<{ tabs: unknown[]; activeTab: string }>("library.get");
   expect(state.tabs).toEqual([]);
   expect(state.activeTab).toBe("library");
   await instance.app.evaluate(({ dialog }, path) => {
     dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [path] });
   }, moved);
-  await row.getByRole("button", { name: "Locate…", exact: true }).click();
+  await locate.click();
   await expect(row).not.toContainText("Folder not found");
   await expect(row.getByRole("button", { name: "Open", exact: true })).toBeVisible();
 });
