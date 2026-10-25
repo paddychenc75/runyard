@@ -438,7 +438,7 @@ describe("窗口变窄时页头和顶栏收紧", () => {
       row("hono-1", { templateId: "hono" }),
     ]);
 
-  it("[DESKTOP-LIBRARY-VIEW-67] 页头可用680宽：搜索框变短、类型和状态合成“筛选”、排序只写方式、运行数只写数字", async () => {
+  it("[DESKTOP-LIBRARY-VIEW-67] 页头可用680宽：搜索框变短、类型和状态合成“筛选”、排序只写方式、运行数仍写完整", async () => {
     layout(1024, 680);
     setup(running());
     const box = await searchBox();
@@ -449,7 +449,7 @@ describe("窗口变窄时页头和顶栏收紧", () => {
     expect(screen.queryByRole("button", { name: /^状态：/ })).toBeNull();
     expect(screen.getByRole("button", { name: "最近使用" })).toBeTruthy();
     const count = screen.getByRole("button", { name: "1 个运行中" });
-    expect(count.textContent).toBe("1");
+    expect(count.textContent).toBe("1 个运行中");
   });
 
   it("[DESKTOP-LIBRARY-VIEW-67] 改回 1440 宽：搜索框、类型状态两个按钮、完整的运行数都恢复", async () => {

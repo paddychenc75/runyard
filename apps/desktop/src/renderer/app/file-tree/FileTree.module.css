@@ -73,7 +73,12 @@
   background: var(--color-fill-neutral);
 }
 
+/* 打开着的文件：树有键盘焦点时是强调色实底，失焦后退成和全局侧栏同一套的导航选中底（UI 走查 W7） */
 .row[data-active] {
+  background: var(--color-nav-selected-bg);
+}
+
+.tree:focus-within .row[data-active] {
   background: var(--color-fill-accent);
   color: var(--color-text-on-accent);
 }
@@ -98,7 +103,7 @@
   transform: rotate(-90deg);
 }
 
-.row[data-active] .chevron {
+.tree:focus-within .row[data-active] .chevron {
   color: var(--color-tree-selected-icon);
 }
 
@@ -129,7 +134,7 @@
   color: var(--color-tree-data);
 }
 
-.row[data-active] .icon {
+.tree:focus-within .row[data-active] .icon {
   color: var(--color-tree-selected-icon);
 }
 

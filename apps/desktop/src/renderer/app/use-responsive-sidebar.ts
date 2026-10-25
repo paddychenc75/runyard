@@ -1,14 +1,18 @@
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
 
 // 收列后的表格仍需约742px，加侧栏264px与页边距56px；1100可容纳，1024需临时隐藏。
-const MIN_WITH_SIDEBAR = 1062;
+const LIBRARY_MIN_WITH_SIDEBAR = 1062;
+// 项目页：侧栏 240 + 文件树 216 + 编辑器至少 420 + 预览至少 280 + 间距，1280 以下放不下，默认收起侧栏（UI 走查 W1）。
+const PROJECT_MIN_WITH_SIDEBAR = 1280;
 
 /** 自动隐藏只影响本次布局，持久偏好由调用方在宽窗口手动切换时写入。 */
 export function useResponsiveSidebar(
   enabled: boolean,
   collapsed: boolean,
   toggleSaved: () => void,
+  projectPage = false,
 ) {
+  const minWidth = projectPage ? PROJECT_MIN_WITH_SIDEBAR : LIBRARY_MIN_WITH_SIDEBAR;
   const root = useRef<HTMLDivElement>(null);
   const [narrow, setNarrow] = useState(false);
   const [opened, setOpened] = useState(false);
@@ -22,7 +26,7 @@ export function useResponsiveSidebar(
     if (!node || typeof ResizeObserver === "undefined") return;
     const measure = () => {
       const width = node.getBoundingClientRect().width;
-      const next = width > 0 && width < MIN_WITH_SIDEBAR;
+      const next = width > 0 && width < minWidth;
       const changesMode = next !== measuredNarrow.current;
       measuredNarrow.current = next;
       const focused = document.activeElement;
@@ -44,7 +48,7 @@ export function useResponsiveSidebar(
     const observer = new ResizeObserver(measure);
     observer.observe(node);
     return () => observer.disconnect();
-  }, [enabled, collapsed]);
+  }, [enabled, collapsed, minWidth]);
   useLayoutEffect(() => {
     if (!automatic) setOpened(false);
   }, [automatic]);

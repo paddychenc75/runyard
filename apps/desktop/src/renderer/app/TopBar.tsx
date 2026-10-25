@@ -1,14 +1,6 @@
 import type { Localized } from "@runyard/i18n";
-import { useFormat, useT } from "@runyard/i18n/react";
-import {
-  Badge,
-  Button,
-  StatusMark,
-  TabStrip,
-  type TabStripItem,
-  Tooltip,
-  UserText,
-} from "@runyard/ui";
+import { useT } from "@runyard/i18n/react";
+import { Badge, Button, StatusMark, TabStrip, type TabStripItem, UserText } from "@runyard/ui";
 import { useCallback, useRef, useState } from "react";
 import type { BootstrapInfo, DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { PlaygroundRow, RunningRow, TabRow } from "../../shared/library-state.ts";
@@ -45,7 +37,7 @@ export interface TopBarProps {
   onClose: (id: string) => void;
 }
 
-/** 窗口窄于它：“N 个运行中”只留圆点和数字，运行条只留圆点和端口（规格 DESKTOP-LIBRARY-VIEW-67、DESKTOP-WORKSPACE-65） */
+/** 窗口窄于它：运行条省掉端口，状态词和“N 个运行中”都保留，不出现裸数字（规格 DESKTOP-WORKSPACE-65） */
 export const COMPACT_WINDOW_PX = 1200;
 
 // 顶栏只列打开的项目标签，资源库由全局侧栏进入（DESKTOP-WORKSPACE-03）。
@@ -69,7 +61,6 @@ export function TopBar({
   onClose,
 }: TopBarProps) {
   const t = useT();
-  const format = useFormat();
   const flushProject = useFlushProject();
   const compact = useWindowWidth() < COMPACT_WINDOW_PX;
   const [listOpen, setListOpen] = useState(false);
@@ -114,11 +105,10 @@ export function TopBar({
       data-open={listOpen || undefined}
       aria-haspopup="dialog"
       aria-expanded={listOpen}
-      aria-label={compact ? runningText : undefined}
       onClick={() => setListOpen((open) => !open)}
     >
       <StatusMark status={running > 0 ? "running" : "stopped"} />
-      <span>{compact && running > 0 ? format.number(running) : runningText}</span>
+      <span>{runningText}</span>
     </button>
   );
   return (
@@ -152,7 +142,7 @@ export function TopBar({
       )}
       {activeTabRow === undefined ? null : <span className={styles.divider} aria-hidden="true" />}
       <div className={styles.runningWrap} ref={runningRef}>
-        {compact ? <Tooltip content={runningText}>{runningButton}</Tooltip> : runningButton}
+        {runningButton}
         {listOpen && runningRef.current !== null ? (
           <RunningPopover
             bridge={bridge}
