@@ -238,7 +238,9 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
         <div
           ref={sidebar.root}
           className={styles.root}
-          data-surface={page === "library" && !onLibraryPage ? "workspace" : undefined}
+          data-surface={
+            page === "settings" || (page === "library" && !onLibraryPage) ? "workspace" : undefined
+          }
           data-sidebar-overlay={sidebar.overlay ? "" : undefined}
           data-sidebar={sidebarVisible && !sidebar.overlay ? "shown" : "hidden"}
           data-controls={windowControls.inset === 0 ? "none" : windowControls.side}
@@ -277,11 +279,12 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
               bridge={bridge}
               modKey={modKey}
               tabs={tabs}
-              activeTab={activeTab}
+              // 设置页顶栏只放全局内容：项目标签不呈选中态、没有运行条（规格 DESKTOP-SETTINGS-49）
+              activeTab={page === "settings" ? "" : activeTab}
               running={runningCount(library?.playgrounds ?? [])}
               runs={library?.runs ?? []}
               playgrounds={library?.playgrounds ?? []}
-              activeTabRow={activeTabRow}
+              activeTabRow={page === "settings" ? undefined : activeTabRow}
               sidebarVisible={sidebarVisible}
               onToggleSidebar={toggleSidebar}
               onNew={openPicker}

@@ -621,4 +621,18 @@ describe("项目页版面（UI 走查 W1 至 W7）", () => {
     expect(global.querySelector("[data-icon]")?.getAttribute("data-icon")).toBe("sidebar-left");
     expect(tree.querySelector("[data-icon]")?.getAttribute("data-icon")).toBe("chevrons-left");
   });
+
+  it("[DESKTOP-SETTINGS-49] 设置页整页用工作区底色，顶栏没有项目运行条也没有选中的项目标签", async () => {
+    const { container, emit } = setup(projectState());
+    await handle("调整文件树宽度");
+    expect(screen.queryByRole("button", { name: "停止" })).not.toBeNull();
+    emit("command.run", { id: "app.settings" });
+    await screen.findByRole("heading", { name: "设置" });
+    expect(container.querySelector("[data-surface]")?.getAttribute("data-surface")).toBe(
+      "workspace",
+    );
+    expect(screen.queryByRole("button", { name: "停止" })).toBeNull();
+    expect(screen.getByRole("tab", { name: /demo/ }).getAttribute("aria-selected")).toBe("false");
+    expect(screen.getByRole("button", { name: "新建" })).toBeTruthy();
+  });
 });

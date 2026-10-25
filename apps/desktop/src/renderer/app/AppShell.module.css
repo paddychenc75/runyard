@@ -6,7 +6,7 @@
   background: var(--color-bg-window);
 }
 
-/* 项目页：卡片之间的底色是工作区底色（设计稿 Web、WebLight），资源库页保持窗口底色 */
+/* 项目页和设置页整页（含顶栏区域）用工作区底色（设计稿 Web、WebLight），资源库页保持窗口底色 */
 .root[data-surface="workspace"] {
   background: var(--color-bg-workspace);
 }
