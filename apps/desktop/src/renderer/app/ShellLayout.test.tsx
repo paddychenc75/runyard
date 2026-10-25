@@ -8,14 +8,14 @@ import { AppFrame } from "./AppFrame.tsx";
 import { sampleTab } from "./sample-tab.ts";
 
 // 外壳的版面：侧栏收起与显示范围、项目标签页的可拖面板（规格 DESKTOP-LIBRARY-VIEW-61 至 63、DESKTOP-WORKSPACE-55 至 61）。
-// jsdom 不做版面：容器固定 1200 x 700，预览占位区的宽度取自版面写下的 CSS 变量，像真实版面一样跟着拖动变。
+// jsdom 不做版面：容器固定 1440 x 700，预览占位区的宽度取自版面写下的 CSS 变量，像真实版面一样跟着拖动变。
 
-const CONTAINER = { width: 1200, height: 700 };
+const CONTAINER = { width: 1440, height: 700 };
 let observers: (() => void)[] = [];
 
 beforeEach(() => {
   observers = [];
-  CONTAINER.width = 1200;
+  CONTAINER.width = 1440;
   (Element.prototype as { getAnimations?: () => unknown[] }).getAnimations = () => [];
   vi.stubGlobal(
     "ResizeObserver",
@@ -299,6 +299,10 @@ describe("项目标签页的可拖面板", () => {
     const boundsCalls = () =>
       call.mock.calls.filter(([method, bounds]) => method === "preview.bounds" && bounds !== null);
     const widths = () => boundsCalls().map(([, bounds]) => (bounds as { width: number }).width);
+    // 第一次画用的是量不到容器时的备用尺寸；让量到的 1440 宽生效后，占位区才报出稳定的初始宽度
+    act(() => {
+      for (const notify of observers) notify();
+    });
     const start = Number.parseFloat(cssVar(container, "--pane-preview-width") ?? "0");
     expect(widths().at(-1)).toBe(start);
     // 一边拖一边让版面“生效”：真实环境里占位区的 ResizeObserver 在每一帧都会触发
@@ -578,4 +582,43 @@ it("[DESKTOP-LIBRARY-VIEW-64] 项目侧栏筛选直接回库，不关闭标签�
   expect(call.mock.calls.some(([method]) => method === "run.stop" || method === "tab.close")).toBe(
     false,
   );
+});
+
+describe("项目页版面（UI 走查 W1 至 W7）", () => {
+  it("[DESKTOP-WORKSPACE-72] 1100 宽进入项目页：全局侧栏默认收起，可临时展开，不改手动偏好", async () => {
+    const user = userEvent.setup();
+    CONTAINER.width = 1100;
+    setup(projectState());
+    await handle("调整文件树宽度");
+    expect(sidebar()).toBeNull();
+    expect(window.localStorage.getItem("runyard.layout.v1")).toBeNull();
+    await user.click(screen.getByRole("button", { name: "显示侧栏" }));
+    expect(sidebar()).toBeTruthy();
+    expect(window.localStorage.getItem("runyard.layout.v1")).toBeNull();
+    // 编辑器最窄 420：预览不会把它挤到更窄
+    const tree = Number.parseFloat(treeWidth(document.body) ?? "0");
+    const preview = Number.parseFloat(cssVar(document.body, "--pane-preview-width") ?? "0");
+    expect(1100 - tree - preview - 2 * 12).toBeGreaterThanOrEqual(420);
+    // 宽窗口照手动偏好常驻
+    resizeShell(1440);
+    expect(sidebar()).toBeTruthy();
+  });
+
+  it("[DESKTOP-WORKSPACE-73] 项目页卡片间用工作区底色，资源库页不用", async () => {
+    const { container, emit } = setup(projectState());
+    await handle("调整文件树宽度");
+    const shell = () => container.querySelector<HTMLElement>("[data-surface]");
+    expect(shell()?.getAttribute("data-surface")).toBe("workspace");
+    emit("library.changed", libraryState());
+    expect(container.querySelector("[data-surface]")).toBeNull();
+  });
+
+  it("[DESKTOP-WORKSPACE-74] 全局侧栏开关和文件树开关用不同的图案", async () => {
+    setup(projectState());
+    await handle("调整文件树宽度");
+    const global = screen.getByRole("button", { name: "收起侧栏" });
+    const tree = screen.getByRole("button", { name: "收起文件树" });
+    expect(global.querySelector("[data-icon]")?.getAttribute("data-icon")).toBe("sidebar-left");
+    expect(tree.querySelector("[data-icon]")?.getAttribute("data-icon")).toBe("chevrons-left");
+  });
 });

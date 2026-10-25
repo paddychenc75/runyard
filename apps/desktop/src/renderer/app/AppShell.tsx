@@ -39,6 +39,7 @@ import { TemplatesPage } from "./templates/TemplatesPage.tsx";
 import { UrlConfirmDialog } from "./UrlConfirmDialog.tsx";
 import { useQuitTerminalConfirm } from "./use-quit-terminal-confirm.ts";
 import { useResponsiveSidebar } from "./use-responsive-sidebar.ts";
+import { useSearchShortcut } from "./use-search-shortcut.ts";
 import { useSettingsPage } from "./use-settings-page.ts";
 import { WorkspaceLayout } from "./WorkspaceLayout.tsx";
 
@@ -136,19 +137,7 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
   // 版面偏好：侧栏收起与否、各面板的尺寸（记在界面自己的存储里）
   const [layoutPrefs, patchLayout] = useLayoutPrefs();
   const onLibraryPage = (library?.activeTab ?? "library") === "library";
-  // ⌘F 在资源库页把焦点放进搜索框（规格 DESKTOP-LIBRARY-VIEW-14）；项目标签页没有搜索框，不拦
-  useEffect(() => {
-    if (!onLibraryPage || page !== "library") return;
-    function onKeyDown(event: KeyboardEvent) {
-      const pressed = modKey === "meta" ? event.metaKey : event.ctrlKey;
-      if (!pressed || event.key.toLowerCase() !== "f" || event.altKey || event.shiftKey) return;
-      event.preventDefault();
-      searchRef.current?.focus();
-      searchRef.current?.select();
-    }
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [onLibraryPage, modKey, page]);
+  useSearchShortcut(onLibraryPage && page === "library", modKey, searchRef);
   const tabs = library?.tabs ?? [];
   const activeTab = library?.activeTab ?? "library";
   const settingsPage = useSettingsPage(
@@ -176,6 +165,7 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
         setTemporaryNavigation(!temporaryNavigation);
       } else patchLayout({ sidebarCollapsed: !layoutPrefs.sidebarCollapsed });
     },
+    page === "library" && !onLibraryPage,
   );
   const sidebarVisible = sidebar.visible;
   useLayoutEffect(() => {
@@ -248,6 +238,7 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
         <div
           ref={sidebar.root}
           className={styles.root}
+          data-surface={page === "library" && !onLibraryPage ? "workspace" : undefined}
           data-sidebar-overlay={sidebar.overlay ? "" : undefined}
           data-sidebar={sidebarVisible && !sidebar.overlay ? "shown" : "hidden"}
           data-controls={windowControls.inset === 0 ? "none" : windowControls.side}

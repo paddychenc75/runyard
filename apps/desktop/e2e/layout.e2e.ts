@@ -56,7 +56,7 @@ test("[DESKTOP-WORKSPACE-68][DESKTOP-LIBRARY-VIEW-93] 版面：搜索在页头�
   await resize(720, 720);
   await expect(page.getByRole("button", { name: "Filter" })).toBeVisible();
   await expect(page.getByRole("button", { name: /^Type/ })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: /^1 running/ })).toHaveText("1");
+  await expect(page.getByRole("button", { name: /^1 running/ })).toHaveText("1 running");
   await resize(1440, 900);
   await expect(page.getByRole("button", { name: /^Type/ })).toBeVisible();
   await expect(page.getByRole("navigation", { name: "Library navigation" })).toBeVisible();

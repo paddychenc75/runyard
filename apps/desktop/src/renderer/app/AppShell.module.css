@@ -6,6 +6,11 @@
   background: var(--color-bg-window);
 }
 
+/* 项目页：卡片之间的底色是工作区底色（设计稿 Web、WebLight），资源库页保持窗口底色 */
+.root[data-surface="workspace"] {
+  background: var(--color-bg-workspace);
+}
+
 .content {
   position: absolute;
   inset-block: var(--layout-topbar-height) 0;

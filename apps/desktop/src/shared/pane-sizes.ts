@@ -6,7 +6,7 @@ import { CONSOLE_HEIGHT_PX, FILE_TREE_WIDTH_PX } from "./layout.ts";
 
 export const FILE_TREE_MIN_PX = 160;
 export const FILE_TREE_MAX_PX = 480;
-export const EDITOR_MIN_PX = 280;
+export const EDITOR_MIN_PX = 420;
 export const PREVIEW_MIN_PX = 280;
 export const CONSOLE_MIN_PX = 96;
 /** 三栏那一行至少留这么高，输出面板拖得再高也压不掉它 */
