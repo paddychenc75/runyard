@@ -5,6 +5,8 @@ import { pathToFileURL } from "node:url";
 import { chromium, expect } from "@playwright/test";
 import { launchRunyard } from "./support/launch.ts";
 
+// 项目页里还有编辑器面包屑也是 navigation：必须按名字取资源库导航（UI 走查 T1）
+const libraryNavName = /^(资源库导航|Library navigation)$/;
 const out = process.env.RUNYARD_STATUS_REVIEW_OUTPUT ?? mkdtempSync(join(tmpdir(), "ry-status-"));
 mkdirSync(out, { recursive: true });
 const repo = resolve(import.meta.dirname, "../../..");
@@ -81,9 +83,14 @@ try {
               main?.focus();
             }, fixture);
             if (screen === "Main") {
-              await expect(page.getByRole("navigation")).toBeVisible();
-              await expect(page.getByRole("navigation")).toHaveAttribute("data-active", "true");
-              const selected = page.getByRole("navigation").locator('button[aria-current="page"]');
+              await expect(page.getByRole("navigation", { name: libraryNavName })).toBeVisible();
+              await expect(page.getByRole("navigation", { name: libraryNavName })).toHaveAttribute(
+                "data-active",
+                "true",
+              );
+              const selected = page
+                .getByRole("navigation", { name: libraryNavName })
+                .locator('button[aria-current="page"]');
               await expect(selected).toHaveCSS(
                 "background-color",
                 theme === "light" ? "rgba(0, 0, 0, 0.08)" : "rgba(255, 255, 255, 0.1)",
@@ -141,7 +148,10 @@ try {
             await comparison.close();
             if (screen === "Main") {
               await page.evaluate(() => window.dispatchEvent(new Event("blur")));
-              await expect(page.getByRole("navigation")).toHaveAttribute("data-active", "false");
+              await expect(page.getByRole("navigation", { name: libraryNavName })).toHaveAttribute(
+                "data-active",
+                "false",
+              );
               await expect(
                 page
                   .getByRole("navigation")

@@ -95,6 +95,7 @@ export function LibraryTable({
       id: "name",
       header: t("library.column.name.label"),
       width: "fill",
+      sort: { sorted: sort === "name", onSort: () => onSortChange("name") },
       render: (row) =>
         row.id === editingId ? (
           <RenameInlineFields draft={draft} />
@@ -194,6 +195,7 @@ export function LibraryTable({
       id: "lastUsed",
       header: t("library.column.lastUsed.label"),
       width: "md",
+      sort: { sorted: sort === "recent", onSort: () => onSortChange("recent") },
       collapse: { order: 1, mode: "hide" },
       render: (row) =>
         dim(

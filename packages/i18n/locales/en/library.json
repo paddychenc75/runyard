@@ -48,7 +48,7 @@
   "library.note.dialog.title": "Edit note",
   "library.note.empty.label": "No note",
   "library.page.results.label": "{count, plural, one {# result} other {# results}} · {total, plural, one {# playground} other {# playgrounds}} · stored in {root}",
-  "library.page.summary.label": "{total, plural, one {# playground} other {# playgrounds}} · {running, plural, one {# running} other {# running}} · stored in {root}",
+  "library.page.summary.label": "{total, plural, one {# playground} other {# playgrounds}}{running, plural, =0 {} one { · # running} other { · # running}} · stored in {root}",
   "library.rename.dialog.title": "Rename",
   "library.rename.nameFolder.hint": "The name is also the folder name; renaming breaks old runyard://open links.",
   "library.rename.nameRunning.hint": "The name is also the folder name. This playground is running: saving stops it and restarts it under the new name. Old runyard://open links will stop working.",
