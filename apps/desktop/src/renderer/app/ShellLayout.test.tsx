@@ -540,19 +540,16 @@ it("[DESKTOP-LIBRARY-VIEW-97] 展开偏好从临时模板拉宽回库后不遗�
   expect(document.activeElement).toBe(search);
 });
 
-it("[DESKTOP-LIBRARY-VIEW-99] 项目临时侧栏聚焦首项，原生预览让位并在关闭后恢复", async () => {
-  const { call, emit } = setup({ ...projectState(), loaded: false });
+it("[DESKTOP-WORKSPACE-79] 720 宽项目页展开侧栏也是占位一栏，不是浮层，再切换收回并归还焦点", async () => {
+  const { emit, container } = setup({ ...projectState(), loaded: false });
   await handle("调整预览宽度");
   resizeShell(720);
-  call.mockClear();
   emit("sidebar.toggle");
   expect(document.activeElement).toBe(sidebar()?.querySelector("button"));
-  expect(sidebar()?.querySelector('[aria-current="page"]')).toBeNull();
-  await waitFor(() => expect(call).toHaveBeenCalledWith("preview.visible", false));
-  call.mockClear();
-  await userEvent.setup().keyboard("{Escape}");
+  expect(container.querySelector("[data-sidebar-overlay]")).toBeNull();
+  expect(container.querySelector("[data-sidebar]")?.getAttribute("data-sidebar")).toBe("shown");
+  emit("sidebar.toggle");
   expect(sidebar()).toBeNull();
-  await waitFor(() => expect(call).toHaveBeenCalledWith("preview.visible", true));
   expect(document.activeElement).toBe(screen.getByRole("button", { name: "显示侧栏" }));
   expect(window.localStorage.getItem("runyard.layout.v1")).toBeNull();
 });

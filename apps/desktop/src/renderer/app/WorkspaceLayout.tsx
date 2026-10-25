@@ -54,7 +54,7 @@ export function WorkspaceLayout({ bridge, tab, overlays, prefs, onPrefs }: Works
     return () => observer.disconnect();
   }, []);
   const script = isScript(tab);
-  const { sizes, ranges, treeCollapsed } = layoutPanes(box, prefs, true);
+  const { sizes, ranges, treeCollapsed, previewHidden, treeHidden } = layoutPanes(box, prefs, true);
   const vars = {
     "--layout-file-tree-width": `${sizes.tree}px`,
     "--layout-console-height": `${sizes.console}px`,
@@ -67,6 +67,7 @@ export function WorkspaceLayout({ bridge, tab, overlays, prefs, onPrefs }: Works
           key={tab.id}
           bridge={bridge}
           tab={tab}
+          hideTree={treeHidden}
           onCollapseTree={() => onPrefs({ treeCollapsed: true })}
           collapsedRail={
             treeCollapsed ? (
@@ -95,29 +96,33 @@ export function WorkspaceLayout({ bridge, tab, overlays, prefs, onPrefs }: Works
             <div className={styles.column}>
               <div className={styles.top}>
                 {editor}
-                <ResizeHandle
-                  orientation="vertical"
-                  label={t("workspace.resize.preview.label")}
-                  value={sizes.preview}
-                  range={ranges.preview}
-                  growsTowardEnd={false}
-                  onResize={(previewWidth) => onPrefs({ previewWidth })}
-                  onReset={() => onPrefs({ previewWidth: null })}
-                />
-                <div className={styles.right}>
-                  {/* 缺工具在任何类型的项目里都是同一个画面 */}
-                  {tab.failure !== null &&
-                  previewScreenOf(tab) === "missing" &&
-                  (script || tab.service === true) ? (
-                    <MissingToolPane bridge={bridge} tab={tab} failure={tab.failure} />
-                  ) : script ? (
-                    <ScriptOutput bridge={bridge} tab={tab} />
-                  ) : tab.service === true ? (
-                    <RequestPanel key={tab.id} bridge={bridge} tab={tab} />
-                  ) : (
-                    <PreviewPane bridge={bridge} tab={tab} overlays={overlays} />
-                  )}
-                </div>
+                {previewHidden ? null : (
+                  <>
+                    <ResizeHandle
+                      orientation="vertical"
+                      label={t("workspace.resize.preview.label")}
+                      value={sizes.preview}
+                      range={ranges.preview}
+                      growsTowardEnd={false}
+                      onResize={(previewWidth) => onPrefs({ previewWidth })}
+                      onReset={() => onPrefs({ previewWidth: null })}
+                    />
+                    <div className={styles.right}>
+                      {/* 缺工具在任何类型的项目里都是同一个画面 */}
+                      {tab.failure !== null &&
+                      previewScreenOf(tab) === "missing" &&
+                      (script || tab.service === true) ? (
+                        <MissingToolPane bridge={bridge} tab={tab} failure={tab.failure} />
+                      ) : script ? (
+                        <ScriptOutput bridge={bridge} tab={tab} />
+                      ) : tab.service === true ? (
+                        <RequestPanel key={tab.id} bridge={bridge} tab={tab} />
+                      ) : (
+                        <PreviewPane bridge={bridge} tab={tab} overlays={overlays} />
+                      )}
+                    </div>
+                  </>
+                )}
               </div>
               <ResizeHandle
                 orientation="horizontal"
