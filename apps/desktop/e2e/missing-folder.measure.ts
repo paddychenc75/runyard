@@ -31,7 +31,8 @@ try {
         renameSync(join(instance.library, "vue-drag-list"), join(instance.home, "moved-demo"));
         await instance.call("tab.open", id);
         await expect(page.locator("[data-missing-note]")).toBeVisible();
-        const locate = row.getByRole("button", {
+        // 行内只剩“⋯”，“重新定位…”只在行下的说明里（走查 M1）
+        const locate = page.locator("[data-missing-note]").getByRole("button", {
           name: lang === "en" ? "Locate…" : "重新定位…",
           exact: true,
         });

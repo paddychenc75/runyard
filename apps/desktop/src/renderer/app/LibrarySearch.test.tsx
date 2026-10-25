@@ -172,7 +172,7 @@ describe("资源库搜索", () => {
       row(index < 3 ? `match-${index}` : `other-${index}`),
     );
     setup(library(rows));
-    expect(await screen.findByText(/^20 个项目 · 0 个正在运行/)).toBeTruthy();
+    expect(await screen.findByText(/^20 个项目 · 存放在/)).toBeTruthy();
     await user.type(await searchBox(), "match");
     expect(await screen.findByText(/^3 个结果 · 共 20 个项目/)).toBeTruthy();
   });
@@ -392,6 +392,28 @@ describe("页概况与资源库位置", () => {
     const footer = screen.getByText(/^20 个项目 · /, { selector: "div" });
     expect(footer.parentElement?.textContent).toContain("~/Runyard");
   });
+
+  it("[DESKTOP-LIBRARY-VIEW-108] 没有项目在运行时省略“正在运行”一段（走查 L3）", async () => {
+    setup(library([]));
+    expect(await screen.findByText("0 个项目 · 存放在 ~/Runyard")).toBeTruthy();
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-108] 有项目但都没运行：只写项目数和位置", async () => {
+    setup(library([row("a"), row("b")]));
+    expect(await screen.findByText("2 个项目 · 存放在 ~/Runyard")).toBeTruthy();
+  });
+});
+
+describe("当前排序列的列头", () => {
+  it("[DESKTOP-LIBRARY-VIEW-107] 当前排序的列头是按钮并带降序标记，其余列头不带（走查 L2）", async () => {
+    setup(library([row("a"), row("b")]));
+    const table = await screen.findByRole("table");
+    const sorted = [...table.querySelectorAll("th[aria-sort]")];
+    expect(sorted).toHaveLength(1);
+    expect(sorted[0]?.textContent).toBe("最近使用");
+    await userEvent.setup().click(within(table).getByRole("button", { name: "名称与备注" }));
+    expect(table.querySelector("th[aria-sort]")?.textContent).toBe("名称与备注");
+  });
 });
 
 describe("搜索框在页头", () => {
@@ -447,13 +469,14 @@ describe("窗口变窄时页头和顶栏收紧", () => {
     expect(screen.getByRole("button", { name: "筛选" })).toBeTruthy();
     expect(screen.queryByRole("button", { name: /^类型：/ })).toBeNull();
     expect(screen.queryByRole("button", { name: /^状态：/ })).toBeNull();
-    expect(screen.getByRole("button", { name: "最近使用" })).toBeTruthy();
+    // 排序下拉只写方式；当前排序的列头也是同名按钮
+    expect(screen.getAllByRole("button", { name: "最近使用" })).toHaveLength(2);
     const count = screen.getByRole("button", { name: "1 个运行中" });
     expect(count.textContent).toBe("1 个运行中");
   });
 
   it("[DESKTOP-LIBRARY-VIEW-67] 改回 1440 宽：搜索框、类型状态两个按钮、完整的运行数都恢复", async () => {
-    layout(1440, 1100);
+    layout(1440, 1136);
     setup(running());
     const box = await searchBox();
     expect(box.closest("[data-size]")?.getAttribute("data-size")).toBe("wide");
@@ -462,6 +485,22 @@ describe("窗口变窄时页头和顶栏收紧", () => {
     expect(screen.getByRole("button", { name: /^状态：全部/ })).toBeTruthy();
     expect(screen.getByRole("button", { name: /^排序：/ })).toBeTruthy();
     expect(screen.getByRole("button", { name: "1 个运行中" }).textContent).toBe("1 个运行中");
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-106] 1100 宽收起侧栏（页头 1028）：用窄工具条，搜索框 180、占位只写“搜索”，不被键帽切断（走查 L1）", async () => {
+    layout(1100, 1028);
+    setup(running());
+    const box = await searchBox();
+    expect(box.closest("[data-size]")?.getAttribute("data-size")).toBe("short");
+    expect(box.getAttribute("placeholder")).toBe("搜索");
+    expect(screen.getByRole("button", { name: "筛选" })).toBeTruthy();
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-67] 内容区 1180（页头 1124）起才用宽工具条", async () => {
+    layout(1440, 1124);
+    setup(running());
+    const box = await searchBox();
+    expect(box.closest("[data-size]")?.getAttribute("data-size")).toBe("wide");
   });
 
   it("[DESKTOP-LIBRARY-VIEW-67] “筛选”按钮里有类型和状态两组，选了照样筛选列表", async () => {
