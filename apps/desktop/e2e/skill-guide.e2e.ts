@@ -28,7 +28,7 @@ test("[DESKTOP-SETTINGS-44] 未安装也能查看随包中英文说明，拒绝�
     );
   const chineseGuide = page.getByRole("dialog", { name: "查看说明", exact: true });
   await expect(chineseGuide).toBeVisible();
-  await expect(chineseGuide).toContainText("这是给人看的中文对照");
+  await expect(chineseGuide).toContainText("## 工作流程");
   await page.getByRole("button", { name: "关闭说明", exact: true }).click();
   await expect(chineseGuide).not.toBeVisible();
   await instance.call("settings.set", { language: "en" });
