@@ -4,8 +4,6 @@ import { useCallback, useLayoutEffect, useRef, useState } from "react";
 const LIBRARY_MIN_WITH_SIDEBAR = 1062;
 // 项目页：侧栏 240 + 文件树 216 + 编辑器至少 420 + 预览至少 280 + 间距，1280 以下放不下，默认收起侧栏（UI 走查 W1）。
 const PROJECT_MIN_WITH_SIDEBAR = 1280;
-// 项目页展开侧栏当一栏推开内容所需的最小窗口宽：侧栏 264 + 文件树窄条 + 编辑器 420 + 预览下限 200 + 间距；再窄放不下，退回覆盖。
-const PROJECT_PUSH_MIN = 1000;
 
 /** 自动隐藏只影响本次布局，持久偏好由调用方在宽窗口手动切换时写入。 */
 export function useResponsiveSidebar(
@@ -18,12 +16,11 @@ export function useResponsiveSidebar(
   const root = useRef<HTMLDivElement>(null);
   const [narrow, setNarrow] = useState(false);
   const [opened, setOpened] = useState(false);
-  const [pushable, setPushable] = useState(false);
   const focusRequest = useRef<"toggle" | "navigation" | null>(null);
   const measuredNarrow = useRef(false);
   const automatic = enabled && narrow;
   // 项目页窄窗口：展开的侧栏是布局里的一栏，把内容向右推（负责人 2026-10-26），只有资源库页才浮在表格上。
-  const overlay = automatic && opened && !(projectPage && pushable);
+  const overlay = automatic && opened && !projectPage;
   const visible = automatic ? opened : !collapsed;
   useLayoutEffect(() => {
     const node = root.current;
@@ -47,7 +44,6 @@ export function useResponsiveSidebar(
       )
         focusRequest.current = "toggle";
       setNarrow(next);
-      setPushable(width >= PROJECT_PUSH_MIN);
     };
     measure();
     const observer = new ResizeObserver(measure);

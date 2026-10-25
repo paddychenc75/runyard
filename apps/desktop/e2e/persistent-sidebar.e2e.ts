@@ -84,7 +84,7 @@ test("[DESKTOP-LIBRARY-VIEW-63][DESKTOP-LIBRARY-VIEW-64][DESKTOP-WORKSPACE-03][D
   await expect(tree).toHaveCount(0);
 });
 
-test("[DESKTOP-LIBRARY-VIEW-99][DESKTOP-WORKSPACE-61] 720 宽项目侧栏覆盖时预览让位，收回恢复且不改手动偏好", async ({
+test("[DESKTOP-WORKSPACE-61][DESKTOP-WORKSPACE-79] 720 宽项目侧栏占位展开时预览收起，收回恢复且不改手动偏好", async ({
   launch,
 }) => {
   const instance = await launch();
@@ -101,13 +101,14 @@ test("[DESKTOP-LIBRARY-VIEW-99][DESKTOP-WORKSPACE-61] 720 宽项目侧栏覆盖�
   const nav = page.getByRole("navigation", { name: "Library navigation" });
   await expect(nav).toHaveCount(0);
   await expect.poll(() => visiblePreviews(instance)).toBe(1);
-  const slot = await page.locator("[data-preview-slot]").boundingBox();
   await pressMenuShortcut(app, "Ctrl+Cmd+S");
   await expect(nav.getByRole("button").first()).toBeFocused();
+  await expect(page.locator("[data-sidebar-overlay]")).toHaveCount(0);
+  await expect(page.locator("[data-preview-slot]")).toHaveCount(0);
   await expect.poll(() => visiblePreviews(instance)).toBe(0);
-  expect(await page.locator("[data-preview-slot]").boundingBox()).toEqual(slot);
-  await page.keyboard.press("Escape");
-  await expect(page.getByRole("button", { name: "Show sidebar" })).toBeFocused();
+  await pressMenuShortcut(app, "Ctrl+Cmd+S");
+  await expect(nav).toHaveCount(0);
+  await expect(page.locator("[data-preview-slot]")).toHaveCount(1);
   await expect.poll(() => visiblePreviews(instance)).toBe(1);
   expect(await saved()).toBe(before);
   await window.evaluate((win) => win.setContentSize(1440, 900));

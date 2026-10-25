@@ -18,6 +18,15 @@ async function shot(instance: RunyardApp, name: string) {
   writeFileSync(join(shotsDir, `${name}.png`), Buffer.from(base64, "base64"));
 }
 
+async function visiblePreviews(instance: RunyardApp) {
+  const window = await instance.app.browserWindow(instance.page);
+  return window.evaluate(
+    (win) =>
+      win.contentView.children.filter((view: { getVisible(): boolean }) => view.getVisible())
+        .length,
+  );
+}
+
 async function openProject(instance: RunyardApp, name: string) {
   const row = instance.page.locator("tr[data-row-id]").filter({ hasText: name });
   await row.getByRole("button", { name: "Open", exact: true }).click();
@@ -30,12 +39,12 @@ async function openProject(instance: RunyardApp, name: string) {
     .toBe("ready");
 }
 
-const widths = shotsDir === undefined ? [1000] : [1000, 1100, 1440];
+const widths = shotsDir === undefined ? [720, 860, 1000] : [720, 860, 1000, 1100, 1440];
 const themes = shotsDir === undefined ? (["dark"] as const) : (["light", "dark"] as const);
 
 for (const width of widths) {
   for (const theme of themes) {
-    test(`[DESKTOP-WORKSPACE-72][DESKTOP-WORKSPACE-77][DESKTOP-WORKSPACE-78] 项目页侧栏展开占位置推开内容、不遮挡（${width} 宽 ${theme}）`, async ({
+    test(`[DESKTOP-WORKSPACE-72][DESKTOP-WORKSPACE-77][DESKTOP-WORKSPACE-78][DESKTOP-WORKSPACE-79] 项目页侧栏展开占位置推开内容、不遮挡（${width} 宽 ${theme}）`, async ({
       launch,
     }) => {
       const instance = await launch({ theme });
@@ -58,7 +67,9 @@ for (const width of widths) {
       if (width < 1062)
         await page.getByRole("button", { name: "Show sidebar", exact: true }).click();
       await openProject(instance, "push-beta");
-      await page.getByRole("tab", { name: /push-alpha$/ }).click();
+      // 窄窗口标签条合并成“更多标签”，当前项目以外的标签可能不在条里
+      const alpha = page.getByRole("tab", { name: /push-alpha$/ });
+      if ((await alpha.count()) > 0) await alpha.click();
       if (narrow) {
         // 窄窗口打开项目：侧栏收起
         await expect(nav).toHaveCount(0);
@@ -72,6 +83,17 @@ for (const width of widths) {
         await page.evaluate(() => document.querySelector("[data-library-sidebar] :focus-visible")),
       ).toBeNull();
       await shot(instance, `${width}-${theme}-3-project-sidebar-open`);
+      console.log(
+        width,
+        JSON.stringify(
+          await page.evaluate(() =>
+            [...(document.querySelector("[data-window-toolbar]")?.children ?? [])].map((c) => {
+              const r = c.getBoundingClientRect();
+              return [c.className.slice(0, 30), Math.round(r.x), Math.round(r.width)];
+            }),
+          ),
+        ),
+      );
 
       // 内容整体在侧栏右边：顶部标签、文件树、编辑器、预览占位都不与侧栏相交
       const sidebarBox = await page.locator("[data-library-sidebar]").boundingBox();
@@ -91,11 +113,20 @@ for (const width of widths) {
       // 编辑器卡片 420，Monaco 在卡片边线里面，量到的是 418
       expect(editor?.width ?? 0).toBeGreaterThanOrEqual(418);
       // 窗口里的内容不横向溢出
-      const content = await page.locator("[data-preview-slot]").boundingBox();
-      expect((content?.x ?? 0) + (content?.width ?? 0)).toBeLessThanOrEqual(width);
+
+      // 窗口太窄放不下预览时预览整块收起，原生预览视图也不残留；编辑器不超出窗口
+      const previewHidden = width < 952;
+      await expect(page.locator("[data-preview-slot]")).toHaveCount(previewHidden ? 0 : 1);
+      if (previewHidden) await expect.poll(() => visiblePreviews(instance)).toBe(0);
+      expect((editor?.x ?? 0) + (editor?.width ?? 0)).toBeLessThanOrEqual(width);
 
       // 从顶部标签切到另一个项目，侧栏保持
-      await page.getByRole("tab", { name: /push-beta$/ }).click();
+      const other = page.getByRole("tab", { name: /push-(alpha|beta)$/ });
+      if (
+        (await other.count()) > 0 &&
+        (await other.first().getAttribute("aria-selected")) !== "true"
+      )
+        await other.first().click();
       await expect(nav).toBeVisible();
       await shot(instance, `${width}-${theme}-4-after-tab-switch`);
     });

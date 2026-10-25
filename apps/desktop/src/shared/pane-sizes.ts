@@ -57,14 +57,27 @@ export function layoutPanes(
   container: { width: number; height: number },
   prefs: PanePrefs,
   hasConsole: boolean,
-): { sizes: PaneSizes; ranges: PaneRanges; treeCollapsed: boolean } {
+): {
+  sizes: PaneSizes;
+  ranges: PaneRanges;
+  /** 文件树是不是只剩窄条（手动收起或放不下自动收起） */
+  treeCollapsed: boolean;
+  /** 预览（脚本是输出）放不下时整块收起，不占位；编辑器保底 420 */
+  previewHidden: boolean;
+  /** 连窄条也放不下时文件树整块隐藏 */
+  treeHidden: boolean;
+} {
   // 放不下“文件树最小宽 + 编辑器 420 + 预览最小宽”时，文件树自动收成窄条（不改手动偏好），先保编辑器
   const treeAuto =
     !prefs.treeCollapsed &&
     container.width < FILE_TREE_MIN_PX + EDITOR_MIN_PX + PREVIEW_MIN_PX + 2 * HANDLE_PX;
   const treeCollapsed = prefs.treeCollapsed || treeAuto;
-  const left = treeCollapsed ? RAIL_PX : 0;
-  const handles = treeCollapsed ? HANDLE_PX : 2 * HANDLE_PX;
+  // 窗口再窄（侧栏展开占去 264）：窄条下连预览最小下限也放不下就收起预览；窄条也放不下就连文件树一起隐藏（UI 走查 #546，负责人 2026-10-26）
+  const previewHidden =
+    treeCollapsed && container.width < RAIL_PX + EDITOR_MIN_PX + HANDLE_PX + PREVIEW_COMPACT_MIN_PX;
+  const treeHidden = previewHidden && container.width < RAIL_PX + EDITOR_MIN_PX;
+  const left = treeHidden ? 0 : treeCollapsed ? RAIL_PX : 0;
+  const handles = previewHidden ? 0 : treeCollapsed ? HANDLE_PX : 2 * HANDLE_PX;
   const treeRange: Range = {
     min: FILE_TREE_MIN_PX,
     max: Math.max(
@@ -92,6 +105,8 @@ export function layoutPanes(
     : 0;
   return {
     treeCollapsed,
+    previewHidden,
+    treeHidden,
     sizes: { tree, preview, console: consoleSize },
     ranges: { tree: treeRange, preview: previewRange, console: consoleRange },
   };
