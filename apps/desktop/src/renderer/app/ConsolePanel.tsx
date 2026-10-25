@@ -1,5 +1,3 @@
-import { useT } from "@runyard/i18n/react";
-import { Button } from "@runyard/ui";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { TabRow } from "../../shared/library-state.ts";
@@ -22,7 +20,6 @@ export interface ConsolePanelProps {
 // 两类都在用户主动打开后才创建终端，避免打开项目就启动 shell。
 // “清除”只在“输出”下出现（规格 DESKTOP-WORKSPACE-42）。⌃` 在编辑器和终端之间切换焦点（DESKTOP-TERMINAL-05）。
 export function ConsolePanel({ bridge, tab }: ConsolePanelProps) {
-  const t = useT();
   const visible = useContentVisible();
   const mode = usePanelMode(tab.id);
   const script = tab.kind === "oneshot";
@@ -31,6 +28,9 @@ export function ConsolePanel({ bridge, tab }: ConsolePanelProps) {
   const terminal = useRef<TerminalViewHandle>(null);
   // 用户主动切到终端时，接上后把焦点放进去；恢复标签页、切回标签页时不抢焦点
   const [focusOnStart, setFocusOnStart] = useState(false);
+
+  // 脚本没打开终端时收成一行标题条（问题单 R2），把高度还给编辑器和输出；打开后恢复上次高度
+  const collapsed = script && mode !== "terminal";
 
   const showTerminal = useCallback(() => {
     setFocusOnStart(true);
@@ -70,13 +70,19 @@ export function ConsolePanel({ bridge, tab }: ConsolePanelProps) {
   }, [mode, showTerminal, visible]);
 
   return (
-    <section ref={root} className={styles.root} data-console={tab.id}>
+    <section
+      ref={root}
+      className={styles.root}
+      data-console={tab.id}
+      data-collapsed={collapsed || undefined}
+    >
       <ConsolePanelHeader
         script={script}
         mode={mode}
         onModeChange={(next) =>
           next === "terminal" ? showTerminal() : setPanelMode(tab.id, "output")
         }
+        onOpenTerminal={collapsed ? showTerminal : undefined}
         onClear={() => void bridge.call("console.clear", tab.id)}
       />
       {mode === "terminal" ? (
@@ -88,13 +94,7 @@ export function ConsolePanel({ bridge, tab }: ConsolePanelProps) {
           focusOnStart={focusOnStart}
           className={styles.body}
         />
-      ) : script ? (
-        <div className={styles.empty}>
-          <Button size="sm" onClick={showTerminal}>
-            {t("desktop.console.terminalStart.action")}
-          </Button>
-        </div>
-      ) : (
+      ) : script ? null : (
         <ConsoleOutput bridge={bridge} playground={tab.id} className={styles.log} />
       )}
     </section>

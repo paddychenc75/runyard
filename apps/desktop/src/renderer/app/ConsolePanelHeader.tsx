@@ -8,15 +8,21 @@ export function ConsolePanelHeader({
   mode,
   onModeChange,
   onClear,
+  onOpenTerminal,
 }: {
   script: boolean;
   mode: PanelMode;
   onModeChange: (mode: PanelMode) => void;
   onClear: () => void;
+  /** 脚本的终端还没打开时给出，标题条上显示“打开终端”（问题单 R2） */
+  onOpenTerminal?: (() => void) | undefined;
 }) {
   const t = useT();
   return (
-    <header className={styles.header}>
+    <header
+      className={styles.header}
+      data-collapsed={onOpenTerminal === undefined ? undefined : ""}
+    >
       {script ? (
         <span className={styles.title}>{t("desktop.console.terminal.label")}</span>
       ) : (
@@ -30,7 +36,11 @@ export function ConsolePanelHeader({
           onValueChange={(next) => onModeChange(next === "terminal" ? "terminal" : "output")}
         />
       )}
-      {!script && mode === "output" ? (
+      {onOpenTerminal !== undefined ? (
+        <Button size="sm" onClick={onOpenTerminal}>
+          {t("desktop.console.terminalOpen.action")}
+        </Button>
+      ) : !script && mode === "output" ? (
         <Button size="sm" onClick={onClear}>
           {t("desktop.console.clear.action")}
         </Button>

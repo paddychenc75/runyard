@@ -136,7 +136,7 @@ export const iconPaths = {
   },
   stop: {
     viewBox: "0 0 16 16",
-    paths: ["M3 3h10v10H3z"],
+    paths: ["M5 3h6a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"],
   },
   tools: {
     viewBox: "0 0 16 16",

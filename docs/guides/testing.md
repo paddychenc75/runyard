@@ -152,7 +152,12 @@ Web 系列只有 1440 画板，1100 对照保留原布局裁取，不代表存�
 
 ### 脚本输出布局取证（#464）
 
-先构建桌面应用，运行 `node tooling/design-render/render.mjs Script ScriptDark ScriptEn ScriptDarkEn`，再运行 `node apps/desktop/e2e/script-output-design.measure.ts`。脚本在临时 HOME/root 中创建 Node 脚本项目，覆盖浅深、中英、1440/1100八组；输出目录由 `RUNYARD_SCRIPT_REVIEW_OUTPUT` 指定，否则新建临时目录。只验证右侧输出与底部终端入口，未点击前不创建 shell；示例程序与设计的 Python 示例不同，PR 中列明差异。CI 上传 script-output-design-comparison。
+先构建桌面应用，运行 `node tooling/design-render/render.mjs Script ScriptDark ScriptEn ScriptDarkEn`，再运行 `node apps/desktop/e2e/script-output-design.measure.ts`。脚本在临时 HOME/root 中创建 Node 脚本项目，覆盖浅深、中英、1440/1100八组；输出目录由 `RUNYARD_SCRIPT_REVIEW_OUTPUT` 指定，否则新建临时目录。只验证右侧输出与底部终端入口（未打开终端时底部是一行 36px 的标题条加“打开终端”按钮），未点击前不创建 shell；示例程序与设计的 Python 示例不同，PR 中列明差异。CI 上传 script-output-design-comparison。
+
+### 侧栏与筛选取证（sidebar-filters）
+
+运行 `apps/desktop/e2e/sidebar-filters.measure.ts` 之前要先渲染它读取的画板：`node tooling/design-render/render.mjs Main LibraryRunning LibraryAutoClean LibraryAgentEmpty RowMenu AutoCleanDialog CleanReminder`（脚本从设计渲染的输出目录里按画板名取 HTML）。资源库导航按名字取（“资源库导航” / Library navigation），因为编辑器面包屑也是 navigation。
+
 ### 请求与预览工具栏取证（#436）
 
 渲染 Service/ServiceDark/ServiceEn/ServiceDarkEn 和 Web/WebEn/WebLight/WebLightEn，再运行 `node apps/desktop/e2e/request-layout.measure.ts`。临时 HOME/root 中的真实 Hono 项目发送请求后停止，覆盖当前响应与历史响应提示；另建 HTML 验证预览图标按钮。浅深、中英、1440/1100共24图写入 `RUNYARD_REQUEST_REVIEW_OUTPUT` 或临时目录。原生预览单独抓取后按占位坐标合成并保留原图。`request-status.e2e.ts` 使用方向键将面板收至280，断言地址不溢出、路径输入宽度至少40像素、工具栏不换行、停止后的响应明确标旧。CI上传request-layout-design-comparison。

@@ -254,7 +254,8 @@ describe("项目标签页的可拖面板", () => {
     unmount();
     setup(projectState("oneshot"));
     await handle("调整文件树宽度");
-    expect(screen.getByRole("separator", { name: "调整输出面板高度" })).toBeTruthy();
+    // 脚本没开终端时底部是一行标题条，没有可拖的高度
+    expect(screen.queryByRole("separator", { name: "调整输出面板高度" })).toBeNull();
   });
 
   it("[DESKTOP-WORKSPACE-58] 一直往一个方向拖，停在最小尺寸，不会消失", async () => {

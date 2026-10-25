@@ -10,7 +10,9 @@ test("[DESKTOP-WORKSPACE-69][DESKTOP-WORKSPACE-70][DESKTOP-TERMINAL-39][DESKTOP-
   await createWithKeyboard(page, "Node + TypeScript");
   const output = page.getByRole("region", { name: "Process output" });
   await expect(output.getByRole("log")).toContainText("Hello, Runyard!");
-  await expect(output).toContainText("exit code 0");
+  // 状态只在顶栏运行条写一次，输出头部不重复（问题单 R1）
+  await expect(page.getByText("Finished · exit code 0")).toHaveCount(1);
+  await expect(output.locator("header")).not.toContainText("exit code");
   const bottom = page.locator("[data-console]");
   await expect(bottom.getByRole("log")).toHaveCount(0);
   await expect(bottom.getByRole("button", { name: "Clear", exact: true })).toHaveCount(0);
@@ -19,9 +21,11 @@ test("[DESKTOP-WORKSPACE-69][DESKTOP-WORKSPACE-70][DESKTOP-TERMINAL-39][DESKTOP-
   expect(project).toBeTruthy();
   expect(await runyard.call("terminal.status", { project })).toMatchObject({ open: false });
   const openTerminal = bottom.getByRole("button", {
-    name: "Click here or press ⌃` to open a terminal",
+    name: "Open terminal ⌃`",
   });
   await expect(openTerminal).toBeVisible();
+  // 没开终端时底部面板收成一行标题条（问题单 R2）
+  expect((await bottom.boundingBox())?.height).toBeLessThanOrEqual(40);
 
   // 换成一个常驻、回显标准输入的程序；先关掉“保存即运行”，免得外部改文件触发的那次运行和手动运行抢
   await output.getByRole("switch", { name: "Run on save" }).click();
