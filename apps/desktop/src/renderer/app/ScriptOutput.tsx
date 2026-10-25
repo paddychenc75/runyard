@@ -21,7 +21,7 @@ export interface ScriptOutputProps {
 const TAIL_LINES = 12;
 
 // 脚本项目没有预览，右侧是输出（设计稿 Script、ScriptRunning、ScriptStale、ScriptFailed）：
-// 头部只有“保存后自动运行”开关、清除和运行、停止按钮（语法错误时有“过期”标记）；
+// 头部的运行按钮是次要样式，一屏只留顶栏一个主按钮（负责人 2026-10-25 决定，问题单 #546）；头部只有“保存后自动运行”开关、清除和运行、停止按钮（语法错误时有“过期”标记）；
 // 状态（运行中 · 已 3.2 秒 / 已结束 · 退出码 0 · 0.18 秒）只在顶栏的运行条里写一次，不在这里重复（问题单 R1）；中间是进程输出；底部是输入行。
 export function ScriptOutput({ bridge, tab }: ScriptOutputProps) {
   const t = useT();
@@ -46,7 +46,7 @@ export function ScriptOutput({ bridge, tab }: ScriptOutputProps) {
         <Button size="sm" onClick={() => void bridge.call("console.clear", tab.id)}>
           {t("desktop.console.clear.action")}
         </Button>
-        <RunActionButton bridge={bridge} tab={tab} />
+        <RunActionButton bridge={bridge} tab={tab} emphasis="secondary" />
       </header>
       {tab.stale ? (
         <p className={styles.staleNotice} role="status" data-script-stale="">
