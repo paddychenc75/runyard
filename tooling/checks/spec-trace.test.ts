@@ -118,3 +118,38 @@ describe("spec-trace 检查", () => {
     expect(specTrace.run(missing)).toHaveLength(2);
   });
 });
+
+describe("正式 Playwright 端到端测试的规格追踪", () => {
+  const source = `# 规格\n\n## Requirements\n\n### Requirement: 要求\n正文 MUST 成立。\n来源：实现细节\n\n${scenario("DESKTOP-EDITOR-51")}`;
+  const repo = (path: string, ids = ["DESKTOP-EDITOR-51"], pending = "") =>
+    makeRepo({
+      "openspec/specs/desktop/editor/spec.md": source,
+      [path]: testFile(...ids).replaceAll("it(", "test("),
+      "tooling/checks/spec-pending.txt": pending,
+    });
+  it("正式 e2e 文件中的真实测试标题算覆盖", () => {
+    expect(specTrace.run(repo("apps/desktop/e2e/external.e2e.ts"))).toEqual([]);
+  });
+  it("e2e 引用未知编号仍报错，已有覆盖仍不能留在 pending", () => {
+    expect(
+      specTrace
+        .run(repo("apps/desktop/e2e/external.e2e.ts", ["DESKTOP-EDITOR-51", "DESKTOP-EDITOR-999"]))
+        .join(),
+    ).toContain("规格里不存在的编号 DESKTOP-EDITOR-999");
+    expect(
+      specTrace
+        .run(repo("apps/desktop/e2e/external.e2e.ts", undefined, "DESKTOP-EDITOR-51\n"))
+        .join(),
+    ).toContain("已经有测试");
+  });
+  it.each([
+    "apps/desktop/e2e/external.measure.ts",
+    "apps/desktop/e2e/external.fixture.ts",
+    "apps/desktop/e2e/external.ts",
+    "apps/desktop/e2e/support/external.e2e.ts",
+    "apps/other/e2e/external.e2e.ts",
+    "tooling/scripts/external.e2e.ts",
+  ])("不把非正式端到端入口 %s 算作覆盖", (path) => {
+    expect(specTrace.run(repo(path)).join()).toContain("但没有测试的标题引用它");
+  });
+});

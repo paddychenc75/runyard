@@ -15,6 +15,8 @@ import type { Check } from "./workspace.ts";
 
 export const PENDING_FILE = "tooling/checks/spec-pending.txt";
 const TEST_FILE = /^(packages|apps|tooling)\/.*\.test\.tsx?$/;
+// 与桌面 Playwright 的正式入口保持一致；取证/夹具脚本不能代替实际执行的测试。
+const DESKTOP_E2E_FILE = /^apps\/desktop\/e2e\/[^/]+\.e2e\.ts$/;
 const TEST_CALL = /\b(?:it|test|describe)\b[^"'`]*["'`](.*)$/;
 // 能力路径是两级，所以编号的前缀至少两段（RUN-OWNERSHIP-01）；一段的写法（X-01）是别处的记号，不当场景编号
 const ID_IN_TITLE = /\[([A-Z0-9]+(?:-[A-Z0-9]+)+-\d{2,})\]/g;
@@ -133,7 +135,7 @@ export const specTrace: Check = {
   run(root) {
     const files = listFiles(root);
     const tests: Record<string, string> = {};
-    for (const file of files.filter((path) => TEST_FILE.test(path)))
+    for (const file of files.filter((path) => TEST_FILE.test(path) || DESKTOP_E2E_FILE.test(path)))
       tests[file] = readText(root, file);
     const pending = files.includes(PENDING_FILE) ? readText(root, PENDING_FILE) : "";
     return checkSpecTrace(readSpecs(root), tests, pending);
