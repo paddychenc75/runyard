@@ -154,12 +154,15 @@ describe("skill status", () => {
     expect((await statusOf(h))[0]?.state).toBe("current");
   });
 
-  it("[CLI-COMMANDS-94] 另一种安装形式（执行文件是中文、另有 SKILL.en.md）的内容与随包版本一致时也是 current", async () => {
+  it("[CLI-COMMANDS-94] 随包的三份文件都在且一致时是 current，目录里多出来的别的文件不影响", async () => {
     const h = harness();
     await h.run(["skill", "install", "--target", "claude"]);
-    // 随包说明变了：只比较随包要写的每一份文件，多出来的文件不影响
-    h.fake.fs.writeFile(absPath(join(dirOf(h, "claude"), "SKILL.en.md")), "别的版本留下的多余文件");
+    // 只比较随包要写的每一份文件，多出来的文件不影响
+    h.fake.fs.writeFile(absPath(join(dirOf(h, "claude"), "NOTES.md")), "别的版本留下的多余文件");
     expect((await statusOf(h))[0]?.state).toBe("current");
+    h.fake.fs.writeFile(absPath(join(dirOf(h, "claude"), "SKILL.en.md")), "改过的英文对照");
+    expect((await statusOf(h))[0]?.state).toBe("outdated");
+    await h.run(["skill", "install", "--target", "claude"]);
     h.fake.fs.writeFile(absPath(join(dirOf(h, "claude"), "SKILL.zh-CN.md")), "改过的对照");
     expect((await statusOf(h))[0]?.state).toBe("outdated");
   });

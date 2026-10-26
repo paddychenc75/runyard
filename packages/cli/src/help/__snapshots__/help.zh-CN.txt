@@ -375,7 +375,7 @@ runyard skill status - 查看说明装在哪、是不是当前版本
   --target <claude|agents|all>  针对哪个智能体：claude、agents 或 all
 
 全局选项：
-  --json           输出一个 JSON 对象，不受语言影响
+  --json           以 JSON 输出命令结果；帮助仍为文本
   --quiet          不输出进度和提示，结果和错误照常输出
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
@@ -392,7 +392,7 @@ runyard skill uninstall - 把装过的说明移到废纸篓
   --target <claude|agents|all>  针对哪个智能体：claude、agents 或 all
 
 全局选项：
-  --json           输出一个 JSON 对象，不受语言影响
+  --json           以 JSON 输出命令结果；帮助仍为文本
   --quiet          不输出进度和提示，结果和错误照常输出
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
