@@ -5,7 +5,7 @@ const menuState = () => {
   const root = document.querySelector(".shadow-root-host")?.shadowRoot;
   const menu = root?.querySelector(".monaco-menu") as HTMLElement | null;
   if (!menu) return null;
-  const cs = getComputedStyle(menu);
+  const cs = getComputedStyle((root?.querySelector(".context-view") as HTMLElement | null) ?? menu);
   const labels = [...menu.querySelectorAll(".action-item:not(.disabled) .action-label")];
   const keybinding = menu.querySelector(".keybinding")?.getBoundingClientRect();
   const rect = menu.getBoundingClientRect();
@@ -49,8 +49,14 @@ for (const theme of ["light", "dark"] as const) {
     await expect.poll(() => previewVisible(app)).toBe(true);
 
     // 点在编辑器偏右的位置：菜单会伸到右边的预览所在区域
-    await editor.click({ button: "right", position: { x: 500, y: 200 } });
+    const box = await page.locator(".monaco-editor").first().boundingBox();
+    // 用坐标点右键：定位器的 click 会先把元素滚进视野，把编辑器横向滚走
+    await page.mouse.click((box?.x ?? 0) + (box?.width ?? 0) * 0.6, (box?.y ?? 0) + 200, {
+      button: "right",
+    });
     await expect(page.getByRole("menuitem", { name: /Command Palette/ })).toBeVisible();
+    // 菜单打开不改编辑器的版面：第一行还是从头开始显示
+    await expect(editor).toContainText("<!doctype html>");
     const state = await page.evaluate(menuState);
     expect(state).not.toBeNull();
     expect(alpha(state?.background ?? "")).toBeGreaterThan(0.5);

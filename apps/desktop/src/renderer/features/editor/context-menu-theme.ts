@@ -9,7 +9,7 @@
 export const CONTEXT_MENU_CSS = `
 :host {
   color-scheme: inherit;
-  --vscode-menu-background: var(--glass-dialog-bg);
+  --vscode-menu-background: transparent;
   --vscode-menu-foreground: var(--color-text-primary);
   --vscode-menu-selectionBackground: var(--color-fill-accent);
   --vscode-menu-selectionForeground: var(--color-text-on-accent);
@@ -20,7 +20,15 @@ export const CONTEXT_MENU_CSS = `
   --vscode-strokeThickness: 0px;
   font-family: var(--font-sans);
 }
-.context-view { z-index: var(--z-popover); }
+/* 底色、圆角、阴影、模糊画在最外层 .context-view 上：.monaco-menu 外面还有一层 overflow: hidden 的滚动容器，画在 .monaco-menu 上阴影会被裁掉，浅色下菜单就没有边缘 */
+/* 选择器写三个类是为了压过 Monaco 自己的 .context-view.monaco-menu-container（它给菜单画了自己的阴影） */
+.context-view.monaco-component.monaco-menu-container {
+  z-index: var(--z-popover);
+  background: var(--glass-dialog-bg);
+  backdrop-filter: var(--glass-blur-menu);
+  border-radius: var(--radius-menu);
+  box-shadow: var(--shadow-overlay);
+}
 .monaco-menu {
   font-family: var(--font-sans);
   font-size: var(--text-body-size);
@@ -28,15 +36,13 @@ export const CONTEXT_MENU_CSS = `
   padding: var(--space-3);
   box-sizing: border-box;
   color: var(--color-text-primary);
-  background: var(--glass-dialog-bg);
-  backdrop-filter: var(--glass-blur-menu);
+  background: transparent;
   border-radius: var(--radius-menu);
-  box-shadow: var(--shadow-overlay);
 }
 .monaco-menu .monaco-action-bar .action-item .action-menu-item { border-radius: var(--radius-sm); }
 .monaco-menu .monaco-action-bar .action-item .keybinding { font-size: var(--text-caption-size); }
 @media (prefers-reduced-transparency: reduce) {
-  .monaco-menu { backdrop-filter: none; background: var(--color-bg-card); }
+  .context-view.monaco-component.monaco-menu-container { backdrop-filter: none; background: var(--color-bg-card); }
 }
 `;
 

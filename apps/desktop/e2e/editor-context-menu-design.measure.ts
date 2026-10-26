@@ -23,7 +23,11 @@ for (const lang of ["zh-CN", "en"] as const) {
         await page.getByRole("treeitem", { name: "index.html", exact: true }).click();
         const editor = page.locator(".monaco-editor .view-lines").first();
         await expect(editor).toContainText("doctype");
-        await editor.click({ button: "right", position: { x: 500, y: 200 } });
+        const box = await page.locator(".monaco-editor").first().boundingBox();
+        // 用坐标点右键：定位器的 click 会先把元素滚进视野，把编辑器横向滚走
+        await page.mouse.click((box?.x ?? 0) + (box?.width ?? 0) * 0.6, (box?.y ?? 0) + 200, {
+          button: "right",
+        });
         await expect(page.getByRole("menuitem").first()).toBeVisible();
         await page.evaluate(() => {
           const root = document.querySelector(".shadow-root-host")?.shadowRoot;
