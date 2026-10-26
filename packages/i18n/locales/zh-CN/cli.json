@@ -115,5 +115,11 @@
   "cli.usage.unknownSetting.body": "不认识的设置项：{name}。目前只有 lang。",
   "cli.version.body": "{version}",
   "cli.templateTest.step.body": "{step}：{status, select, ok {通过} other {失败}}（{ms} ms）",
-  "cli.skillGuide.body": "这是给人看的中文对照，智能体以 SKILL.md 为准。\n\n# Runyard\n\nRunyard 从模板创建小项目，在后台运行并保存日志。\n始终添加 `--json`：标准输出就会恰好是一个可解析的 JSON 对象。\n\n## 工作流程\n\n1. 不确定选哪个模板时，先列出模板：`runyard template list --json`。\n2. 一步创建并启动项目，并说明它的用途：\n   `runyard new '<template>' [name] --run --note \"what this is for\" --json`\n   网页或服务的结果包含 `run.url`；脚本则在退出后返回输出。\n3. 直接编辑结果里 `path` 下的文件。运行中的服务会自行重新加载。\n4. 使用 `runyard logs '<name>' --since '<cursor>' --json` 检查结果。\n   使用上次结果中的 `cursor`，只读取新增内容。\n5. 用完后停止：`runyard stop '<name>' --json`。\n\n## 规则\n\n- 不要为这些项目自行启动开发服务器。使用 `runyard run '<name>' --json`。\n- 只用于验证、无须长期保留的项目：添加 `--clean-after 30d` 到 `new`，\n  让它以后自动清理。如果用户说要留着，就不要添加这个选项。\n- 命令失败时，JSON 包含 `error.code` 和 `error.hint`。按 `error.hint` 的说明处理，\n  不要盲目重复同一个命令。\n- `runyard status --json` 显示正在运行的项目。`runyard doctor --json` 显示已安装的工具。"
+  "cli.skillGuide.body": "这是给人看的中文对照，智能体以 SKILL.md 为准。\n\n# Runyard\n\nRunyard 从模板创建小项目，在后台运行并保存日志。\n始终添加 `--json`：标准输出就会恰好是一个可解析的 JSON 对象。\n\n## 工作流程\n\n1. 不确定选哪个模板时，先列出模板：`runyard template list --json`。\n2. 一步创建并启动项目，并说明它的用途：\n   `runyard new '<template>' [name] --run --note \"what this is for\" --json`\n   网页或服务的结果包含 `run.url`；脚本则在退出后返回输出。\n3. 直接编辑结果里 `path` 下的文件。运行中的服务会自行重新加载。\n4. 使用 `runyard logs '<name>' --since '<cursor>' --json` 检查结果。\n   使用上次结果中的 `cursor`，只读取新增内容。\n5. 用完后停止：`runyard stop '<name>' --json`。\n\n## 规则\n\n- 不要为这些项目自行启动开发服务器。使用 `runyard run '<name>' --json`。\n- 只用于验证、无须长期保留的项目：添加 `--clean-after 30d` 到 `new`，\n  让它以后自动清理。如果用户说要留着，就不要添加这个选项。\n- 命令失败时，JSON 包含 `error.code` 和 `error.hint`。按 `error.hint` 的说明处理，\n  不要盲目重复同一个命令。\n- `runyard status --json` 显示正在运行的项目。`runyard doctor --json` 显示已安装的工具。",
+  "cli.command.skillStatus.title": "查看说明装在哪、是不是当前版本",
+  "cli.command.skillUninstall.title": "把装过的说明移到{term_trash}",
+  "cli.skillStatus.item.body": "{target, select, claude {Claude} other {智能体}}：{state, select, missing {没装} current {当前版本} other {旧版本}}（{dir}）",
+  "cli.skillUninstall.removed.body": "已把 {target, select, claude {Claude} other {智能体}} 的说明移到{term_trash}：{dir}",
+  "cli.skillUninstall.skipped.body": "没有移除 {target, select, claude {Claude} other {智能体}} 的说明：{dir} 里还有别的文件，请自己处理",
+  "cli.option.skillTarget.hint": "针对哪个智能体：claude、agents 或 all"
 }

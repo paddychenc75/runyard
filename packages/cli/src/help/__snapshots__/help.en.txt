@@ -57,7 +57,9 @@ Usage:
   runyard skill <command> [options]
 
 Commands:
-  install  Write the instructions to the agent folders
+  install    Write the instructions to the agent folders
+  status     Show where the instructions are installed and whether they are current
+  uninstall  Move the installed instructions to the Trash
 
 Global options:
   --json           Print one JSON object; not affected by language
@@ -354,6 +356,40 @@ Usage:
 
 Options:
   --target <claude|agents|all>  Where to write: claude, agents or all
+
+Global options:
+  --json           Print one JSON object; not affected by language
+  --quiet          Do not print progress or notices; results and errors are still printed
+  --root <dir>     Use this folder in place of the home folder
+  --lang <locale>  Language for this command only: en or zh-CN
+  --help           Show help
+  --version        Print the version number
+
+$ runyard skill status --help
+runyard skill status - Show where the instructions are installed and whether they are current
+
+Usage:
+  runyard skill status [options]
+
+Options:
+  --target <claude|agents|all>  Which agent: claude, agents or all
+
+Global options:
+  --json           Print one JSON object; not affected by language
+  --quiet          Do not print progress or notices; results and errors are still printed
+  --root <dir>     Use this folder in place of the home folder
+  --lang <locale>  Language for this command only: en or zh-CN
+  --help           Show help
+  --version        Print the version number
+
+$ runyard skill uninstall --help
+runyard skill uninstall - Move the installed instructions to the Trash
+
+Usage:
+  runyard skill uninstall [options]
+
+Options:
+  --target <claude|agents|all>  Which agent: claude, agents or all
 
 Global options:
   --json           Print one JSON object; not affected by language

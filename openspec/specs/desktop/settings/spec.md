@@ -142,7 +142,7 @@
 - 验证：test
 
 ### Requirement: 命令行与智能体
-“命令行与智能体”一组 MUST 有：`runyard` 命令（是否可用、版本、路径；没装时有“安装命令行工具”，装了的有“移除”）；诊断信息（“导出诊断信息…”）；后台管理进程（状态，如“运行中 · N 个由命令行启动”或“未运行”，和“停止”）；智能体技能包（安装在哪些智能体里，“安装到其他智能体…”）；来自链接的新建请求：内置模板免确认（开关，默认关，说明“默认每次都确认。打开后，链接要新建的是内置模板时不再询问”）。“安装命令行工具”MUST 把随应用安装的命令行接到 `PATH` 上（见 cli/commands），完成后这一行显示路径和“可用”；链接所在目录不在 `PATH` 上时 MUST 写明并给出加入 `PATH` 的一行命令。“导出诊断信息…”MUST 做 `runyard doctor --bundle` 做的事，完成后在访达中显示生成的文件。“停止”管理进程：有运行时（命令行持有的和标签页持有的都算） MUST 先确认，写明会停止命令行持有的 N 个和标签页持有的 M 个运行；确认后停止它们并让管理进程退出，应用之后需要时再启动新的。
+“命令行与智能体”一组 MUST 有：`runyard` 命令（是否可用、版本、路径；没装时有“安装命令行工具”，装了的有“移除”）；诊断信息（“导出诊断信息…”）；后台管理进程（状态，如“运行中 · N 个由命令行启动”或“未运行”，和“停止”）；智能体技能包（见下面的“智能体技能包一行”）；来自链接的新建请求：内置模板免确认（开关，默认关，说明“默认每次都确认。打开后，链接要新建的是内置模板时不再询问”）。“安装命令行工具”MUST 把随应用安装的命令行接到 `PATH` 上（见 cli/commands），完成后这一行显示路径和“可用”；链接所在目录不在 `PATH` 上时 MUST 写明并给出加入 `PATH` 的一行命令。“导出诊断信息…”MUST 做 `runyard doctor --bundle` 做的事，完成后在访达中显示生成的文件。“停止”管理进程：有运行时（命令行持有的和标签页持有的都算） MUST 先确认，写明会停止命令行持有的 N 个和标签页持有的 M 个运行；确认后停止它们并让管理进程退出，应用之后需要时再启动新的。
 来源：PRD #prd-settings-items；PRD #prd-cli-distribution；PRD #prd-decision-table（第 17 项）；PRD #prd-link-new
 
 #### Scenario: [DESKTOP-SETTINGS-20] 安装命令行工具
@@ -171,12 +171,79 @@
 #### Scenario: [DESKTOP-SETTINGS-24] 智能体技能包
 - 前提：技能包已装到 Claude Code，没有装到 Codex
 - **WHEN** 查看这一行
-- **THEN** 写“已安装到 Claude Code”；“安装到其他智能体…”可以选 Codex 并安装
+- **THEN** 写“已装到 Claude Code”，情境按钮是“安装到 Codex”，点它只装到 Codex，装好后写“Claude Code、Codex”且没有这个按钮
 - 验证：test
 
 #### Scenario: [DESKTOP-SETTINGS-25] 内置模板免确认默认关
 - **WHEN** 第一次打开设置页
 - **THEN** “内置模板免确认”是关的
+- 验证：test
+
+### Requirement: 智能体技能包一行
+“命令行与智能体”一组里所有状态（`runyard` 命令、后台管理进程、智能体技能包）MUST 统一用小号次要文字色加一个小状态点，不用整句彩色文字。技能包一行的说明末尾 MUST 有“查看说明”链接；右边 MUST 是状态加至多一个情境按钮加“⋯”菜单：没装时是空心圈“未安装”加“安装…”（下拉选 Claude Code 或 Codex）；只装了一个时是绿点“已装到 X”加“安装到”另一个；都装了是绿点“Claude Code、Codex”，没有情境按钮；随应用带的技能包比已装的新（内容与随应用的版本不同，判断由命令行的 `skill status` 做，见 cli/commands）时是黄点“有新版本”加“更新”，说明写更新会覆盖用户改过的技能文件；安装或移除失败时是红叉“安装失败”加“重试”，说明行 MUST 改红字写具体原因（如没有写入权限）。“⋯”菜单 MUST 按位置分组：已装的位置有“重新安装”“在访达中显示”“移除…”，没装的位置有“安装”。“移除…”MUST 先确认；确认后 MUST 只把 runyard 装的技能目录移到废纸篓（等同 `runyard skill uninstall`），MUST NOT 删别人的文件。整行在 1100 宽 MUST 不换行，全部操作 MUST 能用键盘完成。
+来源：PRD #prd-settings-items；负责人 2026-10-26 选定方案 A
+
+#### Scenario: [DESKTOP-SETTINGS-50] 随应用的版本比已装的新
+- 前提：命令行报告某个位置的技能包是旧版
+- **WHEN** 查看这一行
+- **THEN** 该位置被当作旧版：状态是“有新版本”，不是“已装到”；读不到状态时当作没装
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-51] 安装失败给出具体原因
+- 前提：往 Codex 的位置写入时没有权限
+- **WHEN** 点“安装到 Codex”
+- **THEN** 结果带原因“没有写入权限”（其他错误是“出错了”），状态没有变成已装
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-52] 移除只动 runyard 装的目录
+- **WHEN** 确认移除某个位置
+- **THEN** 就是运行 `runyard skill uninstall --target <位置>`；目录里有别人的文件而没有移除时，结果带原因“还有别的文件”
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-53] 在访达中显示
+- **WHEN** 在菜单里点已装位置的“在访达中显示”
+- **THEN** 访达里选中那份 SKILL.md；没装的位置什么都不做
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-54] 整组状态统一样式
+- **WHEN** 查看“命令行与智能体”一组
+- **THEN** `runyard` 命令、后台管理进程、智能体技能包的状态都是小号次要文字加小状态点（绿点表示可用）
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-55] 未安装
+- 前提：两个位置都没装
+- **WHEN** 查看这一行并在“安装…”下拉里选 Codex
+- **THEN** 先是“未安装”，说明末尾有“查看说明”链接；选 Codex 后只装到 Codex，状态变为“已装到 Codex”
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-56] 全部安装
+- 前提：两个位置都是当前版本
+- **WHEN** 查看这一行
+- **THEN** 写“Claude Code、Codex”，没有“安装”“更新”“重试”按钮，只有“⋯”
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-57] 有新版本
+- 前提：Claude Code 位置的技能包是旧版
+- **WHEN** 点“更新”
+- **THEN** 之前写“有新版本”，说明写“更新会覆盖你改过的技能文件”；更新后这些提示消失，状态是“Claude Code、Codex”
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-58] 安装失败与重试
+- 前提：装到 Codex 时没有写入权限
+- **WHEN** 点“安装到 Codex”，再点“重试”（这次成功）
+- **THEN** 失败时状态是红叉“安装失败”，说明行红字写“没能装到 Codex：~/.agents/skills 没有写入权限”；重试成功后恢复为正常状态
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-59] “⋯”菜单按位置分组
+- 前提：Claude Code 已装，Codex 没装
+- **WHEN** 用键盘聚焦“⋯”并回车
+- **THEN** “Claude Code · 已安装”组有重新安装、在访达中显示、移除…；“Codex · 未安装”组有安装；点“在访达中显示”就显示 Claude Code 的技能说明
+- 验证：test
+
+#### Scenario: [DESKTOP-SETTINGS-60] 移除要确认
+- 前提：两个位置都装了
+- **WHEN** 在菜单里点 Codex 的“移除…”
+- **THEN** 先弹确认；取消什么都不变；确认后只移除 Codex，Claude Code 仍是已装
 - 验证：test
 
 ### Requirement: 每天一次的更新检查

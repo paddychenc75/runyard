@@ -18,7 +18,17 @@ export interface MenuItemEntry {
   checked?: boolean;
 }
 
-export type MenuEntry = ({ type?: "item" } & MenuItemEntry) | { type: "separator" };
+/** 带小标题的一组：标题给读屏器当这一组的名字（如“Claude Code · 已安装”下面的“重新安装”） */
+export interface MenuGroupEntry {
+  type: "group";
+  label: Localized;
+  items: readonly MenuItemEntry[];
+}
+
+export type MenuEntry =
+  | ({ type?: "item" } & MenuItemEntry)
+  | { type: "separator" }
+  | MenuGroupEntry;
 
 export interface MenuProps {
   /** 菜单的名字，读屏器靠它（如“react-counter 的更多操作”） */
@@ -80,27 +90,17 @@ export function Menu({
               {entries.map((entry, index) =>
                 entry.type === "separator" ? (
                   <BaseMenu.Separator key={`separator-${index}`} className={styles.separator} />
+                ) : entry.type === "group" ? (
+                  <BaseMenu.Group key={`group-${index}`}>
+                    <BaseMenu.GroupLabel className={styles.groupLabel}>
+                      {entry.label}
+                    </BaseMenu.GroupLabel>
+                    {entry.items.map((item) => (
+                      <MenuItem key={item.id} entry={item} onSelect={onSelect} />
+                    ))}
+                  </BaseMenu.Group>
                 ) : (
-                  <BaseMenu.Item
-                    key={entry.id}
-                    className={styles.item}
-                    data-tone={entry.tone ?? "default"}
-                    disabled={entry.disabled}
-                    {...(entry.checked === undefined
-                      ? {}
-                      : { role: "menuitemradio", "aria-checked": entry.checked })}
-                    onClick={() => onSelect(entry.id)}
-                  >
-                    {entry.checked === undefined ? null : (
-                      <span className={styles.check} aria-hidden="true">
-                        {entry.checked ? <Icon name="check" size={14} /> : null}
-                      </span>
-                    )}
-                    <span className={styles.label}>{entry.label}</span>
-                    {entry.hint === undefined ? null : (
-                      <span className={styles.hint}>{entry.hint}</span>
-                    )}
-                  </BaseMenu.Item>
+                  <MenuItem key={entry.id} entry={entry} onSelect={onSelect} />
                 ),
               )}
             </ScrollArea>
@@ -108,5 +108,27 @@ export function Menu({
         </BaseMenu.Positioner>
       </BaseMenu.Portal>
     </BaseMenu.Root>
+  );
+}
+
+function MenuItem({ entry, onSelect }: { entry: MenuItemEntry; onSelect: (id: string) => void }) {
+  return (
+    <BaseMenu.Item
+      className={styles.item}
+      data-tone={entry.tone ?? "default"}
+      disabled={entry.disabled}
+      {...(entry.checked === undefined
+        ? {}
+        : { role: "menuitemradio", "aria-checked": entry.checked })}
+      onClick={() => onSelect(entry.id)}
+    >
+      {entry.checked === undefined ? null : (
+        <span className={styles.check} aria-hidden="true">
+          {entry.checked ? <Icon name="check" size={14} /> : null}
+        </span>
+      )}
+      <span className={styles.label}>{entry.label}</span>
+      {entry.hint === undefined ? null : <span className={styles.hint}>{entry.hint}</span>}
+    </BaseMenu.Item>
   );
 }

@@ -5,8 +5,16 @@ import type {
   AgentSkillStatus,
   AgentSkillTarget,
   CliCommandStatus,
+  SkillFailureReason,
   SupervisorStatus,
 } from "../../../shared/settings-bridge.ts";
+
+/** 上一次装、更新或移除没做成：哪个位置、做的什么、什么原因（“重试”就重做这件事） */
+export interface SkillFailure {
+  target: AgentSkillTarget;
+  action: "install" | "remove";
+  reason: SkillFailureReason;
+}
 
 export interface CliStatusView {
   command: CliCommandStatus | null;
@@ -22,7 +30,13 @@ export interface CliStatusView {
   guide: string | null;
   closeGuide: () => void;
   openGuide: (locale: "en" | "zh-CN") => void;
+  skillFailure: SkillFailure | null;
+  skillBusy: boolean;
   installSkill: (target: AgentSkillTarget) => void;
+  /** 把旧版的位置都更新到随应用带的版本；一个失败就停下 */
+  updateSkills: (targets: readonly AgentSkillTarget[]) => void;
+  removeSkill: (target: AgentSkillTarget) => void;
+  revealSkill: (target: AgentSkillTarget) => void;
   stopSupervisor: () => void;
 }
 
@@ -33,6 +47,8 @@ export function useCliStatus(bridge: DesktopBridge, library: LibraryState | null
   const [command, setCommand] = useState<CliCommandStatus | null>(null);
   const [failed, setFailed] = useState(false);
   const [skills, setSkills] = useState<AgentSkillStatus | null>(null);
+  const [skillFailure, setSkillFailure] = useState<SkillFailure | null>(null);
+  const [skillBusy, setSkillBusy] = useState(false);
   const [supervisor, setSupervisor] = useState<SupervisorStatus | null>(null);
   const [diagnostics, setDiagnostics] = useState<CliStatusView["diagnostics"]>("idle");
 
@@ -77,6 +93,28 @@ export function useCliStatus(bridge: DesktopBridge, library: LibraryState | null
     [bridge],
   );
 
+  // 装和移除都只经主进程让命令行去做；做完用返回的最新状态替换，失败带原因
+  const changeSkill = useCallback(
+    async (action: SkillFailure["action"], target: AgentSkillTarget): Promise<boolean> => {
+      setSkillBusy(true);
+      try {
+        const outcome = await bridge.call(
+          action === "install" ? "agents.install" : "agents.remove",
+          target,
+        );
+        setSkills(outcome.status);
+        setSkillFailure(outcome.failure === undefined ? null : { ...outcome.failure, action });
+        return outcome.failure === undefined;
+      } catch {
+        setSkillFailure({ target, action, reason: "other" });
+        return false;
+      } finally {
+        setSkillBusy(false);
+      }
+    },
+    [bridge],
+  );
+
   return {
     guideFailed,
     guide,
@@ -105,11 +143,15 @@ export function useCliStatus(bridge: DesktopBridge, library: LibraryState | null
         () => setDiagnostics("failed"),
       );
     },
-    installSkill: (target) =>
-      void bridge.call("agents.install", target).then(
-        (status) => setSkills(status),
-        () => {},
-      ),
+    skillFailure,
+    skillBusy,
+    installSkill: (target) => void changeSkill("install", target),
+    updateSkills: (targets) =>
+      void (async () => {
+        for (const target of targets) if (!(await changeSkill("install", target))) break;
+      })(),
+    removeSkill: (target) => void changeSkill("remove", target),
+    revealSkill: (target) => void bridge.call("agents.reveal", target).catch(() => {}),
     stopSupervisor: () =>
       void bridge.call("supervisor.stop").then(
         (status) => setSupervisor(status),
