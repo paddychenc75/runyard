@@ -1,5 +1,5 @@
 import { useT } from "@runyard/i18n/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { DesktopBridge } from "../../../shared/desktop-bridge.ts";
 import type { TabRow } from "../../../shared/library-state.ts";
 import { useCommands } from "../../shared/command-host.tsx";
@@ -14,7 +14,9 @@ import styles from "./EditorColumn.module.css";
 import { useActiveEditor } from "./EditorWorkspace.tsx";
 import { FileNotice } from "./FileNotice.tsx";
 import { FileTabs } from "./FileTabs.tsx";
+import { editorLanguageOf } from "./file-language.ts";
 import { type FileTab, isDirty } from "./file-tab.ts";
+import { type FormatMenuLabels, formatSupport } from "./format-support.ts";
 import {
   createMonacoHost,
   type EditorHost,
@@ -25,6 +27,7 @@ import { baseName } from "./path-names.ts";
 import { bridgeProjectSource } from "./project-source.ts";
 import { SaveStatus, type SaveStatusKind } from "./SaveStatus.tsx";
 import { useAppliedTheme } from "./use-applied-theme.ts";
+import { useVueUsable } from "./use-vue-usable.ts";
 
 function statusOf(tab: FileTab): SaveStatusKind {
   if (tab.saveError !== null) return "failed";
@@ -56,6 +59,17 @@ export function EditorColumn({ bridge, tab, createHost = createMonacoHost }: Edi
   const [menuOpen, setMenuOpen] = useState(false);
   const active = state.tabs.find((candidate) => candidate.path === state.active) ?? null;
   const { modKey, locale } = bridge.bootstrap;
+  const vueUsable = useVueUsable(bridge, tab.id);
+  // 右键菜单里“格式化文档”不可用时的文字，按原因各一条（规格 DESKTOP-EDITOR-96、98）
+  const formatLabels = useMemo<FormatMenuLabels>(
+    () => ({
+      python: t("desktop.editor.formatBlockedPython.label"),
+      go: t("desktop.editor.formatBlockedGo.label"),
+      other: t("desktop.editor.formatBlockedOther.label"),
+      vue: t("desktop.editor.formatBlockedVue.label"),
+    }),
+    [t],
+  );
 
   // 右键菜单：套上主题；打开期间报“有浮层”，原生预览让位，菜单伸到预览上的部分才看得见（#566）
   useEffect(() => {
@@ -82,6 +96,7 @@ export function EditorColumn({ bridge, tab, createHost = createMonacoHost }: Edi
       },
       locale,
       bridgeProjectSource(bridge, tab.id),
+      formatLabels,
     )
       .then((created) => {
         if (disposed) {
@@ -102,7 +117,7 @@ export function EditorColumn({ bridge, tab, createHost = createMonacoHost }: Edi
       hostRef.current = null;
       setHostReady(false);
     };
-  }, [createHost, session, locale, bridge, tab.id]);
+  }, [createHost, session, locale, bridge, tab.id, formatLabels]);
 
   useEffect(() => {
     if (hostReady) hostRef.current?.sync(state, theme);
@@ -164,6 +179,11 @@ export function EditorColumn({ bridge, tab, createHost = createMonacoHost }: Edi
     "editor.foldAll": operate("foldAll"),
     "editor.unfoldAll": operate("unfoldAll"),
     "editor.selectAllOccurrences": operate("selectAllOccurrences"),
+    // 不能格式化的文件（Python、Go、Vue 服务没起来等）命令面板里不列（规格 DESKTOP-EDITOR-61 的“只列能用的”）
+    "editor.formatDocument":
+      active !== null && formatSupport(editorLanguageOf(active.path, active.mode), vueUsable).ok
+        ? operate("formatDocument")
+        : null,
   });
   let status: SaveStatusKind | null = null;
   if (editing && active !== null) status = statusOf(active);

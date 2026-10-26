@@ -17,6 +17,7 @@ import langPython from "shiki/langs/python.mjs";
 import langTsx from "shiki/langs/tsx.mjs";
 import langTypescript from "shiki/langs/typescript.mjs";
 import langVue from "shiki/langs/vue.mjs";
+import { editorMenu } from "./runtime-menu.ts";
 import { type EditorRuntime, WORKER_BASE_URL } from "./runtime-types.ts";
 
 // 编辑器运行时的装配（决策记录 0020、证据文件“装法”）：后台线程是 app://runyard/workers/ 下的独立文件，
@@ -111,5 +112,5 @@ export async function createEditorRuntime(): Promise<EditorRuntime> {
     });
     shikiToMonaco(tsxHighlighter, monaco);
   }
-  return { monaco, typescript, themes: { ...THEMES } };
+  return { monaco, typescript, menu: editorMenu, themes: { ...THEMES } };
 }

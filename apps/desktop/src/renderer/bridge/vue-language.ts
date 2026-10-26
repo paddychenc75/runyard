@@ -1,5 +1,12 @@
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
-import type { VueDiagnostics, VueRequest, VueResult } from "../../shared/vue-language.ts";
+import type {
+  VueDiagnostics,
+  VueEvents,
+  VueRequest,
+  VueResult,
+} from "../../shared/vue-language.ts";
+
+export type VueStatusState = VueEvents["vue.status"]["state"];
 
 export interface VueDocumentBridge {
   open(path: string, text: string, version: number, session: string): Promise<void>;
@@ -8,6 +15,8 @@ export interface VueDocumentBridge {
   request(input: Omit<VueRequest, "project">): Promise<VueResult>;
   cancel(requestId: string): void;
   diagnostics(listener: (event: VueDiagnostics) => void): () => void;
+  /** 这个项目的 Vue 语言服务状态变化（格式化据此决定是否可用） */
+  status(listener: (state: VueStatusState) => void): () => void;
 }
 export function bridgeVueLanguage(bridge: DesktopBridge, project: string): VueDocumentBridge {
   return {
@@ -26,6 +35,10 @@ export function bridgeVueLanguage(bridge: DesktopBridge, project: string): VueDo
     diagnostics: (listener) =>
       bridge.on("vue.diagnostics", (event) => {
         if (event.project === project) listener(event);
+      }),
+    status: (listener) =>
+      bridge.on("vue.status", (event) => {
+        if (event.project === project) listener(event.state);
       }),
   };
 }

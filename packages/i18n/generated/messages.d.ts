@@ -290,6 +290,7 @@ export type CatalogMessages = {
   "desktop.command.editNote.label": Record<never, never>;
   "desktop.command.find.label": Record<never, never>;
   "desktop.command.foldAll.label": Record<never, never>;
+  "desktop.command.formatDocument.label": Record<never, never>;
   "desktop.command.goToDefinition.label": Record<never, never>;
   "desktop.command.goToLine.label": Record<never, never>;
   "desktop.command.new.label": Record<never, never>;
@@ -395,6 +396,10 @@ export type CatalogMessages = {
     name: string | number;
   };
   "desktop.editor.failed.title": Record<never, never>;
+  "desktop.editor.formatBlockedGo.label": Record<never, never>;
+  "desktop.editor.formatBlockedOther.label": Record<never, never>;
+  "desktop.editor.formatBlockedPython.label": Record<never, never>;
+  "desktop.editor.formatBlockedVue.label": Record<never, never>;
   "desktop.editor.keepMine.action": Record<never, never>;
   "desktop.editor.loading.label": Record<never, never>;
   "desktop.editor.mixedEolNotice.body": {

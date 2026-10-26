@@ -131,6 +131,36 @@ describe("Vue 项目窄通道", () => {
       await fixture.close();
     }
   });
+  it("[DESKTOP-EDITOR-98] 真实 Vue 语言服务返回整份文档的格式化修改", async () => {
+    const fixture = await setup(true);
+    try {
+      const text = '<template>\n<div   class="a">hi</div>\n</template>\n';
+      writeFileSync(join(fixture.project, "src", "Fmt.vue"), text);
+      const open = await fixture.channel.open({
+        project: "p",
+        path: "src/Fmt.vue",
+        text,
+        version: 1,
+        session: "fmt",
+      });
+      expect(open.ok).toBe(true);
+      const result = await fixture.channel.request({
+        project: "p",
+        path: "src/Fmt.vue",
+        requestId: "format",
+        kind: "formatting",
+        format: { tabSize: 2, insertSpaces: true },
+      });
+      expect(result.ok).toBe(true);
+      const edits = result.ok ? (result.value as { newText?: unknown }[]) : [];
+      expect(Array.isArray(edits)).toBe(true);
+      expect(edits.length).toBeGreaterThan(0);
+      expect(edits.every((edit) => typeof edit.newText === "string")).toBe(true);
+    } finally {
+      await fixture.close();
+    }
+  });
+
   it("[DESKTOP-EDITOR-88] 依赖从无到有后，悬停读到真实 Vue 类型", async () => {
     const fixture = await setup(false);
     try {

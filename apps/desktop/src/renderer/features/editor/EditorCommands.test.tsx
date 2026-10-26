@@ -29,6 +29,7 @@ const EDITOR_COMMANDS = [
   "editor.foldAll",
   "editor.unfoldAll",
   "editor.selectAllOccurrences",
+  "editor.formatDocument",
 ];
 
 describe("编辑器命令", () => {
@@ -56,8 +57,9 @@ describe("编辑器命令", () => {
       host?.run("editor.goToLine");
       host?.run("editor.toggleComment");
       host?.run("editor.foldAll");
+      host?.run("editor.formatDocument");
     });
-    expect(ctx.runs).toEqual(["find", "goToLine", "toggleComment", "foldAll"]);
+    expect(ctx.runs).toEqual(["find", "goToLine", "toggleComment", "foldAll", "formatDocument"]);
   });
 
   it("[DESKTOP-EDITOR-62] “保存”和“关闭文件标签”与 ⌘S、⌘W 做同样的事", async () => {
@@ -79,5 +81,38 @@ describe("编辑器命令", () => {
       host?.run("editor.closeTab");
     });
     await waitFor(() => expect(screen.queryByRole("tab", { name: "App.tsx" })).toBeNull());
+  });
+
+  it("[DESKTOP-EDITOR-96] Python、Go、其他没有格式化器的文件：命令面板里没有“格式化文档”，其余编辑器命令照常", async () => {
+    for (const path of ["main.py", "main.go", "notes.md"]) {
+      const ctx = mount({ [path]: "a" }, path, "off", <Probe onHost={() => {}} />);
+      await screen.findByRole("tab", { name: path });
+      await waitFor(() =>
+        expect(screen.getByTestId("available").textContent).toContain("editor.find"),
+      );
+      expect(screen.getByTestId("available").textContent).not.toContain("editor.formatDocument");
+      ctx.view.unmount();
+    }
+  });
+
+  it("[DESKTOP-EDITOR-99] Vue 文件：语言服务放弃或重启中时命令面板里没有“格式化文档”，恢复后回来", async () => {
+    const ctx = mount({ "App.vue": "<template/>" }, "App.vue", "off", <Probe onHost={() => {}} />);
+    await waitFor(() =>
+      expect(screen.getByTestId("available").textContent).toContain("editor.formatDocument"),
+    );
+    ctx.emit("vue.status", { project: "demo", state: "disabled" });
+    await waitFor(() =>
+      expect(screen.getByTestId("available").textContent).not.toContain("editor.formatDocument"),
+    );
+    ctx.emit("vue.status", { project: "other", state: "ready" });
+    expect(screen.getByTestId("available").textContent).not.toContain("editor.formatDocument");
+    ctx.emit("vue.status", { project: "demo", state: "ready" });
+    await waitFor(() =>
+      expect(screen.getByTestId("available").textContent).toContain("editor.formatDocument"),
+    );
+    ctx.emit("vue.status", { project: "demo", state: "restarting" });
+    await waitFor(() =>
+      expect(screen.getByTestId("available").textContent).not.toContain("editor.formatDocument"),
+    );
   });
 });

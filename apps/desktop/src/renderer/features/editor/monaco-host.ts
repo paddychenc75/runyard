@@ -3,8 +3,11 @@ import type * as Monaco from "monaco-editor/editor/editor.api.js";
 import { loadEditorRuntime } from "../../editor/editor-loader.ts";
 import type { EditorRuntime } from "../../editor/runtime-types.ts";
 import { type EditorOperation, runEditorOperation } from "./editor-operations.ts";
+import { applyLanguageOptions, monoFontFamily } from "./editor-options.ts";
 import { editorLanguageOf } from "./file-language.ts";
 import type { FileTab } from "./file-tab.ts";
+import { createFormatMenu } from "./format-menu.ts";
+import type { FormatMenuLabels } from "./format-support.ts";
 import { scrollbarOptions } from "./monaco-scrollbar-options.ts";
 import { widgetOptions } from "./monaco-widget-options.ts";
 import type { ProjectSource } from "./project-source.ts";
@@ -49,6 +52,8 @@ export type EditorHostFactory = (
   locale: Locale,
   /** 项目文件的来源：有它才有跨文件的智能提示 */
   source?: ProjectSource,
+  /** 右键菜单里“格式化文档”不可用时的几条文字（按原因） */
+  formatLabels?: FormatMenuLabels,
 ) => Promise<EditorHost>;
 
 /**
@@ -58,14 +63,15 @@ export type EditorHostFactory = (
  */
 const usedVersions = new WeakMap<object, Map<string, number>>();
 
-function monoFontFamily(): string {
-  const value = getComputedStyle(document.documentElement).getPropertyValue("--font-mono").trim();
-  return value === "" ? "Menlo, monospace" : value;
-}
-
 /** 生产用：加载编辑器脚本（预加载过就是现成的）再装配 */
-export const createMonacoHost: EditorHostFactory = async (container, handlers, locale, source) =>
-  buildHost(await loadEditorRuntime(document, locale), container, handlers, source);
+export const createMonacoHost: EditorHostFactory = async (
+  container,
+  handlers,
+  locale,
+  source,
+  formatLabels,
+) =>
+  buildHost(await loadEditorRuntime(document, locale), container, handlers, source, formatLabels);
 
 /** 跳转后等着摆光标的位置，过了这么久还没等到那个文件显示出来就作废（文件没打开成功） */
 const REVEAL_EXPIRES_MS = 5000;
@@ -75,6 +81,7 @@ export function buildHost(
   container: HTMLElement,
   handlers: EditorHostHandlers,
   source?: ProjectSource,
+  formatLabels?: FormatMenuLabels,
 ): EditorHost {
   const { monaco } = runtime;
   configureTypeScript(runtime);
@@ -95,6 +102,7 @@ export function buildHost(
           bridge: source.vue,
           owns: (model) => [...entries.values()].some((entry) => entry.model === model),
           synced: (model) => vue.synced(model),
+          onUsableChange: () => updateFormatMenu(),
         })
       : undefined;
   const viewStates = new Map<string, Monaco.editor.ICodeEditorViewState | null>();
@@ -151,6 +159,14 @@ export function buildHost(
     scrollbar: scrollbarOptions,
     ...widgetOptions,
   });
+  // “格式化文档”不可用时右键菜单里的那条置灰项（规格 DESKTOP-EDITOR-96、98）
+  const formatMenu =
+    formatLabels === undefined ? undefined : createFormatMenu(runtime, editor, formatLabels);
+  const updateFormatMenu = (): void =>
+    formatMenu?.update(
+      shownId === null ? null : (entries.get(shownId)?.model.getLanguageId() ?? null),
+      vueServices?.usable() ?? true,
+    );
   // 输入法组词时模型里已经是没选定的拼音，会话据此暂缓自动保存（#310）
   const composing = [true, false].map((on) =>
     (on ? editor.onDidCompositionStart : editor.onDidCompositionEnd)(() => {
@@ -292,15 +308,6 @@ export function buildHost(
     entry.model.dispose();
   }
 
-  function applyLanguageOptions(id: string): void {
-    // Vue 只采用语言服务的候选，不把文件里的词混进真实类型补全。
-    const vue = entries.get(id)?.model.getLanguageId() === "vue";
-    editor.updateOptions({
-      wordBasedSuggestions: vue ? "off" : "matchingDocuments",
-      quickSuggestions: { other: true, comments: false, strings: vue },
-    });
-  }
-
   return {
     sync(state, theme) {
       if (appliedTheme !== theme) {
@@ -344,14 +351,15 @@ export function buildHost(
       diagnostics.schedule();
       const activeTab = state.tabs.find((tab) => tab.path === state.active);
       const next = activeTab !== undefined && editable.has(activeTab.id) ? activeTab.id : null;
-      if (next === shownId) return;
+      if (next === shownId) return updateFormatMenu();
       if (shownId !== null && entries.has(shownId)) {
         viewStates.set(shownId, editor.saveViewState());
       }
       shownId = next;
       editor.setModel(next === null ? null : (entries.get(next)?.model ?? null));
+      updateFormatMenu();
       if (next !== null) {
-        applyLanguageOptions(next);
+        applyLanguageOptions(editor, entries.get(next)?.model);
         const saved = viewStates.get(next);
         if (saved) editor.restoreViewState(saved);
         const wanted = reveal;
@@ -370,6 +378,7 @@ export function buildHost(
     focus: () => editor.focus(),
     run: (operation) => runEditorOperation(editor, operation),
     dispose() {
+      formatMenu?.dispose();
       vueServices?.dispose();
       opener.dispose();
       createdListener.dispose();

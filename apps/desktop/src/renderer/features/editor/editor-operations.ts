@@ -10,7 +10,8 @@ export type EditorOperation =
   | "toggleComment"
   | "foldAll"
   | "unfoldAll"
-  | "selectAllOccurrences";
+  | "selectAllOccurrences"
+  | "formatDocument";
 
 const MONACO_ACTIONS: Record<EditorOperation, string> = {
   find: "actions.find",
@@ -22,6 +23,7 @@ const MONACO_ACTIONS: Record<EditorOperation, string> = {
   foldAll: "editor.foldAll",
   unfoldAll: "editor.unfoldAll",
   selectAllOccurrences: "editor.action.selectHighlights",
+  formatDocument: "editor.action.formatDocument",
 };
 
 /** 在编辑器里做一个操作：先把焦点放回编辑器；这个文件（语言）上没有这个操作就什么都不做 */

@@ -1,3 +1,4 @@
+import { pathToFileURL } from "node:url";
 import { expect, it, vi } from "vitest";
 import { VueOperations } from "./vue-operations.ts";
 import type { VueSession } from "./vue-projects.ts";
@@ -39,6 +40,28 @@ it("补全详情只取缓存候选和原位置，页面伪造的详情标识不�
       line: 5,
       offset: 9,
       entryNames: [{ name: "count", source: "component", data: undefined }],
+    },
+    undefined,
+  );
+});
+
+it("[DESKTOP-EDITOR-98] 格式化只转发整份文档和两个缩进字段，不带别的参数", async () => {
+  const request = vi.fn(async () => [{ range: {}, newText: "x" }]);
+  const session = { request } as unknown as VueSession;
+  const result = await new VueOperations().request(session, "/project/Use.vue", {
+    project: "p",
+    path: "Use.vue",
+    requestId: "f",
+    kind: "formatting",
+    format: { tabSize: 4, insertSpaces: false },
+  });
+  expect(result).toEqual([{ range: {}, newText: "x" }]);
+  expect(request).toHaveBeenCalledWith(
+    "vue",
+    "textDocument/formatting",
+    {
+      textDocument: { uri: pathToFileURL("/project/Use.vue").href },
+      options: { tabSize: 4, insertSpaces: false },
     },
     undefined,
   );
