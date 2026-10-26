@@ -127,7 +127,7 @@
 - 验证：test
 
 ### Requirement: 管理进程和桌面应用没有运行时的行为
-命令行连不上管理进程时 MUST 自己启动它再继续（连接、握手、版本比对由 client 负责）；P0 命令 MUST NOT 要求桌面应用在运行，MUST NOT 拉起桌面应用。`config`、`skill install`、`template lint`、`template test`、`--help` MUST NOT 需要管理进程。管理进程连不上也启动不了时 MUST 报 `SUPERVISOR_UNAVAILABLE`，退出码 10。错误带有原因（`reason`，见 supervisor/lifecycle）时，提示 MUST 写出原因和对应的办法（路径过长就让用户换更短的 `--root` 或主目录），不能只说连不上。`doctor` 在管理进程连不上时 MUST 照常输出其余诊断信息，并在结果里写明管理进程不可用，有原因时 `supervisor.startFailure` 写出原因代码，人读的输出里 MUST 写明原因；MUST NOT 因此失败。
+命令行连不上管理进程时 MUST 自己启动它再继续（连接、握手、版本比对由 client 负责）；P0 命令 MUST NOT 要求桌面应用在运行，MUST NOT 拉起桌面应用。`config`、`skill install`、`skill status`、`skill uninstall`、`template lint`、`template test`、`--help` MUST NOT 需要管理进程。管理进程连不上也启动不了时 MUST 报 `SUPERVISOR_UNAVAILABLE`，退出码 10。错误带有原因（`reason`，见 supervisor/lifecycle）时，提示 MUST 写出原因和对应的办法（路径过长就让用户换更短的 `--root` 或主目录），不能只说连不上。`doctor` 在管理进程连不上时 MUST 照常输出其余诊断信息，并在结果里写明管理进程不可用，有原因时 `supervisor.startFailure` 写出原因代码，人读的输出里 MUST 写明原因；MUST NOT 因此失败。
 来源：PRD #prd-cli-json；PRD #prd-cli-distribution；PRD #prd-decided-by-default
 
 #### Scenario: [CLI-COMMANDS-20] 没有管理进程时自动启动
@@ -535,6 +535,45 @@
 #### Scenario: [CLI-COMMANDS-92] 两份说明逐条对应
 - **WHEN** 读取随包的中英文技能说明
 - **THEN** 中文执行正文与中文对照完全相同；操作条目数量和命令示例与英文一致
+- 验证：test
+
+### Requirement: `skill status` 与 `skill uninstall` 管理已安装的说明
+`runyard skill status [--target claude|agents|all]` MUST 只读地报告每个位置的说明状态，结果 MUST 是 `{ "targets": [ { "target", "dir", "state" } ] }`，`dir` 是绝对路径，`state` 取 `missing`（没有 `SKILL.md`）、`current`（随包的每份说明文件都在，内容逐字相同）、`outdated`（其余情况，包括用户改过的和旧版命令行装的）。状态 MUST 靠内容比较得出，MUST NOT 依赖另写的版本标记。
+`runyard skill uninstall [--target claude|agents|all]` MUST 只处理固定位置里的 runyard 目录：目录里只有 runyard 自己写的说明文件时 MUST 把整个目录移到废纸篓（MUST NOT 永久删除）；里面有别的文件或子目录时 MUST 原样保留并写进 `skipped`（`reason` 为 `foreign-files`）。没装过的目标 MUST 什么都不做。结果 MUST 是 `{ "removed": [ { "target", "dir" } ], "skipped": [ { "target", "dir", "reason" } ] }`。两条命令 MUST NOT 连管理进程；`--target` 值不对 MUST 报 `USAGE`，退出码 2，没有动任何文件。
+来源：PRD #prd-cli-commands；桌面应用设置页“智能体技能包”（desktop/settings）
+
+#### Scenario: [CLI-COMMANDS-93] 没装、当前版本、旧版本
+- 前提：claude 位置没装；agents 位置装了当前版本，然后 claude 位置装好后把 `SKILL.md` 改成别的内容
+- **WHEN** 执行 `runyard skill status --json`
+- **THEN** 没装的是 `missing`，内容被改的是 `outdated`，装好没改的是 `current`；重新安装后改回 `current`
+- 验证：test
+
+#### Scenario: [CLI-COMMANDS-94] 只比较随包的文件
+- 前提：目录里随包的文件都与当前版本相同，另有别的版本留下的多余文件
+- **WHEN** 执行 `skill status`
+- **THEN** 状态是 `current`；随包的任一份文件被改过则是 `outdated`
+- 验证：test
+
+#### Scenario: [CLI-COMMANDS-95] 卸载移到废纸篓
+- 前提：两个位置都装了说明
+- **WHEN** 执行 `runyard skill uninstall --target claude --json`
+- **THEN** claude 的整个目录进了废纸篓，`removed` 有这一项，agents 位置不动
+- 验证：test
+
+#### Scenario: [CLI-COMMANDS-96] 目录里有别人的文件不动
+- 前提：agents 位置的目录里有一个不是 runyard 写的文件
+- **WHEN** 执行 `runyard skill uninstall --target agents --json`
+- **THEN** 目录和里面所有文件原样保留，`skipped` 有这一项，原因是 `foreign-files`，没有移到废纸篓
+- 验证：test
+
+#### Scenario: [CLI-COMMANDS-97] 没装过时卸载
+- **WHEN** 在没装过说明的主目录执行 `skill uninstall --json`，或 `--target` 的值不对
+- **THEN** 前者成功且 `removed`、`skipped` 都是空；后者报 `USAGE`，退出码 2，什么都没动
+- 验证：test
+
+#### Scenario: [CLI-COMMANDS-98] 目标值不对
+- **WHEN** 执行 `runyard skill status --target other`
+- **THEN** 报 `USAGE`，退出码 2，没有连管理进程
 - 验证：test
 
 ### Requirement: 命令行能报告自己的版本

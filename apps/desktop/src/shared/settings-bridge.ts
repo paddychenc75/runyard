@@ -55,11 +55,21 @@ export interface DiagnosticsOutcome {
 }
 
 /** 技能包写在哪些智能体的目录里（claude：~/.claude/skills，agents：~/.agents/skills，Codex 等读这一份） */
+export type SkillState = "missing" | "current" | "outdated";
 export interface AgentSkillStatus {
-  claude: boolean;
-  agents: boolean;
+  claude: SkillState;
+  agents: SkillState;
 }
 export type AgentSkillTarget = keyof AgentSkillStatus;
+
+/** 装或移除没成功的原因：没有写入权限、目录里有别人放的文件所以没移除、其他 */
+export type SkillFailureReason = "permission" | "foreign-files" | "other";
+
+/** 装、更新、移除之后：最新的状态；没做成时带上是哪个位置、什么原因 */
+export interface AgentSkillOutcome {
+  status: AgentSkillStatus;
+  failure?: { target: AgentSkillTarget; reason: SkillFailureReason };
+}
 
 /**
  * 后台管理进程：是否在运行，命令行持有的运行个数（“运行中 · N 个由命令行启动”），
@@ -101,9 +111,12 @@ export interface SettingsMethods {
   "cli.install": { param: undefined; result: CliLinkOutcome };
   "cli.remove": { param: undefined; result: CliLinkOutcome };
   "diagnostics.export": { param: undefined; result: DiagnosticsOutcome };
-  "agents.openGuide": { param: "en" | "zh-CN"; result: { ok: boolean } };
+  "agents.openGuide": { param: "en" | "zh-CN"; result: { ok: boolean; content?: string } };
   "agents.status": { param: undefined; result: AgentSkillStatus };
-  "agents.install": { param: AgentSkillTarget; result: AgentSkillStatus };
+  "agents.install": { param: AgentSkillTarget; result: AgentSkillOutcome };
+  /** 移除：只把 runyard 装的技能目录移到废纸篓（界面已确认） */
+  "agents.remove": { param: AgentSkillTarget; result: AgentSkillOutcome };
+  "agents.reveal": { param: AgentSkillTarget; result: undefined };
   "supervisor.status": { param: undefined; result: SupervisorStatus };
   /** 停止命令行持有的运行并让管理进程退出（界面已确认） */
   "supervisor.stop": { param: undefined; result: SupervisorStatus };
@@ -132,6 +145,8 @@ export const settingsMethodNames: readonly SettingsMethod[] = [
   "agents.openGuide",
   "agents.status",
   "agents.install",
+  "agents.remove",
+  "agents.reveal",
   "supervisor.status",
   "supervisor.stop",
 ];

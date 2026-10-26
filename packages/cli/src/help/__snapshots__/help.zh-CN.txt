@@ -57,7 +57,9 @@ runyard skill - 安装给智能体用的说明
   runyard skill <command> [options]
 
 命令：
-  install  把说明写到智能体的目录
+  install    把说明写到智能体的目录
+  status     查看说明装在哪、是不是当前版本
+  uninstall  把装过的说明移到废纸篓
 
 全局选项：
   --json           以 JSON 输出命令结果；帮助仍为文本
@@ -354,6 +356,40 @@ runyard skill install - 把说明写到智能体的目录
 
 选项：
   --target <claude|agents|all>  写到哪里：claude、agents 或 all
+
+全局选项：
+  --json           以 JSON 输出命令结果；帮助仍为文本
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明
+  --version        输出版本号
+
+$ runyard skill status --help
+runyard skill status - 查看说明装在哪、是不是当前版本
+
+用法：
+  runyard skill status [options]
+
+选项：
+  --target <claude|agents|all>  针对哪个智能体：claude、agents 或 all
+
+全局选项：
+  --json           以 JSON 输出命令结果；帮助仍为文本
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明
+  --version        输出版本号
+
+$ runyard skill uninstall --help
+runyard skill uninstall - 把装过的说明移到废纸篓
+
+用法：
+  runyard skill uninstall [options]
+
+选项：
+  --target <claude|agents|all>  针对哪个智能体：claude、agents 或 all
 
 全局选项：
   --json           以 JSON 输出命令结果；帮助仍为文本

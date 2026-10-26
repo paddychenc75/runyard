@@ -1,0 +1,24 @@
+/* “查看说明”：说明文字末尾的链接，不是按钮的样子 */
+.link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text-link);
+  font: inherit;
+  cursor: pointer;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.link:focus-visible {
+  border-radius: var(--radius-sm);
+  outline: none;
+  box-shadow: var(--shadow-focus-ring);
+}
+
+/* 失败原因：说明行整句红字 */
+.error {
+  color: var(--color-status-danger-text);
+}
