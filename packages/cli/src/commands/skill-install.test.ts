@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { Harness } from "../cli-harness.test.ts";
 import { skillText } from "../skill/skill-text.ts";
 
-const SKILL_TEXT = skillText("en", "darwin");
+const SKILL_TEXT = skillText("zh-CN", "darwin");
 const open: Harness[] = [];
 function harness(): Harness {
   const h = new Harness();
@@ -53,7 +53,7 @@ describe("skill install", () => {
     expect(await h.platform.fs.readText(claudePath(h))).toBe(SKILL_TEXT);
   });
 
-  it("[CLI-COMMANDS-76] 说明是英文，含约定的要点，不教智能体设置语言", async () => {
+  it("[CLI-COMMANDS-76] 说明是中文，含约定的要点，不教智能体设置语言", async () => {
     const h = harness();
     await h.run(["skill", "install", "--target", "agents"]);
     const text = (await h.platform.fs.readText(agentsPath(h))) ?? "";
@@ -61,7 +61,8 @@ describe("skill install", () => {
       expect(text, point).toContain(point);
     }
     expect(text).not.toContain("config set lang");
-    expect(text).not.toMatch(/[㐀-鿿]/);
+    expect(text).toMatch(/^---\nname: runyard\ndescription: [^\n]*[㐀-鿿][^\n]*\n---\n/);
+    expect(text).toContain("runyard rm");
     // 全文快照：说明的任何改动都要在评审里被看见
     expect(text).toMatchSnapshot();
   });
@@ -83,17 +84,22 @@ describe("skill install", () => {
   });
 });
 
-it("[CLI-COMMANDS-91] 同时安装并覆盖中文对照，返回结构仍只有英文路径", async () => {
+it("[CLI-COMMANDS-91] 同时安装并覆盖双语对照，返回结构仍只有执行正文路径", async () => {
   const h = harness();
   const chinese = absPath(
     join(h.platform.paths.home, ".claude", "skills", "runyard", "SKILL.zh-CN.md"),
   );
+  const english = absPath(
+    join(h.platform.paths.home, ".claude", "skills", "runyard", "SKILL.en.md"),
+  );
   h.fake.fs.writeFile(chinese, "旧中文");
+  h.fake.fs.writeFile(english, "Old English guide");
+  h.fake.fs.writeFile(claudePath(h), "旧执行正文");
   const result = await h.run(["skill", "install", "--target", "claude", "--json"]);
   expect(h.json(result).installed).toEqual([{ target: "claude", path: claudePath(h) }]);
-  expect(await h.platform.fs.readText(chinese)).toContain(
-    "这是给人看的中文对照，智能体以 SKILL.md 为准",
-  );
+  expect(await h.platform.fs.readText(chinese)).toBe(SKILL_TEXT);
+  expect(await h.platform.fs.readText(claudePath(h))).toBe(SKILL_TEXT);
+  expect(await h.platform.fs.readText(english)).toBe(skillText("en", h.platform.id));
   expect(await h.platform.fs.exists(agentsPath(h))).toBe(false);
 });
 it("[CLI-COMMANDS-92] 中文正文与英文操作条目、章节和命令示例对应", async () => {
@@ -106,7 +112,16 @@ it("[CLI-COMMANDS-92] 中文正文与英文操作条目、章节和命令示例�
   const items = (s: string) => s.match(/^(?:\d+\.|-) /gm)?.length;
   const headings = (s: string) => s.match(/^##? /gm)?.length;
   const examples = (s: string) => [...s.matchAll(/`([^`]+)`/g)].map((m) => m[1]);
-  expect(items(chinese ?? "")).toBe(items(SKILL_TEXT));
-  expect(headings(chinese ?? "")).toBe(headings(SKILL_TEXT));
-  expect(examples(chinese ?? "")).toEqual(examples(SKILL_TEXT));
+  expect(items(chinese ?? "")).toBe(items(skillText("en", h.platform.id)));
+  expect(headings(chinese ?? "")).toBe(headings(skillText("en", h.platform.id)));
+  expect(examples(chinese ?? "")).toEqual(examples(skillText("en", h.platform.id)));
+});
+
+it("[CLI-COMMANDS-76] 英文和中文界面均安装中文执行正文与英文对照", async () => {
+  for (const locale of ["en", "zh-CN"]) {
+    const h = harness();
+    await h.run(["skill", "install", "--lang", locale, "--json"]);
+    expect(await h.platform.fs.readText(agentsPath(h))).toBe(SKILL_TEXT);
+    expect(skillText("en", h.platform.id)).not.toMatch(/[㐀-鿿]/);
+  }
 });
