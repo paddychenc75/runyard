@@ -64,6 +64,9 @@ test("[DESKTOP-SETTINGS-35] 标题固定、滚动高亮和细线，行距符合�
   await closePicker(runyard.page);
   const page = await openSettingsPage(runyard);
   await page.setViewportSize({ width: 820, height: 900 });
+  // 820 宽时侧栏自动收起，ResizeObserver 量到之后才变；等它收起、版面稳定再量“滚动前”的页头，
+  // 否则量到的是侧栏还在时的位置（x=256），滚动后侧栏收起页头就变成 x=8
+  await expect(page.locator("[data-library-sidebar]")).toHaveCount(0);
   const header = page.locator("[data-settings-header]");
   await expect(header).toBeVisible();
   const before = await header.boundingBox();
