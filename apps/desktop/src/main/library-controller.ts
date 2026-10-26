@@ -19,6 +19,8 @@ import { toDesktopError } from "./desktop-error.ts";
 import { frameBeforeCrash } from "./last-frame.ts";
 import { LibraryChrome } from "./library-chrome.ts";
 import { PlaygroundEdits } from "./playground-edits.ts";
+import { ProjectOpening } from "./project-opening.ts";
+import { ProjectPresence } from "./project-presence.ts";
 import { ProjectRelease } from "./project-release.ts";
 import { ProjectSystem } from "./project-system.ts";
 import { RunActions } from "./run-actions.ts";
@@ -62,6 +64,8 @@ export class LibraryController {
   readonly edits: PlaygroundEdits;
   readonly system: ProjectSystem;
   readonly runBar: RunBarActions;
+  readonly #presence: ProjectPresence;
+  readonly #opening: ProjectOpening;
   readonly #reading = new Coalesced(() => this.#readAll());
   constructor(options: LibraryControllerOptions) {
     this.#client = options.client;
@@ -102,6 +106,27 @@ export class LibraryController {
       terminalCommand: (id) => this.#release.runningCommand(id),
     });
     this.#console = new ConsoleLogs(options.client);
+    this.#presence = new ProjectPresence(
+      () => this.#playgrounds,
+      options.system.directoryExists,
+      async () => {
+        await this.#client.call("library.rescan", {});
+        await this.refresh();
+      },
+    );
+    this.#opening = new ProjectOpening({
+      present: async (id) => (await this.checkProjectFolders(id)) && !this.#isMissing(id),
+      markOpened: (id) => this.edits.markOpened(id),
+      workspace: this.#workspace,
+      show: () => {
+        this.#applyPreview();
+        this.#emit();
+      },
+      runs: () => this.#runs,
+      cliView: this.#cliView,
+      console: this.#console,
+      start: (id) => this.startRun(id),
+    });
     this.system = new ProjectSystem(options.system, (id) => this.folderOf(id));
     this.chrome = new LibraryChrome(options, {
       refresh: () => this.refresh(),
@@ -157,28 +182,15 @@ export class LibraryController {
   async #restore(): Promise<void> {
     const known = new Set(this.#playgrounds.map((playground) => playground.id));
     const plan = this.#loaded ? await this.#session.plan(known) : null;
-    if (plan !== null) {
-      for (const id of plan.tabs) {
-        this.#workspace.open(id);
-        await this.#console.watch(id);
-      }
-      this.#workspace.select(plan.active);
-      for (const id of plan.pending) this.#pendingStart.add(id);
-      await this.#cliView.sync(this.#workspace.tabs, this.#runs);
-      await this.#startIfPending(this.#workspace.active);
-      this.#applyPreview();
-    }
+    if (plan !== null) await this.#opening.restore(plan, this.#pendingStart);
+    this.#applyPreview();
     this.#session.open();
     this.#emit();
   }
 
   // 恢复出来没启动的标签页被切到才启动；已有进行中的运行（命令行启动的）就不再启动
-  async #startIfPending(id: string): Promise<void> {
-    if (!this.#pendingStart.delete(id)) return;
-    if (this.#isMissing(id)) return;
-    const run = latestRunByPlayground(this.#runs).get(id);
-    if (run === undefined || !isActiveRun(run.state)) await this.startRun(id);
-  }
+  #startIfPending = (id: string): Promise<void> =>
+    this.#opening.startPending(id, this.#pendingStart);
 
   /** 设置页改了语言或资源库位置：按新的重读、推给界面；旧位置的文件一个不碰（规格 DESKTOP-SETTINGS-03、06） */
   async applySettings(locale: Locale): Promise<void> {
@@ -188,24 +200,27 @@ export class LibraryController {
   }
 
   getState(): LibraryState {
-    return buildLibraryState({
-      locale: this.#locale,
-      playgrounds: this.#playgrounds,
-      runs: this.#runs,
-      templates: this.#templates,
-      tabIds: this.#workspace.tabs,
-      activeTab: this.#workspace.active,
-      busyIds: this.#busy,
-      closeRequestId: this.#close.requestId,
-      closeTerminal: this.#close.requestTerminal,
-      error: this.#error,
-      ...this.chrome.inputs(),
-      startErrors: this.#startErrors,
-      lastFrames: this.#lastFrames,
-      home: this.#home,
-      phases: (id) => this.#timeline.phases(id),
-      loaded: this.#loaded,
-    });
+    return {
+      ...buildLibraryState({
+        locale: this.#locale,
+        playgrounds: this.#playgrounds,
+        runs: this.#runs,
+        templates: this.#templates,
+        tabIds: this.#workspace.tabs,
+        activeTab: this.#workspace.active,
+        busyIds: this.#busy,
+        closeRequestId: this.#close.requestId,
+        closeTerminal: this.#close.requestTerminal,
+        error: this.#error,
+        ...this.chrome.inputs(),
+        startErrors: this.#startErrors,
+        lastFrames: this.#lastFrames,
+        home: this.#home,
+        phases: (id) => this.#timeline.phases(id),
+        loaded: this.#loaded,
+      }),
+      libraryReveal: this.#opening.reveal,
+    };
   }
 
   onChange(listener: (state: LibraryState) => void): () => void {
@@ -216,27 +231,8 @@ export class LibraryController {
   /** 重读全部数据。并发的调用合并：正在读时再来请求，读完后补读一次 */
   refresh = (): Promise<void> => this.#reading.run();
 
-  /**
-   * 打开项目（规格 DESKTOP-WORKSPACE-01、02）：新开标签并启动运行；
-   * 已经有它的标签就只切过去，不再启动。
-   */
-  async openProject(playgroundId: string): Promise<void> {
-    await this.edits.markOpened(playgroundId);
-    const isNew = this.#workspace.open(playgroundId);
-    this.#applyPreview();
-    this.#emit();
-    if (isNew) {
-      // 先接上控制台再启动：安装和启动阶段的输出也要看得到（规格 DESKTOP-WORKSPACE-16）
-      await this.#console.watch(playgroundId);
-      if (this.#isMissing(playgroundId)) return;
-      // 命令行已经在运行它：只查看，不启动，持有者仍是命令行（规格 DESKTOP-WORKSPACE-46、48）
-      if (heldByCli(playgroundId, this.#runs) !== null) {
-        await this.#cliView.sync(this.#workspace.tabs, this.#runs);
-        return;
-      }
-      await this.startRun(playgroundId);
-    }
-  }
+  /** 普通打开的路径守卫与运行规则由 ProjectOpening 共用。 */
+  openProject = (id: string): Promise<void> => this.#opening.open(id);
 
   /** “改为由我管理”（规格 DESKTOP-WORKSPACE-49） */
   async adoptRun(playgroundId: string): Promise<void> {
@@ -248,15 +244,7 @@ export class LibraryController {
   stopAll = (): Promise<void> => this.#runActions.stopAll();
 
   /** “打开但不运行”（规格 DESKTOP-LIBRARY-VIEW-33）：已停止的只开标签页、不算一次使用；运行中的同“打开” */
-  async openProjectWithoutRun(playgroundId: string): Promise<void> {
-    const run = latestRunByPlayground(this.#runs).get(playgroundId);
-    if (run !== undefined && isActiveRun(run.state)) return this.openProject(playgroundId);
-    await this.edits.markOpened(playgroundId);
-    const isNew = this.#workspace.open(playgroundId);
-    this.#applyPreview();
-    this.#emit();
-    if (isNew) await this.#console.watch(playgroundId);
-  }
+  openProjectWithoutRun = (id: string): Promise<void> => this.#opening.open(id, true);
 
   /** 这个项目标签页的控制台已有的全部输出（界面挂载时先取这份，再接后面的推送） */
   consoleLines = (playgroundId: string): ConsoleLine[] => this.#console.lines(playgroundId);
@@ -267,8 +255,19 @@ export class LibraryController {
   /** 启动（或标签页里点“运行”再次启动）；持有者始终是这个项目的标签页 */
   async startRun(playgroundId: string): Promise<void> {
     this.#pendingStart.delete(playgroundId);
-    if (this.#isMissing(playgroundId)) return;
+    if (!(await this.checkProjectFolders(playgroundId)) || this.#isMissing(playgroundId)) return;
     await this.#runActions.start(playgroundId);
+  }
+
+  async checkProjectFolders(id?: string): Promise<boolean> {
+    try {
+      await this.#presence.check(id);
+      return true;
+    } catch (error) {
+      this.#error = toDesktopError(error);
+      this.#emit();
+      return false;
+    }
   }
 
   #isMissing = (id: string): boolean =>
@@ -283,7 +282,7 @@ export class LibraryController {
 
   /** 去掉标签并放掉预览和控制台，不碰运行 */
   #dropTab(playgroundId: string): boolean {
-    if (!this.#workspace.close(playgroundId)) return false;
+    if (!this.#opening.closeTab(playgroundId)) return false;
     this.#dropProject(playgroundId);
     this.#applyPreview();
     this.#emit();
@@ -304,11 +303,12 @@ export class LibraryController {
   folderOf = (id: string): string | null =>
     this.#playgrounds.find((playground) => playground.id === id)?.path ?? null;
 
-  selectTab(id: string): void {
+  async selectTab(id: string): Promise<void> {
+    this.#opening.beginNavigation();
     this.#workspace.select(id);
     this.#applyPreview();
     this.#emit();
-    void this.#startIfPending(id);
+    await this.#startIfPending(id);
   }
 
   /** 新建弹窗的“创建并运行”（规格 DESKTOP-CREATE-FLOW-11）：创建失败原样交回弹窗，不动全局错误；运行失败不算创建失败 */

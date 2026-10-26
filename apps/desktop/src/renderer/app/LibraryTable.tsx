@@ -33,6 +33,7 @@ import styles from "./LibraryTable.module.css";
 import { MissingNote } from "./MissingNote.tsx";
 import { RenameInlineActions, RenameInlineFields } from "./RenameInline.tsx";
 import { RowActions } from "./RowActions.tsx";
+import { useLibraryReveal } from "./use-library-reveal.ts";
 import { useRelocate } from "./use-relocate.ts";
 import { useRenameDraft } from "./use-rename-draft.ts";
 
@@ -41,6 +42,7 @@ export interface LibraryTableProps {
   locale: Locale;
   rows: readonly PlaygroundRow[];
   now: number;
+  reveal?: { id: string; sequence: number };
   /** 当前排序，和“排序”下拉是同一个值；点“大小”表头等于选“大小” */
   sort: SortKey;
   onSortChange: (sort: SortKey) => void;
@@ -50,11 +52,20 @@ export interface LibraryTableProps {
 const NONE = "—";
 
 // 资源库方案 A：列宽取设计稿组合已有变量；窄窗口先收最近使用、端口，再把模板收为徽标。
-export function LibraryTable({ bridge, locale, rows, now, sort, onSortChange }: LibraryTableProps) {
+export function LibraryTable({
+  bridge,
+  locale,
+  rows,
+  now,
+  sort,
+  onSortChange,
+  reveal,
+}: LibraryTableProps) {
   const t = useT();
   const format = useFormat();
   // 创建副本后选中它（规格 DESKTOP-LIBRARY-VIEW-42）
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  useLibraryReveal(reveal, rows, setSelectedId);
   const taken = useMemo(() => rows.map((row) => row.name), [rows]);
   const draft = useRenameDraft(bridge, taken);
   const editingId = draft.session?.target.id ?? null;

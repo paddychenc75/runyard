@@ -176,7 +176,7 @@ export function registerBridgeHandlers(
     },
     "tab.select": async (id) => {
       const tab = text(id);
-      if (tab !== null) controller.selectTab(tab);
+      if (tab !== null) await controller.selectTab(tab);
     },
     "tab.close": async (id) => {
       const tab = text(id);

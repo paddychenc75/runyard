@@ -189,3 +189,30 @@ describe("底部面板：输出 / 终端", () => {
     expect(host.available()).toEqual([]);
   });
 });
+
+describe("脚本底部终端", () => {
+  it("[DESKTOP-TERMINAL-39][DESKTOP-WORKSPACE-69] 只显示终端入口，不重复右侧输出或提前创建 shell", async () => {
+    const scriptTab = sampleTab({ id: "script-only", kind: "oneshot" });
+    const result = setup({ ...base, tabs: [scriptTab], activeTab: scriptTab.id });
+    const panel = await waitFor(() => {
+      const el = document.querySelector('[data-console="script-only"]');
+      expect(el).not.toBeNull();
+      return el as HTMLElement;
+    });
+    expect(panel.querySelector('[role="log"]')).toBeNull();
+    expect(panel.textContent).toContain("打开终端 ⌃`");
+    expect(panel.textContent).not.toContain("清除");
+    expect(result.named("terminal.open")).toEqual([]);
+  });
+
+  it("[DESKTOP-TERMINAL-40] 点击入口才创建脚本终端", async () => {
+    const scriptTab = sampleTab({ id: "script-click", kind: "oneshot" });
+    const result = setup({ ...base, tabs: [scriptTab], activeTab: scriptTab.id });
+    await userEvent.setup().click(await screen.findByRole("button", { name: "打开终端 ⌃`" }));
+    await waitFor(() =>
+      expect(result.named("terminal.open")).toEqual([
+        { project: "script-click", cols: 100, rows: 30 },
+      ]),
+    );
+  });
+});

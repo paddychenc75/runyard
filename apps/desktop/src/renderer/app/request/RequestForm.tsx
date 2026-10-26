@@ -48,6 +48,7 @@ export function RequestForm({
             type="submit"
             variant="primary"
             size="lg"
+            className={styles.send}
             disabled={!canSend}
             loading={panel.sending}
             onClick={(event) => {

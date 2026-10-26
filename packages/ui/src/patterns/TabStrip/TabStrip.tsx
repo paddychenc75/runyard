@@ -14,6 +14,7 @@ import { Icon } from "../../primitives/Icon/index.ts";
 import { IconButton } from "../../primitives/IconButton/index.ts";
 import { Menu } from "../../primitives/Menu/index.ts";
 import { SlidingIndicator, useSlidingIndicator } from "../../primitives/SlidingIndicator/index.ts";
+import { StatusMark } from "../../primitives/StatusMark/index.ts";
 import { Tooltip } from "../../primitives/Tooltip/index.ts";
 import { fitTabs } from "./fit-tabs.ts";
 import styles from "./TabStrip.module.css";
@@ -250,15 +251,8 @@ export function TabStrip({
                 onKeyDown={(event) => onTabKeyDown(event, index)}
               >
                 {item.icon === undefined ? null : <Icon name={item.icon} size={14} />}
-                {item.status === undefined ? null : item.statusLabel === undefined ? (
-                  <span aria-hidden="true" className={styles.status} data-status={item.status} />
-                ) : (
-                  <span
-                    role="img"
-                    aria-label={item.statusLabel}
-                    className={styles.status}
-                    data-status={item.status}
-                  />
+                {item.status === undefined ? null : (
+                  <StatusMark status={item.status} markLabel={item.statusLabel} />
                 )}
                 <span className={styles.label} data-truncate="">
                   {item.label}

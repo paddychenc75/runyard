@@ -42,7 +42,13 @@ catalog:
   vitest: 4.1.11
   vue: 3.5.43
   yaml: 2.9.1
-  zod: 4.6.5
+  zod: 4.6.6
+
+# 传递依赖的安全覆盖：vite 只经 vitest（及 @vitest/mocker）进来，vitest 4.1.11 的锁定解析到 8.3.1，
+# 受 GHSA-587h-7wmj-h5pm（高）等影响；vitest 4 线没有更新的补丁能带出新 vite，故覆盖到发布满 15 天的 8.3.4（2026-10-08）。
+# 等 vitest 升级后能自然解析到 >=8.3.4 时删掉这一条。
+overrides:
+  vite: 8.3.4
 
 # 发布不满 14 天的版本不装（单位：分钟，20160 = 14 天）
 minimumReleaseAge: 20160

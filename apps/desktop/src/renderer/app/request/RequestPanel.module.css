@@ -361,3 +361,8 @@
   display: flex;
   flex: none;
 }
+
+/* 同一行的方法、地址、发送都是圆角矩形（设计稿 Service，问题单 R4） */
+.sendHint .send {
+  border-radius: var(--radius-row);
+}
