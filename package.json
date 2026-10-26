@@ -35,5 +35,6 @@
     "@fission-ai/openspec": "catalog:",
     "turbo": "catalog:",
     "typescript": "catalog:"
-  }
+  },
+  "version": "0.1.0"
 }
