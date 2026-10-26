@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Runyard website: download, unsigned build</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+/* 颜色、阴影的名字与 packages/tokens/src/tokens.json 一致；--brand-run-line 取自 Brand 画板的图标渐变 */
+.site{--color-bg-window: #1C1C1E; --color-bg-workspace: #161618; --color-bg-card: #1E1E21; --color-bg-inset: rgba(0, 0, 0, 0.35); --color-bg-chip: rgba(255, 255, 255, 0.1); --color-fill-neutral: rgba(118, 118, 128, 0.24); --color-text-primary: #F5F5F7; --color-text-secondary-strong: #D1D1D6; --color-text-secondary: #A1A1A6; --color-text-tertiary: #8E8E93; --color-text-on-accent: #FFFFFF; --color-line-hairline: rgba(255, 255, 255, 0.08); --color-line-strong: rgba(255, 255, 255, 0.14); --color-line-card: rgba(255, 255, 255, 0.08); --color-fill-accent: #0071E3; --color-text-accent: #4DA3FF; --color-text-link: #4DA3FF; --color-fill-accent-tint: rgba(10, 132, 255, 0.32); --color-status-running-mark: #30D158; --color-status-running-text: #30D158; --color-status-warning-mark: #FFD60A; --color-status-warning-text: #FFD60A; --color-fill-warning-tint: rgba(255, 214, 10, 0.14); --color-agent-text: #D0A8FF; --color-fill-agent-tint: rgba(191, 90, 242, 0.24); --color-code-plain: #F5F5F7; --color-code-keyword: #FF7AB2; --color-code-string: #FF8170; --color-code-function: #6BDFFF; --color-code-number: #D9C97C; --color-code-tag: #4EB0CC; --color-code-property: #6BDFFF; --color-code-punctuation: #A1A1A6; --color-code-line-number: #8E8E93; --color-code-current-line: rgba(255, 255, 255, 0.06); --glass-toolbar-bg: rgba(72, 72, 78, 0.55); --shadow-floating: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 28px rgba(0, 0, 0, 0.42); --shadow-dialog: 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 40px 90px rgba(0, 0, 0, 0.6); --shadow-overlay: 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 16px 40px rgba(0, 0, 0, 0.5); --brand-run-line: linear-gradient(90deg, #EA4A1A 0%, #FF7A1A 55%, #FFA62A 85%, #FFDA6E 100%); --term-bg: #1E1E21;}
+.site{box-sizing:border-box;position:relative;overflow:hidden;background:var(--color-bg-window);color:var(--color-text-primary);font-family:-apple-system,'SF Pro Text','PingFang SC','Helvetica Neue',sans-serif;font-size:15px;line-height:1.5}
+.site *{box-sizing:border-box}
+.site a{color:var(--color-text-link);text-decoration:none}
+.site code,.mono{font-family:'SF Mono',Menlo,monospace}
+.site p{margin:0}
+.site h1,.site h2,.site h3{margin:0}
+.wrap{width:1120px;margin:0 auto}
+.phone .wrap{width:auto;margin:0 20px}
+.nav{height:64px;display:flex;align-items:center;gap:28px;border-bottom:1px solid var(--color-line-hairline)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;letter-spacing:-0.2px;color:var(--color-text-primary)}
+.navlinks{display:flex;gap:26px;margin-left:16px;flex:1}
+.navlinks a{color:var(--color-text-secondary-strong);font-size:14px;display:flex;align-items:center;gap:6px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;font-weight:600;white-space:nowrap;border:none}
+.btn-p{background:var(--color-fill-accent);color:var(--color-text-on-accent) !important}
+.btn-s{background:var(--color-fill-neutral);color:var(--color-text-primary) !important}
+.btn-sm{height:32px;padding:0 14px;font-size:13px}
+.btn-lg{height:48px;padding:0 22px;font-size:16px}
+.seg{display:inline-flex;padding:2px;border-radius:999px;background:var(--color-fill-neutral);font-size:12px}
+.seg span{padding:3px 10px;border-radius:999px;color:var(--color-text-secondary-strong)}
+.seg span.on{background:var(--color-bg-card);color:var(--color-text-primary);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,0.14)}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;height:28px;padding:0 12px;border-radius:999px;background:var(--color-bg-chip);color:var(--color-text-secondary-strong);font-size:13px;font-weight:500}
+.h1{font-size:60px;line-height:1.08;font-weight:700;letter-spacing:-1.2px}
+.phone .h1{font-size:36px;line-height:1.15;letter-spacing:-0.6px}
+.lead{font-size:18px;line-height:1.6;color:var(--color-text-secondary)}
+.phone .lead{font-size:16px}
+.h2{font-size:40px;line-height:1.15;font-weight:700;letter-spacing:-0.6px}
+.phone .h2{font-size:28px;letter-spacing:-0.3px}
+.h3{font-size:19px;line-height:1.35;font-weight:600}
+.muted{color:var(--color-text-secondary)}
+.sec{padding:112px 0}
+.phone .sec{padding:64px 0}
+.alt{background:var(--color-bg-workspace)}
+.card{background:var(--color-bg-card);border:1px solid var(--color-line-hairline);border-radius:16px}
+.shot{position:relative;border-radius:12px;border:1.5px dashed var(--color-line-strong);background:var(--color-bg-inset);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:12px;color:var(--color-text-secondary)}
+.shot b{color:var(--color-text-secondary-strong);font-size:14px;font-weight:600}
+.shot small{font-size:12px}
+.tag{position:absolute;left:10px;top:10px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:6px;background:var(--color-bg-chip);color:var(--color-text-secondary)}
+.code{font-family:'SF Mono',Menlo,monospace;font-size:13px;line-height:22px;white-space:pre}
+.kw{color:var(--color-code-keyword)}.str{color:var(--color-code-string)}.fn{color:var(--color-code-function)}.tg{color:var(--color-code-tag)}.pn{color:var(--color-code-punctuation)}.pr{color:var(--color-code-property)}.nu{color:var(--color-code-number)}
+.dot{width:8px;height:8px;border-radius:4px;background:var(--color-status-running-mark);flex:none}
+.inline code{font-size:0.88em;padding:1px 6px;border-radius:6px;background:var(--color-bg-chip);color:var(--color-text-primary)}
+.notes{background:var(--color-bg-workspace);border-top:2px dashed var(--color-line-strong);padding:40px 0 56px;font-size:13px;line-height:1.55;color:var(--color-text-secondary-strong)}
+.notes h4{margin:0 0 10px;font-size:15px;color:var(--color-text-primary)}
+.notes ul{margin:0;padding-left:18px}
+.notes li{margin:0 0 4px}
+.fr{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.frbox{height:120px;border-radius:12px;background:var(--color-bg-card);border:1px solid var(--color-line-hairline);position:relative;overflow:hidden}
+.bar{position:absolute;height:8px;border-radius:4px}
+/* 预览卡里的页面：照 templates/builtin/react19 的 App.tsx 与 App.css 原样还原（系统字体、浏览器默认按钮） */
+.site .tpl{position:absolute;left:0;top:0;transform-origin:0 0;background:Canvas;color:CanvasText;font-family:system-ui,sans-serif;font-size:16px;line-height:normal;padding:1px 8px}
+.site .tpl main{max-width:40rem;margin:4rem auto;padding:0 1rem}
+.site .tpl h1{font-size:2em;margin:0.67em 0;font-weight:bold}
+.site .tpl p{margin:1em 0}
+.site .tpl button{font:inherit;padding:0.4rem 0.9rem}
+</style>
+</helmet>
+<div class="site" style="width: 1440px; height: 1330px">
+
+<div class="wrap nav"><div class="brand"><svg role="img" aria-label="Runyard" width="30" height="30" viewBox="0 0 1024 1024" style="display: block; flex: none"><defs><clipPath id="ic1t"><path d="M383.4,100 L640.6,100 C722.2,100 763,100 799.8,112.1 L806.9,113.9 C854.9,131.3 892.7,169.1 910.1,217.1 L911.9,224.2 C924,261 924,301.8 924,383.4 L924,640.6 C924,722.2 924,763 911.9,799.8 L910.1,806.9 C892.7,854.9 854.9,892.7 806.9,910.1 L799.8,911.9 C763,924 722.2,924 640.6,924 L383.4,924 C301.8,924 261,924 224.2,911.9 L217.1,910.1 C169.1,892.7 131.3,854.9 113.9,806.9 L112.1,799.8 C100,763 100,722.2 100,640.6 L100,383.4 C100,301.8 100,261 112.1,224.2 L113.9,217.1 C131.3,169.1 169.1,131.3 217.1,113.9 L224.2,112.1 C261,100 301.8,100 383.4,100 Z"/></clipPath><linearGradient id="ic1p" x1="0" y1="100" x2="0" y2="924" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#34312F"/><stop offset="1" stop-color="#1D1C1B"/></linearGradient><linearGradient id="ic1h" x1="408" y1="0" x2="1004" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#EA4A1A"/><stop offset="0.6" stop-color="#FF7A1A"/><stop offset="0.86" stop-color="#FFA62A"/><stop offset="1" stop-color="#FFDA6E"/></linearGradient></defs><path d="M383.4,100 L640.6,100 C722.2,100 763,100 799.8,112.1 L806.9,113.9 C854.9,131.3 892.7,169.1 910.1,217.1 L911.9,224.2 C924,261 924,301.8 924,383.4 L924,640.6 C924,722.2 924,763 911.9,799.8 L910.1,806.9 C892.7,854.9 854.9,892.7 806.9,910.1 L799.8,911.9 C763,924 722.2,924 640.6,924 L383.4,924 C301.8,924 261,924 224.2,911.9 L217.1,910.1 C169.1,892.7 131.3,854.9 113.9,806.9 L112.1,799.8 C100,763 100,722.2 100,640.6 L100,383.4 C100,301.8 100,261 112.1,224.2 L113.9,217.1 C131.3,169.1 169.1,131.3 217.1,113.9 L224.2,112.1 C261,100 301.8,100 383.4,100 Z" fill="url(#ic1p)"/><g clip-path="url(#ic1t)"><rect x="232" y="275" width="264" height="76" rx="38" fill="#D6D1C8"/><rect x="320" y="397" width="430" height="76" rx="38" fill="#D6D1C8"/><rect x="232" y="673" width="372" height="76" rx="38" fill="#5F5C58"/><path d="M383.4,100 L640.6,100 C722.2,100 763,100 799.8,112.1 L806.9,113.9 C854.9,131.3 892.7,169.1 910.1,217.1 L911.9,224.2 C924,261 924,301.8 924,383.4 L924,640.6 C924,722.2 924,763 911.9,799.8 L910.1,806.9 C892.7,854.9 854.9,892.7 806.9,910.1 L799.8,911.9 C763,924 722.2,924 640.6,924 L383.4,924 C301.8,924 261,924 224.2,911.9 L217.1,910.1 C169.1,892.7 131.3,854.9 113.9,806.9 L112.1,799.8 C100,763 100,722.2 100,640.6 L100,383.4 C100,301.8 100,261 112.1,224.2 L113.9,217.1 C131.3,169.1 169.1,131.3 217.1,113.9 L224.2,112.1 C261,100 301.8,100 383.4,100 Z" fill="none" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="8"/></g><rect x="408" y="519" width="596" height="108" rx="54" fill="url(#ic1h)"/></svg>Runyard</div><div class="navlinks"><a>Features</a><a>Agents</a><a>Download</a><a><svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" style="flex: none"><path fill="var(--color-text-secondary-strong)" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a></div><span class="seg"><span class="">中</span><span class="on">EN</span></span><span class="btn btn-p btn-sm"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#FFFFFF" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M8 2v8.5M4.5 7 8 10.5 11.5 7M2.5 13.5h11"/></svg>Download</span></div>
+
+<div id="download" class="sec alt"><div class="wrap" style="width: 880px">
+<div style="display: flex; flex-direction: column; gap: 12px; align-items: center; text-align: center; margin-bottom: 40px"><h2 class="h2">Download Runyard</h2><p class="lead">Free and open source. All you need is a Mac.</p></div>
+<div class="card" style="padding: 32px; display: flex; flex-direction: column; gap: 28px; box-shadow: var(--shadow-floating)">
+<div style="display: flex; align-items: center; gap: 24px">
+<svg role="img" aria-label="Runyard" width="96" height="96" viewBox="0 0 1024 1024" style="display: block; flex: none"><defs><clipPath id="ic2t"><path d="M383.4,100 L640.6,100 C722.2,100 763,100 799.8,112.1 L806.9,113.9 C854.9,131.3 892.7,169.1 910.1,217.1 L911.9,224.2 C924,261 924,301.8 924,383.4 L924,640.6 C924,722.2 924,763 911.9,799.8 L910.1,806.9 C892.7,854.9 854.9,892.7 806.9,910.1 L799.8,911.9 C763,924 722.2,924 640.6,924 L383.4,924 C301.8,924 261,924 224.2,911.9 L217.1,910.1 C169.1,892.7 131.3,854.9 113.9,806.9 L112.1,799.8 C100,763 100,722.2 100,640.6 L100,383.4 C100,301.8 100,261 112.1,224.2 L113.9,217.1 C131.3,169.1 169.1,131.3 217.1,113.9 L224.2,112.1 C261,100 301.8,100 383.4,100 Z"/></clipPath><linearGradient id="ic2p" x1="0" y1="100" x2="0" y2="924" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#34312F"/><stop offset="1" stop-color="#1D1C1B"/></linearGradient><linearGradient id="ic2h" x1="408" y1="0" x2="1004" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#EA4A1A"/><stop offset="0.6" stop-color="#FF7A1A"/><stop offset="0.86" stop-color="#FFA62A"/><stop offset="1" stop-color="#FFDA6E"/></linearGradient></defs><path d="M383.4,100 L640.6,100 C722.2,100 763,100 799.8,112.1 L806.9,113.9 C854.9,131.3 892.7,169.1 910.1,217.1 L911.9,224.2 C924,261 924,301.8 924,383.4 L924,640.6 C924,722.2 924,763 911.9,799.8 L910.1,806.9 C892.7,854.9 854.9,892.7 806.9,910.1 L799.8,911.9 C763,924 722.2,924 640.6,924 L383.4,924 C301.8,924 261,924 224.2,911.9 L217.1,910.1 C169.1,892.7 131.3,854.9 113.9,806.9 L112.1,799.8 C100,763 100,722.2 100,640.6 L100,383.4 C100,301.8 100,261 112.1,224.2 L113.9,217.1 C131.3,169.1 169.1,131.3 217.1,113.9 L224.2,112.1 C261,100 301.8,100 383.4,100 Z" fill="url(#ic2p)"/><g clip-path="url(#ic2t)"><rect x="232" y="275" width="264" height="76" rx="38" fill="#D6D1C8"/><rect x="320" y="397" width="430" height="76" rx="38" fill="#D6D1C8"/><rect x="232" y="673" width="372" height="76" rx="38" fill="#5F5C58"/><path d="M383.4,100 L640.6,100 C722.2,100 763,100 799.8,112.1 L806.9,113.9 C854.9,131.3 892.7,169.1 910.1,217.1 L911.9,224.2 C924,261 924,301.8 924,383.4 L924,640.6 C924,722.2 924,763 911.9,799.8 L910.1,806.9 C892.7,854.9 854.9,892.7 806.9,910.1 L799.8,911.9 C763,924 722.2,924 640.6,924 L383.4,924 C301.8,924 261,924 224.2,911.9 L217.1,910.1 C169.1,892.7 131.3,854.9 113.9,806.9 L112.1,799.8 C100,763 100,722.2 100,640.6 L100,383.4 C100,301.8 100,261 112.1,224.2 L113.9,217.1 C131.3,169.1 169.1,131.3 217.1,113.9 L224.2,112.1 C261,100 301.8,100 383.4,100 Z" fill="none" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="8"/></g><rect x="408" y="519" width="596" height="108" rx="54" fill="url(#ic2h)"/></svg>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px"><h3 class="h3" style="font-size: 22px">Runyard 0.1.0</h3><span class="muted">macOS · Apple silicon (arm64) · .dmg</span></div>
+<span class="btn btn-p btn-lg" style=""><svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#FFFFFF" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M8 2v8.5M4.5 7 8 10.5 11.5 7M2.5 13.5h11"/></svg>Download .dmg</span>
+</div>
+<div style="display: flex; gap: 12px; align-items: center"><a style="display: inline-flex; align-items: center; gap: 4px; font-size: 14px">Intel (x64)<svg aria-hidden="true" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="var(--color-text-link)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M4.5 2.5h5v5M9.5 2.5 3 9"/></svg></a><span class="muted">·</span><a style="display: inline-flex; align-items: center; gap: 4px; font-size: 14px">All releases and checksums<svg aria-hidden="true" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="var(--color-text-link)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M4.5 2.5h5v5M9.5 2.5 3 9"/></svg></a><span class="muted">·</span><a style="display: inline-flex; align-items: center; gap: 4px; font-size: 14px">Changelog<svg aria-hidden="true" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="var(--color-text-link)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M4.5 2.5h5v5M9.5 2.5 3 9"/></svg></a></div>
+<div style="display: flex; flex-direction: column; gap: 14px; padding: 20px; border-radius: 12px; background: var(--color-fill-warning-tint)">
+<div style="display: flex; gap: 10px; align-items: flex-start"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" style="flex: none"><path d="M9 1.8 17 15.6H1z" fill="none" stroke="var(--color-status-warning-mark)" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 6.5v4.2" stroke="var(--color-status-warning-mark)" stroke-width="1.7" stroke-linecap="round"/><circle cx="9" cy="13.1" r="1" fill="var(--color-status-warning-mark)"/></svg><div style="display: flex; flex-direction: column; gap: 4px; min-width: 0"><strong style="color: var(--color-status-warning-text); font-size: 15px">This build is not notarised by Apple yet, so macOS blocks the first launch</strong><span style="color: var(--color-text-secondary-strong)">On first launch, right-click → Open. On newer macOS, do the steps below once; after that it opens normally.</span></div></div>
+<ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px"><li style="display: flex; gap: 10px; align-items: flex-start"><span style="width: 22px; height: 22px; border-radius: 11px; background: var(--color-bg-card); border: 1px solid var(--color-line-strong); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex: none; margin-top: 1px">1</span><span style="min-width: 0">Open the .dmg, drag Runyard to Applications first, then open it from Applications (opening it inside the .dmg causes problems)</span></li><li style="display: flex; gap: 10px; align-items: flex-start"><span style="width: 22px; height: 22px; border-radius: 11px; background: var(--color-bg-card); border: 1px solid var(--color-line-strong); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex: none; margin-top: 1px">2</span><span style="min-width: 0">Double-click Runyard. When macOS says it cannot verify the developer, click Done</span></li><li style="display: flex; gap: 10px; align-items: flex-start"><span style="width: 22px; height: 22px; border-radius: 11px; background: var(--color-bg-card); border: 1px solid var(--color-line-strong); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex: none; margin-top: 1px">3</span><span style="min-width: 0">Open System Settings → Privacy & Security, click Open Anyway under Security, then enter your login password</span></li></ol>
+<p style="color: var(--color-text-secondary); font-size: 13px">macOS 14 and earlier: right-click Runyard in Applications and choose Open.</p>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: var(--color-text-secondary)">Comfortable with the terminal? One step:</span>
+<div style="display: flex; align-items: center; gap: 10px; padding: 8px 8px 8px 12px; border-radius: 10px; background: var(--color-bg-card); border: 1px solid var(--color-line-field, var(--color-line-strong))"><code style="flex: 1; min-width: 0; font-size: 13px; white-space: nowrap">xattr -dr com.apple.quarantine /Applications/Runyard.app</code><span class="btn btn-s btn-sm" style="flex: none">Copy</span></div></div>
+<p style="font-size: 13px; color: var(--color-text-secondary)">Repeat this after every update. <a>Full guide <svg aria-hidden="true" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="var(--color-text-link)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M4.5 2.5h5v5M9.5 2.5 3 9"/></svg></a></p>
+</div>
+<p class="muted" style="font-size: 13px">Playgrounds run on the Node, Python and Go already on your Mac. If something is missing, the app tells you how to install it.</p>
+</div>
+</div></div>
+
+<div class="notes"><div class="wrap" style="display: flex; flex-direction: column; gap: 8px"><h4>Design notes (not part of the page)</h4><p>Unsigned variant of the download section: use it instead of the three install steps while there is no Apple Developer account and the build is not notarised.</p><p>Note: docs/guides/first-open-unsigned-app.md says the old right-click → Open shortcut is gone since macOS 15 (not verified on a real Mac), so it sits on the older-macOS line and newer macOS goes through System Settings. The owner should confirm the wording.</p></div></div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1330}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
