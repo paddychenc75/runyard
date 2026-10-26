@@ -178,5 +178,18 @@
   "cli.skillGuide.body": {
     "glossarySkip": ["项目"],
     "glossarySkipReason": "#468 要求供智能体执行的英文 SKILL.md 保持原文，原文使用 project；中文对照按产品术语使用“项目”。"
+  },
+  "cli.skillStatus.item.body": {
+    "target": "claude 或 agents；用 select 选词",
+    "state": "missing、current 或 outdated；用 select 选词",
+    "dir": "技能目录的绝对路径，原样显示"
+  },
+  "cli.skillUninstall.removed.body": {
+    "target": "claude 或 agents；用 select 选词",
+    "dir": "技能目录的绝对路径，原样显示"
+  },
+  "cli.skillUninstall.skipped.body": {
+    "target": "claude 或 agents；用 select 选词",
+    "dir": "技能目录的绝对路径，原样显示"
   }
 }

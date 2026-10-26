@@ -86,7 +86,7 @@ const unavailableCli: CliCommandStatus = {
   onPath: false,
   pathCommand: "",
 };
-const noSkills: AgentSkillStatus = { claude: false, agents: false };
+const noSkills: AgentSkillStatus = { claude: "missing", agents: "missing" };
 const rejectedEdit: EditResult = { ok: false, error: { code: "INTERNAL", params: {} } };
 const rejectedCreate: CreateResult = { ok: false, error: { code: "INTERNAL", params: {} } };
 
@@ -266,8 +266,16 @@ export function registerBridgeHandlers(
     "agents.status": async () => (await settings?.cli?.agentSkills()) ?? noSkills,
     "agents.install": async (target) =>
       target === "claude" || target === "agents"
-        ? ((await settings?.cli?.installAgentSkill(target)) ?? noSkills)
-        : noSkills,
+        ? ((await settings?.cli?.installAgentSkill(target)) ?? { status: noSkills })
+        : { status: noSkills },
+    "agents.remove": async (target) =>
+      target === "claude" || target === "agents"
+        ? ((await settings?.cli?.removeAgentSkill(target)) ?? { status: noSkills })
+        : { status: noSkills },
+    "agents.reveal": async (target) => {
+      if (target === "claude" || target === "agents") await settings?.cli?.revealAgentSkill(target);
+      return undefined;
+    },
     "supervisor.status": async () =>
       (await settings?.cli?.supervisorStatus()) ?? { running: false, cliRuns: 0, tabRuns: 0 },
     "supervisor.stop": async () =>

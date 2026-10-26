@@ -1,18 +1,15 @@
-import { useLocale, useT } from "@runyard/i18n/react";
-import { Button, ButtonGroup, ConfirmDialog, CopyableCommand, Menu, UserText } from "@runyard/ui";
+import { useT } from "@runyard/i18n/react";
+import { Button, ConfirmDialog, CopyableCommand, UserText } from "@runyard/ui";
 import { useState } from "react";
 import type { DesktopBridge } from "../../../shared/desktop-bridge.ts";
 import type { LibraryState } from "../../../shared/library-state.ts";
-import type {
-  AgentSkillStatus,
-  CliCommandStatus,
-  SupervisorStatus,
-} from "../../../shared/settings-bridge.ts";
+import type { CliCommandStatus, SupervisorStatus } from "../../../shared/settings-bridge.ts";
 import type { SettingsApi } from "../../bridge/use-settings.ts";
 import styles from "./CliGroup.module.css";
 import { SettingSwitch } from "./SettingSwitch.tsx";
 import { SettingsGroup, SettingsRow } from "./SettingsGroup.tsx";
 import { SkillGuideDialog } from "./SkillGuideDialog.tsx";
+import { SkillsRow } from "./SkillsRow.tsx";
 import { StatusLine } from "./StatusLine.tsx";
 import { useCliStatus } from "./use-cli-status.ts";
 
@@ -85,7 +82,7 @@ function CommandRow({ bridge, cli }: { bridge: DesktopBridge; cli: Cli }) {
         }
         monoHint={hint === undefined}
       >
-        <StatusLine tone={installed ? "ok" : status.state === "missing" ? "idle" : "warn"}>
+        <StatusLine quiet tone={installed ? "ok" : status.state === "missing" ? "idle" : "warn"}>
           {label}
         </StatusLine>
         {installed ? (
@@ -154,7 +151,7 @@ function SupervisorRow({ cli }: { cli: Cli }) {
         hint={t("settings.supervisor.hint")}
         wrapHint
       >
-        <StatusLine tone={status.running ? "ok" : "idle"}>
+        <StatusLine quiet tone={status.running ? "ok" : "idle"}>
           {status.running
             ? t("settings.supervisor.running.label", { count: status.cliRuns })
             : t("settings.supervisor.stopped.label")}
@@ -181,49 +178,6 @@ function SupervisorRow({ cli }: { cli: Cli }) {
         }}
       />
     </>
-  );
-}
-
-function SkillsRow({ cli }: { cli: Cli }) {
-  const t = useT();
-  const locale = useLocale();
-  const skills: AgentSkillStatus | null = cli.skills;
-  if (skills === null) return null;
-  const label =
-    skills.claude && skills.agents
-      ? t("settings.skills.both.label")
-      : skills.claude
-        ? t("settings.skills.claude.label")
-        : skills.agents
-          ? t("settings.skills.agents.label")
-          : t("settings.skills.none.label");
-  return (
-    <SettingsRow title={t("settings.skills.title")} hint={t("settings.skills.hint")} wrapHint>
-      <StatusLine tone={skills.claude || skills.agents ? "ok" : "idle"}>{label}</StatusLine>
-      <ButtonGroup>
-        <Button onClick={() => cli.openGuide(locale === "zh-CN" ? "zh-CN" : "en")}>
-          {t("settings.skills.guide.action")}
-        </Button>
-        <Menu
-          label={t("settings.skills.other.action")}
-          entries={[
-            {
-              id: "claude",
-              label: t("settings.skills.claudeName.label"),
-              checked: skills.claude,
-            },
-            {
-              id: "agents",
-              label: t("settings.skills.agentsName.label"),
-              checked: skills.agents,
-            },
-          ]}
-          onSelect={(id) => cli.installSkill(id === "claude" ? "claude" : "agents")}
-          trigger={<Button>{t("settings.skills.other.action")}</Button>}
-        />
-      </ButtonGroup>
-      {cli.guideFailed ? <span role="alert">{t("settings.skills.guideFailed.hint")}</span> : null}
-    </SettingsRow>
   );
 }
 

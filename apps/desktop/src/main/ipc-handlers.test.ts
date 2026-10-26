@@ -425,11 +425,16 @@ describe("设置通道", () => {
         },
       },
       cli: {
-        agentSkills: async () => ({ claude: true, agents: false }),
+        agentSkills: async () => ({ claude: "current", agents: "missing" }),
         installAgentSkill: async (target: string) => {
           seen.push(["skill", target]);
-          return { claude: true, agents: true };
+          return { status: { claude: "current", agents: "current" } };
         },
+        removeAgentSkill: async (target: string) => {
+          seen.push(["unskill", target]);
+          return { status: { claude: "missing", agents: "current" } };
+        },
+        revealAgentSkill: async (target: string) => void seen.push(["reveal", target]),
       },
       onChange: (listener: (settings: unknown) => void) => {
         push = listener;
@@ -481,14 +486,26 @@ describe("设置通道", () => {
     await call(app, "toolchain.pickPath", "node");
     await call(app, "toolchain.runInstall", "go");
     await call(app, "toolchain.runInstall", { command: "rm -rf /" });
-    expect(await call(app, "agents.install", "codex")).toEqual({ claude: false, agents: false });
-    expect(await call(app, "agents.install", "agents")).toEqual({ claude: true, agents: true });
+    expect(await call(app, "agents.install", "codex")).toEqual({
+      status: { claude: "missing", agents: "missing" },
+    });
+    expect(await call(app, "agents.install", "agents")).toEqual({
+      status: { claude: "current", agents: "current" },
+    });
+    expect(await call(app, "agents.remove", "codex")).toEqual({
+      status: { claude: "missing", agents: "missing" },
+    });
+    await call(app, "agents.remove", "claude");
+    await call(app, "agents.reveal", "../etc");
+    await call(app, "agents.reveal", "agents");
     expect(seen).toEqual([
       ["check", true],
       ["check", false],
       ["pick", "node"],
       ["install", "go"],
       ["skill", "agents"],
+      ["unskill", "claude"],
+      ["reveal", "agents"],
     ]);
   });
 

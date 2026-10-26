@@ -12,6 +12,8 @@ import { newPlayground } from "./new.ts";
 import { rm } from "./rm.ts";
 import { runPlayground } from "./run.ts";
 import { skillInstall as skillInstallRun } from "./skill-install.ts";
+import { skillStatus as skillStatusRun } from "./skill-status.ts";
+import { skillUninstall as skillUninstallRun } from "./skill-uninstall.ts";
 import { status } from "./status.ts";
 import { stop } from "./stop.ts";
 import { templateLint, templateList, templateSave, templateShow } from "./template-commands.ts";
@@ -261,6 +263,31 @@ const skillInstall = defineCommand({
   run: skillInstallRun,
 });
 
+const skillTargetOption: OptionSpec = {
+  name: "target",
+  type: "string",
+  valueName: "claude|agents|all",
+  hint: (t) => t("cli.option.skillTarget.hint"),
+};
+
+const skillStatus = defineCommand({
+  name: "skill status",
+  title: (t) => t("cli.command.skillStatus.title"),
+  positionals: [],
+  options: [skillTargetOption],
+  needsSupervisor: false,
+  run: skillStatusRun,
+});
+
+const skillUninstall = defineCommand({
+  name: "skill uninstall",
+  title: (t) => t("cli.command.skillUninstall.title"),
+  positionals: [],
+  options: [skillTargetOption],
+  needsSupervisor: false,
+  run: skillUninstallRun,
+});
+
 const versionDeclaration = defineCommand({
   name: "version",
   title: (t) => t("cli.command.version.title"),
@@ -304,6 +331,8 @@ export const builtinRegistry: CommandRegistry = {
     versionDeclaration,
     ...templateCommands,
     skillInstall,
+    skillStatus,
+    skillUninstall,
     ...configCommands,
   ],
   groups: [
