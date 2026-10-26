@@ -23,6 +23,8 @@
 | cli.command.run.title | 运行项目，等到就绪或退出 | Run a playground and wait until it is ready or exits | — |
 | cli.command.skill.title | 安装给智能体用的说明 | Install the instructions for agents | — |
 | cli.command.skillInstall.title | 把说明写到智能体的目录 | Write the instructions to the agent folders | — |
+| cli.command.skillStatus.title | 查看说明装在哪、是不是当前版本 | Show where the instructions are installed and whether they are current | — |
+| cli.command.skillUninstall.title | 把装过的说明移到{term_trash} | Move the installed instructions to the {term_trash} | — |
 | cli.command.status.title | 列出项目和运行状态 | List playgrounds and their run state | — |
 | cli.command.stop.title | 停止项目的运行 | Stop the run of a playground | — |
 | cli.command.template.title | 查看、保存、检查和测试模板 | Show, save, lint and test templates | — |
@@ -83,6 +85,7 @@
 | cli.option.run.hint | 创建后立即运行 | Run it right after creating | — |
 | cli.option.running.hint | 只列出运行中的项目 | List only playgrounds that are running | — |
 | cli.option.since.hint | 只读这个游标之后的内容 | Read only what comes after this cursor | — |
+| cli.option.skillTarget.hint | 针对哪个智能体：claude、agents 或 all | Which agent: claude, agents or all | — |
 | cli.option.tail.hint | 只读最后几行 | Read only the last lines | — |
 | cli.option.target.hint | 写到哪里：claude、agents 或 all | Where to write: claude, agents or all | — |
 | cli.option.template.hint | 只检查这个模板所需的环境 | Check only what this template needs | — |
@@ -99,6 +102,9 @@
 | cli.run.starting.body | 正在启动 {name} | Starting {name} | name：项目名称，原样显示 |
 | cli.skillGuide.body | --- name: runyard description: 使用 runyard 命令行创建、运行和检查小型代码项目（网页、React 应用、脚本）。需要试验或展示代码时使用，不要自行启动开发服务器。 ---  # Runyard  Runyard 从模板创建小项目，在后台运行并保存日志。 执行命令时添加 `--json`：标准输出是一个可解析的 JSON 对象。 例外：`--help` 即使带 `--json` 也返回帮助文本；`logs --follow --json` 每行返回一个 JSON 对象。  ## 工作流程  1. 不确定选哪个模板时，先列出模板：`runyard template list --json`。 2. 一步创建并启动项目，并说明它的用途：    `runyard new '<template>' [name] --run --note "what this is for" --json`    网页或服务的结果包含 `run.url`；脚本则在退出后返回输出。 3. 直接编辑结果里 `path` 下的文件。运行中的服务会自行重新加载。 4. 使用 `runyard logs '<name>' --since '<cursor>' --json` 检查结果。    使用上次结果中的 `cursor`，只读取新增内容。 5. 用完后停止：`runyard stop '<name>' --json`。 6. 任务结束后不再需要的验证项目，移到{term_trash}：    `runyard rm '<name>' --json`。这也会停止运行。用户要留着的项目应保留。  ## 规则  - 不要为这些项目自行启动开发服务器。使用 `runyard run '<name>' --json`。 - 只用于验证、无须长期保留的项目：添加 `--clean-after 30d` 到 `new`，   让它以后自动清理。如果用户说要留着，就不要添加这个选项。 - 命令失败时，JSON 包含 `error.code` 和 `error.hint`。按 `error.hint` 的说明处理，   不要盲目重复同一个命令。 - `runyard status --json` 显示正在运行的项目。`runyard doctor --json` 显示已安装的工具。 | --- name: runyard description: Create, run and inspect small throwaway code projects (web pages, React apps, scripts) with the runyard command line. Use it when you need to try out or show a piece of code instead of starting a dev server yourself. ---  # Runyard  Runyard creates small projects from templates, runs them in the background and keeps their logs. Add `--json` when executing commands: standard output is one JSON object that you can parse. Exceptions: `--help` returns help text even with `--json`; `logs --follow --json` returns one JSON object per line.  ## Workflow  1. List templates when you are unsure which one fits: `runyard template list --json`. 2. Create and start a project in one step, and say why it exists:    `runyard new '<template>' [name] --run --note "what this is for" --json`    For a server the result has `run.url`; for a script it has the output once it exits. 3. Edit the files under the `path` in the result directly. A running server reloads by itself. 4. Check what happened with `runyard logs '<name>' --since '<cursor>' --json`.    Use the `cursor` from the previous result to read only what is new. 5. Stop it when you are done: `runyard stop '<name>' --json`. 6. If a verification project is no longer needed after the task, move it to {term_trash}:    `runyard rm '<name>' --json`. This also stops its run. Keep projects the user wants to retain.  ## Rules  - Do not start your own dev server for these projects. Use `runyard run '<name>' --json`. - A project that only verifies something and is not meant to be kept: add `--clean-after 30d` to `new`   so it is cleaned up later. If the user says to keep it, leave the option out. - When a command fails, the JSON has `error.code` and `error.hint`. Do what `error.hint` says,   do not retry the same command blindly. - `runyard status --json` shows what is running. `runyard doctor --json` shows which tools are installed. | — |
 | cli.skillInstall.installed.body | 已写入 {target, select, claude {Claude} other {智能体}} 的说明：{path} | Wrote the {target, select, claude {Claude} other {agents}} instructions: {path} | target：claude 或 agents；用 select 选词；path：写入的 SKILL.md 绝对路径，原样显示 |
+| cli.skillStatus.item.body | {target, select, claude {Claude} other {智能体}}：{state, select, missing {没装} current {当前版本} other {旧版本}}（{dir}） | {target, select, claude {Claude} other {agents}}: {state, select, missing {not installed} current {current} other {outdated}} ({dir}) | target：claude 或 agents；用 select 选词；state：missing、current 或 outdated；用 select 选词；dir：技能目录的绝对路径，原样显示 |
+| cli.skillUninstall.removed.body | 已把 {target, select, claude {Claude} other {智能体}} 的说明移到{term_trash}：{dir} | Moved the {target, select, claude {Claude} other {agents}} instructions to the {term_trash}: {dir} | target：claude 或 agents；用 select 选词；dir：技能目录的绝对路径，原样显示 |
+| cli.skillUninstall.skipped.body | 没有移除 {target, select, claude {Claude} other {智能体}} 的说明：{dir} 里还有别的文件，请自己处理 | Kept the {target, select, claude {Claude} other {agents}} instructions: {dir} holds other files, handle them yourself | target：claude 或 agents；用 select 选词；dir：技能目录的绝对路径，原样显示 |
 | cli.status.empty.body | 没有项目。 | No playgrounds. | — |
 | cli.status.item.body | {name}　{state}{url, select, none {} other {　{url}}}{missing, select, yes {　（找不到文件夹）} other {}} | {name}  {state}{url, select, none {} other {  {url}}}{missing, select, yes {  (folder missing)} other {}} | name：项目名称，原样显示；state：运行状态（已按当前语言挑选的文字）；url：地址，原样显示；没有时是 none；missing：yes 或 no；yes 时加“找不到文件夹”标记 |
 | cli.status.summary.body | {count, plural, other {# 个项目运行中}} | {count, plural, one {# playground running} other {# playgrounds running}} | count：运行中的个数 |
@@ -964,18 +970,41 @@
 | settings.runtime.version.label | 版本 | Version | — |
 | settings.scriptAutoRun.hint | Node、Python、Go 脚本保存后自动重新运行 | Node, Python and Go scripts run again automatically when saved | — |
 | settings.scriptAutoRun.title | 脚本保存后自动运行 | Run scripts on save | — |
-| settings.skills.agents.label | 已安装到 Codex | Installed for Codex | — |
+| settings.skills.agents.label | 已装到 Codex | Installed for Codex | — |
 | settings.skills.agentsName.label | Codex | Codex | — |
-| settings.skills.both.label | 已安装到 Claude Code 和 Codex | Installed for Claude Code and Codex | — |
-| settings.skills.claude.label | 已安装到 Claude Code | Installed for Claude Code | — |
+| settings.skills.both.label | Claude Code、Codex | Claude Code, Codex | — |
+| settings.skills.claude.label | 已装到 Claude Code | Installed for Claude Code | — |
 | settings.skills.claudeName.label | Claude Code | Claude Code | — |
 | settings.skills.closeGuide.action | 关闭说明 | Close guide | — |
+| settings.skills.failed.label | 安装失败 | Install failed | — |
+| settings.skills.groupInstalled.label | {agent} · 已安装 | {agent} · installed | agent：智能体名，Claude Code 或 Codex；专有名词，原样显示 |
+| settings.skills.groupMissing.label | {agent} · 未安装 | {agent} · not installed | agent：智能体名，Claude Code 或 Codex；专有名词，原样显示 |
+| settings.skills.groupOutdated.label | {agent} · 有新版本 | {agent} · update available | agent：智能体名，Claude Code 或 Codex；专有名词，原样显示 |
 | settings.skills.guide.action | 查看说明 | View guide | — |
 | settings.skills.guideFailed.hint | 没能打开说明，请重试。 | Could not open the guide. Try again. | — |
-| settings.skills.hint | 让 Claude Code、Codex 等知道怎么用 runyard 新建和运行项目 | Lets Claude Code, Codex and others create and run playgrounds | — |
+| settings.skills.hint | 让 Claude Code、Codex 知道怎么用 runyard 新建和运行项目。 | Lets Claude Code and Codex create and run playgrounds. | — |
+| settings.skills.install.action | 安装… | Install… | — |
+| settings.skills.installOther.hint | 没能装到 {agent}：{dir} 出错了，请重试 | Could not install for {agent}: something went wrong in {dir}. Try again. | agent：智能体名，Claude Code 或 Codex；专有名词，原样显示；dir：技能所在目录，如 ~/.agents/skills；原样显示 |
+| settings.skills.installPermission.hint | 没能装到 {agent}：{dir} 没有写入权限 | Could not install for {agent}: no write permission for {dir} | agent：智能体名，Claude Code 或 Codex；专有名词，原样显示；dir：技能所在目录，如 ~/.agents/skills；原样显示 |
+| settings.skills.installTargets.label | 选择要安装到的智能体 | Choose which agent to install for | — |
+| settings.skills.installTo.action | 安装到 {agent} | Install for {agent} | agent：智能体名，Claude Code 或 Codex；专有名词，原样显示 |
+| settings.skills.manage.label | 智能体技能包的更多操作 | More actions for the agent skill | — |
+| settings.skills.menuInstall.action | 安装 | Install | — |
 | settings.skills.none.label | 未安装 | Not installed | — |
-| settings.skills.other.action | 安装到其他智能体… | Install for another agent… | — |
+| settings.skills.outdated.hint | 应用里带的技能包比已装的新。更新会覆盖你改过的技能文件。 | The skill pack in this app is newer than the installed one. Updating overwrites skill files you changed. | — |
+| settings.skills.outdated.label | 有新版本 | Update available | — |
+| settings.skills.reinstall.action | 重新安装 | Reinstall | — |
+| settings.skills.remove.action | 移除… | Remove… | — |
+| settings.skills.removeConfirm.action | 移除 | Remove | — |
+| settings.skills.removeConfirm.body | 会把 {dir} 里 runyard 装的技能文件夹移到{term_trash}；别的文件不会动。 | The skill folder Runyard installed in {dir} moves to the {term_trash}. Other files are left alone. | dir：技能所在目录，如 ~/.agents/skills；原样显示 |
+| settings.skills.removeConfirm.title | 移除 {agent} 的技能包？ | Remove the skill for {agent}? | agent：智能体名，Claude Code 或 Codex；专有名词，原样显示 |
+| settings.skills.removeForeign.hint | 没能移除 {agent} 的技能包：{dir} 里还有别的文件，请自己处理 | Could not remove the skill for {agent}: {dir} holds other files, handle them yourself | agent：智能体名，Claude Code 或 Codex；专有名词，原样显示；dir：技能所在目录，如 ~/.agents/skills；原样显示 |
+| settings.skills.removeOther.hint | 没能移除 {agent} 的技能包：{dir} 出错了，请重试 | Could not remove the skill for {agent}: something went wrong in {dir}. Try again. | agent：智能体名，Claude Code 或 Codex；专有名词，原样显示；dir：技能所在目录，如 ~/.agents/skills；原样显示 |
+| settings.skills.removePermission.hint | 没能移除 {agent} 的技能包：{dir} 没有权限 | Could not remove the skill for {agent}: no permission for {dir} | agent：智能体名，Claude Code 或 Codex；专有名词，原样显示；dir：技能所在目录，如 ~/.agents/skills；原样显示 |
+| settings.skills.retry.action | 重试 | Retry | — |
+| settings.skills.reveal.action | 在{term_fileManager}中显示 | Show in {term_fileManager} | — |
 | settings.skills.title | 智能体技能包 | Agent skill | — |
+| settings.skills.update.action | 更新 | Update | — |
 | settings.supervisor.confirm.body | 这会停止全部运行：{cli, plural, other {# 个由命令行启动}}，{tab, plural, other {# 个在标签页里运行}}；然后让管理进程退出。应用需要时会再启动一个新的。 | This stops every run: {cli, plural, one {# started from the CLI} other {# started from the CLI}} and {tab, plural, one {# running in a tab} other {# running in tabs}}. Then the supervisor quits; the app starts a new one when it needs it. | cli：命令行持有的运行个数；tab：标签页持有的运行个数 |
 | settings.supervisor.confirm.title | 停止后台管理进程？ | Stop the background supervisor? | — |
 | settings.supervisor.hint | 照看所有运行；应用退出后继续照看命令行启动的项目 | Looks after every run; keeps CLI-started playgrounds going after the app quits | — |

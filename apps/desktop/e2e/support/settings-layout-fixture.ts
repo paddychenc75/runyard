@@ -13,7 +13,7 @@ export async function installSettingsLayoutFixture(instance: RunyardApp) {
     if (!original) throw new Error("桌面桥没有安装");
     ipcMain.removeHandler("desktop:call");
     ipcMain.handle("desktop:call", (event, method, ...args) => {
-      if (method === "agents.status") return { claude: true, agents: true };
+      if (method === "agents.status") return { claude: "current", agents: "current" };
       if (method === "cli.status")
         return {
           state: "installed",

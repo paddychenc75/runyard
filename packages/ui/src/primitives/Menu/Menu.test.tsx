@@ -94,3 +94,31 @@ describe("Menu", () => {
     );
   });
 });
+
+describe("Menu 分组", () => {
+  it("分组的小标题是这一组的名字，项照常可选", async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    render(
+      <Menu
+        label={l("more actions")}
+        trigger={<IconButton icon="more" label={l("more")} />}
+        entries={[
+          { type: "group", label: l("Claude"), items: [{ id: "redo", label: l("redo") }] },
+          { type: "separator" },
+          { type: "group", label: l("Codex"), items: [{ id: "add", label: l("add") }] },
+        ]}
+        onSelect={onSelect}
+      />,
+    );
+    await user.click(screen.getByRole("button", { name: "more" }));
+    const group = await screen.findByRole("group", { name: "Codex" });
+    expect(group.textContent).toContain("add");
+    expect(screen.getAllByRole("menuitem").map((item) => item.textContent)).toEqual([
+      "redo",
+      "add",
+    ]);
+    await user.click(screen.getByRole("menuitem", { name: "add" }));
+    expect(onSelect).toHaveBeenCalledWith("add");
+  });
+});

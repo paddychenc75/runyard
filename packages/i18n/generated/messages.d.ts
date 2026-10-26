@@ -18,6 +18,8 @@ export type CatalogMessages = {
   "cli.command.run.title": Record<never, never>;
   "cli.command.skill.title": Record<never, never>;
   "cli.command.skillInstall.title": Record<never, never>;
+  "cli.command.skillStatus.title": Record<never, never>;
+  "cli.command.skillUninstall.title": Record<never, never>;
   "cli.command.status.title": Record<never, never>;
   "cli.command.stop.title": Record<never, never>;
   "cli.command.template.title": Record<never, never>;
@@ -135,6 +137,7 @@ export type CatalogMessages = {
   "cli.option.run.hint": Record<never, never>;
   "cli.option.running.hint": Record<never, never>;
   "cli.option.since.hint": Record<never, never>;
+  "cli.option.skillTarget.hint": Record<never, never>;
   "cli.option.tail.hint": Record<never, never>;
   "cli.option.target.hint": Record<never, never>;
   "cli.option.template.hint": Record<never, never>;
@@ -168,6 +171,19 @@ export type CatalogMessages = {
   "cli.skillGuide.body": Record<never, never>;
   "cli.skillInstall.installed.body": {
     path: string | number;
+    target: string;
+  };
+  "cli.skillStatus.item.body": {
+    dir: string | number;
+    state: string;
+    target: string;
+  };
+  "cli.skillUninstall.removed.body": {
+    dir: string | number;
+    target: string;
+  };
+  "cli.skillUninstall.skipped.body": {
+    dir: string | number;
     target: string;
   };
   "cli.status.empty.body": Record<never, never>;
@@ -1196,12 +1212,62 @@ export type CatalogMessages = {
   "settings.skills.claude.label": Record<never, never>;
   "settings.skills.claudeName.label": Record<never, never>;
   "settings.skills.closeGuide.action": Record<never, never>;
+  "settings.skills.failed.label": Record<never, never>;
+  "settings.skills.groupInstalled.label": {
+    agent: string | number;
+  };
+  "settings.skills.groupMissing.label": {
+    agent: string | number;
+  };
+  "settings.skills.groupOutdated.label": {
+    agent: string | number;
+  };
   "settings.skills.guide.action": Record<never, never>;
   "settings.skills.guideFailed.hint": Record<never, never>;
   "settings.skills.hint": Record<never, never>;
+  "settings.skills.install.action": Record<never, never>;
+  "settings.skills.installOther.hint": {
+    agent: string | number;
+    dir: string | number;
+  };
+  "settings.skills.installPermission.hint": {
+    agent: string | number;
+    dir: string | number;
+  };
+  "settings.skills.installTargets.label": Record<never, never>;
+  "settings.skills.installTo.action": {
+    agent: string | number;
+  };
+  "settings.skills.manage.label": Record<never, never>;
+  "settings.skills.menuInstall.action": Record<never, never>;
   "settings.skills.none.label": Record<never, never>;
-  "settings.skills.other.action": Record<never, never>;
+  "settings.skills.outdated.hint": Record<never, never>;
+  "settings.skills.outdated.label": Record<never, never>;
+  "settings.skills.reinstall.action": Record<never, never>;
+  "settings.skills.remove.action": Record<never, never>;
+  "settings.skills.removeConfirm.action": Record<never, never>;
+  "settings.skills.removeConfirm.body": {
+    dir: string | number;
+  };
+  "settings.skills.removeConfirm.title": {
+    agent: string | number;
+  };
+  "settings.skills.removeForeign.hint": {
+    agent: string | number;
+    dir: string | number;
+  };
+  "settings.skills.removeOther.hint": {
+    agent: string | number;
+    dir: string | number;
+  };
+  "settings.skills.removePermission.hint": {
+    agent: string | number;
+    dir: string | number;
+  };
+  "settings.skills.retry.action": Record<never, never>;
+  "settings.skills.reveal.action": Record<never, never>;
   "settings.skills.title": Record<never, never>;
+  "settings.skills.update.action": Record<never, never>;
   "settings.supervisor.confirm.body": {
     cli: number;
     tab: number;

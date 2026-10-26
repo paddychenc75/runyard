@@ -40,5 +40,43 @@
   },
   "settings.runtime.choosePath.aria": {
     "tool": "工具显示名称，如 Node"
+  },
+  "settings.skills.installTo.action": {
+    "agent": "智能体名，Claude Code 或 Codex；专有名词，原样显示"
+  },
+  "settings.skills.groupInstalled.label": {
+    "agent": "智能体名，Claude Code 或 Codex；专有名词，原样显示"
+  },
+  "settings.skills.groupOutdated.label": {
+    "agent": "智能体名，Claude Code 或 Codex；专有名词，原样显示"
+  },
+  "settings.skills.groupMissing.label": {
+    "agent": "智能体名，Claude Code 或 Codex；专有名词，原样显示"
+  },
+  "settings.skills.removeConfirm.title": {
+    "agent": "智能体名，Claude Code 或 Codex；专有名词，原样显示"
+  },
+  "settings.skills.removeConfirm.body": {
+    "dir": "技能所在目录，如 ~/.agents/skills；原样显示"
+  },
+  "settings.skills.installPermission.hint": {
+    "agent": "智能体名，Claude Code 或 Codex；专有名词，原样显示",
+    "dir": "技能所在目录，如 ~/.agents/skills；原样显示"
+  },
+  "settings.skills.installOther.hint": {
+    "agent": "智能体名，Claude Code 或 Codex；专有名词，原样显示",
+    "dir": "技能所在目录，如 ~/.agents/skills；原样显示"
+  },
+  "settings.skills.removePermission.hint": {
+    "agent": "智能体名，Claude Code 或 Codex；专有名词，原样显示",
+    "dir": "技能所在目录，如 ~/.agents/skills；原样显示"
+  },
+  "settings.skills.removeForeign.hint": {
+    "agent": "智能体名，Claude Code 或 Codex；专有名词，原样显示",
+    "dir": "技能所在目录，如 ~/.agents/skills；原样显示"
+  },
+  "settings.skills.removeOther.hint": {
+    "agent": "智能体名，Claude Code 或 Codex；专有名词，原样显示",
+    "dir": "技能所在目录，如 ~/.agents/skills；原样显示"
   }
 }
