@@ -375,7 +375,7 @@ Options:
   --target <claude|agents|all>  Which agent: claude, agents or all
 
 Global options:
-  --json           Print one JSON object; not affected by language
+  --json           Print command results as JSON; help stays text
   --quiet          Do not print progress or notices; results and errors are still printed
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
@@ -392,7 +392,7 @@ Options:
   --target <claude|agents|all>  Which agent: claude, agents or all
 
 Global options:
-  --json           Print one JSON object; not affected by language
+  --json           Print command results as JSON; help stays text
   --quiet          Do not print progress or notices; results and errors are still printed
   --root <dir>     Use this folder in place of the home folder
   --lang <locale>  Language for this command only: en or zh-CN
