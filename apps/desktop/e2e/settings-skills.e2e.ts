@@ -24,7 +24,13 @@ test("[DESKTOP-SETTINGS-57] 安装、旧版提示、更新、移除、写入失�
     return page;
   };
   let page = await goToCli();
-  await expect(page.getByText("未安装", { exact: true })).toBeVisible();
+  // 只看技能包这一行：同一页的“命令行”“运行环境”行在没装命令、缺工具时也写“未安装”（CI 的机器上就是这样），
+  // 整页按文字找会同时匹配到好几处
+  await expect(
+    page
+      .locator("[data-settings-row]", { hasText: "智能体技能包" })
+      .getByText("未安装", { exact: true }),
+  ).toBeVisible();
 
   await page.getByRole("button", { name: "安装…" }).click();
   await page.getByRole("menuitem", { name: "Claude Code" }).click();
