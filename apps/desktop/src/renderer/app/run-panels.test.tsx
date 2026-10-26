@@ -109,6 +109,20 @@ describe("运行条", () => {
 });
 
 describe("脚本输出", () => {
+  it("[DESKTOP-WORKSPACE-70] 输出区清除后只显示新打印的行", async () => {
+    const { bridge, call, push } = fakeBridge(
+      Array.from({ length: 20 }, (_, i) => line(i, `old-${i}`)),
+    );
+    render(view(<ScriptOutput bridge={bridge} tab={script({ state: "running" })} />));
+    await screen.findByText("old-19");
+    await userEvent.setup().click(screen.getByRole("button", { name: "清除" }));
+    expect(call).toHaveBeenCalledWith("console.clear", "a");
+    push({ playground: "a", reset: true, lines: [] });
+    push({ playground: "a", reset: false, lines: [line(21, "new-line")] });
+    expect(screen.queryByText("old-19")).toBeNull();
+    expect(screen.getByText("new-line")).toBeTruthy();
+  });
+
   it("[DESKTOP-WORKSPACE-15] 脚本跑完：显示输出、“已结束”、退出码和耗时，没有预览", async () => {
     const { bridge } = fakeBridge([line(1, "apple: 3 x 1.5 = 4.50"), line(2, "Total: 12.40")]);
     const tab = script({
@@ -118,12 +132,20 @@ describe("脚本输出", () => {
       exitCode: 0,
       durationMs: 180,
     });
-    const { container } = render(view(<ScriptOutput bridge={bridge} tab={tab} />));
-    expect(screen.getByText("已结束 · 退出码 0 · 0.18 秒")).toBeTruthy();
+    const { container } = render(
+      view(
+        <>
+          <RunBar bridge={bridge} tab={tab} />
+          <ScriptOutput bridge={bridge} tab={tab} />
+        </>,
+      ),
+    );
+    // 状态只在运行条里写一次，输出头部不重复
+    expect(screen.getAllByText("已结束 · 退出码 0 · 0.18 秒")).toHaveLength(1);
     expect(await screen.findByText("Total: 12.40")).toBeTruthy();
     expect(screen.getByText("apple: 3 x 1.5 = 4.50")).toBeTruthy();
     expect(container.querySelector("[data-preview-slot]")).toBeNull();
-    expect(screen.getByRole("button", { name: "运行" })).toBeTruthy();
+    expect(screen.getAllByRole("button", { name: "运行" })).toHaveLength(2);
   });
 
   it("英文界面：Finished · exit code 0 · 0.18 s", () => {
@@ -135,7 +157,7 @@ describe("脚本输出", () => {
       exitCode: 0,
       durationMs: 180,
     });
-    render(view(<ScriptOutput bridge={bridge} tab={tab} />, "en"));
+    render(view(<RunBar bridge={bridge} tab={tab} />, "en"));
     expect(screen.getByText("Finished · exit code 0 · 0.18 s")).toBeTruthy();
   });
 
@@ -143,11 +165,17 @@ describe("脚本输出", () => {
     vi.useFakeTimers();
     vi.setSystemTime(4_200);
     const { bridge } = fakeBridge();
+    const tab = script({ state: "running", startedAt: 1_000 });
     render(
-      view(<ScriptOutput bridge={bridge} tab={script({ state: "running", startedAt: 1_000 })} />),
+      view(
+        <>
+          <RunBar bridge={bridge} tab={tab} />
+          <ScriptOutput bridge={bridge} tab={tab} />
+        </>,
+      ),
     );
-    expect(screen.getByText("运行中 · 已 3.2 秒")).toBeTruthy();
-    expect(screen.getByRole("button", { name: "停止" })).toBeTruthy();
+    expect(screen.getAllByText("运行中 · 已 3.2 秒")).toHaveLength(1);
+    expect(screen.getAllByRole("button", { name: "停止" }).length).toBeGreaterThan(0);
     vi.useRealTimers();
   });
 });
