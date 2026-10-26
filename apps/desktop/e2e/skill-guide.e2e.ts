@@ -31,8 +31,8 @@ test("[DESKTOP-SETTINGS-44] 未安装也能查看随包中英文说明，拒绝�
   await page.getByRole("button", { name: "View guide", exact: true }).click();
   await expect.poll(opened).toHaveLength(2);
   const files = await opened();
-  expect(files.map((file) => basename(file))).toEqual(["SKILL.zh-CN.md", "SKILL.md"]);
-  expect(readFileSync(files[0] ?? "", "utf8")).toContain("这是给人看的中文对照");
+  expect(files.map((file) => basename(file))).toEqual(["SKILL.zh-CN.md", "SKILL.en.md"]);
+  expect(readFileSync(files[0] ?? "", "utf8")).toContain("## 工作流程");
   expect(readFileSync(files[1] ?? "", "utf8")).toContain("## Workflow");
   expect(await instance.call("agents.openGuide", "../../private.md")).toEqual({ ok: false });
   expect(await opened()).toHaveLength(2);

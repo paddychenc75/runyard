@@ -16,7 +16,7 @@ it("[DESKTOP-SETTINGS-44] 源码构建和打包各自打开固定目录，文件
   );
   const packaged = { kind: "packaged", resourcesPath: resources } as const;
   expect(skillGuidePath(packaged, "en")).toBe(
-    join(resources, "runyard", "skill-guide", "SKILL.md"),
+    join(resources, "runyard", "skill-guide", "SKILL.en.md"),
   );
   expect(skillGuidePath(packaged, "zh-CN")).toBe(
     join(resources, "runyard", "skill-guide", "SKILL.zh-CN.md"),

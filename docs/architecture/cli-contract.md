@@ -8,8 +8,8 @@
 
 - 始终非交互：不提问、不等待输入。`<pg>` 是项目名称或路径。
 - 全局参数：`--json`、`--quiet`、`--root <dir>`、`--lang <locale>`（只对这一条命令生效）、`--version` / `-v`（输出版本号，同 `version` 命令）。
-- 带 `--json` 时标准输出上恰好一个对象：结果，或 `{"error": {...}}`；路径都是绝对路径。唯一例外是 `logs --follow --json`：每行一个对象（NDJSON），最后一行是 `{ "end": true, "cursor": … }`。
-- `--json` 的输出不随语言变：字段名稳定、`code` 稳定；`error.message` 和 `error.hint` **永远是英文**，由命令行按错误码从英文文案生成（协议里已经没有这两个字段）。智能体看 `code`，不要解析 `message`。
+- 带 `--json` 时标准输出上恰好一个对象：结果，或 `{"error": {...}}`；路径都是绝对路径。例外有两项：`--help` 仍输出当前命令行语言的帮助文本；`logs --follow --json`：每行一个对象（NDJSON），最后一行是 `{ "end": true, "cursor": … }`。
+- `--json` 的命令结果不随语言变（帮助文本除外）：字段名稳定、`code` 稳定；`error.message` 和 `error.hint` **永远是英文**，由命令行按错误码从英文文案生成（协议里已经没有这两个字段）。智能体看 `code`，不要解析 `message`。
 - 本机地址一律字面量 `127.0.0.1`，不写 `localhost`。
 - 智能体名称：环境变量 `RUNYARD_AGENT` 优先，其次已知智能体自己的环境变量（Claude Code 是 `CLAUDECODE`，值为 1；`AI_AGENT` 是跨工具的约定名）；都没有则创建者种类为 `cli`。创建命令原样记入。
 

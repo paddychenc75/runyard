@@ -18,7 +18,7 @@
 
 - 可以导入：`@runyard/protocol`、`platform`、`client`、`i18n`、`core`（`ToolchainService`、模板的读取、lint 和隔离冒烟）；测试里可以导入 `testing`。不许导入 `supervisor`。依赖规则的唯一出处是 `tooling/checks/layers.json`。
 - 所有给人看的文字都来自 `packages/i18n`（`cli` 组和 `errors.*`、`notice.*`）；代码里不写句子，命令说明写成 `(t) => t("键")`。命令名、选项名、占位符（`<pg>`）不翻译。只有 `src/output/` 可以写标准输出和标准错误（`ui-strings` 检查）。
-- `--json`：标准输出恰好一个对象（`result` 或 `{"error":…}`），只有 `logs --follow` 用 `stream()` 每行一个对象。`message` 与 `hint` 永远是英文（取英文文案的 `title`、`hintCli`；用法错误的 `message` 是更具体的英文说明）；`data` 是错误码登记的参数。输出不随语言变，不含堆栈和 `debug`。
+- `--json`：标准输出恰好一个对象（`result` 或 `{"error":…}`），例外：`--help` 始终输出当前语言的帮助文本；`logs --follow` 用 `stream()` 每行一个对象。`message` 与 `hint` 永远是英文（取英文文案的 `title`、`hintCli`；用法错误的 `message` 是更具体的英文说明）；`data` 是错误码登记的参数。输出不随语言变，不含堆栈和 `debug`。
 - 退出码只取 `errorRegistry[code].exit`，本包没有第二张表。管理进程返回了登记表里没有的错误码时按 `INTERNAL`（1）。成功但 `--json` 下没写任何结果也按 `INTERNAL`。
 - 语言：`--lang`，`RUNYARD_LANG`，`~/.runyard/cli.json` 的 `lang`，英文；用 `resolveCliLocale`，不看系统语言；不认识的值在标准错误一行英文提示。`--lang` 和环境变量从不写文件，只有 `config set lang` 写。
 - 参数解析用 Node 自带的 `util.parseArgs` 分词，校验自己做（未知选项、缺值、布尔带值、缺参数、多参数都是 `USAGE`）。不加解析库。
@@ -29,7 +29,7 @@
 ## 本包里已有行为的命令
 
 - `doctor`（`src/commands/doctor.ts`、`src/doctor/`）：`cli`、`supervisor`、`tools`、`library`、`system` 五项。`tools` 在本进程里用 `ToolchainService` 直接检测（不写缓存），所以管理进程连不上时也有；连不上时 `supervisor` 是 `{ running: false, reason: <错误码> }`，退出码 0。缺失或过低的工具带 `install` 提示（`src/doctor/install-hints.ts` 的 `installHints`：在用版本管理工具给它的命令，否则有 Homebrew 给 Homebrew 的，官网链接始终在，模板自己写的 `install` 标 `via: "template"`），**只展示，从不执行**；选哪条的核心规则（TEMPLATES-FORMAT-35）归 core 的安装模块（#36），合并后换掉这个函数体。`--bundle`：只收规格列的各项（`doctor.json`、去掉 `token` 的 `supervisor.json`、`toolchain.json`、`runs/` 下最近三个运行日志、`app.log`、`supervisor.log`、`system.json`），所有文本再抹掉口令和网址里的账号密码（`scrub-secrets.ts`，不依赖设置里代理字段的名字）；zip 自己写（`zip-writer.ts`，不加依赖）；写到 `host.tempDir/runyard-doctor-<时间>.zip`，没有 `--out`（规格没有）。运行日志文件的命名由 #43 定，现在假定“logs/ 下不是 `app.log`、`supervisor.log`（含轮转）的文件”，名字最大的三个。
-- `skill install`（`src/commands/skill-install.ts`、`src/skill/skill-text.ts`）：每个目标同时写 `SKILL.md`（供智能体执行的英文）和 `SKILL.zh-CN.md`（供人阅读的中文对照）；返回路径仍是英文文件。正文同源于文案包 `cli.skillGuide.body`，英文快照保持原文，测试核对两份操作条目及命令示例一致。
+- `skill install`（`src/commands/skill-install.ts`、`src/skill/skill-text.ts`）：每个目标同时写 `SKILL.md`（中文执行正文）、同源 `SKILL.zh-CN.md` 和英文对照 `SKILL.en.md`；返回路径仍是执行正文。正文同源于文案包 `cli.skillGuide.body`，测试核对中文快照、三文件安装及两种语言的操作条目和命令示例一致。
 - `template list|show|save` 经管理进程（`template.list|get|save`）；`save` 在发请求前先校验 `--as`（`NAME_INVALID`）和 `--include|--exclude`（`USAGE`）。`template lint` 在本进程直接调 core 的 `lintTemplateRef`；有错误时先输出结果对象，再以 `TEMPLATE_INVALID`（2）结束。管理进程一侧的 `template.*` 处理不在本包。
 
 - `template test`（`src/template-test/`、`src/commands/template-test.ts`）：core 编排 create/install/start/ready/reload/stop/leftovers，脚本没有 ready；只操作系统临时目录里的副本，不连接管理进程。`--tool-version` 选择已安装的精确版本，`--keep-dir` 返回保留的项目路径。CLI 提供独占目录清理和中断接缝，core 只停止本次标记且核对 pid 加启动时间的进程。
