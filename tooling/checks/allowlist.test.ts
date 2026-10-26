@@ -43,6 +43,43 @@ describe("allowlist", () => {
     ).toBe(true);
   });
 
+  describe("修复版未满发布期的临时放行（fix_released）", () => {
+    const approved = 'owner_approved = "§12 第 51 项，2026-10-26"';
+    const fixed = (released: string, extra = approved) => `${extra}\nfix_released = ${released}`;
+
+    it("到期日正好是发布日加 15 天时通过", () => {
+      expect(checkAllowlist(entry(fixed("2026-10-12"), "2026-10-27"), TODAY)).toEqual([]);
+    });
+
+    it("到期日晚于发布日加 15 天报错（不能借 60 天上限变松）", () => {
+      const errors = checkAllowlist(entry(fixed("2026-10-12"), "2026-10-28"), TODAY);
+      expect(errors.some((e) => e.includes("加 15 天"))).toBe(true);
+    });
+
+    it("没有 owner_approved 报错", () => {
+      const errors = checkAllowlist(entry("fix_released = 2026-10-12", "2026-10-27"), TODAY);
+      expect(errors.some((e) => e.includes("owner_approved"))).toBe(true);
+    });
+
+    it("发布日在未来或不是日期报错", () => {
+      expect(
+        checkAllowlist(entry(fixed("2026-10-13"), "2026-10-20"), TODAY).some((e) =>
+          e.includes("fix_released"),
+        ),
+      ).toBe(true);
+      expect(
+        checkAllowlist(entry(fixed("2026-13-45"), "2026-10-20"), TODAY).some((e) =>
+          e.includes("fix_released"),
+        ),
+      ).toBe(true);
+    });
+
+    it("到期后照样报过期", () => {
+      const later = new Date("2026-10-28T08:00:00Z");
+      expect(checkAllowlist(entry(fixed("2026-10-12"), "2026-10-27"), later)[0]).toContain("过期");
+    });
+  });
+
   it("认不出的写法直接报错", () => {
     expect(parseAllowlist("foo = [1, 2]\n").errors.length).toBe(1);
   });
