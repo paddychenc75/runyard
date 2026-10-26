@@ -49,10 +49,11 @@ test("[DESKTOP-WORKSPACE-68][DESKTOP-LIBRARY-VIEW-93] 版面：搜索在页头�
   expect(tabsAfter?.x).toBe(134);
   await show.click();
 
-  // 1024 宽自动隐藏侧栏，页头按可用空间显示完整筛选；极窄时才合并。
+  // 1024 宽自动隐藏侧栏；UI 走查 L1 把宽工具条的门槛提到内容区 1180，所以 1024 已经合成“筛选”。
   await resize(1024, 720);
   await expect(page.getByRole("navigation", { name: "Library navigation" })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: /^Type/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Filter" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /^Type/ })).toHaveCount(0);
   await resize(720, 720);
   await expect(page.getByRole("button", { name: "Filter" })).toBeVisible();
   await expect(page.getByRole("button", { name: /^Type/ })).toHaveCount(0);
