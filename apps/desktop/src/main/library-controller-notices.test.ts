@@ -24,6 +24,7 @@ const DAY = 24 * HOUR;
 const NOW = 100 * DAY;
 
 class Daemon {
+  onRescan?: () => void;
   calls: { method: string; params: unknown }[] = [];
   playgrounds: Playground[] = [];
   runs: RunSnapshot[] = [];
@@ -46,6 +47,9 @@ class Daemon {
     const id = (p.playground ?? p.playgroundId) as string | undefined;
     let result: unknown = {};
     switch (method) {
+      case "library.rescan":
+        this.onRescan?.();
+        break;
       case "playground.list":
         result = this.playgrounds;
         break;
@@ -112,12 +116,20 @@ class WatchedPreview implements PreviewHost {
   setVisible() {}
 }
 
-function setup(options: { chosen?: string | null; session?: SavedSession; synced?: boolean } = {}) {
+function setup(
+  options: {
+    chosen?: string | null;
+    session?: SavedSession;
+    synced?: boolean;
+    directoryExists?: (path: string) => Promise<boolean>;
+  } = {},
+) {
   const daemon = new Daemon();
   const preview = new WatchedPreview();
   const badges: number[] = [];
   const reveals: string[] = [];
   const system: SystemActions = {
+    directoryExists: options.directoryExists,
     revealInFileManager: (path) => void reveals.push(path),
     copyText() {},
     readText: async () => "",
@@ -216,15 +228,18 @@ describe("找不到文件夹（主进程）", () => {
     expect(daemon.count("playground.trash")).toBe(0);
   });
 
-  it("[DESKTOP-LIBRARY-VIEW-49] 对找不到文件夹的项目“打开”：开标签页但不启动，标签页标成找不到文件夹", async () => {
+  it("[DESKTOP-LIBRARY-VIEW-49] 对找不到文件夹的项目“打开”：留在资源库定位说明，不开新标签或启动", async () => {
     const { daemon, controller } = setup();
     daemon.playgrounds = [missing("v", "vue-drag-list")];
     await controller.start();
     await controller.openProject("v");
     await controller.startRun("v");
     expect(daemon.count("run.start")).toBe(0);
-    const [tab] = controller.getState().tabs;
-    expect(tab).toMatchObject({ id: "v", missing: true, folder: "~/Runyard/vue-drag-list" });
+    expect(controller.getState().tabs).toEqual([]);
+    expect(controller.getState().activeTab).toBe("library");
+    expect(controller.getState().libraryReveal?.id).toBe("v");
+    await controller.openProjectWithoutRun("v");
+    expect(controller.getState().tabs).toEqual([]);
   });
 
   it("[DESKTOP-LIBRARY-VIEW-49] 恢复上次的标签页时，文件夹找不到的不启动，显示同一条说明", async () => {
@@ -500,4 +515,118 @@ describe("自动清理的提醒（主进程）", () => {
     expect(daemon.paramsOf("playground.trash")).toEqual([{ playground: "n" }]);
     expect(controller.getState().playgrounds.map((row) => row.id)).toEqual(["a"]);
   });
+});
+
+it("[DESKTOP-LIBRARY-VIEW-49] 打开前发现目录刚移走，更新索引并定位资源库而不运行", async () => {
+  let exists = true;
+  const { daemon, controller } = setup({ directoryExists: async () => exists });
+  const original = playground("v", "demo");
+  daemon.playgrounds = [original];
+  daemon.onRescan = () => {
+    daemon.playgrounds = [exists ? original : { ...original, missingSince: NOW }];
+  };
+  await controller.start();
+  expect(daemon.count("library.rescan")).toBe(1);
+  exists = false;
+  await controller.openProject("v");
+  expect(daemon.count("library.rescan")).toBe(2);
+  expect(controller.getState().playgrounds[0]?.missing).toBe(true);
+  expect(controller.getState().activeTab).toBe("library");
+  expect(controller.getState().tabs).toEqual([]);
+  expect(daemon.count("run.start")).toBe(0);
+  await controller.checkProjectFolders();
+  expect(daemon.count("library.rescan")).toBe(2);
+  exists = true;
+  await controller.checkProjectFolders();
+  expect(daemon.count("library.rescan")).toBe(3);
+  expect(controller.getState().playgrounds[0]?.missing).toBe(false);
+});
+
+it.each([false, true])(
+  "[DESKTOP-LIBRARY-VIEW-49] 目录检查晚到（存在=%s）不覆盖后来选择的标签",
+  async (present) => {
+    let finish: (exists: boolean) => void = () => {};
+    let checking = false;
+    const { daemon, controller } = setup({
+      directoryExists: (path) =>
+        path.endsWith("/a") && !checking
+          ? new Promise<boolean>((resolve) => {
+              checking = true;
+              finish = resolve;
+            })
+          : Promise.resolve(true),
+    });
+    const original = playground("a", "a");
+    daemon.playgrounds = [original, playground("b", "b")];
+    daemon.onRescan = () => {
+      if (!present && checking)
+        daemon.playgrounds = [{ ...original, missingSince: NOW }, playground("b", "b")];
+    };
+    await controller.start();
+    await controller.openProjectWithoutRun("b");
+    await controller.selectTab("library");
+    const opening = controller.openProject("a");
+    expect(checking).toBe(true);
+    await controller.selectTab("b");
+    finish(present);
+    await opening;
+    expect(controller.getState().activeTab).toBe("b");
+    expect(controller.getState().libraryReveal).toBeUndefined();
+    expect(controller.getState().tabs.map((tab) => tab.id)).toEqual(["b"]);
+    expect(controller.getState().playgrounds.find((row) => row.id === "a")?.missing).toBe(!present);
+    expect(daemon.count("run.start")).toBe(0);
+  },
+);
+
+it.each([true, false])(
+  "[DESKTOP-WORKSPACE-04] 检查目录时关闭标签（活动=%s），只在活动页变化时取消旧导航",
+  async (active) => {
+    let finish: (exists: boolean) => void = () => {};
+    let checking = false;
+    const { daemon, controller } = setup({
+      directoryExists: (path) =>
+        path.endsWith("/a") && !checking
+          ? new Promise<boolean>((resolve) => {
+              checking = true;
+              finish = resolve;
+            })
+          : Promise.resolve(true),
+    });
+    daemon.playgrounds = [playground("a"), playground("b"), playground("c")];
+    await controller.start();
+    await controller.openProjectWithoutRun("c");
+    await controller.openProjectWithoutRun("b");
+    const opening = controller.openProjectWithoutRun("a");
+    expect(checking).toBe(true);
+    await controller.requestCloseTab(active ? "b" : "c");
+    finish(true);
+    await opening;
+    expect(controller.getState().activeTab).toBe(active ? "c" : "a");
+    expect(controller.getState().tabs.map((tab) => tab.id)).toEqual(active ? ["c"] : ["b", "a"]);
+  },
+);
+
+it("[DESKTOP-WORKSPACE-04] 控制台订阅晚到时已关闭该标签，不再启动无人持有的项目", async () => {
+  const { daemon, controller } = setup();
+  daemon.playgrounds = [playground("a")];
+  await controller.start();
+  let finish: () => void = () => {};
+  let started: () => void = () => {};
+  const watching = new Promise<void>((resolve) => {
+    started = resolve;
+  });
+  daemon.followLogs = async () => {
+    started();
+    await new Promise<void>((resolve) => {
+      finish = resolve;
+    });
+    return { sub: 2, unsubscribe: async () => {} };
+  };
+  const opening = controller.openProject("a");
+  await watching;
+  await controller.requestCloseTab("a");
+  finish();
+  await opening;
+  expect(controller.getState().tabs).toEqual([]);
+  expect(daemon.count("run.start")).toBe(0);
 });

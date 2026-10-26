@@ -26,6 +26,8 @@ export interface PreviewHost {
 
 /** 系统层的两个动作（Electron 的 shell 和剪贴板在 integration/system-actions.ts，这里不认识 Electron） */
 export interface SystemActions {
+  /** 只 stat 项目根目录；不存在或不是目录时返回 false，其余读取错误交给调用方 */
+  directoryExists?: (path: string) => Promise<boolean>;
   /** 在文件管理器里选中这个路径 */
   revealInFileManager(path: string): void;
   copyText(text: string): void | Promise<void>;

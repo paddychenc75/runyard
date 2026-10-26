@@ -1,4 +1,4 @@
-/* #445：标题区 140（含独立窗口预留 52），内容列最宽 720。窗口外框由 #465 接入。 */
+/* 主窗口顶栏已让开窗口按钮，设置标题只保留内容区自己的间距。 */
 .root {
   inline-size: 100%;
   min-inline-size: 0;
@@ -10,8 +10,7 @@
 .header {
   box-sizing: border-box;
   flex: none;
-  block-size: calc(var(--space-10) * 5);
-  padding-block-start: calc(var(--space-9) * 2 + var(--space-2));
+  padding-block: var(--space-9) var(--space-6);
   padding-inline: var(--space-10);
   background: var(--color-bg-workspace);
   border-block-end: 1px solid transparent;
@@ -21,20 +20,21 @@
 }
 .headingColumn,
 .column {
-  max-inline-size: var(--size-dialog-width-wide);
+  /* 内容外框840，额外两侧4px只为键盘焦点环留空间；标题和卡片共用此容器。 */
+  box-sizing: border-box;
+  max-inline-size: calc(var(--size-dialog-width-wide) + var(--space-9) * 5 + var(--space-2) * 2);
   margin-inline: auto;
 }
 .title {
-  margin: 0;
+  outline: none;
+  margin: 0 var(--space-2);
   font-size: var(--text-page-title-size);
   font-weight: var(--text-page-title-weight);
   letter-spacing: calc(var(--space-1) * -0.15);
   line-height: var(--text-page-title-line-height);
 }
 .sectionScroll {
-  margin-block-start: var(--space-4);
-  margin-inline-start: calc(var(--space-7) * -1);
-  margin-inline-end: calc(var(--space-2) * -1);
+  margin-block-start: var(--space-6);
 }
 .sectionViewport {
   box-sizing: border-box;
@@ -79,7 +79,7 @@
 .column {
   display: flex;
   flex-direction: column;
-  gap: var(--space-10);
-  padding-block-start: calc(var(--space-8) + 1px);
-  padding-block-end: calc(var(--space-8) * 2);
+  gap: calc(var(--space-7) * 2);
+  padding-inline: var(--space-2);
+  padding-block: var(--space-9) calc(var(--space-7) * 2);
 }

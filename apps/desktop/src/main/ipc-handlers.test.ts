@@ -86,12 +86,28 @@ function setup(dynamicBootstrap = false) {
     send: (channel, event, next) => void sent.push({ channel, event, state: next }),
   };
   const info = { platform: "darwin", locale: "en" } as BootstrapInfo;
-  registerBridgeHandlers(host, controller, dynamicBootstrap ? () => info : info);
+  const pageActive = vi.fn();
+  registerBridgeHandlers(
+    host,
+    controller,
+    dynamicBootstrap ? () => info : info,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    pageActive,
+  );
   const call = (sender: IpcSender, method: unknown, param?: unknown) =>
     handlers.get(desktopChannels.call)?.(sender, method, param);
   return {
     call,
     controller,
+    pageActive,
     syncHandlers,
     info,
     sent,
@@ -130,6 +146,16 @@ it("[DESKTOP-WORKSPACE-71] 刷新桥等待原生加载完成，不在请求送�
 });
 
 describe("registerBridgeHandlers", () => {
+  it("[DESKTOP-SETTINGS-46] 设置页状态只接收布尔值且返回时复位", async () => {
+    const { call, pageActive } = setup();
+    for (const value of [null, "true", 1, {}, undefined])
+      await call(app, "settings.pageActive", value);
+    expect(pageActive).not.toHaveBeenCalled();
+    await call(app, "settings.pageActive", true);
+    await call(app, "settings.pageActive", false);
+    expect(pageActive.mock.calls).toEqual([[true], [false]]);
+  });
+
   it("来自本应用界面的调用转给控制器", async () => {
     const { call, calls, state } = setup();
     expect(call(app, "library.get")).toBe(state);
@@ -190,14 +216,13 @@ describe("registerBridgeHandlers", () => {
     expect(syncHandlers.get(desktopChannels.bootstrap)?.(app)).toBe(info);
   });
 
-  it("[DESKTOP-SETTINGS-01] 设置入口获得独立窗口标记和最新语言主题，主入口不变", () => {
+  it("[DESKTOP-SETTINGS-01] 所有主窗入口使用最新语言主题，不再注入独立窗口标记", () => {
     const { syncHandlers, info } = setup(true);
     const bootstrap = syncHandlers.get(desktopChannels.bootstrap);
     info.locale = "zh-CN";
     info.theme = "dark";
     expect(bootstrap?.({ url: "app://runyard/?view=settings" })).toEqual({
       ...info,
-      windowKind: "settings",
     });
     expect(bootstrap?.(app)).toBe(info);
   });

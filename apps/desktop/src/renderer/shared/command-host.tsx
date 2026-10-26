@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useSyncExternalStore } from "react";
 import type { CommandId } from "../../shared/commands.ts";
+import { useContentVisible } from "./content-visibility.ts";
 
 // 命令的“此刻能用”由界面部件自己说了算（规格 DESKTOP-EDITOR-61）：部件显示期间用 useCommand 登记
 // 一条命令和它的动作，卸载或条件不成立就撤掉。命令面板只列已登记的命令，所以“只列能用的”
@@ -65,11 +66,12 @@ export function useCommand(id: CommandId, run: (() => void) | null): void {
 /** 一次登记多条命令（同一个部件管着好几条时用，免得在循环里调钩子）；值为 null 的不登记 */
 export function useCommands(commands: Partial<Record<CommandId, (() => void) | null>>): void {
   const host = useCommandHost();
+  const visible = useContentVisible();
   const latest = useRef(commands);
   latest.current = commands;
   // 只有“哪些命令能用”变了才重新登记，动作本身每次渲染都换也不会反复登记
   const usable = (Object.keys(commands) as CommandId[])
-    .filter((id) => commands[id] !== null && commands[id] !== undefined)
+    .filter((id) => visible && commands[id] !== null && commands[id] !== undefined)
     .sort()
     .join(",");
   useEffect(() => {

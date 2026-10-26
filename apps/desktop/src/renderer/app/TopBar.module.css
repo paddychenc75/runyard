@@ -10,6 +10,7 @@
   gap: var(--space-2);
   block-size: var(--size-titlebar);
   -webkit-app-region: drag;
+  container-type: inline-size;
 }
 
 .root > * {
@@ -91,4 +92,25 @@
 .new[data-reserved] {
   visibility: hidden;
   pointer-events: none;
+}
+
+/* 窄窗口加上展开的侧栏，顶栏只剩 520 以内：标签条会被挤成几像素。去掉占位的隐藏“新建”，
+   “N 个运行中”只留状态点（文字仍给读屏器），把宽度还给标签条。 */
+@container (max-width: 520px) {
+  .new[data-reserved] {
+    display: none;
+  }
+
+  .runningButton {
+    padding-inline: var(--space-4);
+  }
+
+  .runningButton > span:last-child {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
 }

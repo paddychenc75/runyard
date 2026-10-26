@@ -7,8 +7,8 @@ import { type CommandId, commandRegistry, paletteAccelerators } from "../../shar
 // - 每一项的 label 都显式按应用语言取文案，role 只管行为；否则系统角色的名字跟系统语言走，应用语言和系统语言
 //   不一致时菜单一半中文一半英文。
 // - 触发应用命令的项只带命令标识符，快捷键从 shared/commands.ts 的登记表取，点了交给 runCommand：
-//   焦点在预览视图里（那是另一个网页，按键到不了界面）也有效。设置页以后若改成独立窗口，只改
-//   “app.settings”这一条命令的实现，菜单和 ⌘, 不用动。
+//   焦点在预览视图里（那是另一个网页，按键到不了界面）也有效。设置与其它应用页面一样经
+//   “app.settings”导航，菜单和 ⌘, 共用入口。
 // - 重新载入、强制重新载入、开发者工具只在开发构建里有：⌘R 在正式包里是“运行”，不能重载整页。
 // 平台作为参数传进来：只有 macOS 有以应用名为标题的第一项，其余平台把设置、检查更新、退出放进文件菜单。
 
@@ -31,7 +31,7 @@ export interface AppMenuOptions {
   onReportIssue: () => void;
   /** 当前是项目标签页：资源库页上“快速打开文件”和整个“项目”菜单的操作灰掉（规格 DESKTOP-EDITOR-73） */
   projectTabActive: boolean;
-  settingsWindowActive?: boolean;
+  settingsPageActive?: boolean;
 }
 
 const APP_NAME = "Runyard";
@@ -94,24 +94,14 @@ export function buildAppMenu(options: AppMenuOptions): MenuItemConstructorOption
       },
       separator,
       // ⌘W 关当前标签页（先关文件标签，没有再关项目标签页）；关整个窗口是 ⇧⌘W
-      command(
-        "app.closeTab",
-        options.settingsWindowActive
-          ? t("desktop.menu.closeWindow.label")
-          : t("desktop.menu.closeTab.label"),
-        {
-          enabled: onProject || options.settingsWindowActive === true,
-        },
-      ),
-      ...(options.settingsWindowActive
-        ? []
-        : [
-            {
-              role: "close" as const,
-              label: t("desktop.menu.closeWindow.label"),
-              accelerator: "CmdOrCtrl+Shift+W",
-            },
-          ]),
+      command("app.closeTab", t("desktop.menu.closeTab.label"), {
+        enabled: onProject || options.settingsPageActive === true,
+      }),
+      {
+        role: "close" as const,
+        label: t("desktop.menu.closeWindow.label"),
+        accelerator: "CmdOrCtrl+Shift+W",
+      },
       ...(mac
         ? []
         : [

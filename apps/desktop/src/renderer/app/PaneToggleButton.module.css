@@ -32,33 +32,9 @@
   box-shadow: var(--shadow-focus-ring);
 }
 
-.glyph {
-  position: relative;
-  display: block;
-  inline-size: var(--space-7);
-  block-size: var(--space-6);
-  box-sizing: border-box;
-  border: var(--space-1) solid currentColor;
-  border-radius: var(--radius-checkbox);
-  overflow: hidden;
-}
-
-/* 面板那一侧的竖线：展开时是实心的一块，收起时只剩细线 */
-.glyph::before {
-  content: "";
-  position: absolute;
-  inset-block: 0;
-  inset-inline-start: 0;
-  inline-size: var(--space-4);
-  border-inline-end: var(--space-1) solid currentColor;
-  background: currentColor;
-  background-clip: padding-box;
-  opacity: 0.55;
-}
-
-.glyph[data-collapsed]::before {
-  background: transparent;
-  opacity: 1;
+/* 收起后的“展开”按钮：双箭头翻向另一边 */
+.flipped {
+  transform: scaleX(-1);
 }
 
 @media (prefers-reduced-motion: reduce) {

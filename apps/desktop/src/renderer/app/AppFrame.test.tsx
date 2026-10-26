@@ -91,19 +91,17 @@ function fakeBridge(overrides: Partial<BootstrapInfo> = {}) {
 }
 
 describe("主窗口外壳", () => {
-  it("[DESKTOP-WORKSPACE-03] 资源库标签固定在第一位、没有关闭按钮，⌘W 在它上面不起作用", () => {
+  it("[DESKTOP-WORKSPACE-03] 没有项目时没有资源库标签，⌘W 不关闭项目", () => {
     const { bridge } = fakeBridge();
     render(<AppFrame bridge={bridge} locale="zh-CN" theme="system" />);
-    const tabs = screen.getAllByRole("tab");
-    expect(tabs).toHaveLength(1);
-    expect(tabs[0]?.textContent).toBe("资源库");
-    // 标签条末尾有一个“新建项目”的 ＋ 按钮（设计稿 Web），但资源库标签自己没有关闭按钮
+    expect(screen.queryAllByRole("tab")).toHaveLength(0);
+    // 未选中项目时没有可关闭的项目标签。
     expect(within(screen.getByRole("tablist")).queryByRole("button", { name: /关闭/ })).toBeNull();
     const event = new KeyboardEvent("keydown", { key: "w", metaKey: true, cancelable: true });
     document.dispatchEvent(event);
     expect(event.defaultPrevented).toBe(true);
     fireEvent.keyDown(document.body, { key: "w", metaKey: true });
-    expect(screen.getAllByRole("tab")).toHaveLength(1);
+    expect(screen.queryAllByRole("tab")).toHaveLength(0);
   });
 
   it("语言和主题变了，文字、<html lang>、data-theme 跟着变，不需要刷新", () => {
@@ -114,7 +112,7 @@ describe("主窗口外壳", () => {
     expect(document.documentElement.dataset.theme).toBe("light");
     rerender(<AppFrame bridge={bridge} locale="en" theme="dark" />);
     expect(screen.getByRole("navigation", { name: "Library navigation" })).toBeTruthy();
-    expect(screen.getByRole("tab", { name: "Library" })).toBeTruthy();
+    expect(screen.getByRole("navigation", { name: "Library navigation" })).toBeTruthy();
     expect(document.documentElement.lang).toBe("en");
     expect(document.documentElement.dataset.theme).toBe("dark");
     expect(document.title).toBe("Runyard");
@@ -170,14 +168,11 @@ describe("主窗口外壳", () => {
     });
     render(<AppFrame bridge={bridge} locale="zh-CN" theme="system" />);
     const stop = await screen.findByRole("button", { name: "停止" });
-    expect(screen.getAllByRole("tab").map((node) => node.textContent)).toEqual([
-      "资源库",
-      "react-counter",
-    ]);
+    expect(screen.getAllByRole("tab").map((node) => node.textContent)).toEqual(["react-counter"]);
     await user.click(stop);
     expect(call).toHaveBeenCalledWith("run.stop", "a");
     act(() => push?.(make(false)));
-    expect(screen.getAllByRole("tab")).toHaveLength(2);
+    expect(screen.getAllByRole("tab")).toHaveLength(1);
     // 预览区出现“运行”按钮（运行条上也有一个），点它再次启动
     const stopped = document.querySelector("[data-preview-stopped]") as HTMLElement;
     expect(screen.getAllByRole("button", { name: "运行" })).toHaveLength(2);
@@ -223,7 +218,7 @@ describe("主窗口外壳", () => {
     expect(screen.getByText("1 个运行中")).toBeTruthy();
   });
 
-  it("点标签切换，选的是资源库或项目 id", async () => {
+  it("点全局侧栏分类返回资源库", async () => {
     const user = userEvent.setup();
     const { bridge, call } = fakeBridge();
     call.mockImplementation(async (method: string) => {
@@ -237,7 +232,7 @@ describe("主窗口外壳", () => {
         : undefined;
     });
     render(<AppFrame bridge={bridge} locale="zh-CN" theme="system" />);
-    await user.click(await screen.findByRole("tab", { name: /资源库/ }));
+    await user.click(await screen.findByRole("button", { name: /^全部/ }));
     expect(call).toHaveBeenCalledWith("tab.select", "library");
   });
 

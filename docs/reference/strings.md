@@ -177,6 +177,7 @@
 | desktop.console.tab.label | 输出 | Output | — |
 | desktop.console.tabs.aria | 底部面板 | Bottom panel | — |
 | desktop.console.terminal.label | 终端 | Terminal | — |
+| desktop.console.terminalOpen.action | 打开终端 ⌃` | Open terminal ⌃` | — |
 | desktop.crashed.log.label | 最后的日志 | Last output | — |
 | desktop.crashed.overlay.aria | 崩溃提示 | Crash notice | — |
 | desktop.crashed.title | 已崩溃 · 退出码 {exitCode} | Crashed · exit code {exitCode} | exitCode：进程的退出码 |
@@ -255,6 +256,7 @@
 | desktop.failure.stepReady.label | 就绪，显示页面 | Ready, show page | — |
 | desktop.failure.stepStart.label | 启动开发服务 | Start dev server | — |
 | desktop.failure.steps.aria | 启动步骤 | Start-up steps | — |
+| desktop.idle.body | 还没有运行。点“运行”启动这个项目。 | This playground has not run yet. Choose Run to start it. | — |
 | desktop.linkNotice.linkInvalid.label | 这个链接无法识别 | This link is not recognized | — |
 | desktop.linkNotice.newBusy.label | 已有一个待确认的新建请求，这个链接已忽略 | A create request is already waiting for confirmation, so this link was ignored | — |
 | desktop.linkNotice.newFailed.label | 没能新建 {value} | Could not create {value} | value：链接里写的项目名称、模板标识或新名称（不翻译） |
@@ -474,7 +476,7 @@
 | desktop.start.title | 正在启动 {name} | Starting {name} | name：项目名 |
 | desktop.state.idle.label | 未运行 | Not running | — |
 | desktop.stop.action | 停止 | Stop | — |
-| desktop.stopped.body | 你手动停止了它。点“运行”重新启动；关闭标签页后再打开，也会自动运行。 | You stopped it. Choose Run to start it again; closing the tab and opening it again also runs it. | — |
+| desktop.stopped.body | 项目已停止。点“运行”重新启动；关闭标签页后再打开，也会自动运行。 | The playground is stopped. Choose Run to start it again, or close this tab and reopen it. | — |
 | desktop.tab.cli.label | 命令行 | CLI | — |
 | desktop.templates.create.action | 用它新建 | Create from it | — |
 | desktop.templates.detail.aria | 模板详情 | Template details | — |
@@ -754,7 +756,7 @@
 | library.note.dialog.title | 编辑备注 | Edit note | — |
 | library.note.empty.label | 未填写备注 | No note | — |
 | library.page.results.label | {count, plural, other {# 个结果}} · 共 {total, plural, other {# 个项目}} · 存放在 {root} | {count, plural, one {# result} other {# results}} · {total, plural, one {# playground} other {# playgrounds}} · stored in {root} | count：搜索和筛选后剩下的项目数；total：资源库里项目的总数；root：资源库根目录（主目录缩成 ~） |
-| library.page.summary.label | {total, plural, other {# 个项目}} · {running, plural, other {# 个正在运行}} · 存放在 {root} | {total, plural, one {# playground} other {# playgrounds}} · {running, plural, one {# running} other {# running}} · stored in {root} | total：资源库里项目的总数；running：正在运行的项目数；root：资源库根目录（主目录缩成 ~） |
+| library.page.summary.label | {total, plural, other {# 个项目}}{running, plural, =0 {} other { · # 个正在运行}} · 存放在 {root} | {total, plural, one {# playground} other {# playgrounds}}{running, plural, =0 {} one { · # running} other { · # running}} · stored in {root} | total：资源库里项目的总数；running：正在运行的项目数；root：资源库根目录（主目录缩成 ~） |
 | library.rename.dialog.title | 重命名 | Rename | — |
 | library.rename.nameFolder.hint | 名称同时是文件夹名；改名后旧的 runyard://open 链接会失效。 | The name is also the folder name; renaming breaks old runyard://open links. | — |
 | library.rename.nameRunning.hint | 名称同时是文件夹名；这个项目正在运行，保存后会停止并用新名称重新启动；旧的 runyard://open 链接会失效。 | The name is also the folder name. This playground is running: saving stops it and restarts it under the new name. Old runyard://open links will stop working. | — |
@@ -811,7 +813,6 @@
 | library.status.problem.label | 有问题 | Has a problem | — |
 | library.status.running.label | 运行中 | Running | — |
 | library.status.stopped.label | 已停止 | Stopped | — |
-| library.tab.title | 资源库 | Library | — |
 | library.table.aria | 项目列表 | Playgrounds | — |
 | library.topbar.idle.label | 没有在运行的项目 | No playground running | — |
 | library.topbar.running.label | {count, plural, other {# 个运行中}} | {count, plural, one {# running} other {# running}} | count：正在运行的项目数（标签页和命令行持有的都算） |

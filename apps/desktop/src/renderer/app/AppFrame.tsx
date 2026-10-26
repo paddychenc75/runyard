@@ -6,7 +6,6 @@ import { layoutCssVariables } from "../../shared/layout.ts";
 import { useLibraryState } from "../bridge/use-library-state.ts";
 import type { SettingsApi } from "../bridge/use-settings.ts";
 import { AppShell } from "./AppShell.tsx";
-import { SettingsWindow } from "./settings/SettingsWindow.tsx";
 
 export interface AppFrameProps {
   bridge: DesktopBridge;
@@ -33,11 +32,7 @@ export function AppFrame({ bridge, locale, theme, settings = NO_SETTINGS }: AppF
   }, [locale, theme]);
   return (
     <I18nProvider locale={locale} platform={bridge.bootstrap.platform} catalogs={desktopCatalogs}>
-      {bridge.bootstrap.windowKind === "settings" ? (
-        <SettingsWindow bridge={bridge} api={settings} library={library} />
-      ) : (
-        <AppShell bridge={bridge} library={library} settings={settings} />
-      )}
+      <AppShell bridge={bridge} library={library} settings={settings} />
     </I18nProvider>
   );
 }

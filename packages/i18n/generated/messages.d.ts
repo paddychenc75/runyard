@@ -309,6 +309,7 @@ export type CatalogMessages = {
   "desktop.console.tab.label": Record<never, never>;
   "desktop.console.tabs.aria": Record<never, never>;
   "desktop.console.terminal.label": Record<never, never>;
+  "desktop.console.terminalOpen.action": Record<never, never>;
   "desktop.crashed.log.label": Record<never, never>;
   "desktop.crashed.overlay.aria": Record<never, never>;
   "desktop.crashed.title": {
@@ -430,6 +431,7 @@ export type CatalogMessages = {
   "desktop.failure.stepReady.label": Record<never, never>;
   "desktop.failure.stepStart.label": Record<never, never>;
   "desktop.failure.steps.aria": Record<never, never>;
+  "desktop.idle.body": Record<never, never>;
   "desktop.linkNotice.linkInvalid.label": Record<never, never>;
   "desktop.linkNotice.newBusy.label": Record<never, never>;
   "desktop.linkNotice.newFailed.label": {
@@ -1037,7 +1039,6 @@ export type CatalogMessages = {
   "library.status.problem.label": Record<never, never>;
   "library.status.running.label": Record<never, never>;
   "library.status.stopped.label": Record<never, never>;
-  "library.tab.title": Record<never, never>;
   "library.table.aria": Record<never, never>;
   "library.topbar.idle.label": Record<never, never>;
   "library.topbar.running.label": {

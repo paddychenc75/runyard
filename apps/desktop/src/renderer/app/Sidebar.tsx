@@ -11,6 +11,7 @@ import brandLight from "../../../../../docs/design/logo/final/icon-32.svg";
 import brandDark from "../../../../../docs/design/logo/final/icon-32-dark.svg";
 import type { BootstrapInfo } from "../../shared/desktop-bridge.ts";
 import { type NavFilter, navFilters } from "../library-query.ts";
+import { useWindowFocused } from "../shared/use-window-focused.ts";
 import { navLabel } from "./library-labels.ts";
 import { PaneToggleButton } from "./PaneToggleButton.tsx";
 import styles from "./Sidebar.module.css";
@@ -31,8 +32,8 @@ export interface SidebarProps {
   templateCount: number;
   /** 资源库文件夹，主目录缩成 ~；还没读到是空串 */
   libraryRoot: string;
-  /** 当前显示的页：资源库或模板；设置不改变此值（规格 DESKTOP-SETTINGS-01、DESKTOP-TEMPLATES-VIEW-01） */
-  page: ShellPage;
+  /** 当前显示的页：资源库、模板或设置（规格 DESKTOP-SETTINGS-01、DESKTOP-TEMPLATES-VIEW-01） */
+  page: ShellPage | null;
   onNavigate: (page: ShellPage) => void;
   onSettings?: () => void;
   /** 收起侧栏（顶部、红绿灯那一行的右端；规格 DESKTOP-LIBRARY-VIEW-61、66） */
@@ -56,6 +57,7 @@ export function Sidebar({
   onCollapse,
 }: SidebarProps) {
   const t = useT();
+  const focused = useWindowFocused();
   const format = useFormat();
   const sections: NavListSection[] = [
     {
@@ -150,7 +152,8 @@ export function Sidebar({
         <NavList
           label={t("library.nav.aria")}
           sections={sections}
-          value={page === "library" ? nav : page}
+          active={focused}
+          value={page === "library" ? nav : (page ?? undefined)}
           onValueChange={(id) => {
             if (id === "settings") {
               onSettings?.();
