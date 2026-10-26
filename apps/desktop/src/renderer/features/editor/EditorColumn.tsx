@@ -5,7 +5,9 @@ import type { TabRow } from "../../../shared/library-state.ts";
 import { useCommands } from "../../shared/command-host.tsx";
 import { useContentVisible } from "../../shared/content-visibility.ts";
 import { onEditorFocusRequest } from "../../shared/editor-focus.ts";
+import { useOverlay } from "../../shared/overlay-context.tsx";
 import { ClosePrompt } from "./ClosePrompt.tsx";
+import { watchContextMenu } from "./context-menu-theme.ts";
 import { EditorBar } from "./EditorBar.tsx";
 import { EditorBreadcrumb } from "./EditorBreadcrumb.tsx";
 import styles from "./EditorColumn.module.css";
@@ -51,8 +53,18 @@ export function EditorColumn({ bridge, tab, createHost = createMonacoHost }: Edi
   const containerRef = useRef<HTMLDivElement>(null);
   const hostRef = useRef<EditorHost | null>(null);
   const [hostReady, setHostReady] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const active = state.tabs.find((candidate) => candidate.path === state.active) ?? null;
   const { modKey, locale } = bridge.bootstrap;
+
+  // 右键菜单：套上主题；打开期间报“有浮层”，原生预览让位，菜单伸到预览上的部分才看得见（#566）
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container === null) return undefined;
+    const watch = watchContextMenu(container, setMenuOpen);
+    return () => watch.dispose();
+  }, []);
+  useOverlay(menuOpen);
 
   useEffect(() => {
     const container = containerRef.current;
