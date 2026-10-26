@@ -1,10 +1,12 @@
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { test as base, expect, type Page } from "@playwright/test";
 import { type LaunchOptions, launchRunyard, type RunyardApp } from "./launch.ts";
 
 // 每个用例自己起应用；用例结束（无论成败）一定收尾并核对进程。
 export const test = base.extend<{ launch: (options?: LaunchOptions) => Promise<RunyardApp> }>({
   // biome-ignore lint/correctness/noEmptyPattern: Playwright 要求第一个参数写成解构
-  launch: async ({}, use) => {
+  launch: async ({}, use, testInfo) => {
     const started: RunyardApp[] = [];
     await use(async (options) => {
       const instance = await launchRunyard(options);
@@ -12,6 +14,61 @@ export const test = base.extend<{ launch: (options?: LaunchOptions) => Promise<R
       return instance;
     });
     const problems: unknown[] = [];
+    // 失败时先留证据再收尾（CI 上只能靠这些排查）：每个窗口的截图和可访问性树快照，附在报告里
+    if (testInfo.status !== testInfo.expectedStatus) {
+      for (const [index, instance] of started.entries()) {
+        await instance.page
+          .screenshot()
+          .then((body) =>
+            testInfo.attach(`failure-${index}.png`, { body, contentType: "image/png" }),
+          )
+          .catch(() => undefined);
+        await instance.page
+          .locator("html")
+          .ariaSnapshot()
+          .then((body) =>
+            testInfo.attach(`failure-${index}-aria.txt`, { body, contentType: "text/plain" }),
+          )
+          .catch(() => undefined);
+        // 资源库状态和临时根目录里的日志（管理进程日志、运行日志）：看运行条没端口这类问题要靠它们
+        await instance
+          .call("library.get")
+          .then((state) =>
+            testInfo.attach(`failure-${index}-library.json`, {
+              body: JSON.stringify(state, null, 2),
+              contentType: "application/json",
+            }),
+          )
+          .catch(() => undefined);
+        await instance.app
+          .evaluate(async ({ BrowserWindow, nativeTheme, screen }) => {
+            const window = BrowserWindow.getAllWindows()[0];
+            return {
+              workArea: screen.getPrimaryDisplay().workArea,
+              scaleFactor: screen.getPrimaryDisplay().scaleFactor,
+              bounds: window?.getBounds(),
+              contentBounds: window?.getContentBounds(),
+              innerWidth: await window?.webContents.executeJavaScript("innerWidth"),
+              themeSource: nativeTheme.themeSource,
+            };
+          })
+          .then((info) =>
+            testInfo.attach(`failure-${index}-window.json`, {
+              body: JSON.stringify(info, null, 2),
+              contentType: "application/json",
+            }),
+          )
+          .catch(() => undefined);
+        for (const file of logFilesUnder(instance.root)) {
+          await testInfo
+            .attach(`failure-${index}-${file.name}`, {
+              body: file.tail,
+              contentType: "text/plain",
+            })
+            .catch(() => undefined);
+        }
+      }
+    }
     for (const instance of started) {
       await instance.shutdown().catch((error: unknown) => problems.push(error));
     }
@@ -20,6 +77,20 @@ export const test = base.extend<{ launch: (options?: LaunchOptions) => Promise<R
 });
 
 export { expect };
+
+/** 临时根目录下所有 .log 文件的末尾（最多 64 KB），名字里的路径分隔换成下划线 */
+function logFilesUnder(root: string): { name: string; tail: string }[] {
+  try {
+    return readdirSync(root, { recursive: true, encoding: "utf8" })
+      .filter((entry) => entry.endsWith(".log"))
+      .map((entry) => ({
+        name: entry.replaceAll(/[^\w.-]/g, "_"),
+        tail: readFileSync(join(root, entry), "utf8").slice(-65_536),
+      }));
+  } catch {
+    return [];
+  }
+}
 
 /** 预览是主进程里另一个网页（不在界面的页面里）：取它的正文文字 */
 export async function previewText(app: RunyardApp["app"]): Promise<string | null> {

@@ -13,5 +13,11 @@ export default defineConfig({
   // 单个用例 90 秒：最慢的是 React 模板第一次装依赖，其余几秒内完成
   timeout: 90_000,
   expect: { timeout: 15_000 },
-  reporter: [["list"]],
+  // CI 上多出一份 HTML 报告（附件里有失败截图），随失败产物上传
+  reporter: process.env.CI
+    ? [
+        ["list"],
+        ["html", { open: "never", outputFolder: join(import.meta.dirname, ".output", "report") }],
+      ]
+    : [["list"]],
 });

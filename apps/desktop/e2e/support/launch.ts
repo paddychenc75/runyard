@@ -120,6 +120,11 @@ export async function launchRunyard(options: LaunchOptions = {}): Promise<Runyar
   if (appIdentity === null) throw new Error("the app is not running right after launch");
   const appRef: ProcRef = { pid: appPid, startTime: appIdentity.startTime };
   const page = await app.firstWindow();
+  // 窗口尺寸是用例的前提，不能交给机器的显示器：产品默认宽 1200，低于它界面进入紧凑版面（运行条不显示端口、
+  // 侧栏收起），CI 的虚拟显示器比这窄，窗口会被压到屏幕大小。统一先放到 1440×900，要窄窗的用例自己再改。
+  await app.evaluate(({ BrowserWindow }) => {
+    BrowserWindow.getAllWindows()[0]?.setContentSize(1440, 900);
+  });
 
   const exited = new Promise<void>((resolve) => electronProcess.once("exit", () => resolve()));
   const quit = async (): Promise<void> => {
