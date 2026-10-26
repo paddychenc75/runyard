@@ -35,6 +35,14 @@ function sections(data: SampleData): NavListSection[] {
 
 export const samples: readonly FixtureSample[] = [
   {
+    name: "inactive",
+    render: (data) => (
+      <FixtureFrame>
+        <NavList label={data.label} sections={sections(data)} value="e" active={false} />
+      </FixtureFrame>
+    ),
+  },
+  {
     name: "default",
     render: (data) => (
       <FixtureFrame>

@@ -80,3 +80,20 @@ describe("NavList", () => {
     expect(typeOnly).toBeTypeOf("function");
   });
 });
+
+it("宿主失焦仍保留选中项与键盘动作", async () => {
+  const onValueChange = vi.fn();
+  render(
+    <NavList
+      label={text("S")}
+      sections={sections}
+      value="kept"
+      active={false}
+      onValueChange={onValueChange}
+    />,
+  );
+  expect(screen.getByRole("navigation").getAttribute("data-active")).toBe("false");
+  expect(screen.getByRole("button", { name: "Kept" }).getAttribute("aria-current")).toBe("page");
+  await userEvent.click(screen.getByRole("button", { name: /All/ }));
+  expect(onValueChange).toHaveBeenCalledWith("all");
+});
