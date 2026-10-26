@@ -96,7 +96,9 @@ async function captureApp(instance: RunyardApp, board: string, width: number, he
         .first()
         .evaluate((el) => el.closest("[data-size]")?.getAttribute("data-size")),
     )
-    .toBe(width === 720 || width === 1100 ? "short" : "wide");
+    // 页头 ≥ 1124 才是宽工具条（LibraryPage 的 HEADER_WIDE_PX，UI 走查 L1 从 800 提到 1124）：
+    // 只有 1440 放得下；1100、1024、900、720 都是收紧的“short”
+    .toBe(width === 1440 ? "wide" : "short");
   const selected = instance.page.locator('tr[data-row-id="react19-1"]');
   await selected.locator('td[data-column="name"]').click();
   await expect(selected).toHaveAttribute("data-selected", "");

@@ -103,7 +103,10 @@ try {
             .getByText("header-review", { exact: true })
             .dblclick();
           await expect(app.page.getByRole("tab", { name: /^(Library|资源库)$/ })).toHaveCount(0);
-          await expect(app.page.locator("[data-library-sidebar]")).toBeVisible();
+          // 项目页窄于 1280 时侧栏默认收起（use-responsive-sidebar 的 PROJECT_MIN_WITH_SIDEBAR）：
+          // 1100 宽的项目页只有“收起”这一种画面，不存在展开的项目页
+          const projectFits = width >= 1280;
+          await expect(app.page.locator("[data-library-sidebar]")).toHaveCount(projectFits ? 1 : 0);
           await expect(app.page.locator("[data-preview-slot]")).toBeVisible();
           await expect
             .poll(
@@ -116,15 +119,17 @@ try {
           const tree = app.page.locator('[data-glass-material="filetree"]');
           expect((await tree.boundingBox())?.y).toBe(52);
           expect(await tree.evaluate((el) => getComputedStyle(el).borderRadius)).toBe("9px");
-          await capture(
-            app.page,
-            `${name}-project`,
-            `Web${theme === "light" ? "Light" : ""}${lang === "en" ? "En" : ""}`,
-            width,
-            app,
-          );
-          await hide.click();
-          await expect(app.page.locator("[data-library-sidebar]")).toHaveCount(0);
+          if (projectFits) {
+            await capture(
+              app.page,
+              `${name}-project`,
+              `Web${theme === "light" ? "Light" : ""}${lang === "en" ? "En" : ""}`,
+              width,
+              app,
+            );
+            await hide.click();
+            await expect(app.page.locator("[data-library-sidebar]")).toHaveCount(0);
+          }
           await capture(
             app.page,
             `${name}-project-hidden`,
