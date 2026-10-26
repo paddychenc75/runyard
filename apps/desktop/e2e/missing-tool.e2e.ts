@@ -15,11 +15,27 @@ function fakeTool(runyard: RunyardApp, name: string, version: string): string {
   return file;
 }
 
+// 脚本项目要先成功运行一次，才能验证“过旧后不留旧输出”。机器自带的 python3 可能低于模板要求的 3.12
+// （macOS 自带 3.9），所以先指向一个只对版本探测谎报 3.12 的转发程序，其余调用转给本机的 python3：
+// 测试因此不再依赖本机装了哪一版 Python。
+function pythonShim(runyard: RunyardApp): string {
+  const dir = join(runyard.home, "python-shim");
+  mkdirSync(dir, { recursive: true });
+  const file = join(dir, "python3");
+  writeFileSync(
+    file,
+    '#!/bin/sh\nif [ "$1" = "--version" ]; then echo "Python 3.12.0"; exit 0; fi\nexec python3 "$@"\n',
+  );
+  chmodSync(file, 0o755);
+  return file;
+}
+
 test("[DESKTOP-WORKSPACE-18] 脚本项目：工具过旧时显示缺工具画面，不显示上一次成功运行的输出", async ({
   launch,
 }) => {
   const runyard = await launch();
   const { page } = runyard;
+  await runyard.call("settings.set", { toolPaths: { python: pythonShim(runyard) } });
   await createWithKeyboard(page, "Python script");
   const output = page.getByRole("region", { name: "Process output" });
   await expect(output.getByRole("log")).toContainText("Hello, Runyard!");

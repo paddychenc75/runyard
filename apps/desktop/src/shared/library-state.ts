@@ -12,6 +12,17 @@ import type {
 // 主进程交给界面的全部数据。只有可序列化的普通对象：界面进程没有 Node，
 // 也拿不到连接管理进程的客户端，只能看到这一份状态和 DesktopBridge 里的几个动作。
 
+/** 项目文件夹的磁盘占用（管理进程后台算，规格 LIBRARY-DISK-USAGE） */
+export interface RowSize {
+  /** 总大小，含依赖目录和 .runyard */
+  totalBytes: number;
+  dependencyBytes: number;
+  /** 找到的依赖目录名 */
+  dependencyDirs: string[];
+  /** 没有权限读取、没计入的文件夹个数；大于 0 就是“不完整” */
+  unreadable: number;
+}
+
 export interface PlaygroundRow {
   id: string;
   name: string;
@@ -43,6 +54,8 @@ export interface PlaygroundRow {
   createdAt: number;
   /** 找不到项目文件夹（被移走或删除）：资源库的“有问题”筛选要用 */
   missing: boolean;
+  /** 磁盘占用；没给或 null 是还在计算（找不到文件夹的看 missing，没有大小） */
+  size?: RowSize | null;
   /** 文件夹的显示写法（主目录缩成 ~）：找不到文件夹的说明里写原路径；没给就用 path */
   folder?: string;
 }
@@ -225,6 +238,10 @@ export interface UpdateBannerView {
 }
 
 export interface LibraryState {
+  /** 打开缺失项目时定位资源库；序号使同一个项目的重复请求也能重新定位 */
+  libraryReveal?: { id: string; sequence: number };
+  /** 显式打开成功的序号；同一项目也要从设置等页面返回工作区。 */
+  projectSelection?: number;
   locale: Locale;
   playgrounds: PlaygroundRow[];
   /** 打开的项目标签，按打开顺序；资源库标签固定在最前，不在这里 */

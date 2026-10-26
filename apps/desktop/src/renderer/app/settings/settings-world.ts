@@ -38,10 +38,11 @@ export const library: LibraryState = {
   closeRequest: null,
   templates: [],
   runs: [],
-  loaded: true,
+  loaded: false,
   recentTemplates: [],
   tabs: [],
   activeTab: "library",
+  projectSelection: 0,
   playgrounds: [],
 };
 
@@ -92,7 +93,7 @@ export function world(
       case "cli.status":
         return { state: "unavailable", version: "0.1.0", onPath: false, pathCommand: "" };
       case "agents.status":
-        return { claude: false, agents: false };
+        return { claude: "missing", agents: "missing" };
       case "supervisor.status":
         return { running: false, cliRuns: 0, tabRuns: 0 };
       default:

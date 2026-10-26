@@ -1,5 +1,5 @@
 import type { LibraryItem, PlaygroundFileRead } from "@runyard/core";
-import type { Playground, PlaygroundFile, RunKind } from "@runyard/protocol";
+import type { Playground, PlaygroundFile, PlaygroundSize, RunKind } from "@runyard/protocol";
 
 // 协议里的 Playground = 项目文件夹里的 playground.json 加索引里的本机字段。
 // 文件读不出来（文件夹找不到、更新版本写的、坏了）时用最近一次读到的内容；从没读到过的，
@@ -32,6 +32,7 @@ export function toPlayground(
   item: LibraryItem,
   file: PlaygroundFile,
   runnerKind: RunKind | undefined,
+  size?: PlaygroundSize,
 ): Playground {
   const { entry } = item;
   // 运行器查不到时的猜测：有端口的是服务，没有的是脚本（static 与 server 在这里分不出）
@@ -55,5 +56,6 @@ export function toPlayground(
     lastUsedAt: entry.lastUsedAt,
     ...(entry.lastOpenedAt !== undefined ? { lastOpenedAt: entry.lastOpenedAt } : {}),
     ...(entry.missingSince !== undefined ? { missingSince: entry.missingSince } : {}),
+    ...(size !== undefined && entry.missingSince === undefined ? { size } : {}),
   };
 }

@@ -25,7 +25,7 @@ export interface RowActionsProps {
 }
 
 // 列表一行的操作（规格 desktop/library-view“打开与停止运行”“更多菜单里的访达与路径”）：
-// 主操作随状态变，已停止是“打开”（打开即运行，没有“运行但不打开”），运行中是“停止运行”；
+// 主操作随状态变；找不到文件夹的行不放主操作（“重新定位…”只在行下面的说明里出现一次，行内只留“⋯”，UI 走查 M1）；已停止是“打开”（打开即运行，没有“运行但不打开”），运行中是“停止运行”；
 // 后面是完整的“更多”菜单（设计稿 RowMenu）：打开、打开但不运行、停止运行，其余项与工作区共用 useProjectMenu。
 export function RowActions({
   bridge,
@@ -74,14 +74,16 @@ export function RowActions({
   const moreLabel = t("library.row.more.aria", { name: row.name });
   return (
     <div className={styles.root}>
-      <Button
-        size="sm"
-        disabled={row.busy}
-        tabIndex={tabbable ? 0 : -1}
-        onClick={row.active ? stop : open}
-      >
-        {row.active ? t("library.row.stop.action") : t("library.row.open.action")}
-      </Button>
+      {row.missing ? null : (
+        <Button
+          size="sm"
+          disabled={row.busy}
+          tabIndex={tabbable ? 0 : -1}
+          onClick={row.active ? stop : open}
+        >
+          {row.active ? t("library.row.stop.action") : t("library.row.open.action")}
+        </Button>
+      )}
       <Menu
         label={moreLabel}
         trigger={

@@ -2,6 +2,7 @@ import { existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import type { Locator } from "@playwright/test";
 import { closePicker, expect, test } from "./support/fixtures.ts";
+import { openLibraryPage } from "./support/library-sidebar.ts";
 
 test("资源库：搜索与筛选、重命名、改备注、移到废纸篓", async ({ launch }) => {
   const runyard = await launch();
@@ -324,7 +325,7 @@ test("[DESKTOP-LIBRARY-VIEW-94] 命令行运行与只打开都刷新最近使用
     "tab.openWithoutRun",
     await rows.filter({ hasText: "second" }).getAttribute("data-row-id"),
   );
-  await page.getByRole("tab", { name: "Library", exact: true }).click();
+  await openLibraryPage(page);
   await expect(rows.first()).toContainText("second");
   await expect(rows.first().locator("[data-column=lastUsed]")).not.toHaveText("—");
 });

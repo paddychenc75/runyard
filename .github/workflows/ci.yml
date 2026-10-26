@@ -189,5 +189,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
           SHA: ${{ github.sha }}
-        run: node tooling/ci/report-statuses.ts --repo "$REPO" --run-id "$RUN_ID" --sha "$SHA" --self "回报检查结果（仅发版分支）"
+        run: node tooling/ci/report-statuses.ts --repo "$REPO" --run-id "$RUN_ID" --attempt "$RUN_ATTEMPT" --sha "$SHA" --self "回报检查结果（仅发版分支）"

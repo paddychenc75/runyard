@@ -1,8 +1,7 @@
 import { useT } from "@runyard/i18n/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { LibraryState } from "../../shared/library-state.ts";
-import type { TerminalBusy } from "../../shared/terminal.ts";
 import type { SettingsApi } from "../bridge/use-settings.ts";
 import { EditorWorkspace } from "../features/editor/EditorWorkspace.tsx";
 import { PaletteHost } from "../features/palette/PaletteHost.tsx";
@@ -15,9 +14,12 @@ import {
   useCommandHost,
   useCommands,
 } from "../shared/command-host.tsx";
+import { ContentVisibility } from "../shared/content-visibility.ts";
+import { requestEditorFocus } from "../shared/editor-focus.ts";
 import { useLayoutPrefs } from "../shared/layout-prefs.ts";
 import { OverlayContext } from "../shared/overlay-context.tsx";
 import { OverlayCounter } from "../shared/overlay-counter.ts";
+import { sizeTotalOf } from "../size-view.ts";
 import styles from "./AppShell.module.css";
 import { CloseConfirmDialog } from "./CloseConfirmDialog.tsx";
 import { CreateDialog } from "./CreateDialog.tsx";
@@ -29,12 +31,16 @@ import { PaneToggleButton } from "./PaneToggleButton.tsx";
 import { PickerDialog } from "./PickerDialog.tsx";
 import { QuitTerminalPrompt } from "./QuitTerminalPrompt.tsx";
 import { Sidebar } from "./Sidebar.tsx";
+import { SettingsPage } from "./settings/SettingsPage.tsx";
 import { useAutoSaveReader } from "./settings/use-autosave-reader.ts";
 import { chooseNavFilter, type ShellPage, showLibrary } from "./sidebar-navigation.ts";
 import { TopBar } from "./TopBar.tsx";
 import { TemplatesPage } from "./templates/TemplatesPage.tsx";
 import { UrlConfirmDialog } from "./UrlConfirmDialog.tsx";
+import { useQuitTerminalConfirm } from "./use-quit-terminal-confirm.ts";
 import { useResponsiveSidebar } from "./use-responsive-sidebar.ts";
+import { useSearchShortcut } from "./use-search-shortcut.ts";
+import { useSettingsPage } from "./use-settings-page.ts";
 import { WorkspaceLayout } from "./WorkspaceLayout.tsx";
 
 export interface AppShellProps {
@@ -67,12 +73,14 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
   useEffect(() => {
     document.title = title;
   }, [title]);
-  // 模板仍在主窗口；设置通过独立窗口打开，不参与当前页面或标签选择。
+  // 页面切换不改变项目持有者；设置暂时隐藏工作区而不卸载它。
   const [page, setPage] = useState<ShellPage>("library");
   const [temporaryNavigation, setTemporaryNavigation] = useState<boolean | null>(null);
   const activeTabId = library?.activeTab ?? "library";
   useEffect(() => {
-    setPage("library");
+    // 回库的状态推送不能覆盖刚从项目侧栏选中的模板页面。
+    if (activeTabId === "library") return;
+    setPage((current) => (current === "settings" ? current : "library"));
     setTemporaryNavigation(null);
   }, [activeTabId]);
   // 编辑器按设置里的自动保存档位存（规格 DESKTOP-SETTINGS-11）
@@ -84,6 +92,12 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
   const [pendingName, setPendingName] = useState<string | null>(null);
   // 资源库页的搜索、侧栏筛选、下拉：在外壳里持有，顶栏的搜索框、侧栏和列表共用
   const [query, setQuery] = useState<LibraryQuery>(defaultQuery);
+  const revealSequence = library?.libraryReveal?.sequence;
+  useEffect(() => {
+    if (revealSequence === undefined) return;
+    setPage("library");
+    setQuery(defaultQuery);
+  }, [revealSequence]);
   const patchQuery = useCallback(
     (patch: Partial<LibraryQuery>) => setQuery((current) => ({ ...current, ...patch })),
     [],
@@ -123,21 +137,17 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
   // 版面偏好：侧栏收起与否、各面板的尺寸（记在界面自己的存储里）
   const [layoutPrefs, patchLayout] = useLayoutPrefs();
   const onLibraryPage = (library?.activeTab ?? "library") === "library";
-  // ⌘F 在资源库页把焦点放进搜索框（规格 DESKTOP-LIBRARY-VIEW-14）；项目标签页没有搜索框，不拦
-  useEffect(() => {
-    if (!onLibraryPage) return;
-    function onKeyDown(event: KeyboardEvent) {
-      const pressed = modKey === "meta" ? event.metaKey : event.ctrlKey;
-      if (!pressed || event.key.toLowerCase() !== "f" || event.altKey || event.shiftKey) return;
-      event.preventDefault();
-      searchRef.current?.focus();
-      searchRef.current?.select();
-    }
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [onLibraryPage, modKey]);
+  useSearchShortcut(onLibraryPage && page === "library", modKey, searchRef);
   const tabs = library?.tabs ?? [];
   const activeTab = library?.activeTab ?? "library";
+  const settingsPage = useSettingsPage(
+    bridge,
+    page,
+    setPage,
+    activeTab,
+    tabs.map((tab) => tab.id),
+    library?.projectSelection,
+  );
   // 标签页关了，终端也结束了：再打开这个项目时底部面板从“输出”开始，不自动创建终端（DESKTOP-TERMINAL-06）
   const openIds = useRef<Set<string>>(new Set());
   useEffect(() => {
@@ -145,41 +155,29 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
     for (const id of openIds.current) if (!now.has(id)) forgetPanelMode(id);
     openIds.current = now;
   });
-  // ⌘Q：编辑器的询问之后，终端里有命令在运行就再问一次，列出项目和命令（DESKTOP-TERMINAL-30）
-  const [quitAsk, setQuitAsk] = useState<{
-    busy: TerminalBusy[];
-    answer: (quit: boolean) => void;
-  } | null>(null);
-  const askQuit = useCallback(async (): Promise<boolean> => {
-    const busy = (await bridge.call("terminal.busy").catch(() => [])) ?? [];
-    if (busy.length === 0) return true;
-    return await new Promise<boolean>((resolve) => {
-      setQuitAsk({
-        busy,
-        answer: (quit) => {
-          setQuitAsk(null);
-          resolve(quit);
-        },
-      });
-    });
-  }, [bridge]);
-  // 侧栏只在资源库标签上显示（设计稿 WebLight、Script 的项目标签页没有它），并且可以收起
+  const { quitAsk, askQuit } = useQuitTerminalConfirm(bridge);
+  // 全局侧栏跨页面共享手动偏好；模板保留原来的临时导航布局。
   const sidebar = useResponsiveSidebar(
-    onLibraryPage && page === "library",
+    page !== "templates",
     temporaryNavigation === null ? layoutPrefs.sidebarCollapsed : !temporaryNavigation,
     () => {
       if (temporaryNavigation !== null) {
         setTemporaryNavigation(!temporaryNavigation);
       } else patchLayout({ sidebarCollapsed: !layoutPrefs.sidebarCollapsed });
     },
+    page === "library" && !onLibraryPage,
   );
-  const sidebarVisible = onLibraryPage && sidebar.visible;
-  // ⌃⌘S 是主进程的菜单项（原因同 ⌘N）：资源库标签上收起或显示侧栏，项目标签页上收起或展开文件树
-  // （那里的“侧栏”，规格 DESKTOP-WORKSPACE-62）
-  const toggleSidebar = useCallback(() => {
-    if (onLibraryPage) sidebar.toggle();
-    else patchLayout({ treeCollapsed: !layoutPrefs.treeCollapsed });
-  }, [onLibraryPage, sidebar.toggle, layoutPrefs.treeCollapsed, patchLayout]);
+  const sidebarVisible = sidebar.visible;
+  useLayoutEffect(() => {
+    if (sidebar.overlay) return overlays.acquire();
+  }, [sidebar.overlay, overlays]);
+  const openSettings = () => {
+    if (page === "settings") return;
+    sidebar.close();
+    settingsPage.open();
+  };
+  // 全局侧栏命令与工作区文件树命令独立。
+  const toggleSidebar = sidebar.toggle;
   useEffect(() => bridge.on("sidebar.toggle", toggleSidebar), [bridge, toggleSidebar]);
   // 应用菜单触发的命令（设置、项目操作……）和命令面板走同一个宿主：此刻没登记的命令不会做任何事
   const commandHost = useCommandHost();
@@ -187,7 +185,14 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
     () => bridge.on("command.run", ({ id }) => void commandHost.run(id)),
     [bridge, commandHost],
   );
-  const selectTab = useCallback((id: string) => void bridge.call("tab.select", id), [bridge]);
+  const selectTab = useCallback(
+    (id: string) => {
+      setPage("library");
+      void bridge.call("tab.select", id);
+      if (page === "settings" && id !== "library") requestAnimationFrame(requestEditorFocus);
+    },
+    [bridge, page],
+  );
   // 命令面板里的应用命令（规格“命令面板”）：和菜单、按钮里的同名项走同一个动作；
   // 当前页面上没有意义的不登记（已经在资源库页就没有“打开资源库”，资源库页没有“收起或展开文件树”）
   useCommands({
@@ -199,19 +204,22 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
             showLibrary({ activeTab, selectTab });
             setPage("library");
           },
-    "app.settings": () => void bridge.call("settings.open"),
+    "app.settings": openSettings,
     // ⌘W：项目标签页里先关当前的文件标签，没有文件标签再关项目标签页（规格 DESKTOP-EDITOR-17）
     "app.closeTab":
-      activeTab === "library"
-        ? null
-        : () => {
-            if (!commandHost.run("editor.closeTab")) void bridge.call("tab.close", activeTab);
-          },
+      page === "settings"
+        ? settingsPage.close
+        : activeTab === "library"
+          ? null
+          : () => {
+              if (!commandHost.run("editor.closeTab")) void bridge.call("tab.close", activeTab);
+            },
     "app.stopAll": () => void bridge.call("run.stopAll"),
     "app.toggleSidebar": toggleSidebar,
-    "app.toggleTree": onLibraryPage
-      ? null
-      : () => patchLayout({ treeCollapsed: !layoutPrefs.treeCollapsed }),
+    "app.toggleTree":
+      onLibraryPage || page === "settings"
+        ? null
+        : () => patchLayout({ treeCollapsed: !layoutPrefs.treeCollapsed }),
     "app.themeLight": () => settings.update({ theme: "light" }),
     "app.themeDark": () => settings.update({ theme: "dark" }),
     "app.themeSystem": () => settings.update({ theme: "system" }),
@@ -230,6 +238,9 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
         <div
           ref={sidebar.root}
           className={styles.root}
+          data-surface={
+            page === "settings" || (page === "library" && !onLibraryPage) ? "workspace" : undefined
+          }
           data-sidebar-overlay={sidebar.overlay ? "" : undefined}
           data-sidebar={sidebarVisible && !sidebar.overlay ? "shown" : "hidden"}
           data-controls={windowControls.inset === 0 ? "none" : windowControls.side}
@@ -238,6 +249,7 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
             <Sidebar
               windowControls={windowControls}
               total={total}
+              sizeTotal={sizeTotalOf(library?.playgrounds ?? [])}
               counts={navCounts(library?.playgrounds ?? [])}
               nav={query.nav}
               onNavChange={(nav) => {
@@ -246,12 +258,9 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
               }}
               templateCount={library?.templateCount ?? library?.templates.length ?? 0}
               libraryRoot={library?.libraryRoot ?? ""}
-              page={page}
+              page={page === "library" && !onLibraryPage ? null : page}
               onCollapse={toggleSidebar}
-              onSettings={() => {
-                sidebar.close();
-                void bridge.call("settings.open");
-              }}
+              onSettings={openSettings}
               onNavigate={(next) => {
                 showLibrary({ activeTab, selectTab });
                 // 模板页没有顶栏：从覆盖导航进入时保留现有侧栏，回库再收回，不写手动偏好。
@@ -265,18 +274,19 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
               }}
             />
           ) : null}
-          {page === "library" ? (
+          {page !== "templates" ? (
             <TopBar
               bridge={bridge}
               modKey={modKey}
               tabs={tabs}
-              activeTab={activeTab}
+              // 设置页顶栏只放全局内容：项目标签不呈选中态、没有运行条（规格 DESKTOP-SETTINGS-49）
+              activeTab={page === "settings" ? "" : activeTab}
               running={runningCount(library?.playgrounds ?? [])}
               runs={library?.runs ?? []}
               playgrounds={library?.playgrounds ?? []}
-              activeTabRow={activeTabRow}
+              activeTabRow={page === "settings" ? undefined : activeTabRow}
               sidebarVisible={sidebarVisible}
-              onToggleSidebar={onLibraryPage ? toggleSidebar : undefined}
+              onToggleSidebar={toggleSidebar}
               onNew={openPicker}
               onSelect={selectTab}
               onClose={(id) => void bridge.call("tab.close", id)}
@@ -301,31 +311,45 @@ function ShellBody({ bridge, library, settings }: AppShellProps) {
               />
             </main>
           ) : (
-            <main className={styles.content}>
-              {activeTabRow === undefined ? (
-                <LibraryPage
-                  bridge={bridge}
-                  library={library}
-                  query={query}
-                  searchRef={searchRef}
-                  onQueryChange={patchQuery}
-                  onNew={openPicker}
-                  onCreateFrom={onPick}
-                  onNewNamed={openPickerNamed}
-                />
-              ) : (
-                <WorkspaceLayout
-                  bridge={bridge}
-                  tab={activeTabRow}
-                  overlays={overlays}
-                  prefs={layoutPrefs}
-                  onPrefs={patchLayout}
-                />
-              )}
-            </main>
+            <ContentVisibility.Provider value={page === "library"}>
+              <main
+                className={styles.content}
+                hidden={page === "settings"}
+                inert={page === "settings"}
+              >
+                {activeTabRow === undefined ? (
+                  <LibraryPage
+                    bridge={bridge}
+                    library={library}
+                    query={query}
+                    searchRef={searchRef}
+                    onQueryChange={patchQuery}
+                    onNew={openPicker}
+                    onCreateFrom={onPick}
+                    onNewNamed={openPickerNamed}
+                  />
+                ) : (
+                  <WorkspaceLayout
+                    bridge={bridge}
+                    tab={activeTabRow}
+                    overlays={overlays}
+                    prefs={layoutPrefs}
+                    onPrefs={patchLayout}
+                  />
+                )}
+              </main>
+            </ContentVisibility.Provider>
           )}
+          {page === "settings" ? (
+            <main className={styles.content}>
+              <SettingsPage bridge={bridge} api={settings} library={library} />
+            </main>
+          ) : null}
           <CloseConfirmDialog bridge={bridge} request={library?.closeRequest ?? null} />
-          <PaletteHost bridge={bridge} project={onLibraryPage ? null : activeTab} />
+          <PaletteHost
+            bridge={bridge}
+            project={onLibraryPage || page === "settings" ? null : activeTab}
+          />
           <QuitTerminalPrompt
             busy={quitAsk?.busy ?? null}
             nameOf={(project) => tabs.find((tab) => tab.id === project)?.name ?? project}

@@ -16,7 +16,7 @@ function setup(
     run?: (args: string[]) => { code: number; stdout: string };
     existing?: string[];
     packaged?: boolean;
-    openGuide?: (locale: "en" | "zh-CN") => Promise<boolean>;
+    openGuide?: (locale: "en" | "zh-CN") => Promise<string>;
     runs?: { owner: { kind: string } }[];
   } = {},
 ) {
@@ -148,12 +148,101 @@ describe("诊断信息", () => {
 });
 
 describe("智能体技能包", () => {
-  it("[DESKTOP-SETTINGS-24] 装到了 Claude Code、没装到 Codex；选 Codex 安装就是 runyard skill install --target agents", async () => {
-    const files = [`${HOME}/.claude/skills/runyard/SKILL.md`];
-    const { cli, ran } = setup({ existing: files });
-    expect(await cli.agentSkills()).toEqual({ claude: true, agents: false });
-    await cli.installAgentSkill("agents");
-    expect(ran).toEqual([["skill", "install", "--target", "agents", "--json"]]);
+  const statusJson = (claude: string, agents: string) =>
+    JSON.stringify({
+      targets: [
+        { target: "claude", dir: `${HOME}/.claude/skills/runyard`, state: claude },
+        { target: "agents", dir: `${HOME}/.agents/skills/runyard`, state: agents },
+      ],
+    });
+  const failing = (code: string) => ({
+    code: 9,
+    stdout: JSON.stringify({ error: { code, message: "", hint: "", data: {} } }),
+  });
+
+  it("[DESKTOP-SETTINGS-24] 装到了 Claude Code、没装到 Codex：状态来自 runyard skill status；选 Codex 安装就是 runyard skill install --target agents", async () => {
+    const { cli, ran } = setup({
+      run: (args) =>
+        args[1] === "status"
+          ? { code: 0, stdout: statusJson("current", "missing") }
+          : { code: 0, stdout: "{}" },
+    });
+    expect(await cli.agentSkills()).toEqual({ claude: "current", agents: "missing" });
+    const outcome = await cli.installAgentSkill("agents");
+    expect(outcome.failure).toBeUndefined();
+    expect(ran).toEqual([
+      ["skill", "status", "--json"],
+      ["skill", "install", "--target", "agents", "--json"],
+      ["skill", "status", "--json"],
+    ]);
+  });
+
+  it("[DESKTOP-SETTINGS-50] 命令行给出的旧版本原样交给界面；读不到状态时当没装", async () => {
+    const outdated = setup({ run: () => ({ code: 0, stdout: statusJson("outdated", "current") }) });
+    expect(await outdated.cli.agentSkills()).toEqual({ claude: "outdated", agents: "current" });
+    const broken = setup({ run: () => ({ code: 1, stdout: "not json" }) });
+    expect(await broken.cli.agentSkills()).toEqual({ claude: "missing", agents: "missing" });
+  });
+
+  it("[DESKTOP-SETTINGS-51] 安装失败返回原因：没有写入权限（PATH_LOCKED）、其他", async () => {
+    const locked = setup({
+      run: (args) =>
+        args[1] === "install"
+          ? failing("PATH_LOCKED")
+          : { code: 0, stdout: statusJson("missing", "missing") },
+    });
+    expect(await locked.cli.installAgentSkill("agents")).toEqual({
+      status: { claude: "missing", agents: "missing" },
+      failure: { target: "agents", reason: "permission" },
+    });
+    const other = setup({
+      run: (args) =>
+        args[1] === "install"
+          ? failing("INTERNAL")
+          : { code: 0, stdout: statusJson("missing", "missing") },
+    });
+    expect((await other.cli.installAgentSkill("claude")).failure).toEqual({
+      target: "claude",
+      reason: "other",
+    });
+  });
+
+  it("[DESKTOP-SETTINGS-52] 移除就是 runyard skill uninstall；目录里有别人的文件时报 foreign-files", async () => {
+    const skipped = setup({
+      run: (args) =>
+        args[1] === "uninstall"
+          ? {
+              code: 0,
+              stdout: JSON.stringify({
+                removed: [],
+                skipped: [{ target: "claude", reason: "foreign-files" }],
+              }),
+            }
+          : { code: 0, stdout: statusJson("current", "missing") },
+    });
+    const outcome = await skipped.cli.removeAgentSkill("claude");
+    expect(outcome.failure).toEqual({ target: "claude", reason: "foreign-files" });
+    expect(skipped.ran[0]).toEqual(["skill", "uninstall", "--target", "claude", "--json"]);
+    const done = setup({
+      run: (args) => ({
+        code: 0,
+        stdout:
+          args[1] === "uninstall"
+            ? JSON.stringify({ removed: [{}], skipped: [] })
+            : statusJson("missing", "missing"),
+      }),
+    });
+    expect((await done.cli.removeAgentSkill("claude")).failure).toBeUndefined();
+  });
+
+  it("[DESKTOP-SETTINGS-53] 在访达中显示：已装才显示技能说明文件，没装什么都不做", async () => {
+    const file = `${HOME}/.claude/skills/runyard/SKILL.md`;
+    const installed = setup({ existing: [file] });
+    await installed.cli.revealAgentSkill("claude");
+    expect(installed.revealed).toEqual([file]);
+    const none = setup();
+    await none.cli.revealAgentSkill("agents");
+    expect(none.revealed).toEqual([]);
   });
 });
 
@@ -181,11 +270,11 @@ it("[DESKTOP-SETTINGS-44] 只打开固定语言说明，未安装也可用且拒
   const { cli, ran } = setup({
     openGuide: async (locale) => {
       opened.push(locale);
-      return true;
+      return "guide";
     },
   });
-  expect(await cli.openSkillGuide("zh-CN")).toEqual({ ok: true });
-  expect(await cli.openSkillGuide("en")).toEqual({ ok: true });
+  expect(await cli.openSkillGuide("zh-CN")).toEqual({ ok: true, content: "guide" });
+  expect(await cli.openSkillGuide("en")).toEqual({ ok: true, content: "guide" });
   for (const bad of ["../../private.txt", "zh", "", undefined, {}, ["en"]])
     expect(await cli.openSkillGuide(bad)).toEqual({ ok: false });
   expect(opened).toEqual(["zh-CN", "en"]);

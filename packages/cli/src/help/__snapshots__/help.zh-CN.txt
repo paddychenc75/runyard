@@ -18,7 +18,7 @@ runyard - 用本地模板新建、运行和管理项目，每个项目是一个�
   config <command>       查看和修改命令行的设置
 
 全局选项：
-  --json           输出一个 JSON 对象，不受语言影响
+  --json           以 JSON 输出命令结果；帮助仍为文本
   --quiet          不输出进度和提示，结果和错误照常输出
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
@@ -41,7 +41,7 @@ runyard template - 查看、保存、检查和测试模板
   test <template>  对模板做冒烟测试
 
 全局选项：
-  --json           输出一个 JSON 对象，不受语言影响
+  --json           以 JSON 输出命令结果；帮助仍为文本
   --quiet          不输出进度和提示，结果和错误照常输出
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
@@ -57,10 +57,12 @@ runyard skill - 安装给智能体用的说明
   runyard skill <command> [options]
 
 命令：
-  install  把说明写到智能体的目录
+  install    把说明写到智能体的目录
+  status     查看说明装在哪、是不是当前版本
+  uninstall  把装过的说明移到废纸篓
 
 全局选项：
-  --json           输出一个 JSON 对象，不受语言影响
+  --json           以 JSON 输出命令结果；帮助仍为文本
   --quiet          不输出进度和提示，结果和错误照常输出
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
@@ -80,7 +82,7 @@ runyard config - 查看和修改命令行的设置
   set <key> <value>  修改设置
 
 全局选项：
-  --json           输出一个 JSON 对象，不受语言影响
+  --json           以 JSON 输出命令结果；帮助仍为文本
   --quiet          不输出进度和提示，结果和错误照常输出
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
@@ -109,7 +111,7 @@ runyard new - 用模板新建项目，可以接着运行
   --no-wait                 请求被接受后立即返回
 
 全局选项：
-  --json           输出一个 JSON 对象，不受语言影响
+  --json           以 JSON 输出命令结果；帮助仍为文本
   --quiet          不输出进度和提示，结果和错误照常输出
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
@@ -132,7 +134,7 @@ runyard run - 运行项目，等到就绪或退出
   --port <n>           只用于这一次的端口
 
 全局选项：
-  --json           输出一个 JSON 对象，不受语言影响
+  --json           以 JSON 输出命令结果；帮助仍为文本
   --quiet          不输出进度和提示，结果和错误照常输出
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
@@ -153,7 +155,7 @@ runyard stop - 停止项目的运行
   --mine  只停命令行持有的运行
 
 全局选项：
-  --json           输出一个 JSON 对象，不受语言影响
+  --json           以 JSON 输出命令结果；帮助仍为文本
   --quiet          不输出进度和提示，结果和错误照常输出
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
@@ -173,7 +175,7 @@ runyard status - 列出项目和运行状态
   --running  只列出运行中的项目
 
 全局选项：
-  --json           输出一个 JSON 对象，不受语言影响
+  --json           以 JSON 输出命令结果；帮助仍为文本
   --quiet          不输出进度和提示，结果和错误照常输出
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
@@ -196,7 +198,7 @@ runyard logs - 读取项目的日志
   --raw             保留颜色码等控制序列
 
 全局选项：
-  --json           输出一个 JSON 对象，不受语言影响
+  --json           以 JSON 输出命令结果；帮助仍为文本
   --quiet          不输出进度和提示，结果和错误照常输出
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
@@ -213,7 +215,7 @@ runyard rm - 停止项目并移到废纸篓
   pg  项目名称或路径
 
 全局选项：
-  --json           输出一个 JSON 对象，不受语言影响
+  --json           以 JSON 输出命令结果；帮助仍为文本
   --quiet          不输出进度和提示，结果和错误照常输出
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
@@ -231,7 +233,7 @@ runyard doctor - 检查运行环境并输出诊断信息
   --bundle         导出诊断包并打印路径
 
 全局选项：
-  --json           输出一个 JSON 对象，不受语言影响
+  --json           以 JSON 输出命令结果；帮助仍为文本
   --quiet          不输出进度和提示，结果和错误照常输出
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
@@ -245,7 +247,7 @@ runyard version - 输出版本号
   runyard version
 
 全局选项：
-  --json           输出一个 JSON 对象，不受语言影响
+  --json           以 JSON 输出命令结果；帮助仍为文本
   --quiet          不输出进度和提示，结果和错误照常输出
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
@@ -259,7 +261,7 @@ runyard template list - 列出模板
   runyard template list
 
 全局选项：
-  --json           输出一个 JSON 对象，不受语言影响
+  --json           以 JSON 输出命令结果；帮助仍为文本
   --quiet          不输出进度和提示，结果和错误照常输出
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
@@ -276,7 +278,7 @@ runyard template show - 查看一个模板
   template  模板标识
 
 全局选项：
-  --json           输出一个 JSON 对象，不受语言影响
+  --json           以 JSON 输出命令结果；帮助仍为文本
   --quiet          不输出进度和提示，结果和错误照常输出
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
@@ -301,7 +303,7 @@ runyard template save - 把项目存为模板
   --exclude <path>      从模板里去掉默认会收录的文件，可重复
 
 全局选项：
-  --json           输出一个 JSON 对象，不受语言影响
+  --json           以 JSON 输出命令结果；帮助仍为文本
   --quiet          不输出进度和提示，结果和错误照常输出
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
@@ -318,7 +320,7 @@ runyard template lint - 检查模板的格式
   template  模板标识或模板文件夹
 
 全局选项：
-  --json           输出一个 JSON 对象，不受语言影响
+  --json           以 JSON 输出命令结果；帮助仍为文本
   --quiet          不输出进度和提示，结果和错误照常输出
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
@@ -339,7 +341,7 @@ runyard template test - 对模板做冒烟测试
   --tool-version <version>  用指定的工具版本测试
 
 全局选项：
-  --json           输出一个 JSON 对象，不受语言影响
+  --json           以 JSON 输出命令结果；帮助仍为文本
   --quiet          不输出进度和提示，结果和错误照常输出
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
@@ -356,7 +358,41 @@ runyard skill install - 把说明写到智能体的目录
   --target <claude|agents|all>  写到哪里：claude、agents 或 all
 
 全局选项：
-  --json           输出一个 JSON 对象，不受语言影响
+  --json           以 JSON 输出命令结果；帮助仍为文本
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明
+  --version        输出版本号
+
+$ runyard skill status --help
+runyard skill status - 查看说明装在哪、是不是当前版本
+
+用法：
+  runyard skill status [options]
+
+选项：
+  --target <claude|agents|all>  针对哪个智能体：claude、agents 或 all
+
+全局选项：
+  --json           以 JSON 输出命令结果；帮助仍为文本
+  --quiet          不输出进度和提示，结果和错误照常输出
+  --root <dir>     用这个目录代替主目录
+  --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
+  --help           显示说明
+  --version        输出版本号
+
+$ runyard skill uninstall --help
+runyard skill uninstall - 把装过的说明移到废纸篓
+
+用法：
+  runyard skill uninstall [options]
+
+选项：
+  --target <claude|agents|all>  针对哪个智能体：claude、agents 或 all
+
+全局选项：
+  --json           以 JSON 输出命令结果；帮助仍为文本
   --quiet          不输出进度和提示，结果和错误照常输出
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
@@ -373,7 +409,7 @@ runyard config get - 显示设置的当前值和来源
   key  设置项的名字，目前只有 lang
 
 全局选项：
-  --json           输出一个 JSON 对象，不受语言影响
+  --json           以 JSON 输出命令结果；帮助仍为文本
   --quiet          不输出进度和提示，结果和错误照常输出
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN
@@ -391,7 +427,7 @@ runyard config set - 修改设置
   value  新的值
 
 全局选项：
-  --json           输出一个 JSON 对象，不受语言影响
+  --json           以 JSON 输出命令结果；帮助仍为文本
   --quiet          不输出进度和提示，结果和错误照常输出
   --root <dir>     用这个目录代替主目录
   --lang <locale>  只对这一条命令使用的语言，en 或 zh-CN

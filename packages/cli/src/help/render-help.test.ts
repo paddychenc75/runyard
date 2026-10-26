@@ -75,15 +75,21 @@ describe("--help", () => {
     }
   });
 
-  it("-h 与 --help 相同；--help 在 --json 下仍是文字，退出码 0", async () => {
-    const h = new Harness();
-    open.push(h);
-    const long = await h.run(["status", "--help"]);
-    expect((await h.run(["status", "-h"])).stdout).toBe(long.stdout);
-    const json = await h.run(["status", "--help", "--json"]);
-    expect(json.stdout).toBe(long.stdout);
-    expect(json.code).toBe(0);
-  });
+  it.each(["en", "zh-CN"] as const)(
+    "[CLI-COMMANDS-15] %s 的根、组和子命令帮助在 --json 下仍是文字",
+    async (lang) => {
+      const h = new Harness();
+      open.push(h);
+      for (const path of screens) {
+        const long = await h.run(["--lang", lang, ...path, "--help"]);
+        expect((await h.run(["--lang", lang, ...path, "-h"])).stdout).toBe(long.stdout);
+        const json = await h.run(["--lang", lang, ...path, "--help", "--json"]);
+        expect(json.stdout).toBe(long.stdout);
+        expect(json.stderr).toBe("");
+        expect(json.code).toBe(0);
+      }
+    },
+  );
 
   it("没有命令的 --help 与根帮助相同；选项写在命令之前也认", async () => {
     const h = new Harness();

@@ -55,5 +55,7 @@ export function sortLabel(sort: SortKey, t: Translate) {
       return t("library.sort.name.label");
     case "created":
       return t("library.sort.created.label");
+    case "size":
+      return t("library.sort.size.label");
   }
 }

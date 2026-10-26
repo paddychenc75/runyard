@@ -7,6 +7,12 @@ export {
   judgeAutoClean,
 } from "./auto-clean.ts";
 export { createUlid, randomUlid } from "./create-ulid.ts";
+export {
+  computeDiskUsage,
+  DEPENDENCY_DIR_NAMES,
+  type DiskUsageOptions,
+  type DiskUsageResult,
+} from "./disk-usage.ts";
 export { isLibraryError, LibraryError, libraryError } from "./library-error.ts";
 export { libraryIndexPath } from "./library-index.ts";
 export type {
