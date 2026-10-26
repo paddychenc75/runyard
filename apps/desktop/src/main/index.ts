@@ -28,11 +28,10 @@ import {
   installCliLink,
   uninstallCliLink,
 } from "./integration/cli-link.ts";
-import { createDesktopIpcHost, settingsDialogOwner } from "./integration/desktop-ipc-host.ts";
+import { createDesktopIpcHost } from "./integration/desktop-ipc-host.ts";
 import { CLEAN_CHECK_INTERVAL_MS, createDockBadge } from "./integration/dock-badge.ts";
 import { createMainWindow } from "./integration/main-window.ts";
 import { createElectronSettingsHost } from "./integration/settings-host.ts";
-import { createSettingsWindowHost } from "./integration/settings-window-host.ts";
 import { claimSingleInstance, focusWindow } from "./integration/single-instance.ts";
 import { ElectronSystemActions } from "./integration/system-actions.ts";
 import { createSystemSettings } from "./integration/system-settings-host.ts";
@@ -40,7 +39,7 @@ import { createTerminalService, runTerminalSmokeFlow } from "./integration/termi
 import { resolveUserDataDir } from "./integration/user-data.ts";
 import { createVueChannelHost } from "./integration/vue-channel-host.ts";
 import { keepAliveAfterClose } from "./integration/window-lifecycle.ts";
-import { registerBridgeHandlers } from "./ipc-handlers.ts";
+import { registerBridgeHandlers, requestCommand } from "./ipc-handlers.ts";
 import { type LibraryClient, LibraryController } from "./library-controller.ts";
 import { LinkHandler } from "./links/link-handler.ts";
 import { createLinkHost } from "./links/link-host.ts";
@@ -211,14 +210,7 @@ async function main(args: DesktopArgs): Promise<void> {
     session: new FileSessionStore(join(app.getPath("userData"), "workspace-session.json")),
     terminals: terminalHooks,
   });
-  const settingsWindow = createSettingsWindowHost({
-    preloadPath: join(distDir, "preload", "index.cjs"),
-    statePath: join(app.getPath("userData"), "settings-window.json"),
-    platform: currentPlatform(),
-    locale,
-    onFocusChanged: (focused) => menu.setSettingsWindowActive(focused),
-  });
-  const ipcHost = createDesktopIpcHost(window, () => settingsWindow.controller.current);
+  const ipcHost = createDesktopIpcHost(window);
   const terminals = createTerminalService({
     root: args.root,
     distDir,
@@ -228,7 +220,6 @@ async function main(args: DesktopArgs): Promise<void> {
   // 应用菜单（安装、重建、菜单动作转给界面都在 native-ui/menu-host.ts）；语言变了、切到或离开项目标签页都重建
   const menu = createMenuHost({
     window,
-    settingsWindow: settingsWindow.controller,
     ipcHost,
     locale,
     platform: currentPlatform(),
@@ -239,16 +230,16 @@ async function main(args: DesktopArgs): Promise<void> {
   });
   menu.install();
   controller.onChange((state) => menu.setProjectTabActive(state.activeTab !== "library"));
+  window.on("focus", () => void controller.checkProjectFolders());
   const home = args.root ?? homedir();
   const settings = new SettingsController({
     client,
     host: createElectronSettingsHost({
       home,
       window,
-      dialogWindow: () => settingsDialogOwner(window, settingsWindow.controller.current),
+      dialogWindow: () => window,
       onLocaleChanged: (next) => {
         menu.install(next);
-        settingsWindow.setLocale(next);
       },
     }),
     library: controller,
@@ -259,7 +250,7 @@ async function main(args: DesktopArgs): Promise<void> {
       runtime: runtime(),
       home,
       window,
-      dialogWindow: () => settingsDialogOwner(window, settingsWindow.controller.current),
+      dialogWindow: () => window,
     }),
     ...(args.theme === undefined ? {} : { fallbackTheme: args.theme }),
     ...(initial === undefined ? {} : { initial }),
@@ -272,6 +263,7 @@ async function main(args: DesktopArgs): Promise<void> {
       controller.getState().playgrounds.find((playground) => playground.id === id)?.path ?? null,
     onChange: (project, changes) => {
       ipcHost.send(desktopChannels.event, "files.changed", { project, changes });
+      void controller.checkProjectFolders(project);
       void language.filesChanged(project, changes);
     },
   });
@@ -335,8 +327,13 @@ async function main(args: DesktopArgs): Promise<void> {
       refresh: controller.refresh,
     }),
     { links, updates },
-    () => settingsWindow.controller.open(),
+    () => {
+      focusWindow(window);
+      window.webContents.focus();
+      requestCommand(ipcHost, "app.settings");
+    },
     language,
+    (active) => menu.setSettingsPageActive(active),
   );
   await window.loadURL(`${APP_ORIGIN}/`);
   await controller.start();

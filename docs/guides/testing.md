@@ -132,17 +132,15 @@ Node 24 下运行 `pnpm --filter @runyard/desktop build`，然后 `node apps/des
 
 Node 24 下先运行 `node tooling/design-render/render.mjs Settings SettingsDark SettingsEn SettingsDarkEn SettingsNarrow SettingsNarrowDark SettingsNarrowEn SettingsNarrowDarkEn`，再运行 `pnpm --filter @runyard/desktop build` 和 `node apps/desktop/e2e/settings-design.measure.ts`。脚本每次新建临时 HOME/root，顺序启动自己的 Electron 应用并核对收尾，输出八组 1440/1100 × 浅深 × 中英文的原图、并排图和测量 JSON；1100 宽滚到“编辑与运行”，1440 宽停在最上面。
 
-`RUNYARD_SETTINGS_REVIEW_OUTPUT` 指定产物目录，不设时新建临时目录；`RUNYARD_REVIEW_CHROME` 可覆盖生成并排图用的 Chrome 路径。原图保留原始像素，并排图按相同 CSS 逻辑像素展示（设计渲染器输出 2× 图，按 820×900 显示），设计稿与设置窗口都为 820×900；主窗口分别设为1440/1100宽以核对两者独立。设置窗口没有侧栏或标签条；截图只包含网页内容，原生红绿灯位置/全屏能力在窗口e2e核对。测量核对 720 内容列居中、140 标题区、至少 54 行高、至少 24 文字与控件间距、说明不超过两行、没有横向溢出。真实设置值、工具检测结果取当前临时环境；内容不同应在评审里说明。`settings.e2e.ts` 另测最小 760 宽英文导航的 Tab 顺序、末按钮完整可见、焦点环四边至少 4px 留白，以及主页面不横向溢出。
+`RUNYARD_SETTINGS_REVIEW_OUTPUT` 指定产物目录，不设时新建临时目录；`RUNYARD_REVIEW_CHROME` 可覆盖并排图用的 Chrome。原设计参考为820×900，实际主窗口分别1440/1100：保留顶部项目标签与运行状态、设置内容嵌入主窗，是负责人2026-10-20批准的差异，不能声称外框逐像素一致。标题区按内容自然高度；共用848外容器含两侧4px焦点环余量，可见卡片最宽840居中，h1/首导航pill/h2/card同线。检查至少64行高、20/12行内距、横向24/换行后纵向12的文字控件间距、32组距及无横向溢出。检测结果取临时环境，内容差异如实列出。
 
-设置窗口的端到端操作先用 `e2e/support/settings-window.ts` 的 `openSettingsWindow` 取得该窗口，
-不要把主窗口的 `page` 当作设置页。主窗口与设置窗口共享进程但网页不同；用例分别核对焦点、
-主题重开后切回系统、关闭设置后主窗口状态，以及原生选择框属于发起操作的前台窗口。
+端到端操作用 `e2e/support/settings-page.ts` 的 `openSettingsPage`，返回同一个主窗口page，不等待新窗口。`settings-alignment.e2e.ts`覆盖720/900/1100/1440×中英浅深真实几何，固定已安装长CLI状态与长工具路径草稿仅供布局验证，另测保存/取消按钮边界、文字至少160px、控件不截断及首尾导航焦点环四边4px。普通hint仍限两行，wrapHint允许自然多行。`settings-navigation.e2e.ts` 验证重复打开保留草稿/焦点、隐藏主窗恢复、语言主题和选择框归属；`settings-workspace.e2e.ts` 用真实Monaco/model对象、selection、运行标识及PTY进程启动时间验证切换不重建，720宽仍能返回，隐藏编辑器不接收保存快捷键；终端Portal菜单不能留在设置上。设置中⌘W只返回原项目或资源库；旧38–40独立窗口场景作废，由45–48替代。
 
 ## 工具路径输入的设计对照
 
 #484 的 `apps/desktop/e2e/tool-path.e2e.ts` 在临时 HOME 内生成只输出版本号的可执行文件，验证含空格路径输入、保存、无效文件不覆盖、Escape、Tab 和重新装载后读取。它走真实工具验证，不执行用户的工具路径。
 
-Node 24 下先运行 `node tooling/design-render/render.mjs SettingsNarrow SettingsNarrowDark SettingsNarrowEn SettingsNarrowDarkEn` 和桌面构建，再运行 `node apps/desktop/e2e/tool-path-design.measure.ts`。脚本固定四个工具的检测报告（含 universal 架构和缺失工具），仅供画面取证；主窗口 1440/1100 分别搭配真实独立设置窗口 820/760，浅深×中英共八组。设计图抽取现有 SettingsNarrow 的运行环境区域，保留内部样式；新增完整输入框、辅助选择按钮和输入说明是批准的差异，版本及架构用固定测试状态。量尺检查架构与状态至少 8px、各行状态列对齐、输入可用宽度和无横向溢出。`RUNYARD_TOOL_PATH_REVIEW_OUTPUT` 指定新临时产物目录；CI 上传 `tool-path-design-comparison`。
+Node 24 下先运行 `node tooling/design-render/render.mjs SettingsNarrow SettingsNarrowDark SettingsNarrowEn SettingsNarrowDarkEn` 和桌面构建，再运行 `node apps/desktop/e2e/tool-path-design.measure.ts`。脚本固定四个工具的检测报告（含 universal 架构和缺失工具），仅供画面取证；主窗口 1440/1100 分别搭配主窗口设置页，浅深×中英共八组。设计图抽取现有 SettingsNarrow 的运行环境区域，保留内部样式；新增完整输入框、辅助选择按钮和输入说明是批准的差异，版本及架构用固定测试状态。量尺检查架构与状态至少 8px、各行状态列对齐、输入可用宽度和无横向溢出。`RUNYARD_TOOL_PATH_REVIEW_OUTPUT` 指定新临时产物目录；CI 上传 `tool-path-design-comparison`。
 
 ## 预览刷新动效的真实应用取证
 
@@ -152,10 +150,25 @@ Node 24 下先 `pnpm --filter @runyard/desktop build`，再运行 `pnpm --filter
 
 Web 系列只有 1440 画板，1100 对照保留原布局裁取，不代表存在窄窗设计稿。原生预览另附 preview.png；静态项目和设计的 React 示例内容不同，原有顶栏/侧栏差异分别由 #446/#448 追踪，停止图标沿用已合并 #475。动效是 #477 批准的新增行为，不能用静止图证明动效生命周期，须结合真实端到端结果。
 
+### 脚本输出布局取证（#464）
+
+先构建桌面应用，运行 `node tooling/design-render/render.mjs Script ScriptDark ScriptEn ScriptDarkEn`，再运行 `node apps/desktop/e2e/script-output-design.measure.ts`。脚本在临时 HOME/root 中创建 Node 脚本项目，覆盖浅深、中英、1440/1100八组；输出目录由 `RUNYARD_SCRIPT_REVIEW_OUTPUT` 指定，否则新建临时目录。只验证右侧输出与底部终端入口（未打开终端时底部是一行 36px 的标题条加“打开终端”按钮），未点击前不创建 shell；示例程序与设计的 Python 示例不同，PR 中列明差异。CI 上传 script-output-design-comparison。
+
+### 侧栏与筛选取证（sidebar-filters）
+
+运行 `apps/desktop/e2e/sidebar-filters.measure.ts` 之前要先渲染它读取的画板：`node tooling/design-render/render.mjs Main LibraryRunning LibraryAutoClean LibraryAgentEmpty RowMenu AutoCleanDialog CleanReminder`（脚本从设计渲染的输出目录里按画板名取 HTML）。资源库导航按名字取（“资源库导航” / Library navigation），因为编辑器面包屑也是 navigation。
+
 ### 请求与预览工具栏取证（#436）
 
 渲染 Service/ServiceDark/ServiceEn/ServiceDarkEn 和 Web/WebEn/WebLight/WebLightEn，再运行 `node apps/desktop/e2e/request-layout.measure.ts`。临时 HOME/root 中的真实 Hono 项目发送请求后停止，覆盖当前响应与历史响应提示；另建 HTML 验证预览图标按钮。浅深、中英、1440/1100共24图写入 `RUNYARD_REQUEST_REVIEW_OUTPUT` 或临时目录。原生预览单独抓取后按占位坐标合成并保留原图。`request-status.e2e.ts` 使用方向键将面板收至280，断言地址不溢出、路径输入宽度至少40像素、工具栏不换行、停止后的响应明确标旧。CI上传request-layout-design-comparison。
 
 ### 窗口顶部取证（#446）
 
-先渲染 Main、MainSidebarHidden、Web、Settings 的浅深中英画板，再运行 `node apps/desktop/e2e/window-header.measure.ts`。每个临时实例覆盖1440/1100、展开/收起/项目/独立设置四种状态，32组对照与 measurements.json 写到 `RUNYARD_HEADER_REVIEW_OUTPUT` 或新临时目录。原生红绿灯API坐标19/19；侧栏按钮90/12，展开收起恢复不移动；首标签134，标题70，文件树顶52/圆角9。项目原生预览单独截图后按占位实测坐标合成，保留原始图和预览图。没有窄版的画板使用完整参考，不把裁切稿当窄窗设计。
+先渲染 Main、MainSidebarHidden、Web、Settings 的浅深中英画板，再运行 `node apps/desktop/e2e/window-header.measure.ts`。每个临时实例覆盖1440/1100、展开/收起/项目/设置页面四种状态，32组对照与 measurements.json 写到 `RUNYARD_HEADER_REVIEW_OUTPUT` 或新临时目录。原生红绿灯API坐标19/19；侧栏按钮90/12，展开收起恢复不移动；首标签134，标题70，文件树顶52/圆角9。项目原生预览单独截图后按占位实测坐标合成，保留原始图和预览图。没有窄版的画板使用完整参考，不把裁切稿当窄窗设计。
+
+
+### 全局侧栏导航验收
+
+全局导航（负责人 2026-10-21）：顶部只列项目；资源库页面无项目选中时，首个可见项目仍有键盘入口。侧栏在项目页没有伪造的当前分类；窄窗临时展开聚焦第一项，并经浮层计数器让原生预览让位。`sidebar.toggle` 和 `app.toggleSidebar` 在所有页面只控制全局侧栏；`app.toggleTree` 与文件树按钮独立。
+
+`apps/desktop/e2e/persistent-sidebar.e2e.ts` 用两个真实 HTML 项目验证全局侧栏偏好、文件树独立、资源库键盘入口及 720 宽原生预览让位。`window-header.measure.ts` 在 1440/1100、浅深、中英八种组合各记录资源库展开、资源库收起、项目展开、项目收起和设置五种状态；原设计与用户批准的新导航差异见产物说明。

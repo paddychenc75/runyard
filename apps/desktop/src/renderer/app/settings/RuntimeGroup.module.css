@@ -1,4 +1,4 @@
-/* 运行环境表（设计稿 Settings）：表头 28、行高 32、左右内边距 16；列宽数字出自设计稿，写成间距变量的组合 */
+/* 运行环境表（设计稿 Settings）：表头 28、行高 32、左右内边距 20；列宽数字出自设计稿，写成间距变量的组合 */
 .recheck {
   flex: none;
 }
@@ -25,10 +25,10 @@
     "path path path path";
   column-gap: var(--space-4);
   align-items: center;
-  min-block-size: var(--size-row);
+  min-block-size: calc(var(--size-row) + var(--space-5));
   box-sizing: border-box;
-  padding-block: var(--space-5);
-  padding-inline: var(--space-7);
+  padding-block: var(--space-6);
+  padding-inline: var(--space-8);
   border-block-start: 1px solid var(--color-line-hairline);
   font-size: var(--text-body-size);
 }
@@ -121,7 +121,7 @@
   align-items: center;
   gap: var(--space-4);
   padding-block: var(--space-4);
-  padding-inline: var(--space-7);
+  padding-inline: var(--space-8);
   color: var(--color-status-warning-text);
   font-size: var(--text-secondary-size);
 }

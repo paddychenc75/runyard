@@ -17,6 +17,24 @@ export const autoCleanSchema = z.object({
 });
 export type AutoClean = z.infer<typeof autoCleanSchema>;
 
+// 项目文件夹占的磁盘（规格 LIBRARY-DISK-USAGE）。没有这个字段：还在计算（找不到文件夹的项目也没有）。
+// 只存在于管理进程的内存里，不写盘
+export const playgroundSizeSchema = z.object({
+  totalBytes: z.number().int().nonnegative().describe("项目文件夹的总占用，含依赖目录和 .runyard"),
+  dependencyBytes: z
+    .number()
+    .int()
+    .nonnegative()
+    .describe("其中依赖目录（node_modules、.venv）的占用"),
+  dependencyDirs: z.array(z.string().min(1)).describe("找到的依赖目录名，去重、排好序"),
+  unreadable: z
+    .number()
+    .int()
+    .nonnegative()
+    .describe("没有权限读取、被跳过的文件夹个数；大于 0 就是“不完整”"),
+});
+export type PlaygroundSize = z.infer<typeof playgroundSizeSchema>;
+
 export const playgroundSchema = z
   .object({
     id: z.string().min(1).describe("创建时生成、之后不变；文件夹改名或移动后靠它认回"),
@@ -44,6 +62,7 @@ export const playgroundSchema = z
     lastUsedAt: timestampSchema,
     lastOpenedAt: timestampSchema.optional(),
     missingSince: timestampSchema.optional().describe("找不到文件夹的起始时间"),
+    size: playgroundSizeSchema.optional().describe("磁盘占用；没有表示还在计算"),
   })
   .meta({ id: "Playground" });
 export type Playground = z.infer<typeof playgroundSchema>;

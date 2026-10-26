@@ -23,6 +23,8 @@
 | cli.command.run.title | 运行项目，等到就绪或退出 | Run a playground and wait until it is ready or exits | — |
 | cli.command.skill.title | 安装给智能体用的说明 | Install the instructions for agents | — |
 | cli.command.skillInstall.title | 把说明写到智能体的目录 | Write the instructions to the agent folders | — |
+| cli.command.skillStatus.title | 查看说明装在哪、是不是当前版本 | Show where the instructions are installed and whether they are current | — |
+| cli.command.skillUninstall.title | 把装过的说明移到{term_trash} | Move the installed instructions to the {term_trash} | — |
 | cli.command.status.title | 列出项目和运行状态 | List playgrounds and their run state | — |
 | cli.command.stop.title | 停止项目的运行 | Stop the run of a playground | — |
 | cli.command.template.title | 查看、保存、检查和测试模板 | Show, save, lint and test templates | — |
@@ -68,7 +70,7 @@
 | cli.option.help.hint | 显示说明 | Show help | — |
 | cli.option.ifExists.hint | 名称已存在时的做法，reuse 或 fail | What to do if the name exists: reuse or fail | — |
 | cli.option.include.hint | 把默认不收录的文件加进模板，可重复 | Add a file that is left out by default; repeatable | — |
-| cli.option.json.hint | 输出一个 JSON 对象，不受语言影响 | Print one JSON object; not affected by language | — |
+| cli.option.json.hint | 以 JSON 输出命令结果；帮助仍为文本 | Print command results as JSON; help stays text | — |
 | cli.option.keepDir.hint | 测试后保留临时文件夹 | Keep the temporary folder after the test | — |
 | cli.option.lang.hint | 只对这一条命令使用的语言，en 或 zh-CN | Language for this command only: en or zh-CN | — |
 | cli.option.mine.hint | 只停命令行持有的运行 | Stop only the runs held by the command line | — |
@@ -83,6 +85,7 @@
 | cli.option.run.hint | 创建后立即运行 | Run it right after creating | — |
 | cli.option.running.hint | 只列出运行中的项目 | List only playgrounds that are running | — |
 | cli.option.since.hint | 只读这个游标之后的内容 | Read only what comes after this cursor | — |
+| cli.option.skillTarget.hint | 针对哪个智能体：claude、agents 或 all | Which agent: claude, agents or all | — |
 | cli.option.tail.hint | 只读最后几行 | Read only the last lines | — |
 | cli.option.target.hint | 写到哪里：claude、agents 或 all | Where to write: claude, agents or all | — |
 | cli.option.template.hint | 只检查这个模板所需的环境 | Check only what this template needs | — |
@@ -97,8 +100,11 @@
 | cli.run.ready.body | {name} 已就绪：{url} | {name} is ready at {url} | name：项目名称，原样显示；url：服务的地址，以 http://127.0.0.1: 开头，原样显示 |
 | cli.run.started.body | 已启动 {name}（运行 {runId}）。 | Started {name} (run {runId}). | name：项目名称，原样显示；runId：运行的标识，原样显示 |
 | cli.run.starting.body | 正在启动 {name} | Starting {name} | name：项目名称，原样显示 |
-| cli.skillGuide.body | 这是给人看的中文对照，智能体以 SKILL.md 为准。  # Runyard  Runyard 从模板创建小项目，在后台运行并保存日志。 始终添加 `--json`：标准输出就会恰好是一个可解析的 JSON 对象。  ## 工作流程  1. 不确定选哪个模板时，先列出模板：`runyard template list --json`。 2. 一步创建并启动项目，并说明它的用途：    `runyard new '<template>' [name] --run --note "what this is for" --json`    网页或服务的结果包含 `run.url`；脚本则在退出后返回输出。 3. 直接编辑结果里 `path` 下的文件。运行中的服务会自行重新加载。 4. 使用 `runyard logs '<name>' --since '<cursor>' --json` 检查结果。    使用上次结果中的 `cursor`，只读取新增内容。 5. 用完后停止：`runyard stop '<name>' --json`。  ## 规则  - 不要为这些项目自行启动开发服务器。使用 `runyard run '<name>' --json`。 - 只用于验证、无须长期保留的项目：添加 `--clean-after 30d` 到 `new`，   让它以后自动清理。如果用户说要留着，就不要添加这个选项。 - 命令失败时，JSON 包含 `error.code` 和 `error.hint`。按 `error.hint` 的说明处理，   不要盲目重复同一个命令。 - `runyard status --json` 显示正在运行的项目。`runyard doctor --json` 显示已安装的工具。 | --- name: runyard description: Create, run and inspect small throwaway code projects (web pages, React apps, scripts) with the runyard command line. Use it when you need to try out or show a piece of code instead of starting a dev server yourself. ---  # Runyard  Runyard creates small projects from templates, runs them in the background and keeps their logs. Always add `--json`: standard output is then exactly one JSON object that you can parse.  ## Workflow  1. List templates when you are unsure which one fits: `runyard template list --json`. 2. Create and start a project in one step, and say why it exists:    `runyard new '<template>' [name] --run --note "what this is for" --json`    For a server the result has `run.url`; for a script it has the output once it exits. 3. Edit the files under the `path` in the result directly. A running server reloads by itself. 4. Check what happened with `runyard logs '<name>' --since '<cursor>' --json`.    Use the `cursor` from the previous result to read only what is new. 5. Stop it when you are done: `runyard stop '<name>' --json`.  ## Rules  - Do not start your own dev server for these projects. Use `runyard run '<name>' --json`. - A project that only verifies something and is not meant to be kept: add `--clean-after 30d` to `new`   so it is cleaned up later. If the user says to keep it, leave the option out. - When a command fails, the JSON has `error.code` and `error.hint`. Do what `error.hint` says,   do not retry the same command blindly. - `runyard status --json` shows what is running. `runyard doctor --json` shows which tools are installed. | — |
+| cli.skillGuide.body | --- name: runyard description: 使用 runyard 命令行创建、运行和检查小型代码项目（网页、React 应用、脚本）。需要试验或展示代码时使用，不要自行启动开发服务器。 ---  # Runyard  Runyard 从模板创建小项目，在后台运行并保存日志。 执行命令时添加 `--json`：标准输出是一个可解析的 JSON 对象。 例外：`--help` 即使带 `--json` 也返回帮助文本；`logs --follow --json` 每行返回一个 JSON 对象。  ## 工作流程  1. 不确定选哪个模板时，先列出模板：`runyard template list --json`。 2. 一步创建并启动项目，并说明它的用途：    `runyard new '<template>' [name] --run --note "what this is for" --json`    网页或服务的结果包含 `run.url`；脚本则在退出后返回输出。 3. 直接编辑结果里 `path` 下的文件。运行中的服务会自行重新加载。 4. 使用 `runyard logs '<name>' --since '<cursor>' --json` 检查结果。    使用上次结果中的 `cursor`，只读取新增内容。 5. 用完后停止：`runyard stop '<name>' --json`。 6. 任务结束后不再需要的验证项目，移到{term_trash}：    `runyard rm '<name>' --json`。这也会停止运行。用户要留着的项目应保留。  ## 规则  - 不要为这些项目自行启动开发服务器。使用 `runyard run '<name>' --json`。 - 只用于验证、无须长期保留的项目：添加 `--clean-after 30d` 到 `new`，   让它以后自动清理。如果用户说要留着，就不要添加这个选项。 - 命令失败时，JSON 包含 `error.code` 和 `error.hint`。按 `error.hint` 的说明处理，   不要盲目重复同一个命令。 - `runyard status --json` 显示正在运行的项目。`runyard doctor --json` 显示已安装的工具。 | --- name: runyard description: Create, run and inspect small throwaway code projects (web pages, React apps, scripts) with the runyard command line. Use it when you need to try out or show a piece of code instead of starting a dev server yourself. ---  # Runyard  Runyard creates small projects from templates, runs them in the background and keeps their logs. Add `--json` when executing commands: standard output is one JSON object that you can parse. Exceptions: `--help` returns help text even with `--json`; `logs --follow --json` returns one JSON object per line.  ## Workflow  1. List templates when you are unsure which one fits: `runyard template list --json`. 2. Create and start a project in one step, and say why it exists:    `runyard new '<template>' [name] --run --note "what this is for" --json`    For a server the result has `run.url`; for a script it has the output once it exits. 3. Edit the files under the `path` in the result directly. A running server reloads by itself. 4. Check what happened with `runyard logs '<name>' --since '<cursor>' --json`.    Use the `cursor` from the previous result to read only what is new. 5. Stop it when you are done: `runyard stop '<name>' --json`. 6. If a verification project is no longer needed after the task, move it to {term_trash}:    `runyard rm '<name>' --json`. This also stops its run. Keep projects the user wants to retain.  ## Rules  - Do not start your own dev server for these projects. Use `runyard run '<name>' --json`. - A project that only verifies something and is not meant to be kept: add `--clean-after 30d` to `new`   so it is cleaned up later. If the user says to keep it, leave the option out. - When a command fails, the JSON has `error.code` and `error.hint`. Do what `error.hint` says,   do not retry the same command blindly. - `runyard status --json` shows what is running. `runyard doctor --json` shows which tools are installed. | — |
 | cli.skillInstall.installed.body | 已写入 {target, select, claude {Claude} other {智能体}} 的说明：{path} | Wrote the {target, select, claude {Claude} other {agents}} instructions: {path} | target：claude 或 agents；用 select 选词；path：写入的 SKILL.md 绝对路径，原样显示 |
+| cli.skillStatus.item.body | {target, select, claude {Claude} other {智能体}}：{state, select, missing {没装} current {当前版本} other {旧版本}}（{dir}） | {target, select, claude {Claude} other {agents}}: {state, select, missing {not installed} current {current} other {outdated}} ({dir}) | target：claude 或 agents；用 select 选词；state：missing、current 或 outdated；用 select 选词；dir：技能目录的绝对路径，原样显示 |
+| cli.skillUninstall.removed.body | 已把 {target, select, claude {Claude} other {智能体}} 的说明移到{term_trash}：{dir} | Moved the {target, select, claude {Claude} other {agents}} instructions to the {term_trash}: {dir} | target：claude 或 agents；用 select 选词；dir：技能目录的绝对路径，原样显示 |
+| cli.skillUninstall.skipped.body | 没有移除 {target, select, claude {Claude} other {智能体}} 的说明：{dir} 里还有别的文件，请自己处理 | Kept the {target, select, claude {Claude} other {agents}} instructions: {dir} holds other files, handle them yourself | target：claude 或 agents；用 select 选词；dir：技能目录的绝对路径，原样显示 |
 | cli.status.empty.body | 没有项目。 | No playgrounds. | — |
 | cli.status.item.body | {name}　{state}{url, select, none {} other {　{url}}}{missing, select, yes {　（找不到文件夹）} other {}} | {name}  {state}{url, select, none {} other {  {url}}}{missing, select, yes {  (folder missing)} other {}} | name：项目名称，原样显示；state：运行状态（已按当前语言挑选的文字）；url：地址，原样显示；没有时是 none；missing：yes 或 no；yes 时加“找不到文件夹”标记 |
 | cli.status.summary.body | {count, plural, other {# 个项目运行中}} | {count, plural, one {# playground running} other {# playgrounds running}} | count：运行中的个数 |
@@ -177,6 +183,7 @@
 | desktop.console.tab.label | 输出 | Output | — |
 | desktop.console.tabs.aria | 底部面板 | Bottom panel | — |
 | desktop.console.terminal.label | 终端 | Terminal | — |
+| desktop.console.terminalOpen.action | 打开终端 ⌃` | Open terminal ⌃` | — |
 | desktop.crashed.log.label | 最后的日志 | Last output | — |
 | desktop.crashed.overlay.aria | 崩溃提示 | Crash notice | — |
 | desktop.crashed.title | 已崩溃 · 退出码 {exitCode} | Crashed · exit code {exitCode} | exitCode：进程的退出码 |
@@ -255,6 +262,7 @@
 | desktop.failure.stepReady.label | 就绪，显示页面 | Ready, show page | — |
 | desktop.failure.stepStart.label | 启动开发服务 | Start dev server | — |
 | desktop.failure.steps.aria | 启动步骤 | Start-up steps | — |
+| desktop.idle.body | 还没有运行。点“运行”启动这个项目。 | This playground has not run yet. Choose Run to start it. | — |
 | desktop.linkNotice.linkInvalid.label | 这个链接无法识别 | This link is not recognized | — |
 | desktop.linkNotice.newBusy.label | 已有一个待确认的新建请求，这个链接已忽略 | A create request is already waiting for confirmation, so this link was ignored | — |
 | desktop.linkNotice.newFailed.label | 没能新建 {value} | Could not create {value} | value：链接里写的项目名称、模板标识或新名称（不翻译） |
@@ -474,7 +482,7 @@
 | desktop.start.title | 正在启动 {name} | Starting {name} | name：项目名 |
 | desktop.state.idle.label | 未运行 | Not running | — |
 | desktop.stop.action | 停止 | Stop | — |
-| desktop.stopped.body | 你手动停止了它。点“运行”重新启动；关闭标签页后再打开，也会自动运行。 | You stopped it. Choose Run to start it again; closing the tab and opening it again also runs it. | — |
+| desktop.stopped.body | 项目已停止。点“运行”重新启动；关闭标签页后再打开，也会自动运行。 | The playground is stopped. Choose Run to start it again, or close this tab and reopen it. | — |
 | desktop.tab.cli.label | 命令行 | CLI | — |
 | desktop.templates.create.action | 用它新建 | Create from it | — |
 | desktop.templates.detail.aria | 模板详情 | Template details | — |
@@ -754,7 +762,7 @@
 | library.note.dialog.title | 编辑备注 | Edit note | — |
 | library.note.empty.label | 未填写备注 | No note | — |
 | library.page.results.label | {count, plural, other {# 个结果}} · 共 {total, plural, other {# 个项目}} · 存放在 {root} | {count, plural, one {# result} other {# results}} · {total, plural, one {# playground} other {# playgrounds}} · stored in {root} | count：搜索和筛选后剩下的项目数；total：资源库里项目的总数；root：资源库根目录（主目录缩成 ~） |
-| library.page.summary.label | {total, plural, other {# 个项目}} · {running, plural, other {# 个正在运行}} · 存放在 {root} | {total, plural, one {# playground} other {# playgrounds}} · {running, plural, one {# running} other {# running}} · stored in {root} | total：资源库里项目的总数；running：正在运行的项目数；root：资源库根目录（主目录缩成 ~） |
+| library.page.summary.label | {total, plural, other {# 个项目}}{running, plural, =0 {} other { · # 个正在运行}} · 存放在 {root} | {total, plural, one {# playground} other {# playgrounds}}{running, plural, =0 {} one { · # running} other { · # running}} · stored in {root} | total：资源库里项目的总数；running：正在运行的项目数；root：资源库根目录（主目录缩成 ~） |
 | library.rename.dialog.title | 重命名 | Rename | — |
 | library.rename.nameFolder.hint | 名称同时是文件夹名；改名后旧的 runyard://open 链接会失效。 | The name is also the folder name; renaming breaks old runyard://open links. | — |
 | library.rename.nameRunning.hint | 名称同时是文件夹名；这个项目正在运行，保存后会停止并用新名称重新启动；旧的 runyard://open 链接会失效。 | The name is also the folder name. This playground is running: saving stops it and restarts it under the new name. Old runyard://open links will stop working. | — |
@@ -792,16 +800,25 @@
 | library.search.label | 搜索项目 | Search playgrounds | — |
 | library.search.placeholder | 搜索名称、备注、模板 | Search name, note, template | — |
 | library.search.short.placeholder | 搜索 | Search | — |
+| library.sidebar.calculating.label | {count, plural, other {# 个项目}} · 正在计算大小 | {count, plural, one {# playground} other {# playgrounds}} · calculating size | count：资源库里项目的总数 |
 | library.sidebar.collapse.label | 收起侧栏 | Hide sidebar | — |
 | library.sidebar.expand.label | 显示侧栏 | Show sidebar | — |
 | library.sidebar.footer.label | {count, plural, other {# 个项目}} | {count, plural, one {# playground} other {# playgrounds}} | count：资源库里项目的总数 |
+| library.sidebar.total.label | {count, plural, other {# 个项目}} · 共 {size} | {count, plural, one {# playground} other {# playgrounds}} · {size} total | count：资源库里项目的总数；size：所有项目大小之和（format.fileSize） |
+| library.size.atLeast.label | ≥ {size} | ≥ {size} | size：项目总大小的写法（format.fileSize）；结果不完整时前面加“≥ ” |
+| library.size.calculating.label | 计算中 | Calculating | — |
+| library.size.dependencies.tooltip | 依赖 {size}（{dirs}） | Dependencies {size} ({dirs}) | size：依赖目录的总大小；dirs：找到的依赖目录名，用顿号（英文逗号）连起来 |
+| library.size.dirs.label | {first}、{second} | {first}, {second} | first：第一个依赖目录名；second：第二个依赖目录名（依赖目录只有 node_modules 和 .venv 两种） |
+| library.size.noDependencies.tooltip | 没有依赖目录 | No dependency folders | — |
+| library.size.rest.tooltip | 其余 {size} | Everything else {size} | size：总大小减去依赖大小 |
+| library.size.unreadable.tooltip | 有 {count, plural, other {# 处}}没有权限读取，没有计入 | {count, plural, one {# location} other {# locations}} could not be read and {count, plural, one {is} other {are}} not counted | count：没有权限读取而被跳过的文件夹个数 |
 | library.sort.created.label | 创建时间 | Created | — |
 | library.sort.name.label | 名称 | Name | — |
 | library.sort.recent.label | 最近使用 | Last used | — |
+| library.sort.size.label | 大小 | Size | — |
 | library.status.problem.label | 有问题 | Has a problem | — |
 | library.status.running.label | 运行中 | Running | — |
 | library.status.stopped.label | 已停止 | Stopped | — |
-| library.tab.title | 资源库 | Library | — |
 | library.table.aria | 项目列表 | Playgrounds | — |
 | library.topbar.idle.label | 没有在运行的项目 | No playground running | — |
 | library.topbar.running.label | {count, plural, other {# 个运行中}} | {count, plural, one {# running} other {# running}} | count：正在运行的项目数（标签页和命令行持有的都算） |
@@ -935,10 +952,11 @@
 | settings.runtime.path.label | 路径 | Path | — |
 | settings.runtime.pathFailed.body | 没能指定这个路径 | Couldn't set that path | — |
 | settings.runtime.pathInput.aria | {tool} 可执行文件路径 | {tool} executable path | tool：工具显示名称，如 Node |
-| settings.runtime.pathInput.hint | 输入完整路径后按回车保存，Esc 撤销 | Press Enter to save the full path; Esc to cancel | — |
+| settings.runtime.pathInput.hint | 修改后点击保存或按回车，Esc 撤销 | Click Save or press Enter to apply changes; Esc to cancel | — |
 | settings.runtime.pathInput.placeholder | 输入完整可执行文件路径 | Enter the full executable path | — |
 | settings.runtime.recheck.action | 重新检测 | Check again | — |
 | settings.runtime.runInstall.action | 在终端中运行 | Run in Terminal | — |
+| settings.runtime.savePath.action | 保存 | Save | — |
 | settings.runtime.setPath.action | 指定路径… | Set path… | — |
 | settings.runtime.site.label | 官网 | Website | — |
 | settings.runtime.status.label | 状态 | Status | — |
@@ -952,17 +970,41 @@
 | settings.runtime.version.label | 版本 | Version | — |
 | settings.scriptAutoRun.hint | Node、Python、Go 脚本保存后自动重新运行 | Node, Python and Go scripts run again automatically when saved | — |
 | settings.scriptAutoRun.title | 脚本保存后自动运行 | Run scripts on save | — |
-| settings.skills.agents.label | 已安装到 Codex | Installed for Codex | — |
+| settings.skills.agents.label | 已装到 Codex | Installed for Codex | — |
 | settings.skills.agentsName.label | Codex | Codex | — |
-| settings.skills.both.label | 已安装到 Claude Code 和 Codex | Installed for Claude Code and Codex | — |
-| settings.skills.claude.label | 已安装到 Claude Code | Installed for Claude Code | — |
+| settings.skills.both.label | Claude Code、Codex | Claude Code, Codex | — |
+| settings.skills.claude.label | 已装到 Claude Code | Installed for Claude Code | — |
 | settings.skills.claudeName.label | Claude Code | Claude Code | — |
+| settings.skills.closeGuide.action | 关闭说明 | Close guide | — |
+| settings.skills.failed.label | 安装失败 | Install failed | — |
+| settings.skills.groupInstalled.label | {agent} · 已安装 | {agent} · installed | agent：智能体名，Claude Code 或 Codex；专有名词，原样显示 |
+| settings.skills.groupMissing.label | {agent} · 未安装 | {agent} · not installed | agent：智能体名，Claude Code 或 Codex；专有名词，原样显示 |
+| settings.skills.groupOutdated.label | {agent} · 有新版本 | {agent} · update available | agent：智能体名，Claude Code 或 Codex；专有名词，原样显示 |
 | settings.skills.guide.action | 查看说明 | View guide | — |
 | settings.skills.guideFailed.hint | 没能打开说明，请重试。 | Could not open the guide. Try again. | — |
-| settings.skills.hint | 让 Claude Code、Codex 等知道怎么用 runyard 新建和运行项目 | Lets Claude Code, Codex and others create and run playgrounds | — |
+| settings.skills.hint | 让 Claude Code、Codex 知道怎么用 runyard 新建和运行项目。 | Lets Claude Code and Codex create and run playgrounds. | — |
+| settings.skills.install.action | 安装… | Install… | — |
+| settings.skills.installOther.hint | 没能装到 {agent}：{dir} 出错了，请重试 | Could not install for {agent}: something went wrong in {dir}. Try again. | agent：智能体名，Claude Code 或 Codex；专有名词，原样显示；dir：技能所在目录，如 ~/.agents/skills；原样显示 |
+| settings.skills.installPermission.hint | 没能装到 {agent}：{dir} 没有写入权限 | Could not install for {agent}: no write permission for {dir} | agent：智能体名，Claude Code 或 Codex；专有名词，原样显示；dir：技能所在目录，如 ~/.agents/skills；原样显示 |
+| settings.skills.installTargets.label | 选择要安装到的智能体 | Choose which agent to install for | — |
+| settings.skills.installTo.action | 安装到 {agent} | Install for {agent} | agent：智能体名，Claude Code 或 Codex；专有名词，原样显示 |
+| settings.skills.manage.label | 智能体技能包的更多操作 | More actions for the agent skill | — |
+| settings.skills.menuInstall.action | 安装 | Install | — |
 | settings.skills.none.label | 未安装 | Not installed | — |
-| settings.skills.other.action | 安装到其他智能体… | Install for another agent… | — |
+| settings.skills.outdated.hint | 应用里带的技能包比已装的新。更新会覆盖你改过的技能文件。 | The skill pack in this app is newer than the installed one. Updating overwrites skill files you changed. | — |
+| settings.skills.outdated.label | 有新版本 | Update available | — |
+| settings.skills.reinstall.action | 重新安装 | Reinstall | — |
+| settings.skills.remove.action | 移除… | Remove… | — |
+| settings.skills.removeConfirm.action | 移除 | Remove | — |
+| settings.skills.removeConfirm.body | 会把 {dir} 里 runyard 装的技能文件夹移到{term_trash}；别的文件不会动。 | The skill folder Runyard installed in {dir} moves to the {term_trash}. Other files are left alone. | dir：技能所在目录，如 ~/.agents/skills；原样显示 |
+| settings.skills.removeConfirm.title | 移除 {agent} 的技能包？ | Remove the skill for {agent}? | agent：智能体名，Claude Code 或 Codex；专有名词，原样显示 |
+| settings.skills.removeForeign.hint | 没能移除 {agent} 的技能包：{dir} 里还有别的文件，请自己处理 | Could not remove the skill for {agent}: {dir} holds other files, handle them yourself | agent：智能体名，Claude Code 或 Codex；专有名词，原样显示；dir：技能所在目录，如 ~/.agents/skills；原样显示 |
+| settings.skills.removeOther.hint | 没能移除 {agent} 的技能包：{dir} 出错了，请重试 | Could not remove the skill for {agent}: something went wrong in {dir}. Try again. | agent：智能体名，Claude Code 或 Codex；专有名词，原样显示；dir：技能所在目录，如 ~/.agents/skills；原样显示 |
+| settings.skills.removePermission.hint | 没能移除 {agent} 的技能包：{dir} 没有权限 | Could not remove the skill for {agent}: no permission for {dir} | agent：智能体名，Claude Code 或 Codex；专有名词，原样显示；dir：技能所在目录，如 ~/.agents/skills；原样显示 |
+| settings.skills.retry.action | 重试 | Retry | — |
+| settings.skills.reveal.action | 在{term_fileManager}中显示 | Show in {term_fileManager} | — |
 | settings.skills.title | 智能体技能包 | Agent skill | — |
+| settings.skills.update.action | 更新 | Update | — |
 | settings.supervisor.confirm.body | 这会停止全部运行：{cli, plural, other {# 个由命令行启动}}，{tab, plural, other {# 个在标签页里运行}}；然后让管理进程退出。应用需要时会再启动一个新的。 | This stops every run: {cli, plural, one {# started from the CLI} other {# started from the CLI}} and {tab, plural, one {# running in a tab} other {# running in tabs}}. Then the supervisor quits; the app starts a new one when it needs it. | cli：命令行持有的运行个数；tab：标签页持有的运行个数 |
 | settings.supervisor.confirm.title | 停止后台管理进程？ | Stop the background supervisor? | — |
 | settings.supervisor.hint | 照看所有运行；应用退出后继续照看命令行启动的项目 | Looks after every run; keeps CLI-started playgrounds going after the app quits | — |

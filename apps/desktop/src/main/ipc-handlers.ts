@@ -86,7 +86,7 @@ const unavailableCli: CliCommandStatus = {
   onPath: false,
   pathCommand: "",
 };
-const noSkills: AgentSkillStatus = { claude: false, agents: false };
+const noSkills: AgentSkillStatus = { claude: "missing", agents: "missing" };
 const rejectedEdit: EditResult = { ok: false, error: { code: "INTERNAL", params: {} } };
 const rejectedCreate: CreateResult = { ok: false, error: { code: "INTERNAL", params: {} } };
 
@@ -111,6 +111,7 @@ export function registerBridgeHandlers(
   appLinks?: AppLinks,
   openSettings?: () => void,
   vue?: VueChannel,
+  settingsPageActive?: (active: boolean) => void,
 ): () => void {
   // 方法名到控制器的映射；参数不是预期类型时不调用控制器
   const methods: Record<DesktopMethod, (param: unknown) => unknown> = {
@@ -176,7 +177,7 @@ export function registerBridgeHandlers(
     },
     "tab.select": async (id) => {
       const tab = text(id);
-      if (tab !== null) controller.selectTab(tab);
+      if (tab !== null) await controller.selectTab(tab);
     },
     "tab.close": async (id) => {
       const tab = text(id);
@@ -238,6 +239,9 @@ export function registerBridgeHandlers(
     },
     // 设置页（#188）；没接线时设置读不到，界面显示默认值
     "settings.open": () => openSettings?.(),
+    "settings.pageActive": (value) => {
+      if (typeof value === "boolean") settingsPageActive?.(value);
+    },
     "settings.get": () => settings?.get(),
     "settings.set": (patch) => settings?.set(patch),
     "settings.editors": async () => (await settings?.editors()) ?? [],
@@ -262,8 +266,16 @@ export function registerBridgeHandlers(
     "agents.status": async () => (await settings?.cli?.agentSkills()) ?? noSkills,
     "agents.install": async (target) =>
       target === "claude" || target === "agents"
-        ? ((await settings?.cli?.installAgentSkill(target)) ?? noSkills)
-        : noSkills,
+        ? ((await settings?.cli?.installAgentSkill(target)) ?? { status: noSkills })
+        : { status: noSkills },
+    "agents.remove": async (target) =>
+      target === "claude" || target === "agents"
+        ? ((await settings?.cli?.removeAgentSkill(target)) ?? { status: noSkills })
+        : { status: noSkills },
+    "agents.reveal": async (target) => {
+      if (target === "claude" || target === "agents") await settings?.cli?.revealAgentSkill(target);
+      return undefined;
+    },
     "supervisor.status": async () =>
       (await settings?.cli?.supervisorStatus()) ?? { running: false, cliRuns: 0, tabRuns: 0 },
     "supervisor.stop": async () =>
@@ -340,9 +352,7 @@ export function registerBridgeHandlers(
   host.handleSync(desktopChannels.bootstrap, (sender) => {
     trusted(sender);
     const info = typeof bootstrap === "function" ? bootstrap() : bootstrap;
-    return new URL(sender.url).searchParams.get("view") === "settings"
-      ? { ...info, windowKind: "settings" as const }
-      : info;
+    return info;
   });
   const stopState = controller.onChange((state) =>
     host.send(desktopChannels.event, "library.changed", state),

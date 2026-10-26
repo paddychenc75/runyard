@@ -1,5 +1,7 @@
 import { useT } from "@runyard/i18n/react";
 import { Menu, type MenuEntry } from "@runyard/ui";
+import { useEffect } from "react";
+import { useContentVisible } from "../../shared/content-visibility.ts";
 import { useOverlay } from "../../shared/overlay-context.tsx";
 import styles from "./FileTree.module.css";
 import type { TreePath } from "./file-tree-model.ts";
@@ -23,7 +25,11 @@ export interface FileTreeMenuProps {
 // 所以右键、菜单键、Shift+F10 都能用同一个菜单。新建项放在被点的文件夹里（点的是文件就放在它旁边）。
 export function FileTreeMenu({ target, onSelect, onClose }: FileTreeMenuProps) {
   const t = useT();
-  const open = target !== null;
+  const visible = useContentVisible();
+  const open = visible && target !== null;
+  useEffect(() => {
+    if (!visible && target !== null) onClose();
+  }, [visible, target, onClose]);
   useOverlay(open);
   const entries: MenuEntry[] = [
     { id: "newFile", label: t("workspace.files.newFile.action") },
@@ -64,7 +70,7 @@ export function FileTreeMenu({ target, onSelect, onClose }: FileTreeMenuProps) {
         />
       }
       entries={entries}
-      onSelect={(id) => onSelect(id as "newFile" | "newFolder" | "rename" | "trash")}
+      onSelect={(id) => visible && onSelect(id as "newFile" | "newFolder" | "rename" | "trash")}
     />
   );
 }

@@ -21,6 +21,14 @@ Playwright（`_electron`）驱动真正的应用走主要用户流程（issue #1
 
 ## 测试
 
+`m3-flow.e2e.ts` 是 #267 的同项目串联：界面新建、编辑保存、原生预览更新、终端真实离线安装并使用本地 file 依赖、关闭后释放 shell 和端口。方法与验收边界见 `docs/architecture/evidence/m3-integrated-flow.md`；不以它替代性能或系统输入法手验。
+
 本目录本身就是测试。本机跑全套约半分钟；失败的截图和报告在 `e2e/.output/`（已忽略）。失败不重试：偶发失败按仓库规则记成带 `flaky` 标签的 issue。
 
 #401 的两条整合回归分别在 `editor-external-change.e2e.ts` 与 `terminal-cli-ownership.e2e.ts`：前者用独立 Node 命令写同一 HTML 文件，核对编辑器与原生预览在两秒内同时更新，再走编辑器保存；后者通过真实终端键盘调用随包 CLI，关闭宿主标签后核对另一服务的原进程身份、HTTP 内容及命令行持有者，再主动停止并核对回收。服务夹具沿用正式 Hono 运行器，但测试副本改成无依赖 Node HTTP，避免联网安装干扰持有者验证。应用使用临时 `--root` 时，终端里的命令也要显式带同一个参数，不能误连另一个临时默认资源库。
+
+## 常驻全局侧栏回归（#541）
+
+`persistent-sidebar.e2e.ts` 用两个真实 HTML 项目验证项目切换、全局侧栏和文件树独立、资源库键盘入口、运行持有者不变，以及 720 宽覆盖导航时原生预览让位和恢复。旧资源库 Tab 已取消，启动就绪检查主外壳与标签条；返回全部列表使用 `openLibraryPage` 的真实侧栏按钮，不以直接桥调用代替导航。设置始终沿用主窗口，不再等待新窗口或关闭主窗口来关闭设置。
+
+`window-header.measure.ts` 输出 1440/1100 × 中英 × 浅深的资源库展开/收起、项目展开/收起和设置画面，并与只读设计稿并排。先按设计渲染手册生成 Main、MainSidebarHidden、WebLight/Web、Settings 对应画板，再以 `RUNYARD_HEADER_REVIEW_OUTPUT=<新临时目录>` 运行。原生预览截图依真实位置合成且保留原图；输出 README 记录取消资源库 Tab、项目常驻侧栏、主窗口设置这三项已批准设计差异。与其他实窗任务串行运行。

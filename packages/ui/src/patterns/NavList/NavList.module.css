@@ -63,8 +63,8 @@
 }
 
 .item[data-selected] {
-  background: var(--color-fill-accent);
-  color: var(--color-text-on-accent);
+  background: var(--color-nav-selected-bg);
+  color: var(--color-text-primary);
   font-weight: var(--text-item-weight);
 }
 
@@ -81,7 +81,7 @@
 }
 
 .item[data-selected] .mark {
-  background: var(--color-text-on-accent);
+  background: var(--color-fill-accent);
 }
 
 .label {
@@ -99,11 +99,21 @@
 }
 
 .item[data-selected] .count {
-  color: var(--color-text-on-accent);
+  color: var(--color-text-secondary);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .item {
     transition: none;
   }
+}
+
+.item[data-selected] > svg {
+  color: var(--color-fill-accent);
+}
+.root[data-active="false"] .item[data-selected] > svg {
+  color: var(--color-text-secondary);
+}
+.root[data-active="false"] .item[data-selected] .mark {
+  background: var(--color-text-secondary);
 }

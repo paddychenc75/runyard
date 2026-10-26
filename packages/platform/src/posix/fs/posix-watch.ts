@@ -40,9 +40,17 @@ export const watchPosix: Platform["watch"] = async (
   callback: (events: WatchEvent[]) => void,
 ): Promise<Disposable> => {
   const ignore = opts.ignore ?? [];
+  const ignoreNames = new Set(opts.ignoreNames ?? []);
   const isIgnored = (path: string): boolean => {
     const rel = relOf(root, path);
-    return ignore.some((item) => rel === item || rel.startsWith(`${item}/`));
+    if (ignore.some((item) => rel === item || rel.startsWith(`${item}/`))) return true;
+    // 在 chokidar 遍历前剪掉整个子树，不能等事件出来再过滤（嵌套依赖会占用大量监听句柄）。
+    return (
+      rel !== "" &&
+      rel !== ".." &&
+      !rel.startsWith("../") &&
+      rel.split("/").some((part) => ignoreNames.has(part))
+    );
   };
   const watcher = chokidarWatch(root, {
     ignoreInitial: true,

@@ -16,7 +16,7 @@ export interface RunBarProps {
   tab: TabRow;
   /** 资源库里的全部项目：“更多”菜单要这个项目的备注、保留状态和重名校验用的名称；不给就没有“更多”菜单 */
   playgrounds?: readonly PlaygroundRow[];
-  /** 窗口窄：状态文字省掉，只留圆点和端口（规格 DESKTOP-WORKSPACE-65） */
+  /** 窗口窄：省掉端口，保留圆点和状态词（规格 DESKTOP-WORKSPACE-65） */
   compact?: boolean;
 }
 
@@ -52,9 +52,11 @@ export function RunBar({ bridge, tab, playgrounds, compact = false }: RunBarProp
     template !== null && hints.length > 0
       ? t("desktop.runbar.note.label", { template, hint: hints.join(" ") })
       : (lines[0] ?? null);
-  // 窄窗口：服务运行中只留“:7101”，其余状态（出错、缺工具、脚本的退出码）的文字照旧
+  // 窄窗口：只省端口，状态词（“运行中”）必须留着，裸端口脱离上下文看不懂（UI 走查 W2）；其余状态的文字照旧
   const portOnly = compact && tab.port !== null && status.text.includes(`:${tab.port}`);
-  const statusText = (portOnly ? `:${tab.port}` : status.text) as Localized;
+  const statusText = (
+    portOnly ? status.text.replace(`:${tab.port}`, "").trim() : status.text
+  ) as Localized;
   // 缺工具不是失败：警示色加三角图标，和设计稿 MissingLight 的“缺少 Go”一致
   const mark =
     action === "recheck" ? (

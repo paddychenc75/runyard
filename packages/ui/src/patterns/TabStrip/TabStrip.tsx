@@ -14,6 +14,7 @@ import { Icon } from "../../primitives/Icon/index.ts";
 import { IconButton } from "../../primitives/IconButton/index.ts";
 import { Menu } from "../../primitives/Menu/index.ts";
 import { SlidingIndicator, useSlidingIndicator } from "../../primitives/SlidingIndicator/index.ts";
+import { StatusMark } from "../../primitives/StatusMark/index.ts";
 import { Tooltip } from "../../primitives/Tooltip/index.ts";
 import { fitTabs } from "./fit-tabs.ts";
 import styles from "./TabStrip.module.css";
@@ -32,10 +33,9 @@ export interface TabStripItem {
   statusLabel?: Localized;
   /**
    * 关闭按钮的名字。不传 = 这个标签不能关闭：没有关闭按钮，⌘W 和 Delete 键都不起作用
-   * （固定在第一位的资源库标签就是这样，规格 desktop/workspace 的“资源库标签不能关闭”）。
    */
   closeLabel?: Localized;
-  /** 放不下时先缩成只剩图标（读屏器和悬停提示仍读 menuLabel）；资源库标签用 */
+  /** 放不下时先缩成只剩图标（读屏器和悬停提示仍读 menuLabel）；由调用方决定哪些项允许压缩 */
   shrinkToIcon?: boolean;
   /** 折进“+N”菜单后的名字，也是缩成图标后的悬停提示；label 不是纯文字时必须给 */
   menuLabel?: Localized;
@@ -172,7 +172,7 @@ export function TabStrip({
   }, [modKey, current, onClose]);
 
   // 方向键只在看得见的标签之间走
-  const shown = items.flatMap((item, index) => (visibleAt(index) ? [index] : []));
+  const shown = items.flatMap((_item, index) => (visibleAt(index) ? [index] : []));
   const move = (from: number, step: number) => {
     const at = shown.indexOf(from);
     const target = items[shown[(at + step + shown.length) % shown.length] ?? from];
@@ -243,22 +243,17 @@ export function TabStrip({
                 }}
                 className={styles.trigger}
                 aria-selected={selected}
-                tabIndex={selected ? 0 : -1}
+                tabIndex={
+                  !folded && (selected || (current === undefined && index === shown[0])) ? 0 : -1
+                }
                 title={iconOnly ? nameOf(item) : undefined}
                 data-closable={item.closeLabel === undefined ? undefined : ""}
                 onClick={() => onValueChange?.(item.id)}
                 onKeyDown={(event) => onTabKeyDown(event, index)}
               >
                 {item.icon === undefined ? null : <Icon name={item.icon} size={14} />}
-                {item.status === undefined ? null : item.statusLabel === undefined ? (
-                  <span aria-hidden="true" className={styles.status} data-status={item.status} />
-                ) : (
-                  <span
-                    role="img"
-                    aria-label={item.statusLabel}
-                    className={styles.status}
-                    data-status={item.status}
-                  />
+                {item.status === undefined ? null : (
+                  <StatusMark status={item.status} markLabel={item.statusLabel} />
                 )}
                 <span className={styles.label} data-truncate="">
                   {item.label}

@@ -32,8 +32,8 @@ const four = [
 
 async function openRuntime(w: World) {
   const user = userEvent.setup();
-  w.bridge.bootstrap.windowKind = "settings";
   render(<App bridge={w.bridge} />);
+  await user.click(await screen.findByRole("button", { name: "\u8bbe\u7f6e" }));
   await screen.findByRole("heading", { name: "运行环境" });
   return user;
 }
@@ -41,6 +41,35 @@ const rowOf = (name: string) =>
   screen.getByRole("rowheader", { name }).closest("tr") as HTMLElement;
 
 describe("运行环境", () => {
+  it("[DESKTOP-SETTINGS-41] 点击保存提交路径，取消撤销草稿", async () => {
+    const w = world({
+      on: {
+        "toolchain.check": () => ({ tools: four }),
+        "toolchain.setPath": () => ({
+          status: "set",
+          report: {
+            tools: [found("node", "26.0.0", "/opt/node"), ...four.slice(1)],
+          },
+        }),
+      },
+    });
+    const user = await openRuntime(w);
+    const input = await screen.findByRole("textbox", { name: "Node 可执行文件路径" });
+    expect(screen.queryByRole("button", { name: "保存" })).toBeNull();
+    await user.clear(input);
+    await user.type(input, "/opt/node");
+    await user.click(screen.getByRole("button", { name: "保存" }));
+    await screen.findByText("26.0.0");
+    expect(w.calls.filter((call) => call.method === "toolchain.setPath")).toEqual([
+      { method: "toolchain.setPath", param: { tool: "node", path: "/opt/node" } },
+    ]);
+    expect(screen.queryByRole("button", { name: "保存" })).toBeNull();
+    await user.type(input, "-draft");
+    await user.click(screen.getByRole("button", { name: "取消" }));
+    expect((input as HTMLInputElement).value).toBe("/opt/node");
+    expect(w.calls.filter((call) => call.method === "toolchain.setPath")).toHaveLength(1);
+  });
+
   it("[DESKTOP-SETTINGS-41] 输入和粘贴期间不检测，回车保存新路径并更新版本架构", async () => {
     const w = world({
       on: {

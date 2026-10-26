@@ -269,13 +269,13 @@ describe("buildAppMenu 命令", () => {
     const appItems = (en[0]?.submenu ?? []) as MenuItemConstructorOptions[];
     expect(appItems.map((item) => item.label)).toContain("Settings…");
   });
-  it("[DESKTOP-SETTINGS-39] 设置窗口的⌘W是关闭窗口，返回主窗口后恢复关闭标签页", () => {
+  it("[DESKTOP-SETTINGS-46] 设置页⌘W可用，返回资源库后恢复菜单可用状态", () => {
     const settings = itemsOf(
-      build({ locale: "en", projectTabActive: false, settingsWindowActive: true }),
+      build({ locale: "en", projectTabActive: false, settingsPageActive: true }),
       "File",
     );
     expect(settings.filter((item) => item.label === "Close Window")).toHaveLength(1);
-    expect(named(settings, "Close Window")).toMatchObject({
+    expect(named(settings, "Close Tab")).toMatchObject({
       accelerator: "CmdOrCtrl+W",
       enabled: true,
     });

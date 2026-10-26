@@ -5,6 +5,7 @@ import { createLogModule } from "./log-module.ts";
 import { createRequestHandlers, type RequestDeps } from "./request-handlers.ts";
 import { createRunModule, type RunModule, type RunModuleOptions } from "./run-module.ts";
 import { combineObservers } from "./run-observers.ts";
+import { createSizeObserver } from "./size-observer.ts";
 import type { SupervisorApi } from "./supervisor-api.ts";
 import type { SupervisorExtensions } from "./supervisor-options.ts";
 
@@ -60,6 +61,7 @@ export function composeExtensions(api: SupervisorApi, options: ComposeOptions): 
       logs.observer,
       idle.observer,
       recovery.observer,
+      createSizeObserver(api),
       options.run?.observer ?? {},
     ),
   });

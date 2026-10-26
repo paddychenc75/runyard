@@ -39,9 +39,11 @@ describe("StepList", () => {
         ]}
       />,
     );
-    const icons = [...container.querySelectorAll("li")].map((li) =>
-      li.querySelector("svg")?.getAttribute("data-icon"),
+    const icons = [...container.querySelectorAll("li")].map(
+      (li) =>
+        li.querySelector("svg")?.getAttribute("data-icon") ??
+        li.querySelector('[data-status="crashed"][data-size="step"]')?.getAttribute("data-status"),
     );
-    expect(icons).toEqual(["check", "close", undefined]);
+    expect(icons).toEqual(["check", "crashed", undefined]);
   });
 });

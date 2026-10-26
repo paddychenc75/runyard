@@ -33,16 +33,23 @@ export function createLibraryService(ctx: LibraryContext): LibraryService {
   async function rename(ref: string, newName: string): Promise<Playground> {
     let restart: { id: string; owner: Owner } | undefined;
     const playground = await mutex.run(async () => {
-      const { library } = await ctx.open();
+      const { library, root } = await ctx.open();
       const id = ctx.require(library, ref).entry.id;
-      await library.rename(ref, newName, {
-        isBusy: () => ctx.runs().isBusy(id),
-        beforeMove: async () => {
-          const owner = ctx.runs().activePlaygrounds().has(id) ? ctx.runs().ownerOf(id) : undefined;
-          if (owner !== undefined) restart = { id, owner };
-          await ctx.releaseOrder(id, "rename");
-        },
-      });
+      try {
+        await library.rename(ref, newName, {
+          isBusy: () => ctx.runs().isBusy(id),
+          beforeMove: async () => {
+            const owner = ctx.runs().activePlaygrounds().has(id)
+              ? ctx.runs().ownerOf(id)
+              : undefined;
+            if (owner !== undefined) restart = { id, owner };
+            await ctx.releaseOrder(id, "rename");
+          },
+        });
+      } finally {
+        // 移动失败也恢复旧路径监听，缓存始终按 id 保留。
+        ctx.syncSizes(library, root);
+      }
       return ctx.changed(library, id);
     });
     // 第 6 步：改名前在运行的，用新名称再启动，持有者不变。不占着排队的锁；
@@ -88,6 +95,7 @@ export function createLibraryService(ctx: LibraryContext): LibraryService {
       });
       const item = ctx.require(library, result.entry.id);
       ctx.remember(item.entry.id, result.file);
+      ctx.syncSizes(library, root);
       const playground = await ctx.describe(library, item);
       if (result.created) api.publish("playground.added", playground);
       return {
@@ -116,12 +124,13 @@ export function createLibraryService(ctx: LibraryContext): LibraryService {
   // 副本和新建一样登记并发 playground.added；不启动运行，原项目的运行不受影响
   const duplicate: LibraryService["duplicate"] = (params) =>
     mutex.run(async () => {
-      const { library } = await ctx.open();
+      const { library, root } = await ctx.open();
       const result = await library.duplicate(params.playground, {
         ...(params.name !== undefined ? { name: params.name } : {}),
       });
       const item = ctx.require(library, result.entry.id);
       ctx.remember(item.entry.id, result.file);
+      ctx.syncSizes(library, root);
       const playground = await ctx.describe(library, item);
       api.publish("playground.added", playground);
       return playground;
@@ -156,26 +165,35 @@ export function createLibraryService(ctx: LibraryContext): LibraryService {
     duplicate,
     trash: (ref) =>
       mutex.run(async () => {
-        const { library } = await ctx.open();
+        const { library, root } = await ctx.open();
         const id = ctx.require(library, ref).entry.id;
-        const outcome = await library.trash(ref, {
-          beforeMove: () => ctx.releaseOrder(id, "trash"),
-        });
+        const outcome = await library
+          .trash(ref, {
+            beforeMove: () => ctx.releaseOrder(id, "trash"),
+          })
+          .finally(() => ctx.syncSizes(library, root));
         ctx.forgetSeen(id);
+        ctx.syncSizes(library, root);
         api.publish("playground.removed", { playgroundId: id });
         return { trashed: true, deletedRegenerable: [...outcome.result.removedDirectly] };
       }),
     relocate: (ref, path) =>
       mutex.run(async () => {
-        const { library } = await ctx.open();
+        const { library, root } = await ctx.open();
         const entry = await library.relocate(ref, absPath(path));
+        ctx.syncSizes(library, root);
+        // 重新定位到另一个文件夹：内容是另一份，重算（路径变了，对账只换监听）
+        ctx.sizes.refresh(entry.id);
         return ctx.changed(library, entry.id);
       }),
     forget: (ref) =>
       mutex.run(async () => {
-        const { library } = await ctx.open();
-        const item = await library.forget(ref);
+        const { library, root } = await ctx.open();
+        const id = ctx.require(library, ref).entry.id;
+        await ctx.sizes.pause(id);
+        const item = await library.forget(ref).finally(() => ctx.syncSizes(library, root));
         ctx.forgetSeen(item.entry.id);
+        ctx.syncSizes(library, root);
         api.publish("playground.removed", { playgroundId: item.entry.id });
       }),
     markOpened: (ref) =>

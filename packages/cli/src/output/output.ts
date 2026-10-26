@@ -5,7 +5,7 @@ import { englishErrorFields, humanErrorLines } from "./error-text.ts";
 
 // 命令行唯一的输出口（技术设计 §5.3；ui-strings 检查：只有本目录可以写标准输出）。
 // 给人看的文字只收 Localized，用户的数据（日志正文、名称）走 data()，所以“没翻译的句子”过不了类型检查。
-// 带 --json 时标准输出上恰好一个对象（result 或 error），logs --follow 例外用 stream() 每行一个对象。
+// 带 --json 时标准输出上恰好一个对象（result 或 error），例外：help() 输出当前语言的帮助文本，logs --follow 用 stream() 每行一个对象。
 
 export interface TextSink {
   write(chunk: string): unknown;

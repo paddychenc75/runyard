@@ -1,5 +1,5 @@
 import { useT } from "@runyard/i18n/react";
-import { Icon } from "@runyard/ui";
+import { StatusMark } from "@runyard/ui";
 import type { DesktopError } from "../../shared/library-state.ts";
 import styles from "./ScriptOutput.module.css";
 import { useErrorText } from "./use-error-text.ts";
@@ -12,7 +12,7 @@ export function ScriptFailure({ failure }: { failure: DesktopError }) {
   return (
     <div className={styles.failure} role="alert" data-script-failure={failure.code}>
       <p className={styles.failureTitle}>
-        <Icon name="close" size={16} />
+        <StatusMark status="crashed" size="hero" />
         {errorText(failure, "title")}
       </p>
       {/* 脚本没有“就绪”：通用的“进程在就绪之前就退出了”只对网页和服务成立 */}

@@ -190,7 +190,7 @@ describe("命令面板在外壳里", () => {
     await vi.waitFor(() => expect(update).toHaveBeenCalledWith({ theme: "dark" }));
     await user.keyboard("{F1}");
     await user.keyboard("设置{Enter}");
-    await vi.waitFor(() => expect(call).toHaveBeenCalledWith("settings.open"));
+    await screen.findByRole("heading", { level: 1, name: "\u8bbe\u7f6e" });
     expect(call).not.toHaveBeenCalledWith("tab.select", "library");
   });
 
@@ -204,11 +204,11 @@ describe("命令面板在外壳里", () => {
     expect(await screen.findByRole("dialog", { name: "快速打开" })).toBeTruthy();
   });
 
-  it("[DESKTOP-SETTINGS-38] 应用菜单打开独立设置窗口，不切换项目标签页", async () => {
+  it("[DESKTOP-SETTINGS-45] 应用菜单打开设置页面，不改变项目选择", async () => {
     const { emit, call } = setup(projectState());
     await screen.findByRole("group", { name: "运行条" });
     emit("command.run", { id: "app.settings" });
-    await vi.waitFor(() => expect(call).toHaveBeenCalledWith("settings.open"));
+    await screen.findByRole("heading", { level: 1, name: "\u8bbe\u7f6e" });
     expect(call).not.toHaveBeenCalledWith("tab.select", "library");
   });
 
