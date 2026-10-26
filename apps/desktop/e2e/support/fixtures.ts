@@ -49,14 +49,14 @@ export async function pressMenuShortcut(
 /** 新建流程只用键盘：模板选择器里可选输入搜索词，回车选中，再回车创建并运行 */
 export async function createWithKeyboard(page: Page, search?: string): Promise<void> {
   // 对话框出现了不等于焦点已经到位：先等输入框拿到焦点再按键，否则回车会丢
-  await expect(page.getByRole("combobox", { name: "Search templates" })).toBeFocused();
+  await expect(page.getByRole("combobox", { name: /^(Search templates|搜索模板)$/ })).toBeFocused();
   if (search !== undefined) {
     await page.keyboard.type(search);
     await expect(page.getByRole("option")).toHaveCount(1);
     await expect(page.getByRole("option", { selected: true })).toBeVisible();
   }
   await page.keyboard.press("Enter");
-  await expect(page.getByRole("textbox", { name: "Name" })).toBeFocused();
+  await expect(page.getByRole("textbox", { name: /^(Name|名称)$/ })).toBeFocused();
   await page.keyboard.press("Enter");
 }
 
@@ -70,7 +70,7 @@ export async function attachScreenshot(
 
 /** 关掉模板选择器：等输入框拿到焦点再按 Esc，焦点没到位时按键会丢 */
 export async function closePicker(page: Page): Promise<void> {
-  await expect(page.getByRole("combobox", { name: "Search templates" })).toBeFocused();
+  await expect(page.getByRole("combobox", { name: /^(Search templates|搜索模板)$/ })).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toHaveCount(0);
 }
