@@ -3,6 +3,7 @@ import { ScrollArea } from "@runyard/ui";
 import { type ReactNode, useEffect, useRef } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { Bounds } from "../../shared/layout.ts";
+import { useContentVisible } from "../shared/content-visibility.ts";
 import styles from "./PreviewSlot.module.css";
 
 export interface PreviewSlotProps {
@@ -22,10 +23,16 @@ export interface PreviewSlotProps {
 // 有浮层盖住时它显示截来的那一帧，视图则被主进程藏起。
 export function PreviewSlot({ bridge, placeholder, frame, overlay, onBounds }: PreviewSlotProps) {
   const t = useT();
+  const visible = useContentVisible();
   const ref = useRef<HTMLDivElement>(null);
   const report = useRef(onBounds);
   report.current = onBounds;
   useEffect(() => {
+    if (!visible) {
+      report.current?.(null);
+      void bridge.call("preview.bounds", null);
+      return;
+    }
     const element = ref.current;
     if (element === null) return;
     let last = "";
@@ -49,7 +56,7 @@ export function PreviewSlot({ bridge, placeholder, frame, overlay, onBounds }: P
       report.current?.(null);
       void bridge.call("preview.bounds", null);
     };
-  }, [bridge]);
+  }, [bridge, visible]);
   return (
     <div ref={ref} className={styles.slot} data-preview-slot="">
       {frame === null ? (

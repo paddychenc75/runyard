@@ -11,6 +11,7 @@ import brandLight from "../../../../../docs/design/logo/final/icon-32.svg";
 import brandDark from "../../../../../docs/design/logo/final/icon-32-dark.svg";
 import type { BootstrapInfo } from "../../shared/desktop-bridge.ts";
 import { type NavFilter, navFilters } from "../library-query.ts";
+import { useWindowFocused } from "../shared/use-window-focused.ts";
 import { navLabel } from "./library-labels.ts";
 import { PaneToggleButton } from "./PaneToggleButton.tsx";
 import styles from "./Sidebar.module.css";
@@ -20,6 +21,8 @@ export interface SidebarProps {
   windowControls: BootstrapInfo["windowControls"];
   /** 资源库里项目的总数 */
   total: number;
+  /** 所有项目大小的合计，和有没有项目还在计算（规格 DESKTOP-LIBRARY-VIEW-69、70） */
+  sizeTotal: { bytes: number; calculating: boolean };
   /** 四个固定筛选各自符合的项目数 */
   counts: Record<NavFilter, number>;
   /** 当前的固定筛选 */
@@ -29,8 +32,8 @@ export interface SidebarProps {
   templateCount: number;
   /** 资源库文件夹，主目录缩成 ~；还没读到是空串 */
   libraryRoot: string;
-  /** 当前显示的页：资源库或模板；设置不改变此值（规格 DESKTOP-SETTINGS-01、DESKTOP-TEMPLATES-VIEW-01） */
-  page: ShellPage;
+  /** 当前显示的页：资源库、模板或设置（规格 DESKTOP-SETTINGS-01、DESKTOP-TEMPLATES-VIEW-01） */
+  page: ShellPage | null;
   onNavigate: (page: ShellPage) => void;
   onSettings?: () => void;
   /** 收起侧栏（顶部、红绿灯那一行的右端；规格 DESKTOP-LIBRARY-VIEW-61、66） */
@@ -42,6 +45,7 @@ export interface SidebarProps {
 export function Sidebar({
   windowControls,
   total,
+  sizeTotal,
   counts,
   nav,
   onNavChange,
@@ -53,6 +57,7 @@ export function Sidebar({
   onCollapse,
 }: SidebarProps) {
   const t = useT();
+  const focused = useWindowFocused();
   const format = useFormat();
   const sections: NavListSection[] = [
     {
@@ -98,6 +103,15 @@ export function Sidebar({
   // 窗口按钮是自绘标题栏的一部分：让位宽度大于 0 才有，在哪一侧由主进程说了算
   const controls =
     windowControls.inset === 0 ? "none" : windowControls.side === "left" ? "start" : "end";
+  // 没有项目只写个数；有项目还在计算时写“正在计算大小”，全算完才写合计
+  const footerText = () => {
+    if (total === 0) return t("library.sidebar.footer.label", { count: total });
+    if (sizeTotal.calculating) return t("library.sidebar.calculating.label", { count: total });
+    return t("library.sidebar.total.label", {
+      count: total,
+      size: format.fileSize(sizeTotal.bytes),
+    });
+  };
   return (
     <GlassSurface
       material="sidebar"
@@ -138,7 +152,8 @@ export function Sidebar({
         <NavList
           label={t("library.nav.aria")}
           sections={sections}
-          value={page === "library" ? nav : page}
+          active={focused}
+          value={page === "library" ? nav : (page ?? undefined)}
           onValueChange={(id) => {
             if (id === "settings") {
               onSettings?.();
@@ -157,7 +172,7 @@ export function Sidebar({
         <UserText mono className={styles.location}>
           {libraryRoot}
         </UserText>
-        <div>{t("library.sidebar.footer.label", { count: total })}</div>
+        <div>{footerText()}</div>
       </div>
     </GlassSurface>
   );

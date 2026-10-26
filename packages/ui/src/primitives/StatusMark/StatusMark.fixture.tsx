@@ -10,6 +10,16 @@ export const meta: FixtureMeta = {
 
 export const samples: readonly FixtureSample[] = [
   {
+    name: "error-sizes",
+    render: (data) => (
+      <FixtureStack>
+        <StatusMark status="crashed" markLabel={data.label} />
+        <StatusMark status="crashed" size="step" markLabel={data.label} />
+        <StatusMark status="crashed" size="hero" markLabel={data.label} />
+      </FixtureStack>
+    ),
+  },
+  {
     name: "all-statuses",
     render: (data) => (
       <FixtureStack>

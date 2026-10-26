@@ -7,3 +7,52 @@
   font-weight: var(--text-control-weight);
   white-space: nowrap;
 }
+
+/* 小号次要文字色加小状态点；颜色只表示状态点，文字一律是次要色 */
+.quiet {
+  --dot-color: var(--color-text-tertiary);
+  --dot-fill: transparent;
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  color: var(--color-text-secondary);
+  font-size: var(--text-secondary-size);
+  line-height: var(--text-secondary-line-height);
+  white-space: nowrap;
+}
+
+.quiet[data-tone="ok"] {
+  --dot-color: var(--color-status-running-mark);
+  --dot-fill: var(--color-status-running-mark);
+}
+
+.quiet[data-tone="warn"] {
+  --dot-color: var(--color-status-warning-mark);
+  --dot-fill: var(--color-status-warning-mark);
+}
+
+.quiet[data-tone="danger"] {
+  --dot-color: var(--color-status-danger-mark);
+  --dot-fill: var(--color-status-danger-mark);
+}
+
+.dot {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  inline-size: var(--size-status-mark);
+  block-size: var(--size-status-mark);
+  border: calc(var(--space-1) * 0.75) solid var(--dot-color);
+  border-radius: var(--radius-capsule);
+  background: var(--dot-fill);
+}
+
+/* 失败是个红色实心圆圈叉，比小点大一圈，里面的叉用强调色上的白 */
+.quiet[data-tone="danger"] .dot {
+  inline-size: var(--size-status-error-mark);
+  block-size: var(--size-status-error-mark);
+  color: var(--color-text-on-accent);
+}

@@ -10,6 +10,8 @@ export interface TabContentProps {
   tab: TabRow;
   /** 文件树收起时（规格 DESKTOP-WORKSPACE-60）：树不画，窄条里放“展开”按钮 */
   collapsedRail?: ReactNode;
+  /** 窗口太窄连窄条也放不下：文件树整块不画 */
+  hideTree?: boolean;
   onCollapseTree?: () => void;
   /** 文件树和编辑器之间的分隔条（规格 DESKTOP-WORKSPACE-55） */
   treeHandle?: ReactNode;
@@ -25,6 +27,7 @@ export function TabContent({
   bridge,
   tab,
   collapsedRail,
+  hideTree,
   onCollapseTree,
   treeHandle,
   children,
@@ -34,7 +37,7 @@ export function TabContent({
   const editor = <EditorColumn bridge={bridge} tab={tab} />;
   return (
     <>
-      {collapsed ? (
+      {hideTree ? null : collapsed ? (
         collapsedRail
       ) : (
         <>

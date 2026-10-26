@@ -61,15 +61,15 @@ describe("窄窗口的运行条", () => {
     window.innerWidth = 1440;
   });
 
-  it("[DESKTOP-WORKSPACE-65] 1024 宽：运行条只有圆点和“:7101”，没有“运行中”三个字；运行数只有数字", () => {
+  it("[DESKTOP-WORKSPACE-65] 1024 宽：运行条只省端口，仍写“运行中”；运行数仍写“1 个运行中”，没有裸数字", () => {
     window.innerWidth = 1024;
     show(sampleTab({ port: 7101 }));
     const bar = screen.getByRole("group", { name: "运行条" });
-    expect(within(bar).getByText(":7101")).toBeTruthy();
-    expect(within(bar).queryByText(/运行中/)).toBeNull();
+    expect(within(bar).getByText("运行中")).toBeTruthy();
+    expect(within(bar).queryByText(/7101/)).toBeNull();
     expect(within(bar).getByRole("button", { name: "重启" })).toBeTruthy();
     expect(within(bar).getByRole("button", { name: "停止" })).toBeTruthy();
-    expect(screen.getByRole("button", { name: "1 个运行中" }).textContent).toBe("1");
+    expect(screen.getByRole("button", { name: "1 个运行中" }).textContent).toBe("1 个运行中");
   });
 
   it("[DESKTOP-WORKSPACE-65] 1440 宽：运行条写“运行中 :7101”，运行数写“1 个运行中”", () => {

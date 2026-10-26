@@ -16,6 +16,7 @@ import { isDueTomorrow } from "../../shared/clean-due.ts";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import { lastUsedAt } from "../../shared/last-used.ts";
 import type { PlaygroundRow } from "../../shared/library-state.ts";
+import type { SortKey } from "../library-query.ts";
 import {
   brandOf,
   logoOf,
@@ -25,12 +26,15 @@ import {
   stateLabelKey,
   statusMarkOf,
 } from "../library-view.ts";
+import { useContentVisible } from "../shared/content-visibility.ts";
 import { ActionFailedDialog } from "./ActionFailedDialog.tsx";
 import { CreatorDetails, CreatorTag } from "./CreatorCell.tsx";
+import { sizeColumn } from "./LibrarySizeColumn.tsx";
 import styles from "./LibraryTable.module.css";
 import { MissingNote } from "./MissingNote.tsx";
 import { RenameInlineActions, RenameInlineFields } from "./RenameInline.tsx";
 import { RowActions } from "./RowActions.tsx";
+import { useLibraryReveal } from "./use-library-reveal.ts";
 import { useRelocate } from "./use-relocate.ts";
 import { useRenameDraft } from "./use-rename-draft.ts";
 
@@ -39,17 +43,30 @@ export interface LibraryTableProps {
   locale: Locale;
   rows: readonly PlaygroundRow[];
   now: number;
+  reveal?: { id: string; sequence: number };
+  /** 当前排序，和“排序”下拉是同一个值；点“大小”表头等于选“大小” */
+  sort: SortKey;
+  onSortChange: (sort: SortKey) => void;
 }
 
-// 没有值的格子用短横线；大小数据由 #410 接入。
+// 没有值的格子用短横线。
 const NONE = "—";
 
 // 资源库方案 A：列宽取设计稿组合已有变量；窄窗口先收最近使用、端口，再把模板收为徽标。
-export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
+export function LibraryTable({
+  bridge,
+  locale,
+  rows,
+  now,
+  sort,
+  onSortChange,
+  reveal,
+}: LibraryTableProps) {
   const t = useT();
   const format = useFormat();
   // 创建副本后选中它（规格 DESKTOP-LIBRARY-VIEW-42）
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  useLibraryReveal(reveal, rows, setSelectedId);
   const taken = useMemo(() => rows.map((row) => row.name), [rows]);
   const draft = useRenameDraft(bridge, taken);
   const editingId = draft.session?.target.id ?? null;
@@ -78,6 +95,7 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
       id: "name",
       header: t("library.column.name.label"),
       width: "fill",
+      sort: { sorted: sort === "name", onSort: () => onSortChange("name") },
       render: (row) =>
         row.id === editingId ? (
           <RenameInlineFields draft={draft} />
@@ -172,22 +190,12 @@ export function LibraryTable({ bridge, locale, rows, now }: LibraryTableProps) {
           ),
         ),
     },
-    {
-      id: "size",
-      header: t("library.column.size.label"),
-      width: {
-        size: "var(--size-column-sm)",
-        compact: {
-          whenCollapsed: "template",
-          size: "calc(var(--size-column-sm) - var(--space-4))",
-        },
-      },
-      render: (row) => dim(row, <span className={styles.size}>{NONE}</span>),
-    },
+    sizeColumn(t("library.column.size.label"), sort === "size", () => onSortChange("size")),
     {
       id: "lastUsed",
       header: t("library.column.lastUsed.label"),
       width: "md",
+      sort: { sorted: sort === "recent", onSort: () => onSortChange("recent") },
       collapse: { order: 1, mode: "hide" },
       render: (row) =>
         dim(
@@ -327,7 +335,9 @@ function useRowKeyboard(
   editingId: string | null,
   open: (id: string) => void,
 ) {
+  const visible = useContentVisible();
   useEffect(() => {
+    if (!visible) return;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return;
       if (editingId !== null || rows.length === 0) return;
@@ -360,5 +370,5 @@ function useRowKeyboard(
     };
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [rows, selectedId, select, editingId, open]);
+  }, [rows, selectedId, select, editingId, open, visible]);
 }

@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { BootstrapInfo, DesktopBridge } from "../../shared/desktop-bridge.ts";
@@ -8,14 +8,14 @@ import { AppFrame } from "./AppFrame.tsx";
 import { sampleTab } from "./sample-tab.ts";
 
 // 外壳的版面：侧栏收起与显示范围、项目标签页的可拖面板（规格 DESKTOP-LIBRARY-VIEW-61 至 63、DESKTOP-WORKSPACE-55 至 61）。
-// jsdom 不做版面：容器固定 1200 x 700，预览占位区的宽度取自版面写下的 CSS 变量，像真实版面一样跟着拖动变。
+// jsdom 不做版面：容器固定 1440 x 700，预览占位区的宽度取自版面写下的 CSS 变量，像真实版面一样跟着拖动变。
 
-const CONTAINER = { width: 1200, height: 700 };
+const CONTAINER = { width: 1440, height: 700 };
 let observers: (() => void)[] = [];
 
 beforeEach(() => {
   observers = [];
-  CONTAINER.width = 1200;
+  CONTAINER.width = 1440;
   (Element.prototype as { getAnimations?: () => unknown[] }).getAnimations = () => [];
   vi.stubGlobal(
     "ResizeObserver",
@@ -182,27 +182,37 @@ describe("侧栏的收起与显示范围", () => {
     expect(sidebar()).toBeNull();
   });
 
-  it("[DESKTOP-LIBRARY-VIEW-63] 项目标签页没有侧栏，也没有侧栏按钮；切回资源库，侧栏回来", async () => {
+  it("[DESKTOP-LIBRARY-VIEW-63] 项目保留侧栏，跨项目和资源库保持手动收起偏好", async () => {
     const user = userEvent.setup();
-    setup(projectState());
-    await screen.findByRole("separator", { name: "调整文件树宽度" });
+    const { emit } = setup(projectState());
+    await handle("调整文件树宽度");
+    expect(sidebar()).toBeTruthy();
+    expect(sidebar()?.querySelector('[aria-current="page"]')).toBeNull();
+    await user.click(screen.getByRole("button", { name: "收起侧栏" }));
     expect(sidebar()).toBeNull();
-    expect(screen.queryByRole("button", { name: "收起侧栏" })).toBeNull();
-    expect(screen.queryByRole("button", { name: "显示侧栏" })).toBeNull();
-    cleanup();
-    setup(libraryState());
-    expect(await screen.findByRole("navigation", { name: "资源库导航" })).toBeTruthy();
-    expect(user).toBeTruthy();
+    emit(
+      "library.changed",
+      libraryState({ tabs: [sampleTab({ id: "other" })], activeTab: "other" }),
+    );
+    expect(sidebar()).toBeNull();
+    expect(screen.getByRole("separator", { name: "调整文件树宽度" })).toBeTruthy();
+    emit("library.changed", libraryState());
+    expect(sidebar()).toBeNull();
+    await user.click(screen.getByRole("button", { name: "显示侧栏" }));
+    expect(sidebar()).toBeTruthy();
   });
 
-  it("[DESKTOP-WORKSPACE-62] 在项目标签页按 ⌃⌘S 收起和展开文件树，不动资源库侧栏的状态", async () => {
+  it("[DESKTOP-WORKSPACE-62] 项目页侧栏快捷键及文件树命令互不影响", async () => {
     const { emit } = setup(projectState());
-    await screen.findByRole("separator", { name: "调整文件树宽度" });
+    await handle("调整文件树宽度");
     emit("sidebar.toggle");
+    expect(sidebar()).toBeNull();
+    expect(screen.getByRole("separator", { name: "调整文件树宽度" })).toBeTruthy();
+    emit("command.run", { id: "app.toggleSidebar" });
+    expect(sidebar()).toBeTruthy();
+    emit("command.run", { id: "app.toggleTree" });
     expect(await screen.findByRole("button", { name: "展开文件树" })).toBeTruthy();
-    expect(screen.queryByRole("tree")).toBeNull();
-    emit("sidebar.toggle");
-    expect(await screen.findByRole("separator", { name: "调整文件树宽度" })).toBeTruthy();
+    expect(sidebar()).toBeTruthy();
     expect(
       JSON.parse(window.localStorage.getItem("runyard.layout.v1") ?? "{}").sidebarCollapsed,
     ).toBe(false);
@@ -244,7 +254,8 @@ describe("项目标签页的可拖面板", () => {
     unmount();
     setup(projectState("oneshot"));
     await handle("调整文件树宽度");
-    expect(screen.getByRole("separator", { name: "调整输出面板高度" })).toBeTruthy();
+    // 脚本没开终端时底部是一行标题条，没有可拖的高度
+    expect(screen.queryByRole("separator", { name: "调整输出面板高度" })).toBeNull();
   });
 
   it("[DESKTOP-WORKSPACE-58] 一直往一个方向拖，停在最小尺寸，不会消失", async () => {
@@ -289,6 +300,10 @@ describe("项目标签页的可拖面板", () => {
     const boundsCalls = () =>
       call.mock.calls.filter(([method, bounds]) => method === "preview.bounds" && bounds !== null);
     const widths = () => boundsCalls().map(([, bounds]) => (bounds as { width: number }).width);
+    // 第一次画用的是量不到容器时的备用尺寸；让量到的 1440 宽生效后，占位区才报出稳定的初始宽度
+    act(() => {
+      for (const notify of observers) notify();
+    });
     const start = Number.parseFloat(cssVar(container, "--pane-preview-width") ?? "0");
     expect(widths().at(-1)).toBe(start);
     // 一边拖一边让版面“生效”：真实环境里占位区的 ResizeObserver 在每一帧都会触发
@@ -394,7 +409,8 @@ it("[DESKTOP-LIBRARY-VIEW-99] 覆盖侧栏按钮与快捷键可开关，分类�
   resizeShell(720);
   await user.click(screen.getByRole("button", { name: "显示侧栏" }));
   expect(container.querySelector("[data-sidebar-overlay]")).toBeTruthy();
-  expect(document.activeElement).toBe(sidebar()?.querySelector('[aria-current="page"]'));
+  // 鼠标点开：焦点不进侧栏，避免出现键盘焦点环（DESKTOP-WORKSPACE-78）
+  expect(sidebar()?.contains(document.activeElement)).toBe(false);
   await user.keyboard("{Escape}");
   expect(sidebar()).toBeNull();
   expect(document.activeElement).toBe(screen.getByRole("button", { name: "显示侧栏" }));
@@ -477,7 +493,7 @@ it.each(["reopen", "return"])(
     if (action === "reopen") {
       await user.click(screen.getByRole("button", { name: "收起侧栏" }));
       await user.click(screen.getByRole("button", { name: "显示侧栏" }));
-      expect(document.activeElement).toBe(sidebar()?.querySelector('[aria-current="page"]'));
+      expect(sidebar()?.contains(document.activeElement)).toBe(false);
     } else {
       await user.click(screen.getByRole("button", { name: /^全部/ }));
       expect(document.activeElement).toBe(screen.getByRole("button", { name: "显示侧栏" }));
@@ -523,4 +539,132 @@ it("[DESKTOP-LIBRARY-VIEW-97] 展开偏好从临时模板拉宽回库后不遗�
   search.focus();
   resizeShell(720);
   expect(document.activeElement).toBe(search);
+});
+
+it("[DESKTOP-WORKSPACE-79] 720 宽项目页展开侧栏也是占位一栏，不是浮层，再切换收回并归还焦点", async () => {
+  const { emit, container } = setup({ ...projectState(), loaded: false });
+  await handle("调整预览宽度");
+  resizeShell(720);
+  emit("sidebar.toggle");
+  expect(document.activeElement).toBe(sidebar()?.querySelector("button"));
+  expect(container.querySelector("[data-sidebar-overlay]")).toBeNull();
+  expect(container.querySelector("[data-sidebar]")?.getAttribute("data-sidebar")).toBe("shown");
+  emit("sidebar.toggle");
+  expect(sidebar()).toBeNull();
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "显示侧栏" }));
+  expect(window.localStorage.getItem("runyard.layout.v1")).toBeNull();
+});
+
+it("[DESKTOP-LIBRARY-VIEW-64] 项目侧栏进入模板，回库状态推送不覆盖页面且不停止项目", async () => {
+  const state = { ...projectState(), loaded: false };
+  const { emit, call } = setup(state);
+  await handle("调整文件树宽度");
+  await userEvent.setup().click(screen.getByRole("button", { name: /^模板/ }));
+  expect(call).toHaveBeenCalledWith("tab.select", "library");
+  emit("library.changed", { ...state, activeTab: "library" });
+  expect(await screen.findByRole("heading", { name: "模板" })).toBeTruthy();
+  expect(sidebar()).toBeTruthy();
+  expect(call.mock.calls.some(([method]) => method === "run.stop" || method === "tab.close")).toBe(
+    false,
+  );
+});
+
+it("[DESKTOP-LIBRARY-VIEW-64] 项目侧栏筛选直接回库，不关闭标签或停止运行", async () => {
+  const state = { ...projectState(), loaded: false };
+  const { emit, call } = setup(state);
+  await handle("调整文件树宽度");
+  await userEvent.setup().click(screen.getByRole("button", { name: /^智能体创建/ }));
+  expect(call).toHaveBeenCalledWith("tab.select", "library");
+  emit("library.changed", { ...state, activeTab: "library" });
+  expect(await screen.findByRole("heading", { name: "智能体创建" })).toBeTruthy();
+  expect(screen.getByRole("tab", { name: /demo/ }).getAttribute("aria-selected")).toBe("false");
+  expect(call.mock.calls.some(([method]) => method === "run.stop" || method === "tab.close")).toBe(
+    false,
+  );
+});
+
+describe("项目页版面（UI 走查 W1 至 W7）", () => {
+  it("[DESKTOP-WORKSPACE-72] 1100 宽进入项目页：全局侧栏默认收起，可临时展开，不改手动偏好", async () => {
+    const user = userEvent.setup();
+    CONTAINER.width = 1100;
+    setup(projectState());
+    await handle("调整文件树宽度");
+    expect(sidebar()).toBeNull();
+    expect(window.localStorage.getItem("runyard.layout.v1")).toBeNull();
+    await user.click(screen.getByRole("button", { name: "显示侧栏" }));
+    expect(sidebar()).toBeTruthy();
+    // 展开的侧栏是布局里的一栏（推开内容），不是浮层（DESKTOP-WORKSPACE-77）
+    expect(document.querySelector("[data-sidebar-overlay]")).toBeNull();
+    expect(document.querySelector("[data-sidebar]")?.getAttribute("data-sidebar")).toBe("shown");
+    // 鼠标展开不把焦点送进侧栏（DESKTOP-WORKSPACE-78）
+    expect(sidebar()?.contains(document.activeElement)).toBe(false);
+    expect(window.localStorage.getItem("runyard.layout.v1")).toBeNull();
+    // 编辑器最窄 420：预览不会把它挤到更窄
+    const tree = Number.parseFloat(treeWidth(document.body) ?? "0");
+    const preview = Number.parseFloat(cssVar(document.body, "--pane-preview-width") ?? "0");
+    expect(1100 - tree - preview - 2 * 12).toBeGreaterThanOrEqual(420);
+    // 宽窗口照手动偏好常驻
+    resizeShell(1440);
+    expect(sidebar()).toBeTruthy();
+  });
+
+  it("[DESKTOP-WORKSPACE-78] 鼠标展开侧栏焦点不进导航，快捷键展开才进入", async () => {
+    const user = userEvent.setup();
+    CONTAINER.width = 1100;
+    const { emit } = setup(projectState());
+    await handle("调整文件树宽度");
+    await user.click(screen.getByRole("button", { name: "显示侧栏" }));
+    expect(sidebar()?.contains(document.activeElement)).toBe(false);
+    await user.click(screen.getByRole("button", { name: "收起侧栏" }));
+    expect(sidebar()).toBeNull();
+    (document.activeElement as HTMLElement | null)?.blur();
+    emit("sidebar.toggle");
+    expect(sidebar()?.contains(document.activeElement)).toBe(true);
+  });
+
+  it("[DESKTOP-WORKSPACE-77] 资源库页临时展开侧栏后打开项目，侧栏从收起开始", async () => {
+    const user = userEvent.setup();
+    CONTAINER.width = 1100;
+    const state = { ...projectState(), loaded: false };
+    const { emit } = setup({ ...state, activeTab: "library" });
+    await screen.findByRole("navigation", { name: "资源库导航" });
+    resizeShell(1000);
+    await user.click(screen.getByRole("button", { name: "显示侧栏" }));
+    expect(sidebar()).toBeTruthy();
+    emit("library.changed", state);
+    await handle("调整文件树宽度");
+    expect(sidebar()).toBeNull();
+  });
+
+  it("[DESKTOP-WORKSPACE-73] 项目页卡片间用工作区底色，资源库页不用", async () => {
+    const { container, emit } = setup(projectState());
+    await handle("调整文件树宽度");
+    const shell = () => container.querySelector<HTMLElement>("[data-surface]");
+    expect(shell()?.getAttribute("data-surface")).toBe("workspace");
+    emit("library.changed", libraryState());
+    expect(container.querySelector("[data-surface]")).toBeNull();
+  });
+
+  it("[DESKTOP-WORKSPACE-74] 全局侧栏开关和文件树开关用不同的图案", async () => {
+    setup(projectState());
+    await handle("调整文件树宽度");
+    const global = screen.getByRole("button", { name: "收起侧栏" });
+    const tree = screen.getByRole("button", { name: "收起文件树" });
+    expect(global.querySelector("[data-icon]")?.getAttribute("data-icon")).toBe("sidebar-left");
+    expect(tree.querySelector("[data-icon]")?.getAttribute("data-icon")).toBe("chevrons-left");
+  });
+
+  it("[DESKTOP-SETTINGS-49] 设置页整页用工作区底色，顶栏没有项目运行条也没有选中的项目标签", async () => {
+    const { container, emit } = setup(projectState());
+    await handle("调整文件树宽度");
+    expect(screen.queryByRole("button", { name: "停止" })).not.toBeNull();
+    emit("command.run", { id: "app.settings" });
+    await screen.findByRole("heading", { name: "设置" });
+    expect(container.querySelector("[data-surface]")?.getAttribute("data-surface")).toBe(
+      "workspace",
+    );
+    expect(screen.queryByRole("button", { name: "停止" })).toBeNull();
+    expect(screen.getByRole("tab", { name: /demo/ }).getAttribute("aria-selected")).toBe("false");
+    expect(screen.getByRole("button", { name: "新建" })).toBeTruthy();
+  });
 });

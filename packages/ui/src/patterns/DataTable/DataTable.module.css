@@ -99,6 +99,45 @@
   text-align: start;
 }
 
+.cell[data-align="end"],
+.headerCell[data-align="end"] {
+  text-align: end;
+}
+
+/* 数字列的单元格内容靠右：单元格里是 flex 或 inline 内容时也一样 */
+.cell[data-align="end"] > * {
+  margin-inline-start: auto;
+}
+
+.sortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-inline-size: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* 当前排序列：列头加粗、用主文字色，后面带箭头（走查 L2，设计稿 Main 的“最近使用 ⌄”） */
+.headerCell[aria-sort] {
+  color: var(--color-text-primary);
+  font-weight: var(--text-control-weight);
+}
+
+.headerCell[data-align="end"] .sortButton {
+  float: inline-end;
+}
+
+.sortButton:focus-visible {
+  outline: var(--space-1) solid var(--color-line-accent);
+  outline-offset: var(--space-1);
+  border-radius: var(--radius-row);
+}
+
 /* 表格是一个 Tab 停点；焦点环不画在整张表上（选中行就是焦点的位置），没有选中行时才画 */
 .table:focus-visible {
   outline: none;

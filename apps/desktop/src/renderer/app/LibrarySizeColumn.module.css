@@ -1,0 +1,15 @@
+.number {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.muted {
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+}
+
+.tip {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}

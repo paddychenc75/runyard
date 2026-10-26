@@ -1,5 +1,6 @@
 import { useT } from "@runyard/i18n/react";
 import { ScrollArea } from "@runyard/ui";
+import { useEffect, useRef } from "react";
 import type { DesktopBridge } from "../../../shared/desktop-bridge.ts";
 import type { LibraryState } from "../../../shared/library-state.ts";
 import type { SettingsApi } from "../../bridge/use-settings.ts";
@@ -20,6 +21,10 @@ export interface SettingsPageProps {
 // 标题留在滚动区外，分区位置由真实内容几何决定，说明换行或工具检测更新后仍能正确跳转。
 export function SettingsPage({ bridge, api, library }: SettingsPageProps) {
   const t = useT();
+  const title = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    title.current?.focus({ preventScroll: true });
+  }, []);
   const { viewport, column, navigation, current, scrolled, updateSection, jump, reveal } =
     useSettingsNavigation();
   const labels = [
@@ -40,7 +45,9 @@ export function SettingsPage({ bridge, api, library }: SettingsPageProps) {
     <section className={styles.root} aria-label={t("settings.page.aria")}>
       <header className={styles.header} data-settings-header="" data-scrolled={scrolled}>
         <div className={styles.headingColumn}>
-          <h1 className={styles.title}>{t("settings.page.title")}</h1>
+          <h1 ref={title} tabIndex={-1} className={styles.title}>
+            {t("settings.page.title")}
+          </h1>
           <ScrollArea
             orientation="horizontal"
             className={styles.sectionScroll}

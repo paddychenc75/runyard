@@ -101,8 +101,7 @@ export function createSystemSettings(options: SystemSettingsOptions): {
     exists,
     shellName: () => basename(process.env.SHELL ?? "zsh"),
     revealInFileManager: (path) => shell.showItemInFolder(path),
-    openSkillGuide: async (locale) =>
-      (await shell.openPath(skillGuidePath(runtime, locale))) === "",
+    openSkillGuide: async (locale) => readFile(skillGuidePath(runtime, locale), "utf8"),
   };
   return { toolchain, cli: new CliSettings(client, host) };
 }

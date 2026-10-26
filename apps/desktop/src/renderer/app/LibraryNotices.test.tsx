@@ -117,10 +117,14 @@ const missing = (extra: Partial<PlaygroundRow> = {}) =>
   row("vue-drag-list", { missing: true, port: 7106, ...extra });
 
 describe("找不到文件夹的行", () => {
-  it("[DESKTOP-LIBRARY-VIEW-49] 状态写“找不到文件夹”，下方说明写原路径，有重新定位、从资源库移除、显示上一级文件夹三个操作", async () => {
+  it("[DESKTOP-LIBRARY-VIEW-49][DESKTOP-LIBRARY-VIEW-105] 状态写“找不到文件夹”，下方说明写原路径，有重新定位、从资源库移除、显示上一级文件夹三个操作", async () => {
     setup(library([missing(), row("next16-1")]));
     const line = await bodyRow("vue-drag-list");
     expect(within(line).getByText("找不到文件夹")).toBeTruthy();
+    // 行内只剩“⋯”，没有“重新定位…”和“打开”（场景 DESKTOP-LIBRARY-VIEW-105）
+    expect(within(line).queryByRole("button", { name: "重新定位…" })).toBeNull();
+    expect(within(line).queryByRole("button", { name: "打开" })).toBeNull();
+    expect(within(line).getAllByRole("button")).toHaveLength(1);
     const note = document.querySelector('[data-missing-note="vue-drag-list"]') as HTMLElement;
     expect(note.textContent).toContain(
       "~/Runyard/vue-drag-list 不在原来的位置了。可能被移动、改名或删除。",
@@ -136,7 +140,7 @@ describe("找不到文件夹的行", () => {
     setup(library([missing()], { locale: "en" }), () => undefined, "en");
     const note = await screen.findByText(/is no longer where it was/);
     expect(note.textContent).toContain("~/Runyard/vue-drag-list is no longer where it was");
-    expect(screen.getByRole("button", { name: "Locate…" })).toBeTruthy();
+    expect(screen.getAllByRole("button", { name: "Locate…" })).toHaveLength(1);
   });
 
   it("[DESKTOP-LIBRARY-VIEW-50] 点“重新定位…”：向主进程要重新定位，主进程推来恢复后的状态，该行变回已停止、说明消失、端口不变", async () => {
@@ -482,4 +486,18 @@ describe("自动清理通知", () => {
     );
     expect(calledWith(calls, "playground.trash")).toEqual(["node-ts-1"]);
   });
+});
+
+it("[DESKTOP-LIBRARY-VIEW-49] 定位缺失项目时清除遮挡它的筛选并聚焦重新定位", async () => {
+  const { push } = setup(library([row("vue-drag-list"), row("other")]));
+  await bodyRow("vue-drag-list");
+  await user.type(screen.getByRole("textbox", { name: /搜索/ }), "other");
+  expect(document.querySelector('tr[data-row-id="vue-drag-list"]')).toBeNull();
+  await push(
+    library([missing(), row("other")], { libraryReveal: { id: "vue-drag-list", sequence: 1 } }),
+  );
+  const target = await bodyRow("vue-drag-list");
+  expect(target.hasAttribute("data-selected")).toBe(true);
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "重新定位…" }));
+  expect((screen.getByRole("textbox", { name: /搜索/ }) as HTMLInputElement).value).toBe("");
 });

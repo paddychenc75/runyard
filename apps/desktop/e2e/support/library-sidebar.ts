@@ -20,3 +20,13 @@ export async function showLibrarySidebar(page: Page): Promise<void> {
   }
   await expect(sidebar).toBeVisible();
 }
+
+/** 用真实全局导航返回全部项目；也覆盖窄窗口临时展开的入口。 */
+export async function openLibraryPage(page: Page): Promise<void> {
+  await showLibrarySidebar(page);
+  await page
+    .getByRole("navigation")
+    .getByRole("button", { name: /^(All|全部)/ })
+    .click();
+  await expect(page.getByRole("heading", { name: /^(All|全部)$/, level: 1 })).toBeVisible();
+}

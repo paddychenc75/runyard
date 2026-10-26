@@ -8,8 +8,8 @@
 
 - 始终非交互：不提问、不等待输入。`<pg>` 是项目名称或路径。
 - 全局参数：`--json`、`--quiet`、`--root <dir>`、`--lang <locale>`（只对这一条命令生效）、`--version` / `-v`（输出版本号，同 `version` 命令）。
-- 带 `--json` 时标准输出上恰好一个对象：结果，或 `{"error": {...}}`；路径都是绝对路径。唯一例外是 `logs --follow --json`：每行一个对象（NDJSON），最后一行是 `{ "end": true, "cursor": … }`。
-- `--json` 的输出不随语言变：字段名稳定、`code` 稳定；`error.message` 和 `error.hint` **永远是英文**，由命令行按错误码从英文文案生成（协议里已经没有这两个字段）。智能体看 `code`，不要解析 `message`。
+- 带 `--json` 时标准输出上恰好一个对象：结果，或 `{"error": {...}}`；路径都是绝对路径。例外有两项：`--help` 仍输出当前命令行语言的帮助文本；`logs --follow --json`：每行一个对象（NDJSON），最后一行是 `{ "end": true, "cursor": … }`。
+- `--json` 的命令结果不随语言变（帮助文本除外）：字段名稳定、`code` 稳定；`error.message` 和 `error.hint` **永远是英文**，由命令行按错误码从英文文案生成（协议里已经没有这两个字段）。智能体看 `code`，不要解析 `message`。
 - 本机地址一律字面量 `127.0.0.1`，不写 `localhost`。
 - 智能体名称：环境变量 `RUNYARD_AGENT` 优先，其次已知智能体自己的环境变量（Claude Code 是 `CLAUDECODE`，值为 1；`AI_AGENT` 是跨工具的约定名）；都没有则创建者种类为 `cli`。创建命令原样记入。
 
@@ -27,6 +27,8 @@
 | `doctor` | `--template <id>`、`--bundle`（导出诊断包 zip，打印路径；去掉口令和代理账号密码） | #prd-cli-commands |
 | `template list \| show \| save \| lint \| test` | `test` 另有 `--keep-dir`、`--tool-version`；`lint`、`test` 在命令行进程里直接跑，不经管理进程 | #prd-template-lint-test |
 | `skill install` | `--target claude\|agents\|all`；写 `~/.claude/skills/runyard/SKILL.md` 和 `~/.agents/skills/runyard/SKILL.md` | #prd-cli-commands |
+| `skill status` | `--target claude\|agents\|all`；只读，报告每个位置的说明是没装、当前版本还是旧版（比内容）：`{targets:[{target,dir,state}]}` | #prd-cli-commands |
+| `skill uninstall` | `--target claude\|agents\|all`；只把 runyard 自己写的技能目录移到废纸篓，里面有别的文件就保留并写进 `skipped`：`{removed,skipped}` | #prd-cli-commands |
 | `config get lang \| set lang <locale>` | 唯一设置项 `lang`（`en` 或 `zh-CN`），存 `~/.runyard/cli.json`；`get` 显示生效的语言和来源（`--lang`、环境变量、设置、默认） | #prd-cli-language |
 
 `new` 不给名称时按“模板标识加序号”自动命名，序号取现有最大序号加一，不回头补空缺（PRD #prd-naming）。创建时默认不开启自动清理，带 `--clean-after 30d` 才开启。`open`、`screenshot` 属于 P1，需要桌面应用，M1 不做。

@@ -19,6 +19,10 @@ export const iconPaths = {
     viewBox: "0 0 16 16",
     paths: ["M3.5 6l4.5 4.5L12.5 6"],
   },
+  "chevrons-left": {
+    viewBox: "0 0 16 16",
+    paths: ["M8.5 4 4.5 8l4 4M12.5 4l-4 4 4 4"],
+  },
   clear: {
     viewBox: "0 0 16 16",
     paths: ["M8 14.25a6.25 6.25 0 1 0 0-12.5 6.25 6.25 0 0 0 0 12.5ZM6 6l4 4M10 6l-4 4"],
@@ -110,6 +114,10 @@ export const iconPaths = {
     viewBox: "0 0 16 16",
     paths: ["M7 12.25a5.25 5.25 0 1 0 0-10.5 5.25 5.25 0 0 0 0 10.5ZM14.25 14.25l-3.5-3.5"],
   },
+  "sidebar-left": {
+    viewBox: "0 0 24 24",
+    paths: ["M6 5h12a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3zM8 5v14"],
+  },
   sliders: {
     viewBox: "0 0 16 16",
     paths: [
@@ -128,7 +136,7 @@ export const iconPaths = {
   },
   stop: {
     viewBox: "0 0 16 16",
-    paths: ["M3 3h10v10H3z"],
+    paths: ["M5 3h6a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"],
   },
   tools: {
     viewBox: "0 0 16 16",

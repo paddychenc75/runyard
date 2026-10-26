@@ -125,7 +125,7 @@ if (typeof document !== "undefined") {
   try {
     render(<AppFrame bridge={bridge} locale="zh-CN" theme="light" />);
     within(await screen.findByRole("table", { name: /项目列表|Playgrounds/ })).getAllByRole("row");
-    screen.getAllByRole("tab");
+    screen.getByRole("tablist");
 
     // 再走一遍「选择器 -> 新建弹窗 -> 开关 -> 输入 -> 回车」，把弹窗路径的冷启动也付掉
     const user = userEvent.setup();

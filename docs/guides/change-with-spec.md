@@ -39,7 +39,7 @@
 
 ### 待实现清单
 
-规格先于代码批准，所以标了“验证：test”但还没有测试的场景登记在 `tooling/checks/spec-pending.txt`。清单只许缩小：实现某个场景时，在同一个 PR 里写标题带 `[编号]` 的测试，并把它从清单里删掉（`spec-trace` 会因为“已有测试还留在清单里”而变红）。
+规格先于代码批准，所以标了“验证：test”但还没有测试的场景登记在 `tooling/checks/spec-pending.txt`。追踪正式单元/进程测试的 `.test.ts(x)`，以及桌面 Playwright 配置下 `apps/desktop/e2e/*.e2e.ts` 的测试标题；`.measure.ts`、`.fixture.ts` 和普通脚本不算测试覆盖。清单只许缩小：实现某个场景时，在同一个 PR 里写标题带 `[编号]` 的测试，并把它从清单里删掉（`spec-trace` 会因为“已有测试还留在清单里”而变红）。
 
 ## 验证
 

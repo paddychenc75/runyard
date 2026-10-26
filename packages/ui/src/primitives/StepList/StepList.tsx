@@ -1,6 +1,7 @@
 import type { Localized } from "@runyard/i18n";
 import type { ComponentProps } from "react";
 import { Icon } from "../Icon/index.ts";
+import { StatusMark } from "../StatusMark/index.ts";
 import styles from "./StepList.module.css";
 
 export type StepStatus = "done" | "current" | "failed" | "pending";
@@ -17,7 +18,7 @@ export interface StepListProps extends Omit<ComponentProps<"ol">, "children"> {
   label: Localized;
 }
 
-// 步骤条：几个步骤横排，每步一个标记（完成是对勾，当前是转圈，失败是红色方块里的叉，未到是空心圆）
+// 步骤条：几个步骤横排，每步一个标记（完成是对勾，当前是转圈，失败是红色圆圈叉，未到是空心圆）
 // 加名字。形状随状态变，不只靠颜色（设计稿 StartFailed）。
 export function StepList({ steps, label, className, ...rest }: StepListProps) {
   return (
@@ -33,11 +34,14 @@ export function StepList({ steps, label, className, ...rest }: StepListProps) {
           data-status={step.status}
           aria-current={step.status === "current" ? "step" : undefined}
         >
-          <span aria-hidden="true" className={styles.mark}>
-            {step.status === "done" ? <Icon name="check" size={12} /> : null}
-            {step.status === "failed" ? <Icon name="close" size={12} /> : null}
-            {step.status === "current" ? <Icon name="spinner" size={12} /> : null}
-          </span>
+          {step.status === "failed" ? (
+            <StatusMark status="crashed" size="step" />
+          ) : (
+            <span aria-hidden="true" className={styles.mark}>
+              {step.status === "done" ? <Icon name="check" size={12} /> : null}
+              {step.status === "current" ? <Icon name="spinner" size={12} /> : null}
+            </span>
+          )}
           <span className={styles.label}>{step.label}</span>
         </li>
       ))}

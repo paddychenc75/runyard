@@ -37,7 +37,8 @@ describe("改名与移到废纸篓的释放顺序", () => {
     expect(requested).toEqual({ playgroundId: id, reason: "rename" });
     await app.call("playground.released", { playgroundId: id });
     expect(await pending).toMatchObject({ ok: true });
-    expect(lw.clock.pendingTimers()).toBe(0);
+    // 3 秒的等待计时器已清掉；剩下的一个是磁盘占用每 30 分钟复核的计时器
+    expect(lw.clock.pendingTimers()).toBe(1);
     expect(lw.logs.some((line) => line.startsWith("release timeout"))).toBe(false);
   });
 
@@ -49,7 +50,8 @@ describe("改名与移到废纸篓的释放顺序", () => {
     await app.call("playground.released", { playgroundId: id });
     expect(await pending).toMatchObject({ ok: true });
     expect(cli.eventsOf("playground.releaseRequested")).toEqual([]);
-    expect(lw.clock.pendingTimers()).toBe(0);
+    // 3 秒的等待计时器已清掉；剩下的一个是磁盘占用每 30 分钟复核的计时器
+    expect(lw.clock.pendingTimers()).toBe(1);
   });
 
   it("等待期间连接断开的客户端不再等", async () => {

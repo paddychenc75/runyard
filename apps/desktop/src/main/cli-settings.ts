@@ -1,15 +1,18 @@
 import type {
+  AgentSkillOutcome,
   AgentSkillStatus,
   AgentSkillTarget,
   CliCommandStatus,
   CliLinkOutcome,
   DiagnosticsOutcome,
+  SkillFailureReason,
+  SkillState,
   SupervisorStatus,
 } from "../shared/settings-bridge.ts";
 import type { CliLinkResult, CliLinkState } from "./integration/cli-link.ts";
 import type { LibraryClient } from "./library-controller.ts";
 
-// 设置页“命令行与智能体”背后的主进程一侧（规格 DESKTOP-SETTINGS-20 至 24）：
+// 设置页“命令行与智能体”背后的主进程一侧（规格 DESKTOP-SETTINGS-20 至 24、50 至 53）：
 // `runyard` 命令接到 PATH、导出诊断信息、智能体技能包、后台管理进程的状态与停止。
 // 命令行本身做的事（诊断包、技能包）就让随包的命令行去做，不在这里再写一遍（规格：与 runyard doctor --bundle 相同）。
 // 不认识 Electron：系统相关的都经 CliHost 传进来。
@@ -41,13 +44,17 @@ export interface CliHost {
   /** 用户的登录 shell 名（zsh、bash…），决定“加入 PATH”那行命令写进哪个文件 */
   shellName(): string;
   revealInFileManager(path: string): void;
-  openSkillGuide?(locale: "en" | "zh-CN"): Promise<boolean>;
+  openSkillGuide?(locale: "en" | "zh-CN"): Promise<string>;
 }
 
 const SKILL_FOLDERS: Record<AgentSkillTarget, string> = {
   claude: ".claude/skills/runyard/SKILL.md",
   agents: ".agents/skills/runyard/SKILL.md",
 };
+
+function isSkillState(value: unknown): value is SkillState {
+  return value === "missing" || value === "current" || value === "outdated";
+}
 
 /** 主目录缩成 ~，给界面显示 */
 function tilde(path: string, home: string): string {
@@ -128,29 +135,66 @@ export class CliSettings {
     }
   }
 
-  async openSkillGuide(locale: unknown): Promise<{ ok: boolean }> {
+  async openSkillGuide(locale: unknown): Promise<{ ok: boolean; content?: string }> {
     if (locale !== "en" && locale !== "zh-CN") return { ok: false };
     try {
-      return { ok: (await this.#host.openSkillGuide?.(locale)) ?? false };
+      const content = await this.#host.openSkillGuide?.(locale);
+      return content ? { ok: true, content } : { ok: false };
     } catch {
       return { ok: false };
     }
   }
 
+  /** 每个位置里的技能包：没装、当前版本还是旧版，由命令行比内容得出（runyard skill status，规格 CLI-COMMANDS-93） */
   async agentSkills(): Promise<AgentSkillStatus> {
-    const there = (target: AgentSkillTarget) =>
-      this.#host.exists(`${this.#host.home}/${SKILL_FOLDERS[target]}`);
-    return { claude: await there("claude"), agents: await there("agents") };
+    const status: AgentSkillStatus = { claude: "missing", agents: "missing" };
+    try {
+      const run = await this.#host.runCli(["skill", "status", "--json"]);
+      const targets = (
+        JSON.parse(run.stdout) as { targets?: { target?: unknown; state?: unknown }[] }
+      ).targets;
+      for (const item of run.code === 0 && Array.isArray(targets) ? targets : []) {
+        const state = item.state;
+        if ((item.target === "claude" || item.target === "agents") && isSkillState(state))
+          status[item.target] = state;
+      }
+    } catch {
+      // 读不到就当没装：不在这里吓用户，界面上点安装会得到具体原因
+    }
+    return status;
   }
 
-  /** 安装到一类智能体：就是 runyard skill install --target（规格 DESKTOP-SETTINGS-24） */
-  async installAgentSkill(target: AgentSkillTarget): Promise<AgentSkillStatus> {
+  /** 安装或更新一类智能体：就是 runyard skill install --target（规格 DESKTOP-SETTINGS-24、51） */
+  async installAgentSkill(target: AgentSkillTarget): Promise<AgentSkillOutcome> {
+    return await this.#changeSkill(["skill", "install", "--target", target, "--json"], target);
+  }
+
+  /** 移除：runyard skill uninstall --target，只移走 runyard 装的目录，有别人的文件就保留（规格 DESKTOP-SETTINGS-52） */
+  async removeAgentSkill(target: AgentSkillTarget): Promise<AgentSkillOutcome> {
+    return await this.#changeSkill(["skill", "uninstall", "--target", target, "--json"], target);
+  }
+
+  /** 在访达中显示已装的技能说明；没装就什么都不做 */
+  async revealAgentSkill(target: AgentSkillTarget): Promise<void> {
+    const file = `${this.#host.home}/${SKILL_FOLDERS[target]}`;
+    if (await this.#host.exists(file)) this.#host.revealInFileManager(file);
+  }
+
+  async #changeSkill(args: string[], target: AgentSkillTarget): Promise<AgentSkillOutcome> {
+    let failure: SkillFailureReason | undefined;
     try {
-      await this.#host.runCli(["skill", "install", "--target", target, "--json"]);
+      const run = await this.#host.runCli(args);
+      const body = JSON.parse(run.stdout) as {
+        error?: { code?: unknown };
+        skipped?: unknown[];
+      };
+      if (run.code !== 0) failure = body.error?.code === "PATH_LOCKED" ? "permission" : "other";
+      else if ((body.skipped?.length ?? 0) > 0) failure = "foreign-files";
     } catch {
-      // 没装上，下面读到的就是没变
+      failure = "other";
     }
-    return await this.agentSkills();
+    const status = await this.agentSkills();
+    return failure === undefined ? { status } : { status, failure: { target, reason: failure } };
   }
 
   async supervisorStatus(): Promise<SupervisorStatus> {

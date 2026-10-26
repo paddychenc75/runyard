@@ -98,7 +98,7 @@ describe("运行条：重启与持有者", () => {
     expect(screen.queryByRole("button", { name: "重启" })).toBeNull();
   });
 
-  it("[DESKTOP-WORKSPACE-39] 已出错：运行条和输出区都写警示色的“已出错 · 退出码 1 · 0.4 秒”，按钮是“重新运行”", () => {
+  it("[DESKTOP-WORKSPACE-39] 已出错：运行条写警示色的“已出错 · 退出码 1 · 0.4 秒”，输出头部不重复，按钮是“重新运行”", () => {
     const { bridge } = fakeBridge();
     const row = script({
       state: "errored",
@@ -115,11 +115,10 @@ describe("运行条：重启与持有者", () => {
         </>,
       ),
     );
+    // 状态只在运行条里写一次，输出头部不重复（避免窄窗口被截断）
     const texts = screen.getAllByText("已出错 · 退出码 1 · 0.4 秒");
-    expect(texts).toHaveLength(2);
-    for (const text of texts) {
-      expect(text.closest("[data-danger]")).not.toBeNull();
-    }
+    expect(texts).toHaveLength(1);
+    expect(texts[0]?.closest("[data-danger]")).not.toBeNull();
     expect(screen.getAllByRole("button", { name: "重新运行" })).toHaveLength(2);
   });
 });
@@ -232,7 +231,7 @@ describe("脚本失败", () => {
       failure: { code: "RUN_FAILED", params: { name: "python-2" } },
     });
     render(view(<ScriptOutput bridge={bridge} tab={row} />));
-    expect(screen.getAllByText("启动失败").length).toBeGreaterThan(0);
+    expect(screen.getByRole("alert").textContent).toContain("启动失败");
     expect(screen.getByText("项目 python-2 启动失败")).toBeTruthy();
     expect(await screen.findByText("env: python3: No such file or directory")).toBeTruthy();
     expect(screen.getByText("已有的最后几行输出")).toBeTruthy();

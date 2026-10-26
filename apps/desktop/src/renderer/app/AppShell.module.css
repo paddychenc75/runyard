@@ -6,6 +6,11 @@
   background: var(--color-bg-window);
 }
 
+/* 项目页和设置页整页（含顶栏区域）用工作区底色（设计稿 Web、WebLight），资源库页保持窗口底色 */
+.root[data-surface="workspace"] {
+  background: var(--color-bg-workspace);
+}
+
 .content {
   position: absolute;
   inset-block: var(--layout-topbar-height) 0;
@@ -14,7 +19,11 @@
   min-block-size: 0;
 }
 
-/* 设置页和模板页：没有顶栏，内容从窗口顶边起（设计稿 Settings、Templates） */
+.content[hidden] {
+  display: none;
+}
+
+/* 模板页没有顶栏，内容从窗口顶边起（设计稿 Templates） */
 .settings {
   position: absolute;
   inset-block: 0;
@@ -23,7 +32,7 @@
   min-block-size: 0;
 }
 
-/* 侧栏收起或在项目标签页时，内容区从窗口左边的留白开始，顶栏让开窗口按钮（红黄绿） */
+/* 侧栏收起时，内容区从窗口左边的留白开始，顶栏让开窗口按钮（红黄绿） */
 .root[data-sidebar="hidden"] {
   --layout-content-left: var(--size-window-inset);
 }

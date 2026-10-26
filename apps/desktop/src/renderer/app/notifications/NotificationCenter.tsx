@@ -191,7 +191,7 @@ function Entry({ item, service }: { item: NotificationRecord; service: Notificat
           </p>
         ))}
         {item.required ? (
-          <ButtonGroup size="sm">
+          <ButtonGroup size="sm" className={styles.actions}>
             <Actions item={item} service={service} />
           </ButtonGroup>
         ) : null}

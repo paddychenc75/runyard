@@ -86,12 +86,28 @@ function setup(dynamicBootstrap = false) {
     send: (channel, event, next) => void sent.push({ channel, event, state: next }),
   };
   const info = { platform: "darwin", locale: "en" } as BootstrapInfo;
-  registerBridgeHandlers(host, controller, dynamicBootstrap ? () => info : info);
+  const pageActive = vi.fn();
+  registerBridgeHandlers(
+    host,
+    controller,
+    dynamicBootstrap ? () => info : info,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    pageActive,
+  );
   const call = (sender: IpcSender, method: unknown, param?: unknown) =>
     handlers.get(desktopChannels.call)?.(sender, method, param);
   return {
     call,
     controller,
+    pageActive,
     syncHandlers,
     info,
     sent,
@@ -130,6 +146,16 @@ it("[DESKTOP-WORKSPACE-71] 刷新桥等待原生加载完成，不在请求送�
 });
 
 describe("registerBridgeHandlers", () => {
+  it("[DESKTOP-SETTINGS-46] 设置页状态只接收布尔值且返回时复位", async () => {
+    const { call, pageActive } = setup();
+    for (const value of [null, "true", 1, {}, undefined])
+      await call(app, "settings.pageActive", value);
+    expect(pageActive).not.toHaveBeenCalled();
+    await call(app, "settings.pageActive", true);
+    await call(app, "settings.pageActive", false);
+    expect(pageActive.mock.calls).toEqual([[true], [false]]);
+  });
+
   it("来自本应用界面的调用转给控制器", async () => {
     const { call, calls, state } = setup();
     expect(call(app, "library.get")).toBe(state);
@@ -190,14 +216,13 @@ describe("registerBridgeHandlers", () => {
     expect(syncHandlers.get(desktopChannels.bootstrap)?.(app)).toBe(info);
   });
 
-  it("[DESKTOP-SETTINGS-01] 设置入口获得独立窗口标记和最新语言主题，主入口不变", () => {
+  it("[DESKTOP-SETTINGS-01] 所有主窗入口使用最新语言主题，不再注入独立窗口标记", () => {
     const { syncHandlers, info } = setup(true);
     const bootstrap = syncHandlers.get(desktopChannels.bootstrap);
     info.locale = "zh-CN";
     info.theme = "dark";
     expect(bootstrap?.({ url: "app://runyard/?view=settings" })).toEqual({
       ...info,
-      windowKind: "settings",
     });
     expect(bootstrap?.(app)).toBe(info);
   });
@@ -400,11 +425,16 @@ describe("设置通道", () => {
         },
       },
       cli: {
-        agentSkills: async () => ({ claude: true, agents: false }),
+        agentSkills: async () => ({ claude: "current", agents: "missing" }),
         installAgentSkill: async (target: string) => {
           seen.push(["skill", target]);
-          return { claude: true, agents: true };
+          return { status: { claude: "current", agents: "current" } };
         },
+        removeAgentSkill: async (target: string) => {
+          seen.push(["unskill", target]);
+          return { status: { claude: "missing", agents: "current" } };
+        },
+        revealAgentSkill: async (target: string) => void seen.push(["reveal", target]),
       },
       onChange: (listener: (settings: unknown) => void) => {
         push = listener;
@@ -456,14 +486,26 @@ describe("设置通道", () => {
     await call(app, "toolchain.pickPath", "node");
     await call(app, "toolchain.runInstall", "go");
     await call(app, "toolchain.runInstall", { command: "rm -rf /" });
-    expect(await call(app, "agents.install", "codex")).toEqual({ claude: false, agents: false });
-    expect(await call(app, "agents.install", "agents")).toEqual({ claude: true, agents: true });
+    expect(await call(app, "agents.install", "codex")).toEqual({
+      status: { claude: "missing", agents: "missing" },
+    });
+    expect(await call(app, "agents.install", "agents")).toEqual({
+      status: { claude: "current", agents: "current" },
+    });
+    expect(await call(app, "agents.remove", "codex")).toEqual({
+      status: { claude: "missing", agents: "missing" },
+    });
+    await call(app, "agents.remove", "claude");
+    await call(app, "agents.reveal", "../etc");
+    await call(app, "agents.reveal", "agents");
     expect(seen).toEqual([
       ["check", true],
       ["check", false],
       ["pick", "node"],
       ["install", "go"],
       ["skill", "agents"],
+      ["unskill", "claude"],
+      ["reveal", "agents"],
     ]);
   });
 

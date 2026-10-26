@@ -111,6 +111,7 @@ export function createSupervisorRuntime(options: StartSupervisorOptions) {
     publish: <E extends EventName>(event: E, data: EventData<E>) => manager.publish(event, data),
     notifyRunsChanged: () => idle.evaluate(),
     readySessions: () => manager.ready(),
+    refreshSize: (playgroundId) => library.sizes.refresh(playgroundId),
     openLibrary: async () => (await library.open()).library,
     readSettings: () => library.settings.get(),
     updateSettings: async (patch) => {
@@ -126,6 +127,10 @@ export function createSupervisorRuntime(options: StartSupervisorOptions) {
         } catch (error) {
           log(`onShutdown failed: ${String(error)}`);
         }
+        // 大小的后台计算和项目文件夹的监听不再需要
+        await library.sizes
+          .dispose()
+          .catch((error) => log(`disk usage shutdown failed: ${String(error)}`));
         // 启动时的扫描还在写资源库的话，等它结束再往下（否则调用方刚清掉目录它又写回去）
         await startupScan;
         // 先删发现文件：之后再来的客户端不会拿到一个马上要失效的口令
