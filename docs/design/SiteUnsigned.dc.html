@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Runyard 官网：下载区（未签名版）</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+html,body{margin:0;overflow:hidden}
+/* 颜色、阴影的名字与 packages/tokens/src/tokens.json 一致；--brand-run-line 取自 Brand 画板的图标渐变 */
+.site{--color-bg-window: #FFFFFF; --color-bg-workspace: #F5F5F7; --color-bg-card: #FFFFFF; --color-bg-inset: #F5F5F7; --color-bg-chip: #F0F0F3; --color-fill-neutral: rgba(118, 118, 128, 0.14); --color-text-primary: #1D1D1F; --color-text-secondary-strong: #3A3A3C; --color-text-secondary: #6E6E73; --color-text-tertiary: #8E8E93; --color-text-on-accent: #FFFFFF; --color-line-hairline: rgba(0, 0, 0, 0.06); --color-line-strong: rgba(0, 0, 0, 0.1); --color-line-card: rgba(0, 0, 0, 0.08); --color-fill-accent: #0071E3; --color-text-accent: #0058B0; --color-text-link: #0071E3; --color-fill-accent-tint: rgba(0, 113, 227, 0.08); --color-status-running-mark: #28A745; --color-status-running-text: #1B7A34; --color-status-warning-mark: #C27400; --color-status-warning-text: #8A4B00; --color-fill-warning-tint: rgba(194, 116, 0, 0.08); --color-agent-text: #7A2E9E; --color-fill-agent-tint: rgba(175, 82, 222, 0.12); --color-code-plain: #1D1D1F; --color-code-keyword: #AD3DA4; --color-code-string: #B3261E; --color-code-function: #0F68A0; --color-code-number: #1C00CF; --color-code-tag: #1B7A34; --color-code-property: #0F68A0; --color-code-punctuation: #6E6E73; --color-code-line-number: #6E6E73; --color-code-current-line: rgba(0, 113, 227, 0.07); --glass-toolbar-bg: rgba(255, 255, 255, 0.66); --shadow-floating: 0 1px 2px rgba(15, 23, 42, 0.05), 0 8px 24px rgba(15, 23, 42, 0.09); --shadow-dialog: 0 0 0 0.5px rgba(0, 0, 0, 0.14), 0 40px 90px rgba(15, 23, 42, 0.32); --shadow-overlay: 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 16px 40px rgba(15, 23, 42, 0.2); --brand-run-line: linear-gradient(90deg, #E8451A 0%, #FA6A1A 60%, #FF9A22 86%, #FFC94A 100%); --term-bg: #F5F5F7;}
+.site{box-sizing:border-box;position:relative;overflow:hidden;background:var(--color-bg-window);color:var(--color-text-primary);font-family:-apple-system,'SF Pro Text','PingFang SC','Helvetica Neue',sans-serif;font-size:15px;line-height:1.5}
+.site *{box-sizing:border-box}
+.site a{color:var(--color-text-link);text-decoration:none}
+.site code,.mono{font-family:'SF Mono',Menlo,monospace}
+.site p{margin:0}
+.site h1,.site h2,.site h3{margin:0}
+.wrap{width:1120px;margin:0 auto}
+.phone .wrap{width:auto;margin:0 20px}
+.nav{height:64px;display:flex;align-items:center;gap:28px;border-bottom:1px solid var(--color-line-hairline)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;letter-spacing:-0.2px;color:var(--color-text-primary)}
+.navlinks{display:flex;gap:26px;margin-left:16px;flex:1}
+.navlinks a{color:var(--color-text-secondary-strong);font-size:14px;display:flex;align-items:center;gap:6px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;font-weight:600;white-space:nowrap;border:none}
+.btn-p{background:var(--color-fill-accent);color:var(--color-text-on-accent) !important}
+.btn-s{background:var(--color-fill-neutral);color:var(--color-text-primary) !important}
+.btn-sm{height:32px;padding:0 14px;font-size:13px}
+.btn-lg{height:48px;padding:0 22px;font-size:16px}
+.seg{display:inline-flex;padding:2px;border-radius:999px;background:var(--color-fill-neutral);font-size:12px}
+.seg span{padding:3px 10px;border-radius:999px;color:var(--color-text-secondary-strong)}
+.seg span.on{background:var(--color-bg-card);color:var(--color-text-primary);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,0.14)}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;height:28px;padding:0 12px;border-radius:999px;background:var(--color-bg-chip);color:var(--color-text-secondary-strong);font-size:13px;font-weight:500}
+.h1{font-size:60px;line-height:1.08;font-weight:700;letter-spacing:-1.2px}
+.phone .h1{font-size:36px;line-height:1.15;letter-spacing:-0.6px}
+.lead{font-size:18px;line-height:1.6;color:var(--color-text-secondary)}
+.phone .lead{font-size:16px}
+.h2{font-size:40px;line-height:1.15;font-weight:700;letter-spacing:-0.6px}
+.phone .h2{font-size:28px;letter-spacing:-0.3px}
+.h3{font-size:19px;line-height:1.35;font-weight:600}
+.muted{color:var(--color-text-secondary)}
+.sec{padding:112px 0}
+.phone .sec{padding:64px 0}
+.alt{background:var(--color-bg-workspace)}
+.card{background:var(--color-bg-card);border:1px solid var(--color-line-hairline);border-radius:16px}
+.shot{position:relative;border-radius:12px;border:1.5px dashed var(--color-line-strong);background:var(--color-bg-inset);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:12px;color:var(--color-text-secondary)}
+.shot b{color:var(--color-text-secondary-strong);font-size:14px;font-weight:600}
+.shot small{font-size:12px}
+.tag{position:absolute;left:10px;top:10px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:6px;background:var(--color-bg-chip);color:var(--color-text-secondary)}
+.code{font-family:'SF Mono',Menlo,monospace;font-size:13px;line-height:22px;white-space:pre}
+.kw{color:var(--color-code-keyword)}.str{color:var(--color-code-string)}.fn{color:var(--color-code-function)}.tg{color:var(--color-code-tag)}.pn{color:var(--color-code-punctuation)}.pr{color:var(--color-code-property)}.nu{color:var(--color-code-number)}
+.dot{width:8px;height:8px;border-radius:4px;background:var(--color-status-running-mark);flex:none}
+.inline code{font-size:0.88em;padding:1px 6px;border-radius:6px;background:var(--color-bg-chip);color:var(--color-text-primary)}
+.notes{background:var(--color-bg-workspace);border-top:2px dashed var(--color-line-strong);padding:40px 0 56px;font-size:13px;line-height:1.55;color:var(--color-text-secondary-strong)}
+.notes h4{margin:0 0 10px;font-size:15px;color:var(--color-text-primary)}
+.notes ul{margin:0;padding-left:18px}
+.notes li{margin:0 0 4px}
+.fr{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.frbox{height:120px;border-radius:12px;background:var(--color-bg-card);border:1px solid var(--color-line-hairline);position:relative;overflow:hidden}
+.bar{position:absolute;height:8px;border-radius:4px}
+</style>
+</helmet>
+<div class="site" style="width: 1440px; height: 1260px">
+
+<div class="wrap nav"><div class="brand"><svg role="img" aria-label="Runyard" width="30" height="30" viewBox="0 0 1024 1024" style="display: block; flex: none"><defs><clipPath id="ic1t"><path d="M383.4,100 L640.6,100 C722.2,100 763,100 799.8,112.1 L806.9,113.9 C854.9,131.3 892.7,169.1 910.1,217.1 L911.9,224.2 C924,261 924,301.8 924,383.4 L924,640.6 C924,722.2 924,763 911.9,799.8 L910.1,806.9 C892.7,854.9 854.9,892.7 806.9,910.1 L799.8,911.9 C763,924 722.2,924 640.6,924 L383.4,924 C301.8,924 261,924 224.2,911.9 L217.1,910.1 C169.1,892.7 131.3,854.9 113.9,806.9 L112.1,799.8 C100,763 100,722.2 100,640.6 L100,383.4 C100,301.8 100,261 112.1,224.2 L113.9,217.1 C131.3,169.1 169.1,131.3 217.1,113.9 L224.2,112.1 C261,100 301.8,100 383.4,100 Z"/></clipPath><linearGradient id="ic1p" x1="0" y1="100" x2="0" y2="924" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFFEFC"/><stop offset="1" stop-color="#F5F2EB"/></linearGradient><linearGradient id="ic1h" x1="408" y1="0" x2="1004" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#E8451A"/><stop offset="0.6" stop-color="#FA6A1A"/><stop offset="0.86" stop-color="#FF9A22"/><stop offset="1" stop-color="#FFC94A"/></linearGradient></defs><path d="M383.4,100 L640.6,100 C722.2,100 763,100 799.8,112.1 L806.9,113.9 C854.9,131.3 892.7,169.1 910.1,217.1 L911.9,224.2 C924,261 924,301.8 924,383.4 L924,640.6 C924,722.2 924,763 911.9,799.8 L910.1,806.9 C892.7,854.9 854.9,892.7 806.9,910.1 L799.8,911.9 C763,924 722.2,924 640.6,924 L383.4,924 C301.8,924 261,924 224.2,911.9 L217.1,910.1 C169.1,892.7 131.3,854.9 113.9,806.9 L112.1,799.8 C100,763 100,722.2 100,640.6 L100,383.4 C100,301.8 100,261 112.1,224.2 L113.9,217.1 C131.3,169.1 169.1,131.3 217.1,113.9 L224.2,112.1 C261,100 301.8,100 383.4,100 Z" fill="url(#ic1p)"/><g clip-path="url(#ic1t)"><rect x="232" y="275" width="264" height="76" rx="38" fill="#24232B"/><rect x="320" y="397" width="430" height="76" rx="38" fill="#24232B"/><rect x="232" y="673" width="372" height="76" rx="38" fill="#C4C1C6"/><path d="M383.4,100 L640.6,100 C722.2,100 763,100 799.8,112.1 L806.9,113.9 C854.9,131.3 892.7,169.1 910.1,217.1 L911.9,224.2 C924,261 924,301.8 924,383.4 L924,640.6 C924,722.2 924,763 911.9,799.8 L910.1,806.9 C892.7,854.9 854.9,892.7 806.9,910.1 L799.8,911.9 C763,924 722.2,924 640.6,924 L383.4,924 C301.8,924 261,924 224.2,911.9 L217.1,910.1 C169.1,892.7 131.3,854.9 113.9,806.9 L112.1,799.8 C100,763 100,722.2 100,640.6 L100,383.4 C100,301.8 100,261 112.1,224.2 L113.9,217.1 C131.3,169.1 169.1,131.3 217.1,113.9 L224.2,112.1 C261,100 301.8,100 383.4,100 Z" fill="none" stroke="#6E6350" stroke-opacity="0.3" stroke-width="8"/></g><rect x="408" y="519" width="596" height="108" rx="54" fill="url(#ic1h)"/></svg>Runyard</div><div class="navlinks"><a>功能</a><a>智能体</a><a>下载</a><a><svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" style="flex: none"><path fill="var(--color-text-secondary-strong)" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a></div><span class="seg"><span class="on">中</span><span class="">EN</span></span><span class="btn btn-p btn-sm"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#FFFFFF" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M8 2v8.5M4.5 7 8 10.5 11.5 7M2.5 13.5h11"/></svg>下载</span></div>
+
+<div id="download" class="sec alt"><div class="wrap" style="width: 880px">
+<div style="display: flex; flex-direction: column; gap: 12px; align-items: center; text-align: center; margin-bottom: 40px"><h2 class="h2">下载 Runyard</h2><p class="lead">免费、开源，只要一台 Mac。</p></div>
+<div class="card" style="padding: 32px; display: flex; flex-direction: column; gap: 28px; box-shadow: var(--shadow-floating)">
+<div style="display: flex; align-items: center; gap: 24px">
+<svg role="img" aria-label="Runyard" width="96" height="96" viewBox="0 0 1024 1024" style="display: block; flex: none"><defs><clipPath id="ic2t"><path d="M383.4,100 L640.6,100 C722.2,100 763,100 799.8,112.1 L806.9,113.9 C854.9,131.3 892.7,169.1 910.1,217.1 L911.9,224.2 C924,261 924,301.8 924,383.4 L924,640.6 C924,722.2 924,763 911.9,799.8 L910.1,806.9 C892.7,854.9 854.9,892.7 806.9,910.1 L799.8,911.9 C763,924 722.2,924 640.6,924 L383.4,924 C301.8,924 261,924 224.2,911.9 L217.1,910.1 C169.1,892.7 131.3,854.9 113.9,806.9 L112.1,799.8 C100,763 100,722.2 100,640.6 L100,383.4 C100,301.8 100,261 112.1,224.2 L113.9,217.1 C131.3,169.1 169.1,131.3 217.1,113.9 L224.2,112.1 C261,100 301.8,100 383.4,100 Z"/></clipPath><linearGradient id="ic2p" x1="0" y1="100" x2="0" y2="924" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFFEFC"/><stop offset="1" stop-color="#F5F2EB"/></linearGradient><linearGradient id="ic2h" x1="408" y1="0" x2="1004" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#E8451A"/><stop offset="0.6" stop-color="#FA6A1A"/><stop offset="0.86" stop-color="#FF9A22"/><stop offset="1" stop-color="#FFC94A"/></linearGradient></defs><path d="M383.4,100 L640.6,100 C722.2,100 763,100 799.8,112.1 L806.9,113.9 C854.9,131.3 892.7,169.1 910.1,217.1 L911.9,224.2 C924,261 924,301.8 924,383.4 L924,640.6 C924,722.2 924,763 911.9,799.8 L910.1,806.9 C892.7,854.9 854.9,892.7 806.9,910.1 L799.8,911.9 C763,924 722.2,924 640.6,924 L383.4,924 C301.8,924 261,924 224.2,911.9 L217.1,910.1 C169.1,892.7 131.3,854.9 113.9,806.9 L112.1,799.8 C100,763 100,722.2 100,640.6 L100,383.4 C100,301.8 100,261 112.1,224.2 L113.9,217.1 C131.3,169.1 169.1,131.3 217.1,113.9 L224.2,112.1 C261,100 301.8,100 383.4,100 Z" fill="url(#ic2p)"/><g clip-path="url(#ic2t)"><rect x="232" y="275" width="264" height="76" rx="38" fill="#24232B"/><rect x="320" y="397" width="430" height="76" rx="38" fill="#24232B"/><rect x="232" y="673" width="372" height="76" rx="38" fill="#C4C1C6"/><path d="M383.4,100 L640.6,100 C722.2,100 763,100 799.8,112.1 L806.9,113.9 C854.9,131.3 892.7,169.1 910.1,217.1 L911.9,224.2 C924,261 924,301.8 924,383.4 L924,640.6 C924,722.2 924,763 911.9,799.8 L910.1,806.9 C892.7,854.9 854.9,892.7 806.9,910.1 L799.8,911.9 C763,924 722.2,924 640.6,924 L383.4,924 C301.8,924 261,924 224.2,911.9 L217.1,910.1 C169.1,892.7 131.3,854.9 113.9,806.9 L112.1,799.8 C100,763 100,722.2 100,640.6 L100,383.4 C100,301.8 100,261 112.1,224.2 L113.9,217.1 C131.3,169.1 169.1,131.3 217.1,113.9 L224.2,112.1 C261,100 301.8,100 383.4,100 Z" fill="none" stroke="#6E6350" stroke-opacity="0.3" stroke-width="8"/></g><rect x="408" y="519" width="596" height="108" rx="54" fill="url(#ic2h)"/></svg>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px"><h3 class="h3" style="font-size: 22px">Runyard 0.1.0</h3><span class="muted">macOS · Apple 芯片（arm64）· .dmg</span></div>
+<span class="btn btn-p btn-lg" style=""><svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#FFFFFF" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M8 2v8.5M4.5 7 8 10.5 11.5 7M2.5 13.5h11"/></svg>下载 .dmg</span>
+</div>
+<div style="display: flex; gap: 12px; align-items: center"><a style="display: inline-flex; align-items: center; gap: 4px; font-size: 14px">Intel 芯片（x64）<svg aria-hidden="true" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="var(--color-text-link)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M4.5 2.5h5v5M9.5 2.5 3 9"/></svg></a><span class="muted">·</span><a style="display: inline-flex; align-items: center; gap: 4px; font-size: 14px">所有版本和校验和<svg aria-hidden="true" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="var(--color-text-link)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M4.5 2.5h5v5M9.5 2.5 3 9"/></svg></a><span class="muted">·</span><a style="display: inline-flex; align-items: center; gap: 4px; font-size: 14px">更新日志<svg aria-hidden="true" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="var(--color-text-link)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M4.5 2.5h5v5M9.5 2.5 3 9"/></svg></a></div>
+<div style="display: flex; flex-direction: column; gap: 14px; padding: 20px; border-radius: 12px; background: var(--color-fill-warning-tint)">
+<div style="display: flex; gap: 10px; align-items: flex-start"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" style="flex: none"><path d="M9 1.8 17 15.6H1z" fill="none" stroke="var(--color-status-warning-mark)" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 6.5v4.2" stroke="var(--color-status-warning-mark)" stroke-width="1.7" stroke-linecap="round"/><circle cx="9" cy="13.1" r="1" fill="var(--color-status-warning-mark)"/></svg><div style="display: flex; flex-direction: column; gap: 4px; min-width: 0"><strong style="color: var(--color-status-warning-text); font-size: 15px">这个版本还没有经过苹果公证，第一次打开会被系统拦下</strong><span style="color: var(--color-text-secondary-strong)">首次打开请右键 → 打开；新系统上按下面的步骤做一次，以后就能直接打开。</span></div></div>
+<ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px"><li style="display: flex; gap: 10px; align-items: flex-start"><span style="width: 22px; height: 22px; border-radius: 11px; background: var(--color-bg-card); border: 1px solid var(--color-line-strong); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex: none; margin-top: 1px">1</span><span style="min-width: 0">打开 .dmg，先把 Runyard 拖进“应用程序”，再从“应用程序”打开（直接在 .dmg 里打开会出问题）</span></li><li style="display: flex; gap: 10px; align-items: flex-start"><span style="width: 22px; height: 22px; border-radius: 11px; background: var(--color-bg-card); border: 1px solid var(--color-line-strong); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex: none; margin-top: 1px">2</span><span style="min-width: 0">双击 Runyard。系统提示无法验证开发者时，点“完成”</span></li><li style="display: flex; gap: 10px; align-items: flex-start"><span style="width: 22px; height: 22px; border-radius: 11px; background: var(--color-bg-card); border: 1px solid var(--color-line-strong); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex: none; margin-top: 1px">3</span><span style="min-width: 0">打开“系统设置 → 隐私与安全性”，在“安全性”里点“仍要打开”，再输入登录密码</span></li></ol>
+<p style="color: var(--color-text-secondary); font-size: 13px">macOS 14 及更早：在“应用程序”里右键点 Runyard，选“打开”即可。</p>
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: var(--color-text-secondary)">懂命令行的可以一步做完：</span>
+<div style="display: flex; align-items: center; gap: 10px; padding: 8px 8px 8px 12px; border-radius: 10px; background: var(--color-bg-card); border: 1px solid var(--color-line-field, var(--color-line-strong))"><code style="flex: 1; min-width: 0; font-size: 13px; white-space: nowrap">xattr -dr com.apple.quarantine /Applications/Runyard.app</code><span class="btn btn-s btn-sm" style="flex: none">拷贝</span></div></div>
+<p style="font-size: 13px; color: var(--color-text-secondary)">每次更新都要再做一次。 <a>详细说明 <svg aria-hidden="true" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="var(--color-text-link)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M4.5 2.5h5v5M9.5 2.5 3 9"/></svg></a></p>
+</div>
+<p class="muted" style="font-size: 13px">项目用你电脑上已有的 Node、Python、Go 运行；缺了什么，应用会告诉你怎么装。</p>
+</div>
+</div></div>
+
+<div class="notes"><div class="wrap" style="display: flex; flex-direction: column; gap: 8px"><h4>设计说明（不属于页面）</h4><p>下载区的“未签名”版本：没有苹果开发者账号、安装包未公证时用它替换下载区里的“安装”三步。</p><p>注意：仓库的手册 docs/guides/first-open-unsigned-app.md 说“右键 → 打开”的旧捷径从 macOS 15 起已取消（未在真机核实），所以把它放在旧系统那一行，新系统走“系统设置”。需要负责人确认措辞。</p></div></div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1260}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

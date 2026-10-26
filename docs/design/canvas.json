@@ -2539,6 +2539,150 @@
    "y": 15840,
    "title": "57 Notification list",
    "page": "enDark"
+  },
+  "Site.dc.html": {
+   "w": 1440,
+   "h": 4660,
+   "radius": 26,
+   "x": 0,
+   "y": 0,
+   "title": "官网 · 电脑宽度 1440",
+   "page": "site"
+  },
+  "SiteDark.dc.html": {
+   "w": 1440,
+   "h": 4660,
+   "radius": 26,
+   "x": 1520,
+   "y": 0,
+   "title": "官网 · 电脑宽度 · 深色",
+   "page": "site"
+  },
+  "SitePhone.dc.html": {
+   "w": 390,
+   "h": 6000,
+   "radius": 26,
+   "x": 3040,
+   "y": 0,
+   "title": "官网 · 手机宽度 390",
+   "page": "site"
+  },
+  "SitePhoneDark.dc.html": {
+   "w": 390,
+   "h": 6000,
+   "radius": 26,
+   "x": 3510,
+   "y": 0,
+   "title": "官网 · 手机宽度 · 深色",
+   "page": "site"
+  },
+  "SiteUnsigned.dc.html": {
+   "w": 1440,
+   "h": 1260,
+   "radius": 26,
+   "x": 0,
+   "y": 6800,
+   "title": "下载区 · 未签名版",
+   "page": "site"
+  },
+  "SiteUnsignedDark.dc.html": {
+   "w": 1440,
+   "h": 1260,
+   "radius": 26,
+   "x": 1520,
+   "y": 6800,
+   "title": "下载区 · 未签名版 · 深色",
+   "page": "site"
+  },
+  "SiteUnsignedPhone.dc.html": {
+   "w": 390,
+   "h": 1550,
+   "radius": 26,
+   "x": 3040,
+   "y": 6800,
+   "title": "下载区 · 未签名版 · 手机",
+   "page": "site"
+  },
+  "SiteUnsignedPhoneDark.dc.html": {
+   "w": 390,
+   "h": 1550,
+   "radius": 26,
+   "x": 3510,
+   "y": 6800,
+   "title": "下载区 · 未签名版 · 手机 · 深色",
+   "page": "site"
+  },
+  "SiteEn.dc.html": {
+   "w": 1440,
+   "h": 4820,
+   "radius": 26,
+   "x": 0,
+   "y": 0,
+   "title": "Website · desktop 1440",
+   "page": "siteEn"
+  },
+  "SiteDarkEn.dc.html": {
+   "w": 1440,
+   "h": 4820,
+   "radius": 26,
+   "x": 1520,
+   "y": 0,
+   "title": "Website · desktop · dark",
+   "page": "siteEn"
+  },
+  "SitePhoneEn.dc.html": {
+   "w": 390,
+   "h": 6400,
+   "radius": 26,
+   "x": 3040,
+   "y": 0,
+   "title": "Website · phone 390",
+   "page": "siteEn"
+  },
+  "SitePhoneDarkEn.dc.html": {
+   "w": 390,
+   "h": 6400,
+   "radius": 26,
+   "x": 3510,
+   "y": 0,
+   "title": "Website · phone · dark",
+   "page": "siteEn"
+  },
+  "SiteUnsignedEn.dc.html": {
+   "w": 1440,
+   "h": 1330,
+   "radius": 26,
+   "x": 0,
+   "y": 6800,
+   "title": "Download · unsigned build",
+   "page": "siteEn"
+  },
+  "SiteUnsignedDarkEn.dc.html": {
+   "w": 1440,
+   "h": 1330,
+   "radius": 26,
+   "x": 1520,
+   "y": 6800,
+   "title": "Download · unsigned build · dark",
+   "page": "siteEn"
+  },
+  "SiteUnsignedPhoneEn.dc.html": {
+   "w": 390,
+   "h": 1720,
+   "radius": 26,
+   "x": 3040,
+   "y": 6800,
+   "title": "Download · unsigned · phone",
+   "page": "siteEn"
+  },
+  "SiteUnsignedPhoneDarkEn.dc.html": {
+   "w": 390,
+   "h": 1720,
+   "radius": 26,
+   "x": 3510,
+   "y": 6800,
+   "title": "Download · unsigned · phone · dark",
+   "page": "siteEn"
   }
  },
  "createdOnFiles": {
@@ -3101,6 +3245,22 @@
    "y": 15580,
    "maxW": 4480,
    "page": "enDark"
+  },
+  "siteTitle": {
+   "kind": "title1",
+   "text": "官网设计稿（#563）：请负责人看过再实现",
+   "x": 0,
+   "y": -260,
+   "maxW": 4000,
+   "page": "site"
+  },
+  "siteTitleEn": {
+   "kind": "title1",
+   "text": "Website design (#563): owner review before build",
+   "x": 0,
+   "y": -260,
+   "maxW": 4000,
+   "page": "siteEn"
   }
  },
  "order": [
@@ -3385,7 +3545,23 @@
   "NotifyEn.dc.html",
   "NotifyCenterEn.dc.html",
   "NotifyDarkEn.dc.html",
-  "NotifyCenterDarkEn.dc.html"
+  "NotifyCenterDarkEn.dc.html",
+  "Site.dc.html",
+  "SiteDark.dc.html",
+  "SitePhone.dc.html",
+  "SitePhoneDark.dc.html",
+  "SiteUnsigned.dc.html",
+  "SiteUnsignedDark.dc.html",
+  "SiteUnsignedPhone.dc.html",
+  "SiteUnsignedPhoneDark.dc.html",
+  "SiteEn.dc.html",
+  "SiteDarkEn.dc.html",
+  "SitePhoneEn.dc.html",
+  "SitePhoneDarkEn.dc.html",
+  "SiteUnsignedEn.dc.html",
+  "SiteUnsignedDarkEn.dc.html",
+  "SiteUnsignedPhoneEn.dc.html",
+  "SiteUnsignedPhoneDarkEn.dc.html"
  ],
  "pages": [
   {
@@ -3411,6 +3587,14 @@
   {
    "id": "specEn",
    "name": "Design spec"
+  },
+  {
+   "id": "site",
+   "name": "官网 · 设计稿"
+  },
+  {
+   "id": "siteEn",
+   "name": "Website · Design"
   }
  ],
  "title": "Runyard 设计稿"
