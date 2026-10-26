@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Runyard 首页动画原型</title>
+<!--
+  官网首屏的可播放原型（#563），规则见 hero-animation.md。
+  纯 HTML、CSS、JS，没有外部依赖。?lang=en 切英文；?theme=dark|light 强制深浅色（默认跟随系统）。
+  颜色、阴影的变量名与 packages/tokens/src/tokens.json 一致；--brand-run-line 取自图标（Brand 画板）。
+-->
+<style>
+:root {
+  color-scheme: light;
+  --color-bg-window: #FFFFFF; --color-bg-card: #FFFFFF; --color-bg-chip: #F0F0F3;
+  --color-fill-neutral: rgba(118, 118, 128, 0.14);
+  --color-text-primary: #1D1D1F; --color-text-secondary-strong: #3A3A3C; --color-text-secondary: #6E6E73;
+  --color-text-on-accent: #FFFFFF; --color-text-link: #0071E3;
+  --color-line-hairline: rgba(0, 0, 0, 0.06);
+  --color-fill-accent: #0071E3;
+  --color-status-running-mark: #28A745; --color-status-running-text: #1B7A34;
+  --color-code-plain: #1D1D1F; --color-code-keyword: #AD3DA4; --color-code-string: #B3261E; --color-code-function: #0F68A0;
+  --color-code-number: #1C00CF; --color-code-tag: #1B7A34; --color-code-property: #0F68A0; --color-code-punctuation: #6E6E73;
+  --color-code-line-number: #6E6E73; --color-code-current-line: rgba(0, 113, 227, 0.07);
+  --shadow-floating: 0 1px 2px rgba(15, 23, 42, 0.05), 0 8px 24px rgba(15, 23, 42, 0.09);
+  --shadow-overlay: 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 16px 40px rgba(15, 23, 42, 0.2);
+  --brand-run-line: linear-gradient(90deg, #E8451A 0%, #FA6A1A 60%, #FF9A22 86%, #FFC94A 100%);
+  --motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+}
+:root.dark {
+  color-scheme: dark;
+  --color-bg-window: #1C1C1E; --color-bg-card: #1E1E21; --color-bg-chip: rgba(255, 255, 255, 0.1);
+  --color-fill-neutral: rgba(118, 118, 128, 0.24);
+  --color-text-primary: #F5F5F7; --color-text-secondary-strong: #D1D1D6; --color-text-secondary: #A1A1A6;
+  --color-text-link: #4DA3FF;
+  --color-line-hairline: rgba(255, 255, 255, 0.08);
+  --color-status-running-mark: #30D158; --color-status-running-text: #30D158;
+  --color-code-plain: #F5F5F7; --color-code-keyword: #FF7AB2; --color-code-string: #FF8170; --color-code-function: #6BDFFF;
+  --color-code-number: #D9C97C; --color-code-tag: #4EB0CC; --color-code-property: #6BDFFF; --color-code-punctuation: #A1A1A6;
+  --color-code-line-number: #8E8E93; --color-code-current-line: rgba(255, 255, 255, 0.06);
+  --shadow-floating: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 28px rgba(0, 0, 0, 0.42);
+  --shadow-overlay: 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 16px 40px rgba(0, 0, 0, 0.5);
+  --brand-run-line: linear-gradient(90deg, #EA4A1A 0%, #FF7A1A 55%, #FFA62A 85%, #FFDA6E 100%);
+}
+* { box-sizing: border-box; }
+/* 深色图标取 logo/final/icon-dark.svg 的颜色 */
+.dark .ic-paper { fill: #2A2826; stroke: rgba(255, 255, 255, 0.16); } .dark .ic-ink { fill: #D6D1C8; } .dark .ic-pend { fill: #5F5C58; }
+html, body { margin: 0; }
+body {
+  background: var(--color-bg-window); color: var(--color-text-primary);
+  font-family: -apple-system, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif;
+  font-size: 15px; line-height: 1.5; overflow-x: hidden;
+}
+a { color: var(--color-text-link); text-decoration: none; }
+.wrap { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+.nav { height: 64px; display: flex; align-items: center; gap: 28px; border-bottom: 1px solid var(--color-line-hairline); }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; letter-spacing: -0.2px; }
+.navlinks { display: flex; gap: 26px; margin-left: 16px; flex: 1; }
+.navlinks a { color: var(--color-text-secondary-strong); font-size: 14px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 999px; font-weight: 600; white-space: nowrap; }
+.btn-p { background: var(--color-fill-accent); color: var(--color-text-on-accent); }
+.btn-s { background: var(--color-fill-neutral); color: var(--color-text-primary); }
+.btn-sm { height: 32px; padding: 0 14px; font-size: 13px; }
+.btn-lg { height: 48px; padding: 0 22px; font-size: 16px; }
+.btn small { font-weight: 400; opacity: 0.85; font-size: 13px; }
+.hero { padding: 88px 0 104px; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
+.copy { width: 500px; flex: none; display: flex; flex-direction: column; gap: 24px; }
+.eyebrow { align-self: flex-start; display: inline-flex; align-items: center; height: 28px; padding: 0 12px; border-radius: 999px; background: var(--color-bg-chip); color: var(--color-text-secondary-strong); font-size: 13px; font-weight: 500; }
+h1 { margin: 0; font-size: 60px; line-height: 1.08; font-weight: 700; letter-spacing: -1.2px; }
+:root[lang="en"] h1 { font-size: 52px; }
+.lead { margin: 0; font-size: 18px; line-height: 1.6; color: var(--color-text-secondary); }
+.ctas { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.meta { margin: 0; font-size: 13px; color: var(--color-text-secondary); }
+
+/* 舞台：固定 560×520 画，窄屏时整体缩放 */
+.stage-box { flex: none; width: 560px; height: 520px; position: relative; }
+.stage { position: absolute; left: 0; top: 0; width: 560px; height: 520px; transform-origin: 0 0; }
+.cmd { position: absolute; left: 0; top: 0; height: 36px; padding: 0 14px; border-radius: 999px; background: var(--color-bg-card); box-shadow: var(--shadow-floating); display: flex; align-items: center; gap: 8px; font: 13px 'SF Mono', Menlo, monospace; white-space: nowrap; }
+.cmd .p { color: var(--color-text-secondary); }
+.caret { display: inline-block; width: 7px; height: 15px; margin-left: 1px; background: var(--color-text-secondary); vertical-align: -3px; }
+.card { position: absolute; left: 0; top: 64px; width: 470px; height: 416px; border-radius: 28px; background: var(--color-bg-card); border: 1px solid var(--color-line-hairline); box-shadow: var(--shadow-floating); overflow: hidden; }
+.file { height: 40px; display: flex; align-items: center; padding: 0 18px; border-bottom: 1px solid var(--color-line-hairline); font: 500 12px 'SF Mono', Menlo, monospace; }
+.code { font: 13px/24px 'SF Mono', Menlo, monospace; color: var(--color-code-plain); position: relative; }
+.ln { display: flex; height: 24px; align-items: center; }
+.ln .no { width: 36px; flex: none; text-align: right; padding-right: 12px; color: var(--color-code-line-number); }
+.ln .tx { white-space: pre; }
+.curbg { position: absolute; left: 0; right: 0; height: 24px; top: 0; background: var(--color-code-current-line); }
+.kw { color: var(--color-code-keyword); } .str { color: var(--color-code-string); } .fn { color: var(--color-code-function); }
+.tg { color: var(--color-code-tag); } .pn { color: var(--color-code-punctuation); } .pr { color: var(--color-code-property); } .nu { color: var(--color-code-number); }
+.bar { position: absolute; left: 48px; top: 0; width: 478px; height: 6px; border-radius: 3px; background: var(--brand-run-line); transform-origin: 0 50%; }
+.pv { position: absolute; right: -8px; bottom: 0; width: 268px; height: 210px; border-radius: 16px; background: var(--color-bg-card); box-shadow: var(--shadow-overlay); overflow: hidden; display: flex; flex-direction: column; }
+.pv-top { height: 34px; flex: none; display: flex; align-items: center; gap: 6px; padding: 0 10px; border-bottom: 1px solid var(--color-line-hairline); font-size: 12px; white-space: nowrap; }
+.dot { width: 8px; height: 8px; border-radius: 4px; background: var(--color-status-running-mark); flex: none; }
+.pv-top b { color: var(--color-status-running-text); font-weight: 600; }
+.pv-top .mono { font-family: 'SF Mono', Menlo, monospace; color: var(--color-text-secondary); }
+
+/* 预览里的页面：照 templates/builtin/react19 的 App.tsx 与 App.css 原样还原，按 0.6 倍缩小，铺满预览卡 */
+.pv-body { flex: 1; position: relative; overflow: hidden; }
+.tpl { position: absolute; left: 0; top: 0; width: 447px; height: 294px; transform: scale(0.6); transform-origin: 0 0;
+  background: Canvas; color: CanvasText; font-family: system-ui, sans-serif; font-size: 16px; line-height: normal; padding: 1px 8px; }
+.tpl main { max-width: 40rem; margin: 4rem auto; padding: 0 1rem; }
+.tpl h1 { font-size: 2em; margin: 0.67em 0; letter-spacing: normal; line-height: normal; font-weight: bold; }
+.tpl p { margin: 1em 0; }
+.tpl button { font: inherit; padding: 0.4rem 0.9rem; }
+
+@media (max-width: 1100px) {
+  .hero { flex-direction: column; align-items: stretch; padding: 40px 0 56px; }
+  .copy { width: auto; }
+  .navlinks, .seg { display: none; }
+  .nav { gap: 12px; }
+  .nav .spacer { flex: 1; }
+  h1, :root[lang="en"] h1 { font-size: 36px; line-height: 1.15; }
+  .lead { font-size: 16px; }
+  .ctas { flex-direction: column; align-items: stretch; }
+}
+</style>
+</head>
+<body>
+<div class="wrap nav">
+  <div class="brand"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 1024 1024"><rect x="100" y="100" width="824" height="824" rx="230" class="ic-paper" fill="#FFFEFC" stroke="rgba(110,99,80,0.3)" stroke-width="8"/><rect x="232" y="275" width="264" height="76" rx="38" class="ic-ink" fill="#24232B"/><rect x="320" y="397" width="430" height="76" rx="38" class="ic-ink" fill="#24232B"/><rect x="232" y="673" width="372" height="76" rx="38" class="ic-pend" fill="#C4C1C6"/><rect x="408" y="519" width="596" height="108" rx="54" fill="#FA6A1A"/></svg>Runyard</div>
+  <div class="navlinks"><a data-t="nav0"></a><a data-t="nav1"></a><a data-t="nav2"></a><a>GitHub</a></div>
+  <div class="spacer"></div>
+  <span class="btn btn-p btn-sm" data-t="navCta"></span>
+</div>
+<div class="wrap hero">
+  <div class="copy">
+    <span class="eyebrow" data-t="eyebrow"></span>
+    <h1 data-t="h1"></h1>
+    <p class="lead" data-t="sub"></p>
+    <div class="ctas"><span class="btn btn-p btn-lg"><span data-t="cta"></span><small data-t="ctaSub"></small></span><span class="btn btn-s btn-lg"><span data-t="demo"></span><small data-t="demoLen"></small></span></div>
+    <p class="meta"><span data-t="meta"></span><a data-t="metaLink"></a></p>
+  </div>
+  <div class="stage-box" id="box" aria-hidden="true">
+    <div class="stage" id="stage">
+      <div class="cmd" id="cmd"><span class="p">$</span><span id="typed"></span><span class="caret" id="caret"></span></div>
+      <div class="card" id="card">
+        <div class="file">src/App.tsx</div>
+        <div class="code" id="code"><div class="curbg" id="curbg"></div></div>
+      </div>
+      <div class="bar" id="bar"></div>
+      <div class="pv" id="pv">
+        <div class="pv-top"><span class="dot" id="dot"></span><b data-t="running"></b><span class="mono">127.0.0.1:7104</span></div>
+        <div class="pv-body"><div class="tpl"><main>
+          <h1>React 19 + Vite</h1>
+          <p>Edit src/App.tsx and save: the page updates without a reload.</p>
+          <button type="button" id="tplBtn" tabindex="-1">Clicked <span id="count">0</span> times</button>
+        </main></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const q = new URLSearchParams(location.search);
+  const T = {
+    zh: { nav0: "功能", nav1: "智能体", nav2: "下载", navCta: "下载", eyebrow: "免费开源 · macOS",
+      h1: "选个模板，<br>一秒就跑起来。",
+      sub: "Runyard 是 Mac 上存放和运行代码示例的桌面应用。选一个模板，就得到带编辑器、实时预览和终端的项目；AI 编程智能体也能用命令行新建和运行。",
+      cta: "下载 macOS 版", ctaSub: "Apple 芯片 · .dmg", demo: "看演示视频", demoLen: "1 分半",
+      meta: "版本 0.1.0 · MIT 许可 · ", metaLink: "在 GitHub 上看源码", running: "运行中" },
+    en: { nav0: "Features", nav1: "Agents", nav2: "Download", navCta: "Download", eyebrow: "Free and open source · macOS",
+      h1: "Pick a template.<br>It runs in a second.",
+      sub: "Runyard is a Mac app for keeping and running code samples. Pick a template and get a playground with an editor, live preview and terminal. AI coding agents can create and run playgrounds from the command line.",
+      cta: "Download for Mac", ctaSub: "Apple silicon · .dmg", demo: "Watch the demo", demoLen: "1.5 min",
+      meta: "Version 0.1.0 · MIT licence · ", metaLink: "Source on GitHub", running: "Running" },
+  };
+  const lang = q.get("lang") === "en" ? "en" : "zh";
+  document.documentElement.lang = lang === "en" ? "en" : "zh-CN";
+  for (const el of document.querySelectorAll("[data-t]")) el.innerHTML = T[lang][el.dataset.t];
+
+  // 深浅色：?theme 优先，否则跟随系统
+  const mq = matchMedia("(prefers-color-scheme: dark)");
+  const applyTheme = () => document.documentElement.classList.toggle("dark", q.get("theme") ? q.get("theme") === "dark" : mq.matches);
+  applyTheme(); mq.addEventListener("change", applyTheme);
+
+  // react19 模板真实的 src/App.tsx
+  const CODE = [
+    '<span class="kw">import</span> <span class="pn">{</span> useState <span class="pn">}</span> <span class="kw">from</span> <span class="str">"react"</span><span class="pn">;</span>',
+    "",
+    '<span class="kw">export default function</span> <span class="fn">App</span><span class="pn">() {</span>',
+    '  <span class="kw">const</span> <span class="pn">[</span>count<span class="pn">,</span> setCount<span class="pn">] =</span> <span class="fn">useState</span><span class="pn">(</span><span class="nu">0</span><span class="pn">);</span>',
+    '  <span class="kw">return</span> <span class="pn">(</span>',
+    '    <span class="pn">&lt;</span><span class="tg">main</span><span class="pn">&gt;</span>',
+    '      <span class="pn">&lt;</span><span class="tg">h1</span><span class="pn">&gt;</span>React 19 + Vite<span class="pn">&lt;/</span><span class="tg">h1</span><span class="pn">&gt;</span>',
+    '      <span class="pn">&lt;</span><span class="tg">button</span> <span class="pr">onClick</span><span class="pn">={() =&gt;</span> <span class="fn">setCount</span><span class="pn">(</span>…<span class="pn">)}&gt;</span>',
+    '        Clicked <span class="pn">{</span>count<span class="pn">}</span> times',
+    '      <span class="pn">&lt;/</span><span class="tg">button</span><span class="pn">&gt;</span>',
+    '    <span class="pn">&lt;/</span><span class="tg">main</span><span class="pn">&gt;</span>',
+    '  <span class="pn">);</span>',
+    '<span class="pn">}</span>',
+  ];
+  const code = document.getElementById("code");
+  const lines = CODE.map((html, i) => {
+    const d = document.createElement("div");
+    d.className = "ln";
+    d.innerHTML = `<span class="no">${i + 1}</span><span class="tx">${html}</span>`;
+    code.appendChild(d);
+    return d;
+  });
+  const $ = (id) => document.getElementById(id);
+  const stage = $("stage"), box = $("box"), cmd = $("cmd"), typed = $("typed"), caret = $("caret"), card = $("card");
+  const bar = $("bar"), curbg = $("curbg"), pv = $("pv"), dot = $("dot"), count = $("count"), tplBtn = $("tplBtn");
+  const COMMAND = "runyard new react19 --run";
+
+  // 时间轴（毫秒），一轮 7200ms；与 hero-animation.md 的表一致
+  const LOOP = 7200;
+  const K = {
+    fadeIn: [0, 300], type: [150, 28], lines: [900, 75, 150],
+    sweep: [1900, 250, 200], target: 7, overshoot: [3900, 500],
+    pop: [4400, 250], pulse: [4650, 300], clicks: [4900, 5500, 6100],
+    fadeOut: [6600, 600],
+  };
+  const LINE_H = 24, CODE_TOP = 64 + 40, BAR_FULL = 478, BAR_IN = 478 - 56;
+  // 三条缓动曲线（视觉规范第 6 节），用二分法解三次贝塞尔
+  const bez = (x1, y1, x2, y2) => (x) => {
+    if (x <= 0) return 0; if (x >= 1) return 1;
+    let lo = 0, hi = 1, t = x;
+    for (let i = 0; i < 24; i++) {
+      t = (lo + hi) / 2;
+      const cx = 3 * x1 * t * (1 - t) ** 2 + 3 * x2 * t * t * (1 - t) + t ** 3;
+      if (cx < x) lo = t; else hi = t;
+    }
+    return 3 * y1 * t * (1 - t) ** 2 + 3 * y2 * t * t * (1 - t) + t ** 3;
+  };
+  const standard = bez(0.2, 0, 0, 1), slide = bez(0.32, 0.72, 0, 1), popover = bez(0.34, 1.3, 0.64, 1);
+  const prog = (t, start, dur) => Math.min(1, Math.max(0, (t - start) / dur));
+
+  function render(t) {
+    // 整体淡入、淡出
+    const fin = standard(prog(t, K.fadeIn[0], K.fadeIn[1]));
+    const fout = 1 - standard(prog(t, K.fadeOut[0], K.fadeOut[1]));
+    stage.style.opacity = Math.min(fin, fout);
+    const lift = (1 - fin) * 8;
+    cmd.style.transform = card.style.transform = `translateY(${lift}px)`;
+
+    // 命令逐字打出；打完后光标闪两下再消失
+    const n = Math.max(0, Math.min(COMMAND.length, Math.floor((t - K.type[0]) / K.type[1])));
+    typed.textContent = COMMAND.slice(0, n);
+    const typedEnd = K.type[0] + COMMAND.length * K.type[1];
+    caret.style.opacity = t < typedEnd ? 1 : t < typedEnd + 600 ? (Math.floor((t - typedEnd) / 150) % 2 ? 0 : 1) : 0;
+
+    // 执行线：第几行，以及行内位移
+    const s = t - K.sweep[0];
+    const step = Math.max(0, Math.min(K.target, Math.floor(s / K.sweep[1])));
+    const within = s < 0 ? 0 : step >= K.target ? 1 : slide(Math.min(1, (s - step * K.sweep[1]) / K.sweep[2]));
+    const from = Math.max(0, step - 1), pos = s < 0 ? 0 : step === 0 ? 0 : from + (step - from) * within;
+    const execIdx = s < 0 ? -1 : step;
+
+    // 代码行逐行出现；执行线走过的行变实，没走到的偏淡（0.38）
+    lines.forEach((el, i) => {
+      const a = standard(prog(t, K.lines[0] + i * K.lines[1], K.lines[2]));
+      el.style.opacity = a * (i <= execIdx ? 1 : 0.38);
+      el.style.transform = `translateY(${(1 - a) * 4}px)`;
+    });
+    curbg.style.opacity = s < 0 ? 0 : Math.min(1, s / 120);
+    curbg.style.transform = `translateY(${pos * LINE_H}px)`;
+
+    // 线的位置与长度：先在卡片里，再冲出右边缘
+    const ov = standard(prog(t, K.overshoot[0], K.overshoot[1]));
+    bar.style.opacity = s < 0 ? 0 : Math.min(1, s / 120);
+    bar.style.transform = `translateY(${CODE_TOP + pos * LINE_H + LINE_H - 3}px) scaleX(${(BAR_IN + (BAR_FULL - BAR_IN) * ov) / BAR_FULL})`;
+
+    // 预览卡滑入（浮层缓动，带轻微回弹）
+    const p = prog(t, K.pop[0], K.pop[1]);
+    pv.style.opacity = standard(p);
+    pv.style.transform = `translateX(${(1 - popover(p)) * 24}px)`;
+    const pu = prog(t, K.pulse[0], K.pulse[1]);
+    dot.style.transform = `scale(${1 + 0.4 * Math.sin(Math.PI * pu)})`;
+
+    // 预览里的计数器被点三次
+    const clicks = K.clicks.filter((c) => t >= c).length;
+    count.textContent = String(clicks);
+    const pressed = K.clicks.some((c) => t >= c - 90 && t < c + 30);
+    tplBtn.style.transform = pressed ? "scale(0.96)" : "none";
+  }
+
+  // 窄屏：舞台按可用宽度缩放
+  function fit() {
+    const w = Math.min(560, box.parentElement.clientWidth);
+    const k = w / 560;
+    stage.style.transform = `scale(${k})`;
+    box.style.width = `${w}px`; box.style.height = `${520 * k}px`;
+  }
+  addEventListener("resize", fit); fit();
+
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+  const FINAL = K.clicks[2] + 200; // 最后一帧：线冲出边缘、预览卡已在、点过三次
+  let clock = 0, last = null, visible = true, raf = 0;
+  function frame(now) {
+    raf = requestAnimationFrame(frame);
+    if (last !== null) clock = (clock + Math.min(64, now - last)) % LOOP; // 切回标签页不跳帧
+    last = now;
+    render(clock);
+  }
+  function start() {
+    cancelAnimationFrame(raf);
+    if (reduce.matches) { render(FINAL); return; }
+    if (!visible || document.hidden) { last = null; return; }
+    raf = requestAnimationFrame(frame);
+  }
+  // 给录屏和检查用：?t=毫秒 固定在某一帧
+  if (q.has("t")) { render(Number(q.get("t"))); return; }
+  new IntersectionObserver((e) => { visible = e[0].isIntersecting; start(); }).observe(box);
+  document.addEventListener("visibilitychange", start);
+  reduce.addEventListener("change", start);
+  render(reduce.matches ? FINAL : 0);
+  start();
+})();
+</script>
+</body>
+</html>
