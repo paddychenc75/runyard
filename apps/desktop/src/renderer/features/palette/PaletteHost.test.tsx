@@ -170,6 +170,16 @@ describe("命令面板", () => {
     expect(optionNames()).toEqual(["运行⌘R"]);
   });
 
+  it("[DESKTOP-EDITOR-95] 输入“格式化”找到“格式化文档”，右侧是 ⌥⇧F，回车执行登记的动作", async () => {
+    const format = vi.fn();
+    const { user } = setup({ commands: { "editor.formatDocument": format } });
+    await user.keyboard("{F1}");
+    await user.type(screen.getByRole("combobox"), "格式化");
+    expect(optionNames()).toEqual(["格式化文档⌥⇧F"]);
+    await user.keyboard("{Enter}");
+    await vi.waitFor(() => expect(format).toHaveBeenCalledTimes(1));
+  });
+
   it("[DESKTOP-EDITOR-62] 全部登记时，应用命令和编辑器命令都在，名称是当前界面语言", async () => {
     const all = Object.fromEntries(commandIds.map((id) => [id, noop]));
     const { user } = setup({ commands: all });
@@ -218,6 +228,7 @@ describe("命令面板", () => {
       "折叠全部",
       "展开全部",
       "选中所有相同内容",
+      "格式化文档",
     ]) {
       expect(names, expected).toContain(expected);
     }

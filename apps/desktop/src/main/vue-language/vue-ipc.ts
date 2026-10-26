@@ -29,6 +29,20 @@ function request(value: unknown): VueRequest | null {
   if (!p || !file || !text(p.requestId)) return null;
   const base = { ...file, requestId: p.requestId };
   if (p.kind === "diagnostics") return { ...base, kind: p.kind };
+  if (p.kind === "formatting") {
+    const format = record(p.format);
+    return format &&
+      Number.isSafeInteger(format.tabSize) &&
+      (format.tabSize as number) >= 1 &&
+      (format.tabSize as number) <= 16 &&
+      typeof format.insertSpaces === "boolean"
+      ? {
+          ...base,
+          kind: p.kind,
+          format: { tabSize: format.tabSize as number, insertSpaces: format.insertSpaces },
+        }
+      : null;
+  }
   if (p.kind === "completionDetails" && text(p.detailId))
     return { ...base, kind: p.kind, detailId: p.detailId };
   const position = record(p.position);

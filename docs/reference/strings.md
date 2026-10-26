@@ -148,6 +148,7 @@
 | desktop.command.editNote.label | 编辑备注… | Edit note… | — |
 | desktop.command.find.label | 查找 | Find | — |
 | desktop.command.foldAll.label | 折叠全部 | Fold all | — |
+| desktop.command.formatDocument.label | 格式化文档 | Format document | — |
 | desktop.command.goToDefinition.label | 跳到定义 | Go to definition | — |
 | desktop.command.goToLine.label | 跳到行… | Go to line… | — |
 | desktop.command.new.label | 新建项目… | New playground… | — |
@@ -228,6 +229,10 @@
 | desktop.editor.empty.title | 还没有打开的文件 | No file is open | — |
 | desktop.editor.failed.body | 读取 {name} 时出了错。文件可能刚被移走或没有读取权限。 | Something went wrong reading {name}. It may have just been moved, or you may not have permission to read it. | name：文件名 |
 | desktop.editor.failed.title | 打不开这个文件 | Can't open this file | — |
+| desktop.editor.formatBlockedGo.label | 格式化文档（暂不支持 Go） | Format Document (not available for Go) | — |
+| desktop.editor.formatBlockedOther.label | 格式化文档（这类文件暂不支持） | Format Document (not available for this file type) | — |
+| desktop.editor.formatBlockedPython.label | 格式化文档（暂不支持 Python） | Format Document (not available for Python) | — |
+| desktop.editor.formatBlockedVue.label | 格式化文档（Vue 语言服务未运行） | Format Document (Vue language service isn't running) | — |
 | desktop.editor.keepMine.action | 保留我的修改 | Keep my changes | — |
 | desktop.editor.loading.label | 正在打开… | Opening… | — |
 | desktop.editor.mixedEolNotice.body | 这个文件的换行符号不统一，保存时会统一成 {eol}。 | This file mixes line endings. Saving will make them all {eol}. | eol：统一成的换行符，LF 或 CRLF |

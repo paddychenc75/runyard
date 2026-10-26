@@ -61,6 +61,7 @@ export const commandRegistry = {
   "editor.foldAll": { group: "editor", accelerator: "CmdOrCtrl+K CmdOrCtrl+0" },
   "editor.unfoldAll": { group: "editor", accelerator: "CmdOrCtrl+K CmdOrCtrl+J" },
   "editor.selectAllOccurrences": { group: "editor", accelerator: "CmdOrCtrl+Shift+L" },
+  "editor.formatDocument": { group: "editor", accelerator: "Shift+Alt+F" },
 } as const satisfies Record<string, CommandSpec>;
 
 export type CommandId = keyof typeof commandRegistry;

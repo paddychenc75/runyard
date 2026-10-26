@@ -9,13 +9,21 @@ export type VueRequestKind =
   | "completionDetails"
   | "hover"
   | "definition"
-  | "diagnostics";
+  | "diagnostics"
+  | "formatting";
+/** 格式化用的缩进设置：跟着编辑器此刻的模型走，不读用户的配置文件 */
+export interface VueFormatOptions {
+  tabSize: number;
+  insertSpaces: boolean;
+}
 export interface VueRequest extends FileTarget {
   requestId: string;
   kind: VueRequestKind;
   position?: VuePosition;
   /** 只接受主进程上一次补全返回的不透明标识，不接受任意服务器参数。 */
   detailId?: string;
+  /** 只有 formatting 用 */
+  format?: VueFormatOptions;
 }
 export interface VueDocument extends FileTarget {
   session: string;

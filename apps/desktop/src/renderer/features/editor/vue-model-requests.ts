@@ -1,5 +1,5 @@
 import type * as Monaco from "monaco-editor/editor/editor.api.js";
-import type { VueRequestKind } from "../../../shared/vue-language.ts";
+import type { VueFormatOptions, VueRequestKind } from "../../../shared/vue-language.ts";
 import type { VueDocumentBridge } from "../../bridge/vue-language.ts";
 import { vueModelSession } from "./vue-model-sync.ts";
 
@@ -42,6 +42,7 @@ export class VueModelRequests {
     kind: VueRequestKind,
     position?: Monaco.Position,
     detailId?: string,
+    format?: VueFormatOptions,
   ): Promise<unknown> {
     const requestId = `vue-${crypto.randomUUID()}`;
     this.#pending.add(requestId);
@@ -57,6 +58,7 @@ export class VueModelRequests {
           ? { position: { line: position.lineNumber - 1, character: position.column - 1 } }
           : {}),
         ...(detailId ? { detailId } : {}),
+        ...(format ? { format } : {}),
       });
       return result.ok && !token.isCancellationRequested && this.current(origin)
         ? result.value

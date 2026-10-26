@@ -42,6 +42,7 @@ export function commandTitles(t: Translate): Record<CommandId, Localized> {
     "editor.replace": t("desktop.command.replace.label"),
     "editor.goToLine": t("desktop.command.goToLine.label"),
     "editor.goToDefinition": t("desktop.command.goToDefinition.label"),
+    "editor.formatDocument": t("desktop.command.formatDocument.label"),
     "editor.renameSymbol": t("desktop.command.renameSymbol.label"),
     "editor.toggleComment": t("desktop.command.toggleComment.label"),
     "editor.foldAll": t("desktop.command.foldAll.label"),

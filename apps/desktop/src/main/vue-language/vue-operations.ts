@@ -31,6 +31,16 @@ export class VueOperations {
     const tsPosition = { file, line: position.line + 1, offset: position.character + 1 };
     const lspPosition = { textDocument: { uri: pathToFileURL(file).href }, position };
     if (input.kind === "diagnostics") return this.diagnostics(session, file, signal);
+    if (input.kind === "formatting") {
+      // 只转发整份文档的格式化，缩进设置来自界面校验过的两个字段，不接受任意服务器参数
+      const options = input.format ?? { tabSize: 2, insertSpaces: true };
+      return session.request(
+        "vue",
+        "textDocument/formatting",
+        { textDocument: lspPosition.textDocument, options },
+        signal,
+      );
+    }
     if (input.kind === "completionDetails") {
       const found = this.#details.get(input.detailId ?? "");
       if (!found || found.file !== file) throw new Error("LANGUAGE_DETAIL_UNKNOWN");
