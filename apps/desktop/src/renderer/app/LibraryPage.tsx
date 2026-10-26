@@ -238,6 +238,7 @@ export function LibraryPage({
           locale={locale}
           rows={visible}
           now={now}
+          reveal={library.libraryReveal}
           sort={query.sort}
           onSortChange={(sort) => onQueryChange({ sort })}
         />

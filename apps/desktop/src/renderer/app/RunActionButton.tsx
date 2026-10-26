@@ -8,16 +8,18 @@ export interface RunActionButtonProps {
   bridge: DesktopBridge;
   tab: TabRow;
   size?: ButtonProps["size"];
+  /** 输出区头部用 "secondary"：一屏只留顶栏一个主按钮 */
+  emphasis?: "primary" | "secondary";
 }
 
 // 停止 / 运行 / 重新运行：运行条、脚本输出头部、预览区的“已停止”画面共用同一个判断。
 // 手动停止后标签页保持打开，点“运行”再次启动，持有者仍是这个标签页（规格 DESKTOP-WORKSPACE-11、12）。
-export function RunActionButton({ bridge, tab, size }: RunActionButtonProps) {
+export function RunActionButton({ bridge, tab, size, emphasis = "primary" }: RunActionButtonProps) {
   const t = useT();
   const action = runActionOf(tab);
   return (
     <Button
-      variant={action === "stop" ? "neutral" : "primary"}
+      variant={action === "stop" || emphasis === "secondary" ? "neutral" : "primary"}
       size={size ?? "md"}
       icon={action === "stop" ? "stop" : action === "recheck" ? "refresh" : "play"}
       // 找不到文件夹的项目没有东西可运行（主进程也不会启动它）

@@ -177,6 +177,7 @@
 | desktop.console.tab.label | 输出 | Output | — |
 | desktop.console.tabs.aria | 底部面板 | Bottom panel | — |
 | desktop.console.terminal.label | 终端 | Terminal | — |
+| desktop.console.terminalOpen.action | 打开终端 ⌃` | Open terminal ⌃` | — |
 | desktop.crashed.log.label | 最后的日志 | Last output | — |
 | desktop.crashed.overlay.aria | 崩溃提示 | Crash notice | — |
 | desktop.crashed.title | 已崩溃 · 退出码 {exitCode} | Crashed · exit code {exitCode} | exitCode：进程的退出码 |
@@ -255,6 +256,7 @@
 | desktop.failure.stepReady.label | 就绪，显示页面 | Ready, show page | — |
 | desktop.failure.stepStart.label | 启动开发服务 | Start dev server | — |
 | desktop.failure.steps.aria | 启动步骤 | Start-up steps | — |
+| desktop.idle.body | 还没有运行。点“运行”启动这个项目。 | This playground has not run yet. Choose Run to start it. | — |
 | desktop.linkNotice.linkInvalid.label | 这个链接无法识别 | This link is not recognized | — |
 | desktop.linkNotice.newBusy.label | 已有一个待确认的新建请求，这个链接已忽略 | A create request is already waiting for confirmation, so this link was ignored | — |
 | desktop.linkNotice.newFailed.label | 没能新建 {value} | Could not create {value} | value：链接里写的项目名称、模板标识或新名称（不翻译） |
@@ -474,7 +476,7 @@
 | desktop.start.title | 正在启动 {name} | Starting {name} | name：项目名 |
 | desktop.state.idle.label | 未运行 | Not running | — |
 | desktop.stop.action | 停止 | Stop | — |
-| desktop.stopped.body | 你手动停止了它。点“运行”重新启动；关闭标签页后再打开，也会自动运行。 | You stopped it. Choose Run to start it again; closing the tab and opening it again also runs it. | — |
+| desktop.stopped.body | 项目已停止。点“运行”重新启动；关闭标签页后再打开，也会自动运行。 | The playground is stopped. Choose Run to start it again, or close this tab and reopen it. | — |
 | desktop.tab.cli.label | 命令行 | CLI | — |
 | desktop.templates.create.action | 用它新建 | Create from it | — |
 | desktop.templates.detail.aria | 模板详情 | Template details | — |
