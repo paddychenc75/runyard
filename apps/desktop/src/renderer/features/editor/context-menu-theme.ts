@@ -6,6 +6,8 @@
 // 所以直接引用设计变量，浅色深色由变量自己切换。样式只改外观，不改菜单的结构和行为。
 
 // color-scheme: inherit 不能省：Monaco 的第一条规则是 all: initial，会把 color-scheme 也重置成浅色，light-dark() 就永远取浅色那一半
+// 底色、圆角、阴影、模糊画在最外层 .context-view 上：.monaco-menu 外面还有一层 overflow: hidden 的滚动容器，画在 .monaco-menu 上阴影会被裁掉，浅色下菜单就没有边缘。
+// 选择器写三个类是为了压过 Monaco 自己的 .context-view.monaco-menu-container（它给菜单画了自己的阴影）。
 export const CONTEXT_MENU_CSS = `
 :host {
   color-scheme: inherit;
@@ -20,8 +22,6 @@ export const CONTEXT_MENU_CSS = `
   --vscode-strokeThickness: 0px;
   font-family: var(--font-sans);
 }
-/* 底色、圆角、阴影、模糊画在最外层 .context-view 上：.monaco-menu 外面还有一层 overflow: hidden 的滚动容器，画在 .monaco-menu 上阴影会被裁掉，浅色下菜单就没有边缘 */
-/* 选择器写三个类是为了压过 Monaco 自己的 .context-view.monaco-menu-container（它给菜单画了自己的阴影） */
 .context-view.monaco-component.monaco-menu-container {
   z-index: var(--z-popover);
   background: var(--glass-dialog-bg);
