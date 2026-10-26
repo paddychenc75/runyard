@@ -8,6 +8,7 @@
       "!**/.turbo",
       "!packages/ui/visual/.output",
       "!apps/desktop/e2e/.output",
+      "!apps/desktop/visual/.output",
       "!**/dist",
       "!pnpm-lock.yaml",
       "!.release-please-manifest.json",

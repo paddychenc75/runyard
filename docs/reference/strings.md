@@ -437,7 +437,7 @@
 | desktop.saveTemplate.files.aria | 选择要放进模板的文件 | Choose the files to put in the template | — |
 | desktop.saveTemplate.files.label | 包含的文件 | Included files | — |
 | desktop.saveTemplate.footer.hint | 保存后出现在新建时的“我的”分组 · {path} | Appears under Mine when creating · {path} | path：新模板文件夹的显示路径，如 ~/.runyard/templates/todo-api |
-| desktop.saveTemplate.id.hint | 只能用小写字母、数字和连字符，命令行里用它：<code>runyard new {id}</code> | Lowercase letters, numbers and hyphens only. Used on the command line: <code>runyard new {id}</code> | id：模板标识；还没填时是“<标识>”这样的占位；code：包住命令的标签，显示成等宽字体 |
+| desktop.saveTemplate.id.hint | 只能用小写字母、数字和连字符，命令行里用它：<code>{command}</code> | Lowercase letters, numbers and hyphens only. Used on the command line: <code>{command}</code> | command：原样显示的CLI命令，包含模板标识；还没填时用标识占位；code：包住命令的标签，显示成等宽字体 |
 | desktop.saveTemplate.id.label | 模板标识 | Template id | — |
 | desktop.saveTemplate.idInvalid.hint | 标识只能用小写字母、数字和连字符，首尾不能是连字符 | Use lowercase letters, digits and hyphens only, and no hyphen at either end | — |
 | desktop.saveTemplate.idPlaceholder.label | '<'标识'>' | '<'id'>' | — |

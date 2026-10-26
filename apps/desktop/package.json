@@ -2,7 +2,7 @@
   "name": "@runyard/desktop",
   "version": "0.0.0",
   "private": true,
-  "description": "桌面应用的最早外壳：主进程、预加载脚本、界面；从源码用 pnpm dev 打开",
+  "description": "\u684c\u9762\u5e94\u7528\u7684\u6700\u65e9\u5916\u58f3\uff1a\u4e3b\u8fdb\u7a0b\u3001\u9884\u52a0\u8f7d\u811a\u672c\u3001\u754c\u9762\uff1b\u4ece\u6e90\u7801\u7528 pnpm dev \u6253\u5f00",
   "type": "module",
   "main": "dist/main/index.mjs",
   "scripts": {
@@ -16,7 +16,9 @@
     "e2e:run": "playwright test --config e2e/playwright.config.ts",
     "test:process": "vitest run --project process --passWithNoTests",
     "package": "node ../../tooling/scripts/package-desktop.ts",
-    "electron:download": "install-electron"
+    "electron:download": "install-electron",
+    "visual:screens": "playwright test --config visual/playwright.config.ts && node visual/check-results.ts && node visual/check-budget.ts",
+    "visual:scan": "node visual/probe.ts"
   },
   "dependencies": {
     "@runyard/client": "workspace:*",

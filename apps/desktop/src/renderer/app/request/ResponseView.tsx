@@ -1,7 +1,7 @@
 import type { Localized } from "@runyard/i18n";
 import { useFormat, useT } from "@runyard/i18n/react";
 import type { RequestFailureReason as FailureReason } from "@runyard/protocol";
-import { Icon, ScrollArea, SegmentedControl } from "@runyard/ui";
+import { Icon, ScrollArea, SegmentedControl, UserText } from "@runyard/ui";
 import { useState } from "react";
 import { formatBody, type notReadyReason, statusTone } from "../../../shared/request-model.ts";
 import { JsonText } from "./JsonText.tsx";
@@ -87,9 +87,9 @@ function ResponseHead({ response }: { response: ShownResponse | null }) {
       <span className={styles.responseTitle}>{t("desktop.request.response.title")}</span>
       {result?.outcome === "response" ? (
         <>
-          <span className={styles.status} data-tone={statusTone(result.status)}>
+          <UserText className={styles.status} data-tone={statusTone(result.status)}>
             {`${result.status} ${result.statusText}`.trim()}
-          </span>
+          </UserText>
           <span className={styles.meta}>
             {t("desktop.request.meta.label", {
               duration: fmt.technicalDuration(result.durationMs),
@@ -132,7 +132,11 @@ function BodyText({ payload }: { payload: string }) {
     return <span className={styles.quiet}>{t("desktop.request.bodyEmpty.label")}</span>;
   }
   const { text, json } = formatBody(payload);
-  return <pre className={styles.pre}>{json ? <JsonText text={text} /> : text}</pre>;
+  return (
+    <pre className={styles.pre}>
+      <UserText>{json ? <JsonText text={text} /> : text}</UserText>
+    </pre>
+  );
 }
 
 function HeaderList({ headers }: { headers: readonly { name: string; value: string }[] }) {
@@ -141,8 +145,12 @@ function HeaderList({ headers }: { headers: readonly { name: string; value: stri
       {headers.map(({ name, value }, index) => (
         // 同名的头可以出现多次，所以键带序号
         <div key={`${index}:${name}`} className={styles.headerLine}>
-          <dt className={styles.key}>{name}</dt>
-          <dd className={styles.headerValue}>{value}</dd>
+          <dt className={styles.key}>
+            <UserText>{name}</UserText>
+          </dt>
+          <dd className={styles.headerValue}>
+            <UserText>{value}</UserText>
+          </dd>
         </div>
       ))}
     </dl>

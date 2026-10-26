@@ -39,6 +39,11 @@
   block-size: var(--size-control-md);
 }
 
+.wordmark {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
 .mark img {
   inline-size: 100%;
   block-size: 100%;

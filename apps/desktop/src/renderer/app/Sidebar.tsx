@@ -144,7 +144,7 @@ export function Sidebar({
             draggable={false}
           />
         </span>
-        <span>{t("desktop.window.title")}</span>
+        <span className={styles.wordmark}>{t("desktop.window.title")}</span>
       </div>
       <ScrollArea className={styles.nav}>
         <NavList

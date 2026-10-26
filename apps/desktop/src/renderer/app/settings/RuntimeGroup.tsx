@@ -1,6 +1,6 @@
 import { useT } from "@runyard/i18n/react";
 import type { ToolCheck, ToolchainReport } from "@runyard/protocol";
-import { Button, Icon, Menu } from "@runyard/ui";
+import { Button, Icon, Menu, UserText } from "@runyard/ui";
 import { useState } from "react";
 import type { DesktopBridge } from "../../../shared/desktop-bridge.ts";
 import { RuntimeDetail } from "./RuntimeDetail.tsx";
@@ -65,7 +65,7 @@ export function RuntimeGroup({ bridge }: { bridge: DesktopBridge }) {
             <th scope="col" data-col="version">
               {t("settings.runtime.version.label")}
             </th>
-            <th scope="col" data-col="path" className={styles.hidden}>
+            <th scope="col" data-col="path" data-truncate="" className={styles.hidden}>
               {t("settings.runtime.path.label")}
             </th>
             <th scope="col" data-col="arch">
@@ -139,20 +139,20 @@ function ToolRows({
               aria-expanded={expanded}
               onClick={actions.onToggle}
             >
-              {name}
+              <UserText>{name}</UserText>
             </button>
           ) : (
-            name
+            <UserText>{name}</UserText>
           )}
         </th>
         <td className={styles.mono} data-col="version">
-          {check.version ?? NONE}
+          <UserText mono>{check.version ?? NONE}</UserText>
         </td>
         <td className={styles.pathCell} data-col="path">
           <ToolPathInput bridge={bridge} tool={check.tool} path={check.path} onApply={onApply} />
         </td>
         <td className={styles.mono} data-col="arch">
-          {check.arch ?? NONE}
+          <UserText mono>{check.arch ?? NONE}</UserText>
         </td>
         <td data-col="status">
           <ToolStatus status={check.status} />

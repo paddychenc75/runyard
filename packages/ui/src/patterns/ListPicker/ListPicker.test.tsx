@@ -1,4 +1,4 @@
-import type { Localized } from "@runyard/i18n";
+import { type Localized, scanPageForLeaks } from "@runyard/i18n";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ReactNode } from "react";
@@ -11,14 +11,14 @@ const groups: ListPickerGroup[] = [
   {
     id: "recent",
     title: name("recent"),
-    items: [{ id: "vue3", title: "Vue", letters: "Vu" }],
+    items: [{ id: "vue3", userContent: true, title: "Vue", letters: "Vu" }],
   },
   {
     id: "frontend",
     title: name("frontend"),
     items: [
-      { id: "react19", title: "React", subtitle: "sub", letters: "Re" },
-      { id: "vue3", title: "Vue", letters: "Vu" },
+      { id: "react19", userContent: true, title: "React", subtitle: "sub", letters: "Re" },
+      { id: "vue3", userContent: true, title: "Vue", letters: "Vu" },
     ],
   },
 ];
@@ -214,4 +214,34 @@ describe("ListPicker 的分类栏和随高亮变的底部", () => {
     );
     expect(screen.getByText("now:undefined")).toBeTruthy();
   });
+});
+
+it("只标记明确的外部标题和说明，普通标签仍接受伪语言扫描", () => {
+  const view = render(
+    <ListPicker
+      label={name("⟦Picker⟧")}
+      renderHeader={() => <input aria-label={name("⟦Search⟧")} />}
+      onChoose={() => {}}
+      groups={[
+        {
+          id: "group",
+          title: name("⟦Group⟧"),
+          items: [
+            {
+              id: "external",
+              userContent: true,
+              title: "External title",
+              subtitle: "External description",
+              letters: "X",
+            },
+            { id: "normal", title: name("Untranslated label"), letters: "N" },
+          ],
+        },
+      ]}
+    />,
+  );
+  const leaked = scanPageForLeaks(view.container).map((item) => item.text);
+  expect(leaked).toContain("Untranslated label");
+  expect(leaked).not.toContain("External title");
+  expect(leaked).not.toContain("External description");
 });
