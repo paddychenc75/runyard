@@ -2,7 +2,7 @@
 
 ## 用途
 
-Playwright（`_electron`）驱动真正的应用走主要用户流程（issue #180），并和 CI 的打包冒烟（#196）一起放在 `.github/workflows/e2e.yml`（只跑 macos-26，`e2e` 与 `package` 两个任务，暂不是必过检查）。不是库，不替代单元测试。
+Playwright（`_electron`）驱动真正的应用走主要用户流程（issue #180），并和 CI 的打包冒烟（#196）一起放在 `.github/workflows/e2e.yml`（只跑 macos-26，`build`、`e2e`、`design-1..4`（设计对照分四组并行）与 `package` 几个任务，暂不是必过检查）。不是库，不替代单元测试。
 
 ## 对外暴露什么
 

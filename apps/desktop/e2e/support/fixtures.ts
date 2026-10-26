@@ -4,7 +4,7 @@ import { type LaunchOptions, launchRunyard, type RunyardApp } from "./launch.ts"
 // 每个用例自己起应用；用例结束（无论成败）一定收尾并核对进程。
 export const test = base.extend<{ launch: (options?: LaunchOptions) => Promise<RunyardApp> }>({
   // biome-ignore lint/correctness/noEmptyPattern: Playwright 要求第一个参数写成解构
-  launch: async ({}, use) => {
+  launch: async ({}, use, testInfo) => {
     const started: RunyardApp[] = [];
     await use(async (options) => {
       const instance = await launchRunyard(options);
@@ -12,6 +12,24 @@ export const test = base.extend<{ launch: (options?: LaunchOptions) => Promise<R
       return instance;
     });
     const problems: unknown[] = [];
+    // 失败时先留证据再收尾（CI 上只能靠这些排查）：每个窗口的截图和可访问性树快照，附在报告里
+    if (testInfo.status !== testInfo.expectedStatus) {
+      for (const [index, instance] of started.entries()) {
+        await instance.page
+          .screenshot()
+          .then((body) =>
+            testInfo.attach(`failure-${index}.png`, { body, contentType: "image/png" }),
+          )
+          .catch(() => undefined);
+        await instance.page
+          .locator("html")
+          .ariaSnapshot()
+          .then((body) =>
+            testInfo.attach(`failure-${index}-aria.txt`, { body, contentType: "text/plain" }),
+          )
+          .catch(() => undefined);
+      }
+    }
     for (const instance of started) {
       await instance.shutdown().catch((error: unknown) => problems.push(error));
     }
