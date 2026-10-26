@@ -41,8 +41,13 @@
 }
 .entry {
   display: flex;
-  gap: var(--space-4);
-  padding-block: var(--space-4);
+  gap: var(--space-5);
+  padding: var(--space-5);
+}
+
+/* 操作按钮和上面的文字隔 6，文字块自己不留下边距，没有按钮的条目才不会在底部多出一截 */
+.actions {
+  margin-block-start: var(--space-3);
 }
 .tile {
   display: grid;
@@ -77,7 +82,7 @@
   overflow-wrap: anywhere;
 }
 .description {
-  margin: var(--space-1) 0 var(--space-4);
+  margin: 0;
   color: var(--color-text-secondary);
   font-size: var(--text-secondary-size);
   overflow-wrap: anywhere;

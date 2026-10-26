@@ -4,6 +4,7 @@ import "@xterm/xterm/css/xterm.css";
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import type { DesktopBridge } from "../../../shared/desktop-bridge.ts";
 import { FALLBACK_SHELL, type TerminalState } from "../../../shared/terminal.ts";
+import { useContentVisible } from "../../shared/content-visibility.ts";
 import { useOverlay } from "../../shared/overlay-context.tsx";
 import { FindBar } from "./FindBar.tsx";
 import styles from "./TerminalView.module.css";
@@ -34,6 +35,7 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(fu
   ref,
 ) {
   const t = useT();
+  const visible = useContentVisible();
   const hostRef = useRef<HTMLDivElement>(null);
   const sessionRef = useRef<TerminalSession | null>(null);
   const [state, setState] = useState<TerminalState>({ kind: "none" });
@@ -42,10 +44,16 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(fu
   const [results, setResults] = useState<FindResults>(NO_RESULTS);
   const [menu, setMenu] = useState<{ x: number; y: number; copyable: boolean } | null>(null);
   useOverlay(menu !== null);
+  useEffect(() => {
+    if (visible) return;
+    setMenu(null);
+    setFindOpen(false);
+    sessionRef.current?.endFind();
+  }, [visible]);
 
   // 创建会话的 effect 只在项目变时重跑，要用的最新值放进引用
   const latest = useRef({ t, appearance, focusOnStart });
-  latest.current = { t, appearance, focusOnStart };
+  latest.current = { t, appearance, focusOnStart: focusOnStart && visible };
 
   useImperativeHandle(
     ref,
@@ -168,7 +176,7 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(fu
           onClose={closeFind}
         />
       ) : null}
-      {menu === null ? null : (
+      {menu === null || !visible ? null : (
         <Menu
           label={t("desktop.terminalMenu.aria")}
           align="start"
@@ -184,10 +192,11 @@ export const TerminalView = forwardRef<TerminalViewHandle, TerminalViewProps>(fu
           onOpenChange={(open) => {
             if (!open) {
               setMenu(null);
-              sessionRef.current?.focus();
+              if (visible) sessionRef.current?.focus();
             }
           }}
           onSelect={(id) => {
+            if (!visible) return;
             setMenu(null);
             const session = sessionRef.current;
             if (session === null) return;

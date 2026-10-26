@@ -214,7 +214,7 @@ export function DataTable<Row>({
                     onClick={column.sort.onSort}
                   >
                     <span data-truncate="">{column.header}</span>
-                    {column.sort.sorted ? <Icon name="chevron-down" size={12} /> : null}
+                    {column.sort.sorted ? <Icon name="chevron-down" size={10} /> : null}
                   </button>
                 ) : (
                   (column.header ?? (

@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { expect, test } from "./support/fixtures.ts";
-import { openSettingsWindow } from "./support/settings-window.ts";
+import { openSettingsPage } from "./support/settings-page.ts";
 
 test("[DESKTOP-SETTINGS-44] 未安装也能查看随包中英文说明，拒绝路径输入", async ({ launch }) => {
   const instance = await launch({ lang: "zh-CN", theme: "light" });
@@ -16,7 +16,7 @@ test("[DESKTOP-SETTINGS-44] 未安装也能查看随包中英文说明，拒绝�
       return "";
     };
   });
-  const page = await openSettingsWindow(instance);
+  const page = await openSettingsPage(instance);
   await page
     .locator("[data-settings-header]")
     .getByRole("button", { name: "命令行与智能体", exact: true })

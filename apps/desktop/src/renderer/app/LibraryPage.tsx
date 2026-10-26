@@ -43,8 +43,12 @@ export interface LibraryPageProps {
 // 相对时间和“剩 N 天”不靠事件，半分钟走一次字
 const CLOCK_INTERVAL_MS = 30_000;
 
-/** 页头比它窄就收紧：搜索框 240 缩到 180、类型和状态合成“筛选”；比 COMPACT 还窄，搜索框缩成放大镜（规格 DESKTOP-LIBRARY-VIEW-67、68） */
-export const HEADER_WIDE_PX = 800;
+/**
+ * 页头比它窄就收紧：搜索框 240 缩到 180、类型和状态合成“筛选”；比 COMPACT 还窄，搜索框缩成放大镜（规格 DESKTOP-LIBRARY-VIEW-67、68）。
+ * 宽工具条要内容区 ≥ 1180（页头 = 内容区减去左右页边距各 28）才放得下完整的搜索框加三个按钮；
+ * 原来的 800 让 1100 宽收起侧栏（内容区 1084）时也走宽工具条，占位文字被快捷键键帽切断（UI 走查 L1）。
+ */
+export const HEADER_WIDE_PX = 1124;
 export const HEADER_COMPACT_PX = 560;
 
 /** 页头宽度（0 是还没量到，当作宽）对应的收紧档 */

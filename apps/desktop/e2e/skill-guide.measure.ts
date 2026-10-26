@@ -4,7 +4,7 @@ import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { chromium, expect } from "@playwright/test";
 import { launchRunyard } from "./support/launch.ts";
-import { openSettingsWindow } from "./support/settings-window.ts";
+import { openSettingsPage } from "./support/settings-page.ts";
 
 const out =
   process.env.RUNYARD_SKILL_GUIDE_OUTPUT ?? mkdtempSync(join(tmpdir(), "ry-skill-guide-"));
@@ -24,10 +24,10 @@ try {
       try {
         await expect(instance.page.getByRole("combobox")).toBeFocused();
         await instance.page.keyboard.press("Escape");
-        const page = await openSettingsWindow(instance);
+        const page = await openSettingsPage(instance);
         const heading = lang === "en" ? "Command line and agents" : "命令行与智能体";
         for (const width of [1440, 1100]) {
-          const settingsWidth = width === 1440 ? 820 : 760;
+          const settingsWidth = width;
           await instance.page.setViewportSize({ width, height: 900 });
           await page.setViewportSize({ width: settingsWidth, height: 900 });
           await page

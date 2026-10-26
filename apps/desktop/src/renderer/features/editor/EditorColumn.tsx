@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import type { DesktopBridge } from "../../../shared/desktop-bridge.ts";
 import type { TabRow } from "../../../shared/library-state.ts";
 import { useCommands } from "../../shared/command-host.tsx";
+import { useContentVisible } from "../../shared/content-visibility.ts";
 import { onEditorFocusRequest } from "../../shared/editor-focus.ts";
 import { ClosePrompt } from "./ClosePrompt.tsx";
 import { EditorBar } from "./EditorBar.tsx";
@@ -43,6 +44,7 @@ export interface EditorColumnProps {
 // 没有文件标签了才放行给标签条去关项目标签页（规格 DESKTOP-EDITOR-17）。
 export function EditorColumn({ bridge, tab, createHost = createMonacoHost }: EditorColumnProps) {
   const t = useT();
+  const visible = useContentVisible();
   const { session, state } = useActiveEditor();
   const theme = useAppliedTheme();
   const rootRef = useRef<HTMLElement>(null);
@@ -96,6 +98,7 @@ export function EditorColumn({ bridge, tab, createHost = createMonacoHost }: Edi
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      if (!visible) return;
       const pressed = modKey === "meta" ? event.metaKey : event.ctrlKey;
       if (!pressed || event.altKey || event.shiftKey) return;
       const key = event.key.toLowerCase();
@@ -112,10 +115,10 @@ export function EditorColumn({ bridge, tab, createHost = createMonacoHost }: Edi
     };
     window.addEventListener("keydown", onKeyDown, true);
     return () => window.removeEventListener("keydown", onKeyDown, true);
-  }, [session, modKey]);
+  }, [session, modKey, visible]);
 
   // 终端按 ⌃` 把焦点还给编辑器（DESKTOP-TERMINAL-05）：光标留在原来的位置
-  useEffect(() => onEditorFocusRequest(() => hostRef.current?.focus()), []);
+  useEffect(() => onEditorFocusRequest(() => visible && hostRef.current?.focus()), [visible]);
 
   // 失去焦点（DESKTOP-EDITOR-24）：焦点移出编辑器区域（点了预览、控制台或别处），或者切到别的应用、关窗口
   useEffect(() => {

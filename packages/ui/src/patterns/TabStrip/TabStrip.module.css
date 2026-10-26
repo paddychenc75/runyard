@@ -25,20 +25,19 @@
   pointer-events: none;
 }
 
-/* 右端渐隐：行尾留出一段空位，由窗口底色渐变盖住 */
-.row[data-overflow] {
-  padding-inline-end: var(--space-7);
+/* 折叠的标签本来就不可见，不需要渐隐遮罩；渐隐的伪元素在行被压窄时会错位盖到当前标签上，已去掉。
+   放不下而折叠时，当前标签可以压到比 --size-tab-min 更窄（名字省略号截断），“+N”是行右边独立的胶囊，
+   不与标签、关闭钮重叠；关闭钮此时只在悬停或键盘聚焦的标签上占位。 */
+.row[data-overflow] .tab:has([data-closable]) {
+  min-inline-size: 0;
 }
 
-.row[data-overflow]::after {
-  content: "";
-  position: absolute;
-  inset-block: 0;
-  inset-inline-end: 0;
-  inline-size: var(--space-7);
-  background: linear-gradient(to right, transparent, var(--color-bg-window));
+.row[data-overflow] .tab:not(:hover, :focus-within) .close {
+  inline-size: 0;
+  margin-inline: 0;
+  overflow: hidden;
+  opacity: 0;
   pointer-events: none;
-  z-index: var(--z-slide-content);
 }
 
 /* 项目标签（能关闭的）放不下时从完整宽度压窄，名字省略；压到 --size-tab-min 还不够才折进“+N”。
