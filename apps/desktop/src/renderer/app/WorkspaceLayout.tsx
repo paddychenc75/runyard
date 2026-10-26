@@ -3,6 +3,7 @@ import { type CSSProperties, useLayoutEffect, useRef, useState } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { TabRow } from "../../shared/library-state.ts";
 import { layoutPanes } from "../../shared/pane-sizes.ts";
+import { usePanelMode } from "../features/terminal/panel-mode.ts";
 import type { LayoutPrefs } from "../shared/layout-prefs.ts";
 import type { OverlayCounter } from "../shared/overlay-counter.ts";
 import { ConsolePanel } from "./ConsolePanel.tsx";
@@ -54,6 +55,9 @@ export function WorkspaceLayout({ bridge, tab, overlays, prefs, onPrefs }: Works
     return () => observer.disconnect();
   }, []);
   const script = isScript(tab);
+  // 脚本没开终端时底部面板只有一行标题条，没有可拖的高度（问题单 R2）
+  const panelMode = usePanelMode(tab.id);
+  const consoleCollapsed = script && panelMode !== "terminal";
   const { sizes, ranges } = layoutPanes(box, prefs, true);
   const vars = {
     "--layout-file-tree-width": `${sizes.tree}px`,
@@ -119,15 +123,17 @@ export function WorkspaceLayout({ bridge, tab, overlays, prefs, onPrefs }: Works
                   )}
                 </div>
               </div>
-              <ResizeHandle
-                orientation="horizontal"
-                label={t("workspace.resize.console.label")}
-                value={sizes.console}
-                range={ranges.console}
-                growsTowardEnd={false}
-                onResize={(consoleHeight) => onPrefs({ consoleHeight })}
-                onReset={() => onPrefs({ consoleHeight: null })}
-              />
+              {consoleCollapsed ? null : (
+                <ResizeHandle
+                  orientation="horizontal"
+                  label={t("workspace.resize.console.label")}
+                  value={sizes.console}
+                  range={ranges.console}
+                  growsTowardEnd={false}
+                  onResize={(consoleHeight) => onPrefs({ consoleHeight })}
+                  onReset={() => onPrefs({ consoleHeight: null })}
+                />
+              )}
               <ConsolePanel bridge={bridge} tab={tab} />
             </div>
           )}

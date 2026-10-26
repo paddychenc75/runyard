@@ -424,6 +424,7 @@
   "desktop.urlConfirm.warning.label": "The link wrote this source itself and Runyard cannot verify it. Creating the project installs dependencies and runs the template's code, so continue only if you trust it.",
   "desktop.window.title": "Runyard",
   "desktop.idle.body": "This playground has not run yet. Choose Run to start it.",
+  "desktop.console.terminalOpen.action": "Open terminal ⌃`",
   "desktop.request.stoppedResponse.label": "The service has stopped. This response was received before it stopped.",
   "desktop.request.previousResponse.label": "The service is not ready. This is the previous response.",
   "desktop.notifications.title": "Notifications",
