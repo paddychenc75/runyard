@@ -239,6 +239,7 @@ async function main(args: DesktopArgs): Promise<void> {
   });
   menu.install();
   controller.onChange((state) => menu.setProjectTabActive(state.activeTab !== "library"));
+  window.on("focus", () => void controller.checkProjectFolders());
   const home = args.root ?? homedir();
   const settings = new SettingsController({
     client,
@@ -272,6 +273,7 @@ async function main(args: DesktopArgs): Promise<void> {
       controller.getState().playgrounds.find((playground) => playground.id === id)?.path ?? null,
     onChange: (project, changes) => {
       ipcHost.send(desktopChannels.event, "files.changed", { project, changes });
+      void controller.checkProjectFolders(project);
       void language.filesChanged(project, changes);
     },
   });

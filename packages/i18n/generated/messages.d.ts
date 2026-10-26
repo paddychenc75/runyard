@@ -431,6 +431,7 @@ export type CatalogMessages = {
   "desktop.failure.stepReady.label": Record<never, never>;
   "desktop.failure.stepStart.label": Record<never, never>;
   "desktop.failure.steps.aria": Record<never, never>;
+  "desktop.idle.body": Record<never, never>;
   "desktop.linkNotice.linkInvalid.label": Record<never, never>;
   "desktop.linkNotice.newBusy.label": Record<never, never>;
   "desktop.linkNotice.newFailed.label": {
