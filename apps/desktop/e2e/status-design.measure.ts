@@ -77,11 +77,22 @@ try {
               activeTab: screen === "Main" ? "library" : base.id,
               playgrounds: [{ ...base, state: "crashed", active: false }],
             };
-            await instance.app.evaluate(({ BrowserWindow }, fixed) => {
+            await instance.app.evaluate(({ app, BrowserWindow }, fixed) => {
               const main = BrowserWindow.getAllWindows()[0];
               main?.webContents.send("desktop:event", "library.changed", fixed);
+              // 导航的 data-active 就是窗口焦点：CI 的会话里应用不是前台，光 main.focus() 不一定拿得到焦点，
+              // 先强制激活应用再聚焦窗口，前提成立之后下面才去断言。
+              app.focus({ steal: true });
+              main?.show();
               main?.focus();
             }, fixture);
+            await expect
+              .poll(() =>
+                instance.app.evaluate(({ BrowserWindow }) =>
+                  BrowserWindow.getAllWindows()[0]?.isFocused(),
+                ),
+              )
+              .toBe(true);
             if (screen === "Main") {
               await expect(page.getByRole("navigation", { name: libraryNavName })).toBeVisible();
               await expect(page.getByRole("navigation", { name: libraryNavName })).toHaveAttribute(
