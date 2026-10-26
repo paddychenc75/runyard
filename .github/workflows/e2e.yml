@@ -96,6 +96,24 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+      - name: 侧栏选中与出错符号设计对照
+        if: always()
+        env:
+          RUNYARD_E2E_APP: ${{ github.workspace }}/apps/desktop/release/e2e/mac-arm64/Runyard.app/Contents/MacOS/Runyard
+          RUNYARD_STATUS_REVIEW_OUTPUT: ${{ runner.temp }}/status-design-comparison
+        run: |
+          node tooling/design-render/render.mjs Main MainDark MainEn MainDarkEn Crashed CrashedDark CrashedEn CrashedDarkEn StartFailed StartFailedDark StartFailedEn StartFailedDarkEn ScriptFailed ScriptFailedDark ScriptFailedEn ScriptFailedDarkEn --no-shots
+          node apps/desktop/e2e/status-design.measure.ts
+
+      - name: 上传侧栏选中与出错符号设计对照
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: status-design-comparison
+          path: ${{ runner.temp }}/status-design-comparison/
+          if-no-files-found: error
+          retention-days: 14
+
       - name: 技能说明入口八组设计对照
         if: always()
         env:
