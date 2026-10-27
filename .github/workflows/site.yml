@@ -1,0 +1,60 @@
+# 官网发布到 GitHub Pages（#563）。目前只许手动触发：负责人先看过预览，再在仓库设置里启用 Pages（来源选“GitHub Actions”），
+# 然后手动运行本工作流。不在 push 或 pull_request 上自动运行，所以不会出现新的必过检查，也不会自己部署。
+name: 官网
+
+on:
+  workflow_dispatch:
+
+# 默认不给任何写权限；只有部署任务单独要 pages 和 id-token
+permissions:
+  contents: read
+
+concurrency:
+  group: site-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: 构建官网
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: 安装 pnpm（版本读自 package.json 的 packageManager 字段）
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: 安装 Node（版本读自 .node-version）
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+
+      - name: 安装依赖（只装官网和它的依赖）
+        run: pnpm install --frozen-lockfile --filter @runyard/site...
+
+      - name: 构建
+        run: pnpm --filter @runyard/site build
+
+      - name: 上传产物
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: apps/site/dist
+
+  deploy:
+    name: 发布到 GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 部署
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
