@@ -1,6 +1,6 @@
 {
   "name": "@runyard/desktop",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "桌面应用的最早外壳：主进程、预加载脚本、界面；从源码用 pnpm dev 打开",
   "type": "module",
