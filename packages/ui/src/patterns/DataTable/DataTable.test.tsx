@@ -312,7 +312,7 @@ describe("DataTable 放不下时按顺序收列（DESKTOP-LIBRARY-VIEW-28、29�
       const css = readFileSync(join(import.meta.dirname, "DataTable.module.css"), "utf8");
       expect(css).toMatch(/\.sortButton:hover\s*\{[^}]*background:/);
       expect(css).toMatch(/\.sortButton\s*\{[^}]*cursor:\s*pointer/);
-      expect(css).toMatch(/\.sortButton:focus-visible\s*\{[^}]*outline-offset:\s*calc\(-1/);
+      expect(css).toMatch(/\.sortButton:focus-visible\s*\{[^}]*outline-offset:\s*var\(--space-1\)/);
       expect(css).not.toMatch(/\.sortButton:focus\s*[,{]/);
     });
   });

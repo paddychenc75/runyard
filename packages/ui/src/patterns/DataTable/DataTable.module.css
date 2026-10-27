@@ -119,9 +119,7 @@
   align-items: center;
   gap: var(--space-2);
   max-inline-size: 100%;
-  /* 内边距给焦点环和悬停底色留位置：环画在按钮边框内侧，不会被表头行（滚动区）裁掉 */
-  padding: var(--space-2) var(--space-3);
-  margin: calc(-1 * var(--space-2)) calc(-1 * var(--space-3));
+  padding: 0;
   border: 0;
   border-radius: var(--radius-row);
   background: none;
@@ -131,8 +129,11 @@
   transition: background-color var(--motion-duration-fast) linear;
 }
 
+/* 悬停底色用同色的外扩阴影撑出文字外一圈：阴影不算布局和溢出，列宽、表头高度都不变；
+   外扩量不超过表头单元格的上下留白（space-2），不会被表头行裁掉 */
 .sortButton:hover {
   background: var(--color-fill-table-hover);
+  box-shadow: 0 0 0 var(--space-2) var(--color-fill-table-hover);
 }
 
 /* 升序：同一个向下的箭头翻转，不另画图标 */
@@ -150,10 +151,10 @@
   float: inline-end;
 }
 
-/* 只有键盘操作才画焦点环；负偏移让环整个落在按钮内侧 */
+/* 只有键盘操作才画焦点环；环加偏移共 space-2，正好落在表头单元格上下的留白里，不被表头行裁掉 */
 .sortButton:focus-visible {
   outline: var(--space-1) solid var(--color-line-accent);
-  outline-offset: calc(-1 * var(--space-1));
+  outline-offset: var(--space-1);
 }
 
 /* 表格是一个 Tab 停点；焦点环不画在整张表上（选中行就是焦点的位置），没有选中行时才画 */
