@@ -34,24 +34,6 @@ owner_approved = "§12 第 30 项，2026-10-12"
 # 第四种情况（§12 第 51 项，2026-10-26）：修复版已发布但未满发布期，满 15 天当天升级并删除。
 
 [[allow]]
-id = "GHSA-cg2g-xh64-v4q7"
-scope = "root"
-package = "dompurify"
-reason = "修复版 3.4.17 已发布（2026-10-12），但未满 15 天发布期，按规则暂不能装；经 monaco-editor 带入；到期（2026-10-27）即升级并删除本条，不续期"
-expires = 2026-10-27
-owner_approved = "§12 第 51 项，2026-10-26"
-fix_released = 2026-10-12
-
-[[allow]]
-id = "GHSA-mrv2-3pqr-j5jr"
-scope = "root"
-package = "dompurify"
-reason = "修复版 3.4.17 已发布（2026-10-12），但未满 15 天发布期，按规则暂不能装；经 monaco-editor 带入；到期（2026-10-27）即升级并删除本条，不续期"
-expires = 2026-10-27
-owner_approved = "§12 第 51 项，2026-10-26"
-fix_released = 2026-10-12
-
-[[allow]]
 id = "GHSA-xjj6-f33q-929c"
 scope = "root"
 package = "undici"
