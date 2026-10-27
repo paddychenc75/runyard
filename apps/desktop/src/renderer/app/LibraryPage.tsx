@@ -4,6 +4,7 @@ import type { RefObject } from "react";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import type { LibraryState } from "../../shared/library-state.ts";
 import {
+  applySortChoice,
   canCreateFromSearch,
   filterRows,
   isFiltering,
@@ -18,7 +19,7 @@ import { CombinedFilterMenu } from "./CombinedFilterMenu.tsx";
 import { FilterMenu } from "./FilterMenu.tsx";
 import styles from "./LibraryPage.module.css";
 import { LibraryTable } from "./LibraryTable.tsx";
-import { navLabel, sortLabel, statusLabel, typeLabel } from "./library-labels.ts";
+import { navLabel, sortLabel, sortValueLabel, statusLabel, typeLabel } from "./library-labels.ts";
 import { NavEmptyState } from "./NavEmptyState.tsx";
 import { NoResults } from "./NoResults.tsx";
 import { SearchBox } from "./SearchBox.tsx";
@@ -83,6 +84,10 @@ export function LibraryPage({
   const { playgrounds, templates, locale } = library;
   const visible = filterRows(playgrounds, templates, locale, query);
   const filtering = isFiltering(query);
+  // 表头和下拉共用：选当前排序键就切换升降序（规格 DESKTOP-LIBRARY-VIEW-110）
+  const chooseSort = (sort: string) =>
+    onQueryChange(applySortChoice(query, sort as LibraryQuery["sort"]));
+  const sortValue = sortValueLabel(query.sort, query.sortDirection, t);
   const status = query.nav === "running" ? "running" : query.status;
   const common = COMMON_TEMPLATES.flatMap((id) => {
     const template = templates.find((candidate) => candidate.id === id);
@@ -167,14 +172,15 @@ export function LibraryPage({
             )}
             <FilterMenu
               buttonLabel={
-                mode === "wide"
-                  ? t("library.filter.sort.label", { value: sortLabel(query.sort, t) })
-                  : sortLabel(query.sort, t)
+                mode === "wide" ? t("library.filter.sort.label", { value: sortValue }) : sortValue
               }
               menuLabel={t("library.menu.sort.aria")}
-              options={sortKeys.map((id) => ({ id, label: sortLabel(id, t) }))}
+              options={sortKeys.map((id) => ({
+                id,
+                label: id === query.sort ? sortValue : sortLabel(id, t),
+              }))}
               value={query.sort}
-              onValueChange={(sort) => onQueryChange({ sort: sort as LibraryQuery["sort"] })}
+              onValueChange={chooseSort}
             />
           </div>
         )}
@@ -244,7 +250,8 @@ export function LibraryPage({
           now={now}
           reveal={library.libraryReveal}
           sort={query.sort}
-          onSortChange={(sort) => onQueryChange({ sort })}
+          sortDirection={query.sortDirection}
+          onSortChange={chooseSort}
         />
       )}
     </section>

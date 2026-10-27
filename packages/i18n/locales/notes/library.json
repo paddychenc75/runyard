@@ -2,6 +2,15 @@
   "library.cleanBanner.lead.label": {
     "count": "明天会被自动清理的项目数"
   },
+  "library.column.sort.hint": {
+    "column": "排序依据的名称，如“名称”“大小”“最近使用”"
+  },
+  "library.column.sortAscending.hint": {
+    "column": "当前排序依据的名称"
+  },
+  "library.column.sortDescending.hint": {
+    "column": "当前排序依据的名称"
+  },
   "library.creator.details.label": {
     "time": "创建时间（已格式化）",
     "hasCommand": "有创建命令是 yes，否则 no",
@@ -89,6 +98,12 @@
   },
   "library.size.unreadable.tooltip": {
     "count": "没有权限读取而被跳过的文件夹个数"
+  },
+  "library.sort.ascending.label": {
+    "label": "排序依据的名称"
+  },
+  "library.sort.descending.label": {
+    "label": "排序依据的名称"
   },
   "library.topbar.running.label": {
     "count": "正在运行的项目数（标签页和命令行持有的都算）"

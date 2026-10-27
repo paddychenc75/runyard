@@ -29,12 +29,25 @@ export const statusFilters: readonly StatusFilter[] = ["all", "running", "stoppe
 export type SortKey = "recent" | "name" | "created" | "size";
 export const sortKeys: readonly SortKey[] = ["recent", "name", "created", "size"];
 
+/** 排序方向：ascending 升序，descending 降序 */
+export type SortDirection = "ascending" | "descending";
+
+/** 每个排序键第一次选中时的方向：最近使用最新在前、大小最大在前、创建时间最新在前，名称 A→Z */
+export function defaultDirection(sort: SortKey): SortDirection {
+  return sort === "name" ? "ascending" : "descending";
+}
+
+export function reverseDirection(direction: SortDirection): SortDirection {
+  return direction === "ascending" ? "descending" : "ascending";
+}
+
 export interface LibraryQuery {
   search: string;
   nav: NavFilter;
   type: TypeFilter;
   status: StatusFilter;
   sort: SortKey;
+  sortDirection: SortDirection;
 }
 
 export const defaultQuery: LibraryQuery = {
@@ -43,7 +56,20 @@ export const defaultQuery: LibraryQuery = {
   type: "all",
   status: "all",
   sort: "recent",
+  sortDirection: "descending",
 };
+
+/**
+ * 点表头或在排序下拉里选一项：选的不是当前排序键就换键并用它的默认方向；
+ * 选当前键就在升序和降序之间切换（规格 DESKTOP-LIBRARY-VIEW-110）。
+ */
+export function applySortChoice(
+  query: LibraryQuery,
+  sort: SortKey,
+): Pick<LibraryQuery, "sort" | "sortDirection"> {
+  if (sort === query.sort) return { sort, sortDirection: reverseDirection(query.sortDirection) };
+  return { sort, sortDirection: defaultDirection(sort) };
+}
 
 /** 有搜索或任何筛选在起作用（页概况改写成“N 个结果 · 共 M 个项目”）；排序不算筛选 */
 export function isFiltering(query: LibraryQuery): boolean {
@@ -89,17 +115,25 @@ function matchesSearch(row: PlaygroundRow, needle: string, locale: Locale): bool
   );
 }
 
-function compare(sort: SortKey, a: PlaygroundRow, b: PlaygroundRow): number {
-  // 大小：从大到小；还在计算的和没有大小的排在最后（规格 DESKTOP-LIBRARY-VIEW-76）
-  if (sort === "size") {
-    const aSize = a.size?.totalBytes ?? -1;
-    const bSize = b.size?.totalBytes ?? -1;
-    return bSize - aSize || a.name.localeCompare(b.name);
-  }
+/** 按排序键的“升序”比较（数值小的在前、名称 A→Z）；同值时按名称，名称相同无所谓 */
+function compareAscending(sort: SortKey, a: PlaygroundRow, b: PlaygroundRow): number {
+  if (sort === "size") return (a.size?.totalBytes ?? 0) - (b.size?.totalBytes ?? 0);
   if (sort === "name") return a.name.localeCompare(b.name);
-  if (sort === "created") return b.createdAt - a.createdAt || a.name.localeCompare(b.name);
+  if (sort === "created") return a.createdAt - b.createdAt;
   // 最近使用：打开、命令行运行、创建里最近的一次（规格 DESKTOP-LIBRARY-VIEW-01、94）
-  return lastUsedAt(b) - lastUsedAt(a) || a.name.localeCompare(b.name);
+  return lastUsedAt(a) - lastUsedAt(b);
+}
+
+function compare(query: LibraryQuery, a: PlaygroundRow, b: PlaygroundRow): number {
+  const { sort, sortDirection } = query;
+  // 大小：还在计算的和没有大小的无论升降序都排在最后（规格 DESKTOP-LIBRARY-VIEW-76）
+  if (sort === "size") {
+    const aKnown = a.size !== null && a.size !== undefined;
+    const bKnown = b.size !== null && b.size !== undefined;
+    if (aKnown !== bKnown) return aKnown ? -1 : 1;
+  }
+  const sign = sortDirection === "ascending" ? 1 : -1;
+  return sign * compareAscending(sort, a, b) || a.name.localeCompare(b.name);
 }
 
 export function filterRows(
@@ -123,7 +157,7 @@ export function filterRows(
     .sort((a, b) => {
       // 无论哪种排序，运行中的都在最前
       if (a.active !== b.active) return a.active ? -1 : 1;
-      return compare(query.sort, a, b);
+      return compare(query, a, b);
     });
 }
 

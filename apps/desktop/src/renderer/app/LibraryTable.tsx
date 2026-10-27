@@ -16,7 +16,7 @@ import { isDueTomorrow } from "../../shared/clean-due.ts";
 import type { DesktopBridge } from "../../shared/desktop-bridge.ts";
 import { lastUsedAt } from "../../shared/last-used.ts";
 import type { PlaygroundRow } from "../../shared/library-state.ts";
-import type { SortKey } from "../library-query.ts";
+import type { SortDirection, SortKey } from "../library-query.ts";
 import {
   brandOf,
   logoOf,
@@ -31,6 +31,7 @@ import { ActionFailedDialog } from "./ActionFailedDialog.tsx";
 import { CreatorDetails, CreatorTag } from "./CreatorCell.tsx";
 import { sizeColumn } from "./LibrarySizeColumn.tsx";
 import styles from "./LibraryTable.module.css";
+import { sortHint } from "./library-labels.ts";
 import { MissingNote } from "./MissingNote.tsx";
 import { RenameInlineActions, RenameInlineFields } from "./RenameInline.tsx";
 import { RowActions } from "./RowActions.tsx";
@@ -44,8 +45,9 @@ export interface LibraryTableProps {
   rows: readonly PlaygroundRow[];
   now: number;
   reveal?: { id: string; sequence: number };
-  /** 当前排序，和“排序”下拉是同一个值；点“大小”表头等于选“大小” */
+  /** 当前排序和方向，和“排序”下拉是同一份；点表头等于在下拉里选这一项 */
   sort: SortKey;
+  sortDirection: SortDirection;
   onSortChange: (sort: SortKey) => void;
 }
 
@@ -59,6 +61,7 @@ export function LibraryTable({
   rows,
   now,
   sort,
+  sortDirection,
   onSortChange,
   reveal,
 }: LibraryTableProps) {
@@ -90,12 +93,18 @@ export function LibraryTable({
   const dim = (row: PlaygroundRow, node: ReactNode): ReactNode =>
     row.missing ? <span className={styles.dim}>{node}</span> : node;
 
+  const sortOf = (key: SortKey): DataTableColumn<PlaygroundRow>["sort"] => ({
+    direction: sort === key ? sortDirection : undefined,
+    onSort: () => onSortChange(key),
+    title: sortHint(key, { sort, direction: sortDirection }, t),
+  });
+
   const columns: DataTableColumn<PlaygroundRow>[] = [
     {
       id: "name",
       header: t("library.column.name.label"),
       width: "fill",
-      sort: { sorted: sort === "name", onSort: () => onSortChange("name") },
+      sort: sortOf("name"),
       render: (row) =>
         row.id === editingId ? (
           <RenameInlineFields draft={draft} />
@@ -190,12 +199,12 @@ export function LibraryTable({
           ),
         ),
     },
-    sizeColumn(t("library.column.size.label"), sort === "size", () => onSortChange("size")),
+    sizeColumn(t("library.column.size.label"), sortOf("size")),
     {
       id: "lastUsed",
       header: t("library.column.lastUsed.label"),
       width: "md",
-      sort: { sorted: sort === "recent", onSort: () => onSortChange("recent") },
+      sort: sortOf("recent"),
       collapse: { order: 1, mode: "hide" },
       render: (row) =>
         dim(

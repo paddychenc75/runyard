@@ -54,11 +54,10 @@ export function SizeCell({ row }: { row: PlaygroundRow }) {
   );
 }
 
-/** 列定义：右对齐；点表头等于在排序里选“大小”（sorted 为真时表头旁有向下的箭头） */
+/** 列定义：右对齐；点表头等于在排序里选“大小”（当前按它排序时表头旁有箭头，朝下降序、朝上升序） */
 export function sizeColumn(
   header: DataTableColumn<PlaygroundRow>["header"],
-  sorted: boolean,
-  onSort: () => void,
+  sort: DataTableColumn<PlaygroundRow>["sort"],
 ): DataTableColumn<PlaygroundRow> {
   return {
     id: "size",
@@ -68,7 +67,7 @@ export function sizeColumn(
       compact: { whenCollapsed: "template", size: "calc(var(--size-column-sm) - var(--space-4))" },
     },
     align: "end",
-    sort: { sorted, onSort },
+    sort,
     render: (row) => <SizeCell row={row} />,
   };
 }

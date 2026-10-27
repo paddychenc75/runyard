@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import type { PlaygroundRow } from "../shared/library-state.ts";
 import {
+  applySortChoice,
   canCreateFromSearch,
+  defaultDirection,
   defaultQuery,
   filterRows,
   isFiltering,
@@ -102,4 +104,66 @@ it("[DESKTOP-LIBRARY-VIEW-91] 自动清理仅显示已开启的项目", () => {
   expect(
     filterRows(rows, [], "zh-CN", { ...defaultQuery, nav: "autoClean" }).map((r) => r.id),
   ).toEqual(["on"]);
+});
+
+describe("排序方向", () => {
+  const rows = () => [
+    row("a", {
+      lastUsedAt: 1,
+      createdAt: 1,
+      size: { totalBytes: 5, dependencyBytes: 0, dependencyDirs: [], unreadable: 0 },
+    }),
+    row("b", {
+      lastUsedAt: 3,
+      createdAt: 3,
+      size: { totalBytes: 9, dependencyBytes: 0, dependencyDirs: [], unreadable: 0 },
+    }),
+    row("c", { lastUsedAt: 2, createdAt: 2, size: null }),
+  ];
+  const ids = (query: Parameters<typeof filterRows>[3]) =>
+    filterRows(rows(), [], "zh-CN", query).map((r) => r.id);
+
+  it("[DESKTOP-LIBRARY-VIEW-110] 默认方向：名称 A 到 Z，其余最大或最新在前", () => {
+    expect(defaultDirection("name")).toBe("ascending");
+    expect(defaultDirection("recent")).toBe("descending");
+    expect(defaultDirection("size")).toBe("descending");
+    expect(defaultDirection("created")).toBe("descending");
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-110] 升序把顺序倒过来；大小未知的两个方向都在最后", () => {
+    const base = defaultQuery;
+    expect(ids({ ...base, sort: "recent" })).toEqual(["b", "c", "a"]);
+    expect(ids({ ...base, sort: "recent", sortDirection: "ascending" })).toEqual(["a", "c", "b"]);
+    expect(ids({ ...base, sort: "name", sortDirection: "ascending" })).toEqual(["a", "b", "c"]);
+    expect(ids({ ...base, sort: "name", sortDirection: "descending" })).toEqual(["c", "b", "a"]);
+    expect(ids({ ...base, sort: "size" })).toEqual(["b", "a", "c"]);
+    expect(ids({ ...base, sort: "size", sortDirection: "ascending" })).toEqual(["a", "b", "c"]);
+    expect(ids({ ...base, sort: "created", sortDirection: "ascending" })).toEqual(["a", "c", "b"]);
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-110] 选当前键切换方向，选别的键用它的默认方向", () => {
+    expect(applySortChoice(defaultQuery, "recent")).toEqual({
+      sort: "recent",
+      sortDirection: "ascending",
+    });
+    expect(applySortChoice(defaultQuery, "name")).toEqual({
+      sort: "name",
+      sortDirection: "ascending",
+    });
+    expect(
+      applySortChoice({ ...defaultQuery, sort: "name", sortDirection: "ascending" }, "size"),
+    ).toEqual({
+      sort: "size",
+      sortDirection: "descending",
+    });
+  });
+
+  it("[DESKTOP-LIBRARY-VIEW-110] 运行中的无论升降序都在最前", () => {
+    const list = [row("a", { lastUsedAt: 1 }), row("z", { active: true, lastUsedAt: 0 })];
+    expect(
+      filterRows(list, [], "zh-CN", { ...defaultQuery, sortDirection: "ascending" }).map(
+        (r) => r.id,
+      ),
+    ).toEqual(["z", "a"]);
+  });
 });

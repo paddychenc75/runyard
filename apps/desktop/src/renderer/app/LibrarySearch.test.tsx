@@ -470,7 +470,7 @@ describe("窗口变窄时页头和顶栏收紧", () => {
     expect(screen.queryByRole("button", { name: /^类型：/ })).toBeNull();
     expect(screen.queryByRole("button", { name: /^状态：/ })).toBeNull();
     // 排序下拉只写方式；当前排序的列头也是同名按钮
-    expect(screen.getAllByRole("button", { name: "最近使用" })).toHaveLength(2);
+    expect(screen.getAllByRole("button", { name: /^最近使用/ })).toHaveLength(2);
     const count = screen.getByRole("button", { name: "1 个运行中" });
     expect(count.textContent).toBe("1 个运行中");
   });

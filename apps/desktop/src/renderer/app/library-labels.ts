@@ -1,5 +1,11 @@
 import type { useT } from "@runyard/i18n/react";
-import type { NavFilter, SortKey, StatusFilter, TypeFilter } from "../library-query.ts";
+import type {
+  NavFilter,
+  SortDirection,
+  SortKey,
+  StatusFilter,
+  TypeFilter,
+} from "../library-query.ts";
 
 type Translate = ReturnType<typeof useT>;
 
@@ -58,4 +64,25 @@ export function sortLabel(sort: SortKey, t: Translate) {
     case "size":
       return t("library.sort.size.label");
   }
+}
+
+/** 排序名加方向箭头（“最近使用 ↓”）：下拉按钮和下拉里选中的那一项用 */
+export function sortValueLabel(sort: SortKey, direction: SortDirection, t: Translate) {
+  const label = sortLabel(sort, t);
+  return direction === "ascending"
+    ? t("library.sort.ascending.label", { label })
+    : t("library.sort.descending.label", { label });
+}
+
+/** 可点表头的悬停提示：不是当前排序列写“按 X 排序”，是当前列写点一下会变成哪个方向 */
+export function sortHint(
+  sort: SortKey,
+  current: { sort: SortKey; direction: SortDirection },
+  t: Translate,
+) {
+  const column = sortLabel(sort, t);
+  if (current.sort !== sort) return t("library.column.sort.hint", { column });
+  return current.direction === "ascending"
+    ? t("library.column.sortDescending.hint", { column })
+    : t("library.column.sortAscending.hint", { column });
 }
