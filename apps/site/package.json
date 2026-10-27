@@ -1,0 +1,15 @@
+{
+  "name": "@runyard/site",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Runyard 官网：Astro 静态站，发布到 GitHub Pages（#563）",
+  "type": "module",
+  "scripts": {
+    "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev --host 127.0.0.1",
+    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "preview": "pnpm build && ASTRO_TELEMETRY_DISABLED=1 astro preview --host 127.0.0.1 --port 4321"
+  },
+  "devDependencies": {
+    "astro": "catalog:"
+  }
+}

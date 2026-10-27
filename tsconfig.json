@@ -12,6 +12,7 @@
     { "path": "packages/client" },
     { "path": "packages/cli" },
     { "path": "packages/testing" },
-    { "path": "apps/desktop" }
+    { "path": "apps/desktop" },
+    { "path": "apps/site" }
   ]
 }

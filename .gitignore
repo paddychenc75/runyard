@@ -30,3 +30,4 @@ coverage/
 
 # 端到端测试的本地输出（失败截图、报告）
 /apps/desktop/e2e/.output/
+.astro/

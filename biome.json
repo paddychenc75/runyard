@@ -9,6 +9,7 @@
       "!packages/ui/visual/.output",
       "!apps/desktop/e2e/.output",
       "!**/dist",
+      "!**/.astro",
       "!pnpm-lock.yaml",
       "!.release-please-manifest.json",
       "!docs/design",

@@ -1,0 +1,97 @@
+{
+  "htmlLang": "zh-CN",
+  "title": "Runyard：存放和运行代码示例的 Mac 应用",
+  "description": "Runyard 是 Mac 上存放和运行代码示例的桌面应用。选一个模板，就得到带编辑器、实时预览和终端的项目；AI 编程智能体也能用命令行新建和运行。",
+  "nav": {
+    "features": "功能",
+    "agents": "智能体",
+    "download": "下载",
+    "github": "GitHub"
+  },
+  "switchLabel": "语言",
+  "eyebrow": "免费开源 · macOS",
+  "h1": "选个模板，<br>一秒就跑起来。",
+  "lead": "Runyard 是 Mac 上存放和运行代码示例的桌面应用。选一个模板，就得到带编辑器、实时预览和终端的项目；AI 编程智能体也能用命令行新建和运行。",
+  "cta": "下载 macOS 版",
+  "ctaSub": "Apple 芯片 · .dmg",
+  "more": "看看功能",
+  "meta": "版本 0.1.0 · MIT 许可 · ",
+  "metaLink": "在 GitHub 上看源码",
+  "running": "运行中",
+  "featuresTitle": "一个放代码示例的地方",
+  "featuresLead": "试一个库、验证一个说法、搭一个演示，都从模板开始；做完了，下个月还能在资源库里找到。",
+  "features": [
+    {
+      "shot": "picker",
+      "alt": "Runyard 的选模板弹窗，列出八个模板，选中 React 19 + Vite",
+      "title": "选模板，一秒跑起来",
+      "body": "内置 HTML、React 19、React 18、Vue 3、Node + TypeScript、Python、Go、Hono 八个模板，用你电脑上已有的工具链运行。"
+    },
+    {
+      "shot": "web",
+      "alt": "Runyard 的网页项目工作区：左边代码，右边实时预览，下面是输出",
+      "title": "改代码，马上看到结果",
+      "body": "Monaco 编辑器，和 VS Code 一样的手感。页面边改边刷新，服务一直开着，终端就在下面。"
+    },
+    {
+      "shot": "library",
+      "alt": "Runyard 的资源库，运行中的项目排在最前",
+      "title": "资源库：下个月还找得到",
+      "body": "每个项目都是 ~/Runyard 里的普通文件夹。运行中的排在最前，可以写备注、设自动清理，不要的移到废纸篓。"
+    },
+    {
+      "shot": "service",
+      "alt": "Runyard 的服务项目工作区：右侧是请求面板，显示 200 OK 和响应内容",
+      "title": "服务项目有请求面板",
+      "body": "Hono 这类服务跑起来后，直接在旁边发请求、看响应，不用另开工具。"
+    }
+  ],
+  "agentsTitle": "给 AI 智能体用的命令行",
+  "agentsLead": "Claude Code、Codex 这类编程智能体用一条命令新建并运行项目；你在资源库里看得见它建了什么、哪些还在运行。",
+  "termComment": "# 让智能体学会用 runyard，装一次就好",
+  "termNote": "命令行随应用安装：在设置里接到 PATH；应用内置的终端里一定有 runyard。",
+  "points": [
+    {
+      "title": "一条命令建好并跑起来",
+      "body": "<code>new --run --json</code> 返回路径、地址和日志位置。出错时带错误码和下一步该执行的命令。"
+    },
+    {
+      "title": "装一次技能包",
+      "body": "执行 <code>runyard skill install</code>，或在设置里点“安装”，Claude Code、Codex 就知道怎么用。"
+    },
+    {
+      "title": "看得见智能体做了什么",
+      "body": "智能体建的项目在资源库里带徽标，写明是哪个智能体建的，可以按创建者筛选。"
+    }
+  ],
+  "agentShotAlt": "资源库里智能体刚建的项目：一行带“Claude Code”徽标，右上角有创建并运行的提示",
+  "downloadTitle": "下载 Runyard",
+  "downloadLead": "免费、开源，只要一台 Mac。",
+  "version": "Runyard 0.1.0",
+  "platform": "macOS 13 及以上 · Apple 芯片（arm64）· .dmg",
+  "dmgButton": "下载 .dmg",
+  "allReleases": "所有版本和校验和",
+  "changelog": "更新日志",
+  "unsignedLead": "这个版本还没有经过苹果公证，第一次打开会被系统拦下。首次打开请右键 → 打开；新系统上按下面的步骤做一次，以后就能直接打开。",
+  "unsignedSteps": [
+    "打开 .dmg，先把 Runyard 拖进“应用程序”，再从“应用程序”打开（直接在 .dmg 里打开会出问题）",
+    "双击 Runyard。系统提示无法验证开发者时，点“完成”",
+    "打开“系统设置 → 隐私与安全性”，在“安全性”里点“仍要打开”，再输入登录密码"
+  ],
+  "olderMac": "macOS 14 及更早：在“应用程序”里右键点 Runyard，选“打开”即可。",
+  "terminalLead": "懂命令行的可以一步做完：",
+  "copy": "拷贝",
+  "copied": "已拷贝",
+  "everyUpdate": "每次更新都要再做一次。",
+  "details": "详细说明",
+  "toolchain": "项目用你电脑上已有的 Node、Python、Go 运行；缺了什么，应用会告诉你怎么装。",
+  "footerTagline": "存放和运行代码示例的 Mac 应用",
+  "product": "产品",
+  "resources": "资源",
+  "guide": "使用说明",
+  "unsignedLink": "首次打开未签名的应用",
+  "report": "报告问题",
+  "network": "联网说明：应用每天只向 GitHub 问一次有没有新版本，不带任何标识。",
+  "licence": "MIT 许可 · © 2026 Runyard 的贡献者",
+  "followSystem": "颜色跟随系统"
+}

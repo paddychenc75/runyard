@@ -1,0 +1,10 @@
+{
+  "extends": "../../tooling/tsconfig/neutral.json",
+  "compilerOptions": {
+    "outDir": "../../.tsbuild/site",
+    "tsBuildInfoFile": "../../.tsbuild/site/tsconfig.tsbuildinfo",
+    "rootDir": ".",
+    "resolveJsonModule": true
+  },
+  "include": ["src/**/*.ts", "src/copy/*.json"]
+}

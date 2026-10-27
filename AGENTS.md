@@ -26,6 +26,7 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `docs/releases/` | 每个版本给负责人看的白话说明（`<版本>.md`）。更新日志 `CHANGELOG.md` 在根目录，自动生成，不要手改 |
 | `docs/glossary.md` | 术语表：中文术语、唯一的英文标识符、禁用的同义词 |
 | `apps/desktop/` | 桌面应用（Electron）：主进程、预加载脚本、界面三部分。React 界面，主窗口外壳（悬浮侧栏、顶栏标签条、主题与语言）已有；内容区是资源库列表（列、运行中排最前、实时更新、“N 个运行中”），操作列是“打开”或“停止运行”加更多菜单（打开、停止运行、重命名、编辑备注、自动清理、创建副本、在访达中显示、复制路径；运行条也有同一份“更多”菜单的前几项）、新建（模板选择器加新建弹窗）和页面预览；从源码 `pnpm dev` 打开。关闭标签页（运行中先确认）已有；项目标签页里有代码编辑器和文件标签（Monaco，`renderer/features/editor/`，打开、切换、关闭、⌘S 保存、自动保存三档（默认停止输入 1 秒后）、外部修改与外部删除的处理、关闭和退出前先写入、恢复上次的文件标签）；智能提示、实时结果、终端等随 M3 后续 PR |
+| `apps/site/` | 官网（Astro 静态站，之后发布到 GitHub Pages）：中英文两页、首屏动画、真实截图（webp）；不联网、不装集成；`pnpm site:preview` 在本机预览；发布工作流 `.github/workflows/site.yml` 只能手动触发 |
 | `packages/platform/` | 平台层：`Platform` 接口、`getPlatform()`、路径与名称校验、`darwin` 和薄 `linux` 实现、契约测试（目前有接口、paths、ipc、spawnDetached、exec、proc、ports、fs（含 macOS 废纸篓、`readBytes` / `listFiles` / `appendFile` / `removeFile`）、system（版本串）、watch、env（登录 shell 解析）、tools、shell 的实现，其余是占位，随后续 issue 加入） |
 | `packages/protocol/` | 所有跨进程约定（目前有错误码、提示码、枚举、`RunyardError` / `Notice` / `LogEntry` / `Owner`、分帧、`Frame`、握手消息、版本比对、方法与事件的登记表、`Playground` / `RunSnapshot`、磁盘文件格式与升级链、`template.json` / `runner.json` / 工具定义的格式与校验） |
 | `packages/tokens/` | 设计变量：`src/tokens.json` 是唯一来源，`pnpm tokens:build` 生成 `generated/` 下的 CSS 变量、TS 常量、编辑器配色，并重写 `docs/design/tokens.md` 的表；不导入任何包 |
@@ -61,12 +62,12 @@ Runyard 是一个桌面应用（Electron、TypeScript）加一个命令行，用
 | `@runyard/supervisor` | `@runyard/protocol`、`@runyard/platform`、`@runyard/core`、`@runyard/testing`（只在测试里） | 已有 |
 | `@runyard/client` | `@runyard/protocol`、`@runyard/platform`、`@runyard/testing`（只在测试里） | 已有 |
 | `runyard` | `@runyard/protocol`、`@runyard/platform`、`@runyard/client`、`@runyard/core`、`@runyard/i18n`、`@runyard/testing`（只在测试里） | 已有 |
+| `@runyard/site` | 无 | 已有 |
 | `@runyard/desktop` | `@runyard/protocol`、`@runyard/platform`、`@runyard/client`、`@runyard/i18n`、`@runyard/tokens`、`@runyard/ui` | 已有 |
 | `@runyard/testing` | `@runyard/protocol`、`@runyard/platform`、`@runyard/core`（只在测试里） | 已有 |
 <!-- generated:layers 结束 -->
 
 下面几条在对应的包建立时生效（现在多数包还没建，先知道；出处是技术设计 §3.2）：
-
 - `electron` 只许出现在桌面应用里；界面进程（renderer）里不许用 Node 接口；`@runyard/protocol` 里不许用 Node、浏览器、Electron 的任何接口。
 - 系统分支（读 `process.platform`、直接启动进程、手写路径分隔符）只许写在 `@runyard/platform` 和桌面应用主进程的 integration 目录里，其他地方调用平台接口。`platform-branching` 查 `packages` 和 `apps` 两个目录（含测试）：读运行系统的写法、导入 `child_process`、传给 `node:fs`/`node:path` 函数的手写 `/` 或 `\\` 拼接和 `path.sep` 拼接；`tooling` 目录不查（脚本要启动 git、pnpm）。其余手写分隔符的写法靠评审。
 - 第一版只发 macOS（决策记录 0013）：平台层只有 `darwin` 和薄的 `linux` 两份实现，不许新增只属于 Windows 的代码（`win32` 实现、辅助程序、安装器）；接口按以后好加 Windows 来写（不假设信号和进程组，进程身份是 pid 加启动时间）。依赖平台实现的测试只在 macOS 和 Ubuntu 跑，在 Windows 上只通过测试手册里那一个机制跳过，不在测试里写 `if (process.platform …)`。
@@ -84,8 +85,7 @@ pnpm dev                     # 从源码打开桌面应用的窗口（加 -- --r
 pnpm verify                  # 交付前必跑：lint + typecheck + check + 受影响的包的测试（两个阶段）
 pnpm check                   # 全部仓库检查（依赖规则、文档、术语、PRD 锚点等）
 pnpm lint / pnpm format      # Biome：检查格式和代码规则（只检查）/ 按规则重排格式；pnpm typecheck 是 tsc -b
-pnpm test                    # 全部包的测试：先单元阶段，再进程阶段（起真进程的 *.platform-dependent.test.ts，一次一个包）
-pnpm test:unit               # 只跑单元阶段；pnpm test:process 只跑进程阶段；pnpm test --filter <包名> 只跑一个包
+pnpm test                    # 全部包的测试：先单元阶段，再进程阶段（起真进程的 *.platform-dependent.test.ts，一次一个包）；pnpm test:unit / test:process 只跑一个阶段，--filter <包名> 只跑一个包
 pnpm generate / pnpm deps:lookup <包名>   # 重新生成文档里由脚本生成的部分 / 查依赖的版本和公告
 ```
 
