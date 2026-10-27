@@ -47,8 +47,11 @@ catalog:
 # 传递依赖的安全覆盖：vite 只经 vitest（及 @vitest/mocker）进来，vitest 4.1.11 的锁定解析到 8.3.1，
 # 受 GHSA-587h-7wmj-h5pm（高）等影响；vitest 4 线没有更新的补丁能带出新 vite，故覆盖到发布满 15 天的 8.3.4（2026-10-08）。
 # 等 vitest 升级后能自然解析到 >=8.3.4 时删掉这一条。
+# dompurify 只经 monaco-editor 进来（包里 dependencies 写死 3.4.15），受 GHSA-cg2g-xh64-v4q7（严重）、GHSA-mrv2-3pqr-j5jr（高）等影响，
+# 故覆盖到发布满 15 天的 3.4.17（2026-10-12）。等 monaco-editor 升级后能自然解析到 >=3.4.17 时删掉这一条。
 overrides:
   vite: 8.3.4
+  dompurify: 3.4.17
 
 # 发布不满 14 天的版本不装（单位：分钟，20160 = 14 天）
 minimumReleaseAge: 20160
