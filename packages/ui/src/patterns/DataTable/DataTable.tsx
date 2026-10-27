@@ -37,7 +37,11 @@ export interface DataTableColumn<Row> {
   width: ColumnSize;
   /** 数字列靠右；可点表头与页面排序使用同一个动作。 */
   align?: "end";
-  sort?: { sorted: boolean; onSort: () => void };
+  /**
+   * 可点表头：direction 有值表示当前按这一列排序（箭头朝下是降序，朝上是升序）；
+   * title 是悬停时的原生提示（“按名称排序”）。
+   */
+  sort?: { direction?: "ascending" | "descending"; onSort: () => void; title?: Localized };
   /**
    * 窗口放不下全部列时怎么办：order 小的先收。hide 是整列不画；narrow 是列缩成 narrowWidth，
    * 内容里带 data-collapse-hide 的部分不画（如模板列只剩徽标）。没有这一项的列一直显示
@@ -200,7 +204,7 @@ export function DataTable<Row>({
                 scope="col"
                 className={styles.headerCell}
                 data-align={column.align}
-                aria-sort={column.sort?.sorted === true ? "descending" : undefined}
+                aria-sort={column.sort?.direction}
                 data-column={column.id}
                 data-collapsed={collapsedIds.has(column.id) ? "" : undefined}
               >
@@ -211,10 +215,19 @@ export function DataTable<Row>({
                     type="button"
                     tabIndex={-1}
                     className={styles.sortButton}
+                    title={column.sort.title}
                     onClick={column.sort.onSort}
                   >
                     <span data-truncate="">{column.header}</span>
-                    {column.sort.sorted ? <Icon name="chevron-down" size={10} /> : null}
+                    {column.sort.direction === undefined ? null : (
+                      <Icon
+                        name="chevron-down"
+                        size={10}
+                        className={
+                          column.sort.direction === "ascending" ? styles.sortAscending : undefined
+                        }
+                      />
+                    )}
                   </button>
                 ) : (
                   (column.header ?? (

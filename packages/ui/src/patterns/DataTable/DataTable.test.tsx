@@ -263,4 +263,57 @@ describe("DataTable 放不下时按顺序收列（DESKTOP-LIBRARY-VIEW-28、29�
     resize(700);
     expect(container.firstElementChild?.getAttribute("data-collapsed")).toBe("used port");
   });
+
+  describe("可点表头", () => {
+    const sortable = (direction?: "ascending" | "descending", onSort = vi.fn()) =>
+      columns.map((column) =>
+        column.id === "name"
+          ? { ...column, sort: { direction, onSort, title: text("按“名称”排序") } }
+          : column,
+      );
+
+    it("[DESKTOP-LIBRARY-VIEW-109] 可点表头是带 title 的按钮，不可点的表头不是按钮", async () => {
+      const onSort = vi.fn();
+      setup({ columns: sortable(undefined, onSort) });
+      const button = within(screen.getByRole("columnheader", { name: "Name" })).getByRole("button");
+      expect(button.getAttribute("title")).toBe("按“名称”排序");
+      expect(
+        within(screen.getByRole("columnheader", { name: "Port" })).queryByRole("button"),
+      ).toBeNull();
+      await userEvent.setup().click(button);
+      expect(onSort).toHaveBeenCalledTimes(1);
+    });
+
+    it("[DESKTOP-LIBRARY-VIEW-110] aria-sort 与箭头方向跟着 direction：降序朝下，升序翻转，没有就不画", () => {
+      const { container, rerender } = setup({ columns: sortable() });
+      const head = () => container.querySelector("th[data-column=name]");
+      expect(head()?.hasAttribute("aria-sort")).toBe(false);
+      expect(head()?.querySelector("svg")).toBeNull();
+      const again = (direction: "ascending" | "descending") =>
+        rerender(
+          <DataTable
+            label={text("Table")}
+            columns={sortable(direction)}
+            rows={rows}
+            getRowId={(row) => row.id}
+          />,
+        );
+      again("descending");
+      expect(head()?.getAttribute("aria-sort")).toBe("descending");
+      expect(head()?.querySelector("svg")?.getAttribute("class") ?? "").not.toMatch(
+        /sortAscending/,
+      );
+      again("ascending");
+      expect(head()?.getAttribute("aria-sort")).toBe("ascending");
+      expect(head()?.querySelector("svg")?.getAttribute("class")).toMatch(/sortAscending/);
+    });
+
+    it("[DESKTOP-LIBRARY-VIEW-109][DESKTOP-LIBRARY-VIEW-112] 悬停有底色和手形指针；焦点环只用 :focus-visible 并画在按钮内侧", () => {
+      const css = readFileSync(join(import.meta.dirname, "DataTable.module.css"), "utf8");
+      expect(css).toMatch(/\.sortButton:hover\s*\{[^}]*background:/);
+      expect(css).toMatch(/\.sortButton\s*\{[^}]*cursor:\s*pointer/);
+      expect(css).toMatch(/\.sortButton:focus-visible\s*\{[^}]*outline-offset:\s*calc\(-1/);
+      expect(css).not.toMatch(/\.sortButton:focus\s*[,{]/);
+    });
+  });
 });

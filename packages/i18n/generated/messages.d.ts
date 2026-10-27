@@ -893,6 +893,15 @@ export type CatalogMessages = {
   "library.column.port.label": Record<never, never>;
   "library.column.retention.label": Record<never, never>;
   "library.column.size.label": Record<never, never>;
+  "library.column.sort.hint": {
+    column: string | number;
+  };
+  "library.column.sortAscending.hint": {
+    column: string | number;
+  };
+  "library.column.sortDescending.hint": {
+    column: string | number;
+  };
   "library.column.status.label": Record<never, never>;
   "library.column.template.label": Record<never, never>;
   "library.creator.agent.label": Record<never, never>;
@@ -1053,7 +1062,13 @@ export type CatalogMessages = {
   "library.size.unreadable.tooltip": {
     count: number;
   };
+  "library.sort.ascending.label": {
+    label: string | number;
+  };
   "library.sort.created.label": Record<never, never>;
+  "library.sort.descending.label": {
+    label: string | number;
+  };
   "library.sort.name.label": Record<never, never>;
   "library.sort.recent.label": Record<never, never>;
   "library.sort.size.label": Record<never, never>;

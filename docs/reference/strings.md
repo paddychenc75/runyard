@@ -721,6 +721,9 @@
 | library.column.port.label | 端口 | Port | — |
 | library.column.retention.label | 自动清理 | Auto-clean | — |
 | library.column.size.label | 大小 | Size | — |
+| library.column.sort.hint | 按“{column}”排序 | Sort by {column} | column：排序依据的名称，如“名称”“大小”“最近使用” |
+| library.column.sortAscending.hint | {column}：改为升序 | {column}: switch to ascending | column：当前排序依据的名称 |
+| library.column.sortDescending.hint | {column}：改为降序 | {column}: switch to descending | column：当前排序依据的名称 |
 | library.column.status.label | 状态 | Status | — |
 | library.column.template.label | 模板 | Template | — |
 | library.creator.agent.label | 智能体 | Agent | — |
@@ -817,7 +820,9 @@
 | library.size.noDependencies.tooltip | 没有依赖目录 | No dependency folders | — |
 | library.size.rest.tooltip | 其余 {size} | Everything else {size} | size：总大小减去依赖大小 |
 | library.size.unreadable.tooltip | 有 {count, plural, other {# 处}}没有权限读取，没有计入 | {count, plural, one {# location} other {# locations}} could not be read and {count, plural, one {is} other {are}} not counted | count：没有权限读取而被跳过的文件夹个数 |
+| library.sort.ascending.label | {label} ↑ | {label} ↑ | label：排序依据的名称 |
 | library.sort.created.label | 创建时间 | Created | — |
+| library.sort.descending.label | {label} ↓ | {label} ↓ | label：排序依据的名称 |
 | library.sort.name.label | 名称 | Name | — |
 | library.sort.recent.label | 最近使用 | Last used | — |
 | library.sort.size.label | 大小 | Size | — |
