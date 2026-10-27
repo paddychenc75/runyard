@@ -3,6 +3,14 @@
 本文件由 release-please 根据 `main` 上的提交自动生成，**不要手改**（规则见 `CONTRIBUTING.md` 的“更新日志和发版”）。
 每个版本给负责人看的白话说明在 `docs/releases/<版本>.md`。
 
+## [0.1.1](https://github.com/paddychenc75/runyard/compare/v0.1.0...v0.1.1) (2026-10-27)
+
+
+### 修复
+
+* **deps:** 升级 dompurify 到 3.4.17 并删除两条临时放行 ([#579](https://github.com/paddychenc75/runyard/issues/579)) ([24f93fa](https://github.com/paddychenc75/runyard/commit/24f93fa45467d27dc151e30b790576dc1d755192))
+* **desktop:** 资源库表头排序提示、升降序切换与键盘焦点环 ([#576](https://github.com/paddychenc75/runyard/issues/576)) ([f121cd7](https://github.com/paddychenc75/runyard/commit/f121cd778cc742a43ea232424b9dfec540669aeb))
+
 ## 0.1.0 (2026-10-26)
 
 
