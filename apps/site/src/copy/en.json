@@ -69,6 +69,7 @@
   "downloadLead": "Free and open source. All you need is a Mac.",
   "version": "Runyard 0.1.0",
   "platform": "macOS 13 or later · Apple silicon (arm64) · .dmg",
+  "requires": "Requires a Mac with Apple silicon (M1 or newer). Intel Macs are not supported.",
   "dmgButton": "Download .dmg",
   "allReleases": "All releases and checksums",
   "changelog": "Changelog",

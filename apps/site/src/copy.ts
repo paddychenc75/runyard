@@ -49,6 +49,7 @@ export interface Copy {
   downloadLead: string;
   version: string;
   platform: string;
+  requires: string;
   dmgButton: string;
   allReleases: string;
   changelog: string;

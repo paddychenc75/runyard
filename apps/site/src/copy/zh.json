@@ -69,6 +69,7 @@
   "downloadLead": "免费、开源，只要一台 Mac。",
   "version": "Runyard 0.1.0",
   "platform": "macOS 13 及以上 · Apple 芯片（arm64）· .dmg",
+  "requires": "需要 Apple 芯片的 Mac（M1 及更新）；不支持 Intel 芯片的 Mac。",
   "dmgButton": "下载 .dmg",
   "allReleases": "所有版本和校验和",
   "changelog": "更新日志",
