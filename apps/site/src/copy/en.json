@@ -1,0 +1,98 @@
+{
+  "htmlLang": "en",
+  "title": "Runyard: a Mac app for keeping and running code samples",
+  "description": "Runyard is a Mac app for keeping and running code samples. Pick a template and get a playground with an editor, live preview and terminal. AI coding agents can create and run playgrounds from the command line.",
+  "nav": {
+    "features": "Features",
+    "agents": "Agents",
+    "download": "Download",
+    "github": "GitHub"
+  },
+  "switchLabel": "Language",
+  "eyebrow": "Free and open source · macOS",
+  "h1": "Pick a template.<br>It runs in a second.",
+  "lead": "Runyard is a Mac app for keeping and running code samples. Pick a template and get a playground with an editor, live preview and terminal. AI coding agents can create and run playgrounds from the command line.",
+  "cta": "Download for Mac",
+  "ctaSub": "Apple silicon · .dmg",
+  "more": "See the features",
+  "meta": "Version 0.1.0 · MIT licence · ",
+  "metaLink": "Source on GitHub",
+  "running": "Running",
+  "featuresTitle": "A home for your code samples",
+  "featuresLead": "Try a library, check a claim, build a demo. Start from a template, and find it again in the library next month.",
+  "features": [
+    {
+      "shot": "picker",
+      "alt": "Runyard's template picker listing eight templates, with React 19 + Vite selected",
+      "title": "Pick a template, running in a second",
+      "body": "Eight built-in templates: HTML, React 19, React 18, Vue 3, Node + TypeScript, Python, Go and Hono. They run on the toolchains already on your Mac."
+    },
+    {
+      "shot": "web",
+      "alt": "Runyard's web playground workspace: code on the left, live preview on the right, output below",
+      "title": "Edit code, see the result",
+      "body": "A Monaco editor that feels like VS Code. Pages refresh as you type, services keep running, and the terminal is right below."
+    },
+    {
+      "shot": "library",
+      "alt": "Runyard's library, with running playgrounds listed first",
+      "title": "A library you can find things in",
+      "body": "Every playground is a plain folder in ~/Runyard. Running ones come first. Add notes, turn on auto-clean, move the rest to the Trash."
+    },
+    {
+      "shot": "service",
+      "alt": "Runyard's service workspace: a request panel on the right showing 200 OK and the response",
+      "title": "A request panel for services",
+      "body": "When a service such as Hono is running, send requests and read responses right next to the code. No extra tool."
+    }
+  ],
+  "agentsTitle": "A command line for AI agents",
+  "agentsLead": "Coding agents such as Claude Code and Codex create and run a playground with one command. You see what they made, and what is still running, in the library.",
+  "termComment": "# teach your agent to use runyard (once)",
+  "termNote": "The command line comes with the app: add it to PATH in Settings; it is always available in the built-in terminal.",
+  "points": [
+    {
+      "title": "Create and run in one command",
+      "body": "<code>new --run --json</code> returns the path, the URL and where the logs are. Errors carry a code and the next command to run."
+    },
+    {
+      "title": "Install the skill once",
+      "body": "Run <code>runyard skill install</code>, or click Install in Settings, and Claude Code and Codex know how to use it."
+    },
+    {
+      "title": "See what agents did",
+      "body": "Playgrounds made by an agent carry a badge in the library, name the agent, and can be filtered by creator."
+    }
+  ],
+  "agentShotAlt": "A playground an agent just made: a library row with a Claude Code badge, and a notice that it was created and run",
+  "downloadTitle": "Download Runyard",
+  "downloadLead": "Free and open source. All you need is a Mac.",
+  "version": "Runyard 0.1.0",
+  "platform": "macOS 13 or later · Apple silicon (arm64) · .dmg",
+  "requires": "Requires a Mac with Apple silicon (M1 or newer). Intel Macs are not supported.",
+  "dmgButton": "Download .dmg",
+  "allReleases": "All releases and checksums",
+  "changelog": "Changelog",
+  "unsignedLead": "This build is not notarised by Apple yet, so macOS blocks it the first time you open it. Right-click → Open on older systems; on newer ones do the steps below once, and it opens normally from then on.",
+  "unsignedSteps": [
+    "Open the .dmg and drag Runyard to Applications first, then open it from Applications (opening it inside the .dmg causes problems)",
+    "Double-click Runyard. When macOS says it cannot verify the developer, click Done",
+    "Open System Settings → Privacy & Security, click Open Anyway under Security, then enter your login password"
+  ],
+  "olderMac": "macOS 14 and earlier: right-click Runyard in Applications and choose Open.",
+  "terminalLead": "If you like the command line, do it in one step:",
+  "copy": "Copy",
+  "copied": "Copied",
+  "everyUpdate": "Repeat this after every update. ",
+  "details": "Full details",
+  "toolchain": "Playgrounds run on the Node, Python and Go already on your Mac. If something is missing, the app tells you how to install it.",
+  "footerTagline": "The Mac app for keeping and running code samples",
+  "product": "Product",
+  "resources": "Resources",
+  "guide": "Guide",
+  "unsignedLink": "Opening an unsigned app",
+  "report": "Report an issue",
+  "network": "Network: once a day the app asks GitHub whether a new version exists, with no identifiers.",
+  "licence": "MIT licence · © 2026 Runyard contributors",
+  "followSystem": "Colours follow the system"
+}

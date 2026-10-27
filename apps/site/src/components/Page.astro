@@ -1,0 +1,237 @@
+---
+import "../styles/base.css";
+import "../styles/hero.css";
+import "../styles/sections.css";
+import "../styles/footer.css";
+import "../styles/responsive.css";
+import { copy, type Lang, links, unquarantine } from "../copy";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = copy[lang];
+const base = import.meta.env.BASE_URL;
+const home = lang === "zh" ? base : `${base}en/`;
+const other = { zh: `${base}en/`, en: base }[lang];
+const shot = (name: string, theme: "light" | "dark") =>
+  `${base}shots/${name}-${theme}-${lang}.webp`;
+
+// react19 模板真实的 src/App.tsx
+const code = [
+  '<span class="kw">import</span> <span class="pn">{</span> useState <span class="pn">}</span> <span class="kw">from</span> <span class="str">"react"</span><span class="pn">;</span>',
+  "",
+  '<span class="kw">export default function</span> <span class="fn">App</span><span class="pn">() {</span>',
+  '  <span class="kw">const</span> <span class="pn">[</span>count<span class="pn">,</span> setCount<span class="pn">] =</span> <span class="fn">useState</span><span class="pn">(</span><span class="nu">0</span><span class="pn">);</span>',
+  '  <span class="kw">return</span> <span class="pn">(</span>',
+  '    <span class="pn">&lt;</span><span class="tg">main</span><span class="pn">&gt;</span>',
+  '      <span class="pn">&lt;</span><span class="tg">h1</span><span class="pn">&gt;</span>React 19 + Vite<span class="pn">&lt;/</span><span class="tg">h1</span><span class="pn">&gt;</span>',
+  '      <span class="pn">&lt;</span><span class="tg">button</span> <span class="pr">onClick</span><span class="pn">={() =&gt;</span> <span class="fn">setCount</span><span class="pn">(</span>…<span class="pn">)}&gt;</span>',
+  '        Clicked <span class="pn">{</span>count<span class="pn">}</span> times',
+  '      <span class="pn">&lt;/</span><span class="tg">button</span><span class="pn">&gt;</span>',
+  '    <span class="pn">&lt;/</span><span class="tg">main</span><span class="pn">&gt;</span>',
+  '  <span class="pn">);</span>',
+  '<span class="pn">}</span>',
+];
+const icons = [
+  "M5 4l5 4-5 4M11 13h5",
+  "M9 2v10M5 8l4 4 4-4M3 15h12",
+  "M3 14l4-4 3 3 5-6M3 3v12h12",
+];
+---
+
+<!doctype html>
+<html lang={t.htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{t.title}</title>
+    <meta name="description" content={t.description} />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <link rel="alternate" hreflang="zh-CN" href={`https://paddychenc75.github.io${base}`} />
+    <link rel="alternate" hreflang="en" href={`https://paddychenc75.github.io${base}en/`} />
+    <script is:inline>document.documentElement.classList.add("js");</script>
+  </head>
+  <body>
+    <div class="wrap nav">
+      <a class="brand" href={home}>
+        <svg aria-hidden="true" width="30" height="30" viewBox="0 0 1024 1024"><rect x="100" y="100" width="824" height="824" rx="230" fill="var(--ic-paper)" stroke="var(--ic-stroke)" stroke-width="8"/><rect x="232" y="275" width="264" height="76" rx="38" fill="var(--ic-ink)"/><rect x="320" y="397" width="430" height="76" rx="38" fill="var(--ic-ink)"/><rect x="232" y="673" width="372" height="76" rx="38" fill="var(--ic-pend)"/><rect x="408" y="519" width="596" height="108" rx="54" fill="#FA6A1A"/></svg>
+        Runyard
+      </a>
+      <nav class="navlinks" aria-label="Main">
+        <a href="#features">{t.nav.features}</a>
+        <a href="#agents">{t.nav.agents}</a>
+        <a href="#download">{t.nav.download}</a>
+        <a href={links.repo}>{t.nav.github}</a>
+      </nav>
+      <div class="spacer"></div>
+      <span class="seg" role="group" aria-label={t.switchLabel}>
+        <a href={base} hreflang="zh-CN" aria-current={lang === "zh" ? "true" : undefined}>中</a>
+        <a href={`${base}en/`} hreflang="en" aria-current={lang === "en" ? "true" : undefined}>EN</a>
+      </span>
+      <a class="btn btn-p btn-sm" href="#download">{t.nav.download}</a>
+    </div>
+
+    <main>
+      <div class="wrap hero">
+        <div class="copy">
+          <span class="eyebrow">{t.eyebrow}</span>
+          <h1 set:html={t.h1} />
+          <p class="lead">{t.lead}</p>
+          <div class="ctas">
+            <a class="btn btn-p btn-lg" href={links.dmg}>
+              <svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8.5M4.5 7 8 10.5 11.5 7M2.5 13.5h11"/></svg>
+              {t.cta}<small>{t.ctaSub}</small>
+            </a>
+            <a class="btn btn-s btn-lg" href="#features">{t.more}</a>
+          </div>
+          <p class="meta">{t.meta}<a href={links.repo}>{t.metaLink}</a></p>
+        </div>
+
+        <div class="stage-box" id="box" aria-hidden="true">
+          <div class="stage" id="stage">
+            <div class="cmd" id="cmd"><span class="p">$</span><span id="typed">runyard new react19 --run</span><span class="caret" id="caret"></span></div>
+            <div class="card-code" id="card">
+              <div class="file">src/App.tsx</div>
+              <div class="code" id="code">
+                <div class="curbg" id="curbg"></div>
+                {code.map((html, i) => (
+                  <div class="ln"><span class="no">{i + 1}</span><span class="tx" set:html={html} /></div>
+                ))}
+              </div>
+            </div>
+            <div class="bar" id="bar"></div>
+            <div class="pv" id="pv">
+              <div class="pv-top"><span class="dot" id="dot"></span><b>{t.running}</b><span class="mono">127.0.0.1:7104</span></div>
+              <div class="pv-body"><div class="tpl"><main>
+                <h1>React 19 + Vite</h1>
+                <p>Edit src/App.tsx and save: the page updates without a reload.</p>
+                <button type="button" id="tplBtn" tabindex="-1">Clicked <span id="count">3</span> times</button>
+              </main></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section id="features" class="sec alt"><div class="wrap">
+        <div class="sec-head"><h2 class="h2">{t.featuresTitle}</h2><p class="lead">{t.featuresLead}</p></div>
+        <div class="grid2">
+          {t.features.map((f) => (
+            <div class="card feat">
+              <picture>
+                <source media="(prefers-color-scheme: dark)" srcset={shot(f.shot, "dark")} />
+                <img src={shot(f.shot, "light")} alt={f.alt} width="1600" height="1000" loading="lazy" decoding="async" />
+              </picture>
+              <div class="feat-text"><h3 class="h3">{f.title}</h3><p class="muted">{f.body}</p></div>
+            </div>
+          ))}
+        </div>
+      </div></section>
+
+      <section id="agents" class="sec"><div class="wrap">
+        <div class="sec-head"><h2 class="h2">{t.agentsTitle}</h2><p class="lead">{t.agentsLead}</p></div>
+        <div class="agents">
+          <div class="term-col">
+            <div class="term">
+              <div class="term-bar"><i></i><i></i><i></i><span>zsh</span></div>
+              <pre><span style="color: var(--color-text-secondary)">{t.termComment}</span>
+<span style="color: var(--color-text-secondary)">$</span> runyard skill install
+
+<span style="color: var(--color-text-secondary)">$</span> runyard new react19 pricing-table --run --json \
+    --note <span class="str">"pricing table layout test"</span>
+{"{"} <span class="pr">"name"</span>: <span class="str">"pricing-table"</span>, <span class="pr">"path"</span>: <span class="str">"/Users/me/Runyard/pricing-table"</span>,
+  <span class="pr">"template"</span>: <span class="str">"react19"</span>, <span class="pr">"created"</span>: <span class="kw">true</span>,
+  <span class="pr">"run"</span>: {"{"} <span class="pr">"state"</span>: <span class="str">"ready"</span>, <span class="pr">"url"</span>: <span class="str">"http://127.0.0.1:7104/"</span>,
+           <span class="pr">"readyMs"</span>: <span class="nu">1180</span>, <span class="pr">"owner"</span>: <span class="str">"cli"</span>, <span class="pn">…</span> {"}"} {"}"}</pre>
+            </div>
+            <p class="muted" style="font-size: 13px">{t.termNote}</p>
+          </div>
+          <div class="points">
+            {t.points.map((p, i) => (
+              <div class="point">
+                <span class="point-ic"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d={icons[i]} /></svg></span>
+                <div><h3 class="h3">{p.title}</h3><p class="muted" set:html={p.body} /></div>
+              </div>
+            ))}
+            <div class="agent-shot">
+              <picture>
+                <source media="(prefers-color-scheme: dark)" srcset={shot("agent", "dark")} />
+                <img src={shot("agent", "light")} alt={t.agentShotAlt} width="1600" height="356" loading="lazy" decoding="async" />
+              </picture>
+            </div>
+          </div>
+        </div>
+      </div></section>
+
+      <section id="download" class="sec alt"><div class="dl">
+        <div class="dl-head"><h2 class="h2">{t.downloadTitle}</h2><p class="lead">{t.downloadLead}</p></div>
+        <div class="card dl-card">
+          <div class="dl-row">
+            <svg aria-hidden="true" width="56" height="56" viewBox="0 0 1024 1024" style="flex: none"><rect x="100" y="100" width="824" height="824" rx="230" fill="var(--ic-paper)" stroke="var(--ic-stroke)" stroke-width="8"/><rect x="232" y="275" width="264" height="76" rx="38" fill="var(--ic-ink)"/><rect x="320" y="397" width="430" height="76" rx="38" fill="var(--ic-ink)"/><rect x="232" y="673" width="372" height="76" rx="38" fill="var(--ic-pend)"/><rect x="408" y="519" width="596" height="108" rx="54" fill="#FA6A1A"/></svg>
+            <div><h3 class="h3" style="font-size: 22px">{t.version}</h3><span class="muted">{t.platform}</span><span class="muted">{t.requires}</span></div>
+            <a class="btn btn-p btn-lg" href={links.dmg}>
+              <svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8.5M4.5 7 8 10.5 11.5 7M2.5 13.5h11"/></svg>
+              {t.dmgButton}
+            </a>
+          </div>
+          <div class="dl-links">
+            <a href={links.releases}>{t.allReleases}</a><span class="muted">·</span><a href={links.changelog}>{t.changelog}</a>
+          </div>
+          <p class="notice">{t.unsignedLead}</p>
+          <ol class="steps">
+            {t.unsignedSteps.map((s, i) => (<li><b>{i + 1}</b><span>{s}</span></li>))}
+          </ol>
+          <p class="sub-note">{t.olderMac}</p>
+          <div class="sub">
+            <span class="sub-note">{t.terminalLead}</span>
+            <div class="cmdline">
+              <code>{unquarantine}</code>
+              <button class="btn btn-s btn-sm" type="button" id="copy" data-text={unquarantine} data-done={t.copied}>{t.copy}</button>
+            </div>
+          </div>
+          <p class="sub-note">{t.everyUpdate}<a href={links.unsigned}>{t.details}</a></p>
+          <p class="sub-note">{t.toolchain}</p>
+        </div>
+      </div></section>
+    </main>
+
+    <footer class="foot"><div class="wrap foot-in">
+      <div class="foot-top">
+        <div class="foot-brand">
+          <a class="brand" href={home}>
+            <svg aria-hidden="true" width="30" height="30" viewBox="0 0 1024 1024"><rect x="100" y="100" width="824" height="824" rx="230" fill="var(--ic-paper)" stroke="var(--ic-stroke)" stroke-width="8"/><rect x="232" y="275" width="264" height="76" rx="38" fill="var(--ic-ink)"/><rect x="320" y="397" width="430" height="76" rx="38" fill="var(--ic-ink)"/><rect x="232" y="673" width="372" height="76" rx="38" fill="var(--ic-pend)"/><rect x="408" y="519" width="596" height="108" rx="54" fill="#FA6A1A"/></svg>
+            Runyard
+          </a>
+          <span class="muted" style="font-size: 13px">{t.footerTagline}</span>
+        </div>
+        <div class="foot-cols">
+          <div class="foot-col"><b>{t.product}</b><a href="#features">{t.nav.features}</a><a href="#agents">{t.nav.agents}</a><a href="#download">{t.nav.download}</a><a href={links.changelog}>{t.changelog}</a></div>
+          <div class="foot-col"><b>{t.resources}</b><a href={links.repo}>GitHub</a><a href={links.readme}>{t.guide}</a><a href={links.unsigned}>{t.unsignedLink}</a><a href={links.issues}>{t.report}</a></div>
+        </div>
+      </div>
+      <div class="foot-bot">
+        <span>{t.network}</span><span>{t.licence}</span>
+        <div class="foot-right">
+          <span class="seg" role="group" aria-label={t.switchLabel}>
+            <a href={base} hreflang="zh-CN" aria-current={lang === "zh" ? "true" : undefined}>中文</a>
+            <a href={`${base}en/`} hreflang="en" aria-current={lang === "en" ? "true" : undefined}>English</a>
+          </span>
+          <span>{t.followSystem}</span>
+        </div>
+      </div>
+    </div></footer>
+
+    <script src="../scripts/hero.js"></script>
+    <script is:inline>
+      document.getElementById("copy")?.addEventListener("click", (e) => {
+        const b = e.currentTarget;
+        navigator.clipboard?.writeText(b.dataset.text).then(() => {
+          const old = b.textContent;
+          b.textContent = b.dataset.done;
+          setTimeout(() => { b.textContent = old; }, 1600);
+        }, () => {});
+      });
+    </script>
+  </body>
+</html>

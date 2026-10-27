@@ -48,6 +48,10 @@
       ],
       "devOnly": ["@runyard/testing"]
     },
+    "@runyard/site": {
+      "path": "apps/site",
+      "allow": []
+    },
     "@runyard/desktop": {
       "path": "apps/desktop",
       "allow": [

@@ -1,0 +1,218 @@
+/* 颜色、阴影的名字与 packages/tokens/src/tokens.json 一致；--brand-run-line 取自图标渐变，只用在首屏动画的执行线上。
+   深浅色只靠系统设置（prefers-color-scheme），页面没有主题开关，也不需要脚本。 */
+:root {
+  color-scheme: light dark;
+  --color-bg-window: #ffffff;
+  --color-bg-workspace: #f5f5f7;
+  --color-bg-card: #ffffff;
+  --color-bg-inset: #f5f5f7;
+  --color-bg-chip: #f0f0f3;
+  --color-fill-neutral: rgba(118, 118, 128, 0.14);
+  --color-text-primary: #1d1d1f;
+  --color-text-secondary-strong: #3a3a3c;
+  --color-text-secondary: #6e6e73;
+  --color-text-on-accent: #ffffff;
+  --color-line-hairline: rgba(0, 0, 0, 0.06);
+  --color-line-strong: rgba(0, 0, 0, 0.1);
+  --color-fill-accent: #0071e3;
+  --color-text-link: #0071e3;
+  --color-fill-accent-tint: rgba(0, 113, 227, 0.08);
+  --color-status-running-mark: #28a745;
+  --color-status-running-text: #1b7a34;
+  --color-code-plain: #1d1d1f;
+  --color-code-keyword: #ad3da4;
+  --color-code-string: #b3261e;
+  --color-code-function: #0f68a0;
+  --color-code-number: #1c00cf;
+  --color-code-tag: #1b7a34;
+  --color-code-property: #0f68a0;
+  --color-code-punctuation: #6e6e73;
+  --color-code-line-number: #6e6e73;
+  --color-code-current-line: rgba(0, 113, 227, 0.07);
+  --shadow-floating: 0 1px 2px rgba(15, 23, 42, 0.05), 0 8px 24px rgba(15, 23, 42, 0.09);
+  --shadow-overlay: 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 16px 40px rgba(15, 23, 42, 0.2);
+  --brand-run-line: linear-gradient(90deg, #e8451a 0%, #fa6a1a 60%, #ff9a22 86%, #ffc94a 100%);
+  --term-bg: #f5f5f7;
+  --ic-paper: #fffefc;
+  --ic-stroke: rgba(110, 99, 80, 0.3);
+  --ic-ink: #24232b;
+  --ic-pend: #c4c1c6;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg-window: #1c1c1e;
+    --color-bg-workspace: #161618;
+    --color-bg-card: #1e1e21;
+    --color-bg-inset: rgba(0, 0, 0, 0.35);
+    --color-bg-chip: rgba(255, 255, 255, 0.1);
+    --color-fill-neutral: rgba(118, 118, 128, 0.24);
+    --color-text-primary: #f5f5f7;
+    --color-text-secondary-strong: #d1d1d6;
+    --color-text-secondary: #a1a1a6;
+    --color-line-hairline: rgba(255, 255, 255, 0.08);
+    --color-line-strong: rgba(255, 255, 255, 0.14);
+    --color-text-link: #4da3ff;
+    --color-fill-accent-tint: rgba(10, 132, 255, 0.32);
+    --color-status-running-mark: #30d158;
+    --color-status-running-text: #30d158;
+    --color-code-plain: #f5f5f7;
+    --color-code-keyword: #ff7ab2;
+    --color-code-string: #ff8170;
+    --color-code-function: #6bdfff;
+    --color-code-number: #d9c97c;
+    --color-code-tag: #4eb0cc;
+    --color-code-property: #6bdfff;
+    --color-code-punctuation: #a1a1a6;
+    --color-code-line-number: #8e8e93;
+    --color-code-current-line: rgba(255, 255, 255, 0.06);
+    --shadow-floating: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 28px rgba(0, 0, 0, 0.42);
+    --shadow-overlay: 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 16px 40px rgba(0, 0, 0, 0.5);
+    --brand-run-line: linear-gradient(90deg, #ea4a1a 0%, #ff7a1a 55%, #ffa62a 85%, #ffda6e 100%);
+    --term-bg: #1e1e21;
+    --ic-paper: #2a2826;
+    --ic-stroke: rgba(255, 255, 255, 0.16);
+    --ic-ink: #d6d1c8;
+    --ic-pend: #5f5c58;
+  }
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 72px;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+body {
+  margin: 0;
+  background: var(--color-bg-window);
+  color: var(--color-text-primary);
+  font-family: -apple-system, "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+a {
+  color: var(--color-text-link);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-fill-accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+p,
+h1,
+h2,
+h3 {
+  margin: 0;
+}
+code,
+.mono {
+  font-family: "SF Mono", Menlo, monospace;
+}
+.muted {
+  color: var(--color-text-secondary);
+}
+.wrap {
+  width: min(1120px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
+.nav {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  border-bottom: 1px solid var(--color-line-hairline);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: -0.2px;
+  color: var(--color-text-primary);
+}
+.brand:hover {
+  text-decoration: none;
+}
+.navlinks {
+  display: flex;
+  gap: 26px;
+  margin-left: 16px;
+  flex: 1;
+}
+.navlinks a {
+  color: var(--color-text-secondary-strong);
+  font-size: 14px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 999px;
+  font-weight: 600;
+  white-space: nowrap;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+.btn:hover {
+  text-decoration: none;
+  filter: brightness(1.06);
+}
+.btn-p {
+  background: var(--color-fill-accent);
+  color: var(--color-text-on-accent);
+}
+.btn-s {
+  background: var(--color-fill-neutral);
+  color: var(--color-text-primary);
+}
+.btn-sm {
+  height: 32px;
+  padding: 0 14px;
+  font-size: 13px;
+}
+.btn-lg {
+  height: 48px;
+  padding: 0 22px;
+  font-size: 16px;
+}
+.btn small {
+  font-weight: 400;
+  opacity: 0.85;
+  font-size: 13px;
+}
+.seg {
+  display: inline-flex;
+  padding: 2px;
+  border-radius: 999px;
+  background: var(--color-fill-neutral);
+  font-size: 12px;
+}
+.seg a {
+  padding: 3px 10px;
+  border-radius: 999px;
+  color: var(--color-text-secondary-strong);
+}
+.seg a:hover {
+  text-decoration: none;
+}
+.seg [aria-current] {
+  background: var(--color-bg-card);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.14);
+}

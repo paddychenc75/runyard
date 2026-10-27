@@ -1,0 +1,264 @@
+.hero {
+  padding: 88px 0 104px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+.copy {
+  width: 500px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.eyebrow {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: var(--color-bg-chip);
+  color: var(--color-text-secondary-strong);
+  font-size: 13px;
+  font-weight: 500;
+}
+h1 {
+  font-size: 60px;
+  line-height: 1.08;
+  font-weight: 700;
+  letter-spacing: -1.2px;
+}
+:root[lang="en"] h1 {
+  font-size: 52px;
+}
+.lead {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+.ctas {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.meta {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+/* 舞台：固定 560×520 画，窄屏时整体缩放（见 hero 脚本） */
+.stage-box {
+  flex: none;
+  width: 560px;
+  height: 520px;
+  position: relative;
+}
+.stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 560px;
+  height: 520px;
+  transform-origin: 0 0;
+}
+.js .stage {
+  opacity: 0;
+}
+.cmd {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: var(--color-bg-card);
+  box-shadow: var(--shadow-floating);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font:
+    13px "SF Mono",
+    Menlo,
+    monospace;
+  white-space: nowrap;
+}
+.cmd .p {
+  color: var(--color-text-secondary);
+}
+.caret {
+  display: inline-block;
+  width: 7px;
+  height: 15px;
+  margin-left: 1px;
+  background: var(--color-text-secondary);
+  vertical-align: -3px;
+  opacity: 0;
+}
+.card-code {
+  position: absolute;
+  left: 0;
+  top: 64px;
+  width: 470px;
+  height: 416px;
+  border-radius: 28px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-line-hairline);
+  box-shadow: var(--shadow-floating);
+  overflow: hidden;
+}
+.file {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--color-line-hairline);
+  font:
+    500 12px "SF Mono",
+    Menlo,
+    monospace;
+}
+.code {
+  font:
+    13px / 24px "SF Mono",
+    Menlo,
+    monospace;
+  color: var(--color-code-plain);
+  position: relative;
+}
+.ln {
+  display: flex;
+  height: 24px;
+  align-items: center;
+}
+.ln .no {
+  width: 36px;
+  flex: none;
+  text-align: right;
+  padding-right: 12px;
+  color: var(--color-code-line-number);
+}
+.ln .tx {
+  white-space: pre;
+}
+.curbg {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 24px;
+  top: 0;
+  background: var(--color-code-current-line);
+  transform: translateY(168px);
+}
+.kw {
+  color: var(--color-code-keyword);
+}
+.str {
+  color: var(--color-code-string);
+}
+.fn {
+  color: var(--color-code-function);
+}
+.tg {
+  color: var(--color-code-tag);
+}
+.pn {
+  color: var(--color-code-punctuation);
+}
+.pr {
+  color: var(--color-code-property);
+}
+.nu {
+  color: var(--color-code-number);
+}
+.bar {
+  position: absolute;
+  left: 48px;
+  top: 0;
+  width: 478px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--brand-run-line);
+  transform-origin: 0 50%;
+  transform: translateY(293px);
+}
+.pv {
+  position: absolute;
+  right: -8px;
+  bottom: 0;
+  width: 268px;
+  height: 210px;
+  border-radius: 16px;
+  background: var(--color-bg-card);
+  box-shadow: var(--shadow-overlay);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.pv-top {
+  height: 34px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--color-line-hairline);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--color-status-running-mark);
+  flex: none;
+}
+.pv-top b {
+  color: var(--color-status-running-text);
+  font-weight: 600;
+}
+.pv-top .mono {
+  color: var(--color-text-secondary);
+}
+/* 预览里的页面：照 templates/builtin/react19 的 App.tsx 与 App.css 原样还原，按 0.6 倍缩小，铺满预览卡 */
+.pv-body {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+.tpl {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 447px;
+  height: 294px;
+  transform: scale(0.6);
+  transform-origin: 0 0;
+  background: Canvas;
+  color: CanvasText;
+  font-family: system-ui, sans-serif;
+  font-size: 16px;
+  line-height: normal;
+  padding: 1px 8px;
+}
+.tpl main {
+  max-width: 40rem;
+  margin: 4rem auto;
+  padding: 0 1rem;
+}
+.tpl h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+  letter-spacing: normal;
+  line-height: normal;
+  font-weight: bold;
+}
+.tpl p {
+  margin: 1em 0;
+}
+.tpl button {
+  font: inherit;
+  padding: 0.4rem 0.9rem;
+}

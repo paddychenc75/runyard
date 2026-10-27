@@ -26,6 +26,7 @@ catalog:
   "@xterm/addon-search": 0.16.0
   "@xterm/addon-web-links": 0.12.0
   "@xterm/xterm": 6.0.0
+  astro: 7.3.8
   chokidar: 5.0.0
   electron: 44.5.1
   electron-builder: 26.17.0
