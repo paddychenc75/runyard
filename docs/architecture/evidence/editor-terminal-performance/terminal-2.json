@@ -1,0 +1,1051 @@
+{
+  "sample": 2,
+  "producer": {
+    "targetPerSecond": 30000,
+    "durationMs": 10000,
+    "elapsedMs": 10000.159834,
+    "lines": 299999,
+    "bytes": 16088841,
+    "buckets": [29969, 29990, 30035, 29994, 30008, 30002, 29978, 30011, 29995, 30017],
+    "backpressure": 0,
+    "writeWaitMs": 798.9178890000894
+  },
+  "renderer": {
+    "last": 299999,
+    "receivedLines": 299999,
+    "receivedBytes": 16389333,
+    "maxFrameGap": 10.5,
+    "longTasks": [],
+    "visibleRows": 7,
+    "finalMarkerVisible": true
+  },
+  "interactions": [
+    {
+      "step": 1,
+      "switched": {
+        "domMs": 8.400000095367432,
+        "paintedMs": 21.5,
+        "observed": ["/* PERF_STYLE */"],
+        "longTasks": [],
+        "states": [
+          {
+            "phase": "input",
+            "at": 3195.5999999046326,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "dom",
+            "at": 3203.9000000953674,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "frames",
+            "at": 3217,
+            "visibility": "visible",
+            "focused": true
+          }
+        ],
+        "frames": [
+          {
+            "stamp": 3209,
+            "callback": 3209.5
+          },
+          {
+            "stamp": 3216.7,
+            "callback": 3217
+          }
+        ],
+        "animations": [
+          {
+            "playState": "running",
+            "currentTime": 16.46599989458908
+          },
+          {
+            "playState": "running",
+            "currentTime": 16.46599989458908
+          },
+          {
+            "playState": "running",
+            "currentTime": 16.46599989458908
+          },
+          {
+            "playState": "running",
+            "currentTime": 16.46599989458908
+          },
+          {
+            "playState": "running",
+            "currentTime": 16.46599989458908
+          }
+        ]
+      },
+      "switchUpperMs": 45.152292000000216,
+      "edited": {
+        "domMs": 35.80000019073486,
+        "paintedMs": 43.5,
+        "observed": ["/*P1*/* PERF_STYLE */"],
+        "longTasks": [],
+        "states": [
+          {
+            "phase": "input",
+            "at": 3223.0999999046326,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "dom",
+            "at": 3258.9000000953674,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "frames",
+            "at": 3266.5999999046326,
+            "visibility": "visible",
+            "focused": true
+          }
+        ],
+        "frames": [
+          {
+            "stamp": 3259.1,
+            "callback": 3259.7000000476837
+          },
+          {
+            "stamp": 3266.4,
+            "callback": 3266.5999999046326
+          }
+        ],
+        "animations": [
+          {
+            "playState": "running",
+            "currentTime": 66.16599989458916
+          },
+          {
+            "playState": "running",
+            "currentTime": 66.16599989458916
+          },
+          {
+            "playState": "running",
+            "currentTime": 66.16599989458916
+          },
+          {
+            "playState": "running",
+            "currentTime": 66.16599989458916
+          }
+        ]
+      },
+      "inputUpperMs": 45.14908400000013
+    },
+    {
+      "step": 2,
+      "switched": {
+        "domMs": 7.400000095367432,
+        "paintedMs": 20.600000143051147,
+        "observed": ["<h1>PERF_INDEX</h1>"],
+        "longTasks": [],
+        "states": [
+          {
+            "phase": "input",
+            "at": 3396.5999999046326,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "dom",
+            "at": 3404,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "frames",
+            "at": 3417.2000000476837,
+            "visibility": "visible",
+            "focused": true
+          }
+        ],
+        "frames": [
+          {
+            "stamp": 3408.7,
+            "callback": 3409
+          },
+          {
+            "stamp": 3417,
+            "callback": 3417.2000000476837
+          }
+        ],
+        "animations": [
+          {
+            "playState": "running",
+            "currentTime": 24.00000000000002
+          },
+          {
+            "playState": "running",
+            "currentTime": 15.800000000000036
+          },
+          {
+            "playState": "running",
+            "currentTime": 15.800000000000036
+          },
+          {
+            "playState": "running",
+            "currentTime": 15.800000000000036
+          },
+          {
+            "playState": "running",
+            "currentTime": 216.76599989458902
+          }
+        ]
+      },
+      "switchUpperMs": 43.69550000000072,
+      "edited": {
+        "domMs": 19.5,
+        "paintedMs": 37.30000019073486,
+        "observed": ["/*P2*/<h1>PERF_INDEX</h1>"],
+        "longTasks": [],
+        "states": [
+          {
+            "phase": "input",
+            "at": 3422.5999999046326,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "dom",
+            "at": 3442.0999999046326,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "frames",
+            "at": 3459.9000000953674,
+            "visibility": "visible",
+            "focused": true
+          }
+        ],
+        "frames": [
+          {
+            "stamp": 3451.1,
+            "callback": 3451.2999999523163
+          },
+          {
+            "stamp": 3459.7,
+            "callback": 3459.9000000953674
+          }
+        ],
+        "animations": [
+          {
+            "playState": "running",
+            "currentTime": 66.70000000000043
+          },
+          {
+            "playState": "running",
+            "currentTime": 58.50000000000044
+          },
+          {
+            "playState": "running",
+            "currentTime": 58.50000000000044
+          },
+          {
+            "playState": "running",
+            "currentTime": 259.4659998945894
+          }
+        ]
+      },
+      "inputUpperMs": 38.92000000000007
+    },
+    {
+      "step": 3,
+      "switched": {
+        "domMs": 9,
+        "paintedMs": 19.799999952316284,
+        "observed": ["/*P1*//* PERF_STYLE */"],
+        "longTasks": [],
+        "states": [
+          {
+            "phase": "input",
+            "at": 5347.799999952316,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "dom",
+            "at": 5356.799999952316,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "frames",
+            "at": 5367.599999904633,
+            "visibility": "visible",
+            "focused": true
+          }
+        ],
+        "frames": [
+          {
+            "stamp": 5358.1,
+            "callback": 5358.299999952316
+          },
+          {
+            "stamp": 5367.3,
+            "callback": 5367.599999904633
+          }
+        ],
+        "animations": [
+          {
+            "playState": "running",
+            "currentTime": 9.204999967664662
+          },
+          {
+            "playState": "running",
+            "currentTime": 9.204999967664662
+          },
+          {
+            "playState": "running",
+            "currentTime": 9.204999967664662
+          },
+          {
+            "playState": "running",
+            "currentTime": 9.204999967664662
+          }
+        ]
+      },
+      "switchUpperMs": 41.11095800000021,
+      "edited": {
+        "domMs": 19.59999990463257,
+        "paintedMs": 36.89999985694885,
+        "observed": ["/*P1*//*P3*//* PERF_STYLE */"],
+        "longTasks": [],
+        "states": [
+          {
+            "phase": "input",
+            "at": 5372.900000095367,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "dom",
+            "at": 5392.5,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "frames",
+            "at": 5409.799999952316,
+            "visibility": "visible",
+            "focused": true
+          }
+        ],
+        "frames": [
+          {
+            "stamp": 5400.7,
+            "callback": 5401
+          },
+          {
+            "stamp": 5409.5,
+            "callback": 5409.799999952316
+          }
+        ],
+        "animations": [
+          {
+            "playState": "running",
+            "currentTime": 51.4049999676649
+          },
+          {
+            "playState": "running",
+            "currentTime": 51.4049999676649
+          },
+          {
+            "playState": "running",
+            "currentTime": 51.4049999676649
+          },
+          {
+            "playState": "running",
+            "currentTime": 51.4049999676649
+          }
+        ]
+      },
+      "inputUpperMs": 38.6001669999996
+    },
+    {
+      "step": 4,
+      "switched": {
+        "domMs": 7.200000047683716,
+        "paintedMs": 22.299999952316284,
+        "observed": ["/*P2*/<h1>PERF_INDEX</h1>"],
+        "longTasks": [],
+        "states": [
+          {
+            "phase": "input",
+            "at": 5437.299999952316,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "dom",
+            "at": 5444.400000095367,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "frames",
+            "at": 5459.5,
+            "visibility": "visible",
+            "focused": true
+          }
+        ],
+        "frames": [
+          {
+            "stamp": 5450.4,
+            "callback": 5450.799999952316
+          },
+          {
+            "stamp": 5459.2,
+            "callback": 5459.5
+          }
+        ],
+        "animations": [
+          {
+            "playState": "running",
+            "currentTime": 25.300000000000544
+          },
+          {
+            "playState": "running",
+            "currentTime": 17.700000000000493
+          },
+          {
+            "playState": "running",
+            "currentTime": 17.700000000000493
+          },
+          {
+            "playState": "running",
+            "currentTime": 17.700000000000493
+          }
+        ]
+      },
+      "switchUpperMs": 44.108250000000226,
+      "edited": {
+        "domMs": 25.5,
+        "paintedMs": 41.90000009536743,
+        "observed": ["/*P2*//*P4*/<h1>PERF_INDEX</h1>"],
+        "longTasks": [],
+        "states": [
+          {
+            "phase": "input",
+            "at": 5467.5,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "dom",
+            "at": 5493,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "frames",
+            "at": 5509.400000095367,
+            "visibility": "visible",
+            "focused": true
+          }
+        ],
+        "frames": [
+          {
+            "stamp": 5501.1,
+            "callback": 5501.5
+          },
+          {
+            "stamp": 5509.2,
+            "callback": 5509.400000095367
+          }
+        ],
+        "animations": [
+          {
+            "playState": "running",
+            "currentTime": 75.30000000000037
+          },
+          {
+            "playState": "running",
+            "currentTime": 67.70000000000032
+          },
+          {
+            "playState": "running",
+            "currentTime": 67.70000000000032
+          },
+          {
+            "playState": "running",
+            "currentTime": 67.70000000000032
+          }
+        ]
+      },
+      "inputUpperMs": 43.513457999999446
+    },
+    {
+      "step": 5,
+      "switched": {
+        "domMs": 6.599999904632568,
+        "paintedMs": 23.199999809265137,
+        "observed": ["/*P1*//*P3*//* PERF_STYLE */"],
+        "longTasks": [],
+        "states": [
+          {
+            "phase": "input",
+            "at": 6395.400000095367,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "dom",
+            "at": 6402,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "frames",
+            "at": 6418.599999904633,
+            "visibility": "visible",
+            "focused": true
+          }
+        ],
+        "frames": [
+          {
+            "stamp": 6408.5,
+            "callback": 6408.900000095367
+          },
+          {
+            "stamp": 6418.3,
+            "callback": 6418.599999904633
+          }
+        ],
+        "animations": [
+          {
+            "playState": "running",
+            "currentTime": 9.735000067577104
+          },
+          {
+            "playState": "running",
+            "currentTime": 9.735000067577104
+          },
+          {
+            "playState": "running",
+            "currentTime": 9.735000067577104
+          },
+          {
+            "playState": "running",
+            "currentTime": 9.735000067577104
+          }
+        ]
+      },
+      "switchUpperMs": 45.438874999999825,
+      "edited": {
+        "domMs": 11.700000047683716,
+        "paintedMs": 28.700000047683716,
+        "observed": ["/*P1*//*P3*//*P5*/* PERF_STYLE */"],
+        "longTasks": [],
+        "states": [
+          {
+            "phase": "input",
+            "at": 6423.099999904633,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "dom",
+            "at": 6434.799999952316,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "frames",
+            "at": 6451.799999952316,
+            "visibility": "visible",
+            "focused": true
+          }
+        ],
+        "frames": [
+          {
+            "stamp": 6441.9,
+            "callback": 6442
+          },
+          {
+            "stamp": 6451.6,
+            "callback": 6451.799999952316
+          }
+        ],
+        "animations": [
+          {
+            "playState": "running",
+            "currentTime": 43.03500006757677
+          },
+          {
+            "playState": "running",
+            "currentTime": 43.03500006757677
+          },
+          {
+            "playState": "running",
+            "currentTime": 43.03500006757677
+          },
+          {
+            "playState": "running",
+            "currentTime": 43.03500006757677
+          }
+        ]
+      },
+      "inputUpperMs": 30.406875000000582
+    },
+    {
+      "step": 6,
+      "switched": {
+        "domMs": 6.8999998569488525,
+        "paintedMs": 20.700000047683716,
+        "observed": ["/*P2*//*P4*/<h1>PERF_INDEX</h1>"],
+        "longTasks": [],
+        "states": [
+          {
+            "phase": "input",
+            "at": 8338.200000047684,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "dom",
+            "at": 8345.099999904633,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "frames",
+            "at": 8358.900000095367,
+            "visibility": "visible",
+            "focused": true
+          }
+        ],
+        "frames": [
+          {
+            "stamp": 8350.3,
+            "callback": 8350.599999904633
+          },
+          {
+            "stamp": 8358.3,
+            "callback": 8358.900000095367
+          }
+        ],
+        "animations": [
+          {
+            "playState": "running",
+            "currentTime": 7.994999912753542
+          },
+          {
+            "playState": "running",
+            "currentTime": 7.994999912753542
+          },
+          {
+            "playState": "running",
+            "currentTime": 7.994999912753542
+          },
+          {
+            "playState": "running",
+            "currentTime": 7.994999912753542
+          }
+        ]
+      },
+      "switchUpperMs": 41.98054199999933,
+      "edited": {
+        "domMs": 22.200000047683716,
+        "paintedMs": 37.90000009536743,
+        "observed": ["/*P2*//*P4*//*P6*/<h1>PERF_INDEX</h1>"],
+        "longTasks": [],
+        "states": [
+          {
+            "phase": "input",
+            "at": 8363.799999952316,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "dom",
+            "at": 8386,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "frames",
+            "at": 8401.700000047684,
+            "visibility": "visible",
+            "focused": true
+          }
+        ],
+        "frames": [
+          {
+            "stamp": 8393,
+            "callback": 8393.200000047684
+          },
+          {
+            "stamp": 8401.3,
+            "callback": 8401.700000047684
+          }
+        ],
+        "animations": [
+          {
+            "playState": "running",
+            "currentTime": 50.99499991275458
+          },
+          {
+            "playState": "running",
+            "currentTime": 50.99499991275458
+          },
+          {
+            "playState": "running",
+            "currentTime": 50.99499991275458
+          },
+          {
+            "playState": "running",
+            "currentTime": 50.99499991275458
+          }
+        ]
+      },
+      "inputUpperMs": 39.44074999999975
+    },
+    {
+      "step": 7,
+      "switched": {
+        "domMs": 7,
+        "paintedMs": 21.40000009536743,
+        "observed": ["/*P1*//*P3*//*P5*//* PERF_STYLE */"],
+        "longTasks": [],
+        "states": [
+          {
+            "phase": "input",
+            "at": 8420.299999952316,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "dom",
+            "at": 8427.299999952316,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "frames",
+            "at": 8441.700000047684,
+            "visibility": "visible",
+            "focused": true
+          }
+        ],
+        "frames": [
+          {
+            "stamp": 8434.7,
+            "callback": 8435.099999904633
+          },
+          {
+            "stamp": 8441.4,
+            "callback": 8441.700000047684
+          }
+        ],
+        "animations": [
+          {
+            "playState": "running",
+            "currentTime": 24.600000000001288
+          },
+          {
+            "playState": "running",
+            "currentTime": 15.200000000000102
+          },
+          {
+            "playState": "running",
+            "currentTime": 15.200000000000102
+          },
+          {
+            "playState": "running",
+            "currentTime": 15.200000000000102
+          }
+        ]
+      },
+      "switchUpperMs": 37.788958000001,
+      "edited": {
+        "domMs": 12.899999856948853,
+        "paintedMs": 30.200000047683716,
+        "observed": ["/*P1*//*P3*//*P5*//*P7*/* PERF_STYLE */"],
+        "longTasks": [],
+        "states": [
+          {
+            "phase": "input",
+            "at": 8446.200000047684,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "dom",
+            "at": 8459.099999904633,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "frames",
+            "at": 8476.400000095367,
+            "visibility": "visible",
+            "focused": true
+          }
+        ],
+        "frames": [
+          {
+            "stamp": 8468.3,
+            "callback": 8468.5
+          },
+          {
+            "stamp": 8476.3,
+            "callback": 8476.400000095367
+          }
+        ],
+        "animations": [
+          {
+            "playState": "running",
+            "currentTime": 59.50000000000166
+          },
+          {
+            "playState": "running",
+            "currentTime": 50.10000000000048
+          },
+          {
+            "playState": "running",
+            "currentTime": 50.10000000000048
+          },
+          {
+            "playState": "running",
+            "currentTime": 50.10000000000048
+          }
+        ]
+      },
+      "inputUpperMs": 31.96166599999924
+    },
+    {
+      "step": 8,
+      "switched": {
+        "domMs": 7.700000047683716,
+        "paintedMs": 21.700000047683716,
+        "observed": ["/*P2*//*P4*//*P6*/<h1>PERF_INDEX</h1>"],
+        "longTasks": [],
+        "states": [
+          {
+            "phase": "input",
+            "at": 9354.099999904633,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "dom",
+            "at": 9361.799999952316,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "frames",
+            "at": 9375.799999952316,
+            "visibility": "visible",
+            "focused": true
+          }
+        ],
+        "frames": [
+          {
+            "stamp": 9366.4,
+            "callback": 9366.599999904633
+          },
+          {
+            "stamp": 9375.5,
+            "callback": 9375.799999952316
+          }
+        ],
+        "animations": [
+          {
+            "playState": "running",
+            "currentTime": 9.134000085294858
+          },
+          {
+            "playState": "running",
+            "currentTime": 9.134000085294858
+          },
+          {
+            "playState": "running",
+            "currentTime": 9.134000085294858
+          },
+          {
+            "playState": "running",
+            "currentTime": 9.134000085294858
+          }
+        ]
+      },
+      "switchUpperMs": 37.71295800000007,
+      "edited": {
+        "domMs": 21.199999809265137,
+        "paintedMs": 36.59999990463257,
+        "observed": ["/*P2*//*P4*//*P6*//*P8*/<h1>PERF_INDEX</h1>"],
+        "longTasks": [],
+        "states": [
+          {
+            "phase": "input",
+            "at": 9380.900000095367,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "dom",
+            "at": 9402.099999904633,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "frames",
+            "at": 9417.5,
+            "visibility": "visible",
+            "focused": true
+          }
+        ],
+        "frames": [
+          {
+            "stamp": 9408.1,
+            "callback": 9408.299999952316
+          },
+          {
+            "stamp": 9417.4,
+            "callback": 9417.5
+          }
+        ],
+        "animations": [
+          {
+            "playState": "running",
+            "currentTime": 51.034000085294906
+          },
+          {
+            "playState": "running",
+            "currentTime": 51.034000085294906
+          },
+          {
+            "playState": "running",
+            "currentTime": 51.034000085294906
+          },
+          {
+            "playState": "running",
+            "currentTime": 51.034000085294906
+          }
+        ]
+      },
+      "inputUpperMs": 38.55366699999831
+    },
+    {
+      "step": 9,
+      "switched": {
+        "domMs": 6.799999952316284,
+        "paintedMs": 20.299999952316284,
+        "observed": ["/*P1*//*P3*//*P5*//*P7*//* PERF_STYLE */"],
+        "longTasks": [],
+        "states": [
+          {
+            "phase": "input",
+            "at": 11305.200000047684,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "dom",
+            "at": 11312,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "frames",
+            "at": 11325.5,
+            "visibility": "visible",
+            "focused": true
+          }
+        ],
+        "frames": [
+          {
+            "stamp": 11317.3,
+            "callback": 11317.5
+          },
+          {
+            "stamp": 11325,
+            "callback": 11325.5
+          }
+        ],
+        "animations": [
+          {
+            "playState": "running",
+            "currentTime": 7.68200010061193
+          },
+          {
+            "playState": "running",
+            "currentTime": 7.68200010061193
+          },
+          {
+            "playState": "running",
+            "currentTime": 7.68200010061193
+          },
+          {
+            "playState": "running",
+            "currentTime": 7.68200010061193
+          }
+        ]
+      },
+      "switchUpperMs": 44.56516600000032,
+      "edited": {
+        "domMs": 13.200000047683716,
+        "paintedMs": 29.5,
+        "observed": ["/*P1*//*P3*//*P5*//*P7*//*P9*/* PERF_STYLE */"],
+        "longTasks": [],
+        "states": [
+          {
+            "phase": "input",
+            "at": 11330.599999904633,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "dom",
+            "at": 11343.799999952316,
+            "visibility": "visible",
+            "focused": true
+          },
+          {
+            "phase": "frames",
+            "at": 11360.099999904633,
+            "visibility": "visible",
+            "focused": true
+          }
+        ],
+        "frames": [
+          {
+            "stamp": 11350.9,
+            "callback": 11351.099999904633
+          },
+          {
+            "stamp": 11359.7,
+            "callback": 11360.099999904633
+          }
+        ],
+        "animations": [
+          {
+            "playState": "running",
+            "currentTime": 42.38200010061277
+          },
+          {
+            "playState": "running",
+            "currentTime": 42.38200010061277
+          },
+          {
+            "playState": "running",
+            "currentTime": 42.38200010061277
+          },
+          {
+            "playState": "running",
+            "currentTime": 42.38200010061277
+          }
+        ]
+      },
+      "inputUpperMs": 31.171707999999853
+    }
+  ],
+  "retainedLines": 9999,
+  "archiveNote": "移除可见尾部全文中的本机用户名与主机名；保留完成标记是否可见及全部数值。"
+}

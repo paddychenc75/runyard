@@ -1,0 +1,73 @@
+{
+  "instances": [
+    {
+      "sample": 1,
+      "openDOM": 0.5,
+      "openFrames": 6.700000047683716,
+      "openUpper": 13.090458000000126,
+      "firstDOM": 11.200000047683716,
+      "firstFrames": 17.5,
+      "warmMin": 14.099999904632568,
+      "warmMax": 18.100000143051147,
+      "focusAll": true,
+      "frame1Max": 1.5,
+      "frame2Max": 6.400000095367432
+    },
+    {
+      "sample": 2,
+      "openDOM": 0.5,
+      "openFrames": 8.5,
+      "openUpper": 14.735042000000249,
+      "firstDOM": 10.200000047683716,
+      "firstFrames": 16.700000047683716,
+      "warmMin": 14.399999856948853,
+      "warmMax": 19,
+      "focusAll": true,
+      "frame1Max": 1.7999999523162842,
+      "frame2Max": 7.200000047683716
+    },
+    {
+      "sample": 3,
+      "openDOM": 0.5,
+      "openFrames": 6.799999952316284,
+      "openUpper": 13.168791999998575,
+      "firstDOM": 9.900000095367432,
+      "firstFrames": 16.200000047683716,
+      "warmMin": 13.899999856948853,
+      "warmMax": 18.799999952316284,
+      "focusAll": true,
+      "frame1Max": 1.0999999046325684,
+      "frame2Max": 7.299999952316284
+    },
+    {
+      "sample": 4,
+      "openDOM": 1,
+      "openFrames": 8.799999952316284,
+      "openUpper": 14.574333000000479,
+      "firstDOM": 10.299999952316284,
+      "firstFrames": 16.399999856948853,
+      "warmMin": 13.399999856948853,
+      "warmMax": 19.09999990463257,
+      "focusAll": true,
+      "frame1Max": 0.9000000953674316,
+      "frame2Max": 7.699999809265137
+    },
+    {
+      "sample": 5,
+      "openDOM": 0.5,
+      "openFrames": 7.6000001430511475,
+      "openUpper": 13.69116700000086,
+      "firstDOM": 10.5,
+      "firstFrames": 16.5,
+      "warmMin": 14.299999952316284,
+      "warmMax": 17.5,
+      "focusAll": true,
+      "frame1Max": 1.2999999523162842,
+      "frame2Max": 7.900000095367432
+    }
+  ],
+  "totalQueries": 55,
+  "over100ms": 0,
+  "largest": 19.09999990463257,
+  "longTaskCount": 0
+}

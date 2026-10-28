@@ -1,0 +1,709 @@
+{
+  "sample": 1,
+  "generatedFiles": 10000,
+  "first": {
+    "domMs": 1,
+    "paintedMs": 9,
+    "observed": ["style.css"],
+    "longTasks": [],
+    "states": [
+      {
+        "phase": "input",
+        "at": 1918.2000000476837,
+        "visibility": "visible",
+        "focused": true
+      },
+      {
+        "phase": "dom",
+        "at": 1919.2000000476837,
+        "visibility": "visible",
+        "focused": true
+      },
+      {
+        "phase": "frames",
+        "at": 1927.2000000476837,
+        "visibility": "visible",
+        "focused": true
+      }
+    ],
+    "frames": [
+      {
+        "stamp": 1918.5,
+        "callback": 1920.1000001430511
+      },
+      {
+        "stamp": 1926.8,
+        "callback": 1927.2000000476837
+      }
+    ],
+    "animations": [
+      {
+        "playState": "running",
+        "currentTime": 58.5
+      },
+      {
+        "playState": "running",
+        "currentTime": 51.600000000000094
+      },
+      {
+        "playState": "running",
+        "currentTime": 51.600000000000094
+      },
+      {
+        "playState": "running",
+        "currentTime": 51.600000000000094
+      },
+      {
+        "playState": "running",
+        "currentTime": 16.900000000000137
+      },
+      {
+        "playState": "running",
+        "currentTime": 16.900000000000137
+      }
+    ]
+  },
+  "firstUpperMs": 14.714334000000235,
+  "filtering": [
+    {
+      "query": "z",
+      "domMs": 11,
+      "paintedMs": 17.100000143051147,
+      "observed": [
+        "z0000.txtfiles",
+        "z0001.txtfiles",
+        "z0002.txtfiles",
+        "z0003.txtfiles",
+        "z0004.txtfiles",
+        "z0005.txtfiles",
+        "z0006.txtfiles",
+        "z0007.txtfiles",
+        "z0008.txtfiles",
+        "z0009.txtfiles",
+        "z0010.txtfiles",
+        "z0011.txtfiles",
+        "z0012.txtfiles",
+        "z0013.txtfiles",
+        "z0014.txtfiles",
+        "z0015.txtfiles",
+        "z0016.txtfiles",
+        "z0017.txtfiles",
+        "z0018.txtfiles",
+        "z0019.txtfiles",
+        "z0020.txtfiles",
+        "z0021.txtfiles",
+        "z0022.txtfiles",
+        "z0023.txtfiles",
+        "z0024.txtfiles",
+        "z0025.txtfiles",
+        "z0026.txtfiles",
+        "z0027.txtfiles",
+        "z0028.txtfiles",
+        "z0029.txtfiles",
+        "z0030.txtfiles",
+        "z0031.txtfiles",
+        "z0032.txtfiles",
+        "z0033.txtfiles",
+        "z0034.txtfiles",
+        "z0035.txtfiles",
+        "z0036.txtfiles",
+        "z0037.txtfiles",
+        "z0038.txtfiles",
+        "z0039.txtfiles",
+        "z0040.txtfiles",
+        "z0041.txtfiles",
+        "z0042.txtfiles",
+        "z0043.txtfiles",
+        "z0044.txtfiles",
+        "z0045.txtfiles",
+        "z0046.txtfiles",
+        "z0047.txtfiles",
+        "z0048.txtfiles",
+        "z0049.txtfiles",
+        "z0050.txtfiles",
+        "z0051.txtfiles",
+        "z0052.txtfiles",
+        "z0053.txtfiles",
+        "z0054.txtfiles",
+        "z0055.txtfiles",
+        "z0056.txtfiles",
+        "z0057.txtfiles",
+        "z0058.txtfiles",
+        "z0059.txtfiles",
+        "z0060.txtfiles",
+        "z0061.txtfiles",
+        "z0062.txtfiles",
+        "z0063.txtfiles",
+        "z0064.txtfiles",
+        "z0065.txtfiles",
+        "z0066.txtfiles",
+        "z0067.txtfiles",
+        "z0068.txtfiles",
+        "z0069.txtfiles",
+        "z0070.txtfiles",
+        "z0071.txtfiles",
+        "z0072.txtfiles",
+        "z0073.txtfiles",
+        "z0074.txtfiles",
+        "z0075.txtfiles",
+        "z0076.txtfiles",
+        "z0077.txtfiles",
+        "z0078.txtfiles",
+        "z0079.txtfiles",
+        "z0080.txtfiles",
+        "z0081.txtfiles",
+        "z0082.txtfiles",
+        "z0083.txtfiles",
+        "z0084.txtfiles",
+        "z0085.txtfiles",
+        "z0086.txtfiles",
+        "z0087.txtfiles",
+        "z0088.txtfiles",
+        "z0089.txtfiles",
+        "z0090.txtfiles",
+        "z0091.txtfiles",
+        "z0092.txtfiles",
+        "z0093.txtfiles",
+        "z0094.txtfiles",
+        "z0095.txtfiles",
+        "z0096.txtfiles",
+        "z0097.txtfiles",
+        "z0098.txtfiles",
+        "z0099.txtfiles"
+      ],
+      "longTasks": [],
+      "states": [
+        {
+          "phase": "input",
+          "at": 1930.5,
+          "visibility": "visible",
+          "focused": true
+        },
+        {
+          "phase": "dom",
+          "at": 1941.5,
+          "visibility": "visible",
+          "focused": true
+        },
+        {
+          "phase": "frames",
+          "at": 1947.6000001430511,
+          "visibility": "visible",
+          "focused": true
+        }
+      ],
+      "frames": [
+        {
+          "stamp": 1935.1,
+          "callback": 1942.5
+        },
+        {
+          "stamp": 1943.5,
+          "callback": 1947.6000001430511
+        }
+      ],
+      "animations": [
+        {
+          "playState": "running",
+          "currentTime": 75.19999999999993
+        },
+        {
+          "playState": "running",
+          "currentTime": 68.30000000000003
+        },
+        {
+          "playState": "running",
+          "currentTime": 68.30000000000003
+        },
+        {
+          "playState": "running",
+          "currentTime": 68.30000000000003
+        },
+        {
+          "playState": "running",
+          "currentTime": 33.60000000000007
+        },
+        {
+          "playState": "running",
+          "currentTime": 33.60000000000007
+        }
+      ],
+      "dispatchUpperMs": 20.964500000000044
+    },
+    {
+      "query": "ze",
+      "domMs": 12,
+      "paintedMs": 18,
+      "observed": [
+        "ze0000.txtfiles",
+        "ze0001.txtfiles",
+        "ze0002.txtfiles",
+        "ze0003.txtfiles",
+        "ze0004.txtfiles",
+        "ze0005.txtfiles",
+        "ze0006.txtfiles",
+        "ze0007.txtfiles",
+        "ze0008.txtfiles",
+        "ze0009.txtfiles",
+        "ze0010.txtfiles",
+        "ze0011.txtfiles",
+        "ze0012.txtfiles",
+        "ze0013.txtfiles",
+        "ze0014.txtfiles",
+        "ze0015.txtfiles",
+        "ze0016.txtfiles",
+        "ze0017.txtfiles",
+        "ze0018.txtfiles",
+        "ze0019.txtfiles",
+        "ze0020.txtfiles",
+        "ze0021.txtfiles",
+        "ze0022.txtfiles",
+        "ze0023.txtfiles",
+        "ze0024.txtfiles",
+        "ze0025.txtfiles",
+        "ze0026.txtfiles",
+        "ze0027.txtfiles",
+        "ze0028.txtfiles",
+        "ze0029.txtfiles",
+        "ze0030.txtfiles",
+        "ze0031.txtfiles",
+        "ze0032.txtfiles",
+        "ze0033.txtfiles",
+        "ze0034.txtfiles",
+        "ze0035.txtfiles",
+        "ze0036.txtfiles",
+        "ze0037.txtfiles",
+        "ze0038.txtfiles",
+        "ze0039.txtfiles",
+        "ze0040.txtfiles",
+        "ze0041.txtfiles",
+        "ze0042.txtfiles",
+        "ze0043.txtfiles",
+        "ze0044.txtfiles",
+        "ze0045.txtfiles",
+        "ze0046.txtfiles",
+        "ze0047.txtfiles",
+        "ze0048.txtfiles",
+        "ze0049.txtfiles",
+        "ze0050.txtfiles",
+        "ze0051.txtfiles",
+        "ze0052.txtfiles",
+        "ze0053.txtfiles",
+        "ze0054.txtfiles",
+        "ze0055.txtfiles",
+        "ze0056.txtfiles",
+        "ze0057.txtfiles",
+        "ze0058.txtfiles",
+        "ze0059.txtfiles",
+        "ze0060.txtfiles",
+        "ze0061.txtfiles",
+        "ze0062.txtfiles",
+        "ze0063.txtfiles",
+        "ze0064.txtfiles",
+        "ze0065.txtfiles",
+        "ze0066.txtfiles",
+        "ze0067.txtfiles",
+        "ze0068.txtfiles",
+        "ze0069.txtfiles",
+        "ze0070.txtfiles",
+        "ze0071.txtfiles",
+        "ze0072.txtfiles",
+        "ze0073.txtfiles",
+        "ze0074.txtfiles",
+        "ze0075.txtfiles",
+        "ze0076.txtfiles",
+        "ze0077.txtfiles",
+        "ze0078.txtfiles",
+        "ze0079.txtfiles",
+        "ze0080.txtfiles",
+        "ze0081.txtfiles",
+        "ze0082.txtfiles",
+        "ze0083.txtfiles",
+        "ze0084.txtfiles",
+        "ze0085.txtfiles",
+        "ze0086.txtfiles",
+        "ze0087.txtfiles",
+        "ze0088.txtfiles",
+        "ze0089.txtfiles",
+        "ze0090.txtfiles",
+        "ze0091.txtfiles",
+        "ze0092.txtfiles",
+        "ze0093.txtfiles",
+        "ze0094.txtfiles",
+        "ze0095.txtfiles",
+        "ze0096.txtfiles",
+        "ze0097.txtfiles",
+        "ze0098.txtfiles",
+        "ze0099.txtfiles"
+      ],
+      "longTasks": [],
+      "states": [
+        {
+          "phase": "input",
+          "at": 1953.2999999523163,
+          "visibility": "visible",
+          "focused": true
+        },
+        {
+          "phase": "dom",
+          "at": 1965.2999999523163,
+          "visibility": "visible",
+          "focused": true
+        },
+        {
+          "phase": "frames",
+          "at": 1971.2999999523163,
+          "visibility": "visible",
+          "focused": true
+        }
+      ],
+      "frames": [
+        {
+          "stamp": 1960.4,
+          "callback": 1966.1000001430511
+        },
+        {
+          "stamp": 1968.4,
+          "callback": 1971.2999999523163
+        }
+      ],
+      "animations": [
+        {
+          "playState": "running",
+          "currentTime": 100.09999999999985
+        },
+        {
+          "playState": "running",
+          "currentTime": 93.19999999999995
+        },
+        {
+          "playState": "running",
+          "currentTime": 93.19999999999995
+        },
+        {
+          "playState": "running",
+          "currentTime": 93.19999999999995
+        },
+        {
+          "playState": "running",
+          "currentTime": 17.699999999999825
+        }
+      ],
+      "dispatchUpperMs": 22.127665999999863
+    },
+    {
+      "query": "zet",
+      "domMs": 11.199999809265137,
+      "paintedMs": 16.699999809265137,
+      "observed": [
+        "zet0000.txtfiles",
+        "zet0001.txtfiles",
+        "zet0002.txtfiles",
+        "zet0003.txtfiles",
+        "zet0004.txtfiles",
+        "zet0005.txtfiles",
+        "zet0006.txtfiles",
+        "zet0007.txtfiles",
+        "zet0008.txtfiles",
+        "zet0009.txtfiles",
+        "zet0010.txtfiles",
+        "zet0011.txtfiles",
+        "zet0012.txtfiles",
+        "zet0013.txtfiles",
+        "zet0014.txtfiles",
+        "zet0015.txtfiles",
+        "zet0016.txtfiles",
+        "zet0017.txtfiles",
+        "zet0018.txtfiles",
+        "zet0019.txtfiles",
+        "zet0020.txtfiles",
+        "zet0021.txtfiles",
+        "zet0022.txtfiles",
+        "zet0023.txtfiles",
+        "zet0024.txtfiles",
+        "zet0025.txtfiles",
+        "zet0026.txtfiles",
+        "zet0027.txtfiles",
+        "zet0028.txtfiles",
+        "zet0029.txtfiles",
+        "zet0030.txtfiles",
+        "zet0031.txtfiles",
+        "zet0032.txtfiles",
+        "zet0033.txtfiles",
+        "zet0034.txtfiles",
+        "zet0035.txtfiles",
+        "zet0036.txtfiles",
+        "zet0037.txtfiles",
+        "zet0038.txtfiles",
+        "zet0039.txtfiles",
+        "zet0040.txtfiles",
+        "zet0041.txtfiles",
+        "zet0042.txtfiles",
+        "zet0043.txtfiles",
+        "zet0044.txtfiles",
+        "zet0045.txtfiles",
+        "zet0046.txtfiles",
+        "zet0047.txtfiles",
+        "zet0048.txtfiles",
+        "zet0049.txtfiles",
+        "zet0050.txtfiles",
+        "zet0051.txtfiles",
+        "zet0052.txtfiles",
+        "zet0053.txtfiles",
+        "zet0054.txtfiles",
+        "zet0055.txtfiles",
+        "zet0056.txtfiles",
+        "zet0057.txtfiles",
+        "zet0058.txtfiles",
+        "zet0059.txtfiles",
+        "zet0060.txtfiles",
+        "zet0061.txtfiles",
+        "zet0062.txtfiles",
+        "zet0063.txtfiles",
+        "zet0064.txtfiles",
+        "zet0065.txtfiles",
+        "zet0066.txtfiles",
+        "zet0067.txtfiles",
+        "zet0068.txtfiles",
+        "zet0069.txtfiles",
+        "zet0070.txtfiles",
+        "zet0071.txtfiles",
+        "zet0072.txtfiles",
+        "zet0073.txtfiles",
+        "zet0074.txtfiles",
+        "zet0075.txtfiles",
+        "zet0076.txtfiles",
+        "zet0077.txtfiles",
+        "zet0078.txtfiles",
+        "zet0079.txtfiles",
+        "zet0080.txtfiles",
+        "zet0081.txtfiles",
+        "zet0082.txtfiles",
+        "zet0083.txtfiles",
+        "zet0084.txtfiles",
+        "zet0085.txtfiles",
+        "zet0086.txtfiles",
+        "zet0087.txtfiles",
+        "zet0088.txtfiles",
+        "zet0089.txtfiles",
+        "zet0090.txtfiles",
+        "zet0091.txtfiles",
+        "zet0092.txtfiles",
+        "zet0093.txtfiles",
+        "zet0094.txtfiles",
+        "zet0095.txtfiles",
+        "zet0096.txtfiles",
+        "zet0097.txtfiles",
+        "zet0098.txtfiles",
+        "zet0099.txtfiles"
+      ],
+      "longTasks": [],
+      "states": [
+        {
+          "phase": "input",
+          "at": 1976.1000001430511,
+          "visibility": "visible",
+          "focused": true
+        },
+        {
+          "phase": "dom",
+          "at": 1987.2999999523163,
+          "visibility": "visible",
+          "focused": true
+        },
+        {
+          "phase": "frames",
+          "at": 1992.7999999523163,
+          "visibility": "visible",
+          "focused": true
+        }
+      ],
+      "frames": [
+        {
+          "stamp": 1985.066,
+          "callback": 1988.2999999523163
+        },
+        {
+          "stamp": 1985.1,
+          "callback": 1992.7999999523163
+        }
+      ],
+      "animations": [
+        {
+          "playState": "running",
+          "currentTime": 116.80000000000001
+        },
+        {
+          "playState": "running",
+          "currentTime": 109.9000000000001
+        },
+        {
+          "playState": "running",
+          "currentTime": 109.9000000000001
+        },
+        {
+          "playState": "running",
+          "currentTime": 109.9000000000001
+        },
+        {
+          "playState": "running",
+          "currentTime": 34.399999999999984
+        }
+      ],
+      "dispatchUpperMs": 20.71929199999977
+    },
+    {
+      "query": "zeta",
+      "domMs": 10.100000143051147,
+      "paintedMs": 15.700000047683716,
+      "observed": [
+        "zeta0000.txtfiles",
+        "zeta0001.txtfiles",
+        "zeta0002.txtfiles",
+        "zeta0003.txtfiles",
+        "zeta0004.txtfiles",
+        "zeta0005.txtfiles",
+        "zeta0006.txtfiles",
+        "zeta0007.txtfiles",
+        "zeta0008.txtfiles",
+        "zeta0009.txtfiles",
+        "zeta0010.txtfiles",
+        "zeta0011.txtfiles",
+        "zeta0012.txtfiles",
+        "zeta0013.txtfiles",
+        "zeta0014.txtfiles",
+        "zeta0015.txtfiles",
+        "zeta0016.txtfiles",
+        "zeta0017.txtfiles",
+        "zeta0018.txtfiles",
+        "zeta0019.txtfiles",
+        "zeta0020.txtfiles",
+        "zeta0021.txtfiles",
+        "zeta0022.txtfiles",
+        "zeta0023.txtfiles",
+        "zeta0024.txtfiles",
+        "zeta0025.txtfiles",
+        "zeta0026.txtfiles",
+        "zeta0027.txtfiles",
+        "zeta0028.txtfiles",
+        "zeta0029.txtfiles",
+        "zeta0030.txtfiles",
+        "zeta0031.txtfiles",
+        "zeta0032.txtfiles",
+        "zeta0033.txtfiles",
+        "zeta0034.txtfiles",
+        "zeta0035.txtfiles",
+        "zeta0036.txtfiles",
+        "zeta0037.txtfiles",
+        "zeta0038.txtfiles",
+        "zeta0039.txtfiles",
+        "zeta0040.txtfiles",
+        "zeta0041.txtfiles",
+        "zeta0042.txtfiles",
+        "zeta0043.txtfiles",
+        "zeta0044.txtfiles",
+        "zeta0045.txtfiles",
+        "zeta0046.txtfiles",
+        "zeta0047.txtfiles",
+        "zeta0048.txtfiles",
+        "zeta0049.txtfiles",
+        "zeta0050.txtfiles",
+        "zeta0051.txtfiles",
+        "zeta0052.txtfiles",
+        "zeta0053.txtfiles",
+        "zeta0054.txtfiles",
+        "zeta0055.txtfiles",
+        "zeta0056.txtfiles",
+        "zeta0057.txtfiles",
+        "zeta0058.txtfiles",
+        "zeta0059.txtfiles",
+        "zeta0060.txtfiles",
+        "zeta0061.txtfiles",
+        "zeta0062.txtfiles",
+        "zeta0063.txtfiles",
+        "zeta0064.txtfiles",
+        "zeta0065.txtfiles",
+        "zeta0066.txtfiles",
+        "zeta0067.txtfiles",
+        "zeta0068.txtfiles",
+        "zeta0069.txtfiles",
+        "zeta0070.txtfiles",
+        "zeta0071.txtfiles",
+        "zeta0072.txtfiles",
+        "zeta0073.txtfiles",
+        "zeta0074.txtfiles",
+        "zeta0075.txtfiles",
+        "zeta0076.txtfiles",
+        "zeta0077.txtfiles",
+        "zeta0078.txtfiles",
+        "zeta0079.txtfiles",
+        "zeta0080.txtfiles",
+        "zeta0081.txtfiles",
+        "zeta0082.txtfiles",
+        "zeta0083.txtfiles",
+        "zeta0084.txtfiles",
+        "zeta0085.txtfiles",
+        "zeta0086.txtfiles",
+        "zeta0087.txtfiles",
+        "zeta0088.txtfiles",
+        "zeta0089.txtfiles",
+        "zeta0090.txtfiles",
+        "zeta0091.txtfiles",
+        "zeta0092.txtfiles",
+        "zeta0093.txtfiles",
+        "zeta0094.txtfiles",
+        "zeta0095.txtfiles",
+        "zeta0096.txtfiles",
+        "zeta0097.txtfiles",
+        "zeta0098.txtfiles",
+        "zeta0099.txtfiles"
+      ],
+      "longTasks": [],
+      "states": [
+        {
+          "phase": "input",
+          "at": 1998,
+          "visibility": "visible",
+          "focused": true
+        },
+        {
+          "phase": "dom",
+          "at": 2008.1000001430511,
+          "visibility": "visible",
+          "focused": true
+        },
+        {
+          "phase": "frames",
+          "at": 2013.7000000476837,
+          "visibility": "visible",
+          "focused": true
+        }
+      ],
+      "frames": [
+        {
+          "stamp": 2000.2,
+          "callback": 2008.9000000953674
+        },
+        {
+          "stamp": 2008.6,
+          "callback": 2013.7000000476837
+        }
+      ],
+      "animations": [
+        {
+          "playState": "running",
+          "currentTime": 140.29999999999987
+        },
+        {
+          "playState": "running",
+          "currentTime": 133.39999999999998
+        },
+        {
+          "playState": "running",
+          "currentTime": 57.89999999999984
+        }
+      ],
+      "dispatchUpperMs": 19.36179200000015
+    }
+  ]
+}
